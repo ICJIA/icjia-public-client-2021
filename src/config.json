@@ -1,0 +1,113 @@
+{
+    "publicPath": "",
+    "namespace": "icjia-",
+    "defaultAvatar": "https://cdn.vuetifyjs.com/images/john.jpg",
+    "api": {
+        "base": "https://public.icjia-api.cloud",
+        "baseGraphQL": "https://public.icjia-api.cloud/graphql",
+        "baseClient": "https://public.icjia.cloud",
+        "forgetPassword": "/auth/forgot-password",
+        "resetPassword": "/auth/reset-password",
+        "resetPasswordCallback": "/reset",
+        "posts": "/posts",
+        "login": "/auth/local",
+        "timeout": 10000,
+        "register": "/auth/local/register"
+    },
+    "daysToShowNew": 10,
+    "daysToShowNewResearch": 14,
+    "home": {
+        "eventLimit": 5,
+        "postLimit": 4
+    },
+    "image": {
+        "server": "https://image.icjia.cloud",
+        "thumbHeight": 100,
+        "thumbWidth": 0,
+        "splashHeight": 400,
+        "splashWidth": 0
+    },
+    "unitContentTypes": [
+        "posts",
+        "documents"
+    ],
+    "timezone": "America/Chicago",
+    "underConstruction": false,
+    "events": {
+        "conference": {
+            "color": "blue"
+        },
+        "external": {
+            "color": "indigo"
+        },
+        "general": {
+            "color": "deep-purple"
+        },
+        "holiday": {
+            "color": "teal"
+        },
+        "meeting": {
+            "color": "cyan"
+        },
+        "party": {
+            "color": "orange"
+        },
+        "seminar": {
+            "color": "green"
+        },
+        "summit": {
+            "color": "red"
+        },
+        "training": {
+            "color": "blue-grey"
+        },
+        "webinar": {
+            "color": "light-blue"
+        }
+    },
+    "hoursToShowUpdated": 1,
+    "search": {
+        "isCaseSensitive": false,
+        "includeScore": true,
+        "shouldSort": true,
+        "includeMatches": true,
+        "findAllMatches": true,
+        "minMatchCharLength": 2,
+        "location": 0,
+        "threshold": 0.6,
+        "distance": 100,
+        "useExtendedSearch": false,
+        "ignoreLocation": false,
+        "ignoreFieldNorm": false,
+        "keys": [
+            {
+                "name": "tags",
+                "weight": 1
+            },
+            {
+                "name": "summary",
+                "weight": 1
+            },
+            {
+                "name": "title",
+                "weight": 1
+            },
+            {
+                "name": "headings",
+                "weight": 2
+            },
+            {
+                "name": "contentType",
+                "weight": 2
+            },
+            {
+                "name": "type",
+                "weight": 2
+            },
+            {
+                "name": "ext",
+                "weight": 1
+            }
+        ]
+    }
+}

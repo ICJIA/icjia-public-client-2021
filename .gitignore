@@ -2,10 +2,10 @@
 node_modules
 /dist
 
-
 # local env files
 .env.local
 .env.*.local
+.env
 
 # Log files
 npm-debug.log*
@@ -21,3 +21,10 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+package-lock.json
+
+# public/site-meta.json
+# public/fuse-index.json
+# src/assets/site-meta.json
+# src/assets/units.json
