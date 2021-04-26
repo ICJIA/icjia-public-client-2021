@@ -4,8 +4,36 @@ import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import { createProvider } from "./vue-apollo";
+import "@/assets/app.css";
+import "@/assets/github-markdown.css";
+import "@/components/_globals";
+import "@/filters";
+// import "material-design-icons-iconfont/dist/material-design-icons.css";
+// import Masonry from "masonry-layout";
+
+import "@fortawesome/fontawesome-free/css/all.css";
 
 Vue.config.productionTip = false;
+
+// Set up app wide read-only configs and install as plugin
+import { myApp } from "./services/AppInit";
+myApp.install = function () {
+  Object.defineProperty(Vue.prototype, "$myApp", {
+    get() {
+      return myApp;
+    },
+  });
+};
+Vue.use(myApp);
+
+import VueMeta from "vue-meta";
+Vue.use(VueMeta, {
+  // optional pluginOptions
+  refreshOnceOnNavigation: true,
+});
+
+// import LoadScript from "vue-plugin-load-script";
+// Vue.use(LoadScript);
 
 new Vue({
   router,

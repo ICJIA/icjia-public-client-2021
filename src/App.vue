@@ -48,9 +48,8 @@ export default {
   components: {
     HelloWorld,
   },
-
-  data: () => ({
-    //
-  }),
+  mounted() {
+    console.log(this.$myApp);
+  },
 };
 </script>

@@ -1,0 +1,114 @@
+.hover {
+  cursor: pointer;
+}
+
+/* body {
+  min-height: 100vh !important;
+} */
+
+/* a {
+  font-weight: 900;
+  text-decoration: none;
+  background: #fff;
+} */
+
+/* a:hover {
+
+    color: #777 !important;
+} */
+
+#nprogress .bar {
+  background: #b72424 !important;
+}
+
+#nprogress .spinner-icon {
+  border-top-color: #b72424 !important;
+  border-left-color: #b72424 !important;
+}
+
+.info-card:hover,
+.event-card:hover,
+.news-card:hover {
+  box-shadow: 0px 0px 25px #000000;
+  z-index: 2;
+  -webkit-transition: all 100ms ease-in;
+  -webkit-transform: scale(1.04);
+  -ms-transition: all 100ms ease-in;
+  -ms-transform: scale(1.04);
+  -moz-transition: all 100ms ease-in;
+  -moz-transform: scale(1.04);
+  transition: all 100ms ease-in;
+  transform: scale(1.04);
+  cursor: pointer;
+}
+
+.card:hover {
+  box-shadow: 0px 0px 18px #000000;
+  z-index: 2;
+  -webkit-transition: all 100ms ease-in;
+  -webkit-transform: scale(1.01);
+  -ms-transition: all 100ms ease-in;
+  -ms-transform: scale(1.01);
+  -moz-transition: all 100ms ease-in;
+  -moz-transform: scale(1.01);
+  transition: all 100ms ease-in;
+  transform: scale(1.01);
+  cursor: pointer;
+}
+.article-title {
+  line-height: 1.3em;
+}
+
+.download-link {
+  color: rgb(38, 38, 155) !important;
+  font-weight: bold;
+}
+.download-link:hover {
+  color: #555;
+
+  text-decoration: underline;
+}
+
+.reduce-85 {
+  font-size: 85% !important;
+}
+
+.reduce-90 {
+  font-size: 90% !important;
+}
+
+.reduce-95 {
+  font-size: 95% !important;
+}
+
+.heavy {
+  font-weight: bold !important;
+}
+
+/* .v-chip--label {
+  border-radius: 0px !important;
+} */
+
+.icjia-card.v-chip {
+  border-radius: 0px !important;
+}
+
+.card-banner {
+  background: rgba(79, 80, 79, 0.5);
+  padding: 5px;
+}
+
+.unit-link:hover {
+  text-decoration: underline;
+}
+
+.aria-hidden {
+  border: 0 !important;
+  clip: rect(0 0 0 0) !important;
+  height: 1px !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: absolute !important;
+  width: 1px !important;
+}
