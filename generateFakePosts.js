@@ -25,19 +25,20 @@ function titleCase(str) {
     post.title = titleCase(post.title);
     post.splash = null;
     post.slug = slug(post.title);
+
     return post;
   });
 
-  console.dir(posts);
+  //console.dir(posts);
 
-  //   posts.forEach(async (post) => {
-  //     let response = await axios.post(
-  //       `${process.env.BASE_API}/posts`,
-  //       JSON.stringify(post),
-  //       axiosConfig
-  //     );
-  //     console.log(response.data);
-  //   });
+  posts.forEach(async (post) => {
+    let response = await axios.post(
+      `${process.env.BASE_API}/posts`,
+      post,
+      axiosConfig
+    );
+    console.log(response.data);
+  });
 
-  // console.log(posts);
+  console.log(posts);
 })();
