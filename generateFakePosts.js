@@ -33,7 +33,7 @@ function titleCase(str) {
 
   posts.forEach(async (post) => {
     let response = await axios.post(
-      `${process.env.BASE_API}/posts`,
+      `https://public.icjia-api.cloud/posts`,
       post,
       axiosConfig
     );

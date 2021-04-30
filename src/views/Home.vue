@@ -1,5 +1,5 @@
 <template>
-  <div><HomeSplash :slides="slides"></HomeSplash></div>
+  <div><HomeSplash :slides="slides" :loading="loading"></HomeSplash></div>
 </template>
 
 <script>
@@ -8,6 +8,7 @@ export default {
     return {
       slides: null,
       error: null,
+      loading: false,
     };
   },
 };

@@ -3,30 +3,21 @@ import gql from "graphql-tag";
 const GET_HOME = gql`
   query Home($now: String!, $eventLimit: Int!, $postLimit: Int!) {
     home {
-      id
-      created_at
-      updated_at
-
-      # quick_menu {
-      #   id
-      #   title
-      #   summary
-
-      #   menuItem {
-      #     text
-      #     url
-      #   }
-      # }
-
-      homeSlider {
-        id
+      slider {
         slide {
           title
-          url
-          summary
+          teaser
           image {
             url
+            name
             formats
+          }
+        }
+        button {
+          label
+          buttonMenu {
+            label
+            url
           }
         }
       }
@@ -60,7 +51,6 @@ const GET_HOME = gql`
       summary
       details
       slug
-
       type
     }
 
@@ -85,27 +75,6 @@ const GET_HOME = gql`
         url
         formats
       }
-    }
-
-    documents(limit: 10, sort: "updated_at:desc") {
-      id
-      published_at
-      updated_at
-      title
-      summary
-      externalURL
-      body
-      tags {
-        id
-        title
-        slug
-      }
-      file {
-        url
-        name
-        ext
-      }
-      slug
     }
   }
 `;

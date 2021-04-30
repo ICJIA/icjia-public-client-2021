@@ -4968,13 +4968,17 @@
             "deprecationReason": null
           },
           {
-            "name": "homeSlider",
+            "name": "slider",
             "description": null,
             "args": [],
             "type": {
-              "kind": "OBJECT",
-              "name": "ComponentSliderSlider",
-              "ofType": null
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "ComponentSliderSlider",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -5004,12 +5008,16 @@
         "fields": null,
         "inputFields": [
           {
-            "name": "homeSlider",
+            "name": "slider",
             "description": null,
             "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "ComponentSliderSliderInput",
-              "ofType": null
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "ComponentSliderSliderInput",
+                "ofType": null
+              }
             },
             "defaultValue": null
           },
@@ -5055,12 +5063,16 @@
         "fields": null,
         "inputFields": [
           {
-            "name": "homeSlider",
+            "name": "slider",
             "description": null,
             "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "editComponentSliderSliderInput",
-              "ofType": null
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "editComponentSliderSliderInput",
+                "ofType": null
+              }
             },
             "defaultValue": null
           },
@@ -12304,7 +12316,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "ComponentMenuMenuItem",
+        "name": "ComponentButtonButton",
         "description": null,
         "fields": [
           {
@@ -12324,7 +12336,142 @@
             "deprecationReason": null
           },
           {
-            "name": "text",
+            "name": "label",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "buttonMenu",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "ComponentMenuItemMenuItem",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "ComponentButtonButtonInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "label",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "buttonMenu",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "ComponentMenuItemMenuItemInput",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "editComponentButtonButtonInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "ID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "label",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "buttonMenu",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "editComponentMenuItemMenuItemInput",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "ComponentMenuItemMenuItem",
+        "description": null,
+        "fields": [
+          {
+            "name": "id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "label",
             "description": null,
             "args": [],
             "type": {
@@ -12355,12 +12502,12 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "ComponentMenuMenuItemInput",
+        "name": "ComponentMenuItemMenuItemInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "text",
+            "name": "label",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -12386,7 +12533,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "editComponentMenuMenuItemInput",
+        "name": "editComponentMenuItemMenuItemInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -12401,7 +12548,7 @@
             "defaultValue": null
           },
           {
-            "name": "text",
+            "name": "label",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -12427,7 +12574,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "ComponentMenuMenu",
+        "name": "ComponentSlideSlide",
         "description": null,
         "fields": [
           {
@@ -12447,22 +12594,6 @@
             "deprecationReason": null
           },
           {
-            "name": "menuItem",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "ComponentMenuMenuItem",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "title",
             "description": null,
             "args": [],
@@ -12475,12 +12606,24 @@
             "deprecationReason": null
           },
           {
-            "name": "summary",
+            "name": "teaser",
             "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "image",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "UploadFile",
               "ofType": null
             },
             "isDeprecated": false,
@@ -12494,24 +12637,10 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "ComponentMenuMenuInput",
+        "name": "ComponentSlideSlideInput",
         "description": null,
         "fields": null,
         "inputFields": [
-          {
-            "name": "menuItem",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "INPUT_OBJECT",
-                "name": "ComponentMenuMenuItemInput",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
           {
             "name": "title",
             "description": null,
@@ -12523,11 +12652,21 @@
             "defaultValue": null
           },
           {
-            "name": "summary",
+            "name": "teaser",
             "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "image",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "ID",
               "ofType": null
             },
             "defaultValue": null
@@ -12539,7 +12678,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "editComponentMenuMenuInput",
+        "name": "editComponentSlideSlideInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -12554,20 +12693,6 @@
             "defaultValue": null
           },
           {
-            "name": "menuItem",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "INPUT_OBJECT",
-                "name": "editComponentMenuMenuItemInput",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
-          {
             "name": "title",
             "description": null,
             "type": {
@@ -12578,11 +12703,21 @@
             "defaultValue": null
           },
           {
-            "name": "summary",
+            "name": "teaser",
             "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "image",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "ID",
               "ofType": null
             },
             "defaultValue": null
@@ -12594,7 +12729,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "ComponentSliderSlide",
+        "name": "ComponentSliderButtonSliderButton",
         "description": null,
         "fields": [
           {
@@ -12614,7 +12749,7 @@
             "deprecationReason": null
           },
           {
-            "name": "title",
+            "name": "label",
             "description": null,
             "args": [],
             "type": {
@@ -12626,31 +12761,7 @@
             "deprecationReason": null
           },
           {
-            "name": "summary",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "url",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "buttonMenu",
+            "name": "menuItem",
             "description": null,
             "args": [],
             "type": {
@@ -12658,64 +12769,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "ComponentMenuMenuItem",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "image",
-            "description": null,
-            "args": [
-              {
-                "name": "sort",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "limit",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "start",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "where",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "JSON",
-                  "ofType": null
-                },
-                "defaultValue": null
-              }
-            ],
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "UploadFile",
+                "name": "ComponentMenuItemMenuItem",
                 "ofType": null
               }
             },
@@ -12730,12 +12784,12 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "ComponentSliderSlideInput",
+        "name": "ComponentSliderButtonSliderButtonInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "title",
+            "name": "label",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -12745,48 +12799,14 @@
             "defaultValue": null
           },
           {
-            "name": "summary",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "image",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "url",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "buttonMenu",
+            "name": "menuItem",
             "description": null,
             "type": {
               "kind": "LIST",
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "ComponentMenuMenuItemInput",
+                "name": "ComponentMenuItemMenuItemInput",
                 "ofType": null
               }
             },
@@ -12799,7 +12819,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "editComponentSliderSlideInput",
+        "name": "editComponentSliderButtonSliderButtonInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -12814,7 +12834,7 @@
             "defaultValue": null
           },
           {
-            "name": "title",
+            "name": "label",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -12824,48 +12844,14 @@
             "defaultValue": null
           },
           {
-            "name": "summary",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "image",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "url",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "buttonMenu",
+            "name": "menuItem",
             "description": null,
             "type": {
               "kind": "LIST",
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "editComponentMenuMenuItemInput",
+                "name": "editComponentMenuItemMenuItemInput",
                 "ofType": null
               }
             },
@@ -12906,7 +12892,23 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "ComponentSliderSlide",
+                "name": "ComponentSlideSlide",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "button",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "ComponentButtonButton",
                 "ofType": null
               }
             },
@@ -12933,7 +12935,21 @@
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "ComponentSliderSlideInput",
+                "name": "ComponentSlideSlideInput",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "button",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "ComponentButtonButtonInput",
                 "ofType": null
               }
             },
@@ -12968,7 +12984,21 @@
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "editComponentSliderSlideInput",
+                "name": "editComponentSlideSlideInput",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "button",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "editComponentButtonButtonInput",
                 "ofType": null
               }
             },
@@ -13820,17 +13850,22 @@
           },
           {
             "kind": "OBJECT",
-            "name": "ComponentMenuMenuItem",
+            "name": "ComponentButtonButton",
             "ofType": null
           },
           {
             "kind": "OBJECT",
-            "name": "ComponentMenuMenu",
+            "name": "ComponentMenuItemMenuItem",
             "ofType": null
           },
           {
             "kind": "OBJECT",
-            "name": "ComponentSliderSlide",
+            "name": "ComponentSlideSlide",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "ComponentSliderButtonSliderButton",
             "ofType": null
           },
           {
