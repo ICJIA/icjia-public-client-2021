@@ -39,22 +39,7 @@ export default {
       error(error) {
         this.error = JSON.stringify(error.message);
       },
-      result(ApolloQueryResult) {
-        // this.filteredPosts = ApolloQueryResult.data.posts;
-        // this.posts = ApolloQueryResult.data.posts.map((p) => {
-        //   return {
-        //     ...p,
-        //     search: `${p.title.toLowerCase()} ${p.summary.toLowerCase()} ${p.units[0][
-        //       "title"
-        //     ].toLowerCase()} ${p.units[0]["shortname"].toLowerCase()} ${moment(
-        //       p.published_at
-        //     )
-        //       .format("MMMM DD, YYYY")
-        //       .toLowerCase()}`,
-        //   };
-        // });
-        // this.filteredPosts = this.posts;
-      },
+      result(ApolloQueryResult) {},
     },
   },
 };

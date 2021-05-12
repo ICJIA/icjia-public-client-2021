@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="!homeLoading">
+    <div v-if="!homeLoading && !hubLoading">
       <h2>Slider</h2>
       {{ slider }}
       <h2>Slider buttons</h2>
@@ -9,21 +9,18 @@
       {{ events }}
       <h2>Posts</h2>
       {{ posts }}
-    </div>
-    <div v-else>
-      <Loader></Loader>
-    </div>
-    <div v-if="!hubLoading">
       <h2>Research Hub Apps</h2>
       {{ hubApplications }}
       <h2>Research Hub Articles</h2>
       {{ hubArticles }}
-      <h2>Datasets</h2>
+      <h2>Research Hub Datasets</h2>
       {{ hubDatasets }}
     </div>
     <div v-else>
       <Loader></Loader>
     </div>
+
+    <div>{{ error }}</div>
   </div>
 </template>
 
@@ -66,7 +63,7 @@ export default {
       variables() {
         return {
           now: new Date(),
-          eventLimit: 5,
+          eventLimit: 25,
           postLimit: 5,
         };
       },
@@ -75,7 +72,7 @@ export default {
         this.error = JSON.stringify(error.message);
       },
       result(ApolloQueryResult) {
-        console.log(ApolloQueryResult);
+        // console.log(ApolloQueryResult);
         this.events = ApolloQueryResult.data.events;
         this.posts = ApolloQueryResult.data.posts;
         this.slider = ApolloQueryResult.data.home.homeCarousel;

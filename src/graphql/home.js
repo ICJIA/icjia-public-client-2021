@@ -23,24 +23,6 @@ const GET_HOME = gql`
       }
     }
 
-    eventRange: events(
-      limit: $eventLimit
-      where: { start_lte: $now, end_gte: $now }
-      sort: "start:asc"
-    ) {
-      id
-      published_at
-      name
-      start
-      end
-      timed
-      summary
-      details
-      slug
-
-      type
-    }
-
     events(limit: $eventLimit, where: { start_gte: $now }, sort: "start:asc") {
       id
       name
@@ -52,6 +34,10 @@ const GET_HOME = gql`
       details
       slug
       type
+      tags {
+        title
+        slug
+      }
     }
 
     posts(sort: "published_at:desc", limit: $postLimit) {
