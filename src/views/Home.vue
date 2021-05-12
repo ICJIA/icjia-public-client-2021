@@ -1,12 +1,18 @@
 <template>
   <div>
-    <!-- <HomeSplash :slides="slides" :loading="loading"></HomeSplash>  -->
-    <h2>Slider</h2>
-    {{ slider }}
-    <h2>Events</h2>
-    {{ events }}
-    <h2>Posts</h2>
-    {{ posts }}
+    <div v-if="!homeLoading">
+      <h2>Slider</h2>
+      {{ slider }}
+      <h2>Slider buttons</h2>
+      {{ buttons }}
+      <h2>Events</h2>
+      {{ events }}
+      <h2>Posts</h2>
+      {{ posts }}
+    </div>
+    <div v-else>
+      <Loader></Loader>
+    </div>
   </div>
 </template>
 
@@ -17,10 +23,11 @@ export default {
     return {
       slides: null,
       error: null,
-      loading: false,
+      homeLoading: true,
       events: null,
       posts: null,
       slider: null,
+      buttons: null,
     };
   },
   apollo: {
@@ -34,9 +41,7 @@ export default {
           postLimit: 5,
         };
       },
-      // context: {
-      //   uri: "http://127.0.0.1:8000/graphql/countries",
-      // },
+
       error(error) {
         this.error = JSON.stringify(error.message);
       },
@@ -45,6 +50,8 @@ export default {
         this.events = ApolloQueryResult.data.events;
         this.posts = ApolloQueryResult.data.posts;
         this.slider = ApolloQueryResult.data.home.homeCarousel;
+        this.buttons = ApolloQueryResult.data.home.homeCarouselButton;
+        this.homeLoading = false;
       },
     },
   },
