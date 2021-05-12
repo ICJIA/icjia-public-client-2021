@@ -6,7 +6,7 @@
     "serve": "npm run schema && vue-cli-service serve",
     "build": "npm run schema && vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "schema": "get-graphql-schema https://public.icjia-api.cloud/graphql -j > schema.json"
+    "schema": "get-graphql-schema https://agency.icjia-api.cloud/graphql -j > schema.json"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",

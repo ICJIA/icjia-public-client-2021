@@ -2,27 +2,6 @@ import gql from "graphql-tag";
 /* eslint-disable graphql/template-strings */
 const GET_HOME = gql`
   query Home($now: String!, $eventLimit: Int!, $postLimit: Int!) {
-    home {
-      slider {
-        slide {
-          title
-          teaser
-          image {
-            url
-            name
-            formats
-          }
-        }
-        button {
-          label
-          buttonMenu {
-            label
-            url
-          }
-        }
-      }
-    }
-
     eventRange: events(
       limit: $eventLimit
       where: { start_lte: $now, end_gte: $now }

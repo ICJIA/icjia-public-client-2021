@@ -25,7 +25,7 @@ const defaultOptions = {
   //wsEndpoint: appConfig.api.baseGraphQL || "ws://localhost:4000/graphql",
   wsEndpoint: null,
   // LocalStorage token
-  tokenName: AUTH_TOKEN,
+  //tokenName: AUTH_TOKEN,
   // Enable Automatic Query persisting with Apollo Engine
   persisting: false,
   // Use websockets for everything (no HTTP)
