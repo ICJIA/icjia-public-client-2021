@@ -13,18 +13,17 @@
             <v-col md="12" cols="12">
               <v-img
                 v-if="slide.image && slide.image.formats"
-                :src="`https://agency.icjia-api.cloud${slide.image.formats.large.url}`"
-                :lazy-src="`https://agency.icjia-api.cloud${slide.image.formats.thumbnail.url}`"
+                :src="getImagePath(`${slide.image.url}`, 0, 0, 60, true)"
+                :lazy-src="getImagePath(`${slide.image.url}`, 0, 0, 1, true)"
                 alt="ICJIA home page splash image"
                 height="450"
               >
-                <v-overlay absolute opacity=".2">
+                <v-overlay absolute opacity=".3" color="blue lighten-3">
                   <div
                     class="text-center px-5"
                     style="background: rgba(125, 125, 125, 0.9); padding: 25px"
                     width="100% !important"
                   >
-                    {{ slide.image.formats.thumbnail.url }}
                     <div class="text-center px-5" style="min-width: 350px">
                       <h1 class="nofo-title mt-3" style="color: #1b69bc">
                         Title 1 here
@@ -66,8 +65,6 @@
         </v-card>
       </v-carousel-item>
     </v-carousel>
-
-    {{ slider.slide }}
   </div>
 </template>
 
