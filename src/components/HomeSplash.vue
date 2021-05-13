@@ -1,11 +1,10 @@
 <template>
   <div>
     <v-carousel
-      height="500"
+      height="450"
       hide-delimiter-background
       show-arrows-on-hover
       hide-delimiters
-      style="margin-top: -12px"
     >
       <v-carousel-item v-for="(slide, index) in slider.slide" :key="index">
         <v-card color="grey lighten-4" height="100%">
@@ -13,8 +12,10 @@
             <v-col md="12" cols="12">
               <v-img
                 v-if="slide.image && slide.image.formats"
-                :src="getImagePath(`${slide.image.url}`, 0, 0, 60, true)"
-                :lazy-src="getImagePath(`${slide.image.url}`, 0, 0, 1, true)"
+                :src="getImagePath(slide.image.url, 0, 0, 70, slide.grayscale)"
+                :lazy-src="
+                  getImagePath(slide.image.url, 0, 0, 1, slide.grayscale)
+                "
                 alt="ICJIA home page splash image"
                 height="450"
               >
@@ -30,19 +31,51 @@
                       </h1>
                       <div class="nofo-tagline">Teaser here</div>
                       <div class="mt-4">
-                        <v-container fluid
-                          ><v-row>
-                            <v-col cols="12" md="4">
-                              <v-btn outlined class="mr-3">Button here</v-btn>
-                            </v-col>
-                            <v-col cols="12" md="4">
-                              <v-btn outlined class="mr-3">Button here</v-btn>
-                            </v-col>
-                            <v-col cols="12" md="4">
-                              <v-btn outlined class="mr-3">Button here</v-btn>
-                            </v-col></v-row
-                          ></v-container
-                        >
+                        <v-container fluid>
+                          <v-row>
+                            <!-- <div
+                              v-for="(button, index) in buttons"
+                              :key="`button-${index}`"
+                            >
+                              <v-col cols="12" md="getButtonSize()">
+                                <v-btn outlined class="mr-3">{{
+                                  button.label
+                                }}</v-btn>
+                              </v-col>
+                            </div> -->
+                            <div
+                              v-for="(button, index) in buttons"
+                              :key="`button-${index}`"
+                            >
+                              <v-col cols="12" md="4">
+                                <v-menu
+                                  top
+                                  transition="slide-y-transition"
+                                  role="navigation"
+                                  id="button-2"
+                                  aria-label="Click this button for a menu of Y"
+                                  open-on-hover
+                                >
+                                  <template v-slot:activator="{ on, attrs }"
+                                    ><v-btn v-bind="attrs" v-on="on" large>{{
+                                      button.label
+                                    }}</v-btn></template
+                                  >
+                                  <v-list>
+                                    <v-list-item
+                                      v-for="(item, index) in button.menuItem"
+                                      :key="index"
+                                    >
+                                      <v-list-item-title>{{
+                                        item.label
+                                      }}</v-list-item-title>
+                                    </v-list-item>
+                                  </v-list>
+                                </v-menu></v-col
+                              >
+                            </div>
+                          </v-row>
+                        </v-container>
                       </div>
                     </div>
                   </div>
@@ -65,6 +98,7 @@
         </v-card>
       </v-carousel-item>
     </v-carousel>
+    {{ buttons }}
   </div>
 </template>
 
@@ -72,7 +106,11 @@
 import { getImageURL, getGrayscaleImageURL } from "@/services/Image";
 export default {
   mounted() {},
+
   methods: {
+    getButtonSize() {
+      return 12 / this.buttons.length;
+    },
     route(url) {
       var r = new RegExp("^(?:[a-z]+:)?//", "i");
       if (r.test(url)) {
@@ -89,7 +127,7 @@ export default {
       imgWidth = 0,
       imgHeight = 0,
       imageQuality = 50,
-      grayscale = false
+      grayscale
     ) {
       let imgPath;
       imgPath = `${this.$myApp.config.api.base}${url}`;
@@ -110,7 +148,7 @@ export default {
         );
       }
 
-      console.log("splash path: ", thumborImgPath);
+      console.log("grayscale", grayscale);
       return thumborImgPath;
     },
   },
@@ -119,10 +157,20 @@ export default {
       type: Object,
       default: () => {},
     },
+    buttons: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
       base: this.$myApp.config.api.base,
+      items: [
+        { title: "Click Me" },
+        { title: "Click Me" },
+        { title: "Click Me" },
+        { title: "Click Me 2" },
+      ],
     };
   },
 };

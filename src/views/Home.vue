@@ -15,7 +15,7 @@
       {{ hubArticles }}
       <h2>Research Hub Datasets</h2>
       {{ hubDatasets }} -->
-      <HomeSplash :slider="slider"></HomeSplash>
+      <HomeSplash :slider="slider" :buttons="buttons"></HomeSplash>
     </div>
     <div v-else>
       <Loader></Loader>

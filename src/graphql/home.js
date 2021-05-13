@@ -8,7 +8,7 @@ const GET_HOME = gql`
         slide {
           title
           teaser
-
+          grayscale
           image {
             formats
             url
