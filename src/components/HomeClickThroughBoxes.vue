@@ -18,7 +18,7 @@
               <h2 class="text-center box-head">{{ box.title }}</h2>
 
               <v-card-text class="px-2 font-weight-light box-text text-center">
-                <span v-html="box.teaser" style="font-size: 14px"></span>
+                <span v-html="box.teaser" style="font-size: 16px"></span>
               </v-card-text>
             </v-card>
           </router-link>
@@ -64,7 +64,7 @@ a {
   background: #ccc !important;
 }
 .box:hover > * {
-  color: #444;
+  color: #000;
   cursor: pointer;
 }
 .box-head {
@@ -77,6 +77,9 @@ a {
   font-size: 18px;
   margin-top: 8px;
   color: #fff;
+}
+.box-text:hover {
+  color: #000 !important;
 }
 .rule {
   border-bottom: 1px solid #ccc !important;
