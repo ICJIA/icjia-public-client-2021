@@ -17,14 +17,27 @@ Vue.config.productionTip = false;
 
 // Set up app wide read-only configs and install as plugin
 import { myApp } from "./services/AppInit";
-myApp.install = function () {
-  Object.defineProperty(Vue.prototype, "$myApp", {
-    get() {
-      return myApp;
-    },
-  });
-};
-Vue.use(myApp);
+// myApp.install = function () {
+//   Object.defineProperty(Vue.prototype, "$myApp", {
+//     get() {
+//       return myApp;
+//     },
+//   });
+// };
+// Vue.use(myApp);
+
+// scaffold this for future config from API
+(async function init() {
+  myApp.install = function () {
+    Object.defineProperty(Vue.prototype, "$myApp", {
+      get() {
+        return myApp;
+      },
+    });
+  };
+  Vue.use(myApp);
+  console.log("initialized");
+})();
 
 import VueMeta from "vue-meta";
 Vue.use(VueMeta, {

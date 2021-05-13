@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="!homeLoading && !hubLoading">
-      <h2>Slider</h2>
+      <!-- <h2>Slider</h2>
       {{ slider }}
       <h2>Slider buttons</h2>
       {{ buttons }}
@@ -14,7 +14,8 @@
       <h2>Research Hub Articles</h2>
       {{ hubArticles }}
       <h2>Research Hub Datasets</h2>
-      {{ hubDatasets }}
+      {{ hubDatasets }} -->
+      <HomeSplash :slider="slider"></HomeSplash>
     </div>
     <div v-else>
       <Loader></Loader>

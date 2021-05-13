@@ -30,14 +30,13 @@ async function queryEndpoint(query) {
 const getHubArticlesQuery = (limit) => {
   return `{
       articles (sort: "date:desc", limit: ${limit}, where: {status: "published"}) {
+        id
         title
         status
        createdAt
         abstract
         authors 
         slug
-        thumbnail
-        splash
         date
         createdAt
       }
@@ -47,23 +46,24 @@ const getHubArticlesQuery = (limit) => {
 const getHubApplicationsQuery = (limit) => {
   return `{
     apps (sort: "date:desc", limit: ${limit}, where: {status: "published"}) {
+      id
       title
-    status
-   createdAt
-    updatedAt
-    contributors
-    date
-    slug
-    description
-    image
-    url
-    articles {
-      title
+      status
+      createdAt
+      updatedAt
+      contributors
+      date
       slug
+      description
+      image
+      url
+      articles {
+        title
+        slug
       }
-    datasets {
-      title
-      slug
+      datasets {
+        title
+        slug
       }
     }
   }`;
@@ -72,6 +72,7 @@ const getHubApplicationsQuery = (limit) => {
 const getHubDatasetsQuery = (limit) => {
   return `{
     datasets (sort: "date:desc", limit: ${limit}, where: {status: "published"}) {
+      id
       title
       description
       status
@@ -89,7 +90,7 @@ const getHubArticles = async (limit) => {
     console.log(articles.data.data.articles);
     return articles.data.data.articles;
   } catch (e) {
-    console.log("researchHub error: ", e.toString());
+    console.log("researchHub articles error: ", e.toString());
     EventBus.$emit("error", e.toString());
     NProgress.done();
     return null;
@@ -102,7 +103,8 @@ const getHubApplications = async (limit) => {
     console.log(apps.data.data.apps);
     return apps.data.data.apps;
   } catch (e) {
-    console.log("contentServiceError", e.toString());
+    console.log("researchHub applications error:", e.toString());
+    EventBus.$emit("error", e.toString());
     NProgress.done();
     return [];
   }
@@ -114,7 +116,8 @@ const getHubDatasets = async (limit) => {
     console.log(datasets.data.data.datasets);
     return datasets.data.data.datasets;
   } catch (e) {
-    console.log("contentServiceError", e.toString());
+    console.log("researchHub datasets error:", e.toString());
+    EventBus.$emit("error", e.toString());
     NProgress.done();
     return [];
   }

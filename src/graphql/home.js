@@ -8,8 +8,10 @@ const GET_HOME = gql`
         slide {
           title
           teaser
+
           image {
             formats
+            url
           }
         }
       }
