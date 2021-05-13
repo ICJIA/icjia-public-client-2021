@@ -98,7 +98,7 @@
         </v-card>
       </v-carousel-item>
     </v-carousel>
-    {{ buttons }}
+    <!-- {{ buttons }} -->
   </div>
 </template>
 
@@ -148,7 +148,7 @@ export default {
         );
       }
 
-      console.log("grayscale", grayscale);
+      //console.log("grayscale", grayscale);
       return thumborImgPath;
     },
   },

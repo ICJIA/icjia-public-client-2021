@@ -1,40 +1,40 @@
 <template>
   <div>
-    <!-- <v-container fill-height fluid class="px-0" style="margin-top: -15px">
+    <v-container fill-height fluid class="px-0" style="margin-top: -15px">
       <v-row no-gutters>
         <v-col
           cols="12"
           :md="getBoxSize"
-          v-for="(box, index) in featureBoxes.box"
+          v-for="(box, index) in boxes"
           :key="`box-${index}`"
         >
           <router-link :to="box.url" v-if="box.url">
             <v-card
               dark
-              height="100%"
-              class="elevation-0 px-10 py-8 box"
+              height="275px"
+              class="elevation-0 px-8 py-10 box"
               :color="getFeatureBoxColor(index)"
             >
               <h2 class="text-center box-head">{{ box.title }}</h2>
 
-              <v-card-text class="px-2 font-weight-light box-text">
-                <span v-html="box.summary"></span>
+              <v-card-text class="px-2 font-weight-light box-text text-center">
+                <span v-html="box.teaser" style="font-size: 14px"></span>
               </v-card-text>
             </v-card>
           </router-link>
         </v-col>
       </v-row>
-    </v-container> -->
-    {{ clickThroughBoxes }}
+    </v-container>
+    <!-- Boxes: {{ boxes }} -->
   </div>
 </template>
 
 <script>
 export default {
   computed: {
-    // getBoxSize() {
-    //   return 12 / this.clickThroughBoxes.box.length;
-    // },
+    getBoxSize() {
+      return 12 / this.boxes.length;
+    },
   },
   methods: {
     getFeatureBoxColor(index) {
@@ -44,24 +44,11 @@ export default {
   },
   data() {
     return {
-      colors: [
-        "#442B99",
-        "#7655E4",
-        "#9274F7",
-        "#442B99",
-        "#7655E4",
-        "#9274F7",
-        "#442B99",
-        "#7655E4",
-        "#9274F7",
-        "#442B99",
-        "#7655E4",
-        "#9274F7",
-      ],
+      colors: ["#250b8c", "#002a8c", "#003784", "#003d7a"],
     };
   },
   props: {
-    clickThroughBoxes: {
+    boxes: {
       type: Array,
       default: () => {},
     },

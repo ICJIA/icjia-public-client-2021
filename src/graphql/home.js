@@ -23,6 +23,12 @@ const GET_HOME = gql`
           url
         }
       }
+      clickThroughBoxes {
+        title
+        url
+        teaser
+        icon
+      }
     }
 
     events(limit: $eventLimit, where: { start_gte: $now }, sort: "start:asc") {

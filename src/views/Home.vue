@@ -16,6 +16,7 @@
       <h2>Research Hub Datasets</h2>
       {{ hubDatasets }} -->
       <HomeSplash :slider="slider" :buttons="buttons"></HomeSplash>
+      <HomeClickThroughBoxes :boxes="boxes"></HomeClickThroughBoxes>
     </div>
     <div v-else>
       <Loader></Loader>
@@ -78,6 +79,8 @@ export default {
         this.posts = ApolloQueryResult.data.posts;
         this.slider = ApolloQueryResult.data.home.homeCarousel;
         this.buttons = ApolloQueryResult.data.home.homeCarouselButton;
+        this.boxes = ApolloQueryResult.data.home.clickThroughBoxes;
+        //console.log("home: ", ApolloQueryResult.data.home);
         this.homeLoading = false;
         this.fetchHubContent();
       },

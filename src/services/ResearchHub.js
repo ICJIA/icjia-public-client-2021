@@ -87,10 +87,10 @@ const getHubDatasetsQuery = (limit) => {
 const getHubArticles = async (limit) => {
   try {
     let articles = await queryEndpoint(getHubArticlesQuery(limit));
-    console.log(articles.data.data.articles);
+    //console.log(articles.data.data.articles);
     return articles.data.data.articles;
   } catch (e) {
-    console.log("researchHub articles error: ", e.toString());
+    //console.log("researchHub articles error: ", e.toString());
     EventBus.$emit("error", e.toString());
     NProgress.done();
     return null;
@@ -100,10 +100,10 @@ const getHubArticles = async (limit) => {
 const getHubApplications = async (limit) => {
   try {
     let apps = await queryEndpoint(getHubApplicationsQuery(limit));
-    console.log(apps.data.data.apps);
+    //console.log(apps.data.data.apps);
     return apps.data.data.apps;
   } catch (e) {
-    console.log("researchHub applications error:", e.toString());
+    //console.log("researchHub applications error:", e.toString());
     EventBus.$emit("error", e.toString());
     NProgress.done();
     return [];
@@ -113,10 +113,10 @@ const getHubApplications = async (limit) => {
 const getHubDatasets = async (limit) => {
   try {
     let datasets = await queryEndpoint(getHubDatasetsQuery(limit));
-    console.log(datasets.data.data.datasets);
+    //console.log(datasets.data.data.datasets);
     return datasets.data.data.datasets;
   } catch (e) {
-    console.log("researchHub datasets error:", e.toString());
+    //console.log("researchHub datasets error:", e.toString());
     EventBus.$emit("error", e.toString());
     NProgress.done();
     return [];
