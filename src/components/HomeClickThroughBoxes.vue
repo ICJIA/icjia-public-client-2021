@@ -12,12 +12,15 @@
             <v-card
               dark
               height="275px"
-              class="elevation-0 px-8 py-10 box"
+              class="elevation-0 px-8 py-10 box text-center"
               :color="getFeatureBoxColor(index)"
             >
-              <h2 class="text-center box-head">{{ box.title }}</h2>
+              <v-icon style="font-size: 70px" dark>{{ box.icon }}</v-icon>
+              <h2 class="text-center box-head mt-2">{{ box.title }}</h2>
 
-              <v-card-text class="px-2 font-weight-light box-text text-center">
+              <v-card-text
+                class="px-2 mt-2 font-weight-light box-text text-center"
+              >
                 <span v-html="box.teaser" style="font-size: 16px"></span>
               </v-card-text>
             </v-card>
@@ -44,7 +47,7 @@ export default {
   },
   data() {
     return {
-      colors: ["#250b8c", "#002a8c", "#003784", "#003d7a"],
+      colors: ["#003784", "#002a8c", "#003784", "#003d7a"],
     };
   },
   props: {
@@ -64,7 +67,7 @@ a {
   background: #ccc !important;
 }
 .box:hover > * {
-  color: #000;
+  color: #000 !important;
   cursor: pointer;
 }
 .box-head {

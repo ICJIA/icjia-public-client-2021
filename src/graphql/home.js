@@ -9,6 +9,8 @@ const GET_HOME = gql`
           title
           teaser
           grayscale
+          tint
+          opacity
           image {
             formats
             url

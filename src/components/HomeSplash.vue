@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-carousel
-      height="450"
+      height="500"
       hide-delimiter-background
       show-arrows-on-hover
       hide-delimiters
@@ -17,32 +17,28 @@
                   getImagePath(slide.image.url, 0, 0, 1, slide.grayscale)
                 "
                 alt="ICJIA home page splash image"
-                height="450"
+                height="500"
               >
-                <v-overlay absolute opacity=".3" color="blue lighten-3">
+                <v-overlay
+                  absolute
+                  :opacity="slide.opacity"
+                  :color="slide.tint"
+                >
                   <div
                     class="text-center px-5"
                     style="background: rgba(125, 125, 125, 0.9); padding: 25px"
                     width="100% !important"
                   >
                     <div class="text-center px-5" style="min-width: 350px">
-                      <h1 class="nofo-title mt-3" style="color: #1b69bc">
-                        Title 1 here
+                      <h1 class="nofo-title mt-3" style="color: #fff">
+                        {{ slide.title }}
                       </h1>
-                      <div class="nofo-tagline">Teaser here</div>
+                      <div class="nofo-tagline" style="font-size: 14px">
+                        {{ slide.teaser }}
+                      </div>
                       <div class="mt-4">
                         <v-container fluid>
                           <v-row>
-                            <!-- <div
-                              v-for="(button, index) in buttons"
-                              :key="`button-${index}`"
-                            >
-                              <v-col cols="12" md="getButtonSize()">
-                                <v-btn outlined class="mr-3">{{
-                                  button.label
-                                }}</v-btn>
-                              </v-col>
-                            </div> -->
                             <div
                               v-for="(button, index) in buttons"
                               :key="`button-${index}`"
@@ -57,9 +53,13 @@
                                   open-on-hover
                                 >
                                   <template v-slot:activator="{ on, attrs }"
-                                    ><v-btn v-bind="attrs" v-on="on" large>{{
-                                      button.label
-                                    }}</v-btn></template
+                                    ><v-btn
+                                      outlined
+                                      v-bind="attrs"
+                                      v-on="on"
+                                      large
+                                      >{{ button.label }}</v-btn
+                                    ></template
                                   >
                                   <v-list>
                                     <v-list-item
@@ -130,7 +130,7 @@ export default {
       grayscale
     ) {
       let imgPath;
-      imgPath = `${this.$myApp.config.api.base}${url}`;
+      imgPath = `${this.base}${url}`;
       let thumborImgPath;
       if (grayscale) {
         thumborImgPath = getGrayscaleImageURL(
@@ -165,12 +165,6 @@ export default {
   data() {
     return {
       base: this.$myApp.config.api.base,
-      items: [
-        { title: "Click Me" },
-        { title: "Click Me" },
-        { title: "Click Me" },
-        { title: "Click Me 2" },
-      ],
     };
   },
 };
