@@ -22,10 +22,10 @@
         <v-container fluid style="background: #fff">
           <v-row no-gutters>
             <v-col cols="12" md="4" v-for="n in 3" :key="`article-${n}`">
-              <ResearchCard
+              <HomeResearchCard
                 :item="articles[n - 1]"
                 type="article"
-              ></ResearchCard>
+              ></HomeResearchCard>
             </v-col>
           </v-row>
         </v-container>
@@ -34,7 +34,10 @@
         <v-container fluid style="background: #fff">
           <v-row no-gutters>
             <v-col cols="12" md="4" v-for="n in 3" :key="`app-${n}`">
-              <ResearchCard :item="apps[n - 1]" type="app"></ResearchCard>
+              <HomeResearchCard
+                :item="apps[n - 1]"
+                type="app"
+              ></HomeResearchCard>
             </v-col>
           </v-row>
         </v-container>
@@ -43,7 +46,10 @@
         <v-container fluid style="background: #fff">
           <v-row no-gutters>
             <v-col cols="12" md="4" v-for="n in 3" :key="`dataset-${n}`">
-              test
+              <HomeResearchCard
+                :item="datasets[n - 1]"
+                type="dataset"
+              ></HomeResearchCard>
             </v-col>
           </v-row>
         </v-container>

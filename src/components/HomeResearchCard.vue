@@ -5,7 +5,7 @@
       elevation="0"
       color="#fff"
       style="border: 1px solid #ccc"
-      height="575px"
+      :height="getCardHeight(type)"
     >
       <v-img
         :src="`https://icjia.illinois.gov/researchhub/images/${item.id}-splash.jpeg`"
@@ -92,6 +92,13 @@ export default {
     },
   },
   methods: {
+    getCardHeight(type) {
+      if (type === "dataset") {
+        return 300;
+      } else {
+        return 575;
+      }
+    },
     getImagePath(
       url,
       imgWidth = 0,

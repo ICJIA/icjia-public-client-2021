@@ -33,7 +33,7 @@ const getHubArticlesQuery = (limit) => {
         id
         title
         status
-      
+       slug
         
        createdAt
         abstract
@@ -51,6 +51,7 @@ const getHubApplicationsQuery = (limit) => {
       id
       title
       status
+      slug
       createdAt
       updatedAt
       image
@@ -77,6 +78,8 @@ const getHubDatasetsQuery = (limit) => {
     datasets (sort: "date:desc", limit: ${limit}, where: {status: "published"}) {
       id
       title
+      date
+      slug
       description
       status
       external

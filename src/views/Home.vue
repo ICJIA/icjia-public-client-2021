@@ -1,20 +1,6 @@
 <template>
   <div>
     <div v-if="!homeLoading && !hubLoading">
-      <!-- <h2>Slider</h2>
-      {{ slider }}
-      <h2>Slider buttons</h2>
-      {{ buttons }}
-      <h2>Events</h2>
-      {{ events }}
-      <h2>Posts</h2>
-      {{ posts }}
-      <h2>Research Hub Apps</h2>
-      {{ hubApplications }}
-      <h2>Research Hub Articles</h2>
-      {{ hubArticles }}
-      <h2>Research Hub Datasets</h2>
-      {{ hubDatasets }} -->
       <HomeSplash :slider="slider" :buttons="buttons"></HomeSplash>
 
       <HomeResearch
