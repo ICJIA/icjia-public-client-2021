@@ -37,43 +37,43 @@
                         {{ slide.teaser }}
                       </div>
                       <div class="mt-4">
-                        <v-container fluid>
+                        <v-container>
                           <v-row>
-                            <div
+                            <v-col
+                              cols="12"
+                              md="4"
                               v-for="(button, index) in buttons"
                               :key="`button-${index}`"
                             >
-                              <v-col cols="12" md="4">
-                                <v-menu
-                                  top
-                                  transition="slide-y-transition"
-                                  role="navigation"
-                                  id="button-2"
-                                  aria-label="Click this button for a menu of Y"
-                                  open-on-hover
-                                >
-                                  <template v-slot:activator="{ on, attrs }"
-                                    ><v-btn
-                                      outlined
-                                      v-bind="attrs"
-                                      v-on="on"
-                                      large
-                                      >{{ button.label }}</v-btn
-                                    ></template
-                                  >
-                                  <v-list>
-                                    <v-list-item
-                                      v-for="(item, index) in button.menuItem"
-                                      :key="index"
-                                    >
-                                      <v-list-item-title>{{
-                                        item.label
-                                      }}</v-list-item-title>
-                                    </v-list-item>
-                                  </v-list>
-                                </v-menu></v-col
+                              <v-menu
+                                top
+                                transition="slide-y-transition"
+                                role="navigation"
+                                id="button-2"
+                                aria-label="Click this button for a menu of Y"
+                                open-on-hover
                               >
-                            </div>
+                                <template v-slot:activator="{ on, attrs }">
+                                  <v-btn
+                                    outlined
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    large
+                                    >{{ button.label }}</v-btn
+                                  ></template
+                                >
+                                <v-list>
+                                  <v-list-item
+                                    v-for="(item, index) in button.menuItem"
+                                    :key="index"
+                                  >
+                                    <v-list-item-title>{{
+                                      item.label
+                                    }}</v-list-item-title>
+                                  </v-list-item>
+                                </v-list>
+                              </v-menu>
+                            </v-col>
                           </v-row>
                         </v-container>
                       </div>

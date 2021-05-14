@@ -1,19 +1,20 @@
 <template>
   <div>
-    <div v-if="!homeLoading">
-      <HomeSplash :slider="slider" :buttons="buttons"></HomeSplash>
-
-      <HomeResearch style="margin-top: -10px"></HomeResearch>
-      <HomeClickThroughBoxes
-        :boxes="boxes"
-        style="margin-top: -30px"
-      ></HomeClickThroughBoxes>
-    </div>
-    <div v-else>
+    <div v-if="error">{{ error }}</div>
+    <HomeSplash
+      :slider="slider"
+      :buttons="buttons"
+      v-if="!homeLoading"
+    ></HomeSplash>
+    <v-card height="550" class="px-3 py-3" v-if="homeLoading">
       <Loader></Loader>
-    </div>
+    </v-card>
+    <HomeClickThroughBoxes
+      :boxes="boxes"
+      v-if="!homeLoading"
+    ></HomeClickThroughBoxes>
 
-    <div>{{ error }}</div>
+    <HomeResearch style="margin-top: -10px"></HomeResearch>
   </div>
 </template>
 
@@ -52,13 +53,11 @@ export default {
         this.error = JSON.stringify(error.message);
       },
       result(ApolloQueryResult) {
-        // console.log(ApolloQueryResult);
         this.events = ApolloQueryResult.data.events;
         this.posts = ApolloQueryResult.data.posts;
         this.slider = ApolloQueryResult.data.home.homeCarousel;
         this.buttons = ApolloQueryResult.data.home.homeCarouselButton;
         this.boxes = ApolloQueryResult.data.home.clickThroughBoxes;
-        //console.log("home: ", ApolloQueryResult.data.home);
         this.homeLoading = false;
       },
     },
