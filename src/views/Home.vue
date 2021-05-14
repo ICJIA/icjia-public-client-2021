@@ -16,6 +16,12 @@
       <h2>Research Hub Datasets</h2>
       {{ hubDatasets }} -->
       <HomeSplash :slider="slider" :buttons="buttons"></HomeSplash>
+
+      <HomeResearch
+        :articles="hubArticles"
+        :apps="hubApplications"
+        :datasets="hubDatasets"
+      ></HomeResearch>
       <HomeClickThroughBoxes :boxes="boxes"></HomeClickThroughBoxes>
     </div>
     <div v-else>

@@ -28,3 +28,5 @@ package-lock.json
 # public/fuse-index.json
 # src/assets/site-meta.json
 # src/assets/units.json
+
+public/images

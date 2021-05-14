@@ -33,6 +33,8 @@ const getHubArticlesQuery = (limit) => {
         id
         title
         status
+      
+        
        createdAt
         abstract
         authors 
@@ -51,11 +53,12 @@ const getHubApplicationsQuery = (limit) => {
       status
       createdAt
       updatedAt
+      image
       contributors
       date
       slug
       description
-      image
+      
       url
       articles {
         title
