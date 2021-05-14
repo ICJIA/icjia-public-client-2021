@@ -34,7 +34,8 @@ const getHubArticlesQuery = (limit) => {
         title
         status
        slug
-        
+        thumbnail
+       
        createdAt
         abstract
         authors 

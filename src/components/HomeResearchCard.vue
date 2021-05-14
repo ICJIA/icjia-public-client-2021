@@ -8,7 +8,12 @@
       :height="getCardHeight(type)"
     >
       <v-img
-        :src="`https://icjia.illinois.gov/researchhub/images/${item.id}-splash.jpeg`"
+        :src="
+          getImagePath(
+            `https://icjia.illinois.gov/researchhub/images/${item.id}-splash.jpeg`
+          )
+        "
+        :lazy-src="item.thumbnail"
         aria-label="ResearchHub content image"
         width="100%"
         height="250"
@@ -107,7 +112,7 @@ export default {
       grayscale
     ) {
       let imgPath;
-      imgPath = `${this.base}${url}`;
+      imgPath = `${url}`;
       let thumborImgPath;
       if (grayscale) {
         thumborImgPath = getGrayscaleImageURL(

@@ -2,8 +2,12 @@
   <div>
     <div v-if="!homeLoading">
       <HomeSplash :slider="slider" :buttons="buttons"></HomeSplash>
-      <HomeClickThroughBoxes :boxes="boxes"></HomeClickThroughBoxes>
+
       <HomeResearch style="margin-top: -10px"></HomeResearch>
+      <HomeClickThroughBoxes
+        :boxes="boxes"
+        style="margin-top: -30px"
+      ></HomeClickThroughBoxes>
     </div>
     <div v-else>
       <Loader></Loader>
