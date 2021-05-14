@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container fill-height fluid class="px-0" style="margin-top: -15px">
+    <v-container fill-height fluid class="px-0" style="margin-top: -10px">
       <v-row no-gutters>
         <v-col
           cols="12"
@@ -11,15 +11,16 @@
           <router-link :to="box.url" v-if="box.url">
             <v-card
               dark
-              height="275px"
+              height="300px"
               class="elevation-0 px-8 py-10 box text-center"
               :color="getFeatureBoxColor(index)"
+              :class="{ mr1: index > -1 && index < boxes.length - 1 }"
             >
               <v-icon style="font-size: 70px" dark>{{ box.icon }}</v-icon>
-              <h2 class="text-center box-head mt-2">{{ box.title }}</h2>
+              <h2 class="text-center box-head mt-3">{{ box.title }}</h2>
 
               <v-card-text
-                class="px-2 mt-2 font-weight-light box-text text-center"
+                class="px-2 mt-1 font-weight-light box-text text-center"
               >
                 <span v-html="box.teaser" style="font-size: 16px"></span>
               </v-card-text>
@@ -91,5 +92,13 @@ a {
 
 .v-sheet.v-card {
   border-radius: 0px;
+}
+
+.mr1 {
+  margin-right: 2px;
+}
+
+.ml1 {
+  margin-left: 2px;
 }
 </style>
