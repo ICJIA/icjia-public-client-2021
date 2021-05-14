@@ -23,9 +23,16 @@
           <v-row no-gutters>
             <v-col cols="12" md="4" v-for="n in 3" :key="`article-${n}`">
               <HomeResearchCard
-                :item="articles[n - 1]"
+                :item="hubArticles[n - 1]"
                 type="article"
+                v-if="!hubLoading"
               ></HomeResearchCard>
+              <v-card height="300" class="px-3 py-3" v-else>
+                <v-skeleton-loader
+                  class="mx-auto"
+                  type="card"
+                ></v-skeleton-loader>
+              </v-card>
             </v-col>
           </v-row>
         </v-container>
@@ -35,9 +42,16 @@
           <v-row no-gutters>
             <v-col cols="12" md="4" v-for="n in 3" :key="`app-${n}`">
               <HomeResearchCard
-                :item="apps[n - 1]"
+                :item="hubApplications[n - 1]"
                 type="app"
+                v-if="!hubLoading"
               ></HomeResearchCard>
+              <v-card height="300" class="px-3 py-3" v-else>
+                <v-skeleton-loader
+                  class="mx-auto"
+                  type="card"
+                ></v-skeleton-loader>
+              </v-card>
             </v-col>
           </v-row>
         </v-container>
@@ -47,9 +61,16 @@
           <v-row no-gutters>
             <v-col cols="12" md="4" v-for="n in 3" :key="`dataset-${n}`">
               <HomeResearchCard
-                :item="datasets[n - 1]"
+                :item="hubDatasets[n - 1]"
                 type="dataset"
+                v-if="!hubLoading"
               ></HomeResearchCard>
+              <v-card height="300" class="px-3 py-3" v-else>
+                <v-skeleton-loader
+                  class="mx-auto"
+                  type="card"
+                ></v-skeleton-loader>
+              </v-card>
             </v-col>
           </v-row>
         </v-container>
@@ -59,25 +80,21 @@
 </template>
 
 <script>
+import {
+  getHubApplications,
+  getHubArticles,
+  getHubDatasets,
+} from "@/services/ResearchHub";
 export default {
-  props: {
-    articles: {
-      type: Array,
-      default: () => [],
-    },
-    apps: {
-      type: Array,
-      default: () => [],
-    },
-    datasets: {
-      type: Array,
-      default: () => [],
-    },
-  },
   data() {
     return {
       eventModel: 0,
       eventItems: ["ICJIA ResearchHub"],
+      hubApplications: null,
+      hubArticles: null,
+      hubDatasets: null,
+      hubLoading: true,
+      limit: 3,
     };
   },
   watch: {
@@ -85,7 +102,14 @@ export default {
       console.log("Tab click: ", newValue);
     },
   },
-  methods: {},
+  async mounted() {
+    console.log("fetch here");
+    this.hubApplications = await getHubApplications(3);
+    this.hubArticles = await getHubArticles(3);
+    this.hubDatasets = await getHubDatasets(3);
+    console.log(this.hubArticles);
+    this.hubLoading = false;
+  },
 };
 </script>
 

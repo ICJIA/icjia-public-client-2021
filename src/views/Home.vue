@@ -1,14 +1,9 @@
 <template>
   <div>
-    <div v-if="!homeLoading && !hubLoading">
+    <div v-if="!homeLoading">
       <HomeSplash :slider="slider" :buttons="buttons"></HomeSplash>
-
-      <HomeResearch
-        :articles="hubArticles"
-        :apps="hubApplications"
-        :datasets="hubDatasets"
-      ></HomeResearch>
       <HomeClickThroughBoxes :boxes="boxes"></HomeClickThroughBoxes>
+      <HomeResearch style="margin-top: -10px"></HomeResearch>
     </div>
     <div v-else>
       <Loader></Loader>
@@ -20,11 +15,7 @@
 
 <script>
 import { GET_HOME } from "@/graphql/home";
-import {
-  getHubApplications,
-  getHubArticles,
-  getHubDatasets,
-} from "@/services/ResearchHub";
+
 export default {
   data() {
     return {
@@ -36,20 +27,11 @@ export default {
       posts: null,
       slider: null,
       buttons: null,
-      hubApplications: null,
-      hubArticles: null,
-      hubDatasets: null,
+
       limit: 3,
     };
   },
-  methods: {
-    async fetchHubContent() {
-      this.hubApplications = await getHubApplications(this.limit);
-      this.hubArticles = await getHubArticles(this.limit);
-      this.hubDatasets = await getHubDatasets(this.limit);
-      this.hubLoading = false;
-    },
-  },
+  methods: {},
   apollo: {
     home: {
       prefetch: true,
@@ -74,7 +56,6 @@ export default {
         this.boxes = ApolloQueryResult.data.home.clickThroughBoxes;
         //console.log("home: ", ApolloQueryResult.data.home);
         this.homeLoading = false;
-        this.fetchHubContent();
       },
     },
   },
