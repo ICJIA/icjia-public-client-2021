@@ -1,7 +1,13 @@
 import gql from "graphql-tag";
 /* eslint-disable graphql/template-strings */
 const GET_HOME = gql`
-  query Home($now: String!, $eventLimit: Int!, $postLimit: Int!) {
+  query Home(
+    $now: String!
+    $eventLimit: Int!
+    $postLimit: Int!
+    $meetingLimit: Int!
+    $fundingLimit: Int!
+  ) {
     home {
       homeCarousel {
         title
@@ -33,15 +39,37 @@ const GET_HOME = gql`
       }
     }
 
-    events(limit: $eventLimit, where: { start_gte: $now }, sort: "start:asc") {
-      id
+    meeting: events(
+      limit: $eventLimit
+      where: { type: "meeting", start_gte: $now }
+      sort: "start:asc"
+    ) {
       name
+      type
       start
       end
       published_at
       timed
       summary
-      details
+      slug
+      type
+      tags {
+        title
+        slug
+      }
+    }
+    funding: events(
+      limit: $eventLimit
+      where: { type: "funding", start_gte: $now }
+      sort: "start:asc"
+    ) {
+      name
+      type
+      start
+      end
+      published_at
+      timed
+      summary
       slug
       type
       tags {
@@ -55,21 +83,40 @@ const GET_HOME = gql`
       title
       slug
       summary
-      body
       created_at
       updated_at
       published_at
 
       tags(sort: "title:asc") {
-        id
         title
         slug
-        created_at
-        summary
       }
       splash {
         url
         formats
+      }
+    }
+
+    meetings(sort: "published_at:desc", limit: $meetingLimit) {
+      id
+      title
+      summary
+      slug
+      created_at
+      updated_at
+      published_at
+    }
+
+    grants(sort: "posted:desc", limit: $fundingLimit) {
+      id
+      title
+      slug
+      summary
+      posted
+      expires
+      tags(sort: "title:asc") {
+        title
+        slug
       }
     }
   }

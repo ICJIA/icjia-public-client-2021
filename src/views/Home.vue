@@ -4,17 +4,32 @@
     <HomeSplash
       :slider="slider"
       :buttons="buttons"
-      v-if="!homeLoading"
+      v-if="!loading"
     ></HomeSplash>
-    <v-card height="550" class="px-3 py-3" v-if="homeLoading">
+    <v-card height="550" class="px-3 py-3" v-if="loading">
       <Loader></Loader>
     </v-card>
+
+    <HomeResearch style="margin-top: 15px"></HomeResearch>
     <HomeClickThroughBoxes
       :boxes="boxes"
-      v-if="!homeLoading"
+      v-if="!loading"
+      style="margin-top: -5px"
     ></HomeClickThroughBoxes>
-
-    <HomeResearch style="margin-top: -10px"></HomeResearch>
+    <v-container fluid style="margin-top: -5px">
+      <v-row>
+        <v-col cols="12" md="6">
+          <HomeNews :items="news" :loading="loading"></HomeNews
+        ></v-col>
+        <v-col cols="12" md="6"
+          ><HomeTabbed
+            :grants="grants"
+            :employment="employment"
+            :loading="loading"
+          ></HomeTabbed
+        ></v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
@@ -26,17 +41,30 @@ export default {
     return {
       slides: null,
       error: null,
-      homeLoading: true,
+      loading: true,
       hubLoading: true,
-      events: null,
+      meetingEvents: null,
       posts: null,
+      meetings: null,
+      news: null,
+      grants: null,
+      employment: null,
       slider: null,
       buttons: null,
-
+      totalNewsItems: 5,
       limit: 3,
     };
   },
-  methods: {},
+  methods: {
+    // eslint-disable-next-line no-unused-vars
+    mergePostsAndMeetings(posts, meetings) {
+      let news = posts.concat(meetings);
+      news.sort((b, a) => {
+        return a.published_at.localeCompare(b.published_at);
+      });
+      this.news = news.slice(0, this.totalNewsItems);
+    },
+  },
   apollo: {
     home: {
       prefetch: true,
@@ -44,8 +72,11 @@ export default {
       variables() {
         return {
           now: new Date(),
-          eventLimit: 25,
-          postLimit: 5,
+          eventLimit: 6,
+          postLimit: 6,
+          fundingLimit: 4,
+          meetingLimit: 5,
+          employmentLimit: 4,
         };
       },
 
@@ -53,12 +84,21 @@ export default {
         this.error = JSON.stringify(error.message);
       },
       result(ApolloQueryResult) {
-        this.events = ApolloQueryResult.data.events;
-        this.posts = ApolloQueryResult.data.posts;
+        // Events
+        this.meetingEvents = ApolloQueryResult.data.meeting;
+        this.fundingEvents = ApolloQueryResult.data.funding;
+        // News and Info
+        const posts = ApolloQueryResult.data.posts;
+        const meetings = ApolloQueryResult.data.meetings;
+        this.mergePostsAndMeetings(posts, meetings);
+        // Funding and Employment
+        this.grants = ApolloQueryResult.data.grants;
+        this.employment = ApolloQueryResult.data.employment;
+        //Home page UI
         this.slider = ApolloQueryResult.data.home.homeCarousel;
         this.buttons = ApolloQueryResult.data.home.homeCarouselButton;
         this.boxes = ApolloQueryResult.data.home.clickThroughBoxes;
-        this.homeLoading = false;
+        this.loading = false;
       },
     },
   },

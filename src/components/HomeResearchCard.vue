@@ -5,7 +5,7 @@
       elevation="0"
       color="#fff"
       style="border: 1px solid #ccc"
-      :height="getCardHeight(type)"
+      :min-height="getCardHeight(type)"
     >
       <v-img
         :src="
@@ -101,7 +101,7 @@ export default {
       if (type === "dataset") {
         return 300;
       } else {
-        return 575;
+        return 525;
       }
     },
     getImagePath(
@@ -133,7 +133,7 @@ export default {
       //console.log("grayscale", grayscale);
       return thumborImgPath;
     },
-    truncate(string, maxWords = 40) {
+    truncate(string, maxWords = 30) {
       var strippedString = string.trim();
       var array = strippedString.split(" ");
       var wordCount = array.length;
