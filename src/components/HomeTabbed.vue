@@ -7,15 +7,17 @@
         grow
         class="mt-2"
         color="grey darken-1"
-        style="min-height: 1000px"
       >
         <v-tab>Funding </v-tab>
         <v-tab>Employment </v-tab>
-        <v-tab-item style="background: #e8e8e8 !important">
+        <v-tab-item
+          style="background: #e8e8e8 !important; height: 900px !important"
+          :style="heightObject"
+        >
           <div style="height: 10px; background: #eee !important"></div>
 
           <v-card
-            min-height="200"
+            height="200"
             class="mb-3"
             v-for="(grant, index) in grants"
             :key="`funding-${index}`"
@@ -24,18 +26,29 @@
           </v-card>
         </v-tab-item>
 
-        <v-tab-item>
+        <v-tab-item
+          style="background: #e8e8e8 !important; height: 900px !important"
+        >
           <div style="height: 5px; background: #eee !important"></div>
-          <div v-if="employment.length">
+          <div v-if="employment.length > 0">
             <div
               v-for="(job, index) in employment"
               :key="`employment-${index}`"
             >
-              <v-card min-height="200"> employment here </v-card>
+              <v-card min-height="200">
+                <v-card
+                  height="200"
+                  class="mb-3"
+                  v-for="(job, index) in employment"
+                  :key="`funding-${index}`"
+                >
+                  {{ job.title }}
+                </v-card></v-card
+              >
             </div>
           </div>
           <div v-else>
-            <v-card height="750"
+            <v-card style="height: 400px"
               ><v-container fill-height fluid>
                 <v-row align="center" justify="center">
                   <v-col class="text-center"
@@ -62,13 +75,10 @@
 
 <script>
 export default {
+  computed: {},
   data() {
     return {
-      data() {
-        return {
-          fundingModel: 0,
-        };
-      },
+      fundingModel: 0,
     };
   },
   props: {
@@ -83,6 +93,10 @@ export default {
     loading: {
       type: Boolean,
       default: true,
+    },
+    height: {
+      type: Number,
+      default: 500,
     },
   },
 };

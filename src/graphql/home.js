@@ -7,6 +7,7 @@ const GET_HOME = gql`
     $postLimit: Int!
     $meetingLimit: Int!
     $fundingLimit: Int!
+    $employmentLimit: Int!
   ) {
     home {
       homeCarousel {
@@ -39,7 +40,7 @@ const GET_HOME = gql`
       }
     }
 
-    meeting: events(
+    meetingEvents: events(
       limit: $eventLimit
       where: { type: "meeting", start_gte: $now }
       sort: "start:asc"
@@ -58,7 +59,7 @@ const GET_HOME = gql`
         slug
       }
     }
-    funding: events(
+    fundingEvents: events(
       limit: $eventLimit
       where: { type: "funding", start_gte: $now }
       sort: "start:asc"
@@ -105,6 +106,10 @@ const GET_HOME = gql`
       created_at
       updated_at
       published_at
+    }
+
+    jobs(sort: "published_at:desc", limit: $employmentLimit) {
+      title
     }
 
     grants(sort: "posted:desc", limit: $fundingLimit) {

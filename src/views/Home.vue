@@ -44,8 +44,6 @@ export default {
       loading: true,
       hubLoading: true,
       meetingEvents: null,
-      posts: null,
-      meetings: null,
       news: null,
       grants: null,
       employment: null,
@@ -85,15 +83,15 @@ export default {
       },
       result(ApolloQueryResult) {
         // Events
-        this.meetingEvents = ApolloQueryResult.data.meeting;
-        this.fundingEvents = ApolloQueryResult.data.funding;
+        this.meetingEvents = ApolloQueryResult.data.meetingEvents;
+        this.fundingEvents = ApolloQueryResult.data.fundingEvents;
         // News and Info
         const posts = ApolloQueryResult.data.posts;
         const meetings = ApolloQueryResult.data.meetings;
         this.mergePostsAndMeetings(posts, meetings);
         // Funding and Employment
         this.grants = ApolloQueryResult.data.grants;
-        this.employment = ApolloQueryResult.data.employment;
+        this.employment = ApolloQueryResult.data.jobs;
         //Home page UI
         this.slider = ApolloQueryResult.data.home.homeCarousel;
         this.buttons = ApolloQueryResult.data.home.homeCarouselButton;
