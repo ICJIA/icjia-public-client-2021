@@ -10,20 +10,18 @@
       >
         <v-tab>Funding </v-tab>
         <v-tab>Employment </v-tab>
-        <v-tab-item
-          :style="`background: #e8e8e8 !important; height: ${tabViewHeight}px !important`"
-        >
+        <v-tab-item :style="`background: #e8e8e8 !important; `">
           <div style="height: 10px; background: #eee !important"></div>
 
           <v-card
-            :height="cardHeight"
-            class="mb-3 test"
+            min-height="150"
+            class="mb-3 test py-3 px-3"
             v-for="(grant, index) in grants"
             :key="`funding-${index}`"
           >
             <div class="px-12">
               <h2 style="font-size: 18px">{{ grant.title }}</h2>
-              <p>{{ truncate(grant.summary, 35) }}</p>
+              <p>{{ grant.summary }}</p>
             </div>
           </v-card>
         </v-tab-item>
@@ -37,16 +35,15 @@
               v-for="(job, index) in employment"
               :key="`employment-${index}`"
             >
-              <v-card min-height="150">
-                <v-card
-                  :height="cardHeight"
+              <v-card :min-height="cardHeight">
+                <div
                   class="mb-3"
                   v-for="(job, index) in employment"
                   :key="`funding-${index}`"
                 >
                   <h2>{{ job.title }}</h2>
                   <p>{{ job.summary }}</p>
-                </v-card></v-card
+                </div></v-card
               >
             </div>
           </div>
@@ -81,7 +78,7 @@ export default {
   computed: {
     tabViewHeight() {
       if (this.grants.length > 0) {
-        return this.grants.length * (this.cardHeight + 25);
+        return this.grants.length * 150;
       } else {
         return 900;
       }
@@ -144,7 +141,7 @@ export default {
   color: #fff !important;
 }
 
-.theme--light.v-tabs-items {
+* >>> .theme--light.v-tabs-items {
   background-color: #e8e8e8 !important;
 }
 </style>
