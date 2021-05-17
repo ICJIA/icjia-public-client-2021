@@ -72,9 +72,9 @@ export default {
           now: new Date(),
           eventLimit: 6,
           postLimit: 6,
-          fundingLimit: 4,
+          fundingLimit: 5,
           meetingLimit: 5,
-          employmentLimit: 4,
+          employmentLimit: 5,
         };
       },
 
