@@ -2,7 +2,7 @@
   <div>
     <v-card
       class="grid-item markdown-body hover news-card mt-2 mb-2 px-3 mr-1 ml-1"
-      height="175px"
+      height="200px"
       elevation="0"
       color="#fff"
       v-if="
@@ -18,7 +18,7 @@
             <v-img
               aria-label="News post image"
               :src="`https://agency.icjia-api.cloud${item.splash.formats.thumbnail.url}`"
-              height="135px"
+              height="150px"
               class=""
               style="border: 0px solid #fafafa"
               alt="ICJIA Intranet image"

@@ -17,11 +17,12 @@
 
           <v-card
             :height="cardHeight"
-            class="mb-3"
+            class="mb-3 px-2 py-2"
             v-for="(grant, index) in grants"
             :key="`funding-${index}`"
           >
-            {{ grant.title }}
+            <h2 style="font-size: 18px">{{ grant.title }}</h2>
+            <p>{{ truncate(grant.summary, 35) }}</p>
           </v-card>
         </v-tab-item>
 
@@ -41,7 +42,8 @@
                   v-for="(job, index) in employment"
                   :key="`funding-${index}`"
                 >
-                  {{ job.title }}
+                  <h2>{{ job.title }}</h2>
+                  <p>{{ job.summary }}</p>
                 </v-card></v-card
               >
             </div>
@@ -83,6 +85,20 @@ export default {
       }
     },
   },
+  methods: {
+    truncate(string, maxWords = 20) {
+      var strippedString = string.trim();
+      var array = strippedString.split(" ");
+      var wordCount = array.length;
+      string = array.splice(0, maxWords).join(" ");
+
+      if (wordCount > maxWords) {
+        string += "...";
+      }
+
+      return string;
+    },
+  },
   data() {
     return {
       fundingModel: 0,
@@ -91,7 +107,7 @@ export default {
   props: {
     cardHeight: {
       type: Number,
-      default: 150,
+      default: 200,
     },
     grants: {
       type: Array,

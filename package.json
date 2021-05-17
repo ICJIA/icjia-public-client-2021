@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "serve": "npm run schema && vue-cli-service serve",
-    "build": "npm run schema && vue-cli-service build",
+    "build": "npm run schema && vue-cli-service build --modern",
     "lint": "vue-cli-service lint",
-    "schema": "get-graphql-schema https://agency.icjia-api.cloud/graphql -j > schema.json"
+    "schema": "get-graphql-schema https://agency.icjia-api.cloud/graphql -j > schema.json",
+    "scripts": "npm run schema"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
@@ -32,6 +33,7 @@
     "nanoid": "^3.1.22",
     "netlify-lambda": "^2.0.5",
     "nprogress": "^0.2.0",
+    "regenerator-runtime": "^0.13.7",
     "slug": "^4.0.4",
     "thumbor-url-builder": "^0.1.1",
     "vue": "^2.6.12",
@@ -75,6 +77,9 @@
       "[Bb]reak:": "",
       "^ #(.{6})\\s": "[$1](https://app.clickup.com/t/$1) - "
     },
+    "browserslist": [
+      "last 1 Chrome version"
+    ],
     "includeBranch": [
       "develop",
       "master"
