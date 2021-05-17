@@ -17,12 +17,14 @@
 
           <v-card
             :height="cardHeight"
-            class="mb-3 px-2 py-2"
+            class="mb-3 test"
             v-for="(grant, index) in grants"
             :key="`funding-${index}`"
           >
-            <h2 style="font-size: 18px">{{ grant.title }}</h2>
-            <p>{{ truncate(grant.summary, 35) }}</p>
+            <div class="px-12">
+              <h2 style="font-size: 18px">{{ grant.title }}</h2>
+              <p>{{ truncate(grant.summary, 35) }}</p>
+            </div>
           </v-card>
         </v-tab-item>
 

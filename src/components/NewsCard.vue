@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card
-      class="grid-item markdown-body hover news-card mt-2 mb-2 px-3 mr-1 ml-1"
+      class="grid-item markdown-body hover news-card mt-2 mb-2 mr-1 ml-1 pt-1"
       height="200px"
       elevation="0"
       color="#fff"
@@ -18,7 +18,7 @@
             <v-img
               aria-label="News post image"
               :src="`https://agency.icjia-api.cloud${item.splash.formats.thumbnail.url}`"
-              height="150px"
+              height="165px"
               class=""
               style="border: 0px solid #fafafa"
               alt="ICJIA Intranet image"
@@ -46,7 +46,7 @@
             <v-img
               aria-label="News post image"
               src="/icjia-half-splash-thumb.jpg"
-              height="135px"
+              height="165px"
               class=""
               style="border: 0px solid #fafafa"
               alt="ICJIA Intranet image"
@@ -146,7 +146,7 @@
 <script>
 export default {
   methods: {
-    truncate(string, maxWords = 20) {
+    truncate(string, maxWords = 30) {
       var strippedString = string.trim();
       var array = strippedString.split(" ");
       var wordCount = array.length;
