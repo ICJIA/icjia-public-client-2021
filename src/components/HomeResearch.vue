@@ -107,7 +107,7 @@ export default {
     this.hubApplications = await getHubApplications(3);
     this.hubArticles = await getHubArticles(3);
     this.hubDatasets = await getHubDatasets(3);
-    console.log(this.hubArticles);
+    //console.log(this.hubArticles);
     this.hubLoading = false;
   },
 };

@@ -2295,7 +2295,7 @@
       },
       {
         "kind": "ENUM",
-        "name": "ENUM_EVENT_TYPE",
+        "name": "ENUM_EVENT_CATEGORY",
         "description": null,
         "fields": null,
         "inputFields": null,
@@ -2320,12 +2320,6 @@
             "deprecationReason": null
           },
           {
-            "name": "funding",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "general",
             "description": null,
             "isDeprecated": false,
@@ -2333,12 +2327,6 @@
           },
           {
             "name": "holiday",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "meeting",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -2369,6 +2357,12 @@
           },
           {
             "name": "webinar",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "test",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -2514,18 +2508,6 @@
             "deprecationReason": null
           },
           {
-            "name": "type",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "ENUM",
-              "name": "ENUM_EVENT_TYPE",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "timed",
             "description": null,
             "args": [],
@@ -2544,6 +2526,18 @@
             "type": {
               "kind": "OBJECT",
               "name": "UploadFile",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "category",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "ENUM",
+              "name": "ENUM_EVENT_CATEGORY",
               "ofType": null
             },
             "isDeprecated": false,
@@ -3031,22 +3025,6 @@
             "deprecationReason": null
           },
           {
-            "name": "type",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "EventConnectionType",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "timed",
             "description": null,
             "args": [],
@@ -3072,6 +3050,22 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "EventConnectionSplash",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "category",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "EventConnectionCategory",
                 "ofType": null
               }
             },
@@ -3417,41 +3411,6 @@
       },
       {
         "kind": "OBJECT",
-        "name": "EventConnectionType",
-        "description": null,
-        "fields": [
-          {
-            "name": "key",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "connection",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "OBJECT",
-              "name": "EventConnection",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
         "name": "EventConnectionTimed",
         "description": null,
         "fields": [
@@ -3497,6 +3456,41 @@
             "type": {
               "kind": "SCALAR",
               "name": "ID",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "connection",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "EventConnection",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "EventConnectionCategory",
+        "description": null,
+        "fields": [
+          {
+            "name": "key",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "isDeprecated": false,
@@ -3634,16 +3628,6 @@
             "defaultValue": null
           },
           {
-            "name": "type",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "ENUM_EVENT_TYPE",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
             "name": "timed",
             "description": null,
             "type": {
@@ -3716,6 +3700,16 @@
                 "name": "ID",
                 "ofType": null
               }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "category",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "ENUM_EVENT_CATEGORY",
+              "ofType": null
             },
             "defaultValue": null
           },
@@ -3821,16 +3815,6 @@
             "defaultValue": null
           },
           {
-            "name": "type",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "ENUM_EVENT_TYPE",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
             "name": "timed",
             "description": null,
             "type": {
@@ -3903,6 +3887,16 @@
                 "name": "ID",
                 "ofType": null
               }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "category",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "ENUM_EVENT_CATEGORY",
+              "ofType": null
             },
             "defaultValue": null
           },
@@ -4085,7 +4079,7 @@
       },
       {
         "kind": "ENUM",
-        "name": "ENUM_GRANT_FUNDINGTYPE",
+        "name": "ENUM_GRANT_CATEGORY",
         "description": null,
         "fields": null,
         "inputFields": null,
@@ -4212,7 +4206,7 @@
             "deprecationReason": null
           },
           {
-            "name": "posted",
+            "name": "start",
             "description": null,
             "args": [],
             "type": {
@@ -4224,24 +4218,12 @@
             "deprecationReason": null
           },
           {
-            "name": "expires",
+            "name": "end",
             "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
               "name": "Date",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "fundingType",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "ENUM",
-              "name": "ENUM_GRANT_FUNDINGTYPE",
               "ofType": null
             },
             "isDeprecated": false,
@@ -4254,6 +4236,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "category",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "ENUM",
+              "name": "ENUM_GRANT_CATEGORY",
               "ofType": null
             },
             "isDeprecated": false,
@@ -4595,7 +4589,7 @@
             "deprecationReason": null
           },
           {
-            "name": "posted",
+            "name": "start",
             "description": null,
             "args": [],
             "type": {
@@ -4603,7 +4597,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "GrantConnectionPosted",
+                "name": "GrantConnectionStart",
                 "ofType": null
               }
             },
@@ -4611,7 +4605,7 @@
             "deprecationReason": null
           },
           {
-            "name": "expires",
+            "name": "end",
             "description": null,
             "args": [],
             "type": {
@@ -4619,23 +4613,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "GrantConnectionExpires",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "fundingType",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "GrantConnectionFundingType",
+                "name": "GrantConnectionEnd",
                 "ofType": null
               }
             },
@@ -4652,6 +4630,22 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "GrantConnectionLegacy",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "category",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "GrantConnectionCategory",
                 "ofType": null
               }
             },
@@ -4927,7 +4921,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "GrantConnectionPosted",
+        "name": "GrantConnectionStart",
         "description": null,
         "fields": [
           {
@@ -4962,7 +4956,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "GrantConnectionExpires",
+        "name": "GrantConnectionEnd",
         "description": null,
         "fields": [
           {
@@ -4972,41 +4966,6 @@
             "type": {
               "kind": "SCALAR",
               "name": "ID",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "connection",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "OBJECT",
-              "name": "GrantConnection",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
-        "name": "GrantConnectionFundingType",
-        "description": null,
-        "fields": [
-          {
-            "name": "key",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
               "ofType": null
             },
             "isDeprecated": false,
@@ -5042,6 +5001,41 @@
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "connection",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "GrantConnection",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GrantConnectionCategory",
+        "description": null,
+        "fields": [
+          {
+            "name": "key",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "isDeprecated": false,
@@ -5151,7 +5145,7 @@
             "defaultValue": null
           },
           {
-            "name": "posted",
+            "name": "start",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -5161,21 +5155,11 @@
             "defaultValue": null
           },
           {
-            "name": "expires",
+            "name": "end",
             "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Date",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "fundingType",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "ENUM_GRANT_FUNDINGTYPE",
               "ofType": null
             },
             "defaultValue": null
@@ -5215,6 +5199,16 @@
                 "name": "ID",
                 "ofType": null
               }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "category",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "ENUM_GRANT_CATEGORY",
+              "ofType": null
             },
             "defaultValue": null
           },
@@ -5300,7 +5294,7 @@
             "defaultValue": null
           },
           {
-            "name": "posted",
+            "name": "start",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -5310,21 +5304,11 @@
             "defaultValue": null
           },
           {
-            "name": "expires",
+            "name": "end",
             "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Date",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "fundingType",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "ENUM_GRANT_FUNDINGTYPE",
               "ofType": null
             },
             "defaultValue": null
@@ -5364,6 +5348,16 @@
                 "name": "ID",
                 "ofType": null
               }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "category",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "ENUM_GRANT_CATEGORY",
+              "ofType": null
             },
             "defaultValue": null
           },
@@ -5886,7 +5880,7 @@
       },
       {
         "kind": "ENUM",
-        "name": "ENUM_JOB_JOBTYPE",
+        "name": "ENUM_JOB_CATEGORY",
         "description": null,
         "fields": null,
         "inputFields": null,
@@ -5912,6 +5906,12 @@
           },
           {
             "name": "partTime",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "test",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -6045,7 +6045,7 @@
             "deprecationReason": null
           },
           {
-            "name": "jobType",
+            "name": "category",
             "description": null,
             "args": [],
             "type": {
@@ -6053,7 +6053,7 @@
               "name": null,
               "ofType": {
                 "kind": "ENUM",
-                "name": "ENUM_JOB_JOBTYPE",
+                "name": "ENUM_JOB_CATEGORY",
                 "ofType": null
               }
             },
@@ -6061,13 +6061,17 @@
             "deprecationReason": null
           },
           {
-            "name": "externalURL",
+            "name": "external",
             "description": null,
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "ComponentExternalExternalUrl",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -6383,7 +6387,7 @@
             "deprecationReason": null
           },
           {
-            "name": "jobType",
+            "name": "category",
             "description": null,
             "args": [],
             "type": {
@@ -6391,23 +6395,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "JobConnectionJobType",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "externalURL",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "JobConnectionExternalURL",
+                "name": "JobConnectionCategory",
                 "ofType": null
               }
             },
@@ -6753,42 +6741,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "JobConnectionJobType",
-        "description": null,
-        "fields": [
-          {
-            "name": "key",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "connection",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "OBJECT",
-              "name": "JobConnection",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
-        "name": "JobConnectionExternalURL",
+        "name": "JobConnectionCategory",
         "description": null,
         "fields": [
           {
@@ -6923,21 +6876,11 @@
             "defaultValue": null
           },
           {
-            "name": "jobType",
+            "name": "category",
             "description": null,
             "type": {
               "kind": "ENUM",
-              "name": "ENUM_JOB_JOBTYPE",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "externalURL",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
+              "name": "ENUM_JOB_CATEGORY",
               "ofType": null
             },
             "defaultValue": null
@@ -6951,6 +6894,20 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "ID",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "external",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "ComponentExternalExternalUrlInput",
                 "ofType": null
               }
             },
@@ -7058,21 +7015,11 @@
             "defaultValue": null
           },
           {
-            "name": "jobType",
+            "name": "category",
             "description": null,
             "type": {
               "kind": "ENUM",
-              "name": "ENUM_JOB_JOBTYPE",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "externalURL",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
+              "name": "ENUM_JOB_CATEGORY",
               "ofType": null
             },
             "defaultValue": null
@@ -7086,6 +7033,20 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "ID",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "external",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "editComponentExternalExternalUrlInput",
                 "ofType": null
               }
             },
@@ -7287,6 +7248,18 @@
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "special",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "special2",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "possibleTypes": null
@@ -7397,18 +7370,6 @@
             "deprecationReason": null
           },
           {
-            "name": "category",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "ENUM",
-              "name": "ENUM_MEETING_CATEGORY",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "body",
             "description": null,
             "args": [],
@@ -7432,6 +7393,30 @@
                 "name": "String",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "addToEventCalendar",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "category",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "ENUM",
+              "name": "ENUM_MEETING_CATEGORY",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -7829,22 +7814,6 @@
             "deprecationReason": null
           },
           {
-            "name": "category",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "MeetingConnectionCategory",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "body",
             "description": null,
             "args": [],
@@ -7870,6 +7839,38 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "MeetingConnectionSummary",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "addToEventCalendar",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "MeetingConnectionAddToEventCalendar",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "category",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "MeetingConnectionCategory",
                 "ofType": null
               }
             },
@@ -8145,41 +8146,6 @@
       },
       {
         "kind": "OBJECT",
-        "name": "MeetingConnectionCategory",
-        "description": null,
-        "fields": [
-          {
-            "name": "key",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "connection",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "OBJECT",
-              "name": "MeetingConnection",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
         "name": "MeetingConnectionBody",
         "description": null,
         "fields": [
@@ -8216,6 +8182,76 @@
       {
         "kind": "OBJECT",
         "name": "MeetingConnectionSummary",
+        "description": null,
+        "fields": [
+          {
+            "name": "key",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "connection",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "MeetingConnection",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "MeetingConnectionAddToEventCalendar",
+        "description": null,
+        "fields": [
+          {
+            "name": "key",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "connection",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "MeetingConnection",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "MeetingConnectionCategory",
         "description": null,
         "fields": [
           {
@@ -8334,16 +8370,6 @@
             "defaultValue": null
           },
           {
-            "name": "category",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "ENUM_MEETING_CATEGORY",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
             "name": "body",
             "description": null,
             "type": {
@@ -8406,6 +8432,26 @@
                 "name": "ID",
                 "ofType": null
               }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "addToEventCalendar",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "category",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "ENUM_MEETING_CATEGORY",
+              "ofType": null
             },
             "defaultValue": null
           },
@@ -8491,16 +8537,6 @@
             "defaultValue": null
           },
           {
-            "name": "category",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "ENUM_MEETING_CATEGORY",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
             "name": "body",
             "description": null,
             "type": {
@@ -8559,6 +8595,26 @@
                 "name": "ID",
                 "ofType": null
               }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "addToEventCalendar",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "category",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "ENUM_MEETING_CATEGORY",
+              "ofType": null
             },
             "defaultValue": null
           },
@@ -10131,9 +10187,13 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -11008,9 +11068,13 @@
             "name": "summary",
             "description": null,
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "defaultValue": null
           },
@@ -11388,29 +11452,6 @@
       },
       {
         "kind": "ENUM",
-        "name": "ENUM_PROGRAM_TYPE",
-        "description": null,
-        "fields": null,
-        "inputFields": null,
-        "interfaces": null,
-        "enumValues": [
-          {
-            "name": "federal",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "state",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "possibleTypes": null
-      },
-      {
-        "kind": "ENUM",
         "name": "ENUM_PROGRAM_STATUS",
         "description": null,
         "fields": null,
@@ -11425,6 +11466,29 @@
           },
           {
             "name": "archived",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "ENUM_PROGRAM_CATEGORY",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "federal",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "state",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -11518,18 +11582,6 @@
             "deprecationReason": null
           },
           {
-            "name": "type",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "ENUM",
-              "name": "ENUM_PROGRAM_TYPE",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "status",
             "description": null,
             "args": [],
@@ -11561,6 +11613,22 @@
               "kind": "SCALAR",
               "name": "String",
               "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "category",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "ENUM_PROGRAM_CATEGORY",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -11869,22 +11937,6 @@
             "deprecationReason": null
           },
           {
-            "name": "type",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "ProgramConnectionType",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "status",
             "description": null,
             "args": [],
@@ -11926,6 +11978,22 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "ProgramConnectionBody",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "category",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "ProgramConnectionCategory",
                 "ofType": null
               }
             },
@@ -12131,41 +12199,6 @@
       },
       {
         "kind": "OBJECT",
-        "name": "ProgramConnectionType",
-        "description": null,
-        "fields": [
-          {
-            "name": "key",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "connection",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "OBJECT",
-              "name": "ProgramConnection",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
         "name": "ProgramConnectionStatus",
         "description": null,
         "fields": [
@@ -12271,6 +12304,41 @@
       },
       {
         "kind": "OBJECT",
+        "name": "ProgramConnectionCategory",
+        "description": null,
+        "fields": [
+          {
+            "name": "key",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "connection",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ProgramConnection",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "ProgramConnectionPublished_at",
         "description": null,
         "fields": [
@@ -12339,16 +12407,6 @@
             "defaultValue": null
           },
           {
-            "name": "type",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "ENUM_PROGRAM_TYPE",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
             "name": "status",
             "description": null,
             "type": {
@@ -12401,6 +12459,20 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "ID",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "category",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "ENUM_PROGRAM_CATEGORY",
                 "ofType": null
               }
             },
@@ -12468,16 +12540,6 @@
             "defaultValue": null
           },
           {
-            "name": "type",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "ENUM_PROGRAM_TYPE",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
             "name": "status",
             "description": null,
             "type": {
@@ -12532,6 +12594,16 @@
                 "name": "ID",
                 "ofType": null
               }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "category",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "ENUM_PROGRAM_CATEGORY",
+              "ofType": null
             },
             "defaultValue": null
           },
@@ -19365,6 +19437,129 @@
       },
       {
         "kind": "OBJECT",
+        "name": "ComponentExternalExternalUrl",
+        "description": null,
+        "fields": [
+          {
+            "name": "id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "title",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "url",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "ComponentExternalExternalUrlInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "title",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "url",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "editComponentExternalExternalUrlInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "ID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "title",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "url",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "ComponentMenuItemMenuItem",
         "description": null,
         "fields": [
@@ -20112,17 +20307,17 @@
           },
           {
             "kind": "OBJECT",
-            "name": "EventConnectionType",
-            "ofType": null
-          },
-          {
-            "kind": "OBJECT",
             "name": "EventConnectionTimed",
             "ofType": null
           },
           {
             "kind": "OBJECT",
             "name": "EventConnectionSplash",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "EventConnectionCategory",
             "ofType": null
           },
           {
@@ -20202,22 +20397,22 @@
           },
           {
             "kind": "OBJECT",
-            "name": "GrantConnectionPosted",
+            "name": "GrantConnectionStart",
             "ofType": null
           },
           {
             "kind": "OBJECT",
-            "name": "GrantConnectionExpires",
-            "ofType": null
-          },
-          {
-            "kind": "OBJECT",
-            "name": "GrantConnectionFundingType",
+            "name": "GrantConnectionEnd",
             "ofType": null
           },
           {
             "kind": "OBJECT",
             "name": "GrantConnectionLegacy",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "GrantConnectionCategory",
             "ofType": null
           },
           {
@@ -20322,12 +20517,7 @@
           },
           {
             "kind": "OBJECT",
-            "name": "JobConnectionJobType",
-            "ofType": null
-          },
-          {
-            "kind": "OBJECT",
-            "name": "JobConnectionExternalURL",
+            "name": "JobConnectionCategory",
             "ofType": null
           },
           {
@@ -20407,17 +20597,22 @@
           },
           {
             "kind": "OBJECT",
-            "name": "MeetingConnectionCategory",
-            "ofType": null
-          },
-          {
-            "kind": "OBJECT",
             "name": "MeetingConnectionBody",
             "ofType": null
           },
           {
             "kind": "OBJECT",
             "name": "MeetingConnectionSummary",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "MeetingConnectionAddToEventCalendar",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "MeetingConnectionCategory",
             "ofType": null
           },
           {
@@ -20657,11 +20852,6 @@
           },
           {
             "kind": "OBJECT",
-            "name": "ProgramConnectionType",
-            "ofType": null
-          },
-          {
-            "kind": "OBJECT",
             "name": "ProgramConnectionStatus",
             "ofType": null
           },
@@ -20673,6 +20863,11 @@
           {
             "kind": "OBJECT",
             "name": "ProgramConnectionBody",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "ProgramConnectionCategory",
             "ofType": null
           },
           {
@@ -21118,6 +21313,11 @@
           {
             "kind": "OBJECT",
             "name": "ComponentClickthroughClickthrough",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "ComponentExternalExternalUrl",
             "ofType": null
           },
           {

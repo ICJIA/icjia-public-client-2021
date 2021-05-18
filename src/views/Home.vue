@@ -43,13 +43,12 @@ export default {
       error: null,
       loading: true,
       hubLoading: true,
-      meetingEvents: null,
       news: null,
       grants: null,
       employment: null,
       slider: null,
       buttons: null,
-      totalNewsItems: 5,
+      totalNewsItems: 4,
       limit: 3,
     };
   },
@@ -82,9 +81,6 @@ export default {
         this.error = JSON.stringify(error.message);
       },
       result(ApolloQueryResult) {
-        // Events
-        this.meetingEvents = ApolloQueryResult.data.meetingEvents;
-        this.fundingEvents = ApolloQueryResult.data.fundingEvents;
         // News and Info
         const posts = ApolloQueryResult.data.posts;
         const meetings = ApolloQueryResult.data.meetings;
@@ -97,6 +93,9 @@ export default {
         this.buttons = ApolloQueryResult.data.home.homeCarouselButton;
         this.boxes = ApolloQueryResult.data.home.clickThroughBoxes;
         this.loading = false;
+        //Events
+        console.log("fundingEvents: ", ApolloQueryResult.data.fundingEvents);
+        console.log("meetingEvents: ", ApolloQueryResult.data.meetingEvents);
       },
     },
   },

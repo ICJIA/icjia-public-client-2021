@@ -26,9 +26,7 @@
           </v-card>
         </v-tab-item>
 
-        <v-tab-item
-          :style="`background: #e8e8e8 !important; height: ${tabViewHeight}px !important`"
-        >
+        <v-tab-item :style="`background: #e8e8e8 !important;`">
           <div style="height: 5px; background: #eee !important"></div>
           <div v-if="employment.length > 0">
             <div
@@ -137,7 +135,7 @@ export default {
 }
 .v-tab--active {
   font-weight: 900 !important;
-  background: #666 !important;
+  background: rgb(52, 92, 179) !important;
   color: #fff !important;
 }
 

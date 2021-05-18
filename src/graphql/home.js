@@ -40,43 +40,55 @@ const GET_HOME = gql`
       }
     }
 
-    meetingEvents: events(
+    fundingEvents: grants(
       limit: $eventLimit
-      where: { type: "meeting", start_gte: $now }
+      where: { end_gte: $now }
       sort: "start:asc"
     ) {
-      name
-      type
+      id
+      published_at
+      title
       start
       end
-      published_at
-      timed
       summary
       slug
-      type
-      tags {
-        title
-        slug
-      }
+      category
     }
-    fundingEvents: events(
+
+    meetingEvents: meetings(
       limit: $eventLimit
-      where: { type: "funding", start_gte: $now }
+      where: { end_gte: $now }
+      sort: "start:asc"
+    ) {
+      id
+      published_at
+      title
+      start
+      end
+      summary
+      slug
+      category
+    }
+
+    communityEvents: events(
+      where: { category: "community" }
       sort: "start:asc"
     ) {
       name
-      type
-      start
-      end
-      published_at
-      timed
-      summary
       slug
-      type
-      tags {
-        title
-        slug
-      }
+      summary
+      start
+      category
+      end
+    }
+
+    trainingEvents: events(where: { category: "training" }, sort: "start:asc") {
+      name
+      slug
+      summary
+      start
+      category
+      end
     }
 
     posts(sort: "published_at:desc", limit: $postLimit) {
@@ -103,6 +115,8 @@ const GET_HOME = gql`
       title
       summary
       slug
+      start
+      end
       created_at
       updated_at
       published_at
@@ -112,13 +126,13 @@ const GET_HOME = gql`
       title
     }
 
-    grants(sort: "posted:desc", limit: $fundingLimit) {
+    grants(sort: "start:desc", limit: $fundingLimit) {
       id
       title
       slug
       summary
-      posted
-      expires
+      start
+      end
       tags(sort: "title:asc") {
         title
         slug

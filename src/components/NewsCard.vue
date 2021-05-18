@@ -2,7 +2,7 @@
   <div>
     <v-card
       class="grid-item markdown-body hover news-card mt-2 mb-2 mr-1 ml-1 pt-1"
-      height="200px"
+      min-height="200px"
       elevation="0"
       color="#fff"
       v-if="
