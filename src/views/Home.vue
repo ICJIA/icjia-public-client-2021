@@ -38,12 +38,6 @@
       :community="communityEvents"
       :loading="loading"
     ></HomeEvents>
-
-    <h2>Events</h2>
-    <div class="mt-2">Meeting: {{ meetingEvents }}</div>
-    <div class="mt-2">Funding: {{ fundingEvents }}</div>
-    <div class="mt-2">Community: {{ communityEvents }}</div>
-    <div class="mt-2">Training: {{ trainingEvents }}</div>
   </div>
 </template>
 

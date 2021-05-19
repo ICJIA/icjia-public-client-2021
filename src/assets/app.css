@@ -113,3 +113,51 @@
   position: absolute !important;
   width: 1px !important;
 }
+
+.screenreader-text {
+  position: absolute;
+  /* left: -999px;
+  width: 1px;
+  height: 1px;
+  top: auto; */
+  display: none;
+}
+.screenreader-text:focus {
+  color: black;
+  display: inline-block;
+  height: auto;
+  width: auto;
+  position: static;
+  margin: auto;
+}
+
+.skiplink {
+  position: absolute;
+  top: 5px;
+  border: 0 none;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 1px;
+  font-size: 14px;
+  font-weight: 900 !important;
+}
+.skiplink:focus {
+  clip: auto;
+  height: auto;
+  position: 0px;
+  z-index: 100000;
+  width: auto;
+  background: #fff;
+  color: #000;
+  font-size: 14px;
+  font-weight: 900 !important;
+  padding: 3px 8px;
+}
+
+.skiplink:focus.dark {
+  background: #000;
+  color: #fff;
+}
