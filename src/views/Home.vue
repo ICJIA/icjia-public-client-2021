@@ -30,12 +30,26 @@
         ></v-col>
       </v-row>
     </v-container>
+
+    <HomeEvents
+      :meetings="meetingEvents"
+      :funding="fundingEvents"
+      :training="trainingEvents"
+      :community="communityEvents"
+      :loading="loading"
+    ></HomeEvents>
+
+    <h2>Events</h2>
+    <div class="mt-2">Meeting: {{ meetingEvents }}</div>
+    <div class="mt-2">Funding: {{ fundingEvents }}</div>
+    <div class="mt-2">Community: {{ communityEvents }}</div>
+    <div class="mt-2">Training: {{ trainingEvents }}</div>
   </div>
 </template>
 
 <script>
 import { GET_HOME } from "@/graphql/home";
-
+import nprogress from "nprogress";
 export default {
   data() {
     return {
@@ -50,7 +64,14 @@ export default {
       buttons: null,
       totalNewsItems: 4,
       limit: 3,
+      trainingEvents: null,
+      fundingEvents: null,
+      meetingEvents: null,
+      communityEvents: null,
     };
+  },
+  mounted() {
+    nprogress.start();
   },
   methods: {
     // eslint-disable-next-line no-unused-vars
@@ -69,7 +90,7 @@ export default {
       variables() {
         return {
           now: new Date(),
-          eventLimit: 6,
+          eventLimit: 3,
           postLimit: 6,
           fundingLimit: 5,
           meetingLimit: 5,
@@ -79,6 +100,7 @@ export default {
 
       error(error) {
         this.error = JSON.stringify(error.message);
+        nprogress.done();
       },
       result(ApolloQueryResult) {
         // News and Info
@@ -92,10 +114,24 @@ export default {
         this.slider = ApolloQueryResult.data.home.homeCarousel;
         this.buttons = ApolloQueryResult.data.home.homeCarouselButton;
         this.boxes = ApolloQueryResult.data.home.clickThroughBoxes;
-        this.loading = false;
+
         //Events
-        console.log("fundingEvents: ", ApolloQueryResult.data.fundingEvents);
-        console.log("meetingEvents: ", ApolloQueryResult.data.meetingEvents);
+        this.trainingEvents = ApolloQueryResult.data.trainingEvents.map(
+          (e) => ({
+            ...e,
+            title: e.name,
+          })
+        );
+        this.communityEvents = ApolloQueryResult.data.communityEvents.map(
+          (e) => ({
+            ...e,
+            title: e.name,
+          })
+        );
+        this.meetingEvents = ApolloQueryResult.data.meetingEvents;
+        this.fundingEvents = ApolloQueryResult.data.fundingEvents;
+        this.loading = false;
+        nprogress.done();
       },
     },
   },

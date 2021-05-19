@@ -18,12 +18,13 @@
 } */
 
 #nprogress .bar {
-  background: #b72424 !important;
+  background: #212e5a !important;
+  height: 3px !important;
 }
 
 #nprogress .spinner-icon {
-  border-top-color: #b72424 !important;
-  border-left-color: #b72424 !important;
+  border-top-color: #212e5a !important;
+  border-left-color: #212e5a !important;
 }
 
 .info-card:hover,

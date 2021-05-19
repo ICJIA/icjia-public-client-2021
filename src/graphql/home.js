@@ -71,6 +71,7 @@ const GET_HOME = gql`
     }
 
     communityEvents: events(
+      limit: $eventLimit
       where: { category: "community" }
       sort: "start:asc"
     ) {
@@ -82,7 +83,11 @@ const GET_HOME = gql`
       end
     }
 
-    trainingEvents: events(where: { category: "training" }, sort: "start:asc") {
+    trainingEvents: events(
+      limit: $eventLimit
+      where: { category: "training" }
+      sort: "start:asc"
+    ) {
       name
       slug
       summary

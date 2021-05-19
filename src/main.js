@@ -11,11 +11,12 @@ import "@/components/_globals";
 import "@/filters";
 // import "material-design-icons-iconfont/dist/material-design-icons.css";
 // import Masonry from "masonry-layout";
+import nprogress from "nprogress";
 
 import "@fortawesome/fontawesome-free/css/all.css";
 
 Vue.config.productionTip = false;
-
+nprogress.start();
 // Set up app wide read-only configs and install as plugin
 import { myApp } from "./services/AppInit";
 // myApp.install = function () {
@@ -56,3 +57,5 @@ new Vue({
   apolloProvider: createProvider(),
   render: (h) => h(App),
 }).$mount("#app");
+
+nprogress.done();
