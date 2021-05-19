@@ -29,7 +29,7 @@
           <v-col class="px-4 py-2">
             <div
               style="
-                font-size: 18px;
+                font-size: 14px;
                 font-weight: 900;
                 color: #333;
                 text-transform: uppercase;
@@ -38,19 +38,27 @@
             >
               {{ getEventDayName() }}
             </div>
-            <h2 style="font-size: 64px; font-weight: 900; margin-top: -15px">
-              {{ getEventDay() }}
+            <h2
+              class="mt-3"
+              style="
+                font-size: 32px;
+                font-weight: 900;
+                margin-top: -15px;
+                border-bottom: 5px solid #333;
+              "
+            >
+              {{ getEventDateSpan() }}
             </h2>
 
-            <h3
+            <!-- <h3
               style="
                 border-bottom: 5px solid #333;
                 font-size: 36px;
                 margin-top: -15px;
               "
             >
-              {{ getEventMonth() }}, {{ getEventYear() }}
-            </h3>
+            
+            </h3> -->
             <div class="mt-6">
               <span
                 class="eventTitle"
@@ -92,14 +100,76 @@ import moment from "moment";
 export default {
   methods: {
     getEventDayName() {
-      return moment(this.event.start).format("dddd");
+      let start = moment(this.event.start);
+      let end = moment(this.event.end);
+      if (end.diff(start, "days")) {
+        return (
+          moment(this.event.start).format("dddd") +
+          " - " +
+          moment(this.event.end).format("dddd")
+        );
+      } else {
+        return moment(this.event.start).format("dddd");
+      }
     },
-    getEventDay() {
-      return moment(this.event.start).format("D");
+    getEventDateSpan() {
+      let start = moment(this.event.start);
+      let end = moment(this.event.end);
+      if (start.format("MMM") === end.format("MMM")) {
+        let month = moment(this.event.start).format("MMMM");
+        let daySpan;
+        if (end.diff(start, "days")) {
+          daySpan =
+            moment(this.event.start).format("D") +
+            " - " +
+            moment(this.event.end).format("D");
+        } else {
+          daySpan = moment(this.event.start).format("D");
+        }
+        return (
+          month + " " + daySpan + ", " + moment(this.event.end).format("YYYY")
+        );
+      } else {
+        return (
+          moment(this.event.start).format("MMM") +
+          " " +
+          moment(this.event.start).format("DD") +
+          " - " +
+          moment(this.event.end).format("MMM") +
+          " " +
+          moment(this.event.end).format("DD") +
+          ", " +
+          moment(this.event.end).format("YYYY")
+        );
+      }
+      return "date span here";
     },
-    getEventMonth() {
-      return moment(this.event.start).format("MMMM");
-    },
+    // getEventDay() {
+    //   let start = moment(this.event.start);
+    //   let end = moment(this.event.end);
+    //   if (end.diff(start, "days")) {
+    //     return (
+    //       moment(this.event.start).format("D") +
+    //       " - " +
+    //       moment(this.event.end).format("D")
+    //     );
+    //   } else {
+    //     return moment(this.event.start).format("D");
+    //   }
+    // },
+    // getEventMonth() {
+    //   let start = moment(this.event.start);
+    //   let end = moment(this.event.end);
+    //   if (start.format("MMM") === end.format("MMM")) {
+    //     return moment(this.event.start).format("MMMM");
+    //   } else {
+    //     return (
+    //       moment(this.event.start).format("MMM") +
+    //       " - " +
+    //       moment(this.event.end).format("MMM")
+    //     );
+    //   }
+    // },
     getEventYear() {
       return moment(this.event.start).format("YYYY");
     },
