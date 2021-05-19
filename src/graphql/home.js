@@ -72,7 +72,7 @@ const GET_HOME = gql`
 
     communityEvents: events(
       limit: $eventLimit
-      where: { category: "community" }
+      where: { category: "community", end_gte: $now }
       sort: "start:asc"
     ) {
       name
@@ -85,7 +85,7 @@ const GET_HOME = gql`
 
     trainingEvents: events(
       limit: $eventLimit
-      where: { category: "training" }
+      where: { category: "training", end_gte: $now }
       sort: "start:asc"
     ) {
       name
