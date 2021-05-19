@@ -29,17 +29,16 @@
           <v-col class="px-4 py-2">
             <div
               style="
-                font-size: 14px;
+                font-size: 18px;
                 font-weight: 900;
                 color: #333;
                 text-transform: uppercase;
               "
               class="mb-2"
-            >
-              {{ getEventDayName() }}
-            </div>
+              v-html="getEventDayName()"
+            ></div>
             <h2
-              class="mt-3"
+              class="mt-0"
               style="
                 font-size: 32px;
                 font-weight: 900;
@@ -49,16 +48,17 @@
             >
               {{ getEventDateSpan() }}
             </h2>
-
-            <!-- <h3
+            <div
+              class="eventTime mt-4 text-left"
               style="
-                border-bottom: 5px solid #333;
-                font-size: 36px;
-                margin-top: -15px;
+                color: #333;
+                font-weight: 900;
+                text-transform: uppercase;
+                font-size: 12px;
               "
-            >
-            
-            </h3> -->
+              v-html="getEventTimeSpan()"
+            ></div>
+
             <div class="mt-6">
               <span
                 class="eventTitle"
@@ -69,15 +69,9 @@
               ><span class="eventTitle" style="font-weight: 900" v-else>
                 {{ event.name }}</span
               >
-
-              <div class="eventTime" style="color: #666">
-                {{ event.start }} - {{ event.end }}
-              </div>
             </div>
             <p style="color: #000" class="mt-3">
-              Lorem markdownum Oechalia tenus, bracchia concolor tum, et in tota
-              a generum. Ludit et nostri idemque circum. Tela tamen verba, tenet
-              domui Dymantis.
+              {{ truncate(event.summary) }}
             </p>
             <router-link
               to="/"
@@ -102,15 +96,50 @@ export default {
     getEventDayName() {
       let start = moment(this.event.start);
       let end = moment(this.event.end);
+      let dayName;
       if (end.diff(start, "days")) {
-        return (
-          moment(this.event.start).format("dddd") +
-          " - " +
-          moment(this.event.end).format("dddd")
-        );
+        dayName = "<br/>";
+        //   moment(this.event.start).format("dddd") +
+        //   " - " +
+        //   moment(this.event.end).format("dddd")
       } else {
-        return moment(this.event.start).format("dddd");
+        dayName = moment(this.event.start).format("dddd");
       }
+      return dayName;
+    },
+    truncate(string, maxWords = 30) {
+      var strippedString = string.trim();
+      var array = strippedString.split(" ");
+      var wordCount = array.length;
+      string = array.splice(0, maxWords).join(" ");
+
+      if (wordCount > maxWords) {
+        string += "...";
+      }
+
+      return string;
+    },
+    getEventTimeSpan() {
+      let start = moment(this.event.start);
+      let end = moment(this.event.end);
+      let days = end.diff(start, "days");
+      let hours = end.diff(start, "hours");
+      let timeSpanText = "<br/>";
+      if (days === 0 && hours > 7) {
+        timeSpanText = "All Day";
+      } else if (days === 0 && hours <= 7) {
+        timeSpanText =
+          moment(this.event.start).format("h:mm a") +
+          " - " +
+          moment(this.event.end).format("h:mm a");
+      } else {
+        timeSpanText =
+          moment(this.event.start).format("ddd, MMM DD @ h:mm a") +
+          " - " +
+          moment(this.event.end).format("ddd, MMM DD @ h:mm a");
+      }
+      console.log(days, hours);
+      return timeSpanText;
     },
     getEventDateSpan() {
       let start = moment(this.event.start);
@@ -142,34 +171,8 @@ export default {
           moment(this.event.end).format("YYYY")
         );
       }
-      return "date span here";
     },
-    // getEventDay() {
-    //   let start = moment(this.event.start);
-    //   let end = moment(this.event.end);
-    //   if (end.diff(start, "days")) {
-    //     return (
-    //       moment(this.event.start).format("D") +
-    //       " - " +
-    //       moment(this.event.end).format("D")
-    //     );
-    //   } else {
-    //     return moment(this.event.start).format("D");
-    //   }
-    // },
-    // getEventMonth() {
-    //   let start = moment(this.event.start);
-    //   let end = moment(this.event.end);
-    //   if (start.format("MMM") === end.format("MMM")) {
-    //     return moment(this.event.start).format("MMMM");
-    //   } else {
-    //     return (
-    //       moment(this.event.start).format("MMM") +
-    //       " - " +
-    //       moment(this.event.end).format("MMM")
-    //     );
-    //   }
-    // },
+
     getEventYear() {
       return moment(this.event.start).format("YYYY");
     },
