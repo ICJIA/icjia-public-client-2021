@@ -2,7 +2,7 @@
   <div>
     <v-card
       class="hover event-card mr-2 mt-1 mb-1"
-      style="height: 425px; overflow-y: auto"
+      style="height: 425px; overflow-y: auto; background: #fff"
     >
       <v-container fluid>
         <v-row no-gutters>

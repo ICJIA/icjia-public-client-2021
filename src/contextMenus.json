@@ -1,0 +1,65 @@
+[
+    {
+        "name": "gata",
+        "items": [
+            {
+                "label": "Test Item 1",
+                "path": "/gata/funding/"
+            },
+            {
+                "label": "Test Item 2",
+                "path": "/gata/about/"
+            },
+            {
+                "label": "Test Item 3",
+                "path": "/gata/test/"
+            }
+        ]
+    },
+    {
+        "name": "researchhub",
+        "items": [
+            {
+                "label": "researchhub Item 1",
+                "path": "/researchhub/about/"
+            },
+            {
+                "label": "researchhub Item 2",
+                "path": "/researchhub/articles/"
+            },
+            {
+                "label": "researchhub Item 3",
+                "path": "/researchhub/apps/"
+            }
+        ]
+    },
+    {
+        "name": "test",
+        "items": [
+            {
+                "label": "Test Item 1",
+                "path": "/test/test1/"
+            },
+            {
+                "label": "Test Item 2",
+                "path": "/test/test2/"
+            },
+            {
+                "label": "Test Item 3",
+                "path": "/test/test3/"
+            },
+            {
+                "label": "Test Item 4",
+                "path": "/test/test4/"
+            },
+            {
+                "label": "Test Item 5",
+                "path": "/test/test5/"
+            },
+            {
+                "label": "Test Item 6",
+                "path": "/test/test6/"
+            }
+        ]
+    }
+]

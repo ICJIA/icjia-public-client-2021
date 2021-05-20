@@ -13,6 +13,7 @@
           $vuetify.breakpoint.lg ||
           $vuetify.breakpoint.xl
         "
+        style="background: #aaa !important"
         ><div style="height: 15px"></div>
         <v-tab>Community</v-tab>
         <v-tab>Meetings </v-tab>
