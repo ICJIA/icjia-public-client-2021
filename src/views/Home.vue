@@ -17,7 +17,11 @@
       style="margin-top: -5px"
     ></HomeClickThroughBoxes>
     <div style="background: #e8e8e8; z-index: 1">
-      <v-container fluid style="margin-top: 5px; z-index: 10">
+      <WidgetBar
+        title="News & Information"
+        :menuItems="newsMenuItems"
+      ></WidgetBar>
+      <v-container fluid style="margin-top: 0px; z-index: 10">
         <v-row>
           <v-col
             cols="12"
@@ -29,10 +33,6 @@
               border-right: 1px solid #e8e8e8;
             "
           >
-            <WidgetBar
-              title="News & Information"
-              :menuItems="newsMenuItems"
-            ></WidgetBar>
             <div
               style="
                 height: 15px;
@@ -122,7 +122,7 @@ export default {
           now: new Date(),
           eventLimit: 3,
           postLimit: 6,
-          fundingLimit: 5,
+          fundingLimit: 4,
           meetingLimit: 5,
           employmentLimit: 5,
         };
