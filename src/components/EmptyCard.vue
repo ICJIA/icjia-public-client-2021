@@ -2,6 +2,7 @@
   <v-card
     class="hover event-card mr-2 mt-1 mb-1"
     :style="`height: ${height}px; overflow-y: auto`"
+    elevation="0"
   >
     <v-container fill-height fluid>
       <v-row align="center" justify="center">

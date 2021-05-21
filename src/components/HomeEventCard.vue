@@ -1,8 +1,9 @@
 <template>
   <div>
     <v-card
-      class="hover event-card mr-2 mt-1 mb-1"
+      class="mr-2 mt-1 mb-1"
       style="height: 425px; overflow-y: auto; background: #fff"
+      elevation="0"
     >
       <v-container fluid>
         <v-row no-gutters>
@@ -40,7 +41,7 @@
             <h2
               class="mt-0"
               style="
-                font-size: 32px;
+                font-size: 26px;
                 font-weight: 900;
                 margin-top: -15px;
                 border-bottom: 5px solid #333;

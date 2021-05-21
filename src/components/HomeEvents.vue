@@ -13,14 +13,13 @@
           $vuetify.breakpoint.lg ||
           $vuetify.breakpoint.xl
         "
-        style="background: #aaa !important"
-        ><div style="height: 15px"></div>
+      >
         <v-tab>Community</v-tab>
         <v-tab>Meetings </v-tab>
         <v-tab>Training</v-tab>
         <v-tab>Funding</v-tab>
 
-        <v-tab-item>
+        <v-tab-item style="border-left: 1px solid #e8e8e8">
           <v-container
             fluid
             style="background: #fff"
@@ -32,6 +31,7 @@
                 :md="getCardWidth(community.length)"
                 v-for="n in community.length"
                 :key="`community-${n}`"
+                style="border-right: 1px solid #e8e8e8"
               >
                 <HomeEventCard
                   :event="community[n - 1]"
@@ -56,6 +56,7 @@
                 :md="getCardWidth(meetings.length)"
                 v-for="n in meetings.length"
                 :key="`meeting-${n}`"
+                style="border-right: 1px solid #e8e8e8"
               >
                 <HomeEventCard
                   :event="meetings[n - 1]"
@@ -80,6 +81,7 @@
                 :md="getCardWidth(training.length)"
                 v-for="n in training.length"
                 :key="`training-${n}`"
+                style="border-right: 1px solid #e8e8e8"
               >
                 <HomeEventCard
                   :event="training[n - 1]"
@@ -100,6 +102,7 @@
                 :md="getCardWidth(funding.length)"
                 v-for="n in funding.length"
                 :key="`funding-${n}`"
+                style="border-right: 1px solid #e8e8e8"
               >
                 <HomeEventCard
                   :event="funding[n - 1]"

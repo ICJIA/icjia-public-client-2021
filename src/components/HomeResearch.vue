@@ -13,15 +13,23 @@
         $vuetify.breakpoint.lg ||
         $vuetify.breakpoint.xl
       "
-      ><div style="height: 15px"></div>
+    >
+      <!-- <div style="height: 15px"></div> -->
       <v-tab>Articles</v-tab>
       <v-tab>Web Apps </v-tab>
       <v-tab>Datasets</v-tab>
 
-      <v-tab-item>
+      <v-tab-item style="border-left: 1px solid #e8e8e8">
         <v-container fluid style="background: #fff">
           <v-row no-gutters>
-            <v-col cols="12" md="4" v-for="n in 3" :key="`article-${n}`">
+            <v-col
+              cols="12"
+              md="4"
+              v-for="n in 3"
+              :key="`article-${n}`"
+              class="d-flex"
+              style="flex-direction: column; border-right: 1px solid #e8e8e8"
+            >
               <HomeResearchCard
                 :item="hubArticles[n - 1]"
                 type="article"

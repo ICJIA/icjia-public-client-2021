@@ -1,10 +1,20 @@
 <template>
   <div>
     <v-card
-      class="grid-item markdown-body hover card info-card mr-1 ml-1 px-3 py-3"
+      class="
+        grid-item
+        markdown-body
+        hover
+        card
+        info-card
+        mr-1
+        ml-1
+        px-3
+        py-3
+        flex-grow-1
+      "
       elevation="0"
       color="#fff"
-      style="border: 1px solid #ccc"
       :min-height="getCardHeight(type)"
     >
       <v-img

@@ -16,20 +16,57 @@
       v-if="!loading"
       style="margin-top: -5px"
     ></HomeClickThroughBoxes>
-    <v-container fluid style="margin-top: -5px">
-      <v-row>
-        <v-col cols="12" md="6">
-          <HomeNews :items="news" :loading="loading"></HomeNews
-        ></v-col>
-        <v-col cols="12" md="6"
-          ><HomeTabbed
-            :grants="grants"
-            :employment="employment"
-            :loading="loading"
-          ></HomeTabbed
-        ></v-col>
-      </v-row>
-    </v-container>
+    <div style="background: #fff; z-index: 1">
+      <v-container fluid style="margin-top: -5px; z-index: 10">
+        <v-row>
+          <v-col
+            cols="12"
+            md="6"
+            style="
+              margin: 0;
+              padding: 0;
+              margin-top: 0px;
+              border-right: 1px solid #e8e8e8;
+            "
+          >
+            <v-app-bar dense color="#345cb3" dark>
+              <div
+                style="
+                  font-size: 24px;
+                  font-weight: 900;
+                  text-transform: uppercase;
+                "
+              >
+                News & Information
+              </div></v-app-bar
+            >
+            <div
+              style="
+                height: 15px;
+                background: #fff !important;
+                border-top: 1px solid #e8e8e8;
+              "
+            ></div>
+            <HomeNews :items="news" :loading="loading"></HomeNews
+          ></v-col>
+          <v-col
+            cols="12"
+            md="6"
+            style="
+              margin: 0;
+              padding: 0;
+              margin-top: -8px;
+              border-left: 1px solid #e8e8e8;
+            "
+            ><HomeTabbed
+              :grants="grants"
+              :employment="employment"
+              :loading="loading"
+            ></HomeTabbed
+          ></v-col>
+        </v-row>
+      </v-container>
+    </div>
 
     <HomeEvents
       :meetings="meetingEvents"
@@ -37,6 +74,7 @@
       :training="trainingEvents"
       :community="communityEvents"
       :loading="loading"
+      style="margin-top: 15px"
     ></HomeEvents>
   </div>
 </template>

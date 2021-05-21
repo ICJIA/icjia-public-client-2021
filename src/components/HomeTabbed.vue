@@ -1,41 +1,48 @@
 <template>
   <div>
     <div v-if="!loading">
-      <v-tabs
-        show-arrows
-        v-model="fundingModel"
-        grow
-        class="mt-2"
-        color="grey darken-1"
-      >
+      <v-tabs show-arrows v-model="fundingModel" grow class="mt-2">
         <v-tab>Funding </v-tab>
         <v-tab>Employment </v-tab>
-        <v-tab-item :style="`background: #e8e8e8 !important; `">
-          <div style="height: 10px; background: #eee !important"></div>
+        <v-tab-item :style="`background: #fff !important; `">
+          <div
+            style="
+              height: 15px;
+              background: #fff !important;
+              border-top: 1px solid #e8e8e8;
+            "
+          ></div>
 
           <v-card
             min-height="150"
-            class="mb-3 test py-3 px-3"
+            class="test py-3 px-8"
             v-for="(grant, index) in grants"
             :key="`funding-${index}`"
+            elevation="0"
           >
-            <div class="px-12">
+            <div class="px-2">
               <h2 style="font-size: 18px">{{ grant.title }}</h2>
               <p>{{ grant.summary }}</p>
             </div>
           </v-card>
         </v-tab-item>
 
-        <v-tab-item :style="`background: #e8e8e8 !important;`">
-          <div style="height: 5px; background: #eee !important"></div>
+        <v-tab-item :style="`background: #fff !important;`">
+          <div
+            style="
+              height: 15px;
+              background: #fff !important;
+              border-top: 1px solid #e8e8e8;
+            "
+          ></div>
           <div v-if="employment.length > 0">
             <div
               v-for="(job, index) in employment"
               :key="`employment-${index}`"
             >
-              <v-card :min-height="cardHeight">
+              <v-card :min-height="cardHeight" elevation="0" class="px-8">
                 <div
-                  class="mb-3"
+                  class=""
                   v-for="(job, index) in employment"
                   :key="`funding-${index}`"
                 >
