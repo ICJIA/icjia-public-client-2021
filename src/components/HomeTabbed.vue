@@ -1,7 +1,13 @@
 <template>
   <div>
     <div v-if="!loading">
-      <v-tabs show-arrows v-model="fundingModel" grow class="mt-2">
+      <v-tabs
+        show-arrows
+        v-model="fundingModel"
+        grow
+        class="mt-2"
+        style="border-top: 1px solid #d8d8d8"
+      >
         <v-tab>Funding </v-tab>
         <v-tab>Employment </v-tab>
         <v-tab-item :style="`background: #fff !important; `">
@@ -15,7 +21,7 @@
 
           <v-card
             min-height="150"
-            class="test py-3 px-8"
+            class="test py-3 px-8 rule-bottom"
             v-for="(grant, index) in grants"
             :key="`funding-${index}`"
             elevation="0"
@@ -40,7 +46,11 @@
               v-for="(job, index) in employment"
               :key="`employment-${index}`"
             >
-              <v-card :min-height="cardHeight" elevation="0" class="px-8">
+              <v-card
+                :min-height="cardHeight"
+                elevation="0"
+                class="px-8 rule-bottom"
+              >
                 <div
                   class=""
                   v-for="(job, index) in employment"
@@ -148,5 +158,9 @@ export default {
 
 * >>> .theme--light.v-tabs-items {
   background-color: #e8e8e8 !important;
+}
+
+.rule-bottom {
+  border-bottom: 1px solid #e8e8e8 !important;
 }
 </style>

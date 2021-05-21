@@ -5,6 +5,7 @@
       hide-delimiter-background
       show-arrows-on-hover
       hide-delimiters
+      style="border-bottom: 1px solid #d8d8d8"
     >
       <v-carousel-item v-for="(slide, index) in slider.slide" :key="index">
         <v-card color="grey lighten-4" height="100%">

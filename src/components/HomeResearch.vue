@@ -1,5 +1,13 @@
 <template>
-  <v-card elevation="0" style="margin-top: -5px; margin-bottom: 18px">
+  <v-card
+    elevation="0"
+    style="
+      margin-top: -5px;
+      margin-bottom: 18px;
+      border-top: 1px solid #d8d8d8;
+      border-bottom: 1px solid #d8d8d8;
+    "
+  >
     <!-- <WidgetBar
       title="Latest Research"
       style="margin-top: 10px"
@@ -48,7 +56,13 @@
       <v-tab-item>
         <v-container fluid style="background: #fff">
           <v-row no-gutters>
-            <v-col cols="12" md="4" v-for="n in 3" :key="`app-${n}`">
+            <v-col
+              cols="12"
+              md="4"
+              v-for="n in 3"
+              :key="`app-${n}`"
+              style="border-right: 1px solid #e8e8e8"
+            >
               <HomeResearchCard
                 :item="hubApplications[n - 1]"
                 type="app"
@@ -67,7 +81,13 @@
       <v-tab-item>
         <v-container fluid style="background: #fff">
           <v-row no-gutters>
-            <v-col cols="12" md="4" v-for="n in 3" :key="`dataset-${n}`">
+            <v-col
+              cols="12"
+              md="4"
+              v-for="n in 3"
+              :key="`dataset-${n}`"
+              style="border-right: 1px solid #e8e8e8"
+            >
               <HomeResearchCard
                 :item="hubDatasets[n - 1]"
                 type="dataset"

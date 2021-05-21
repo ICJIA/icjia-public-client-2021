@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card
-      class="grid-item markdown-body mr-1 ml-1 pt-1"
+      class="markdown-body ml-1 pt-1 rule-bottom"
       min-height="200px"
       elevation="0"
       color="#fff"
@@ -18,7 +18,7 @@
             <v-img
               aria-label="News post image"
               :src="`https://agency.icjia-api.cloud${item.splash.formats.thumbnail.url}`"
-              height="165px"
+              height="175px"
               class=""
               style="border: 0px solid #fafafa"
               alt="ICJIA Intranet image"
@@ -168,4 +168,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style>
+.rule-bottom {
+  border-bottom: 1px solid #e8e8e8 !important;
+}
+</style>

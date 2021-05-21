@@ -2,7 +2,12 @@
   <div>
     <v-card
       elevation="0"
-      style="margin-top: -5px; margin-bottom: 18px"
+      style="
+        margin-top: -5px;
+        margin-bottom: 18px;
+        border-top: 1px solid #d8d8d8;
+        border-bottom: 1px solid #d8d8d8;
+      "
       v-if="!loading"
     >
       <v-tabs
@@ -31,7 +36,7 @@
                 :md="getCardWidth(community.length)"
                 v-for="n in community.length"
                 :key="`community-${n}`"
-                style="border-right: 1px solid #e8e8e8"
+                class="rule-right"
               >
                 <HomeEventCard
                   :event="community[n - 1]"
@@ -44,7 +49,7 @@
             <EmptyCard text="No upcoming community events"></EmptyCard>
           </v-container>
         </v-tab-item>
-        <v-tab-item>
+        <v-tab-item style="border-left: 1px solid #e8e8e8">
           <v-container
             fluid
             style="background: #fff"
@@ -56,7 +61,7 @@
                 :md="getCardWidth(meetings.length)"
                 v-for="n in meetings.length"
                 :key="`meeting-${n}`"
-                style="border-right: 1px solid #e8e8e8"
+                class="rule-right"
               >
                 <HomeEventCard
                   :event="meetings[n - 1]"
@@ -69,7 +74,7 @@
             <EmptyCard text="No upcoming meetings"></EmptyCard>
           </v-container>
         </v-tab-item>
-        <v-tab-item>
+        <v-tab-item style="border-left: 1px solid #e8e8e8">
           <v-container
             fluid
             style="background: #fff"
@@ -81,7 +86,8 @@
                 :md="getCardWidth(training.length)"
                 v-for="n in training.length"
                 :key="`training-${n}`"
-                style="border-right: 1px solid #e8e8e8"
+                style="border-right: 1px solid #e8e8e8 !important"
+                class="rule-right"
               >
                 <HomeEventCard
                   :event="training[n - 1]"
@@ -94,7 +100,7 @@
             <EmptyCard text="No upcoming training opportunities"></EmptyCard>
           </v-container>
         </v-tab-item>
-        <v-tab-item>
+        <v-tab-item style="border-left: 1px solid #e8e8e8">
           <v-container fluid style="background: #fff" v-if="funding.length > 0">
             <v-row no-gutters>
               <v-col
@@ -102,7 +108,7 @@
                 :md="getCardWidth(funding.length)"
                 v-for="n in funding.length"
                 :key="`funding-${n}`"
-                style="border-right: 1px solid #e8e8e8"
+                class="rule-right"
               >
                 <HomeEventCard
                   :event="funding[n - 1]"
@@ -179,5 +185,9 @@ export default {
   font-weight: 900 !important;
   background: #666 !important;
   color: #fff !important;
+}
+
+.rule-right {
+  border-right: 1px solid #e8e8e8 !important;
 }
 </style>

@@ -16,8 +16,8 @@
       v-if="!loading"
       style="margin-top: -5px"
     ></HomeClickThroughBoxes>
-    <div style="background: #fff; z-index: 1">
-      <v-container fluid style="margin-top: -5px; z-index: 10">
+    <div style="background: #e8e8e8; z-index: 1">
+      <v-container fluid style="margin-top: 5px; z-index: 10">
         <v-row>
           <v-col
             cols="12"
@@ -27,9 +27,10 @@
               padding: 0;
               margin-top: 0px;
               border-right: 1px solid #e8e8e8;
+              border-top: 1px solid #d8d8d8;
             "
           >
-            <v-app-bar dense color="#345cb3" dark>
+            <v-app-bar flat dense color="#345cb3" dark>
               <div
                 style="
                   font-size: 24px;
@@ -52,12 +53,7 @@
           <v-col
             cols="12"
             md="6"
-            style="
-              margin: 0;
-              padding: 0;
-              margin-top: -8px;
-              border-left: 1px solid #e8e8e8;
-            "
+            style="margin: 0; padding: 0; margin-top: -8px"
             ><HomeTabbed
               :grants="grants"
               :employment="employment"
@@ -74,7 +70,7 @@
       :training="trainingEvents"
       :community="communityEvents"
       :loading="loading"
-      style="margin-top: 15px"
+      style="margin-top: 25px"
     ></HomeEvents>
   </div>
 </template>
