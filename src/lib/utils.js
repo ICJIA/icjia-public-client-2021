@@ -52,10 +52,10 @@ const getKeys = function (obj, val) {
   return objects;
 };
 
-const getContextMenu = function (key = "path", value) {
+const getContextMenu = function (jsonKey = "path", appRoute) {
   let contextMenu = {};
   json.forEach((item) => {
-    const arr = getObjects(item, key.toLowerCase(), value.toLowerCase());
+    const arr = getObjects(item, jsonKey.toLowerCase(), appRoute.toLowerCase());
     if (arr.length) {
       contextMenu = item;
     }
