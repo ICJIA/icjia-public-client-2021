@@ -11,20 +11,15 @@
         <v-tab>Funding </v-tab>
         <v-tab>Employment </v-tab>
         <v-tab-item :style="`background: #fff !important; `">
-          <div
-            style="
-              height: 15px;
-              background: #fff !important;
-              border-top: 1px solid #e8e8e8;
-            "
-          ></div>
+          <div style="height: 15px; background: #fff !important"></div>
 
           <v-card
             min-height="150"
-            class="test py-3 px-8 rule-bottom"
+            class="test py-3 px-8"
             v-for="(grant, index) in grants"
             :key="`funding-${index}`"
             elevation="0"
+            :class="{ 'rule-top': index > 0 }"
           >
             <div class="px-2">
               <h2 style="font-size: 18px">{{ grant.title }}</h2>
@@ -34,13 +29,7 @@
         </v-tab-item>
 
         <v-tab-item :style="`background: #fff !important;`">
-          <div
-            style="
-              height: 15px;
-              background: #fff !important;
-              border-top: 1px solid #e8e8e8;
-            "
-          ></div>
+          <div style="height: 15px; background: #fff !important"></div>
           <div v-if="employment.length > 0">
             <div
               v-for="(job, index) in employment"
@@ -49,7 +38,8 @@
               <v-card
                 :min-height="cardHeight"
                 elevation="0"
-                class="px-8 rule-bottom"
+                class="px-8"
+                :class="{ 'rule-top': index > 0 }"
               >
                 <div
                   class=""
@@ -152,7 +142,7 @@ export default {
 }
 .v-tab--active {
   font-weight: 900 !important;
-  background: #eee;
+  background: #f5f5f5;
   color: #333 !important;
 }
 
@@ -160,7 +150,7 @@ export default {
   background-color: #e8e8e8 !important;
 }
 
-.rule-bottom {
-  border-bottom: 1px solid #e8e8e8 !important;
+.rule-top {
+  border-top: 1px solid #e8e8e8 !important;
 }
 </style>

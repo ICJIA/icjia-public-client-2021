@@ -10,16 +10,17 @@
       <Loader></Loader>
     </v-card>
 
-    <HomeResearch style="margin-top: 15px"></HomeResearch>
+    <HomeResearch></HomeResearch>
     <HomeClickThroughBoxes
       :boxes="boxes"
       v-if="!loading"
-      style="margin-top: -5px"
+      style="margin-top: -30px"
     ></HomeClickThroughBoxes>
-    <div style="background: #e8e8e8; z-index: 1">
+    <div style="background: #fff; z-index: 1">
       <WidgetBar
         title="News & Information"
         :menuItems="newsMenuItems"
+        style="margin-top: -20px"
       ></WidgetBar>
       <v-container fluid style="margin-top: 0px; z-index: 10">
         <v-row>
@@ -62,7 +63,7 @@
       :training="trainingEvents"
       :community="communityEvents"
       :loading="loading"
-      style="margin-top: 25px"
+      style="margin-top: 0px"
     ></HomeEvents>
   </div>
 </template>

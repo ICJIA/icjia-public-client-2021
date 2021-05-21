@@ -1,10 +1,5 @@
 <template>
-  <v-app-bar
-    flat
-    dense
-    color="grey lighten-4"
-    style="border-top: 1px solid #d8d8d8 !important"
-  >
+  <v-app-bar flat dense color="white">
     <div style="font-size: 22px; font-weight: 900; text-transform: uppercase">
       {{ title }}
     </div>

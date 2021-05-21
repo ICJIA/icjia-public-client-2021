@@ -1,6 +1,10 @@
 <template>
   <div>
-    <WidgetBar title="Upcoming Events" :menuItems="eventMenuItems"></WidgetBar>
+    <WidgetBar
+      title="Upcoming Events"
+      :menuItems="eventMenuItems"
+      style="border-top: 1px solid #e8e8e8 !important"
+    ></WidgetBar>
     <v-card
       elevation="0"
       style="

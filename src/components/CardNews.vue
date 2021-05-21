@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card
-      class="markdown-body ml-1 pt-1 rule-bottom"
+      class="markdown-body ml-1 pt-1"
       min-height="200px"
       elevation="0"
       color="#fff"
@@ -10,6 +10,7 @@
         $vuetify.breakpoint.lg ||
         $vuetify.breakpoint.xl
       "
+      :class="{ 'rule-top': index && index > 0 }"
       style="overflow-y: auto !important"
     >
       <v-container fluid>
@@ -164,12 +165,16 @@ export default {
       type: Object,
       default: () => {},
     },
+    index: {
+      type: Number,
+      default: null,
+    },
   },
 };
 </script>
 
 <style>
-.rule-bottom {
-  border-bottom: 1px solid #e8e8e8 !important;
+.rule-top {
+  border-top: 1px solid #e8e8e8 !important;
 }
 </style>
