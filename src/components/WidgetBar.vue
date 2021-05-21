@@ -1,6 +1,6 @@
 <template>
-  <v-app-bar flat dense color="white">
-    <div style="font-size: 22px; font-weight: 900; text-transform: uppercase">
+  <v-app-bar flat color="white">
+    <div style="font-size: 26px; font-weight: 900; text-transform: uppercase">
       {{ title }}
     </div>
     <v-spacer></v-spacer>
