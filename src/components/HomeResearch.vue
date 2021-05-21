@@ -1,110 +1,111 @@
 <template>
-  <v-card
-    elevation="0"
-    style="
-      margin-top: -5px;
-      margin-bottom: 18px;
-      border-top: 1px solid #d8d8d8;
-      border-bottom: 1px solid #d8d8d8;
-    "
-  >
-    <!-- <WidgetBar
+  <div>
+    <WidgetBar
       title="Latest Research"
-      style="margin-top: 10px"
-      :menuItems="eventItems"
-    ></WidgetBar> -->
-    <v-tabs
-      show-arrows
-      v-model="eventModel"
-      :vertical="
-        $vuetify.breakpoint.md ||
-        $vuetify.breakpoint.lg ||
-        $vuetify.breakpoint.xl
+      :menuItems="researchMenuItems"
+    ></WidgetBar>
+    <v-card
+      elevation="0"
+      style="
+        margin-top: -5px;
+        margin-bottom: 18px;
+        border-top: 1px solid #e8e8e8;
+        border-bottom: 1px solid #d8d8d8;
       "
     >
-      <!-- <div style="height: 15px"></div> -->
-      <v-tab>Articles</v-tab>
-      <v-tab>Web Apps </v-tab>
-      <v-tab>Datasets</v-tab>
+      <v-tabs
+        show-arrows
+        v-model="eventModel"
+        :vertical="
+          $vuetify.breakpoint.md ||
+          $vuetify.breakpoint.lg ||
+          $vuetify.breakpoint.xl
+        "
+      >
+        <div style="height: 15px"></div>
+        <v-tab>Articles</v-tab>
+        <v-tab>Web Apps </v-tab>
+        <v-tab>Datasets</v-tab>
 
-      <v-tab-item style="border-left: 1px solid #e8e8e8">
-        <v-container fluid style="background: #fff">
-          <v-row no-gutters>
-            <v-col
-              cols="12"
-              md="4"
-              v-for="n in 3"
-              :key="`article-${n}`"
-              class="d-flex"
-              style="flex-direction: column; border-right: 1px solid #e8e8e8"
-            >
-              <HomeResearchCard
-                :item="hubArticles[n - 1]"
-                type="article"
-                v-if="!hubLoading"
-              ></HomeResearchCard>
-              <v-card height="300" class="px-3 py-3" v-else>
-                <v-skeleton-loader
-                  class="mx-auto"
-                  type="card"
-                ></v-skeleton-loader>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-tab-item>
-      <v-tab-item>
-        <v-container fluid style="background: #fff">
-          <v-row no-gutters>
-            <v-col
-              cols="12"
-              md="4"
-              v-for="n in 3"
-              :key="`app-${n}`"
-              style="border-right: 1px solid #e8e8e8"
-            >
-              <HomeResearchCard
-                :item="hubApplications[n - 1]"
-                type="app"
-                v-if="!hubLoading"
-              ></HomeResearchCard>
-              <v-card height="300" class="px-3 py-3" v-else>
-                <v-skeleton-loader
-                  class="mx-auto"
-                  type="card"
-                ></v-skeleton-loader>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-tab-item>
-      <v-tab-item>
-        <v-container fluid style="background: #fff">
-          <v-row no-gutters>
-            <v-col
-              cols="12"
-              md="4"
-              v-for="n in 3"
-              :key="`dataset-${n}`"
-              style="border-right: 1px solid #e8e8e8"
-            >
-              <HomeResearchCard
-                :item="hubDatasets[n - 1]"
-                type="dataset"
-                v-if="!hubLoading"
-              ></HomeResearchCard>
-              <v-card height="300" class="px-3 py-3" v-else>
-                <v-skeleton-loader
-                  class="mx-auto"
-                  type="card"
-                ></v-skeleton-loader>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-tab-item>
-    </v-tabs>
-  </v-card>
+        <v-tab-item>
+          <v-container fluid style="background: #fff">
+            <v-row no-gutters>
+              <v-col
+                cols="12"
+                md="4"
+                v-for="n in 3"
+                :key="`article-${n}`"
+                class="d-flex"
+                style="flex-direction: column; border-left: 1px solid #e8e8e8"
+              >
+                <HomeResearchCard
+                  :item="hubArticles[n - 1]"
+                  type="article"
+                  v-if="!hubLoading"
+                ></HomeResearchCard>
+                <v-card height="300" class="px-3 py-3" v-else>
+                  <v-skeleton-loader
+                    class="mx-auto"
+                    type="card"
+                  ></v-skeleton-loader>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-tab-item>
+        <v-tab-item>
+          <v-container fluid style="background: #fff">
+            <v-row no-gutters>
+              <v-col
+                cols="12"
+                md="4"
+                v-for="n in 3"
+                :key="`app-${n}`"
+                style="border-right: 1px solid #e8e8e8"
+              >
+                <HomeResearchCard
+                  :item="hubApplications[n - 1]"
+                  type="app"
+                  v-if="!hubLoading"
+                ></HomeResearchCard>
+                <v-card height="300" class="px-3 py-3" v-else>
+                  <v-skeleton-loader
+                    class="mx-auto"
+                    type="card"
+                  ></v-skeleton-loader>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-tab-item>
+        <v-tab-item>
+          <v-container fluid style="background: #fff">
+            <v-row no-gutters>
+              <v-col
+                cols="12"
+                md="4"
+                v-for="n in 3"
+                :key="`dataset-${n}`"
+                style="border-right: 1px solid #e8e8e8"
+              >
+                <HomeResearchCard
+                  :item="hubDatasets[n - 1]"
+                  type="dataset"
+                  v-if="!hubLoading"
+                ></HomeResearchCard>
+                <v-card height="300" class="px-3 py-3" v-else>
+                  <v-skeleton-loader
+                    class="mx-auto"
+                    type="card"
+                  ></v-skeleton-loader>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-tab-item>
+      </v-tabs>
+    </v-card>
+  </div>
 </template>
 
 <script>
@@ -123,6 +124,16 @@ export default {
       hubDatasets: null,
       hubLoading: true,
       limit: 3,
+      researchMenuItems: [
+        {
+          label: "Link 1",
+          url: "/",
+        },
+        {
+          label: "Link 2",
+          url: "/",
+        },
+      ],
     };
   },
   watch: {
@@ -143,7 +154,7 @@ export default {
 
 <style scoped>
 .v-tab {
-  font-size: 24px !important;
+  font-size: 20px !important;
   font-weight: 400 !important;
   color: #000 !important;
   letter-spacing: 0.01rem !important;

@@ -6,7 +6,7 @@
         v-model="fundingModel"
         grow
         class="mt-2"
-        style="border-top: 1px solid #d8d8d8"
+        style="border-top: 1px solid #fafafa"
       >
         <v-tab>Funding </v-tab>
         <v-tab>Employment </v-tab>
@@ -145,15 +145,15 @@ export default {
 
 <style scoped>
 .v-tab {
-  font-size: 24px !important;
+  font-size: 22px !important;
   font-weight: 400 !important;
   color: #000 !important;
   letter-spacing: 0.005rem !important;
 }
 .v-tab--active {
   font-weight: 900 !important;
-  background: rgb(52, 92, 179) !important;
-  color: #fff !important;
+  background: #ddd;
+  color: #333 !important;
 }
 
 * >>> .theme--light.v-tabs-items {

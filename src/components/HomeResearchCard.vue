@@ -10,7 +10,7 @@
         mr-1
         ml-1
         px-3
-        py-3
+        py-1
         flex-grow-1
       "
       elevation="0"

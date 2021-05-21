@@ -27,20 +27,13 @@
               padding: 0;
               margin-top: 0px;
               border-right: 1px solid #e8e8e8;
-              border-top: 1px solid #d8d8d8;
+              border-top: 1px solid #fafafa;
             "
           >
-            <v-app-bar flat dense color="#345cb3" dark>
-              <div
-                style="
-                  font-size: 24px;
-                  font-weight: 900;
-                  text-transform: uppercase;
-                "
-              >
-                News & Information
-              </div></v-app-bar
-            >
+            <WidgetBar
+              title="News & Information"
+              :menuItems="newsMenuItems"
+            ></WidgetBar>
             <div
               style="
                 height: 15px;
@@ -96,6 +89,16 @@ export default {
       fundingEvents: null,
       meetingEvents: null,
       communityEvents: null,
+      newsMenuItems: [
+        {
+          label: "Link 1",
+          url: "/",
+        },
+        {
+          label: "Link 2",
+          url: "/",
+        },
+      ],
     };
   },
   mounted() {

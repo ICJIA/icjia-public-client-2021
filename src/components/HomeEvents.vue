@@ -1,11 +1,12 @@
 <template>
   <div>
+    <WidgetBar title="Upcoming Events" :menuItems="eventMenuItems"></WidgetBar>
     <v-card
       elevation="0"
       style="
         margin-top: -5px;
         margin-bottom: 18px;
-        border-top: 1px solid #d8d8d8;
+        border-top: 1px solid #e8e8e8;
         border-bottom: 1px solid #d8d8d8;
       "
       v-if="!loading"
@@ -19,12 +20,13 @@
           $vuetify.breakpoint.xl
         "
       >
+        <div style="height: 15px"></div>
         <v-tab>Community</v-tab>
         <v-tab>Meetings </v-tab>
         <v-tab>Training</v-tab>
         <v-tab>Funding</v-tab>
 
-        <v-tab-item style="border-left: 1px solid #e8e8e8">
+        <v-tab-item>
           <v-container
             fluid
             style="background: #fff"
@@ -49,7 +51,7 @@
             <EmptyCard text="No upcoming community events"></EmptyCard>
           </v-container>
         </v-tab-item>
-        <v-tab-item style="border-left: 1px solid #e8e8e8">
+        <v-tab-item>
           <v-container
             fluid
             style="background: #fff"
@@ -163,7 +165,16 @@ export default {
   data() {
     return {
       eventModel: 0,
-      eventItems: ["ICJIA Event Calenader"],
+      researchMenuItems: [
+        {
+          label: "ICJIA Event Calendar",
+          url: "/",
+        },
+        {
+          label: "Link 2",
+          url: "/",
+        },
+      ],
     };
   },
   watch: {
@@ -176,7 +187,7 @@ export default {
 
 <style scoped>
 * >>> .v-tab {
-  font-size: 24px !important;
+  font-size: 20px !important;
   font-weight: 400 !important;
   color: #000 !important;
   letter-spacing: 0.01rem !important;
