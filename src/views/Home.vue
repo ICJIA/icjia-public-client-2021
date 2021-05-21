@@ -27,7 +27,6 @@
               padding: 0;
               margin-top: 0px;
               border-right: 1px solid #e8e8e8;
-              border-top: 1px solid #fafafa;
             "
           >
             <WidgetBar

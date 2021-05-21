@@ -6,7 +6,7 @@
         v-model="fundingModel"
         grow
         class="mt-2"
-        style="border-top: 1px solid #fafafa"
+        style="border-top: 1px solid #d8d8d8"
       >
         <v-tab>Funding </v-tab>
         <v-tab>Employment </v-tab>
@@ -152,7 +152,7 @@ export default {
 }
 .v-tab--active {
   font-weight: 900 !important;
-  background: #ddd;
+  background: #f5f5f5;
   color: #333 !important;
 }
 
