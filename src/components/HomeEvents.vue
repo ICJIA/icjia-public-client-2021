@@ -2,8 +2,8 @@
   <div>
     <WidgetBar
       title="Upcoming Events"
+      mobileTitle="Upcoming"
       :menuItems="eventMenuItems"
-      style="border-top: 1px solid #e8e8e8 !important"
     ></WidgetBar>
     <v-card
       elevation="0"
@@ -15,6 +15,10 @@
       "
       v-if="!loading"
     >
+      <div
+        style="height: 15px"
+        v-if="$vuetify.breakpoint.sm || $vuetify.breakpoint.xs"
+      ></div>
       <v-tabs
         show-arrows
         v-model="eventModel"
@@ -168,7 +172,7 @@ export default {
   data() {
     return {
       eventModel: 0,
-      researchMenuItems: [
+      eventMenuItems: [
         {
           label: "ICJIA Event Calendar",
           url: "/",
@@ -197,8 +201,8 @@ export default {
 }
 * >>> .v-tab--active {
   font-weight: 900 !important;
-  background: #666 !important;
-  color: #fff !important;
+  background: #e8e8e8 !important;
+  color: #000 !important;
 }
 
 .rule-left {

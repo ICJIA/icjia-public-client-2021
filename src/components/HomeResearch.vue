@@ -3,6 +3,7 @@
     <WidgetBar
       title="Latest Research"
       :menuItems="researchMenuItems"
+      mobileTitle="Research"
     ></WidgetBar>
     <v-card
       elevation="0"
@@ -13,6 +14,10 @@
         border-bottom: 1px solid #d8d8d8;
       "
     >
+      <div
+        style="height: 15px"
+        v-if="$vuetify.breakpoint.sm || $vuetify.breakpoint.xs"
+      ></div>
       <v-tabs
         show-arrows
         v-model="eventModel"
@@ -161,7 +166,7 @@ export default {
 }
 .v-tab--active {
   font-weight: 900 !important;
-  background: #666 !important;
-  color: #fff !important;
+  background: #e8e8e8 !important;
+  color: #000 !important;
 }
 </style>

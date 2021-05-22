@@ -19,8 +19,9 @@
     <div style="background: #fff; z-index: 1">
       <WidgetBar
         title="News & Information"
+        mobileTitle="Latest News"
         :menuItems="newsMenuItems"
-        style="margin-top: -20px"
+        style="margin-top: -10px"
       ></WidgetBar>
       <v-container fluid style="margin-top: 0px; z-index: 10">
         <v-row>

@@ -142,7 +142,7 @@ export default {
 }
 .v-tab--active {
   font-weight: 900 !important;
-  background: #f5f5f5;
+  background: #e8e8e8;
   color: #333 !important;
 }
 

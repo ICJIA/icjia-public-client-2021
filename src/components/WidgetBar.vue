@@ -1,6 +1,31 @@
 <template>
-  <v-app-bar flat color="white">
-    <div style="font-size: 26px; font-weight: 900; text-transform: uppercase">
+  <v-app-bar
+    flat
+    color="grey lighten-5"
+    style="border-top: 2px solid #ddd !important"
+  >
+    <div
+      style="font-size: 26px; font-weight: 900; text-transform: uppercase"
+      v-if="
+        $vuetify.breakpoint.md ||
+        $vuetify.breakpoint.lg ||
+        ($vuetify.breakpoint.xl && mobileTitle)
+      "
+    >
+      {{ title }}
+    </div>
+    <div
+      style="font-size: 26px; font-weight: 900; text-transform: uppercase"
+      v-else-if="
+        $vuetify.breakpoint.sm || ($vuetify.breakpoint.xs && mobileTitle)
+      "
+    >
+      {{ mobileTitle }}
+    </div>
+    <div
+      style="font-size: 26px; font-weight: 900; text-transform: uppercase"
+      v-else
+    >
       {{ title }}
     </div>
     <v-spacer></v-spacer>
@@ -35,6 +60,10 @@ export default {
     title: {
       type: String,
       default: "Untitled",
+    },
+    mobileTitle: {
+      type: String,
+      default: null,
     },
     menuItems: {
       type: Array,

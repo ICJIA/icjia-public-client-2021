@@ -2,7 +2,7 @@
   <div>
     <v-card
       class="mr-2 mt-1 mb-1"
-      style="height: 425px; overflow-y: auto; background: #fff"
+      style="overflow-y: auto; background: #fff"
       elevation="0"
     >
       <v-container fluid>
