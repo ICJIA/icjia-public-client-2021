@@ -15,7 +15,7 @@
 
           <v-card
             min-height="150"
-            class="test py-3 px-8"
+            class="test py-3 px-8 hover card"
             v-for="(grant, index) in grants"
             :key="`funding-${index}`"
             elevation="0"
@@ -38,7 +38,7 @@
               <v-card
                 :min-height="cardHeight"
                 elevation="0"
-                class="px-8"
+                class="px-8 hover card"
                 :class="{ 'rule-top': index > 0 }"
               >
                 <div

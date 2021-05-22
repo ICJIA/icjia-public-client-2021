@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card
-      class="mr-2 mt-1 mb-1"
+      class="mr-2 mt-1 mb-1 hover card"
       style="overflow-y: auto; background: #fff"
       elevation="0"
     >

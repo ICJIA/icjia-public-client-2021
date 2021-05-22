@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card
-      class="markdown-body ml-1 pt-1"
+      class="markdown-body ml-1 pt-1 hover card"
       min-height="200px"
       elevation="0"
       color="#fff"

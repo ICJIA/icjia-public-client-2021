@@ -1,21 +1,9 @@
 <template>
   <div>
     <v-card
-      class="
-        grid-item
-        markdown-body
-        hover
-        card
-        info-card
-        mr-1
-        ml-1
-        px-3
-        py-1
-        flex-grow-1
-      "
+      class="grid-item markdown-body hover card mr-1 ml-1 px-3 py-1 flex-grow-1"
       elevation="0"
       color="#fff"
-      :min-height="getCardHeight(type)"
     >
       <v-img
         :src="
@@ -83,10 +71,10 @@
         >
 
         <v-card-text v-if="item.abstract" style="margin-top: -15px">{{
-          this.truncate(item.abstract)
+          this.truncate(item.abstract, 90)
         }}</v-card-text>
         <v-card-text v-if="item.description" style="margin-top: -15px">{{
-          this.truncate(item.description)
+          this.truncate(item.description, 90)
         }}</v-card-text>
       </div>
     </v-card>

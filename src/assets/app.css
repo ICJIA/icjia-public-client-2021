@@ -55,6 +55,7 @@
   transition: all 100ms ease-in;
   transform: scale(1.01);
   cursor: pointer;
+  background: #fafafa !important;
 }
 .article-title {
   line-height: 1.3em;
