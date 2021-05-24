@@ -13,7 +13,7 @@
               dark
               height="300px"
               class="elevation-0 px-8 py-10 box text-center"
-              :color="getFeatureBoxColor(index)"
+              :color="box.color"
               :class="{ mr1: index > -1 && index < boxes.length - 1 }"
             >
               <v-icon style="font-size: 70px" dark>{{ box.icon }}</v-icon>

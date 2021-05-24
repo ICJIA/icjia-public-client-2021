@@ -58,13 +58,19 @@
       </v-container>
     </div>
 
+    <HomeClickThroughBoxes
+      :boxes="boxesSecondTier"
+      v-if="!loading"
+      style="margin-top: 10px"
+    ></HomeClickThroughBoxes>
+
     <HomeEvents
       :meetings="meetingEvents"
       :funding="fundingEvents"
       :training="trainingEvents"
       :community="communityEvents"
       :loading="loading"
-      style="margin-top: 0px"
+      style="margin-top: -10px"
     ></HomeEvents>
   </div>
 </template>
@@ -146,6 +152,8 @@ export default {
         this.slider = ApolloQueryResult.data.home.homeCarousel;
         this.buttons = ApolloQueryResult.data.home.homeCarouselButton;
         this.boxes = ApolloQueryResult.data.home.clickThroughBoxes;
+        this.boxesSecondTier =
+          ApolloQueryResult.data.home.clickThroughBoxesSecondTier;
 
         //Events
         this.trainingEvents = ApolloQueryResult.data.trainingEvents.map(
