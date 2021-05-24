@@ -27,14 +27,14 @@
                 >
                   <div
                     class="text-center px-5"
-                    style="background: rgba(125, 125, 125, 0.9); padding: 25px"
+                    style="background: rgba(100, 100, 100, 0.9); padding: 25px"
                     width="100% !important"
                   >
                     <div class="text-center px-5" style="min-width: 350px">
                       <h1 class="nofo-title mt-3" style="color: #fff">
                         {{ slide.title }}
                       </h1>
-                      <div class="nofo-tagline" style="font-size: 14px">
+                      <div class="nofo-tagline" style="font-size: 16px">
                         {{ slide.teaser }}
                       </div>
                       <div class="mt-4">
@@ -50,8 +50,8 @@
                                 top
                                 transition="slide-y-transition"
                                 role="navigation"
-                                id="button-2"
-                                aria-label="Click this button for a menu of Y"
+                                :id="`button-${button.label}`"
+                                :aria-label="`Click this button for a menu of ${button.label}`"
                                 open-on-hover
                               >
                                 <template v-slot:activator="{ on, attrs }">
