@@ -13,7 +13,7 @@
     <HomeResearch></HomeResearch>
     <HomeClickThroughBoxes
       :boxes="boxes"
-      v-if="!loading"
+      v-if="!loading && boxes.length > 0"
       style="margin-top: -30px"
     ></HomeClickThroughBoxes>
     <div style="background: #fff; z-index: 1">
@@ -60,7 +60,7 @@
 
     <HomeClickThroughBoxes
       :boxes="boxesSecondTier"
-      v-if="!loading"
+      v-if="!loading && boxesSecondTier.length > 0"
       style="margin-top: 10px"
     ></HomeClickThroughBoxes>
 
