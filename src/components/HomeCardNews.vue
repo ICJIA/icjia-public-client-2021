@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card
-      class="markdown-body ml-1 pt-1 hover card"
+      class="ml-1 pt-1 hover card"
       elevation="0"
       color="#fff"
       min-height="150"
@@ -78,9 +78,7 @@
                   line-height: 24px;
                 "
               >
-                <router-link to="/" class="card-link">
-                  <span style="font-weight: 900"> {{ item.title }} </span>
-                </router-link>
+                <h2 style="font-size: 18px" class="mt-1">{{ item.title }}</h2>
               </div></v-card-text
             >
 

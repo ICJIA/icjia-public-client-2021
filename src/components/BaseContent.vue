@@ -12,10 +12,10 @@
       </v-container>
     </div>
     <div v-if="loading">
-      <v-container>
+      <v-container fluid>
         <v-row>
           <v-col>
-            <loader></loader>
+            <loader :loaderType="loaderType" :repeat="repeat"></loader>
           </v-col>
         </v-row>
       </v-container>
@@ -40,6 +40,14 @@ export default {
     loading: {
       type: Boolean,
       default: true,
+    },
+    loaderType: {
+      type: String,
+      default: "progress",
+    },
+    repeat: {
+      type: Number,
+      default: 1,
     },
     error: {
       type: String,

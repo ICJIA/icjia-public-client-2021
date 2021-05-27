@@ -1,6 +1,11 @@
 <template>
   <div>
-    <BaseContent :loading="hubLoading">
+    <BaseContent
+      :loading="hubLoading"
+      loaderType="skeletonColumns"
+      :repeat="3"
+      stacks="3"
+    >
       <template slot="content">
         <v-container fluid>
           <v-row class="masonry" dense>

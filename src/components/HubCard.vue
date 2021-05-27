@@ -24,7 +24,6 @@
       <v-img
         v-if="item.imagePath"
         :src="item.imagePath"
-        :lazy-src="item.thumbnail"
         width="100%"
         :height="splashHeight"
         class="mb-5"
