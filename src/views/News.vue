@@ -12,7 +12,7 @@
           </v-row>
         </v-container>
         <v-container class="view-container" :fluid="view === 'block'">
-          <v-row v-if="view === 'block'" class="masonry">
+          <v-row v-if="view === 'block'" class="masonry" dense>
             <v-col
               v-for="(item, index) in news"
               :key="index"
@@ -34,6 +34,7 @@
             v-if="view === 'list'"
             style="margin-top: -20px"
             class="masonry"
+            no-gutters
           >
             <v-col cols="12" sm="12" class="child">
               <div v-for="(item, index) in news" :key="`list-${index}`">

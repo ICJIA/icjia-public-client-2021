@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card
-      class="pa-2 grid-item mb-10 info-card py-3 px-3"
+      class="pa-2 grid-item mb-3 info-card py-3 px-3"
       outlined
       @click="$router.push(item.fullPath)"
     >
