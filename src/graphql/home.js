@@ -145,6 +145,7 @@ const GET_HOME = gql`
       slug
       summary
       start
+      category
       end
       tags(sort: "title:asc") {
         title

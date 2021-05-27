@@ -20,9 +20,47 @@
             :key="`funding-${index}`"
             elevation="0"
             :class="{ 'rule-top': index > 0 }"
+            @click="routeTo(grant.fullPath)"
           >
-            <div class="px-2">
-              <h2 style="font-size: 18px">{{ grant.title }}</h2>
+            <div class="text-right">
+              <!-- <span
+                style="
+                  font-size: 12px;
+                  color: #fff;
+                  font-weight: 400;
+                  padding: 3px 3px;
+                  background: rgb(42, 114, 196);
+                  margin-right: 1px;
+                "
+              >
+                {{ getCategory(grant.category) }}
+              </span> -->
+
+              <span
+                v-if="isItExpired(grant.end)"
+                style="
+                  font-size: 12px;
+                  color: #fff;
+                  padding: 3px 3px;
+                  background: red;
+                "
+              >
+                Expired
+              </span>
+              <span
+                v-else
+                style="
+                  font-size: 12px;
+                  color: #fff;
+                  padding: 3px 3px;
+                  background: green;
+                "
+              >
+                Expires {{ grant.end | format }}
+              </span>
+            </div>
+            <div>
+              <h2 style="font-size: 18px" class="mt-3">{{ grant.title }}</h2>
               <p>{{ grant.summary }}</p>
             </div>
           </v-card>
@@ -40,6 +78,7 @@
                 elevation="0"
                 class="px-8 hover card"
                 :class="{ 'rule-top': index > 0 }"
+                @click="routeTo(job.fullPath)"
               >
                 <div
                   class=""
@@ -90,6 +129,30 @@ export default {
     },
   },
   methods: {
+    isItExpired(expiration) {
+      console.log(expiration);
+      let now = new Date();
+      let expired = new Date(expiration);
+      if (now > expired) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    getCategory(cat) {
+      let category = "";
+      if (cat === "nofo") {
+        category = "Notice of Funding Opportunity";
+      }
+      if (cat === "rfi") {
+        category = "Request for Information";
+      }
+      return category;
+    },
+    routeTo(fullPath) {
+      //console.log(fullPath);
+      this.$router.push(fullPath);
+    },
     truncate(string, maxWords = 20) {
       var strippedString = string.trim();
       var array = strippedString.split(" ");
@@ -151,6 +214,6 @@ export default {
 }
 
 .rule-top {
-  border-top: 1px solid #e8e8e8 !important;
+  border-top: 1px solid #ddd !important;
 }
 </style>

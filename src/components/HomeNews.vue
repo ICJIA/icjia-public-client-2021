@@ -2,7 +2,7 @@
   <div>
     <div v-if="!loading">
       <div v-for="(item, index) in items" :key="`newsCard-${index}`">
-        <CardNews :item="item" :index="index"></CardNews>
+        <HomeCardNews :item="item" :index="index"></HomeCardNews>
       </div>
     </div>
     <div v-if="loading">

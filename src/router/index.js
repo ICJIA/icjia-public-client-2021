@@ -19,10 +19,28 @@ const routes = [
     component: () => import(/* webpackChunkName: "news" */ "../views/News.vue"),
   },
   {
+    path: "/news/:slug",
+    name: "NewsSingle",
+    component: () =>
+      import(/* webpackChunkName: "news" */ "../views/NewsSingle.vue"),
+  },
+  {
+    path: "/meetings/:slug",
+    name: "MeetingsSingle",
+    component: () =>
+      import(/* webpackChunkName: "meetings" */ "../views/MeetingsSingle.vue"),
+  },
+  {
+    path: "/gata/funding/:slug",
+    name: "FundingSingle",
+    component: () =>
+      import(/* webpackChunkName: "funding" */ "../views/FundingSingle.vue"),
+  },
+  {
     path: "/preview",
     name: "Preview",
     component: () =>
-      import(/* webpackChunkName: "news" */ "../views/Preview.vue"),
+      import(/* webpackChunkName: "preview" */ "../views/Preview.vue"),
   },
   {
     path: "*",
