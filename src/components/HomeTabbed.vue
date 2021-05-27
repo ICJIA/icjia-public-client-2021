@@ -60,7 +60,10 @@
               </span>
             </div>
             <div>
-              <h2 style="font-size: 18px" class="mt-3">{{ grant.title }}</h2>
+              <div style="font-weight: 700; font-size: 16px; color: #888">
+                {{ getCategory(grant.category) }}
+              </div>
+              <h2 style="font-size: 18px" class="mt-0">{{ grant.title }}</h2>
               <p>{{ grant.summary }}</p>
             </div>
           </v-card>

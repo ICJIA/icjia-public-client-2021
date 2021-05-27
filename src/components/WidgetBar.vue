@@ -29,11 +29,11 @@
       {{ title }}
     </div>
     <v-spacer></v-spacer>
-    <v-menu>
+    <v-menu v-if="menuItems && menuItems.length > 1">
       <template v-slot:activator="{ on, attrs }">
         <v-btn
           text
-          small
+          large
           v-bind="attrs"
           v-on="on"
           style="margin-right: 0px !important; font-weight: 900"
@@ -57,7 +57,11 @@
           </v-list-item>
         </div>
       </v-list>
-    </v-menu></v-app-bar
+    </v-menu>
+    <v-btn large text v-else style="font-weight: 900" :to="menuItems[0].url"
+      >{{ menuItems[0].label }}
+      <v-icon right>mdi mdi-greater-than</v-icon></v-btn
+    ></v-app-bar
   >
 </template>
 

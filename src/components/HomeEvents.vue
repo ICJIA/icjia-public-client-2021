@@ -174,12 +174,8 @@ export default {
       eventModel: 0,
       eventMenuItems: [
         {
-          label: "ICJIA Event Calendar",
-          url: "/",
-        },
-        {
-          label: "Link 2",
-          url: "/",
+          label: "Calendar",
+          url: "/events/",
         },
       ],
     };

@@ -90,7 +90,7 @@ export default {
       employment: null,
       slider: null,
       buttons: null,
-      totalNewsItems: 4,
+      totalNewsItems: 5,
       limit: 3,
       trainingEvents: null,
       fundingEvents: null,
@@ -98,12 +98,8 @@ export default {
       communityEvents: null,
       newsMenuItems: [
         {
-          label: "All News",
-          url: "/news",
-        },
-        {
-          label: "All Meetings",
-          url: "/meetings",
+          label: "News",
+          url: "/news/",
         },
       ],
     };
