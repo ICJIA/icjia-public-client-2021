@@ -53,7 +53,7 @@ const getAllHubArticlesQuery = () => {
         title
         status
        slug
-       thumbnail
+      
        createdAt
         abstract
         authors 

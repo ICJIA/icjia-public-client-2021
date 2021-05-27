@@ -7,9 +7,18 @@
     >
       <v-card-text>{{ item.date | format }}</v-card-text>
       <v-card-text v-if="item.title"
-        ><h2 style="margin-top: -10px">
+        ><h2 style="margin-top: -20px">
           {{ item.title }}
         </h2></v-card-text
+      >
+      <v-card-text
+        style="
+          font-weight: 700;
+          color: #888;
+          font-size: 12px;
+          margin-top: -25px;
+        "
+        >{{ displayAuthors(item.authors) }}</v-card-text
       >
 
       <v-img
@@ -36,9 +45,9 @@
       <v-card-text
         v-if="item.abstract"
         style="margin-top: -15px; color: #111"
-        >{{ item.abstract }}</v-card-text
+        >{{ truncate(item.abstract, 75) }}</v-card-text
       >
-      <v-card-text>
+      <!-- <v-card-text style="margin-top: -25px">
         <div class="text-right">
           <v-btn
             small
@@ -49,12 +58,13 @@
             Read More
           </v-btn>
         </div>
-      </v-card-text>
+      </v-card-text> -->
     </v-card>
   </div>
 </template>
 
 <script>
+const arrford = require("arrford");
 import { format, parseISO } from "date-fns";
 import { getImageURL } from "@/services/Image";
 import moment from "moment";
@@ -87,6 +97,12 @@ export default {
   },
 
   methods: {
+    displayAuthors(arr) {
+      let authors = arr.map((a) => {
+        return a.title;
+      });
+      return arrford(authors);
+    },
     getSplash(item) {
       return `${item.imagePath}`;
     },
@@ -100,6 +116,18 @@ export default {
       } else {
         return false;
       }
+    },
+    truncate(string, maxWords = 30) {
+      var strippedString = string.trim();
+      var array = strippedString.split(" ");
+      var wordCount = array.length;
+      string = array.splice(0, maxWords).join(" ");
+
+      if (wordCount > maxWords) {
+        string += "...";
+      }
+
+      return string;
     },
     getImagePath(url, imgWidth = 0, imgHeight = 0, imageQuality = 50) {
       let imgPath;

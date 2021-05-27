@@ -12,7 +12,11 @@
               md="4"
               v-resize="resize"
             >
-              <HubCard :item="item"></HubCard>
+              <HubCard
+                :item="item"
+                @init="resize"
+                @imageLoaded="resize"
+              ></HubCard>
             </v-col>
           </v-row>
         </v-container>
