@@ -132,15 +132,15 @@ export default {
       researchMenuItems: [
         {
           label: "Articles",
-          url: "/researchhub/articles",
+          url: "/researchhub/articles/",
         },
         {
           label: "Applications",
-          url: "/researchhub/apps",
+          url: "/researchhub/apps/",
         },
         {
           label: "Datasets",
-          url: "/researchhub/datasets",
+          url: "/researchhub/datasets/",
         },
       ],
     };

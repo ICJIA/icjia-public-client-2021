@@ -5,21 +5,7 @@
       outlined
       @click="$router.push(item.fullPath)"
     >
-      <div style="font-size: 12px; margin-left: 15px">
-        <v-chip
-          v-if="isItNew(item)"
-          label
-          x-small
-          color="#2296F3"
-          class="icjia-card mr-2"
-          style="margin-top: -2px"
-        >
-          <span style="color: #fff !important; font-weight: 900"> NEW! </span>
-        </v-chip>
-        <span v-if="item.contentType" style="font-weight: 700"
-          >{{ item.contentType }} &nbsp;|&nbsp;</span
-        >{{ formatDate(item.published_at) }}
-      </div>
+      <v-card-text>{{ item.date | format }}</v-card-text>
       <v-card-text v-if="item.title"
         ><h2 style="margin-top: -10px">
           {{ item.title }}
@@ -27,15 +13,14 @@
       >
 
       <v-img
-        v-if="item.splash"
-        :src="getSplash(item)"
-        :lazy-src="`https://agency.icjia-api.cloud${item.splash.formats.thumbnail.url}`"
+        v-if="item.imagePath"
+        :src="item.imagePath"
+        :lazy-src="item.thumbnail"
         width="100%"
         :height="splashHeight"
         class="mb-5"
         style="border: 1px solid #fafafa"
         alt="ICJIA News image"
-        @load="resize"
         ><template #placeholder>
           <v-row class="fill-height ma-0" align="center" justify="center">
             <v-progress-circular
@@ -46,30 +31,12 @@
           </v-row>
         </template>
       </v-img>
-      <!-- <v-img
-        aria-label="News post image"
-        src="/icjia-half-splash-thumb.jpg"
-        height="165px"
-        class=""
-        @load="resize"
-        style="border: 0px solid #fafafa"
-        alt="ICJIA Intranet image"
-        v-else
-      >
-        <template v-slot:placeholder>
-          <v-row class="fill-height ma-0" align="center" justify="center">
-            <v-progress-circular
-              indeterminate
-              aria-label="Progress bar: Loading"
-              color="blue darken-3"
-            ></v-progress-circular>
-          </v-row>
-        </template>
-      </v-img> -->
 
-      <v-card-text v-if="item.summary" style="margin-top: -15px; color: #111">{{
-        item.summary
-      }}</v-card-text>
+      <v-card-text
+        v-if="item.abstract"
+        style="margin-top: -15px; color: #111"
+        >{{ item.abstract }}</v-card-text
+      >
       <v-card-text>
         <div class="text-right">
           <v-btn
@@ -78,7 +45,7 @@
             :to="item.fullPath"
             :aria-label="`Read More about ${item.title} `"
           >
-            {{ readMoreText }}
+            Read More
           </v-btn>
         </div>
       </v-card-text>
@@ -120,11 +87,12 @@ export default {
 
   methods: {
     getSplash(item) {
-      if (this.view === "block") {
-        return `https://agency.icjia-api.cloud${item.splash.formats.medium.url}`;
-      } else {
-        return `https://agency.icjia-api.cloud${item.splash.formats.large.url}`;
-      }
+      // if (this.view === "block") {
+      //   return `https://agency.icjia-api.cloud${item.splash.formats.medium.url}`;
+      // } else {
+      //   return `https://agency.icjia-api.cloud${item.splash.formats.large.url}`;
+      // }
+      return `${item.imagePath}`;
     },
     isItNew(item) {
       const now = moment(new Date());
