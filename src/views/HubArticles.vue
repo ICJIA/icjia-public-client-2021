@@ -3,13 +3,14 @@
     <BaseContent :loading="hubLoading">
       <template slot="content">
         <v-container fluid>
-          <v-row>
+          <v-row class="masonry" dense>
             <v-col
               v-for="(item, index) in hubArticles"
               :key="index"
               class="child"
               cols="12"
               md="4"
+              v-resize="resize"
             >
               <HubCard :item="item"></HubCard>
             </v-col>
@@ -48,6 +49,14 @@ export default {
     this.hubLoading = false;
   },
   methods: {
+    resize() {
+      const elem = document.querySelector(".masonry");
+      const masonry = new window.Masonry(elem, {
+        itemSelector: ".child",
+      });
+      masonry.layout();
+      console.log("layout resized", elem);
+    },
     // getImagePath(url, imgWidth = 0, imgHeight = 0, imageQuality = 5) {
     //   let imgPath;
     //   imgPath = `${url}`;

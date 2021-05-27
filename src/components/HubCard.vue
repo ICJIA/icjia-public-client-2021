@@ -21,6 +21,7 @@
         class="mb-5"
         style="border: 1px solid #fafafa"
         alt="ICJIA News image"
+        @load="resize"
         ><template #placeholder>
           <v-row class="fill-height ma-0" align="center" justify="center">
             <v-progress-circular
@@ -87,11 +88,6 @@ export default {
 
   methods: {
     getSplash(item) {
-      // if (this.view === "block") {
-      //   return `https://agency.icjia-api.cloud${item.splash.formats.medium.url}`;
-      // } else {
-      //   return `https://agency.icjia-api.cloud${item.splash.formats.large.url}`;
-      // }
       return `${item.imagePath}`;
     },
     isItNew(item) {
