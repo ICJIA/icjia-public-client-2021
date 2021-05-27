@@ -1,9 +1,5 @@
 <template>
   <div>
-    <!-- {{ posts }}
-    <div>
-      {{ $apollo.error }}
-    </div> -->
     <BaseContent :error="error" :loading="$apollo.loading">
       <template slot="content">
         <v-container fluid>
@@ -23,6 +19,7 @@
               class="child"
               cols="12"
               md="4"
+              v-resize="resize"
             >
               <info-card
                 :item="item"
