@@ -132,18 +132,15 @@ export default {
       researchMenuItems: [
         {
           label: "Articles",
-          url: "https://icjia.illinois.gov/researchhub/articles",
-          type: "external",
+          url: "/researchhub/articles",
         },
         {
           label: "Applications",
-          url: "https://icjia.illinois.gov/researchhub/apps",
-          type: "external",
+          url: "/researchhub/apps",
         },
         {
           label: "Datasets",
-          url: "https://icjia.illinois.gov/researchhub/datasets",
-          type: "external",
+          url: "/researchhub/datasets",
         },
       ],
     };

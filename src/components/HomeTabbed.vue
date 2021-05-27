@@ -8,7 +8,7 @@
         class="mt-2"
         style="border-top: 1px solid #d8d8d8"
       >
-        <v-tab>Funding </v-tab>
+        <v-tab>Funding</v-tab>
         <v-tab>Employment </v-tab>
         <v-tab-item :style="`background: #fff !important; `">
           <div style="height: 15px; background: #fff !important"></div>
@@ -36,19 +36,19 @@
                 {{ getCategory(grant.category) }}
               </span> -->
 
-              <span
+              <!-- <span
                 v-if="isItExpired(grant.end)"
                 style="
                   font-size: 12px;
                   color: #fff;
                   padding: 3px 3px;
-                  background: red;
+                  background: #cc2222;
                 "
               >
                 Expired
-              </span>
-              <span
-                v-else
+              </span> -->
+              <!-- <span
+                v-if="!isItExpired(grant.end)"
                 style="
                   font-size: 12px;
                   color: #fff;
@@ -57,13 +57,55 @@
                 "
               >
                 Expires {{ grant.end | format }}
-              </span>
+              </span> -->
             </div>
             <div>
-              <div style="font-weight: 700; font-size: 16px; color: #888">
+              <!-- <span
+                v-if="isItExpired(grant.end)"
+                style="
+                  font-size: 12px;
+                  font-weight: 700;
+                  color: #222;
+                  padding: 3px;
+                  background: #fff;
+                  border: 1px solid #ddd;
+                "
+                class="mr-2"
+                >EXPIRED</span
+              > -->
+              <v-chip
+                small
+                v-if="isItExpired(grant.end)"
+                class="mr-1"
+                color="grey lighten-2"
+                style="font-weight: 700"
+                >Expired</v-chip
+              >
+              <!-- <span
+                v-if="!isItExpired(grant.end)"
+                class="mr-2"
+                style="
+                  font-size: 12px;
+                  font-weight: 700;
+                  color: #fff;
+                  padding: 3px;
+                  background: #0e4472;
+                "
+                >Expires {{ grant.end | format }}</span
+              > -->
+              <v-chip
+                small
+                dark
+                v-if="!isItExpired(grant.end)"
+                class="mr-1"
+                color="blue darken-4"
+                style="font-weight: 700"
+                >Expires {{ grant.end | format }}</v-chip
+              >
+              <span style="font-weight: 700; font-size: 16px; color: #666">
                 {{ getCategory(grant.category) }}
-              </div>
-              <h2 style="font-size: 18px" class="mt-0">{{ grant.title }}</h2>
+              </span>
+              <h2 style="font-size: 18px" class="mt-1">{{ grant.title }}</h2>
               <p>{{ grant.summary }}</p>
             </div>
           </v-card>
@@ -95,7 +137,7 @@
             </div>
           </div>
           <div v-else>
-            <v-card style="height: 400px"
+            <v-card style="height: 200px"
               ><v-container fill-height fluid>
                 <v-row align="center" justify="center">
                   <v-col class="text-center"

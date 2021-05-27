@@ -101,6 +101,14 @@ export default {
           label: "News",
           url: "/news/",
         },
+        {
+          label: "Funding",
+          url: "/gata/funding/",
+        },
+        {
+          label: "Employment",
+          url: "/employment/",
+        },
       ],
     };
   },
