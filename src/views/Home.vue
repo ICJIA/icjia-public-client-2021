@@ -98,12 +98,12 @@ export default {
       communityEvents: null,
       newsMenuItems: [
         {
-          label: "Link 1",
-          url: "/",
+          label: "All News",
+          url: "/news",
         },
         {
-          label: "Link 2",
-          url: "/",
+          label: "All Meetings",
+          url: "/meetings",
         },
       ],
     };

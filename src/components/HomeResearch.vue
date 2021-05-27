@@ -131,12 +131,19 @@ export default {
       limit: 3,
       researchMenuItems: [
         {
-          label: "Link 1",
-          url: "/",
+          label: "Articles",
+          url: "https://icjia.illinois.gov/researchhub/articles",
+          type: "external",
         },
         {
-          label: "Link 2",
-          url: "/",
+          label: "Applications",
+          url: "https://icjia.illinois.gov/researchhub/apps",
+          type: "external",
+        },
+        {
+          label: "Datasets",
+          url: "https://icjia.illinois.gov/researchhub/datasets",
+          type: "external",
         },
       ],
     };

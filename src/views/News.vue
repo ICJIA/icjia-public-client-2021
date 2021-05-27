@@ -6,17 +6,16 @@
     </div> -->
     <BaseContent :error="error" :loading="$apollo.loading">
       <template slot="content">
-        {{ posts }}
+        {{ news }}
       </template>
     </BaseContent>
   </div>
 </template>
 
 <script>
-/* eslint-disable no-unused-vars */
-import { GET_ALL_POSTS_QUERY } from "@/graphql/posts";
-import moment from "moment";
-import _ from "lodash";
+import { GET_ALL_NEWS_QUERY } from "@/graphql/news";
+// import moment from "moment";
+// import _ from "lodash";
 
 export default {
   name: "News",
@@ -24,22 +23,35 @@ export default {
     return {
       filteredPosts: null,
       error: null,
+      news: null,
     };
+  },
+  methods: {
+    // eslint-disable-next-line no-unused-vars
+    mergePostsAndMeetings(posts, meetings) {
+      let news = posts.concat(meetings);
+      news.sort((b, a) => {
+        return a.published_at.localeCompare(b.published_at);
+      });
+      this.news = news.slice(0, this.totalNewsItems);
+    },
   },
   apollo: {
     posts: {
       prefetch: true,
-      query: GET_ALL_POSTS_QUERY,
+      query: GET_ALL_NEWS_QUERY,
       variables() {
         return {};
       },
-      // context: {
-      //   uri: "http://127.0.0.1:8000/graphql/countries",
-      // },
+
       error(error) {
         this.error = JSON.stringify(error.message);
       },
-      result(ApolloQueryResult) {},
+      result(ApolloQueryResult) {
+        const posts = ApolloQueryResult.data.posts;
+        const meetings = ApolloQueryResult.data.meetings;
+        this.mergePostsAndMeetings(posts, meetings);
+      },
     },
   },
 };

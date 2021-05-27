@@ -44,11 +44,18 @@
       </template>
 
       <v-list>
-        <v-list-item v-for="(item, idx) in menuItems" :key="`menu-${idx}`">
-          <v-list-item-title class="hover" :to="item.url">{{
-            item.label
-          }}</v-list-item-title>
-        </v-list-item>
+        <div v-for="(item, idx) in menuItems" :key="`menu-${idx}`">
+          <v-list-item :to="item.url" v-if="item.type != 'external'">
+            <v-list-item-title class="hover">{{
+              item.label
+            }}</v-list-item-title>
+          </v-list-item>
+          <v-list-item :href="item.url" v-if="item.type === 'external'">
+            <v-list-item-title class="hover">{{
+              item.label
+            }}</v-list-item-title>
+          </v-list-item>
+        </div>
       </v-list>
     </v-menu></v-app-bar
   >
