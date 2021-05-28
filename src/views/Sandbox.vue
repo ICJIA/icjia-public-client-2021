@@ -1,25 +1,34 @@
 <template>
   <div>
-    <v-container fluid>
-      <v-row class="masonry" dense>
-        <v-col
-          v-for="(item, index) in hubArticles"
-          :key="index"
-          class="child"
-          cols="12"
-          md="4"
-          v-resize="resize"
-        >
-          <HubCard :item="item" @init="resize" @imageLoaded="resize"></HubCard>
-        </v-col>
-      </v-row>
-      {{ articleCount }}
-      <v-row>
-        <v-col cols="12" class="text-center">
-          <v-btn @click="loadMore()">Load more </v-btn>
-        </v-col>
-      </v-row>
-    </v-container>
+    <BaseContent
+      :error="error"
+      :loading="$apollo.loading"
+      loaderType="skeletonColumns"
+      :repeat="3"
+      stacks="3"
+    >
+      <template slot="content">
+        <v-container fluid>
+          <v-row class="masonry" dense>
+            <v-col
+              v-for="(item, index) in hubArticles"
+              :key="index"
+              class="child"
+              cols="12"
+              md="4"
+              v-resize="resize"
+            >
+              <HubCard
+                :item="item"
+                @init="resize"
+                @imageLoaded="resize"
+              ></HubCard>
+            </v-col>
+          </v-row>
+          {{ articleCount }}
+        </v-container>
+      </template>
+    </BaseContent>
   </div>
 </template>
 
@@ -39,16 +48,15 @@ export default {
       filteredPosts: null,
       error: null,
       loading: true,
-      hubArticles: [],
+      hubArticles: null,
       start: 0,
-      articleLimit: 24,
+      articleLimit: 25,
       articleCount: null,
     };
   },
   methods: {
     loadMore() {
-      console.log("load more here", this.start, this.articleLimit);
-      this.start = this.start + this.articleLimit;
+      console.log("load more here");
     },
     resize() {
       const elem = document.querySelector(".masonry");
@@ -82,7 +90,6 @@ export default {
     },
     articles: {
       prefetch: true,
-
       query: GET_ARTICLE_GROUP_QUERY,
       variables() {
         return {
@@ -107,7 +114,7 @@ export default {
           imagePath: `https://icjia.illinois.gov/researchhub/images/${e.id}-splash.jpeg`,
           contentType: "Article",
         }));
-        this.hubArticles.push(...hubArticles);
+        this.hubArticles = hubArticles;
         nprogress.done();
       },
     },

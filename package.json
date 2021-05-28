@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "npm run schema && vue-cli-service serve",
-    "build": "npm run schema && vue-cli-service build --modern",
+    "serve": "node generateHubIndex && node generateHubImages && npm run schema && vue-cli-service serve",
+    "build": "node generateHubIndex && node generateHubImages && npm run schema && vue-cli-service build --modern",
     "lint": "vue-cli-service lint",
     "schema": "get-graphql-schema https://agency.icjia-api.cloud/graphql -j > schema.json",
     "scripts": "npm run schema"

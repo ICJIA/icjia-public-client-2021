@@ -49,6 +49,18 @@ const routes = [
       import(/* webpackChunkName: "preview" */ "../views/Preview.vue"),
   },
   {
+    path: "/sandbox",
+    name: "Sandbox",
+    component: () =>
+      import(/* webpackChunkName: "sandbox" */ "../views/Sandbox.vue"),
+  },
+  {
+    path: "/sandbox2",
+    name: "Sandbox2",
+    component: () =>
+      import(/* webpackChunkName: "sandbox" */ "../views/Sandbox2.vue"),
+  },
+  {
     path: "*",
     name: "FourOhFour",
     component: () => import(/* webpackChunkName: '404' */ "../views/404.vue"),

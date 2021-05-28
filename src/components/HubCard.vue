@@ -23,7 +23,8 @@
 
       <v-img
         v-if="item.imagePath"
-        :src="item.imagePath"
+        :src="getImagePath(item.imagePath, 0, 0, 40)"
+        :lazy-src="getImagePath(item.imagePath, 0, 0, 1)"
         width="100%"
         :height="splashHeight"
         class="mb-5"
@@ -46,18 +47,6 @@
         style="margin-top: -15px; color: #111"
         >{{ truncate(item.abstract, 75) }}</v-card-text
       >
-      <!-- <v-card-text style="margin-top: -25px">
-        <div class="text-right">
-          <v-btn
-            small
-            text
-            :to="item.fullPath"
-            :aria-label="`Read More about ${item.title} `"
-          >
-            Read More
-          </v-btn>
-        </div>
-      </v-card-text> -->
     </v-card>
   </div>
 </template>
@@ -131,7 +120,7 @@ export default {
     getImagePath(url, imgWidth = 0, imgHeight = 0, imageQuality = 50) {
       let imgPath;
 
-      imgPath = `${this.$myApp.appConfig.clientURL}${url}`;
+      imgPath = `${url}`;
 
       const thumborImgPath = getImageURL(
         imgPath,
@@ -139,7 +128,7 @@ export default {
         imgHeight,
         imageQuality
       );
-      // console.log(thumborImgPath)
+      // console.log(thumborImgPath);
       return thumborImgPath;
     },
     formatDate(d) {
@@ -149,8 +138,8 @@ export default {
       return formattedDate;
     },
     resize() {
-      console.log("image loaded");
-      this.$emit("imageLoaded");
+      //console.log("image loaded");
+      this.$emit("resize");
     },
   },
 };

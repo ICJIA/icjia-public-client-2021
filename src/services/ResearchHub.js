@@ -51,15 +51,10 @@ const getAllHubArticlesQuery = () => {
       articles (where: {status: "published"}) {
         id
         title
-        status
        slug
-      
-       createdAt
         abstract
         authors 
-        slug
         date
-        createdAt
       }
     }`;
 };
