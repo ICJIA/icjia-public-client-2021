@@ -14,34 +14,20 @@ const query = `query {
     authors
     tags
     date
-    apps {
-      title
-      slug
-    }
-    datasets {
-      title
-      slug
-    }
+   
   }
   apps (where: { status: "published" }) {
     id
     title
     status
     slug
-    contributors
+    authors: contributors
     date
     slug
-    description
+    abtract: description
     url
     tags
-    articles {
-        title
-        slug
-      }
-    datasets {
-        title
-        slug
-      }
+    
   }
 
    datasets (where: {status: "published"}) {
@@ -52,15 +38,7 @@ const query = `query {
     categories
     tags
     project
-    articles {
-      title
-      slug
-    }
-    apps {
-      title
-      slug
-    }
-    
+    abstract: description
   }
 }`;
 

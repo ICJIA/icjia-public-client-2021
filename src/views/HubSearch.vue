@@ -31,19 +31,31 @@
                 <div v-if="result.item.title">
                   <span
                     style="font-size: 20px; font-weight: bold"
-                    class="ml-3"
+                    class=""
                     v-html="result.item.title"
                   ></span>
                 </div>
-                <v-card-text>{{ result.item.abstract }}</v-card-text>
+                <v-card-text v-html="result.item.abstract"></v-card-text>
                 <v-card-text v-if="result.item.authors"
-                  ><div v-html="result.item.authors"></div
-                ></v-card-text>
+                  ><span
+                    v-for="(author, index) in result.item.authors"
+                    :key="index"
+                  >
+                    {{ author.title
+                    }}<span v-if="index < result.item.authors.length - 2"
+                      >,
+                    </span>
+                    <span v-if="index === result.item.authors.length - 2">
+                      and
+                    </span>
+                  </span>
+                </v-card-text>
               </v-card>
             </div>
           </div>
-        </v-form> </v-col
-    ></v-container>
+        </v-form>
+      </v-col></v-container
+    >
   </div>
 </template>
 
@@ -53,6 +65,9 @@ import DOMPurify from "dompurify";
 import Fuse from "fuse.js";
 import _ from "lodash";
 import searchIndex from "@/hub.json";
+function arrayToList(array) {
+  return array.join(", ").replace(/, ((?:.(?!, ))+)$/, " and $1");
+}
 function sortByKey(array, key) {
   return array.sort(function (a, b) {
     const x = a[key];
@@ -107,6 +122,7 @@ export default {
       content: "",
       fuse: null,
       resultNumber: "s",
+      arrayToList,
     };
   },
   created() {
