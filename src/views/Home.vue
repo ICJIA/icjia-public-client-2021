@@ -142,8 +142,16 @@ export default {
       },
       result(ApolloQueryResult) {
         // News and Info
-        const posts = ApolloQueryResult.data.posts;
-        const meetings = ApolloQueryResult.data.meetings;
+        let posts = ApolloQueryResult.data.posts;
+        posts = posts.map((e) => ({
+          ...e,
+          type: "post",
+        }));
+        let meetings = ApolloQueryResult.data.meetings;
+        meetings = meetings.map((e) => ({
+          ...e,
+          type: "meeting",
+        }));
         this.mergePostsAndMeetings(posts, meetings);
         // Funding and Employment
         this.grants = ApolloQueryResult.data.grants;
@@ -155,7 +163,8 @@ export default {
         this.boxesSecondTier =
           ApolloQueryResult.data.home.clickThroughBoxesSecondTier;
 
-        //Events
+        //Data adjustments
+
         this.trainingEvents = ApolloQueryResult.data.trainingEvents.map(
           (e) => ({
             ...e,
