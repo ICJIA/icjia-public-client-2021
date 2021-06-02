@@ -25,7 +25,7 @@ const GET_ALL_ARTICLES_QUERY = gql`
 `;
 
 const GET_ARTICLE_GROUP_QUERY = gql`
-  query articles($articleLimit: Int!, $start: Int!) {
+  query articleGroup($articleLimit: Int!, $start: Int!) {
     articles(
       limit: $articleLimit
       start: $start

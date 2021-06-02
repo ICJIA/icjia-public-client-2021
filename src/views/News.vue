@@ -11,8 +11,8 @@
             </v-col>
           </v-row>
         </v-container>
-        <v-container class="view-container" :fluid="view === 'block'">
-          <v-row v-if="view === 'block'" class="masonry" dense>
+        <v-container class="view-container" :fluid="view === 'grid'">
+          <v-row v-if="view === 'grid'" class="masonry" dense>
             <v-col
               v-for="(item, index) in news"
               :key="index"
@@ -67,7 +67,7 @@ export default {
       error: null,
       news: null,
       masonry: null,
-      view: "block",
+      view: "grid",
     };
   },
   methods: {

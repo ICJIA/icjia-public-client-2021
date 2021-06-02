@@ -7,8 +7,8 @@
         <span aria-hidden="true" class="mdi mdi-format-list-bulleted"> </span>
       </v-btn>
 
-      <v-btn value="block" small>
-        <span class="hidden-sm-and-down" aria-label="Block view">Block</span>
+      <v-btn value="grid" small>
+        <span class="hidden-sm-and-down" aria-label="Grid view">Grid</span>
 
         <span class="mdi mdi-view-module" aria-hidden="true"> </span>
       </v-btn>
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import nprogress from "nprogress";
 export default {
   data() {
     return {
@@ -26,8 +27,10 @@ export default {
   watch: {
     icon(newValue, oldValue) {
       if (!newValue) {
+        nprogress.start();
         this.$emit("toggle", oldValue);
       } else {
+        nprogress.start();
         this.$emit("toggle", newValue);
       }
     },

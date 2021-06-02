@@ -22,7 +22,7 @@
       >
 
       <v-img
-        v-if="item.imagePath"
+        v-if="item.imagePath && !textOnly"
         :src="getImagePath(item.imagePath, 0, 0, 40)"
         :lazy-src="getImagePath(item.imagePath, 0, 0, 1)"
         width="100%"
@@ -64,7 +64,7 @@ export default {
     },
     textOnly: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     readMoreText: {
       type: String,

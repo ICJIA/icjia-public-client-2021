@@ -43,6 +43,12 @@ const routes = [
       import(/* webpackChunkName: "hub" */ "../views/HubArticles.vue"),
   },
   {
+    path: "/researchhub/articles/:slug",
+    name: "hubArticlesSingle",
+    component: () =>
+      import(/* webpackChunkName: "hub" */ "../views/HubArticlesSingle.vue"),
+  },
+  {
     path: "/preview",
     name: "Preview",
     component: () =>
