@@ -6,12 +6,12 @@
     <v-row row wrap align-center>
       <v-flex class="text-center">
         <div>
-          <div style="font-weight: 300; font-size: 50px; color: #777">Oops</div>
-          <div style="font-weight: 700; font-size: 22px" class="mt-2">
+          <div style="font-weight: 300; font-size: 65px; color: #777">Oops</div>
+          <div style="font-weight: 700; font-size: 36px" class="mt-2">
             404 | Page not found
           </div>
-          <div class="mt-5">
-            <v-btn x-small to="/" class="mr-2">Back to home page</v-btn>
+          <div class="mt-12">
+            <v-btn outlined to="/" class="mr-2">Back to home</v-btn>
             <!-- <v-btn x-small to="/web-support/" class="ml-2"
               >Contact web support</v-btn
             > -->

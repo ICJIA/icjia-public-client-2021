@@ -8,7 +8,7 @@
         class="mt-2"
         style="border-top: 1px solid #d8d8d8"
       >
-        <v-tab>Funding </v-tab>
+        <v-tab>Funding</v-tab>
         <v-tab>Employment </v-tab>
         <v-tab-item :style="`background: #fff !important; `">
           <div style="height: 15px; background: #fff !important"></div>
@@ -20,9 +20,92 @@
             :key="`funding-${index}`"
             elevation="0"
             :class="{ 'rule-top': index > 0 }"
+            @click="routeTo(grant.fullPath)"
           >
-            <div class="px-2">
-              <h2 style="font-size: 18px">{{ grant.title }}</h2>
+            <div class="text-right">
+              <!-- <span
+                style="
+                  font-size: 12px;
+                  color: #fff;
+                  font-weight: 400;
+                  padding: 3px 3px;
+                  background: rgb(42, 114, 196);
+                  margin-right: 1px;
+                "
+              >
+                {{ getCategory(grant.category) }}
+              </span> -->
+
+              <!-- <span
+                v-if="isItExpired(grant.end)"
+                style="
+                  font-size: 12px;
+                  color: #fff;
+                  padding: 3px 3px;
+                  background: #cc2222;
+                "
+              >
+                Expired
+              </span> -->
+              <!-- <span
+                v-if="!isItExpired(grant.end)"
+                style="
+                  font-size: 12px;
+                  color: #fff;
+                  padding: 3px 3px;
+                  background: green;
+                "
+              >
+                Expires {{ grant.end | format }}
+              </span> -->
+            </div>
+            <div>
+              <!-- <span
+                v-if="isItExpired(grant.end)"
+                style="
+                  font-size: 12px;
+                  font-weight: 700;
+                  color: #222;
+                  padding: 3px;
+                  background: #fff;
+                  border: 1px solid #ddd;
+                "
+                class="mr-2"
+                >EXPIRED</span
+              > -->
+              <v-chip
+                small
+                v-if="isItExpired(grant.end)"
+                class="mr-1"
+                color="grey lighten-2"
+                style="font-weight: 700"
+                >Expired</v-chip
+              >
+              <!-- <span
+                v-if="!isItExpired(grant.end)"
+                class="mr-2"
+                style="
+                  font-size: 12px;
+                  font-weight: 700;
+                  color: #fff;
+                  padding: 3px;
+                  background: #0e4472;
+                "
+                >Expires {{ grant.end | format }}</span
+              > -->
+              <v-chip
+                small
+                dark
+                v-if="!isItExpired(grant.end)"
+                class="mr-1"
+                color="blue darken-4"
+                style="font-weight: 700"
+                >Expires {{ grant.end | format }}</v-chip
+              >
+              <span style="font-weight: 700; font-size: 16px; color: #666">
+                {{ getCategory(grant.category) }}
+              </span>
+              <h2 style="font-size: 18px" class="mt-1">{{ grant.title }}</h2>
               <p>{{ grant.summary }}</p>
             </div>
           </v-card>
@@ -40,6 +123,7 @@
                 elevation="0"
                 class="px-8 hover card"
                 :class="{ 'rule-top': index > 0 }"
+                @click="routeTo(job.fullPath)"
               >
                 <div
                   class=""
@@ -53,7 +137,7 @@
             </div>
           </div>
           <div v-else>
-            <v-card style="height: 400px"
+            <v-card style="height: 200px"
               ><v-container fill-height fluid>
                 <v-row align="center" justify="center">
                   <v-col class="text-center"
@@ -90,6 +174,30 @@ export default {
     },
   },
   methods: {
+    isItExpired(expiration) {
+      console.log(expiration);
+      let now = new Date();
+      let expired = new Date(expiration);
+      if (now > expired) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    getCategory(cat) {
+      let category = "";
+      if (cat === "nofo") {
+        category = "Notice of Funding Opportunity";
+      }
+      if (cat === "rfi") {
+        category = "Request for Information";
+      }
+      return category;
+    },
+    routeTo(fullPath) {
+      //console.log(fullPath);
+      this.$router.push(fullPath);
+    },
     truncate(string, maxWords = 20) {
       var strippedString = string.trim();
       var array = strippedString.split(" ");
@@ -151,6 +259,6 @@ export default {
 }
 
 .rule-top {
-  border-top: 1px solid #e8e8e8 !important;
+  border-top: 1px solid #ddd !important;
 }
 </style>

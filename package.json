@@ -3,17 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "npm run schema && vue-cli-service serve",
-    "build": "npm run schema && vue-cli-service build --modern",
+    "serve": "node generateHubIndex && node generateHubImages && npm run schema && vue-cli-service serve",
+    "build": "node generateHubIndex && node generateHubImages && npm run schema && vue-cli-service build --modern",
     "lint": "vue-cli-service lint",
     "schema": "get-graphql-schema https://agency.icjia-api.cloud/graphql -j > schema.json",
     "scripts": "npm run schema"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
+    "arrford": "^2.0.1",
     "auto-changelog": "^2.2.1",
     "axios": "^0.21.1",
     "core-js": "^3.11.0",
+    "date-fns": "^2.21.3",
     "dotenv": "^8.2.0",
     "eslint-plugin-graphql": "^4.0.0",
     "fuse.js": "^6.4.6",

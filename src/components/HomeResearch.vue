@@ -131,12 +131,16 @@ export default {
       limit: 3,
       researchMenuItems: [
         {
-          label: "Link 1",
-          url: "/",
+          label: "Articles",
+          url: "/researchhub/articles/",
         },
         {
-          label: "Link 2",
-          url: "/",
+          label: "Applications",
+          url: "/researchhub/apps/",
+        },
+        {
+          label: "Datasets",
+          url: "/researchhub/datasets/",
         },
       ],
     };

@@ -1,10 +1,10 @@
 <template>
   <div>
     <v-card
-      class="markdown-body ml-1 pt-1 hover card"
-      min-height="200px"
+      class="ml-1 pt-1 hover card"
       elevation="0"
       color="#fff"
+      min-height="150"
       v-if="
         $vuetify.breakpoint.md ||
         $vuetify.breakpoint.lg ||
@@ -12,6 +12,7 @@
       "
       :class="{ 'rule-top': index && index > 0 }"
       style="overflow-y: auto !important"
+      @click="routeTo(item.fullPath)"
     >
       <v-container fluid>
         <v-row>
@@ -19,21 +20,12 @@
             <v-img
               aria-label="News post image"
               :src="`https://agency.icjia-api.cloud${item.splash.formats.thumbnail.url}`"
-              height="175px"
+              height="100px"
               class=""
               style="border: 0px solid #fafafa"
               alt="ICJIA Intranet image"
               v-if="item.splash"
             >
-              <!-- <v-chip
-                dark
-                label
-                style="margin-top: -1px"
-                color="#333"
-                class="icjia-card"
-              >
-                NEW! </v-chip
-              > -->
               <template v-slot:placeholder>
                 <v-row class="fill-height ma-0" align="center" justify="center">
                   <v-progress-circular
@@ -47,21 +39,12 @@
             <v-img
               aria-label="News post image"
               src="/icjia-half-splash-thumb.jpg"
-              height="165px"
+              height="100px"
               class=""
               style="border: 0px solid #fafafa"
               alt="ICJIA Intranet image"
               v-else
             >
-              <!-- <v-chip
-                dark
-                label
-                style="margin-top: -1px"
-                color="#333"
-                class="icjia-card"
-              >
-                NEW! </v-chip
-              > -->
               <template v-slot:placeholder>
                 <v-row class="fill-height ma-0" align="center" justify="center">
                   <v-progress-circular
@@ -82,7 +65,8 @@
                 font-weight: 400;
               "
             >
-              {{ item.published_at | format }}
+              <span style="font-weight: 700">{{ item.contentType }}</span
+              >&nbsp;|&nbsp;{{ item.published_at | format }}
             </v-card-text>
 
             <v-card-text
@@ -94,9 +78,7 @@
                   line-height: 24px;
                 "
               >
-                <router-link to="/" class="card-link">
-                  <span style="font-weight: 900"> {{ item.title }} </span>
-                </router-link>
+                <h2 style="font-size: 18px" class="mt-1">{{ item.title }}</h2>
               </div></v-card-text
             >
 
@@ -147,6 +129,10 @@
 <script>
 export default {
   methods: {
+    routeTo(fullPath) {
+      //console.log(fullPath);
+      this.$router.push(fullPath);
+    },
     truncate(string, maxWords = 30) {
       var strippedString = string.trim();
       var array = strippedString.split(" ");

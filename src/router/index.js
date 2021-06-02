@@ -19,10 +19,46 @@ const routes = [
     component: () => import(/* webpackChunkName: "news" */ "../views/News.vue"),
   },
   {
+    path: "/news/:slug",
+    name: "NewsSingle",
+    component: () =>
+      import(/* webpackChunkName: "news" */ "../views/NewsSingle.vue"),
+  },
+  {
+    path: "/meetings/:slug",
+    name: "MeetingsSingle",
+    component: () =>
+      import(/* webpackChunkName: "meetings" */ "../views/MeetingsSingle.vue"),
+  },
+  {
+    path: "/gata/funding/:slug",
+    name: "FundingSingle",
+    component: () =>
+      import(/* webpackChunkName: "funding" */ "../views/FundingSingle.vue"),
+  },
+  {
+    path: "/researchhub/articles",
+    name: "hubArticles",
+    component: () =>
+      import(/* webpackChunkName: "hub" */ "../views/HubArticles.vue"),
+  },
+  {
     path: "/preview",
     name: "Preview",
     component: () =>
-      import(/* webpackChunkName: "news" */ "../views/Preview.vue"),
+      import(/* webpackChunkName: "preview" */ "../views/Preview.vue"),
+  },
+  {
+    path: "/sandbox",
+    name: "Sandbox",
+    component: () =>
+      import(/* webpackChunkName: "sandbox" */ "../views/Sandbox.vue"),
+  },
+  {
+    path: "/sandbox2",
+    name: "Sandbox2",
+    component: () =>
+      import(/* webpackChunkName: "sandbox" */ "../views/Sandbox2.vue"),
   },
   {
     path: "*",

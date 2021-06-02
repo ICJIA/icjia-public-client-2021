@@ -90,7 +90,7 @@ export default {
       employment: null,
       slider: null,
       buttons: null,
-      totalNewsItems: 4,
+      totalNewsItems: 5,
       limit: 3,
       trainingEvents: null,
       fundingEvents: null,
@@ -98,12 +98,16 @@ export default {
       communityEvents: null,
       newsMenuItems: [
         {
-          label: "Link 1",
-          url: "/",
+          label: "News",
+          url: "/news/",
         },
         {
-          label: "Link 2",
-          url: "/",
+          label: "Funding",
+          url: "/gata/funding/",
+        },
+        {
+          label: "Employment",
+          url: "/employment/",
         },
       ],
     };
@@ -142,20 +146,29 @@ export default {
       },
       result(ApolloQueryResult) {
         // News and Info
-        let posts = ApolloQueryResult.data.posts;
-        posts = posts.map((e) => ({
+
+        let posts = ApolloQueryResult.data.posts.map((e) => ({
           ...e,
-          type: "post",
+          fullPath: `/news/${e.slug}/`,
+          contentType: "News",
         }));
-        let meetings = ApolloQueryResult.data.meetings;
-        meetings = meetings.map((e) => ({
+        let meetings = ApolloQueryResult.data.meetings.map((e) => ({
           ...e,
-          type: "meeting",
+          fullPath: `/meetings/${e.slug}/`,
+          contentType: "Meeting",
         }));
         this.mergePostsAndMeetings(posts, meetings);
         // Funding and Employment
-        this.grants = ApolloQueryResult.data.grants;
-        this.employment = ApolloQueryResult.data.jobs;
+        this.grants = ApolloQueryResult.data.grants.map((e) => ({
+          ...e,
+          fullPath: `/gata/funding/${e.slug}/`,
+          contentType: "Funding",
+        }));
+        this.employment = ApolloQueryResult.data.jobs.map((e) => ({
+          ...e,
+          fullPath: `/employment/${e.slug}/`,
+          contentType: "Employment",
+        }));
         //Home page UI
         this.slider = ApolloQueryResult.data.home.homeCarousel;
         this.buttons = ApolloQueryResult.data.home.homeCarouselButton;

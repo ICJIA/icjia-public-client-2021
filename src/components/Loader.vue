@@ -27,6 +27,19 @@
         ></v-skeleton-loader>
       </div>
     </div>
+    <div v-if="loaderType === 'skeletonColumns'">
+      <v-container fluid
+        ><v-row v-for="idx in stacks" :key="idx">
+          <v-col cols="12" :md="12 / repeat" v-for="n in repeat" :key="n">
+            <v-skeleton-loader
+              :boilerplate="false"
+              elevation="2"
+              :type="loaderDisplayType"
+              :height="height"
+            ></v-skeleton-loader
+          ></v-col> </v-row
+      ></v-container>
+    </div>
   </div>
 </template>
 
@@ -55,11 +68,15 @@ export default {
     },
     loaderDisplayType: {
       type: String,
-      default: "card",
+      default: "card, article, actions",
     },
     repeat: {
       type: Number,
-      default: 1,
+      default: 3,
+    },
+    stacks: {
+      type: Number,
+      default: 2,
     },
   },
 };
