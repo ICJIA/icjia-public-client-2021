@@ -84,7 +84,14 @@ axios
       contentType: "application",
     }));
 
-    let content = [...articles, ...apps];
+    datasets = datasets.map((e) => ({
+      ...e,
+      fullPath: `/researchhub/datasets/${e.slug}/`,
+      imagePath: null,
+      contentType: "dataset",
+    }));
+
+    let content = [...articles, ...apps, ...datasets];
     content = _.orderBy(content, ["date"], ["desc"]);
 
     jsonfile.writeFile(`./src/hub.json`, content, function (err) {

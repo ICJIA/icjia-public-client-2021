@@ -42,6 +42,12 @@ const routes = [
     redirect: { name: "hubArticlesGrid" },
   },
   {
+    path: "/researchhub/search",
+    name: "hubSearch",
+    component: () =>
+      import(/* webpackChunkName: "hub" */ "../views/HubSearch.vue"),
+  },
+  {
     path: "/researchhub/articles/grid",
     name: "hubArticlesGrid",
     component: () =>

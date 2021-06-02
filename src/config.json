@@ -67,47 +67,45 @@
     },
     "hoursToShowUpdated": 1,
     "search": {
-        "isCaseSensitive": false,
-        "includeScore": true,
-        "shouldSort": true,
-        "includeMatches": true,
-        "findAllMatches": true,
-        "minMatchCharLength": 2,
-        "location": 0,
-        "threshold": 0.6,
-        "distance": 100,
-        "useExtendedSearch": false,
-        "ignoreLocation": false,
-        "ignoreFieldNorm": false,
-        "keys": [
-            {
-                "name": "tags",
-                "weight": 1
-            },
-            {
-                "name": "summary",
-                "weight": 1
-            },
-            {
-                "name": "title",
-                "weight": 1
-            },
-            {
-                "name": "headings",
-                "weight": 2
-            },
-            {
-                "name": "contentType",
-                "weight": 2
-            },
-            {
-                "name": "type",
-                "weight": 2
-            },
-            {
-                "name": "ext",
-                "weight": 1
-            }
-        ]
+        "hub": {
+            "isCaseSensitive": false,
+            "includeScore": true,
+            "shouldSort": true,
+            "includeMatches": true,
+            "findAllMatches": true,
+            "minMatchCharLength": 2,
+            "location": 0,
+            "threshold": 0.4,
+            "distance": 100,
+            "useExtendedSearch": false,
+            "ignoreLocation": false,
+            "ignoreFieldNorm": false,
+            "keys": [
+                {
+                    "name": "title",
+                    "weight": 1
+                },
+                {
+                    "name": "date",
+                    "weight": 2
+                },
+                {
+                    "name": "contentType",
+                    "weight": 1
+                },
+                {
+                    "name": "authors.title",
+                    "weight": 1
+                },
+                {
+                    "name": "tags",
+                    "weight": 2
+                },
+                {
+                    "name": "abstract",
+                    "weight": 2
+                }
+            ]
+        }
     }
 }

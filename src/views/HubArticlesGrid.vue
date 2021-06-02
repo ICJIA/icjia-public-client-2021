@@ -101,7 +101,7 @@ export default {
       view: "grid",
       initialLoad: true,
       masonry: null,
-      icon: "block",
+      icon: "grid",
     };
   },
 

@@ -38,6 +38,301 @@
         "contentType": "article"
     },
     {
+        "title": "Order of Protection Court Caseload",
+        "slug": "order-of-protection-court-caseload",
+        "date": "2021-05-27T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "courts"
+        ],
+        "tags": [
+            "domestic relations",
+            "caseload"
+        ],
+        "project": null,
+        "articles": [
+            {
+                "title": "Domestic Violence Trends in Illinois: Victimization Characteristics, Help-Seeking, and Service Utilization",
+                "slug": "domestic-violence-trends-in-illinois-victimization-characteristics-help-seeking-and-service-utilization"
+            }
+        ],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/order-of-protection-court-caseload/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
+        "title": "Adult Active Probation Caseload",
+        "slug": "adult-active-probation-caseload",
+        "date": "2021-05-27T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "courts"
+        ],
+        "tags": [
+            "felony",
+            "misdemeanor",
+            "dui"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/adult-active-probation-caseload/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
+        "title": "Illinois Uniform Crime Reports (UCR) Index Crime Offense",
+        "slug": "illinois-uniform-crime-reports-ucr-index-crime-offense",
+        "date": "2021-05-27T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "crimes"
+        ],
+        "tags": [
+            "index crime"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [
+            {
+                "title": "Uniform Crime Report Index Offense Explorer",
+                "slug": "uniform-crime-report-index-offense-explorer"
+            },
+            {
+                "title": "Violent Crime Trends in Illinois",
+                "slug": "violent-crime-trends-in-illinois"
+            }
+        ],
+        "fullPath": "/researchhub/datasets/illinois-uniform-crime-reports-ucr-index-crime-offense/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
+        "title": "Illinois Uniform Crime Reports (UCR) Human Trafficking Arrest",
+        "slug": "illinois-uniform-crime-reports-ucr-human-trafficking-arrest",
+        "date": "2021-05-27T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "crimes"
+        ],
+        "tags": [
+            "human trafficking",
+            "arrest"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/illinois-uniform-crime-reports-ucr-human-trafficking-arrest/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
+        "title": "Illinois Uniform Crime Reports (UCR) Human Trafficking Offense",
+        "slug": "illinois-uniform-crime-reports-ucr-human-trafficking-offense",
+        "date": "2021-05-27T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "crimes"
+        ],
+        "tags": [
+            "human trafficking"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/illinois-uniform-crime-reports-ucr-human-trafficking-offense/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
+        "title": "Illinois Uniform Crime Reports (UCR) Index Crime Arrest",
+        "slug": "illinois-uniform-crime-reports-ucr-index-crime-arrest",
+        "date": "2021-05-27T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "crimes"
+        ],
+        "tags": [
+            "index crime",
+            "arrest"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [
+            {
+                "title": "Violent Crime Trends in Illinois",
+                "slug": "violent-crime-trends-in-illinois"
+            }
+        ],
+        "fullPath": "/researchhub/datasets/illinois-uniform-crime-reports-ucr-index-crime-arrest/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
+        "title": "Illinois Uniform Crime Reports (UCR) Hate Crime Offense",
+        "slug": "illinois-uniform-crime-reports-ucr-hate-crime-offense",
+        "date": "2021-05-27T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "crimes"
+        ],
+        "tags": [
+            "hate"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/illinois-uniform-crime-reports-ucr-hate-crime-offense/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
+        "title": "Illinois Uniform Crime Reports (UCR) Domestic Crime Offense",
+        "slug": "illinois-uniform-crime-reports-ucr-domestic-crime-offense",
+        "date": "2021-05-27T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "crimes"
+        ],
+        "tags": [
+            "domestic"
+        ],
+        "project": null,
+        "articles": [
+            {
+                "title": "Domestic Violence Trends in Illinois: Victimization Characteristics, Help-Seeking, and Service Utilization",
+                "slug": "domestic-violence-trends-in-illinois-victimization-characteristics-help-seeking-and-service-utilization"
+            }
+        ],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/illinois-uniform-crime-reports-ucr-domestic-crime-offense/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
+        "title": "Illinois Uniform Crime Reports (UCR) Drug Arrest",
+        "slug": "illinois-uniform-crime-reports-ucr-drug-arrest",
+        "date": "2021-05-27T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "crimes"
+        ],
+        "tags": [
+            "drug",
+            "arrest"
+        ],
+        "project": null,
+        "articles": [
+            {
+                "title": "2019 Illinois Methamphetamine Study",
+                "slug": "2019-illinois-methamphetamine-study"
+            }
+        ],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/illinois-uniform-crime-reports-ucr-drug-arrest/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
+        "title": "Juvenile Court Case Filings",
+        "slug": "juvenile-court-case-filings",
+        "date": "2021-05-26T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "courts"
+        ],
+        "tags": [
+            "juvenile",
+            "abuse",
+            "neglect"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/juvenile-court-case-filings/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
+        "title": "Juvenile Active Probation Caseload",
+        "slug": "juvenile-active-probation-caseload",
+        "date": "2021-05-26T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "courts"
+        ],
+        "tags": [
+            "juvenile",
+            "probation",
+            "supervision"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/juvenile-active-probation-caseload/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
+        "title": "Juvenile Abuse/Neglect Placements",
+        "slug": "juvenile-abuseneglect-placements",
+        "date": "2021-05-26T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "courts"
+        ],
+        "tags": [
+            "juvenile"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/juvenile-abuseneglect-placements/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
+        "title": "Felony Court Sentences",
+        "slug": "felony-court-sentences",
+        "date": "2021-05-26T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "courts"
+        ],
+        "tags": [
+            "felony",
+            "probation",
+            "prison"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/felony-court-sentences/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
+        "title": "Criminal Court Case Filings",
+        "slug": "criminal-court-case-filings",
+        "date": "2021-05-26T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "courts"
+        ],
+        "tags": [
+            "felony",
+            "misdemeanor",
+            "dui"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/criminal-court-case-filings/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
         "id": "60a7f3d5eaa6940d2c49aafc",
         "title": "Examining the Experiences of Women Police Leaders in Illinois",
         "slug": "examining-the-experiences-of-women-police-leaders-in-illinois",
@@ -1390,6 +1685,86 @@
         "contentType": "application"
     },
     {
+        "title": "Population in Poverty Under 18",
+        "slug": "population-in-poverty-under-18",
+        "date": "2019-11-12T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "other"
+        ],
+        "tags": [
+            "poverty",
+            "juvenile",
+            "risk factors",
+            "demography"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/population-in-poverty-under-18/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
+        "title": "Population in Poverty",
+        "slug": "population-in-poverty",
+        "date": "2019-11-12T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "other"
+        ],
+        "tags": [
+            "poverty",
+            "risk factors",
+            "demography"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/population-in-poverty/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
+        "title": "Drug Lab Submissions",
+        "slug": "drug-lab-submissions",
+        "date": "2019-11-08T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "law enforcement"
+        ],
+        "tags": [
+            "drug"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/drug-lab-submissions/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
+        "title": "Illinois County Unemployment Statistics",
+        "slug": "illinois-county-unemployment-statistics",
+        "date": "2019-11-08T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "other"
+        ],
+        "tags": [
+            "risk factors",
+            "employment",
+            "unemployment",
+            "labor force"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/illinois-county-unemployment-statistics/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
         "id": "5daa11fc551f4c3d4ac15a07",
         "title": "Understanding and Assisting Veterans Involved in the Criminal Justice System",
         "slug": "understanding-and-assisting-veterans-involved-in-the-criminal-justice-system",
@@ -1512,6 +1887,25 @@
         "contentType": "article"
     },
     {
+        "title": "Juvenile Detention Admissions",
+        "slug": "juvenile-detention-admissions",
+        "date": "2019-09-08T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "corrections"
+        ],
+        "tags": [
+            "juvenile",
+            "detention"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/juvenile-detention-admissions/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
         "id": "5da0c0e43bb01c36d66f68f3",
         "title": "How Illinois Service Providers Support Young Victims of Crime: Findings from an Illinois HEALS Survey",
         "slug": "how-illinois-service-providers-support-young-victims-of-crime-findings-from-an-illinois-heals-survey",
@@ -1533,6 +1927,89 @@
         "fullPath": "/researchhub/articles/how-illinois-service-providers-support-young-victims-of-crime-findings-from-an-illinois-heals-survey/",
         "imagePath": "https://icjia.illinois.gov/researchhub/images/5da0c0e43bb01c36d66f68f3-splash.jpeg",
         "contentType": "article"
+    },
+    {
+        "title": "IDOC Admissions for New Court Sentences and Technical Violations ",
+        "slug": "idoc-admissions-for-new-court-sentences-and-technical-violations",
+        "date": "2019-09-03T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "corrections"
+        ],
+        "tags": [
+            "admission",
+            "technical violation",
+            "prison"
+        ],
+        "project": null,
+        "articles": [
+            {
+                "title": "2019 Illinois Methamphetamine Study",
+                "slug": "2019-illinois-methamphetamine-study"
+            }
+        ],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/idoc-admissions-for-new-court-sentences-and-technical-violations/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
+        "title": "IDJJ Admissions for Juvenile Court Sentences and Technical Violations  (Ages 17 to 20)",
+        "slug": "idjj-admissions-for-juvenile-court-sentences-and-technical-violations-ages-17-to-20",
+        "date": "2019-09-01T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "corrections"
+        ],
+        "tags": [
+            "juvenile",
+            "admission",
+            "technical violation"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/idjj-admissions-for-juvenile-court-sentences-and-technical-violations-ages-17-to-20/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
+        "title": "IDJJ Admissions for Juvenile Court Sentences and Technical Violations (Ages 13 to 16)",
+        "slug": "idjj-admissions-for-juvenile-court-sentences-and-technical-violations-ages-13-to-16",
+        "date": "2019-09-01T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "corrections"
+        ],
+        "tags": [
+            "juvenile",
+            "admission",
+            "technical violation"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/idjj-admissions-for-juvenile-court-sentences-and-technical-violations-ages-13-to-16/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
+        "title": "Juvenile Investigations for Probation",
+        "slug": "juvenile-investigations-for-probation",
+        "date": "2019-09-01T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "courts"
+        ],
+        "tags": [
+            "juvenile"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/juvenile-investigations-for-probation/",
+        "imagePath": null,
+        "contentType": "dataset"
     },
     {
         "id": "5da0c0e13bb01c36d66f68ca",
@@ -1849,6 +2326,46 @@
         "fullPath": "/researchhub/articles/entrepreneurship-for-the-formerly-incarcerated/",
         "imagePath": "https://icjia.illinois.gov/researchhub/images/5da0c0e03bb01c36d66f68be-splash.jpeg",
         "contentType": "article"
+    },
+    {
+        "title": "Child Abuse and Neglect",
+        "slug": "child-abuse-and-neglect",
+        "date": "2019-04-26T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "victims"
+        ],
+        "tags": [
+            "abuse",
+            "risk factors",
+            "demography"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/child-abuse-and-neglect/",
+        "imagePath": null,
+        "contentType": "dataset"
+    },
+    {
+        "title": "Elder Abuse",
+        "slug": "elder-abuse",
+        "date": "2019-04-26T00:00:00.000Z",
+        "external": false,
+        "categories": [
+            "victims"
+        ],
+        "tags": [
+            "abuse",
+            "risk factors",
+            "demography"
+        ],
+        "project": null,
+        "articles": [],
+        "apps": [],
+        "fullPath": "/researchhub/datasets/elder-abuse/",
+        "imagePath": null,
+        "contentType": "dataset"
     },
     {
         "id": "5da0c0dc3bb01c36d66f688f",
