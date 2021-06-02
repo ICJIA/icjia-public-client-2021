@@ -1,52 +1,53 @@
 <template>
   <div>
     <v-container fluid>
-      <!-- <v-row>
+      <v-row>
         <v-col cols="12">
           <div class="text-right">
-            <Toggle @toggle="toggle"></Toggle>
+            <v-btn-toggle v-model="icon" borderless>
+              <v-btn value="list" small aria-label="List view">
+                <span class="hidden-sm-and-down">List</span>
+
+                <span aria-hidden="true" class="mdi mdi-format-list-bulleted">
+                </span>
+              </v-btn>
+
+              <v-btn
+                value="grid"
+                small
+                @click="$router.push('/researchhub/articles/grid/')"
+              >
+                <span class="hidden-sm-and-down" aria-label="Grid view"
+                  >Grid</span
+                >
+
+                <span class="mdi mdi-view-module" aria-hidden="true"> </span>
+              </v-btn>
+            </v-btn-toggle>
           </div>
         </v-col>
-      </v-row> -->
-    </v-container>
-    <v-container :fluid="view === 'grid'">
+      </v-row>
       <v-row>
         <v-col> </v-col>
       </v-row>
-      <v-row class="masonry" dense v-if="view === 'grid'">
+
+      <v-row class="masonry" no-gutters>
         <v-col v-if="initialLoad" cols="12" class="text-center">
           <v-skeleton-loader
             type="card-avatar, article, actions"
           ></v-skeleton-loader>
         </v-col>
-
-        <v-col
-          v-for="(item, index) in hubArticles"
-          :key="index"
-          class="child"
-          cols="12"
-          md="4"
-        >
-          <HubCard
-            :item="item"
-            :textOnly="false"
-            @init="resizeInit"
-            @imageLoaded="resize"
-          ></HubCard>
-        </v-col>
-      </v-row>
-      <!-- <v-row v-if="view === 'list'" class="masonry" no-gutters>
         <v-col cols="12" sm="12" class="child">
           <div v-for="(item, index) in hubArticles" :key="`list-${index}`">
             <HubCard
               :item="item"
-              :textOnly="true"
+              :textOnly="false"
               @init="resizeInit"
               @imageLoaded="resize"
             ></HubCard>
           </div>
         </v-col>
-      </v-row> -->
+      </v-row>
       <v-row v-if="start + articleLimit <= articleCount">
         <v-col cols="12" class="text-center">
           <v-btn
@@ -81,7 +82,7 @@ export default {
       start: 0,
       articleLimit: 24,
       articleCount: null,
-      view: "grid",
+      icon: "list",
       initialLoad: true,
       masonry: null,
     };
