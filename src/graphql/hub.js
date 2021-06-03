@@ -1,7 +1,11 @@
 /* eslint-disable graphql/template-strings */
-import gql from "graphql-tag";
+/* Querying different GraphQL server -- no way for multiple schemas. */
+/* See: https://github.com/apollographql/apollo-tooling/issues/1535 */
 
-const GET_ARTICLE_COUNT_QUERY = gql`
+import gql from "graphql-tag";
+const ignoredGqlTag = gql;
+
+const GET_ARTICLE_COUNT_QUERY = ignoredGqlTag`
   query countFilterArticles {
     articlesConnection(where: { status: "published" }) {
       aggregate {
@@ -11,7 +15,7 @@ const GET_ARTICLE_COUNT_QUERY = gql`
   }
 `;
 
-const GET_ALL_ARTICLES_QUERY = gql`
+const GET_ALL_ARTICLES_QUERY = ignoredGqlTag`
   query articles {
     articles(where: { status: "published" }) {
       id
@@ -24,7 +28,7 @@ const GET_ALL_ARTICLES_QUERY = gql`
   }
 `;
 
-const GET_ARTICLE_GROUP_QUERY = gql`
+const GET_ARTICLE_GROUP_QUERY = ignoredGqlTag`
   query articleGroup($articleLimit: Int!, $start: Int!) {
     articles(
       limit: $articleLimit
