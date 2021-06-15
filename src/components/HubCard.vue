@@ -22,7 +22,7 @@
       >
 
       <v-img
-        v-if="item.imagePath && !textOnly"
+        v-if="item.imagePath && !textOnly && imageOK"
         :src="getImagePath(item.imagePath, 0, 0, 40)"
         :lazy-src="getImagePath(item.imagePath, 0, 0, 1)"
         width="100%"
@@ -59,6 +59,11 @@ import { format, parseISO } from "date-fns";
 import { getImageURL } from "@/services/Image";
 import moment from "moment";
 export default {
+  data() {
+    return {
+      imageOK: true,
+    };
+  },
   props: {
     item: {
       type: Object,
@@ -89,6 +94,9 @@ export default {
   methods: {
     errorHandler(id) {
       console.log("error for image: ", id);
+      console.log(this.$refs["img_" + id].src);
+      // this.$refs["img_" + id].src = "https://via.placeholder.com/400x200";
+      this.imageOK = false;
     },
     displayAuthors(arr) {
       let authors = arr.map((a) => {
