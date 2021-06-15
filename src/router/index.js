@@ -96,11 +96,12 @@ const router = new VueRouter({
   base: appConfig.publicPath,
   routes,
   scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition;
-    } else {
-      return { x: 0, y: 0 };
-    }
+    // if (savedPosition) {
+    //   return savedPosition;
+    // } else {
+    //   return { x: 0, y: 0 };
+    // }
+    return { x: 0, y: 0 };
   },
 });
 
