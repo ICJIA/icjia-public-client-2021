@@ -1,12 +1,69 @@
 <template>
   <div>
-    <h2>{{ $route.params }}</h2>
-    News item here
+    <BaseContent :error="error" :loading="loading">
+      <template slot="content">
+        <v-container fluid>
+          <v-row>
+            <v-col cols="12">
+              <div v-html="render(news.body)"></div>
+            </v-col>
+          </v-row>
+        </v-container>
+      </template>
+    </BaseContent>
   </div>
 </template>
 
 <script>
-export default {};
+import NProgress from "nprogress";
+import { renderToHtml } from "@/services/Markdown";
+import { GET_SINGLE_POST_QUERY } from "@/graphql/news";
+export default {
+  data() {
+    return {
+      loading: true,
+      error: null,
+      news: null,
+    };
+  },
+  created() {
+    NProgress.start();
+  },
+  methods: {
+    render(content) {
+      return renderToHtml(content);
+    },
+  },
+  apollo: {
+    posts: {
+      prefetch: true,
+      fetchPolicy: "no-cache",
+      query: GET_SINGLE_POST_QUERY,
+      variables() {
+        return {
+          slug: this.$route.params.slug,
+        };
+      },
+      error(error) {
+        this.error = JSON.stringify(error.message);
+      },
+      result(ApolloQueryResult) {
+        if (
+          ApolloQueryResult.data &&
+          ApolloQueryResult.data.posts.length > 0 === false
+        ) {
+          // eslint-disable-next-line no-unused-vars
+          this.$router.push("/404").catch((err) => {
+            console.log(err);
+          });
+        } else {
+          //console.log(this.id);
+          this.news = ApolloQueryResult.data.posts[0];
+          this.loading = false;
+          NProgress.done();
+        }
+      },
+    },
+  },
+};
 </script>
-
-<style lang="scss" scoped></style>

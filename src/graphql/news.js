@@ -34,4 +34,28 @@ const GET_ALL_NEWS_QUERY = gql`
     }
   }
 `;
-export { GET_ALL_NEWS_QUERY };
+
+const GET_SINGLE_POST_QUERY = gql`
+  query post($slug: String!) {
+    posts(where: { slug: $slug }) {
+      id
+      title
+      slug
+      summary
+      body
+      created_at
+      updated_at
+      published_at
+      tags(sort: "title:asc") {
+        title
+        slug
+      }
+      splash {
+        url
+        formats
+      }
+    }
+  }
+`;
+
+export { GET_ALL_NEWS_QUERY, GET_SINGLE_POST_QUERY };

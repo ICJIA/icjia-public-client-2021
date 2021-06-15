@@ -55,6 +55,7 @@
 </template>
 
 <script>
+import NProgress from "nprogress";
 import { GET_ALL_NEWS_QUERY } from "@/graphql/news";
 // import moment from "moment";
 // import _ from "lodash";
@@ -105,6 +106,7 @@ export default {
         this.error = JSON.stringify(error.message);
       },
       result(ApolloQueryResult) {
+        NProgress.done();
         let posts = ApolloQueryResult.data.posts.map((e) => ({
           ...e,
           fullPath: `/news/${e.slug}/`,

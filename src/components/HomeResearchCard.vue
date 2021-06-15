@@ -74,7 +74,7 @@
           this.truncate(item.abstract, 90)
         }}</v-card-text>
         <v-card-text v-if="item.description" style="margin-top: -15px">{{
-          this.truncate(item.description, 90)
+          this.truncate(item.description, 40)
         }}</v-card-text>
       </div>
     </v-card>
