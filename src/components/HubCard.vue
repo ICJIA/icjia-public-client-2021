@@ -28,6 +28,8 @@
         width="100%"
         :height="splashHeight"
         class="mb-5"
+        :ref="'img_' + item.id"
+        @error="errorHandler(item.id)"
         style="border: 1px solid #fafafa"
         alt="ICJIA News image"
         @load="resize"
@@ -85,6 +87,9 @@ export default {
   },
 
   methods: {
+    errorHandler(id) {
+      console.log("error for image: ", id);
+    },
     displayAuthors(arr) {
       let authors = arr.map((a) => {
         return a.title;

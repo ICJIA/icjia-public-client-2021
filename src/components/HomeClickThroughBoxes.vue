@@ -48,7 +48,7 @@ export default {
   },
   data() {
     return {
-      colors: ["#0E4471", "#0E4471", "#0E4471", "#0E4471"],
+      // colors: ["#0E4471", "#0E4471", "#0E4471", "#0E4471"],
     };
   },
   props: {

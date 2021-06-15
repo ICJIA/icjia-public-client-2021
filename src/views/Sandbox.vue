@@ -34,10 +34,7 @@
 
 <script>
 /* eslint-disable no-unused-vars */
-import {
-  GET_ARTICLE_GROUP_QUERY,
-  GET_ARTICLE_COUNT_QUERY,
-} from "@/graphql/hub";
+import { GET_ALL_ARTICLES_QUERY, GET_ARTICLE_COUNT_QUERY } from "@/graphql/hub";
 import moment from "moment";
 import _ from "lodash";
 import nprogress from "nprogress";
@@ -90,12 +87,9 @@ export default {
     },
     articles: {
       prefetch: true,
-      query: GET_ARTICLE_GROUP_QUERY,
+      query: GET_ALL_ARTICLES_QUERY,
       variables() {
-        return {
-          articleLimit: this.articleLimit,
-          start: this.start,
-        };
+        return {};
       },
       context: {
         uri: "https://researchhub.icjia-api.cloud/graphql",

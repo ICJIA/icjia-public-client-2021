@@ -7,7 +7,7 @@
     <v-container fill-height fluid>
       <v-row align="center" justify="center">
         <v-col class="text-center">
-          <h2 style="font-size: 40px">{{ text }}</h2>
+          <h2 style="font-size: 40px; margin-top: -70px">{{ text }}</h2>
         </v-col>
       </v-row>
     </v-container>
