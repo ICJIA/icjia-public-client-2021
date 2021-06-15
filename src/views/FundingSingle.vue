@@ -4,11 +4,11 @@
       <template slot="content" v-if="!loading">
         <v-container fluid>
           <v-row>
-            <v-col cols="12" md="10" class="markdown-body">
+            <v-col cols="12" md="9" class="markdown-body">
               <h1 v-html="render(funding.title)"></h1>
               <div v-html="render(funding.body)"></div>
             </v-col>
-            <v-col cols="12" md="2"><Toc></Toc></v-col>
+            <v-col cols="12" md="3" class="px-3"><Toc></Toc></v-col>
           </v-row>
         </v-container>
       </template>
