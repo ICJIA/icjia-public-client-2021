@@ -1,9 +1,11 @@
 <template>
-  <div v-if="toc">
+  <div v-if="toc" class="">
     <h2>Contents</h2>
-    <div v-for="(item, index) in toc" :key="index">
-      {{ item.innerHTML }}
-    </div>
+    <ul>
+      <li v-for="(item, index) in toc" :key="index" style="font-size: 14px">
+        {{ item.innerHTML }}
+      </li>
+    </ul>
   </div>
 </template>
 
