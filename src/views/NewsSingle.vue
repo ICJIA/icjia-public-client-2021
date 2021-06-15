@@ -1,12 +1,14 @@
 <template>
   <div>
     <BaseContent :error="error" :loading="loading">
-      <template slot="content">
-        <v-container fluid>
+      <template slot="content" v-if="!loading">
+        <v-container :fluid="news.showTOC ? true : false">
           <v-row>
-            <v-col cols="12">
+            <v-col cols="12" :md="news.showTOC ? 9 : 12">
+              <h1 v-html="render(news.title)"></h1>
               <div v-html="render(news.body)"></div>
             </v-col>
+            <v-col v-if="news && news.showTOC"><Toc></Toc></v-col>
           </v-row>
         </v-container>
       </template>
