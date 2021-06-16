@@ -58,7 +58,7 @@
                   >print</v-icon
                 >
               </div>
-              <div v-html="render(article.md)" class="article-body"></div>
+              <div v-html="html" class="article-body"></div>
 
               <div class="my-12">
                 <BaseInfoBlock v-if="hasAuthorInfo" :large="true">
@@ -172,6 +172,7 @@ export default {
       error: null,
       article: null,
       imageOK: true,
+      html: null,
     };
   },
   created() {
@@ -188,8 +189,14 @@ export default {
     } else {
       this.article.md = this.article.markdown;
     }
-
+    this.html = this.render(this.article.md);
     this.loading = false;
+    await this.$nextTick(() => {
+      window.jQuery('[id*="fnref"]').on("click", (e) => {
+        e.preventDefault();
+        this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
+      });
+    });
   },
   methods: {
     onScroll(e) {
@@ -247,7 +254,8 @@ export default {
         .join("\n")}`;
     },
     render(content) {
-      return renderToHtml(content);
+      let html = renderToHtml(content);
+      return html;
     },
     getImagePath(url, imgWidth = 0, imgHeight = 0, imageQuality = 50) {
       let imgPath;
