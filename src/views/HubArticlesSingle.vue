@@ -196,6 +196,10 @@ export default {
         e.preventDefault();
         this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
       });
+      window.jQuery(".footnote-backref").on("click", (e) => {
+        e.preventDefault();
+        this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
+      });
     });
   },
   methods: {
@@ -274,6 +278,10 @@ export default {
   },
   beforeDestroy() {
     window.jQuery('[id*="fnref"]').off("click", (e) => {
+      e.preventDefault();
+      this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
+    });
+    window.jQuery(".footnote-backref").off("click", (e) => {
       e.preventDefault();
       this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
     });
