@@ -285,7 +285,7 @@ export default {
       e.preventDefault();
       this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
     });
-    console.log("events removed");
+    console.log("click events removed");
   },
 };
 </script>
