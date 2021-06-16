@@ -44,6 +44,29 @@
         </template>
       </v-img>
 
+      <v-img
+        v-else
+        src="/icjia-half-splash-thumb.jpg"
+        lazy-src="/icjia-half-splash-thumb.jpg"
+        width="100%"
+        :height="splashHeight"
+        class="mb-5"
+        :ref="'img_' + item.id"
+        @error="errorHandler(item.id)"
+        style="border: 1px solid #fafafa"
+        alt="ICJIA News image"
+        @load="resize"
+        ><template #placeholder>
+          <v-row class="fill-height ma-0" align="center" justify="center">
+            <v-progress-circular
+              indeterminate
+              color="blue darken-3"
+              aria-label="progress"
+            ></v-progress-circular>
+          </v-row>
+        </template>
+      </v-img>
+
       <v-card-text
         v-if="item.abstract"
         style="margin-top: -15px; color: #111"
