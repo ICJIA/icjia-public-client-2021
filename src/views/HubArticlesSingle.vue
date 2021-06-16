@@ -27,8 +27,50 @@
             <v-col cols="12" md="3">TOC HERE</v-col>
             <v-col cols="12" md="9">
               <h1 class="article-title">{{ article.title }}</h1>
-              <div v-html="render(article.md)" class="article-body"></div
-            ></v-col>
+              <div class="article-abstract px-5 py-5 my-6">
+                {{ article.abstract }}
+              </div>
+              <div class="mb-4 text-uppercase font-oswald">
+                <span v-for="(author, i) in article.authors" :key="i">
+                  <template v-if="i > 0">{{
+                    article.authors.length > i + 1 ? ", " : " and "
+                  }}</template>
+                  <a @click="$emit('author-click', $event)">{{
+                    author.title
+                  }}</a>
+                </span>
+
+                <span v-if="article.date">
+                  <span class="mx-2">|</span>
+                  <template>{{ article.date | format }}</template>
+                </span>
+
+                <span class="mx-2">|</span>
+                <v-icon
+                  class="article-print"
+                  aria-label="Print"
+                  @click="printArticle"
+                  >print</v-icon
+                >
+              </div>
+              <div v-html="render(article.md)" class="article-body"></div>
+
+              <div class="my-12">
+                <BaseInfoBlock v-if="hasAuthorInfo" :large="true">
+                  <template #title>{{
+                    `About the author${article.authors.length > 1 ? "s" : ""}`
+                  }}</template>
+                  <template #text>
+                    <p
+                      v-for="(author, i) in article.authors"
+                      :key="`authorinfo${i}`"
+                    >
+                      <template>{{ author.description }}</template>
+                    </p>
+                  </template>
+                </BaseInfoBlock>
+              </div>
+            </v-col>
           </v-row>
         </v-container>
       </template>
@@ -59,6 +101,16 @@ api.interceptors.response.use((response) => {
   return response;
 });
 export default {
+  computed: {
+    hasAuthorInfo() {
+      const { authors } = this.article;
+      return authors.filter((el) => el.description).length > 0;
+    },
+    hasRelated() {
+      const { apps, datasets } = this.article;
+      return (apps && apps.length) || (datasets && datasets.length);
+    },
+  },
   data() {
     return {
       loading: true,
@@ -85,6 +137,9 @@ export default {
     this.loading = false;
   },
   methods: {
+    printArticle() {
+      console.log("print article here");
+    },
     async downloader(type) {
       // const { hash, ext } = this.item[`${type}file`]
       // window.open(process.env.BASE_URL + `files/${hash}${ext}`, '_blank')
