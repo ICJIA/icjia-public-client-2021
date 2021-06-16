@@ -68,7 +68,7 @@ export default {
     },
     loaderDisplayType: {
       type: String,
-      default: "card, article, actions",
+      default: "card, article, article, article, card",
     },
     repeat: {
       type: Number,

@@ -1,6 +1,11 @@
 <template>
   <div id="article-view">
-    <BaseContent :error="error" :loading="loading" style="background: #fff">
+    <BaseContent
+      :error="error"
+      :loading="loading"
+      style="background: #fff; height: 100vh"
+      loaderType="skeleton"
+    >
       <template slot="content" v-if="!loading">
         <v-img
           v-if="article && article.id"

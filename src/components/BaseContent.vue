@@ -14,7 +14,7 @@
     <div v-if="loading">
       <v-container fluid>
         <v-row>
-          <v-col>
+          <v-col class="mt-5">
             <loader :loaderType="loaderType" :repeat="repeat"></loader>
           </v-col>
         </v-row>

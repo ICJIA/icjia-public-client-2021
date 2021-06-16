@@ -85,7 +85,7 @@
 #article-view .article-body p,
 #article-view .article-body ul,
 #article-view .article-body ol {
-  font-size: 20px;
+  font-size: 1.325em;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
