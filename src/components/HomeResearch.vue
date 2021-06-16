@@ -153,8 +153,23 @@ export default {
   async mounted() {
     console.log("fetch here");
     this.hubApplications = await getHubApplications(3);
+    this.hubApplications = this.hubApplications.map((e) => ({
+      ...e,
+      fullPath: `/researchhub/applications/${e.slug}/`,
+      contentType: "app",
+    }));
     this.hubArticles = await getHubArticles(3);
+    this.hubArticles = this.hubArticles.map((e) => ({
+      ...e,
+      fullPath: `/researchhub/articles/${e.slug}/`,
+      contentType: "article",
+    }));
     this.hubDatasets = await getHubDatasets(3);
+    this.hubDatasets = this.hubDatasets.map((e) => ({
+      ...e,
+      fullPath: `/researchhub/datasets/${e.slug}/`,
+      contentType: "dataset",
+    }));
     //console.log(this.hubArticles);
     this.hubLoading = false;
   },

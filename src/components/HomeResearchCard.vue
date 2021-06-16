@@ -4,6 +4,7 @@
       class="grid-item markdown-body hover card mr-1 ml-1 px-3 py-1 flex-grow-1"
       elevation="0"
       color="#fff"
+      @click="routeTo(item)"
     >
       <v-img
         :src="
@@ -95,6 +96,10 @@ export default {
     },
   },
   methods: {
+    routeTo(item) {
+      console.log(item);
+      this.$router.push(`${item.fullPath}`);
+    },
     getCardHeight(type) {
       if (type === "dataset") {
         return 300;
