@@ -46,8 +46,39 @@ const GET_ARTICLE_GROUP_QUERY = ignoredGqlTag`
   }
 `;
 
+const GET_SINGLE_ARTICLE_QUERY = ignoredGqlTag`
+  query singleArticle ($slug: String!){
+    articles(
+      where: { slug: $slug }
+    ) {
+      id
+      title
+      status
+      slug
+      date
+      external
+      categories
+      tags
+      authors
+      images
+     
+    abstract
+    markdown
+    mainfile {
+      name
+      url
+    }
+    extrafile {
+      name
+      url
+    }
+    }
+  }
+`;
+
 export {
   GET_ALL_ARTICLES_QUERY,
   GET_ARTICLE_GROUP_QUERY,
   GET_ARTICLE_COUNT_QUERY,
+  GET_SINGLE_ARTICLE_QUERY,
 };

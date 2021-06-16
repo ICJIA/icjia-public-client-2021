@@ -4,6 +4,7 @@ import { EventBus } from "@/event-bus.js";
 
 const namedHeaders = require("markdown-it-named-headers");
 const attrs = require("markdown-it-attrs/markdown-it-attrs.browser.js");
+
 let md = require("markdown-it")({
   html: true,
   xhtmlOut: false,
@@ -15,6 +16,7 @@ let md = require("markdown-it")({
 });
 md.use(namedHeaders);
 md.use(attrs);
+md.use(require("markdown-it-footnote"));
 
 const renderToHtml = function (markdown) {
   return md.render(markdown);
