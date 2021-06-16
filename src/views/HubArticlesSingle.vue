@@ -7,7 +7,7 @@
           :src="article.splash"
           :lazy-src="article.thumbnail"
           width="150%"
-          height="450"
+          :height="splashHeight"
           class="mb-5"
           :ref="'img_' + article.id"
           style="border: 1px solid #fafafa"
@@ -25,7 +25,12 @@
         <v-container fluid>
           <v-row>
             <v-col cols="12" md="3">TOC HERE</v-col>
-            <v-col cols="12" md="9">
+            <v-col
+              cols="12"
+              md="9"
+              id="article-content"
+              class="article-content"
+            >
               <h1 class="article-title">{{ article.title }}</h1>
               <div class="article-abstract px-5 py-5 my-6">
                 {{ article.abstract }}
@@ -69,6 +74,50 @@
                     </p>
                   </template>
                 </BaseInfoBlock>
+                <BaseInfoBlock v-if="article.funding" :large="true">
+                  <template #title>{{ "Funding acknowledgment" }}</template>
+                  <template #text>{{ article.funding }}</template>
+                </BaseInfoBlock>
+
+                <BaseInfoBlock v-if="article.citation" :large="true">
+                  <template #title>{{ "Suggested citation" }}</template>
+                  <template #text>
+                    <span v-html="article.citation"></span>
+                    <a
+                      v-if="article.doi"
+                      :href="article.doi"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <template>{{ ` ${article.doi}` }}</template>
+                    </a>
+                  </template>
+                </BaseInfoBlock>
+
+                <BaseInfoBlock v-if="hasRelated" :large="true">
+                  <template #title>{{ "Related contents" }}</template>
+                  <template #text>
+                    <ul>
+                      <li v-for="(app, i) in article.apps" :key="`app${i}`">
+                        <router-link :to="preview ? '' : `/apps/${app.slug}`">
+                          <template>{{ `[APP] ${app.title}` }}</template>
+                        </router-link>
+                      </li>
+                      <li
+                        v-for="(dataset, i) in article.datasets"
+                        :key="`dataset${i}`"
+                      >
+                        <router-link
+                          :to="preview ? '' : `/datasets/${dataset.slug}`"
+                        >
+                          <template>{{
+                            `[DATASET] ${dataset.title}`
+                          }}</template>
+                        </router-link>
+                      </li>
+                    </ul>
+                  </template>
+                </BaseInfoBlock>
               </div>
             </v-col>
           </v-row>
@@ -102,6 +151,12 @@ api.interceptors.response.use((response) => {
 });
 export default {
   computed: {
+    splashHeight() {
+      const { xs, sm } = this.$vuetify.breakpoint;
+      if (xs) return 240;
+      else if (sm) return 360;
+      else return 480;
+    },
     hasAuthorInfo() {
       const { authors } = this.article;
       return authors.filter((el) => el.description).length > 0;
@@ -137,8 +192,49 @@ export default {
     this.loading = false;
   },
   methods: {
+    onScroll(e) {
+      if (typeof window === "undefined" || this.headings === null) return;
+      const top = window.pageYOffset || e.target.scrollTop || 0;
+      const headings = this.headings;
+      if (headings.length && top === 0) {
+        this.activeHeading = headings[0].id;
+      } else {
+        headings.forEach((heading) => {
+          let elHeading = this.$el.querySelector(`#${heading.id}`);
+          let rect = elHeading.getBoundingClientRect();
+          if (rect.top < 91 && this.activeHeading !== heading.id) {
+            this.activeHeading = heading.id;
+          }
+        });
+      }
+    },
+    onScrollTOC(e) {
+      if (typeof window === "undefined") return;
+      const top = window.pageYOffset || e.target.scrollTop || 0;
+      const threshold = this.splashHeight + this.viewTitleHeight;
+      this.isTOCSticky = top > threshold;
+    },
     printArticle() {
-      console.log("print article here");
+      const fonts =
+        '<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Gentium+Book+Basic&amp;display=swap">' +
+        '<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400&display=swap">' +
+        '<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald&display=swap">';
+      const nodes = document.querySelectorAll('link[rel="stylesheet"], style');
+      const style = Array.from(nodes)
+        .map((el) => el.outerHTML)
+        .join("");
+      const content = document.getElementById("article-content").innerHTML;
+      this.printWindow({ head: fonts + style, body: content });
+    },
+    printWindow({ head, body }) {
+      const win = window.open("", "");
+      const toWrite =
+        `<head>${head}</head>` +
+        `<body><div id="app" class="v-application"><div id="article-view">${body}</div></div></body>`;
+      `<script>window.print();<` + `/script>`;
+      win.document.write(toWrite);
+      win.document.close();
+      win.focus();
     },
     async downloader(type) {
       // const { hash, ext } = this.item[`${type}file`]
