@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="article-view">
     <BaseContent :error="error" :loading="loading" style="background: #fff">
       <template slot="content" v-if="!loading">
         <v-img
@@ -26,8 +26,8 @@
           <v-row>
             <v-col cols="12" md="3">TOC HERE</v-col>
             <v-col cols="12" md="9">
-              <h1>{{ article.title }}</h1>
-              <div v-html="render(article.md)" class="markdown-body"></div
+              <h1 class="article-title">{{ article.title }}</h1>
+              <div v-html="render(article.md)" class="article-body"></div
             ></v-col>
           </v-row>
         </v-container>
@@ -37,6 +37,8 @@
 </template>
 
 <script>
+// eslint-disable-next-line no-unused-vars
+
 import NProgress from "nprogress";
 import { renderToHtml } from "@/services/Markdown";
 import { getImageURL } from "@/services/Image";
@@ -71,13 +73,23 @@ export default {
   async mounted() {
     let article = await api.get(`/articles?slug=${this.$route.params.slug}`);
     this.article = article.data[0];
-    this.article.md = this.addImages(
-      this.article.images,
-      this.article.markdown
-    );
+    if (this.article.images) {
+      this.article.md = this.addImages(
+        this.article.images,
+        this.article.markdown
+      );
+    } else {
+      this.article.md = this.article.markdown;
+    }
+
     this.loading = false;
   },
   methods: {
+    async downloader(type) {
+      // const { hash, ext } = this.item[`${type}file`]
+      // window.open(process.env.BASE_URL + `files/${hash}${ext}`, '_blank')
+      console.log(type);
+    },
     addImages(images, markdown) {
       return `${markdown}${images
         .map((i) => `\n\n[${i.title}]: ${i.src}`)
@@ -111,4 +123,5 @@ export default {
   text-align: center !important;
   padding: 24px 12px !important;
 }
+@import url("https://fonts.googleapis.com/css2?family=Gentium+Book+Basic:ital@0;1&family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Oswald:wght@400;500;600;700&display=swap");
 </style>

@@ -7,6 +7,7 @@ import vuetify from "./plugins/vuetify";
 import { createProvider } from "./vue-apollo";
 import "@/assets/app.css";
 import "@/assets/github-markdown.css";
+import "@/assets/hub.css";
 import "@/components/_globals";
 import "@/filters";
 // import "material-design-icons-iconfont/dist/material-design-icons.css";
