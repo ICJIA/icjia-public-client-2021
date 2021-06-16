@@ -272,6 +272,13 @@ export default {
       return thumborImgPath;
     },
   },
+  beforeDestroy() {
+    window.jQuery('[id*="fnref"]').off("click", (e) => {
+      e.preventDefault();
+      this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
+    });
+    console.log("events removed");
+  },
 };
 </script>
 
