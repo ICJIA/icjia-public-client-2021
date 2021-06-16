@@ -20,7 +20,11 @@
         </v-row>
       </v-container>
     </div>
-    <div class="px-4" v-if="!loading">
+    <div
+      class="px-4"
+      v-if="!loading"
+      style="margin: 0 !important; padding: 0 !important"
+    >
       <slot name="readingProgress"></slot>
       <slot name="title"></slot>
       <slot name="postedMeta"></slot>

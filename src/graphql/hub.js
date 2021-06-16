@@ -29,7 +29,7 @@ const GET_ALL_ARTICLES_QUERY = ignoredGqlTag`
 `;
 
 const GET_ARTICLE_GROUP_QUERY = ignoredGqlTag`
-  query articleGroup($articleLimit: Int!, $start: Int!) {
+  query articleGroup ($articleLimit: Int!, $start: Int!) {
     articles(
       limit: $articleLimit
       start: $start
@@ -47,10 +47,8 @@ const GET_ARTICLE_GROUP_QUERY = ignoredGqlTag`
 `;
 
 const GET_SINGLE_ARTICLE_QUERY = ignoredGqlTag`
-  query singleArticle ($slug: String!){
-    articles(
-      where: { slug: $slug }
-    ) {
+  query singleArticle($slug: String!) {
+    articles(where: { slug: $slug }){
       id
       title
       status

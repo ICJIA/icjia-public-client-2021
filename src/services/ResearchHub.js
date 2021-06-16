@@ -59,6 +59,19 @@ const getAllHubArticlesQuery = () => {
     }`;
 };
 
+const getSingleArticleQuery = (slug) => {
+  return `{
+      articles (where: {slug: ${slug}}) {
+        id
+        title
+       slug
+        title
+        authors 
+        date
+      }
+    }`;
+};
+
 const getHubApplicationsQuery = (limit) => {
   return `{
     apps (sort: "date:desc", limit: ${limit}, where: {status: "published"}) {
@@ -87,7 +100,7 @@ const getHubApplicationsQuery = (limit) => {
   }`;
 };
 
-const getHubDatasetsQuery = (limit) => {
+const getHubDatasetsQuery = (limit = 20) => {
   return `{
     datasets (sort: "date:desc", limit: ${limit}, where: {status: "published"}) {
       id
@@ -130,6 +143,19 @@ const getAllHubArticles = async () => {
   }
 };
 
+const getSingleArticle = async (slug) => {
+  try {
+    let article = await queryEndpoint(getSingleArticleQuery(slug));
+    console.log(article);
+    return article.data.data.articles;
+  } catch (e) {
+    console.log("researchHub articles error: ", e.toString());
+    EventBus.$emit("error", e.toString());
+    NProgress.done();
+    return null;
+  }
+};
+
 const getHubApplications = async (limit) => {
   try {
     let apps = await queryEndpoint(getHubApplicationsQuery(limit));
@@ -161,4 +187,5 @@ export {
   getHubApplications,
   getHubDatasets,
   getAllHubArticles,
+  getSingleArticle,
 };
