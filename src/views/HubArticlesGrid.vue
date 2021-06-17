@@ -55,12 +55,7 @@
           cols="12"
           md="4"
         >
-          <HubCard
-            :item="item"
-            :textOnly="false"
-            @init="resizeInit"
-            @imageLoaded="resize"
-          ></HubCard>
+          <HubCard :item="item" orientation="grid" :textOnly="false"></HubCard>
         </v-col>
       </v-row>
 
@@ -122,20 +117,6 @@ export default {
     loadMore() {
       this.start = this.start + this.articleLimit;
       console.log("load more here", this.start, this.articleLimit);
-    },
-    resizeInit() {
-      nprogress.start();
-      const elem = document.querySelector(".masonry");
-      this.masonry = new window.Masonry(elem, {
-        itemSelector: ".child",
-      });
-      this.resize();
-      //console.log("layout init");
-    },
-    resize() {
-      this.masonry.layout();
-      nprogress.done();
-      //console.log("layout resized");
     },
   },
   mounted() {
