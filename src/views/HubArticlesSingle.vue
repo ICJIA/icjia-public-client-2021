@@ -129,7 +129,7 @@
                   </template>
                 </BaseInfoBlock>
 
-                <BaseInfoBlock v-if="hasRelated" :large="true">
+                <!-- <BaseInfoBlock v-if="hasRelated" :large="true">
                   <template #title>{{ "Related contents" }}</template>
                   <template #text>
                     <ul>
@@ -152,7 +152,7 @@
                       </li>
                     </ul>
                   </template>
-                </BaseInfoBlock>
+                </BaseInfoBlock> -->
               </div>
             </v-col>
           </v-row>
@@ -193,11 +193,7 @@ export default {
       else return 480;
     },
     headings() {
-      // const { markdown } = this.item
-      // const { parseHeadings } = this.markdownUtils
-      // return markdown && parseHeadings ? parseHeadings(markdown) : null
       let headings = parseHeadings(this.article.md);
-      //console.log(headings);
       return headings;
     },
     hasAuthorInfo() {

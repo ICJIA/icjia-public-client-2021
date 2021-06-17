@@ -132,7 +132,7 @@ export default {
       researchMenuItems: [
         {
           label: "Articles",
-          url: "/researchhub/articles/grid/",
+          url: "/researchhub/articles/",
         },
         {
           label: "Applications",
