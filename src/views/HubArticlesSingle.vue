@@ -36,8 +36,30 @@
                   class="mb-12"
                   :headings="headings"
                   :active-heading="activeHeading"
-                /></div
-            ></v-col>
+                />
+                <v-btn
+                  v-if="article.mainfile"
+                  block
+                  outlined
+                  class="article-download"
+                  @click="downloadHelper('main')"
+                >
+                  <template>{{ article.mainfiletype }}</template>
+                  <v-icon right>download</v-icon>
+                </v-btn>
+
+                <v-btn
+                  v-if="article.extrafile"
+                  block
+                  outlined
+                  class="article-download"
+                  @click="downloadHelper('extra')"
+                >
+                  <template>{{ "appendix" }}</template>
+                  <v-icon right>download</v-icon>
+                </v-btn>
+              </div></v-col
+            >
             <v-col
               cols="12"
               md="8"
@@ -226,6 +248,16 @@ export default {
     });
   },
   methods: {
+    async downloadHelper(type) {
+      //console.log("download: ", type);
+      const { hash, ext } = this.article[`${type}file`];
+      // console.log(process.env.BASE_URL + `files/${hash}${ext}`, "_blank");
+      //console.log("https://researchhub.icjia-api.cloud/uploads/" + hash + ext);
+      window.open(
+        `https://icjia.illinois.gov/researchhub/files/${hash}${ext}`,
+        "_blank"
+      );
+    },
     onScroll(e) {
       console.log("onScroll");
       if (typeof window === "undefined" || this.headings === null) return;
