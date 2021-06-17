@@ -1,10 +1,16 @@
 <template>
   <div>
     <v-container fluid>
+      <v-row v-if="initialLoad">
+        <v-col cols="12" md="4" v-for="n in 3" :key="n">
+          <Loader loaderType="skeleton" :repeat="1"></Loader>
+        </v-col>
+      </v-row>
+
       <v-row>
         <v-col cols="12">
           <div class="text-right">
-            <v-btn-toggle v-model="icon" borderless>
+            <v-btn-toggle v-model="orientation" borderless>
               <v-btn value="list" small aria-label="List view">
                 <span class="hidden-sm-and-down">List</span>
 
@@ -12,11 +18,7 @@
                 </span>
               </v-btn>
 
-              <v-btn
-                value="grid"
-                small
-                @click="$router.push('/researchhub/articles/grid/')"
-              >
+              <v-btn value="grid" small>
                 <span class="hidden-sm-and-down" aria-label="Grid view"
                   >Grid</span
                 >
@@ -30,23 +32,30 @@
       <v-row>
         <v-col> </v-col>
       </v-row>
-
-      <v-row class="masonry" no-gutters>
-        <v-col v-if="initialLoad" cols="12" class="text-center">
-          <v-skeleton-loader
-            type="card-avatar, article, actions"
-          ></v-skeleton-loader>
-        </v-col>
-        <v-col cols="12" sm="12" class="child">
-          <div v-for="(item, index) in hubArticles" :key="`list-${index}`">
-            <HubCard
-              :item="item"
-              :textOnly="false"
-              orientation="list"
-            ></HubCard>
-          </div>
+      <v-row dense v-if="orientation === 'grid'">
+        <v-col
+          v-for="(item, index) in hubArticles"
+          :key="index"
+          cols="12"
+          md="4"
+        >
+          <HubCard
+            :item="item"
+            :orientation="orientation"
+            :textOnly="false"
+          ></HubCard>
         </v-col>
       </v-row>
+      <v-row dense v-else>
+        <v-col v-for="(item, index) in hubArticles" :key="index" cols="12">
+          <HubCard
+            :item="item"
+            :orientation="orientation"
+            :textOnly="false"
+          ></HubCard>
+        </v-col>
+      </v-row>
+
       <v-row v-if="start + articleLimit <= articleCount">
         <v-col cols="12" class="text-center">
           <v-btn
@@ -56,6 +65,15 @@
             >Load more
           </v-btn>
         </v-col>
+        <v-col cols="12" class="text-center"
+          ><div style="font-size: 10px; font-weight: 900; margin-top: -15px">
+            <span v-if="start + articleLimit <= articleCount"
+              >Showing {{ start + articleLimit }} of
+              {{ articleCount }} articles</span
+            >
+            <span v-else>Showing all {{ articleCount }} articles</span>
+          </div></v-col
+        >
       </v-row>
     </v-container>
   </div>
@@ -81,11 +99,13 @@ export default {
       start: 0,
       articleLimit: 24,
       articleCount: null,
-      icon: "list",
+      view: "grid",
       initialLoad: true,
       masonry: null,
+      orientation: "grid",
     };
   },
+
   methods: {
     progress() {
       nprogress.start();
@@ -155,6 +175,7 @@ export default {
           contentType: "Article",
         }));
         this.hubArticles.push(...hubArticles);
+        this.initialLoad = false;
         nprogress.done();
       },
     },
