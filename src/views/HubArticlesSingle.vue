@@ -32,37 +32,47 @@
             <v-col cols="12" md="3">
               <div class="article-toc">
                 <HubArticleToc
-                  v-if="headings && headings.length"
+                  v-if="
+                    headings &&
+                    headings.length &&
+                    !$vuetify.breakpoint.sm &&
+                    !$vuetify.breakpoint.xs
+                  "
                   class="mb-12"
                   :headings="headings"
                   :active-heading="activeHeading"
                 />
+
                 <v-btn
                   v-if="article.mainfile"
-                  block
                   outlined
+                  block
+                  elevation="2"
                   class="article-download"
                   @click="downloadHelper('main')"
+                  style="font-weight: 900; background: #eee"
                 >
-                  <template>{{ article.mainfiletype }}</template>
+                  <template>Download {{ article.mainfiletype }}</template>
                   <v-icon right>download</v-icon>
                 </v-btn>
 
                 <v-btn
                   v-if="article.extrafile"
-                  block
+                  elevation="2"
                   outlined
+                  block
                   class="article-download"
+                  style="font-weight: 900; background: #eee"
                   @click="downloadHelper('extra')"
                 >
                   <template>{{ "appendix" }}</template>
                   <v-icon right>download</v-icon>
                 </v-btn>
-              </div></v-col
-            >
+              </div>
+            </v-col>
             <v-col
               cols="12"
-              md="8"
+              md="9"
               id="article-content"
               class="article-content"
             >

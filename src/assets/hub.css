@@ -213,8 +213,11 @@
 }
 #article-view .article-toc {
   padding-top: 10px !important;
-  padding-left: 45px !important;
-  width: 275px;
+  right: 10px;
+  left: 10px;
+  margin-right: auto;
+  margin-left: auto;
+  width: 225px;
 }
 
 #article-view .article-toc {
