@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container fluid>
+    <v-container>
       <v-row v-if="initialLoad">
         <v-col cols="12" md="4" v-for="n in 3" :key="n">
           <Loader loaderType="skeleton" :repeat="1"></Loader>
@@ -97,7 +97,7 @@ export default {
       loading: true,
       hubArticles: [],
       start: 0,
-      articleLimit: 24,
+      articleLimit: 45,
       articleCount: null,
       view: "grid",
       initialLoad: true,
