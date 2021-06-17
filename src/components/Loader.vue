@@ -72,7 +72,7 @@ export default {
     },
     repeat: {
       type: Number,
-      default: 3,
+      default: 1,
     },
     stacks: {
       type: Number,

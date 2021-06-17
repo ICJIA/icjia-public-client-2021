@@ -129,7 +129,7 @@
                   </template>
                 </BaseInfoBlock>
 
-                <!-- <BaseInfoBlock v-if="hasRelated" :large="true">
+                <BaseInfoBlock v-if="hasRelated" :large="true">
                   <template #title>{{ "Related contents" }}</template>
                   <template #text>
                     <ul>
@@ -152,7 +152,7 @@
                       </li>
                     </ul>
                   </template>
-                </BaseInfoBlock> -->
+                </BaseInfoBlock>
               </div>
             </v-col>
           </v-row>
@@ -163,12 +163,9 @@
 </template>
 
 <script>
-// eslint-disable-next-line no-unused-vars
-
 import NProgress from "nprogress";
 import { renderToHtml, parseHeadings } from "@/services/Markdown";
 import { getImageURL } from "@/services/Image";
-
 const axios = require("axios");
 const api = axios.create({
   baseURL: "https://researchhub.icjia-api.cloud",
@@ -185,77 +182,30 @@ api.interceptors.response.use((response) => {
   return response;
 });
 export default {
-  computed: {
-    splashHeight() {
-      const { xs, sm } = this.$vuetify.breakpoint;
-      if (xs) return 240;
-      else if (sm) return 360;
-      else return 480;
-    },
-    headings() {
-      let headings = parseHeadings(this.article.md);
-      return headings;
-    },
-    hasAuthorInfo() {
-      const { authors } = this.article;
-      return authors.filter((el) => el.description).length > 0;
-    },
-    hasRelated() {
-      const { apps, datasets } = this.article;
-      return (apps && apps.length) || (datasets && datasets.length);
-    },
-  },
   data() {
     return {
-      loading: true,
-      error: null,
       article: null,
+      error: null,
+      loading: true,
+
       imageOK: true,
       html: null,
       activeHeading: "introduction",
       isTOCSticky: false,
     };
   },
-  created() {
-    NProgress.start();
-  },
-  async mounted() {
-    let article = await api.get(`/articles?slug=${this.$route.params.slug}`);
-    this.article = article.data[0];
-    if (this.article.images) {
-      this.article.md = this.addImages(
-        this.article.images,
-        this.article.markdown
-      );
-    } else {
-      this.article.md = this.article.markdown;
-    }
-    this.html = this.render(this.article.md);
-    this.loading = false;
-    await this.$nextTick(() => {
-      window.jQuery('[id*="fnref"]').on("click", (e) => {
-        e.preventDefault();
-        this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
-      });
-      window.jQuery(".footnote-backref").on("click", (e) => {
-        e.preventDefault();
-        this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
-      });
-    });
-  },
   methods: {
     async downloadHelper(type) {
-      //console.log("download: ", type);
       const { hash, ext } = this.article[`${type}file`];
-      // console.log(process.env.BASE_URL + `files/${hash}${ext}`, "_blank");
-      //console.log("https://researchhub.icjia-api.cloud/uploads/" + hash + ext);
       window.open(
         `https://icjia.illinois.gov/researchhub/files/${hash}${ext}`,
         "_blank"
       );
+      // console.log(hash, ext);
+      //console.log(type, this.article);
     },
     onScroll(e) {
-      console.log("onScroll");
+      // console.log("onScroll");
       if (typeof window === "undefined" || this.headings === null) return;
       const top = window.pageYOffset || e.target.scrollTop || 0;
       const headings = this.headings;
@@ -333,6 +283,97 @@ export default {
       this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
     });
     console.log("click events removed");
+  },
+  computed: {
+    splashHeight() {
+      const { xs, sm } = this.$vuetify.breakpoint;
+      if (xs) return 240;
+      else if (sm) return 360;
+      else return 480;
+    },
+    headings() {
+      let headings = parseHeadings(this.article.md);
+      return headings;
+    },
+    hasAuthorInfo() {
+      const { authors } = this.article;
+      return authors.filter((el) => el.description).length > 0;
+    },
+    hasRelated() {
+      const { apps, datasets } = this.article;
+      return (apps && apps.length) || (datasets && datasets.length);
+    },
+  },
+  async mounted() {
+    const query = `query {
+      articles (where: { status: "published", slug: "${this.$route.params.slug}" }) {
+      id
+      mainfiletype
+      mainfile {
+        name
+        hash
+        ext
+        url
+      }
+      extrafile {
+        name
+        hash
+        ext
+        url
+      }
+      title
+      status
+      slug
+      date
+      external
+      categories
+      tags
+      authors
+      images
+      abstract
+      markdown
+      splash
+      thumbnail
+  }
+ 
+}`;
+    try {
+      let article = await api.post("/graphql", {
+        query,
+        validateStatus: function (status) {
+          return status >= 200 && status < 300;
+        },
+      });
+      this.article = article.data.data.articles[0];
+
+      if (this.article.images) {
+        this.article.md = this.addImages(
+          this.article.images,
+          this.article.markdown
+        );
+      } else {
+        this.article.md = this.article.markdown;
+      }
+      this.html = this.render(this.article.md);
+
+      NProgress.done();
+      this.loading = false;
+      await this.$nextTick(() => {
+        window.jQuery('[id*="fnref"]').on("click", (e) => {
+          e.preventDefault();
+          this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
+        });
+        window.jQuery(".footnote-backref").on("click", (e) => {
+          e.preventDefault();
+          this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
+        });
+      });
+    } catch (e) {
+      console.log(e);
+      this.error = e;
+      NProgress.done();
+      this.loading = false;
+    }
   },
 };
 </script>

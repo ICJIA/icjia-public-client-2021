@@ -12,9 +12,10 @@
         dense
       >
         <div
-          class="large font-lato toc-item py-2 pl-6 hover"
+          class="font-lato toc-item py-2 pl-6 hover"
           :class="{ 'toc-item-active': heading.id === activeHeading }"
           @click="scrollTo(heading.id)"
+          style="font-size: 16px"
         >
           {{ heading.innerText }}
         </div>
