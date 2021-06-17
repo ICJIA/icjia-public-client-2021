@@ -29,10 +29,18 @@
         </v-img>
         <v-container fluid>
           <v-row>
-            <v-col cols="12" md="3">TOC HERE</v-col>
+            <v-col cols="12" md="3">
+              <div class="article-toc">
+                <HubArticleToc
+                  v-if="headings && headings.length"
+                  class="mb-12"
+                  :headings="headings"
+                  :active-heading="activeHeading"
+                /></div
+            ></v-col>
             <v-col
               cols="12"
-              md="9"
+              md="8"
               id="article-content"
               class="article-content"
             >
@@ -63,7 +71,7 @@
                   >print</v-icon
                 >
               </div>
-              <div v-html="html" class="article-body"></div>
+              <div v-html="html" class="article-body" v-scroll="onScroll"></div>
 
               <div class="my-12">
                 <BaseInfoBlock v-if="hasAuthorInfo" :large="true">
@@ -136,7 +144,7 @@
 // eslint-disable-next-line no-unused-vars
 
 import NProgress from "nprogress";
-import { renderToHtml } from "@/services/Markdown";
+import { renderToHtml, parseHeadings } from "@/services/Markdown";
 import { getImageURL } from "@/services/Image";
 
 const axios = require("axios");
@@ -162,6 +170,14 @@ export default {
       else if (sm) return 360;
       else return 480;
     },
+    headings() {
+      // const { markdown } = this.item
+      // const { parseHeadings } = this.markdownUtils
+      // return markdown && parseHeadings ? parseHeadings(markdown) : null
+      let headings = parseHeadings(this.article.md);
+      //console.log(headings);
+      return headings;
+    },
     hasAuthorInfo() {
       const { authors } = this.article;
       return authors.filter((el) => el.description).length > 0;
@@ -178,6 +194,8 @@ export default {
       article: null,
       imageOK: true,
       html: null,
+      activeHeading: "introduction",
+      isTOCSticky: false,
     };
   },
   created() {
@@ -209,6 +227,7 @@ export default {
   },
   methods: {
     onScroll(e) {
+      console.log("onScroll");
       if (typeof window === "undefined" || this.headings === null) return;
       const top = window.pageYOffset || e.target.scrollTop || 0;
       const headings = this.headings;
@@ -224,12 +243,7 @@ export default {
         });
       }
     },
-    onScrollTOC(e) {
-      if (typeof window === "undefined") return;
-      const top = window.pageYOffset || e.target.scrollTop || 0;
-      const threshold = this.splashHeight + this.viewTitleHeight;
-      this.isTOCSticky = top > threshold;
-    },
+
     printArticle() {
       const fonts =
         '<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Gentium+Book+Basic&amp;display=swap">' +

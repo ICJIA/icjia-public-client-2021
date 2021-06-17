@@ -13,6 +13,19 @@
   color: #166cc0 !important;
 }
 
+.font-oswald {
+  font-family: "Oswald", sans-serif;
+}
+.font-lato {
+  font-family: "Lato", sans-serif;
+}
+.small {
+  font-size: 0.8em;
+}
+.large {
+  font-size: 1.1em;
+}
+
 /* article-view */
 
 #article-view h1 {
@@ -199,12 +212,14 @@
   line-height: 1.3;
 }
 #article-view .article-toc {
-  padding-top: 90px !important;
+  padding-top: 10px !important;
   padding-left: 45px !important;
   width: 275px;
 }
-#article-view .article-toc-sticky {
-  position: fixed;
+
+#article-view .article-toc {
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
   top: 0;
 }
 @media screen and (max-width: 600px) {
