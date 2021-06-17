@@ -35,7 +35,9 @@ export default {
     };
   },
   async mounted() {
-    let content = await api.get("/articles");
+    let content = await api.get(
+      "/articles?slug=examining-the-experiences-of-women-police-leaders-in-illinois"
+    );
     this.content = content.data.data;
   },
 };
