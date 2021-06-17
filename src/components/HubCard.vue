@@ -3,11 +3,12 @@
     <v-card
       class="pa-2 grid-item mb-3 info-card py-3 px-3"
       outlined
+      :height="orientation === 'grid' ? 650 : null"
       @click="$router.push(item.fullPath)"
     >
       <v-card-text>{{ item.date | format }}</v-card-text>
       <v-card-text v-if="item.title"
-        ><h2 style="margin-top: -20px">
+        ><h2 style="margin-top: -20px; line-height: 25px">
           {{ item.title }}
         </h2></v-card-text
       >
@@ -70,7 +71,7 @@
       <v-card-text
         v-if="item.abstract"
         style="margin-top: -15px; color: #111"
-        >{{ truncate(item.abstract, 75) }}</v-card-text
+        >{{ truncate(item.abstract, this.truncation) }}</v-card-text
       >
     </v-card>
   </div>
@@ -82,12 +83,25 @@ import { format, parseISO } from "date-fns";
 import { getImageURL } from "@/services/Image";
 import moment from "moment";
 export default {
+  computed: {
+    truncation() {
+      if (this.orientation === "grid") {
+        return 50;
+      } else {
+        return 999;
+      }
+    },
+  },
   data() {
     return {
       imageOK: true,
     };
   },
   props: {
+    orientation: {
+      type: String,
+      default: "grid",
+    },
     item: {
       type: Object,
       default: () => {},
@@ -107,7 +121,7 @@ export default {
     },
     splashHeight: {
       type: Number,
-      default: 250,
+      default: 150,
     },
   },
   mounted() {

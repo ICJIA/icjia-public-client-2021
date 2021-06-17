@@ -9,9 +9,9 @@
       <template slot="content" v-if="!loading">
         <v-img
           v-if="article && article.id"
-          :src="article.splash"
-          :lazy-src="article.thumbnail"
-          width="150%"
+          :src="getImagePath(article.imagePath, 0, 0, 50)"
+          :lazy-src="getImagePath(article.imagePath, 0, 0, 1)"
+          width="100%"
           :height="splashHeight"
           class="mb-5"
           :ref="'img_' + article.id"
@@ -29,15 +29,37 @@
         </v-img>
         <v-container fluid>
           <v-row>
-            <v-col cols="12" md="3">
+            <v-col cols="12" md="3" class="hidden-sm-and-down">
               <div class="article-toc">
                 <HubArticleToc
                   v-if="headings && headings.length"
                   class="mb-12"
                   :headings="headings"
                   :active-heading="activeHeading"
-                /></div
-            ></v-col>
+                />
+                <v-btn
+                  v-if="article.mainfile"
+                  block
+                  outlined
+                  class="article-download"
+                  @click="downloadHelper('main')"
+                >
+                  <template>{{ article.mainfiletype }}</template>
+                  <v-icon right>download</v-icon>
+                </v-btn>
+
+                <v-btn
+                  v-if="article.extrafile"
+                  block
+                  outlined
+                  class="article-download"
+                  @click="downloadHelper('extra')"
+                >
+                  <template>{{ "appendix" }}</template>
+                  <v-icon right>download</v-icon>
+                </v-btn>
+              </div></v-col
+            >
             <v-col
               cols="12"
               md="8"
@@ -107,7 +129,7 @@
                   </template>
                 </BaseInfoBlock>
 
-                <BaseInfoBlock v-if="hasRelated" :large="true">
+                <!-- <BaseInfoBlock v-if="hasRelated" :large="true">
                   <template #title>{{ "Related contents" }}</template>
                   <template #text>
                     <ul>
@@ -130,7 +152,7 @@
                       </li>
                     </ul>
                   </template>
-                </BaseInfoBlock>
+                </BaseInfoBlock> -->
               </div>
             </v-col>
           </v-row>
@@ -147,21 +169,21 @@ import NProgress from "nprogress";
 import { renderToHtml, parseHeadings } from "@/services/Markdown";
 import { getImageURL } from "@/services/Image";
 
-const axios = require("axios");
-const api = axios.create({
-  baseURL: "https://researchhub.icjia-api.cloud",
-  timeout: 15000,
-});
+// const axios = require("axios");
+// const api = axios.create({
+//   baseURL: "https://researchhub.icjia-api.cloud",
+//   timeout: 15000,
+// });
 
-api.interceptors.request.use((config) => {
-  NProgress.start();
-  return config;
-});
+// api.interceptors.request.use((config) => {
+//   NProgress.start();
+//   return config;
+// });
 
-api.interceptors.response.use((response) => {
-  NProgress.done();
-  return response;
-});
+// api.interceptors.response.use((response) => {
+//   NProgress.done();
+//   return response;
+// });
 export default {
   computed: {
     splashHeight() {
@@ -202,8 +224,20 @@ export default {
     NProgress.start();
   },
   async mounted() {
-    let article = await api.get(`/articles?slug=${this.$route.params.slug}`);
-    this.article = article.data[0];
+    let article = this.$myApp.hubArticles.filter((article) => {
+      if (article.slug === this.$route.params.slug) {
+        return article;
+      }
+    });
+
+    // let article = await api.get(`/articles?slug=${this.$route.params.slug}`);
+    if (!article.length) {
+      this.$router.push("/404").catch((err) => {
+        console.log(err);
+      });
+    }
+    this.article = article[0];
+
     if (this.article.images) {
       this.article.md = this.addImages(
         this.article.images,
@@ -224,10 +258,22 @@ export default {
         this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
       });
     });
+    NProgress.done();
   },
   methods: {
+    async downloadHelper(type) {
+      //console.log("download: ", type);
+      const { hash, ext } = this.article[`${type}file`];
+      // console.log(process.env.BASE_URL + `files/${hash}${ext}`, "_blank");
+      //console.log("https://researchhub.icjia-api.cloud/uploads/" + hash + ext);
+      window.open(
+        `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`,
+        "_blank"
+      );
+    },
+
     onScroll(e) {
-      console.log("onScroll");
+      //console.log("onScroll");
       if (typeof window === "undefined" || this.headings === null) return;
       const top = window.pageYOffset || e.target.scrollTop || 0;
       const headings = this.headings;

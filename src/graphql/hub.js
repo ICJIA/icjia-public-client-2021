@@ -74,9 +74,23 @@ const GET_SINGLE_ARTICLE_QUERY = ignoredGqlTag`
   }
 `;
 
+const GET_ALL_APPS_QUERY = ignoredGqlTag`
+  query app {
+    app(where: { status: "published" }) {
+      id
+      title
+      slug
+      abstract
+      authors
+      date
+    }
+  }
+`;
+
 export {
   GET_ALL_ARTICLES_QUERY,
   GET_ARTICLE_GROUP_QUERY,
   GET_ARTICLE_COUNT_QUERY,
   GET_SINGLE_ARTICLE_QUERY,
+  GET_ALL_APPS_QUERY,
 };

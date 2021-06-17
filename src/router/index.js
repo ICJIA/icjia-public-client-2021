@@ -39,7 +39,8 @@ const routes = [
   {
     path: "/researchhub/articles",
     name: "hubArticles",
-    redirect: { name: "hubArticlesGrid" },
+    component: () =>
+      import(/* webpackChunkName: "hub" */ "../views/HubArticles.vue"),
   },
   {
     path: "/researchhub/search",
@@ -47,23 +48,18 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "hub" */ "../views/HubSearch.vue"),
   },
-  {
-    path: "/researchhub/articles/grid",
-    name: "hubArticlesGrid",
-    component: () =>
-      import(/* webpackChunkName: "hub" */ "../views/HubArticlesGrid.vue"),
-  },
-  {
-    path: "/researchhub/articles/list",
-    name: "hubArticlesLit",
-    component: () =>
-      import(/* webpackChunkName: "hub" */ "../views/HubArticlesList.vue"),
-  },
+
   {
     path: "/researchhub/articles/:slug",
     name: "hubArticlesSingle",
     component: () =>
       import(/* webpackChunkName: "hub" */ "../views/HubArticlesSingle.vue"),
+  },
+  {
+    path: "/researchhub/apps",
+    name: "hubApps",
+    component: () =>
+      import(/* webpackChunkName: "hub" */ "../views/HubApps.vue"),
   },
   {
     path: "/preview",
