@@ -3,28 +3,30 @@
     <v-container class="markdown-body">
       <v-row>
         <v-col cols="12">
-          <v-card>
-            <v-img
-              :src="app.image"
-              :max-height="300"
-              style="border: 1px solid #eee"
-            >
-              <template #placeholder>
-                <v-row class="fill-height" align="center" justify="center">
-                  <v-progress-circular indeterminate />
-                </v-row>
-              </template>
-            </v-img>
-            <v-row no-gutters class="px-10 py-10">
+          <v-card class="px-5 py-5">
+            <h1 style="border: 0px">{{ app.title }}</h1>
+
+            <v-row class="px-10 py-10" style="margin-top: -55px">
+              <v-col cols="12" md="4"
+                ><v-img
+                  :src="app.image"
+                  :min-height="350"
+                  style="border: 1px solid #eee"
+                  class="mt-3"
+                >
+                  <template #placeholder>
+                    <v-row class="fill-height" align="center" justify="center">
+                      <v-progress-circular indeterminate />
+                    </v-row>
+                  </template> </v-img
+              ></v-col>
               <v-col
                 class="px-6 pb-6"
                 :class="app.external ? 'pt-0' : 'pt-6'"
                 cols="12"
+                md="8"
               >
-                <h1 style="border: 0px">{{ app.title }}</h1>
                 <MarkerExternal v-if="app.external" />
-
-                <h2 style="margin-top: -20px">About this app</h2>
 
                 <BasePropDisplay name="Updated">
                   <template>{{ app.date }}</template>
@@ -69,7 +71,6 @@
                 <BasePropDisplay name="Description">
                   <template>{{ app.description }}</template>
                 </BasePropDisplay>
-
                 <BaseInfoBlock v-if="app.funding">
                   <template #title>{{ "Funding acknowledgment" }}</template>
                   <template #text>{{ app.funding }}</template>
@@ -123,7 +124,9 @@
                   </template>
                 </BaseInfoBlock>
               </v-col>
-              <v-col class="text-center mt-5"
+            </v-row>
+            <v-row>
+              <v-col class="text-center mb-12" style="margin-top: -25px"
                 ><v-btn
                   elevation="2"
                   color="blue darken-4"

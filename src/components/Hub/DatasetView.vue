@@ -1,5 +1,5 @@
 <template>
-  <v-container class="markdown-body" fluid>
+  <v-container class="markdown-body">
     <v-card class="px-10 py-10">
       <v-col cols="12" class="text-left">
         <h1>{{ dataset.title }}</h1>
@@ -95,18 +95,30 @@
         <template #text>
           <ul class="font-lato">
             <li v-for="(app, i) in dataset.apps" :key="`app${i}`">
-              <router-link :to="preview ? '' : `/apps/${app.slug}`">
+              <router-link :to="preview ? '' : `/researchhub/apps/${app.slug}`">
                 <template>{{ `[APP] ${app.title}` }}</template>
               </router-link>
             </li>
             <li v-for="(article, i) in dataset.articles" :key="`article${i}`">
-              <router-link :to="preview ? '' : `/articles/${article.slug}`">
+              <router-link
+                :to="preview ? '' : `/researchhub/articles/${article.slug}`"
+              >
                 <template>{{ `[ARTICLE] ${article.title}` }}</template>
               </router-link>
             </li>
           </ul>
         </template>
       </BaseInfoBlock>
+      <v-col class="text-center mt-5"
+        ><v-btn
+          elevation="2"
+          color="blue darken-4"
+          @click="download(item.url)"
+          dark
+          x-large
+          >Download the dataset<v-icon right>download</v-icon></v-btn
+        >
+      </v-col>
     </v-card>
   </v-container>
 </template>
@@ -192,6 +204,9 @@ export default {
     async downloadHelper() {
       await this.downloader();
       this.dialog = false;
+    },
+    download() {
+      console.log("download dataset here");
     },
   },
 };

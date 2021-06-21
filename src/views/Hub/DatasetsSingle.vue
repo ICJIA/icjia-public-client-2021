@@ -67,6 +67,14 @@ export default {
         }
         createdAt
         updatedAt
+        apps {
+          title
+          slug
+        }
+        articles {
+          title
+          slug
+        }
  }
 }`;
     try {
