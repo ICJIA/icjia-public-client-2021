@@ -1,6 +1,6 @@
 <template>
   <!-- eslint-disable vue/no-v-html -->
-  <div id="article-view">
+  <div>
     <v-img :height="splashHeight" :src="article.splash">
       <template #placeholder>
         <v-row class="fill-height" align="center" justify="center">
@@ -11,35 +11,36 @@
 
     <v-row no-gutters>
       <v-col md="4" lg="3" class="hidden-sm-and-down">
-        <div class="article-toc" :class="{ 'article-toc-sticky': isTOCSticky }">
-          <ArticleTOC
+        <div
+          class="article-toc text-center"
+          :class="{ 'article-toc-sticky': isTOCSticky }"
+        >
+          <ArticleToc
             v-if="headings && headings.length"
             v-scroll="onScrollTOC"
-            class="mb-12"
+            class="mb-12 text-left"
             :headings="headings"
             :active-heading="activeHeading"
           />
 
           <v-btn
             v-if="article.mainfile"
-            block
             outlined
             class="article-download"
             @click="downloadHelper('main')"
           >
             <template>{{ article.mainfiletype }}</template>
-            <v-icon>$vuetify.icons.download</v-icon>
+            <v-icon>download</v-icon>
           </v-btn>
 
           <v-btn
             v-if="article.extrafile"
-            block
             outlined
             class="article-download"
             @click="downloadHelper('extra')"
           >
             <template>{{ "appendix" }}</template>
-            <v-icon>$vuetify.icons.download</v-icon>
+            <v-icon>download</v-icon>
           </v-btn>
         </div>
       </v-col>
@@ -64,10 +65,6 @@
                 </BasePropChip>
               </template>
             </div>
-
-            <BaseButton label="Back" :to="preview ? '' : '/articles'">
-              <template>{{ "back" }}</template>
-            </BaseButton>
           </v-row>
 
           <MarkerExternal v-if="article.external" />
@@ -95,7 +92,7 @@
               aria-label="Print"
               @click="printArticle"
             >
-              <template>{{ "$vuetify.icons.printer" }}</template>
+              <template>printer</template>
             </v-icon>
           </div>
 
@@ -105,6 +102,7 @@
             v-scroll="onScroll"
             class="article-body"
             v-html="articleBody.main"
+            ref="main"
           />
 
           <div class="my-12">
@@ -256,8 +254,17 @@ export default {
     headings() {
       const { markdown } = this.item;
       const { parseHeadings } = this.markdownUtils;
-      return markdown && parseHeadings ? parseHeadings(markdown) : null;
+      let headings = markdown && parseHeadings ? parseHeadings(markdown) : null;
+      return headings;
     },
+    fnRefs() {
+      const { markdown } = this.item;
+      const { parseHeadings } = this.markdownUtils;
+      let fnRefs = markdown && parseHeadings ? parseHeadings(markdown) : null;
+
+      return fnRefs;
+    },
+
     splashHeight() {
       const { xs, sm } = this.$vuetify.breakpoint;
 
@@ -311,20 +318,29 @@ export default {
         .map((el) => el.outerHTML)
         .join("");
       const content = document.getElementById("article-content").innerHTML;
-
       this.printWindow({ head: fonts + style, body: content });
     },
     printWindow({ head, body }) {
       const win = window.open("", "");
       const toWrite =
         `<head>${head}</head>` +
-        `<body><div id="app" class="v-application"><div id="article-view">${body}</div></div></body>` +
-        `<script>window.print(); window.close()<` +
-        `/script>`;
+        `<body><div id="app" class="v-application"><div id="article-view">${body}</div></div></body>`;
+      `<script>window.print();<` + `/script>`;
       win.document.write(toWrite);
       win.document.close();
       win.focus();
     },
   },
+  mounted() {},
 };
 </script>
+
+<style>
+.article-figure {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-align: center !important;
+  padding: 24px 12px !important;
+}
+@import url("https://fonts.googleapis.com/css2?family=Gentium+Book+Basic:ital@0;1&family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Oswald:wght@400;500;600;700&display=swap");
+</style>
