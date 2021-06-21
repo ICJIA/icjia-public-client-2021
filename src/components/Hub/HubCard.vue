@@ -3,7 +3,7 @@
     <v-card
       class="pa-2 grid-item mb-3 info-card py-3 px-3"
       outlined
-      :height="orientation === 'grid' ? 650 : null"
+      :height="orientation === 'grid' ? cardHeight : null"
       @click="$router.push(item.fullPath)"
     >
       <v-card-text>{{ item.date | format }}</v-card-text>
@@ -13,6 +13,7 @@
         </h2></v-card-text
       >
       <v-card-text
+        v-if="item.authors"
         style="
           font-weight: 700;
           color: #888;
@@ -21,9 +22,29 @@
         "
         >{{ displayAuthors(item.authors) }}</v-card-text
       >
-
       <v-img
-        v-if="item.imagePath && !textOnly && imageOK"
+        v-if="item.image"
+        :src="item.image"
+        width="100%"
+        :height="splashHeight"
+        class="mb-5"
+        :ref="'img_' + item.id"
+        @error="errorHandler(item.id)"
+        style="border: 1px solid #fafafa"
+        alt="ICJIA News image"
+        @load="resize"
+        ><template #placeholder>
+          <v-row class="fill-height ma-0" align="center" justify="center">
+            <v-progress-circular
+              indeterminate
+              color="blue darken-3"
+              aria-label="progress"
+            ></v-progress-circular>
+          </v-row>
+        </template>
+      </v-img>
+      <v-img
+        v-if="item.imagePath && !item.image && !textOnly && imageOK"
         :src="getImagePath(item.imagePath, 0, 0, 40)"
         :lazy-src="getImagePath(item.imagePath, 0, 0, 1)"
         width="100%"
@@ -46,7 +67,7 @@
       </v-img>
 
       <v-img
-        v-else
+        v-if="item.imagePath && !item.image && !textOnly && !imageOK"
         src="/icjia-half-splash-thumb.jpg"
         lazy-src="/icjia-half-splash-thumb.jpg"
         width="100%"
@@ -86,7 +107,7 @@ export default {
   computed: {
     truncation() {
       if (this.orientation === "grid") {
-        return 50;
+        return 60;
       } else {
         return 999;
       }
@@ -95,7 +116,7 @@ export default {
       if (this.orientation === "grid") {
         return 150;
       } else {
-        return 300;
+        return 225;
       }
     },
   },
@@ -125,6 +146,10 @@ export default {
       type: String,
       require: true,
       default: null,
+    },
+    cardHeight: {
+      type: Number,
+      default: 650,
     },
     // splashHeight: {
     //   type: Number,

@@ -172,7 +172,7 @@ export default {
           ...e,
           fullPath: `/researchhub/articles/${e.slug}/`,
           imagePath: `https://icjia.illinois.gov/researchhub/images/${e.id}-splash.jpeg`,
-          contentType: "Article",
+          contentType: "article",
         }));
         this.hubArticles.push(...hubArticles);
         this.initialLoad = false;

@@ -1,5 +1,5 @@
 <template>
-  <BaseCard :external="app.external">
+  <v-container fluid>
     <v-row class="mx-0 px-6 py-4">
       <tag :is="smAndDown ? 'h3' : 'h2'" :class="smAndDown ? 'pb-2' : ''">
         <span class="small" style="color: #666">Apps</span>
@@ -16,7 +16,7 @@
           icon="$vuetify.icons.play"
           :small="smAndDown"
         >
-          <template>{{ 'Launch' }}</template>
+          <template>{{ "Launch" }}</template>
         </BaseButton>
 
         <BaseButton
@@ -24,7 +24,7 @@
           :small="smAndDown"
           :to="preview ? '' : '/apps'"
         >
-          <template>{{ 'back' }}</template>
+          <template>{{ "back" }}</template>
         </BaseButton>
       </v-row>
     </v-row>
@@ -67,7 +67,7 @@
           <template v-if="app.contributors">
             <span v-for="(contributor, i) in app.contributors" :key="i">
               <template v-if="i > 1">{{
-                app.contributors.length > i + 1 ? ', ' : ' and '
+                app.contributors.length > i + 1 ? ", " : " and "
               }}</template>
 
               <a
@@ -82,7 +82,7 @@
             </span>
           </template>
 
-          <template v-else>{{ 'ICJIA R&A staff' }}</template>
+          <template v-else>{{ "ICJIA R&A staff" }}</template>
         </BasePropDisplay>
 
         <BasePropDisplay v-if="app.categories" name="Categories">
@@ -104,12 +104,12 @@
         </BasePropDisplay>
 
         <BaseInfoBlock v-if="app.funding">
-          <template #title>{{ 'Funding acknowledgment' }}</template>
+          <template #title>{{ "Funding acknowledgment" }}</template>
           <template #text>{{ app.funding }}</template>
         </BaseInfoBlock>
 
         <BaseInfoBlock v-if="app.citation">
-          <template #title>{{ 'Suggested citation' }}</template>
+          <template #title>{{ "Suggested citation" }}</template>
           <template #text>
             <!-- eslint-disable-next-line vue/no-v-html -->
             <span v-html="app.citation"></span>
@@ -117,7 +117,7 @@
         </BaseInfoBlock>
 
         <BaseInfoBlock v-if="hasRelated">
-          <template #title>{{ 'Related contents' }}</template>
+          <template #title>{{ "Related contents" }}</template>
           <template #text>
             <ul class="font-lato">
               <li v-for="(article, i) in app.articles" :key="`article${i}`">
@@ -135,27 +135,13 @@
         </BaseInfoBlock>
       </v-col>
     </v-row>
-  </BaseCard>
+  </v-container>
 </template>
 
 <script>
-import { format } from './utils/itemFormatter'
-import BaseButton from './components/BaseButton'
-import BaseCard from './components/BaseCard'
-import BasePropChip from './components/BasePropChip'
-import BasePropDisplay from './components/BasePropDisplay'
-import MarkerExternal from './components/MarkerExternal'
-import BaseInfoBlock from './components/BaseInfoBlock'
+import { format } from "@/utils/itemFormatter";
 
 export default {
-  components: {
-    BaseButton,
-    BaseCard,
-    BasePropChip,
-    BasePropDisplay,
-    MarkerExternal,
-    BaseInfoBlock
-  },
   props: {
     item: {
       type: Object,
@@ -173,26 +159,26 @@ export default {
           image: null,
           tags: null,
           title: null,
-          url: null
-        }
-      }
+          url: null,
+        };
+      },
     },
     preview: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   computed: {
     app() {
-      return format(this.item)
+      return format(this.item);
     },
     hasRelated() {
-      const { articles, datasets } = this.item
-      return (articles && articles.length) || (datasets && datasets.length)
+      const { articles, datasets } = this.item;
+      return (articles && articles.length) || (datasets && datasets.length);
     },
     smAndDown() {
-      return this.$vuetify.breakpoint.smAndDown
-    }
-  }
-}
+      return this.$vuetify.breakpoint.smAndDown;
+    },
+  },
+};
 </script>

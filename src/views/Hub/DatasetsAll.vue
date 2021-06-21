@@ -29,14 +29,17 @@
           </div>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col> </v-col>
+      </v-row>
 
       <v-row dense v-if="orientation === 'grid'">
         <v-col v-for="(item, index) in content" :key="index" cols="12" md="4">
           <HubCard
             :item="item"
             :orientation="orientation"
-            :textOnly="false"
-            :cardHeight="525"
+            :textOnly="true"
+            :cardHeight="450"
           ></HubCard>
         </v-col>
       </v-row>
@@ -45,7 +48,7 @@
           <HubCard
             :item="item"
             :orientation="orientation"
-            :textOnly="false"
+            :textOnly="true"
           ></HubCard>
         </v-col>
       </v-row>
@@ -55,12 +58,12 @@
 
 <script>
 /* eslint-disable no-unused-vars */
-import { GET_ALL_APPS_QUERY } from "@/graphql/hub";
+import { GET_ALL_DATASETS_QUERY } from "@/graphql/hub";
 import moment from "moment";
 import _ from "lodash";
 import nprogress from "nprogress";
 export default {
-  name: "Apps",
+  name: "Datasets",
   data() {
     return {
       error: null,
@@ -93,7 +96,7 @@ export default {
     datasets: {
       prefetch: true,
 
-      query: GET_ALL_APPS_QUERY,
+      query: GET_ALL_DATASETS_QUERY,
       variables() {
         return {};
       },
@@ -106,14 +109,14 @@ export default {
       result(ApolloQueryResult) {
         //console.log(ApolloQueryResult.data.articles);
         this.initialLoad = false;
-        let content = ApolloQueryResult.data.apps;
+        let content = ApolloQueryResult.data.datasets;
 
         content = content.map((e) => ({
           ...e,
-          fullPath: `/researchhub/apps/${e.slug}/`,
-          imagePath: `https://icjia.illinois.gov/researchhub/images/${e.id}-image.png`,
-          contentType: "app",
+          fullPath: `/researchhub/datasets/${e.slug}/`,
+          imagePath: null,
           abstract: e.description,
+          contentType: "dataset",
         }));
         this.content = content;
         this.initialLoad = false;

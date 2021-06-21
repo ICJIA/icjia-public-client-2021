@@ -25,6 +25,23 @@ const GET_DATASET_COUNT_QUERY = ignoredGqlTag`
   }
 `;
 
+const GET_ALL_DATASETS_QUERY = ignoredGqlTag`
+  query datasets {
+   datasets (sort: "date:desc",  where: {status: "published"}) {
+      id
+      title
+      date
+      slug
+      description
+      status
+      external
+      categories
+      tags
+      project
+    }
+  }
+`;
+
 const GET_ALL_ARTICLES_QUERY = ignoredGqlTag`
   query articles {
     articles(where: { status: "published" }) {
@@ -56,9 +73,27 @@ const GET_ARTICLE_GROUP_QUERY = ignoredGqlTag`
   }
 `;
 
+const GET_ALL_APPS_QUERY = ignoredGqlTag`
+  query apps {
+    apps(sort: "date:desc", where: { status: "published" }) {
+      id
+      title
+      slug
+      date
+      description
+      date
+      contributors
+      image
+      
+    }
+  }
+`;
+
 export {
   GET_ALL_ARTICLES_QUERY,
   GET_ARTICLE_GROUP_QUERY,
   GET_ARTICLE_COUNT_QUERY,
   GET_DATASET_COUNT_QUERY,
+  GET_ALL_DATASETS_QUERY,
+  GET_ALL_APPS_QUERY,
 };
