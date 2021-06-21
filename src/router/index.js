@@ -62,6 +62,12 @@ const routes = [
       import(/* webpackChunkName: "hub" */ "../views/Hub/AppsAll.vue"),
   },
   {
+    path: "/researchhub/apps/:slug",
+    name: "hubAppsSingle",
+    component: () =>
+      import(/* webpackChunkName: "hub" */ "../views/Hub/AppsSingle.vue"),
+  },
+  {
     path: "/researchhub/datasets",
     name: "hubDatasets",
     component: () =>
