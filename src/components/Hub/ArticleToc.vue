@@ -1,6 +1,8 @@
 <template>
   <div id="article-toc">
-    <h3 class="text-uppercase font-oswald mb-2">Table of contents</h3>
+    <h3 class="text-uppercase font-oswald mb-2" style="font-weight: 700">
+      Table of contents
+    </h3>
 
     <v-divider></v-divider>
 
@@ -11,13 +13,14 @@
         class="pa-0"
         dense
       >
-        <router-link
-          :to="`#${heading.id}`"
-          class="large font-lato toc-item py-2 pl-6"
+        <div
+          class="font-lato toc-item py-2 pl-6 hover"
           :class="{ 'toc-item-active': heading.id === activeHeading }"
+          @click="scrollTo(heading.id)"
+          style="font-size: 16px"
         >
-          <template>{{ heading.innerText }}</template>
-        </router-link>
+          {{ heading.innerText }}
+        </div>
       </v-list-item>
     </v-list>
   </div>
@@ -25,6 +28,12 @@
 
 <script>
 export default {
+  methods: {
+    scrollTo(id) {
+      //console.log(id);
+      this.$vuetify.goTo(`#${id}`);
+    },
+  },
   props: {
     headings: NodeList,
     activeHeading: {
