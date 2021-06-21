@@ -155,7 +155,7 @@ export default {
     this.hubApplications = await getHubApplications(3);
     this.hubApplications = this.hubApplications.map((e) => ({
       ...e,
-      fullPath: `/researchhub/applications/${e.slug}/`,
+      fullPath: `/researchhub/apps/${e.slug}/`,
       contentType: "app",
     }));
     this.hubArticles = await getHubArticles(3);

@@ -173,7 +173,6 @@
 import { format } from "@/utils/itemFormatter";
 import { createMarkdownUtils, initMarkdownIt } from "@/utils/markdownIt";
 import { initTexmath } from "@/utils/texmath";
-// const cheerio = require("cheerio");
 
 export default {
   props: {
@@ -224,17 +223,7 @@ export default {
     article() {
       return format(this.item);
     },
-    // articleBody() {
-    //   const { markdown, images } = this.item;
-    //   const { renderMarkdown, addImages } = this.markdownUtils;
-    //   const body =
-    //     markdown && renderMarkdown && addImages
-    //       ? renderMarkdown(images ? addImages(images, markdown) : markdown)
-    //       : "";
-    //   const [main, footer] = body.split('<hr class="footnotes-sep">');
-    //   this.parseMain(main);
-    //   return { main, footer };
-    // },
+
     hasAuthorInfo() {
       const { authors } = this.item;
       return authors.filter((el) => el.description).length > 0;
@@ -248,13 +237,6 @@ export default {
       const { parseHeadings } = this.markdownUtils;
       let headings = markdown && parseHeadings ? parseHeadings(markdown) : null;
       return headings;
-    },
-    fnRefs() {
-      const { markdown } = this.item;
-      const { parseHeadings } = this.markdownUtils;
-      let fnRefs = markdown && parseHeadings ? parseHeadings(markdown) : null;
-
-      return fnRefs;
     },
 
     splashHeight() {
@@ -272,11 +254,6 @@ export default {
     this.markdownUtils = createMarkdownUtils(md);
   },
   methods: {
-    parseMain(html) {
-      if (html.length) {
-        console.log(window.jQuery("h2"));
-      }
-    },
     async downloadHelper(type) {
       await this.downloader(type);
     },
