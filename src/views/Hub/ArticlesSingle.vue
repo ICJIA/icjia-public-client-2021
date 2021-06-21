@@ -11,7 +11,7 @@
 
 <script>
 import NProgress from "nprogress";
-
+import { renderToHtml } from "@/services/Markdown";
 const axios = require("axios");
 const api = axios.create({
   baseURL: "https://researchhub.icjia-api.cloud",
@@ -41,8 +41,15 @@ export default {
     };
   },
   methods: {
-    init() {
-      console.log("child mounted");
+    init() {},
+    addImages(images, markdown) {
+      return `${markdown}${images
+        .map((i) => `\n\n[${i.title}]: ${i.src}`)
+        .join("\n")}`;
+    },
+    render(content) {
+      let html = renderToHtml(content);
+      return html;
     },
     async downloader(type) {
       const { hash, ext } = this.article[`${type}file`];
@@ -98,7 +105,15 @@ export default {
         },
       });
       this.article = article.data.data.articles[0];
-
+      if (this.article.images) {
+        this.article.md = this.addImages(
+          this.article.images,
+          this.article.markdown
+        );
+      } else {
+        this.article.md = this.article.markdown;
+      }
+      this.article.html = this.render(this.article.md);
       NProgress.done();
       this.loading = false;
     } catch (e) {

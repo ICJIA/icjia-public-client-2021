@@ -101,7 +101,7 @@
           <div
             v-scroll="onScroll"
             class="article-body"
-            v-html="articleBody.main"
+            v-html="article.html"
             ref="main"
           />
 
@@ -163,16 +163,6 @@
               </template>
             </BaseInfoBlock>
           </div>
-
-          <template v-if="articleBody.footer">
-            <v-divider></v-divider>
-
-            <div
-              v-scroll="onScroll"
-              class="article-body"
-              v-html="articleBody.footer"
-            />
-          </template>
         </v-col>
       </v-col>
     </v-row>
@@ -234,17 +224,17 @@ export default {
     article() {
       return format(this.item);
     },
-    articleBody() {
-      const { markdown, images } = this.item;
-      const { renderMarkdown, addImages } = this.markdownUtils;
-      const body =
-        markdown && renderMarkdown && addImages
-          ? renderMarkdown(images ? addImages(images, markdown) : markdown)
-          : "";
-      const [main, footer] = body.split('<hr class="footnotes-sep">');
-      this.parseMain(main);
-      return { main, footer };
-    },
+    // articleBody() {
+    //   const { markdown, images } = this.item;
+    //   const { renderMarkdown, addImages } = this.markdownUtils;
+    //   const body =
+    //     markdown && renderMarkdown && addImages
+    //       ? renderMarkdown(images ? addImages(images, markdown) : markdown)
+    //       : "";
+    //   const [main, footer] = body.split('<hr class="footnotes-sep">');
+    //   this.parseMain(main);
+    //   return { main, footer };
+    // },
     hasAuthorInfo() {
       const { authors } = this.item;
       return authors.filter((el) => el.description).length > 0;
@@ -338,7 +328,29 @@ export default {
       win.focus();
     },
   },
-  mounted() {},
+  beforeDestroy() {
+    window.jQuery('[id*="fnref"]').off("click", (e) => {
+      e.preventDefault();
+      this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
+    });
+    window.jQuery(".footnote-backref").off("click", (e) => {
+      e.preventDefault();
+      this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
+    });
+    console.log("click events removed");
+  },
+  async mounted() {
+    await this.$nextTick(() => {
+      window.jQuery('[id*="fnref"]').on("click", (e) => {
+        e.preventDefault();
+        this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
+      });
+      window.jQuery(".footnote-backref").on("click", (e) => {
+        e.preventDefault();
+        this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
+      });
+    });
+  },
 };
 </script>
 
