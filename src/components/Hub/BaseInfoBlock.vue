@@ -13,8 +13,8 @@ export default {
   props: {
     large: {
       type: Boolean,
-      default: false
-    }
-  }
-}
+      default: false,
+    },
+  },
+};
 </script>

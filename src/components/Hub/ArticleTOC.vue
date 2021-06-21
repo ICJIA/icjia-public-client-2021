@@ -29,8 +29,8 @@ export default {
     headings: NodeList,
     activeHeading: {
       type: String,
-      default: null
-    }
-  }
-}
+      default: null,
+    },
+  },
+};
 </script>

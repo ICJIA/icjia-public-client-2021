@@ -15,6 +15,16 @@ const GET_ARTICLE_COUNT_QUERY = ignoredGqlTag`
   }
 `;
 
+const GET_DATASET_COUNT_QUERY = ignoredGqlTag`
+  query countDataset{
+    datasetsConnection(where: { status: "published" }) {
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
 const GET_ALL_ARTICLES_QUERY = ignoredGqlTag`
   query articles {
     articles(where: { status: "published" }) {
@@ -50,4 +60,5 @@ export {
   GET_ALL_ARTICLES_QUERY,
   GET_ARTICLE_GROUP_QUERY,
   GET_ARTICLE_COUNT_QUERY,
+  GET_DATASET_COUNT_QUERY,
 };

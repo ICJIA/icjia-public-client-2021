@@ -15,14 +15,14 @@ export default {
   props: {
     name: {
       type: String,
-      default: ''
+      default: "",
     },
     dense: {
       type: Boolean,
-      default: false
-    }
-  }
-}
+      default: false,
+    },
+  },
+};
 </script>
 
 <style scoped>

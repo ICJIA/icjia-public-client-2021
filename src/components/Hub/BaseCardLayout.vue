@@ -28,30 +28,30 @@
 </template>
 
 <script>
-import BaseCard from './BaseCard'
-import BaseImage from './BaseImage'
-import MarkerExternal from './MarkerExternal'
-import MarkerProject from './MarkerProject'
+import BaseCard from "./BaseCard";
+import BaseImage from "./BaseImage";
+import MarkerExternal from "./MarkerExternal";
+import MarkerProject from "./MarkerProject";
 
 export default {
   components: {
     BaseCard,
     BaseImage,
     MarkerExternal,
-    MarkerProject
+    MarkerProject,
   },
   props: {
     external: Boolean,
     horizontal: {
       type: Boolean,
-      default: true
+      default: true,
     },
     image: {
       type: String,
-      default: null
+      default: null,
     },
     preview: Boolean,
-    project: Boolean
-  }
-}
+    project: Boolean,
+  },
+};
 </script>

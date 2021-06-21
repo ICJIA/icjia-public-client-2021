@@ -18,24 +18,24 @@ export default {
   props: {
     label: {
       type: String,
-      default: null
+      default: null,
     },
     href: {
       type: String,
-      default: null
+      default: null,
     },
     icon: {
       type: String,
-      default: null
+      default: null,
     },
     small: {
       type: Boolean,
-      default: false
+      default: false,
     },
     to: {
       type: String,
-      default: null
-    }
-  }
-}
+      default: null,
+    },
+  },
+};
 </script>

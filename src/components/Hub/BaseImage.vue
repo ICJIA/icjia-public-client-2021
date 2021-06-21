@@ -17,12 +17,12 @@ export default {
   props: {
     horizontal: {
       type: Boolean,
-      default: false
+      default: false,
     },
     src: {
       type: String,
-      default: null
-    }
-  }
-}
+      default: null,
+    },
+  },
+};
 </script>
