@@ -344,6 +344,8 @@ export default {
       markdown
       splash
       thumbnail
+      citation
+      funding
   }
  
 }`;

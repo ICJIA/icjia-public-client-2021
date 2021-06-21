@@ -41,19 +41,19 @@ const routes = [
     path: "/researchhub/search",
     name: "hubSearch",
     component: () =>
-      import(/* webpackChunkName: "hub" */ "../views/HubSearch.vue"),
+      import(/* webpackChunkName: "hub" */ "../views/Hub/Search.vue"),
   },
   {
     path: "/researchhub/articles",
     name: "hubArticles",
     component: () =>
-      import(/* webpackChunkName: "hub" */ "../views/HubArticles.vue"),
+      import(/* webpackChunkName: "hub" */ "../views/Hub/AllArticles.vue"),
   },
   {
     path: "/researchhub/articles/:slug",
     name: "hubArticlesSingle",
     component: () =>
-      import(/* webpackChunkName: "hub" */ "../views/HubArticlesSingle.vue"),
+      import(/* webpackChunkName: "hub" */ "../views/Hub/ArticlesSingle.vue"),
   },
   {
     path: "/preview",
