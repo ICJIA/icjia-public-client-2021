@@ -38,7 +38,7 @@
             class="article-download"
             @click="downloadHelper('extra')"
           >
-            <template>{{ 'appendix' }}</template>
+            <template>{{ "appendix" }}</template>
             <v-icon>$vuetify.icons.download</v-icon>
           </v-btn>
         </div>
@@ -66,7 +66,7 @@
             </div>
 
             <BaseButton label="Back" :to="preview ? '' : '/articles'">
-              <template>{{ 'back' }}</template>
+              <template>{{ "back" }}</template>
             </BaseButton>
           </v-row>
 
@@ -79,7 +79,7 @@
           <div class="mb-4 text-uppercase font-oswald">
             <span v-for="(author, i) in article.authors" :key="i">
               <template v-if="i > 0">{{
-                article.authors.length > i + 1 ? ', ' : ' and '
+                article.authors.length > i + 1 ? ", " : " and "
               }}</template>
               <a @click="$emit('author-click', $event)">{{ author.title }}</a>
             </span>
@@ -95,7 +95,7 @@
               aria-label="Print"
               @click="printArticle"
             >
-              <template>{{ '$vuetify.icons.printer' }}</template>
+              <template>{{ "$vuetify.icons.printer" }}</template>
             </v-icon>
           </div>
 
@@ -110,7 +110,7 @@
           <div class="my-12">
             <BaseInfoBlock v-if="hasAuthorInfo" :large="true">
               <template #title>{{
-                `About the author${article.authors.length > 1 ? 's' : ''}`
+                `About the author${article.authors.length > 1 ? "s" : ""}`
               }}</template>
               <template #text>
                 <p
@@ -123,12 +123,12 @@
             </BaseInfoBlock>
 
             <BaseInfoBlock v-if="article.funding" :large="true">
-              <template #title>{{ 'Funding acknowledgment' }}</template>
+              <template #title>{{ "Funding acknowledgment" }}</template>
               <template #text>{{ article.funding }}</template>
             </BaseInfoBlock>
 
             <BaseInfoBlock v-if="article.citation" :large="true">
-              <template #title>{{ 'Suggested citation' }}</template>
+              <template #title>{{ "Suggested citation" }}</template>
               <template #text>
                 <span v-html="article.citation"></span>
                 <a
@@ -143,7 +143,7 @@
             </BaseInfoBlock>
 
             <BaseInfoBlock v-if="hasRelated" :large="true">
-              <template #title>{{ 'Related contents' }}</template>
+              <template #title>{{ "Related contents" }}</template>
               <template #text>
                 <ul>
                   <li v-for="(app, i) in article.apps" :key="`app${i}`">
@@ -182,15 +182,15 @@
 </template>
 
 <script>
-import { format } from './utils/itemFormatter'
-import { createMarkdownUtils, initMarkdownIt } from './utils/markdownIt'
-import { initTexmath } from './utils/texmath'
+import { format } from "./utils/itemFormatter";
+import { createMarkdownUtils, initMarkdownIt } from "./utils/markdownIt";
+import { initTexmath } from "./utils/texmath";
 
-import ArticleTOC from './components/ArticleTOC'
-import BaseButton from './components/BaseButton'
-import BaseInfoBlock from './components/BaseInfoBlock'
-import BasePropChip from './components/BasePropChip'
-import MarkerExternal from './components/MarkerExternal'
+import ArticleTOC from "./components/ArticleTOC";
+import BaseButton from "./components/BaseButton";
+import BaseInfoBlock from "./components/BaseInfoBlock";
+import BasePropChip from "./components/BasePropChip";
+import MarkerExternal from "./components/MarkerExternal";
 
 export default {
   components: {
@@ -198,7 +198,7 @@ export default {
     BaseButton,
     BaseInfoBlock,
     BasePropChip,
-    MarkerExternal
+    MarkerExternal,
   },
   props: {
     item: {
@@ -222,122 +222,122 @@ export default {
           markdown: null,
           splash: null,
           tags: null,
-          title: null
-        }
-      }
+          title: null,
+        };
+      },
     },
     downloader: {
       type: Function,
-      default() {}
+      default() {},
     },
     preview: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
-      activeHeading: 'introduction',
-      baseUrl: 'localhost:8080/',
+      activeHeading: "introduction",
+      baseUrl: "localhost:8080/",
       isTOCSticky: false,
       markdownUtils: {},
-      viewTitleHeight: 60 + 80
-    }
+      viewTitleHeight: 60 + 80,
+    };
   },
   computed: {
     article() {
-      return format(this.item)
+      return format(this.item);
     },
     articleBody() {
-      const { markdown, images } = this.item
-      const { renderMarkdown, addImages } = this.markdownUtils
+      const { markdown, images } = this.item;
+      const { renderMarkdown, addImages } = this.markdownUtils;
       const body =
         markdown && renderMarkdown && addImages
           ? renderMarkdown(images ? addImages(images, markdown) : markdown)
-          : ''
-      const [main, footer] = body.split('<hr class="footnotes-sep">')
-      return { main, footer }
+          : "";
+      const [main, footer] = body.split('<hr class="footnotes-sep">');
+      return { main, footer };
     },
     hasAuthorInfo() {
-      const { authors } = this.item
-      return authors.filter(el => el.description).length > 0
+      const { authors } = this.item;
+      return authors.filter((el) => el.description).length > 0;
     },
     hasRelated() {
-      const { apps, datasets } = this.item
-      return (apps && apps.length) || (datasets && datasets.length)
+      const { apps, datasets } = this.item;
+      return (apps && apps.length) || (datasets && datasets.length);
     },
     headings() {
-      const { markdown } = this.item
-      const { parseHeadings } = this.markdownUtils
-      return markdown && parseHeadings ? parseHeadings(markdown) : null
+      const { markdown } = this.item;
+      const { parseHeadings } = this.markdownUtils;
+      return markdown && parseHeadings ? parseHeadings(markdown) : null;
     },
     splashHeight() {
-      const { xs, sm } = this.$vuetify.breakpoint
+      const { xs, sm } = this.$vuetify.breakpoint;
 
-      if (xs) return 240
-      else if (sm) return 360
-      else return 480
-    }
+      if (xs) return 240;
+      else if (sm) return 360;
+      else return 480;
+    },
   },
   async created() {
-    await initTexmath()
+    await initTexmath();
     // eslint-disable-next-line no-undef
-    const md = initMarkdownIt().use(texmath.use(katex))
-    this.markdownUtils = createMarkdownUtils(md)
+    const md = initMarkdownIt().use(texmath.use(katex));
+    this.markdownUtils = createMarkdownUtils(md);
   },
   methods: {
     async downloadHelper(type) {
-      await this.downloader(type)
+      await this.downloader(type);
     },
     onScroll(e) {
-      if (typeof window === 'undefined' || this.headings === null) return
+      if (typeof window === "undefined" || this.headings === null) return;
 
-      const top = window.pageYOffset || e.target.scrollTop || 0
-      const headings = this.headings
+      const top = window.pageYOffset || e.target.scrollTop || 0;
+      const headings = this.headings;
 
       if (headings.length && top === 0) {
-        this.activeHeading = headings[0].id
+        this.activeHeading = headings[0].id;
       } else {
-        headings.forEach(heading => {
-          let elHeading = this.$el.querySelector(`#${heading.id}`)
-          let rect = elHeading.getBoundingClientRect()
+        headings.forEach((heading) => {
+          let elHeading = this.$el.querySelector(`#${heading.id}`);
+          let rect = elHeading.getBoundingClientRect();
           if (rect.top < 91 && this.activeHeading !== heading.id) {
-            this.activeHeading = heading.id
+            this.activeHeading = heading.id;
           }
-        })
+        });
       }
     },
     onScrollTOC(e) {
-      if (typeof window === 'undefined') return
-      const top = window.pageYOffset || e.target.scrollTop || 0
-      const threshold = this.splashHeight + this.viewTitleHeight
+      if (typeof window === "undefined") return;
+      const top = window.pageYOffset || e.target.scrollTop || 0;
+      const threshold = this.splashHeight + this.viewTitleHeight;
 
-      this.isTOCSticky = top > threshold
+      this.isTOCSticky = top > threshold;
     },
     printArticle() {
       const fonts =
         '<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Gentium+Book+Basic&amp;display=swap">' +
         '<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400&display=swap">' +
-        '<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald&display=swap">'
-      const nodes = document.querySelectorAll('link[rel="stylesheet"], style')
+        '<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald&display=swap">';
+      const nodes = document.querySelectorAll('link[rel="stylesheet"], style');
       const style = Array.from(nodes)
-        .map(el => el.outerHTML)
-        .join('')
-      const content = document.getElementById('article-content').innerHTML
+        .map((el) => el.outerHTML)
+        .join("");
+      const content = document.getElementById("article-content").innerHTML;
 
-      this.printWindow({ head: fonts + style, body: content })
+      this.printWindow({ head: fonts + style, body: content });
     },
     printWindow({ head, body }) {
-      const win = window.open('', '')
+      const win = window.open("", "");
       const toWrite =
         `<head>${head}</head>` +
         `<body><div id="app" class="v-application"><div id="article-view">${body}</div></div></body>` +
         `<script>window.print(); window.close()<` +
-        `/script>`
-      win.document.write(toWrite)
-      win.document.close()
-      win.focus()
-    }
-  }
-}
+        `/script>`;
+      win.document.write(toWrite);
+      win.document.close();
+      win.focus();
+    },
+  },
+};
 </script>

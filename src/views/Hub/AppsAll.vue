@@ -90,7 +90,7 @@ export default {
     nprogress.start();
   },
   apollo: {
-    datasets: {
+    apps: {
       prefetch: true,
 
       query: GET_ALL_APPS_QUERY,
