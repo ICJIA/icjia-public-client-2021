@@ -9,6 +9,7 @@ import "@/assets/app.css";
 import "@/assets/github-markdown.css";
 import "@/assets/hub.css";
 import "@/components/_globals";
+import "@/components/Hub/_hub";
 import "@/filters";
 // import "material-design-icons-iconfont/dist/material-design-icons.css";
 // import Masonry from "masonry-layout";
