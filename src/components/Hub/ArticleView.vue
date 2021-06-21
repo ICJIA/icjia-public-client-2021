@@ -183,6 +183,7 @@
 import { format } from "@/utils/itemFormatter";
 import { createMarkdownUtils, initMarkdownIt } from "@/utils/markdownIt";
 import { initTexmath } from "@/utils/texmath";
+// const cheerio = require("cheerio");
 
 export default {
   props: {
@@ -241,6 +242,7 @@ export default {
           ? renderMarkdown(images ? addImages(images, markdown) : markdown)
           : "";
       const [main, footer] = body.split('<hr class="footnotes-sep">');
+      this.parseMain(main);
       return { main, footer };
     },
     hasAuthorInfo() {
@@ -280,6 +282,11 @@ export default {
     this.markdownUtils = createMarkdownUtils(md);
   },
   methods: {
+    parseMain(html) {
+      if (html.length) {
+        console.log(window.jQuery("h2"));
+      }
+    },
     async downloadHelper(type) {
       await this.downloader(type);
     },
