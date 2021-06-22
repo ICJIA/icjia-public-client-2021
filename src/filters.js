@@ -76,6 +76,24 @@ Vue.filter("truncate", function (string, maxWords) {
   return string;
 });
 
+Vue.filter(
+  "truncateBySentence",
+  function (string, sentCount = 2, moreText = "") {
+    //match ".","!","?" - english ending sentence punctuation
+    // eslint-disable-next-line no-useless-escape
+    var sentences = string.match(/[^\.!\?]+[\.!\?]+/g);
+    if (sentences) {
+      console.log(sentences.length);
+      if (sentences.length >= sentCount && sentences.length > sentCount) {
+        //has enough sentences
+        return sentences.slice(0, sentCount).join(" ") + moreText;
+      }
+    }
+    //return full text if nothing else
+    return string;
+  }
+);
+
 Vue.filter("localTime", function (timestamp) {
   const tstamp = moment(timestamp);
   return tstamp.tz(appConfig.timezone).format("h:mm a");

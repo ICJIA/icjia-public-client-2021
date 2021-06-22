@@ -20,18 +20,6 @@ const GET_ALL_NEWS_QUERY = gql`
         formats
       }
     }
-
-    meetings(sort: "published_at:desc") {
-      id
-      title
-      summary
-      slug
-      start
-      end
-      created_at
-      updated_at
-      published_at
-    }
   }
 `;
 

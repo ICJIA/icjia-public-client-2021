@@ -2,16 +2,18 @@
   <div>
     <BaseContent :error="error" :loading="loading">
       <template slot="content" v-if="!loading">
-        <v-container :fluid="news.showTOC ? true : false">
-          <v-row>
-            <v-col cols="12" :md="news.showTOC ? 9 : 12">
-              <h1 v-html="render(news.title)"></h1>
-              <div v-html="render(news.body)"></div>
-            </v-col>
-            <v-col cols="12" v-if="news && news.showTOC" md="3" class="px-3"
-              ><Toc></Toc
-            ></v-col>
-          </v-row>
+        <v-container>
+          <v-card class="px-5 py-5 mx-5 my-5" elevation="0">
+            <v-row>
+              <v-col cols="12" :md="news.showTOC ? 9 : 12">
+                <h1 v-html="render(news.title)"></h1>
+                <div v-html="render(news.body)"></div>
+              </v-col>
+              <v-col cols="12" v-if="news && news.showTOC" md="3" class="px-3"
+                ><Toc></Toc
+              ></v-col>
+            </v-row>
+          </v-card>
         </v-container>
       </template>
     </BaseContent>

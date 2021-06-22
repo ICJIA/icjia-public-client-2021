@@ -27,7 +27,7 @@
       >
 
       <v-img
-        v-if="item.splash"
+        v-if="item.splash && !textOnly"
         :src="getSplash(item)"
         :lazy-src="`https://agency.icjia-api.cloud${item.splash.formats.thumbnail.url}`"
         width="100%"

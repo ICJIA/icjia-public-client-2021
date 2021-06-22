@@ -72,10 +72,10 @@
         >
 
         <v-card-text v-if="item.abstract" style="margin-top: -15px">{{
-          this.truncate(item.abstract, 90)
+          item.abstract | truncateBySentence(2, "")
         }}</v-card-text>
         <v-card-text v-if="item.description" style="margin-top: -15px">{{
-          this.truncate(item.description, 40)
+          item.description | truncateBySentence(2, "")
         }}</v-card-text>
       </div>
     </v-card>

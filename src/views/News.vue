@@ -73,13 +73,13 @@ export default {
   },
   methods: {
     // eslint-disable-next-line no-unused-vars
-    mergePostsAndMeetings(posts, meetings) {
-      let news = posts.concat(meetings);
-      news.sort((b, a) => {
-        return a.published_at.localeCompare(b.published_at);
-      });
-      this.news = news.slice(0, this.totalNewsItems);
-    },
+    // mergePostsAndMeetings(posts, meetings) {
+    //   let news = posts.concat(meetings);
+    //   news.sort((b, a) => {
+    //     return a.published_at.localeCompare(b.published_at);
+    //   });
+    //   this.news = news.slice(0, this.totalNewsItems);
+    // },
     toggle(e) {
       this.view = e;
       // console.log('view: ', this.view)
@@ -112,12 +112,7 @@ export default {
           fullPath: `/news/${e.slug}/`,
           contentType: "News",
         }));
-        let meetings = ApolloQueryResult.data.meetings.map((e) => ({
-          ...e,
-          fullPath: `/meetings/${e.slug}/`,
-          contentType: "Meeting",
-        }));
-        this.mergePostsAndMeetings(posts, meetings);
+        this.news = posts;
       },
     },
   },

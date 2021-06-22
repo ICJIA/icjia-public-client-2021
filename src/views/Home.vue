@@ -86,6 +86,7 @@ export default {
       loading: true,
       hubLoading: true,
       news: null,
+      meetings: null,
       grants: null,
       employment: null,
       slider: null,
@@ -100,6 +101,10 @@ export default {
         {
           label: "News",
           url: "/news/",
+        },
+        {
+          label: "Meetings",
+          url: "/meetings/",
         },
         {
           label: "Funding",
@@ -133,7 +138,7 @@ export default {
         return {
           now: new Date(),
           eventLimit: 3,
-          postLimit: 6,
+          postLimit: 4,
           fundingLimit: 4,
           meetingLimit: 5,
           employmentLimit: 5,
@@ -152,12 +157,14 @@ export default {
           fullPath: `/news/${e.slug}/`,
           contentType: "News",
         }));
+        this.news = posts;
         let meetings = ApolloQueryResult.data.meetings.map((e) => ({
           ...e,
           fullPath: `/meetings/${e.slug}/`,
           contentType: "Meeting",
         }));
-        this.mergePostsAndMeetings(posts, meetings);
+        this.meetings = meetings;
+        //this.mergePostsAndMeetings(posts, meetings);
         // Funding and Employment
         this.grants = ApolloQueryResult.data.grants.map((e) => ({
           ...e,
