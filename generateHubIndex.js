@@ -14,6 +14,7 @@ const query = `query {
     authors
     tags
     date
+    categories
    
   }
   apps (where: { status: "published" }) {
@@ -27,6 +28,7 @@ const query = `query {
     abtract: description
     url
     tags
+    categories
     
   }
 
@@ -39,6 +41,7 @@ const query = `query {
     tags
     project
     abstract: description
+    categories
   }
 }`;
 

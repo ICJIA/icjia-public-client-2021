@@ -102,6 +102,10 @@
                     "weight": 2
                 },
                 {
+                    "name": "categories",
+                    "weight": 2
+                },
+                {
                     "name": "abstract",
                     "weight": 2
                 }

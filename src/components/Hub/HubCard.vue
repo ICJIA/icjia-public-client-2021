@@ -1,10 +1,10 @@
 <template>
   <div>
     <v-card
-      class="pa-2 grid-item mb-3 info-card py-3 px-3"
+      class="pa-2 grid-item mb-3 info-card py-8 px-3"
       outlined
-      :height="orientation === 'grid' ? cardHeight : null"
-      @click="$router.push(item.fullPath)"
+      :height="orientation === 'grid' ? null : null"
+      @click.prevent="$router.push(item.fullPath)"
     >
       <v-card-text>{{ item.date | format }}</v-card-text>
       <v-card-text v-if="item.title"
@@ -94,6 +94,38 @@
         style="margin-top: -15px; color: #111"
         >{{ truncate(item.abstract, this.truncation) }}</v-card-text
       >
+      <BasePropDisplay name="Contributors" v-if="item.contributors">
+        <template>
+          <span v-for="(contributor, i) in item.contributors" :key="i">
+            <template v-if="i > 1">{{
+              app.contributors.length > i + 1 ? ", " : " and "
+            }}</template>
+
+            <a
+              v-if="contributor.url"
+              :href="contributor.url"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <template>{{ contributor.title }}</template>
+            </a>
+            <template v-else>{{ contributor.title }}</template>
+          </span>
+        </template>
+      </BasePropDisplay>
+      <!-- <BasePropDisplay v-if="item.categories" name="Categories">
+        <span>{{ item.categories }}</span>
+      </BasePropDisplay> -->
+
+      <BasePropDisplay v-if="item.tags" name="">
+        <BasePropChip
+          v-for="tag in item.tags"
+          :key="tag"
+          @chip-click="$emit('tag-click', $event)"
+        >
+          <template>{{ tag }}</template>
+        </BasePropChip>
+      </BasePropDisplay>
     </v-card>
   </div>
 </template>

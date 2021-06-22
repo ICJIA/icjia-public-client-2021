@@ -26,7 +26,7 @@
         <template v-if="app.contributors">
           <span v-for="(contributor, i) in app.contributors" :key="i">
             <template v-if="i > 1">{{
-              app.contributors.length > i + 1 ? ', ' : ' and '
+              app.contributors.length > i + 1 ? ", " : " and "
             }}</template>
 
             <a
@@ -41,7 +41,7 @@
           </span>
         </template>
 
-        <template v-else>{{ 'ICJIA R&A staff' }}</template>
+        <template v-else>{{ "ICJIA R&A staff" }}</template>
       </BasePropDisplay>
 
       <BasePropDisplay v-if="app.categories" name="Categories">
@@ -56,19 +56,19 @@
         :to="preview ? null : `/apps/${app.slug}`"
         icon="$vuetify.icons.dotsHorizontal"
       >
-        <template>{{ 'more' }}</template>
+        <template>{{ "more" }}</template>
       </BaseButton>
     </template>
   </BaseCardLayout>
 </template>
 
 <script>
-import { format } from './utils/itemFormatter'
-import BaseButton from './components/BaseButton'
-import BaseCardLayout from './components/BaseCardLayout'
-import BasePropChip from './components/BasePropChip'
-import BasePropDisplay from './components/BasePropDisplay'
-import BaseTitleDisplay from './components/BaseTitleDisplay'
+import { format } from "./utils/itemFormatter";
+import BaseButton from "./components/BaseButton";
+import BaseCardLayout from "./components/BaseCardLayout";
+import BasePropChip from "./components/BasePropChip";
+import BasePropDisplay from "./components/BasePropDisplay";
+import BaseTitleDisplay from "./components/BaseTitleDisplay";
 
 export default {
   components: {
@@ -76,12 +76,12 @@ export default {
     BaseCardLayout,
     BasePropChip,
     BasePropDisplay,
-    BaseTitleDisplay
+    BaseTitleDisplay,
   },
   props: {
     horizontal: {
       type: Boolean,
-      default: false
+      default: false,
     },
     item: {
       type: Object,
@@ -94,19 +94,19 @@ export default {
           external: null,
           image: null,
           tags: null,
-          title: null
-        }
-      }
+          title: null,
+        };
+      },
     },
     preview: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   computed: {
     app() {
-      return format(this.item)
-    }
-  }
-}
+      return format(this.item);
+    },
+  },
+};
 </script>

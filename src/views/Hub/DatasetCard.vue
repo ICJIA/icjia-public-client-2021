@@ -24,7 +24,7 @@
       <BasePropDisplay v-if="dataset.sources" name="Sources">
         <span v-for="(source, i) in dataset.sources" :key="i">
           <template v-if="i > 0">{{
-            dataset.sources.length > i + 1 ? ', ' : ' and '
+            dataset.sources.length > i + 1 ? ", " : " and "
           }}</template>
 
           <a
@@ -52,19 +52,19 @@
         :to="preview ? null : `/datasets/${dataset.slug}`"
         icon="$vuetify.icons.dotsHorizontal"
       >
-        <template>{{ 'more' }}</template>
+        <template>{{ "more" }}</template>
       </BaseButton>
     </template>
   </BaseCardLayout>
 </template>
 
 <script>
-import { format } from './utils/itemFormatter'
-import BaseButton from './components/BaseButton'
-import BaseCardLayout from './components/BaseCardLayout'
-import BasePropChip from './components/BasePropChip'
-import BasePropDisplay from './components/BasePropDisplay'
-import BaseTitleDisplay from './components/BaseTitleDisplay'
+import { format } from "./utils/itemFormatter";
+import BaseButton from "./components/BaseButton";
+import BaseCardLayout from "./components/BaseCardLayout";
+import BasePropChip from "./components/BasePropChip";
+import BasePropDisplay from "./components/BasePropDisplay";
+import BaseTitleDisplay from "./components/BaseTitleDisplay";
 
 export default {
   components: {
@@ -72,7 +72,7 @@ export default {
     BaseCardLayout,
     BasePropChip,
     BasePropDisplay,
-    BaseTitleDisplay
+    BaseTitleDisplay,
   },
   props: {
     item: {
@@ -88,19 +88,19 @@ export default {
           project: null,
           sources: null,
           tags: null,
-          title: null
-        }
-      }
+          title: null,
+        };
+      },
     },
     preview: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   computed: {
     dataset() {
-      return format(this.item)
-    }
-  }
-}
+      return format(this.item);
+    },
+  },
+};
 </script>

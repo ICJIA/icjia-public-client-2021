@@ -51,6 +51,8 @@ const GET_ALL_ARTICLES_QUERY = ignoredGqlTag`
       abstract
       authors
       date
+      tags
+      categories
     }
   }
 `;
@@ -69,6 +71,8 @@ const GET_ARTICLE_GROUP_QUERY = ignoredGqlTag`
       abstract
       authors
       date
+       tags
+      categories
     }
   }
 `;
@@ -84,6 +88,8 @@ const GET_ALL_APPS_QUERY = ignoredGqlTag`
       date
       contributors
       image
+      tags
+      categories
       
     }
   }
