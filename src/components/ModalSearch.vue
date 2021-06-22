@@ -34,7 +34,7 @@
             style="font-weight: 900"
           />
 
-          <div v-if="query && query.length > 3" class="mb-12">
+          <div v-if="query && query.length" class="mb-12">
             <div
               v-for="(result, index) in queryResults"
               :key="index"

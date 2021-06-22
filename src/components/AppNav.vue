@@ -7,7 +7,7 @@
       height="90"
       hide-on-scroll
       scroll-threshold="1"
-      style="z-index: 9999; border-bottom: 1px solid #eee !important"
+      style="z-index: 99; border-bottom: 1px solid #eee !important"
       flat
     >
       <div

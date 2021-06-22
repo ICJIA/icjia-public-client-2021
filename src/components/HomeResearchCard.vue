@@ -9,16 +9,16 @@
       <v-img
         :src="
           getImagePath(
-            `https://icjia.illinois.gov/researchhub/images/${item.id}-splash.jpeg`
+            `https://icjia.illinois.gov/research/images/${item.id}-splash.jpeg`
           )
         "
         :lazy-src="item.thumbnail"
-        aria-label="ResearchHub content image"
+        aria-label="research content image"
         width="100%"
         height="250"
         class=""
         style="border: 0px solid #fafafa"
-        alt="ResearchHub content image"
+        alt="research content image"
         v-if="type === 'article'"
       >
         <template v-slot:placeholder>
