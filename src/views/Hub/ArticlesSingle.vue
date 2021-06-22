@@ -28,6 +28,13 @@ api.interceptors.response.use((response) => {
   return response;
 });
 export default {
+  watch: {
+    // eslint-disable-next-line no-unused-vars
+    $route(to, from) {
+      console.log("route change");
+      this.fetchContent();
+    },
+  },
   data() {
     return {
       article: null,
@@ -41,29 +48,8 @@ export default {
     };
   },
   methods: {
-    init() {},
-    addImages(images, markdown) {
-      return `${markdown}${images
-        .map((i) => `\n\n[${i.title}]: ${i.src}`)
-        .join("\n")}`;
-    },
-    render(content) {
-      let html = renderToHtml(content);
-      return html;
-    },
-    async downloader(type) {
-      const { hash, ext } = this.article[`${type}file`];
-      window.open(
-        `https://icjia.illinois.gov/researchhub/files/${hash}${ext}`,
-        "_blank"
-      );
-      // console.log(hash, ext);
-      //console.log(type, this.article);
-    },
-  },
-
-  async mounted() {
-    const query = `query {
+    async fetchContent() {
+      const query = `query {
       articles (where: { status: "published", slug: "${this.$route.params.slug}" }) {
       id
       mainfiletype
@@ -97,31 +83,54 @@ export default {
   }
  
 }`;
-    try {
-      let article = await api.post("/graphql", {
-        query,
-        validateStatus: function (status) {
-          return status >= 200 && status < 300;
-        },
-      });
-      this.article = article.data.data.articles[0];
-      if (this.article.images) {
-        this.article.md = this.addImages(
-          this.article.images,
-          this.article.markdown
-        );
-      } else {
-        this.article.md = this.article.markdown;
+      try {
+        let article = await api.post("/graphql", {
+          query,
+          validateStatus: function (status) {
+            return status >= 200 && status < 300;
+          },
+        });
+        this.article = article.data.data.articles[0];
+        if (this.article.images) {
+          this.article.md = this.addImages(
+            this.article.images,
+            this.article.markdown
+          );
+        } else {
+          this.article.md = this.article.markdown;
+        }
+        this.article.html = this.render(this.article.md);
+        NProgress.done();
+        this.loading = false;
+      } catch (e) {
+        console.log(e);
+        this.error = e;
+        NProgress.done();
+        this.loading = false;
       }
-      this.article.html = this.render(this.article.md);
-      NProgress.done();
-      this.loading = false;
-    } catch (e) {
-      console.log(e);
-      this.error = e;
-      NProgress.done();
-      this.loading = false;
-    }
+    },
+    addImages(images, markdown) {
+      return `${markdown}${images
+        .map((i) => `\n\n[${i.title}]: ${i.src}`)
+        .join("\n")}`;
+    },
+    render(content) {
+      let html = renderToHtml(content);
+      return html;
+    },
+    async downloader(type) {
+      const { hash, ext } = this.article[`${type}file`];
+      window.open(
+        `https://icjia.illinois.gov/researchhub/files/${hash}${ext}`,
+        "_blank"
+      );
+      // console.log(hash, ext);
+      //console.log(type, this.article);
+    },
+  },
+
+  async mounted() {
+    this.fetchContent();
   },
 };
 </script>

@@ -25,6 +25,13 @@ api.interceptors.response.use((response) => {
   return response;
 });
 export default {
+  watch: {
+    // eslint-disable-next-line no-unused-vars
+    $route(to, from) {
+      console.log("route change");
+      this.fetchContent();
+    },
+  },
   data() {
     return {
       app: null,
@@ -39,9 +46,8 @@ export default {
         "_blank"
       );
     },
-  },
-  async mounted() {
-    const query = `query {
+    async fetchContent() {
+      const query = `query {
       apps (where: { status: "published", slug: "${this.$route.params.slug}" }) {
         id
         title
@@ -69,23 +75,27 @@ export default {
         }
  }
 }`;
-    try {
-      let content = await api.post("/graphql", {
-        query,
-        validateStatus: function (status) {
-          return status >= 200 && status < 300;
-        },
-      });
-      this.app = content.data.data.apps[0];
+      try {
+        let content = await api.post("/graphql", {
+          query,
+          validateStatus: function (status) {
+            return status >= 200 && status < 300;
+          },
+        });
+        this.app = content.data.data.apps[0];
 
-      NProgress.done();
-      this.loading = false;
-    } catch (e) {
-      console.log(e);
-      this.error = e;
-      NProgress.done();
-      this.loading = false;
-    }
+        NProgress.done();
+        this.loading = false;
+      } catch (e) {
+        console.log(e);
+        this.error = e;
+        NProgress.done();
+        this.loading = false;
+      }
+    },
+  },
+  async mounted() {
+    this.fetchContent();
   },
 };
 </script>

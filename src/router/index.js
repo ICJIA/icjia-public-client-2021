@@ -4,6 +4,7 @@ import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import NProgress from "nprogress";
 import appConfig from "@/config.json";
+import { EventBus } from "@/event-bus";
 
 Vue.use(VueRouter);
 
@@ -121,6 +122,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   NProgress.start();
+  EventBus.$emit("closeSearch");
   next();
 });
 

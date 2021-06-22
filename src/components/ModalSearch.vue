@@ -5,7 +5,7 @@
     transition="dialog-bottom-transition"
     ref="searchTop"
   >
-    <v-card color="#fff" min-height="600">
+    <v-card color="#eee" min-height="600">
       <v-card-title class="text-h5 grey lighten-2"> Search ICJIA </v-card-title>
       <div class="px-4 py-4">
         <div style="font-size: 12px" class="text-right mb-9">
@@ -18,6 +18,7 @@
             label="Search"
             placeholder="Search"
             @input="instantSearch"
+            style="font-weight: 900"
           />
 
           <div v-if="query && query.length" class="mb-12">
@@ -26,37 +27,44 @@
               :key="index"
               class="my-2"
             >
-              <!-- <v-card
-              elevation="1"
-              color="#f1f3f5"
-              @click="route(result)"
-              class="hover py-2 px-2 mb-5 card"
-            >
-              <v-card-text>{{ result.item.contentType }}</v-card-text>
-              <div v-if="result.item.title">
-                <span
-                  style="font-size: 20px; font-weight: bold"
-                  class=""
-                  v-html="result.item.title"
-                ></span>
-              </div>
-              <v-card-text v-html="result.item.abstract"></v-card-text>
-              <v-card-text v-if="result.item.authors"
-                ><span
-                  v-for="(author, index) in result.item.authors"
-                  :key="index"
-                >
-                  {{ author.title
-                  }}<span v-if="index < result.item.authors.length - 2"
-                    >,
-                  </span>
-                  <span v-if="index === result.item.authors.length - 2">
-                    and
-                  </span>
-                </span>
-              </v-card-text>
-            </v-card> -->
-              {{ result }}
+              <v-card
+                elevation="0"
+                color="#fff"
+                @click="route(result.item.fullPath)"
+                class="hover py-4 px-4 mb-5 card"
+              >
+                <div style="font-size: 12px">
+                  <span style="font-weight: 700">{{
+                    result.item.contentType.toUpperCase()
+                  }}</span>
+                  | {{ result.item.date | format }}
+                </div>
+                <div v-if="result.item.title" class="mt-2">
+                  <span
+                    style="font-size: 16px; font-weight: bold"
+                    class=""
+                    v-html="result.item.title"
+                  ></span>
+                  <div v-if="result.item.authors">
+                    <span
+                      style="font-size: 14px"
+                      v-for="(author, index) in result.item.authors"
+                      :key="index"
+                    >
+                      {{ author.title
+                      }}<span v-if="index < result.item.authors.length - 2"
+                        >,
+                      </span>
+                      <span v-if="index === result.item.authors.length - 2">
+                        and
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                <v-card-text v-if="result.item.abstract">{{
+                  result.item.abstract
+                }}</v-card-text>
+              </v-card>
             </div>
           </div>
         </v-form>
@@ -101,6 +109,9 @@ export default {
     this.fuse = new Fuse(searchIndex, this.$myApp.config.search.hub);
   },
   mounted() {
+    EventBus.$on("closeSearch", () => {
+      this.searchModal = false;
+    });
     EventBus.$on("search", (opts) => {
       console.log("fire search: ", opts);
       this.opts = opts;
@@ -156,8 +167,9 @@ export default {
       );
       return cleanExt.substring(1);
     },
-    route(item) {
-      this.$router.push(item.route);
+    route(path) {
+      this.searchModal = false;
+      this.$router.push(path);
     },
     instantSearch() {
       this.queryResults = this.fuse.search(this.query);
