@@ -54,8 +54,12 @@
                       v-for="(author, index) in result.item.authors"
                       :key="index"
                     >
-                      {{ author.title
-                      }}<span v-if="index < result.item.authors.length - 2"
+                      <span
+                        @click.stop.prevent="updateQuery(author.title)"
+                        class="author"
+                        >{{ author.title }}</span
+                      >
+                      <span v-if="index < result.item.authors.length - 2"
                         >,
                       </span>
                       <span v-if="index === result.item.authors.length - 2">
@@ -151,6 +155,10 @@ export default {
 
       return string;
     },
+    updateQuery(author) {
+      this.query = author;
+      this.instantSearch();
+    },
     goToExternal(url) {
       //
       if (url.indexOf("://") > 0 || url.indexOf("//") === 0) {
@@ -195,3 +203,13 @@ export default {
   },
 };
 </script>
+
+<style>
+.author {
+  font-weight: 700;
+  color: #666;
+}
+.author:hover {
+  color: #aaa;
+}
+</style>
