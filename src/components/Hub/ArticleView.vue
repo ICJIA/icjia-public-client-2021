@@ -75,9 +75,11 @@
 
           <h1 class="article-title">{{ article.title }}</h1>
 
-          <div class="article-abstract my-6 px-5 py-5" style="">
-            {{ article.abstract }}
-          </div>
+          <div
+            class="article-abstract my-6 px-5 py-5"
+            style=""
+            v-html="article.abstract"
+          ></div>
 
           <div class="mb-4 text-uppercase font-oswald">
             <span v-for="(author, i) in article.authors" :key="i">

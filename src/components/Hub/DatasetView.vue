@@ -32,15 +32,16 @@
         </BasePropDisplay>
 
         <BasePropDisplay v-if="dataset.categories" name="Categories">
-          <span>{{ dataset.categories }}</span>
+          <span
+            @click.prevent.stop="categoryClick($event)"
+            class="category"
+            style="font-size: 14px"
+            >{{ dataset.categories }}</span
+          >
         </BasePropDisplay>
 
         <BasePropDisplay v-if="dataset.tags" name="Tags">
-          <BasePropChip
-            v-for="tag in dataset.tags"
-            :key="tag"
-            @chip-click="$emit('tag-click', $event)"
-          >
+          <BasePropChip v-for="tag in dataset.tags" :key="tag">
             <template>{{ tag }}</template>
           </BasePropChip>
         </BasePropDisplay>
@@ -62,7 +63,7 @@
         >
           <span>{{ dataset.description }}</span>
         </BasePropDisplay>
-
+        <div class="mt-1">&nbsp;</div>
         <BasePropDisplay v-if="dataset.notes" name="Notes">
           <ul>
             <li v-for="note in dataset.notes" :key="note">
@@ -109,15 +110,26 @@
           </ul>
         </template>
       </BaseInfoBlock>
-      <v-col class="text-center mt-5"
-        ><v-btn
-          elevation="2"
-          color="blue darken-4"
-          @click="download(item.url)"
-          dark
-          x-large
-          >Download the dataset<v-icon right>download</v-icon></v-btn
-        >
+      <v-col class="text-center mt-5">
+        <v-dialog v-model="dialog" class="text-center" persistent width="500">
+          <template #activator="{ on }">
+            <v-btn :small="smAndDown" text v-on="on" elevation="2">
+              <template>{{ "Download" }}</template>
+              <v-icon>download</v-icon>
+            </v-btn>
+          </template>
+
+          <v-sheet class="font-lato px-12 py-12" dark color="#0E4471">
+            <h3 class="pa-6">Did you read the metadata?</h3>
+            <p class="px-6 pb-6">{{ msgDialog }}</p>
+
+            <v-row class="mx-0 px-3 pb-3" justify="end">
+              <v-btn text @click="downloadHelper">Yes, download</v-btn>
+
+              <v-btn text @click="dialog = false">Back</v-btn>
+            </v-row>
+          </v-sheet>
+        </v-dialog>
       </v-col>
     </v-card>
   </v-container>
@@ -125,6 +137,7 @@
 
 <script>
 import { format } from "@/utils/itemFormatter";
+import { EventBus } from "@/event-bus";
 
 const arr2table = ({ arr, cols = ["name", "type", "definition", "values"] }) =>
   `<table>${getThead({ cols })}${getTbody({ cols, rows: arr })}</table>`;
@@ -146,6 +159,7 @@ export default {
   props: {
     item: {
       type: Object,
+
       default() {
         return {
           articles: null,
@@ -178,7 +192,7 @@ export default {
   },
   data() {
     return {
-      dialog: true,
+      dialog: false,
       msgDialog:
         "Context matters. Please read and understand the metadata shown in this page before downloading and using the dataset.",
     };
@@ -201,12 +215,22 @@ export default {
       this.$refs.variables.innerHTML = arr2table({ arr: variables });
   },
   methods: {
-    async downloadHelper() {
-      await this.downloader();
-      this.dialog = false;
+    categoryClick(e) {
+      //console.log("chip click: ", e.target.innerHTML);
+      let opts = {
+        query: e.target.innerText.toLowerCase(),
+        type: "hub",
+      };
+      EventBus.$emit("search", opts);
     },
-    download() {
-      console.log("download dataset here");
+    downloadHelper() {
+      //console.log("download here", this.dataset.datafile);
+      const { hash, ext } = this.dataset.datafile;
+      window.open(
+        `https://icjia.illinois.gov/researchhub/files/${hash}${ext}`,
+        "_blank"
+      );
+      this.dialog = false;
     },
   },
 };

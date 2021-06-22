@@ -1,10 +1,5 @@
 <template>
-  <v-dialog
-    v-model="searchModal"
-    width="80%"
-    transition="dialog-bottom-transition"
-    ref="searchTop"
-  >
+  <v-dialog v-model="searchModal" width="80%" ref="searchTop">
     <v-card color="#eee" min-height="600">
       <v-card-title class="text-h5 grey lighten-2">
         Search ICJIA<v-spacer></v-spacer
@@ -71,6 +66,7 @@
                 <v-card-text v-if="result.item.abstract">{{
                   result.item.abstract
                 }}</v-card-text>
+
                 <template v-if="result.item.tags">
                   <BasePropChip
                     v-for="tag of result.item.tags"
@@ -129,7 +125,7 @@ export default {
       this.searchModal = false;
     });
     EventBus.$on("search", (opts) => {
-      console.log("fire search: ", opts);
+      //console.log("fire search: ", opts);
       this.opts = opts;
       if (this.opts && this.opts.query && this.opts.query.length) {
         this.query = this.opts.query;
@@ -138,7 +134,9 @@ export default {
       this.searchModal = true;
       this.$nextTick(() => {
         let el = document.getElementsByClassName("v-dialog--active");
-        el[0].scrollTop = 0;
+        if (el && el.length) {
+          el[0].scrollTop = 0;
+        }
       });
     });
   },
@@ -189,7 +187,9 @@ export default {
     },
     route(path) {
       this.searchModal = false;
-      this.$router.push(path);
+      this.$router.push(path).catch((err) => {
+        this.$vuetify.goTo(0);
+      });
     },
     instantSearch() {
       this.queryResults = this.fuse.search(this.query);

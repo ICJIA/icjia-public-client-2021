@@ -25,7 +25,7 @@ const query = `query {
     authors: contributors
     date
     slug
-    abtract: description
+    description
     url
     tags
     categories
@@ -40,7 +40,7 @@ const query = `query {
     categories
     tags
     project
-    abstract: description
+   description
     categories
   }
 }`;
@@ -60,6 +60,7 @@ axios
     }));
     apps = apps.map((e) => ({
       ...e,
+      abstract: e.description,
       fullPath: `/researchhub/apps/${e.slug}/`,
       imagePath: `https://icjia.illinois.gov/researchhub/images/${e.id}-image.jpeg`,
       contentType: "application",
@@ -69,6 +70,7 @@ axios
       ...e,
       fullPath: `/researchhub/datasets/${e.slug}/`,
       imagePath: null,
+      abstract: e.description,
       contentType: "dataset",
     }));
 

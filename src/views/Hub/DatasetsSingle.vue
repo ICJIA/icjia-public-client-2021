@@ -25,6 +25,13 @@ api.interceptors.response.use((response) => {
   return response;
 });
 export default {
+  watch: {
+    // eslint-disable-next-line no-unused-vars
+    $route(to, from) {
+      NProgress.start();
+      this.fetchContent();
+    },
+  },
   data() {
     return {
       dataset: null,
@@ -32,16 +39,8 @@ export default {
     };
   },
   methods: {
-    async downloader() {
-      const { hash, ext } = this.item.datafile;
-      window.open(
-        `https://icjia.illinois.gov/researchhub/files/${hash}${ext}`,
-        "_blank"
-      );
-    },
-  },
-  async mounted() {
-    const query = `query {
+    async fetchContent() {
+      const query = `query {
       datasets (where: { status: "published", slug: "${this.$route.params.slug}" }) {
         id
         title
@@ -77,23 +76,34 @@ export default {
         }
  }
 }`;
-    try {
-      let content = await api.post("/graphql", {
-        query,
-        validateStatus: function (status) {
-          return status >= 200 && status < 300;
-        },
-      });
-      this.dataset = content.data.data.datasets[0];
+      try {
+        let content = await api.post("/graphql", {
+          query,
+          validateStatus: function (status) {
+            return status >= 200 && status < 300;
+          },
+        });
+        this.dataset = content.data.data.datasets[0];
 
-      NProgress.done();
-      this.loading = false;
-    } catch (e) {
-      console.log(e);
-      this.error = e;
-      NProgress.done();
-      this.loading = false;
-    }
+        NProgress.done();
+        this.loading = false;
+      } catch (e) {
+        console.log(e);
+        this.error = e;
+        NProgress.done();
+        this.loading = false;
+      }
+    },
+    async downloader() {
+      const { hash, ext } = this.item.datafile;
+      window.open(
+        `https://icjia.illinois.gov/researchhub/files/${hash}${ext}`,
+        "_blank"
+      );
+    },
+  },
+  async mounted() {
+    this.fetchContent();
   },
 };
 </script>
