@@ -35,7 +35,7 @@ const getHubArticlesQuery = (limit) => {
         status
        slug
         thumbnail
-       
+       splash
        createdAt
         abstract
         authors 
@@ -86,7 +86,7 @@ const getHubApplicationsQuery = (limit) => {
       date
       slug
       description
-      
+      image
       url
       articles {
         title

@@ -7,11 +7,7 @@
       @click="routeTo(item)"
     >
       <v-img
-        :src="
-          getImagePath(
-            `https://icjia.illinois.gov/research/images/${item.id}-splash.jpeg`
-          )
-        "
+        :src="item.splash"
         :lazy-src="item.thumbnail"
         aria-label="research content image"
         width="100%"
