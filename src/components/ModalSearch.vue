@@ -64,6 +64,11 @@
                 <v-card-text v-if="result.item.abstract">{{
                   result.item.abstract
                 }}</v-card-text>
+                <template v-if="result.item.tags">
+                  <BasePropChip v-for="tag of result.item.tags" :key="tag">
+                    <template>{{ tag }}</template>
+                  </BasePropChip>
+                </template>
               </v-card>
             </div>
           </div>
@@ -183,5 +188,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped></style>
