@@ -184,6 +184,12 @@ import { initTexmath } from "@/utils/texmath";
 import { EventBus } from "@/event-bus";
 
 export default {
+  watch: {
+    // eslint-disable-next-line no-unused-vars
+    $route(to, from) {
+      console.log("article component here");
+    },
+  },
   props: {
     item: {
       type: Object,

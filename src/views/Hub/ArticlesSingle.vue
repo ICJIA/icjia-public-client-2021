@@ -4,7 +4,8 @@
       v-if="article"
       :item="article"
       :downloader="downloader"
-      class=""
+      @hook:mounted="childMounted"
+      :key="article.title"
     />
   </div>
 </template>
@@ -48,6 +49,9 @@ export default {
     };
   },
   methods: {
+    childMounted() {
+      console.log("child mounted");
+    },
     async fetchContent() {
       const query = `query {
       articles (where: { status: "published", slug: "${this.$route.params.slug}" }) {
