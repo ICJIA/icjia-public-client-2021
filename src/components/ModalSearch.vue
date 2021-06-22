@@ -6,7 +6,10 @@
     ref="searchTop"
   >
     <v-card color="#eee" min-height="600">
-      <v-card-title class="text-h5 grey lighten-2"> Search ICJIA </v-card-title>
+      <v-card-title class="text-h5 grey lighten-2">
+        Search ICJIA<v-spacer></v-spacer
+        ><v-btn small @click="searchModal = false">Close</v-btn>
+      </v-card-title>
       <div class="px-4 py-4">
         <div style="font-size: 12px" class="text-right mb-9">
           {{ queryResults.length }} result{{ resultNumber }}
@@ -65,7 +68,11 @@
                   result.item.abstract
                 }}</v-card-text>
                 <template v-if="result.item.tags">
-                  <BasePropChip v-for="tag of result.item.tags" :key="tag">
+                  <BasePropChip
+                    v-for="tag of result.item.tags"
+                    :key="tag"
+                    class="mt-1"
+                  >
                     <template>{{ tag }}</template>
                   </BasePropChip>
                 </template>

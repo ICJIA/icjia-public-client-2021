@@ -25,7 +25,6 @@
 
           <v-btn
             v-if="article.mainfile"
-            outlined
             class="article-download"
             @click="downloadHelper('main')"
           >
@@ -35,7 +34,6 @@
 
           <v-btn
             v-if="article.extrafile"
-            outlined
             class="article-download"
             @click="downloadHelper('extra')"
           >
@@ -77,14 +75,16 @@
 
           <h1 class="article-title">{{ article.title }}</h1>
 
-          <div class="article-abstract my-6">{{ article.abstract }}</div>
+          <div class="article-abstract my-6 px-5 py-5" style="">
+            {{ article.abstract }}
+          </div>
 
           <div class="mb-4 text-uppercase font-oswald">
             <span v-for="(author, i) in article.authors" :key="i">
               <template v-if="i > 0">{{
                 article.authors.length > i + 1 ? ", " : " and "
               }}</template>
-              <a @click="$emit('author-click', $event)">{{ author.title }}</a>
+              <a @click="openSearch(author.title)">{{ author.title }}</a>
             </span>
 
             <span v-if="article.date">
@@ -261,6 +261,13 @@ export default {
     this.markdownUtils = createMarkdownUtils(md);
   },
   methods: {
+    openSearch(item) {
+      let opts = {
+        query: item,
+        type: "hub",
+      };
+      EventBus.$emit("search", opts);
+    },
     categoryClick(e) {
       //console.log("chip click: ", e.target.innerHTML);
       let opts = {
