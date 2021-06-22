@@ -49,18 +49,24 @@
         <v-col cols="12" sm="10" lg="9" offset-sm="1" offset-md="0">
           <v-row align="center" justify="space-between" no-gutters>
             <div>
-              <span class="font-lato text-uppercase">{{
+              <!-- <span class="font-lato text-uppercase">{{
                 article.categories
-              }}</span>
+              }}</span> -->
+              <span v-if="item.categories && item.categories.length">
+                <span
+                  v-for="(category, index) in item.categories"
+                  :key="index"
+                  class="mr-1 category"
+                  style="font-size: 14px; font-weight: 900"
+                  @click.prevent.stop="categoryClick($event)"
+                  >{{ category.toUpperCase() }}</span
+                >
+              </span>
 
               <template v-if="article.tags">
                 <span class="mx-2">|</span>
 
-                <BasePropChip
-                  v-for="tag of article.tags"
-                  :key="tag"
-                  @chip-click="$emit('tag-click', $event)"
-                >
+                <BasePropChip v-for="tag of article.tags" :key="tag">
                   <template>{{ tag }}</template>
                 </BasePropChip>
               </template>
@@ -173,6 +179,7 @@
 import { format } from "@/utils/itemFormatter";
 import { createMarkdownUtils, initMarkdownIt } from "@/utils/markdownIt";
 import { initTexmath } from "@/utils/texmath";
+import { EventBus } from "@/event-bus";
 
 export default {
   props: {
@@ -254,6 +261,14 @@ export default {
     this.markdownUtils = createMarkdownUtils(md);
   },
   methods: {
+    categoryClick(e) {
+      //console.log("chip click: ", e.target.innerHTML);
+      let opts = {
+        query: e.target.innerText.toLowerCase(),
+        type: "hub",
+      };
+      EventBus.$emit("search", opts);
+    },
     async downloadHelper(type) {
       await this.downloader(type);
     },

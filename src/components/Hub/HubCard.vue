@@ -113,16 +113,22 @@
           </span>
         </template>
       </BasePropDisplay>
-      <!-- <BasePropDisplay v-if="item.categories" name="Categories">
-        <span>{{ item.categories }}</span>
-      </BasePropDisplay> -->
+      <BasePropDisplay
+        v-if="item.categories && item.categories.length"
+        name="Categories"
+      >
+        <span
+          v-for="(category, index) in item.categories"
+          :key="index"
+          class="mr-1 category"
+          style=""
+          @click.prevent.stop="categoryClick($event)"
+          >{{ category.toUpperCase() }}</span
+        >
+      </BasePropDisplay>
 
       <BasePropDisplay v-if="item.tags" name="">
-        <BasePropChip
-          v-for="tag in item.tags"
-          :key="tag"
-          @chip-click="$emit('tag-click', $event)"
-        >
+        <BasePropChip v-for="tag in item.tags" :key="tag">
           <template>{{ tag }}</template>
         </BasePropChip>
       </BasePropDisplay>
@@ -131,6 +137,7 @@
 </template>
 
 <script>
+import { EventBus } from "@/event-bus";
 const arrford = require("arrford");
 import { format, parseISO } from "date-fns";
 import { getImageURL } from "@/services/Image";
@@ -193,6 +200,14 @@ export default {
   },
 
   methods: {
+    categoryClick(e) {
+      //console.log("chip click: ", e.target.innerHTML);
+      let opts = {
+        query: e.target.innerText.toLowerCase(),
+        type: "hub",
+      };
+      EventBus.$emit("search", opts);
+    },
     errorHandler(id) {
       console.log("error for image: ", id);
       console.log(this.$refs["img_" + id].src);
@@ -259,4 +274,14 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style>
+.category {
+  font-size: 12px;
+  color: #0e4471;
+  cursor: pointer;
+}
+.category:hover {
+  color: #444;
+  text-decoration: underline;
+}
+</style>
