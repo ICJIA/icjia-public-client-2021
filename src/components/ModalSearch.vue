@@ -1,17 +1,32 @@
 <template>
-  <v-dialog v-model="searchModal" width="80%" ref="searchTop">
+  <v-dialog
+    v-model="searchModal"
+    width="66%"
+    ref="searchTop"
+    style="z-index: 999999"
+  >
     <v-card color="#eee" min-height="600">
       <v-card-title class="text-h5 grey lighten-2">
         Search ICJIA<v-spacer></v-spacer
         ><v-btn small @click="searchModal = false">Close</v-btn>
       </v-card-title>
+
       <div class="px-4 py-4">
-        <div style="font-size: 12px" class="text-right mb-9">
-          {{ queryResults.length }} result{{ resultNumber }}
+        <div style="font-size: 12px" class="mb-9 d-flex">
+          <v-spacer></v-spacer>
+          <span style="font-weight: 900" v-if="query && query.length">
+            Displaying {{ queryResults.length }} result{{ resultNumber }}</span
+          >
+
+          <!-- <v-btn-toggle v-model="hubOnly" mandatory>
+            <v-btn x-small>ResearchHub Only</v-btn>
+            <v-btn x-small>All ICJIA</v-btn>
+          </v-btn-toggle> -->
         </div>
-        <v-form class="pl-2">
+        <v-form class="pl-2" style="margin-top: -15px">
           <v-text-field
             ref="textfield"
+            clearable
             v-model="query"
             label="Search"
             placeholder="Search"
@@ -19,7 +34,7 @@
             style="font-weight: 900"
           />
 
-          <div v-if="query && query.length" class="mb-12">
+          <div v-if="query && query.length > 3" class="mb-12">
             <div
               v-for="(result, index) in queryResults"
               :key="index"
@@ -107,6 +122,7 @@ function arrayToList(array) {
 export default {
   data() {
     return {
+      hubOnly: true,
       searchModal: false,
       opts: null,
       query: null,
@@ -130,6 +146,8 @@ export default {
       if (this.opts && this.opts.query && this.opts.query.length) {
         this.query = this.opts.query;
         this.instantSearch();
+      } else {
+        this.query = "";
       }
       this.searchModal = true;
       this.$nextTick(() => {
@@ -192,6 +210,7 @@ export default {
       });
     },
     instantSearch() {
+      if (!this.query.length) return;
       this.queryResults = this.fuse.search(this.query);
     },
     displayHeadings(headings) {

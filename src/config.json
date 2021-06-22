@@ -73,7 +73,7 @@
             "shouldSort": true,
             "includeMatches": true,
             "findAllMatches": true,
-            "minMatchCharLength": 2,
+            "minMatchCharLength": 3,
             "location": 0,
             "threshold": 0.4,
             "distance": 100,
