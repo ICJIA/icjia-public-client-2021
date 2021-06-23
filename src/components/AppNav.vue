@@ -26,7 +26,7 @@
         alt="ICJIA Logo"
         class="shrink mr-2 hover"
         contain
-        src="https://ipsumimage.appspot.com/155x100?l= LOGO "
+        src="/icjia-logo.png"
         transition="scale-transition"
         width="90"
         style
@@ -50,6 +50,12 @@
       </div>
 
       <v-spacer></v-spacer>
+
+      <span
+        style="font-weight: 900; background: #0e4471; color: #fff; padding: 5px"
+        class="mr-3"
+        >THIS IS A DRAFT SITE</span
+      >
 
       <!-- <v-menu
         bottom

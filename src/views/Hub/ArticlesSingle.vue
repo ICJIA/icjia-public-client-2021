@@ -14,7 +14,7 @@
 import NProgress from "nprogress";
 import { renderToHtml } from "@/services/Markdown";
 const axios = require("axios");
-import { createMarkdownUtils, initMarkdownIt } from "@/utils/markdownIt";
+// import { createMarkdownUtils, initMarkdownIt } from "@/utils/markdownIt";
 import { initTexmath } from "@/utils/texmath";
 const api = axios.create({
   baseURL: "https://researchhub.icjia-api.cloud",
@@ -105,7 +105,9 @@ export default {
         } else {
           this.article.md = this.article.markdown;
         }
-        this.article.html = this.markdownUtils.renderMarkdown(this.article.md);
+        //TODO: Fix this for katex issues
+        // this.article.html = this.markdownUtils.renderMarkdown(this.article.md);
+        this.article.html = renderToHtml(this.article.md);
         NProgress.done();
         this.loading = false;
       } catch (e) {
@@ -141,8 +143,8 @@ export default {
   async created() {
     await initTexmath();
     // eslint-disable-next-line no-undef
-    const md = initMarkdownIt().use(texmath.use(katex));
-    this.markdownUtils = createMarkdownUtils(md);
+    // const md = initMarkdownIt().use(texmath.use(katex));
+    // this.markdownUtils = createMarkdownUtils(md);
     //console.log(this.markdownUtils.renderMarkdown("## test"));
   },
 };

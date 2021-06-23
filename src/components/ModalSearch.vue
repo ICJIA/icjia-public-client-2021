@@ -1,17 +1,17 @@
 <template>
   <v-dialog
     v-model="searchModal"
-    width="66%"
+    width="98%"
     ref="searchTop"
     style="z-index: 999999"
   >
-    <v-card color="#eee" min-height="600">
+    <v-card color="#eee" min-height="600" class="px-1 py-1">
       <v-card-title class="text-h5 grey lighten-2">
         Search ICJIA<v-spacer></v-spacer
         ><v-btn small @click="searchModal = false">Close</v-btn>
       </v-card-title>
 
-      <div class="px-4 py-4">
+      <div class="">
         <div style="font-size: 12px" class="mb-9 d-flex">
           <v-spacer></v-spacer>
           <span style="font-weight: 900" v-if="query && query.length">
@@ -44,7 +44,7 @@
                 elevation="0"
                 color="#fff"
                 @click="route(result.item.fullPath)"
-                class="hover py-4 px-4 mb-5 card"
+                class="hover px-1 py-3 mb-2 card"
               >
                 <div style="font-size: 12px">
                   <span style="font-weight: 700">{{
