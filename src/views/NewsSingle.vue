@@ -4,6 +4,12 @@
       <template slot="content" v-if="!loading">
         <v-container>
           <v-card class="px-5 py-5 mx-5 my-5" elevation="0">
+            {{ news }}
+            <NewsSplash
+              v-if="news && news.splash"
+              :splash="news.splash"
+              caption="This is a sample caption"
+            ></NewsSplash>
             <v-row>
               <v-col cols="12" :md="news.showTOC ? 9 : 12">
                 <h1 v-html="render(news.title)"></h1>

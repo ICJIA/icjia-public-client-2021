@@ -38,7 +38,7 @@
             <div
               v-for="(result, index) in queryResults"
               :key="index"
-              class="my-2"
+              class="my-4"
             >
               <v-card
                 elevation="0"
