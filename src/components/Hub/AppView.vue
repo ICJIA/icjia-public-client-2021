@@ -1,12 +1,12 @@
 <template>
   <div>
-    <v-container class="markdown-body">
+    <v-container class="markdown-body" fluid>
       <v-row>
         <v-col cols="12">
-          <v-card class="px-5 py-5">
+          <v-card class="px-3 py-5">
             <h1 style="border: 0px">{{ app.title }}</h1>
 
-            <v-row class="px-10 py-10" style="margin-top: -55px">
+            <v-row class="py-10" style="margin-top: -55px">
               <v-col cols="12" md="4"
                 ><v-img
                   :src="app.image"
@@ -127,12 +127,7 @@
             </v-row>
             <v-row>
               <v-col class="text-center mb-12" style="margin-top: -25px"
-                ><v-btn
-                  elevation="2"
-                  color="blue darken-4"
-                  @click="launch(item.url)"
-                  dark
-                  x-large
+                ><v-btn elevation="2" @click="launch(item.url)" x-large
                   >Launch the App<v-icon right>open_in_new</v-icon></v-btn
                 >
               </v-col>

@@ -1,10 +1,5 @@
 <template>
-  <v-dialog
-    v-model="searchModal"
-    width="98%"
-    ref="searchTop"
-    style="z-index: 999999"
-  >
+  <v-dialog v-model="searchModal" ref="searchTop" style="z-index: 999999">
     <v-card color="#eee" min-height="600" class="px-1 py-1">
       <v-card-title class="text-h5 grey lighten-2">
         Search ICJIA<v-spacer></v-spacer

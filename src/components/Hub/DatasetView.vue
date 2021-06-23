@@ -1,6 +1,6 @@
 <template>
-  <v-container class="markdown-body">
-    <v-card class="px-10 py-10">
+  <v-container class="markdown-body" fluid>
+    <v-card class="px-2 py-10">
       <v-col cols="12" class="text-left">
         <h1>{{ dataset.title }}</h1>
       </v-col>

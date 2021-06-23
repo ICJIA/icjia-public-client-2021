@@ -4,7 +4,7 @@
       :src="getImagePath(splash.url, 0, 0, 50)"
       :lazy-src="getImagePath(splash.formats.thumbnail.url)"
       width="100%"
-      height="400"
+      :height="splashHeight"
       class="mb-5"
       style="border: 1px solid #fafafa"
       aria-label="ICJIA Internet news item image"
@@ -45,9 +45,9 @@ export default {
       type: Object,
       default: () => {},
     },
-    caption: {
-      type: String,
-      default: "",
+    splashHeight: {
+      type: Number,
+      default: 450,
     },
   },
 };
