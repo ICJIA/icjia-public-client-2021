@@ -18,7 +18,7 @@
           ></v-progress-circular>
         </v-row> </template
     ></v-img>
-    <div class="splash-caption">{{ caption }}</div>
+    <div class="splash-caption" v-if="splash.caption">{{ splash.caption }}</div>
   </div>
 </template>
 
@@ -47,7 +47,7 @@ export default {
     },
     caption: {
       type: String,
-      default: "Default caption",
+      default: "",
     },
   },
 };
@@ -58,5 +58,6 @@ export default {
   font-size: 14px;
   margin-top: -15px;
   margin-bottom: 25px;
+  color: #777;
 }
 </style>

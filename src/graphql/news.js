@@ -16,6 +16,8 @@ const GET_ALL_NEWS_QUERY = gql`
         slug
       }
       splash {
+        caption
+        alternativeText
         url
         formats
       }
@@ -40,6 +42,8 @@ const GET_SINGLE_POST_QUERY = gql`
         slug
       }
       splash {
+        caption
+        alternativeText
         url
         formats
       }
