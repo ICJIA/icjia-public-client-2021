@@ -179,8 +179,8 @@
 
 <script>
 import { format } from "@/utils/itemFormatter";
-import { createMarkdownUtils, initMarkdownIt } from "@/utils/markdownIt";
-import { initTexmath } from "@/utils/texmath";
+// import { createMarkdownUtils, initMarkdownIt } from "@/utils/markdownIt";
+// import { initTexmath } from "@/utils/texmath";
 import { EventBus } from "@/event-bus";
 
 export default {
@@ -263,10 +263,11 @@ export default {
     },
   },
   async created() {
-    await initTexmath();
-    // eslint-disable-next-line no-undef
-    const md = initMarkdownIt().use(texmath.use(katex));
-    this.markdownUtils = createMarkdownUtils(md);
+    // await initTexmath();
+    // // eslint-disable-next-line no-undef
+    // const md = initMarkdownIt().use(texmath.use(katex));
+    // this.markdownUtils = createMarkdownUtils(md);
+    //console.log(this.markdownUtils.renderMarkdown("## test"));
   },
   methods: {
     openSearch(item) {

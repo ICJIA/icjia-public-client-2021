@@ -32,6 +32,9 @@
 export default {
   name: "App",
   methods: {
+    fixA11y() {
+      console.log("fix a11y here.");
+    },
     scrollFix: function () {
       // var hash = location.hash.substr(1);
       // var el = document.getElementById(`${hash}`);
