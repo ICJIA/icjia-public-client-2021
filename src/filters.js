@@ -83,7 +83,7 @@ Vue.filter(
     // eslint-disable-next-line no-useless-escape
     var sentences = string.match(/[^\.!\?]+[\.!\?]+/g);
     if (sentences) {
-      console.log(sentences.length);
+      //console.log(sentences.length);
       if (sentences.length >= sentCount && sentences.length > sentCount) {
         //has enough sentences
         return sentences.slice(0, sentCount).join(" ") + moreText;

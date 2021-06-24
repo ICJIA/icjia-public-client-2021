@@ -18,10 +18,14 @@
       </router-link>
     </div>
     <AppNav @hook:mounted="fixA11y()"></AppNav>
+
     <v-main style="background: #f3f3f3">
-      <transition name="fade" mode="out-in">
-        <router-view :key="$route.fullPath"></router-view>
-      </transition>
+      <AppNavContext
+        :contextMenu="contextMenu"
+        v-if="contextMenu"
+        class="context-bar"
+      ></AppNavContext>
+      <router-view :key="$route.fullPath"></router-view>
     </v-main>
 
     <ModalSearch></ModalSearch>
@@ -30,25 +34,53 @@
 
 <script>
 export default {
+  watch: {
+    // eslint-disable-next-line no-unused-vars
+    $route(to, from) {
+      this.checkForContextMenu();
+    },
+  },
   name: "App",
+  data() {
+    return {
+      contextMenu: null,
+    };
+  },
   methods: {
     fixA11y() {
       console.log("fix a11y here.");
     },
-    scrollFix: function () {
-      // var hash = location.hash.substr(1);
-      // var el = document.getElementById(`${hash}`);
-      // if (hash && el) {
-      //   //console.log(hash);
-      //   this.$vuetify.goTo(`#${hash}`, { offset: 12 }).catch(() => {
-      //     this.$vuetify.goTo(0);
-      //   });
-      // }
+    scrollFix: function () {},
+    checkForContextMenu() {
+      if (this.$route.fullPath === "/") {
+        this.contextMenu = null;
+        return;
+      }
+      //console.log("app path: ", this.$route.fullPath);
+      let fullPath = this.$route.fullPath;
+      fullPath += fullPath.endsWith("/") ? "" : "/";
+      let context = fullPath.split("/").slice(1, -1);
+      context = "/" + context.slice(0, 1).join("/") + "/";
+      //console.log("search for context:", context);
+      //console.log("context json: ", this.$myApp.context);
+      // const key = "pathPrefix";
+
+      let contextMenu = this.$myApp.context.filter((obj) => {
+        if (obj["pathPrefix"] === context) {
+          return obj;
+        }
+      });
+      if (contextMenu && contextMenu.length) {
+        this.contextMenu = contextMenu;
+      } else {
+        this.contextMenu = null;
+      }
     },
   },
 
   mounted() {
     console.log(this.$myApp);
+    this.checkForContextMenu();
   },
 };
 </script>
@@ -67,5 +99,14 @@ export default {
 .container.full-width {
   width: 100%;
   padding: 0px !important;
+}
+
+.context-bar {
+  position: sticky !important;
+  top: -1px !important;
+  z-index: 1000 !important;
+}
+.btn--context {
+  border: 1px solid #fff !important;
 }
 </style>

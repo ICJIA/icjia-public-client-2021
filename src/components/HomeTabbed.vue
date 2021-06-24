@@ -175,7 +175,7 @@ export default {
   },
   methods: {
     isItExpired(expiration) {
-      console.log(expiration);
+      //console.log(expiration);
       let now = new Date();
       let expired = new Date(expiration);
       if (now > expired) {

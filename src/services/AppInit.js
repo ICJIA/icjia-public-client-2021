@@ -1,12 +1,11 @@
 import config from "@/config.json";
 import hub from "@/hub.json";
-const computedPublicPath =
-  process.env.NODE_ENV === `production` ? config.publicPath : "";
+import context from "@/contextMenus.json";
 
 let myApp = {
   config,
   hub,
-  computedPublicPath,
+  context,
 };
 
 export { myApp };

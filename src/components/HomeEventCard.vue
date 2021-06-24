@@ -139,7 +139,7 @@ export default {
           " - " +
           moment(this.event.end).format("ddd, MMM DD @ h:mm a");
       }
-      console.log(days, hours);
+      //console.log(days, hours);
       return timeSpanText;
     },
     getEventDateSpan() {
