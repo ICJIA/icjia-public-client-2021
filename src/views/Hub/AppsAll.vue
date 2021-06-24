@@ -45,7 +45,7 @@
           <HubCard
             :item="item"
             :orientation="orientation"
-            :textOnly="false"
+            :textOnly="true"
           ></HubCard>
         </v-col>
       </v-row>

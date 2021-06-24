@@ -51,7 +51,7 @@
           <HubCard
             :item="item"
             :orientation="orientation"
-            :textOnly="false"
+            :textOnly="true"
           ></HubCard>
         </v-col>
       </v-row>
@@ -97,7 +97,7 @@ export default {
       loading: true,
       hubArticles: [],
       start: 0,
-      articleLimit: 45,
+      articleLimit: 30,
       articleCount: null,
       view: "grid",
       initialLoad: true,

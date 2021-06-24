@@ -3,7 +3,7 @@
     <v-card
       class="pa-2 grid-item mb-3 info-card py-8 px-3"
       outlined
-      :height="orientation === 'grid' ? null : null"
+      :min-height="orientation === 'grid' ? 400 : null"
       @click.prevent="$router.push(item.fullPath)"
     >
       <v-card-text>{{ item.date | format }}</v-card-text>
@@ -22,73 +22,74 @@
         "
         >{{ displayAuthors(item.authors) }}</v-card-text
       >
-      <v-img
-        v-if="item.image"
-        :src="item.image"
-        width="100%"
-        :height="splashHeight"
-        class="mb-5"
-        :ref="'img_' + item.id"
-        @error="errorHandler(item.id)"
-        style="border: 1px solid #fafafa"
-        alt="ICJIA News image"
-        @load="resize"
-        ><template #placeholder>
-          <v-row class="fill-height ma-0" align="center" justify="center">
-            <v-progress-circular
-              indeterminate
-              color="blue darken-3"
-              aria-label="progress"
-            ></v-progress-circular>
-          </v-row>
-        </template>
-      </v-img>
-      <v-img
-        v-if="item.imagePath && !item.image && !textOnly && imageOK"
-        :src="getImagePath(item.imagePath, 0, 0, 40)"
-        :lazy-src="getImagePath(item.imagePath, 0, 0, 1)"
-        width="100%"
-        :height="splashHeight"
-        class="mb-5"
-        :ref="'img_' + item.id"
-        @error="errorHandler(item.id)"
-        style="border: 1px solid #fafafa"
-        alt="ICJIA News image"
-        @load="resize"
-        ><template #placeholder>
-          <v-row class="fill-height ma-0" align="center" justify="center">
-            <v-progress-circular
-              indeterminate
-              color="blue darken-3"
-              aria-label="progress"
-            ></v-progress-circular>
-          </v-row>
-        </template>
-      </v-img>
+      <div v-if="!textOnly">
+        <v-img
+          v-if="item.image"
+          :src="item.image"
+          width="100%"
+          :height="splashHeight"
+          class="mb-5"
+          :ref="'img_' + item.id"
+          @error="errorHandler(item.id)"
+          style="border: 1px solid #fafafa"
+          alt="ICJIA News image"
+          @load="resize"
+          ><template #placeholder>
+            <v-row class="fill-height ma-0" align="center" justify="center">
+              <v-progress-circular
+                indeterminate
+                color="blue darken-3"
+                aria-label="progress"
+              ></v-progress-circular>
+            </v-row>
+          </template>
+        </v-img>
+        <v-img
+          v-if="item.imagePath && !item.image && !textOnly && imageOK"
+          :src="getImagePath(item.imagePath, 0, 0, 40)"
+          :lazy-src="getImagePath(item.imagePath, 0, 0, 1)"
+          width="100%"
+          :height="splashHeight"
+          class="mb-5"
+          :ref="'img_' + item.id"
+          @error="errorHandler(item.id)"
+          style="border: 1px solid #fafafa"
+          alt="ICJIA News image"
+          @load="resize"
+          ><template #placeholder>
+            <v-row class="fill-height ma-0" align="center" justify="center">
+              <v-progress-circular
+                indeterminate
+                color="blue darken-3"
+                aria-label="progress"
+              ></v-progress-circular>
+            </v-row>
+          </template>
+        </v-img>
 
-      <v-img
-        v-if="item.imagePath && !item.image && !textOnly && !imageOK"
-        src="/icjia-half-splash-thumb.jpg"
-        lazy-src="/icjia-half-splash-thumb.jpg"
-        width="100%"
-        :height="splashHeight"
-        class="mb-5"
-        :ref="'img_' + item.id"
-        @error="errorHandler(item.id)"
-        style="border: 1px solid #fafafa"
-        alt="ICJIA News image"
-        @load="resize"
-        ><template #placeholder>
-          <v-row class="fill-height ma-0" align="center" justify="center">
-            <v-progress-circular
-              indeterminate
-              color="blue darken-3"
-              aria-label="progress"
-            ></v-progress-circular>
-          </v-row>
-        </template>
-      </v-img>
-
+        <v-img
+          v-if="item.imagePath && !item.image && !textOnly && !imageOK"
+          src="/icjia-half-splash-thumb.jpg"
+          lazy-src="/icjia-half-splash-thumb.jpg"
+          width="100%"
+          :height="splashHeight"
+          class="mb-5"
+          :ref="'img_' + item.id"
+          @error="errorHandler(item.id)"
+          style="border: 1px solid #fafafa"
+          alt="ICJIA News image"
+          @load="resize"
+          ><template #placeholder>
+            <v-row class="fill-height ma-0" align="center" justify="center">
+              <v-progress-circular
+                indeterminate
+                color="blue darken-3"
+                aria-label="progress"
+              ></v-progress-circular>
+            </v-row>
+          </template>
+        </v-img>
+      </div>
       <v-card-text
         v-if="item.abstract"
         style="margin-top: -15px; color: #111"
