@@ -12,6 +12,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@mdi/js": "^5.9.55",
+    "aos": "^3.0.0-beta.6",
     "arrford": "^2.0.1",
     "auto-changelog": "^2.3.0",
     "axios": "^0.21.1",

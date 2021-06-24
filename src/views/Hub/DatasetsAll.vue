@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-10">
+  <div class="pt-10 markdown-body">
     <v-container>
       <v-row v-if="initialLoad">
         <v-col cols="12" md="4" v-for="n in 3" :key="n">
