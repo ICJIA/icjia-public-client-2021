@@ -19,14 +19,6 @@
       <v-card elevation="0">
         <v-tabs dark show-arrows center-active v-model="contextTab" height="45">
           <v-tabs-slider></v-tabs-slider>
-
-          <!-- <v-tab @click="routeToPage('About the Research Hub')"
-            >About the Research Hub</v-tab
-          >
-          <v-tab @click="routeToPage('Articles')">Articles</v-tab>
-          <v-tab @click="routeToPage('Web Apps')">Web Apps</v-tab>
-          <v-tab @click="routeToPage('Datasets')">Datasets</v-tab>
-          <v-tab @click="routeToPage('Documentation')">Documentation</v-tab> -->
           <v-tab
             v-for="(item, index) in contextMenu[0].items"
             :key="index"
@@ -53,7 +45,13 @@ export default {
     // eslint-disable-next-line no-unused-vars
   },
   mounted() {
-    this.contextTab = 0;
+    //this.contextTab = 1;
+    console.log(this.contextMenu[0].items);
+    this.contextMenu[0].items.forEach((item, index) => {
+      if (this.$route.fullPath === item.path) {
+        this.contextTab = index;
+      }
+    });
     let distance = window.$("#context-bar").offset().top;
 
     let vm = this;
@@ -68,7 +66,7 @@ export default {
   methods: {
     routeToPage(page) {
       //   if (page === "About the Research Hub") return;
-      console.log("route: ", page);
+      // console.log("route: ", page);
       this.$router.push(page).catch(() => {
         this.$vuetify.goTo(0);
       });
