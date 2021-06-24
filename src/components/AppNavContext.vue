@@ -4,7 +4,7 @@
       dense
       height="45"
       scroll-threshold="0"
-      color="grey darken-2"
+      color="#0a3a60"
       id="context-bar"
     >
       <div
@@ -85,9 +85,9 @@ export default {
 .v-tab {
   font-size: 12px !important;
   font-weight: 700 !important;
-  color: #ddd !important;
+  color: #fff !important;
   /* letter-spacing: 0.01rem !important; */
-  background: #616161 !important;
+  background: #0a3a60 !important;
 }
 .v-tab--active {
   font-weight: 900 !important;
