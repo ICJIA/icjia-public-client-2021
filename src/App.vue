@@ -24,8 +24,9 @@
         :contextMenu="contextMenu"
         v-if="contextMenu"
         class="context-bar"
+        :key="`context-${$route.fullPath}`"
       ></AppNavContext>
-      <router-view :key="$route.fullPath"></router-view>
+      <router-view :key="`routerView-${$route.fullPath}`"></router-view>
     </v-main>
 
     <ModalSearch></ModalSearch>

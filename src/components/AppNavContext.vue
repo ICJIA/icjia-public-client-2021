@@ -45,7 +45,6 @@ export default {
     // eslint-disable-next-line no-unused-vars
   },
   mounted() {
-    //this.contextTab = 1;
     console.log(this.contextMenu[0].items);
     this.contextMenu[0].items.forEach((item, index) => {
       if (this.$route.fullPath === item.path) {

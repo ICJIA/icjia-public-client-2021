@@ -30,7 +30,7 @@
         </v-col>
       </v-row>
 
-      <v-row dense v-if="orientation === 'grid'">
+      <v-row dense v-if="orientation === 'grid'" style="margin-top: 30px">
         <v-col v-for="(item, index) in content" :key="index" cols="12" md="4">
           <HubCard
             :item="item"
@@ -40,7 +40,7 @@
           ></HubCard>
         </v-col>
       </v-row>
-      <v-row dense v-else>
+      <v-row dense v-else style="margin-top: 30px">
         <v-col v-for="(item, index) in content" :key="index" cols="12">
           <HubCard
             :item="item"
@@ -92,7 +92,7 @@ export default {
   apollo: {
     apps: {
       prefetch: true,
-
+      fetchPolicy: "no-cache",
       query: GET_ALL_APPS_QUERY,
       variables() {
         return {};

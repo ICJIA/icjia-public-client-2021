@@ -95,7 +95,7 @@ export default {
   apollo: {
     datasets: {
       prefetch: true,
-
+      fetchPolicy: "no-cache",
       query: GET_ALL_DATASETS_QUERY,
       variables() {
         return {};

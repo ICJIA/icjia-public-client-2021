@@ -1,5 +1,12 @@
 <template>
   <div style="background: #fff" id="article-view">
+    <div v-if="loading" style="background: #f3f3f3; margin-top: 8px">
+      <Loader
+        loaderType="skeleton"
+        :repeat="1"
+        loaderDisplayType="card, article, article, article, article, article"
+      ></Loader>
+    </div>
     <ArticleView
       v-if="article"
       :item="article"

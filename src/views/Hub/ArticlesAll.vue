@@ -7,7 +7,7 @@
         </v-col>
       </v-row>
 
-      <v-row>
+      <v-row v-if="!initialLoad">
         <v-col cols="12">
           <div class="text-right">
             <v-btn-toggle v-model="orientation" borderless>
@@ -56,7 +56,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="start + articleLimit <= articleCount">
+      <v-row v-if="start + articleLimit <= articleCount && !initialLoad">
         <v-col cols="12" class="text-center">
           <v-btn
             @click="loadMore()"
@@ -97,7 +97,7 @@ export default {
       loading: true,
       hubArticles: [],
       start: 0,
-      articleLimit: 30,
+      articleLimit: 42,
       articleCount: null,
       view: "grid",
       initialLoad: true,
@@ -131,6 +131,7 @@ export default {
   apollo: {
     articlesConnection: {
       prefetch: true,
+      fetchPolicy: "no-cache",
       query: GET_ARTICLE_COUNT_QUERY,
       variables() {
         return {};
@@ -149,7 +150,7 @@ export default {
     },
     articles: {
       prefetch: true,
-
+      fetchPolicy: "no-cache",
       query: GET_ARTICLE_GROUP_QUERY,
       variables() {
         return {
@@ -176,6 +177,7 @@ export default {
         }));
         this.hubArticles.push(...hubArticles);
         this.initialLoad = false;
+        this.loading = false;
         nprogress.done();
       },
     },
