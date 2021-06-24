@@ -17,7 +17,14 @@
       </div>
       <v-spacer></v-spacer>
       <v-card elevation="0">
-        <v-tabs dark show-arrows center-active v-model="contextTab" height="45">
+        <v-tabs
+          dark
+          show-arrows
+          center-active
+          v-model="contextTab"
+          height="45"
+          optional
+        >
           <v-tabs-slider></v-tabs-slider>
           <v-tab
             v-for="(item, index) in contextMenu[0].items"
@@ -45,12 +52,14 @@ export default {
     // eslint-disable-next-line no-unused-vars
   },
   mounted() {
-    console.log(this.contextMenu[0].items);
+    //console.log(this.contextMenu[0].items);
+
     this.contextMenu[0].items.forEach((item, index) => {
       if (this.$route.fullPath === item.path) {
         this.contextTab = index;
       }
     });
+
     let distance = window.$("#context-bar").offset().top;
 
     let vm = this;
@@ -76,6 +85,7 @@ export default {
       contextDrawer: true,
       contextTab: null,
       isAtTop: false,
+      disabled: false,
     };
   },
 };
@@ -93,6 +103,11 @@ export default {
   font-weight: 900 !important;
   background: #333 !important;
   color: #fff !important;
+}
+
+.v-tab--disabled {
+  /* pointer-events: none; */
+  opacity: 1 !important;
 }
 
 * >>> .v-slide-group__next,
