@@ -6,7 +6,11 @@
       :min-height="orientation === 'grid' ? 400 : null"
       @click.prevent="$router.push(item.fullPath)"
     >
-      <v-card-text>{{ item.date | format }}</v-card-text>
+      <v-card-text
+        ><span v-if="!showUpdated" class="font-lato">{{
+          item.date | format
+        }}</span></v-card-text
+      >
       <v-card-text v-if="item.title"
         ><h2 style="margin-top: -20px; line-height: 25px">
           {{ item.title }}
@@ -95,44 +99,50 @@
         style="margin-top: -15px; color: #111"
         >{{ truncate(item.abstract, this.truncation) }}</v-card-text
       >
-      <BasePropDisplay name="Contributors" v-if="item.contributors">
-        <template>
-          <span v-for="(contributor, i) in item.contributors" :key="i">
-            <template v-if="i > 1">{{
-              app.contributors.length > i + 1 ? ", " : " and "
-            }}</template>
+      <div class="ml-3">
+        <BasePropDisplay name="Contributors" v-if="item.contributors">
+          <template>
+            <span v-for="(contributor, i) in item.contributors" :key="i">
+              <template v-if="i > 1">{{
+                app.contributors.length > i + 1 ? ", " : " and "
+              }}</template>
 
-            <a
-              v-if="contributor.url"
-              :href="contributor.url"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <template>{{ contributor.title }}</template>
-            </a>
-            <template v-else>{{ contributor.title }}</template>
-          </span>
-        </template>
-      </BasePropDisplay>
-      <BasePropDisplay
-        v-if="item.categories && item.categories.length"
-        name="Categories"
-      >
-        <span
-          v-for="(category, index) in item.categories"
-          :key="index"
-          class="mr-1 category"
-          style=""
-          @click.prevent.stop="categoryClick($event)"
-          >{{ category.toUpperCase() }}</span
+              <a
+                v-if="contributor.url"
+                :href="contributor.url"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <template>{{ contributor.title }}</template>
+              </a>
+              <template v-else>{{ contributor.title }}</template>
+            </span>
+          </template>
+        </BasePropDisplay>
+
+        <BasePropDisplay v-if="showUpdated" name="Updated">
+          {{ item.date | format }}
+        </BasePropDisplay>
+        <BasePropDisplay
+          v-if="item.categories && item.categories.length"
+          name="Categories"
         >
-      </BasePropDisplay>
+          <span
+            v-for="(category, index) in item.categories"
+            :key="index"
+            class="mr-1 category"
+            style=""
+            @click.prevent.stop="categoryClick($event)"
+            >{{ category.toUpperCase() }}</span
+          >
+        </BasePropDisplay>
 
-      <BasePropDisplay v-if="item.tags" name="">
-        <BasePropChip v-for="tag in item.tags" :key="tag">
-          <template>{{ tag }}</template>
-        </BasePropChip>
-      </BasePropDisplay>
+        <BasePropDisplay v-if="item.tags" name="">
+          <BasePropChip v-for="tag in item.tags" :key="tag">
+            <template>{{ tag }}</template>
+          </BasePropChip>
+        </BasePropDisplay>
+      </div>
     </v-card>
   </div>
 </template>
@@ -170,11 +180,16 @@ export default {
       type: String,
       default: "grid",
     },
+
     item: {
       type: Object,
       default: () => {},
     },
     textOnly: {
+      type: Boolean,
+      default: false,
+    },
+    showUpdated: {
       type: Boolean,
       default: false,
     },

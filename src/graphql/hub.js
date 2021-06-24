@@ -38,6 +38,7 @@ const GET_ALL_DATASETS_QUERY = ignoredGqlTag`
       categories
       tags
       project
+      updatedAt
     }
   }
 `;
@@ -90,6 +91,7 @@ const GET_ALL_APPS_QUERY = ignoredGqlTag`
       image
       tags
       categories
+      updatedAt
       
     }
   }
