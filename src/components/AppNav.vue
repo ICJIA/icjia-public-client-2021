@@ -6,7 +6,7 @@
       color="white"
       height="90"
       hide-on-scroll
-      scroll-threshold="1"
+      scroll-threshold="80"
       style="z-index: 99999; border-bottom: 1px solid #eee !important"
       flat
     >
