@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container class="markdown-body" fluid>
+    <v-container class="markdown-body">
       <v-row>
         <v-col cols="12">
           <v-card class="px-3 py-5">
