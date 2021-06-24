@@ -2,8 +2,8 @@
   <div>
     <BaseContent :error="error" :loading="loading">
       <template slot="content" v-if="!loading">
-        <v-container class="markdown-body" fluid>
-          <v-card class="px-3 py-5 mx-0 my-5" elevation="0">
+        <v-sheet color="white">
+          <v-container class="markdown-body">
             <NewsSplash
               v-if="news && news.splash"
               :splash="news.splash"
@@ -21,8 +21,8 @@
                 ><Toc></Toc
               ></v-col>
             </v-row>
-          </v-card>
-        </v-container>
+          </v-container>
+        </v-sheet>
       </template>
     </BaseContent>
   </div>

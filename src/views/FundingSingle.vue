@@ -2,8 +2,8 @@
   <div>
     <BaseContent :error="error" :loading="loading">
       <template slot="content" v-if="!loading">
-        <v-container fluid class="markdown-body">
-          <v-card class="px-3 py-3 mx-5 my-10" elevation="0">
+        <v-sheet color="white">
+          <v-container class="markdown-body">
             <v-row>
               <v-col cols="12" md="9" class="markdown-body">
                 <h1 v-html="render(funding.title)"></h1>
@@ -13,8 +13,8 @@
                 ><Toc></Toc
               ></v-col>
             </v-row>
-          </v-card>
-        </v-container>
+          </v-container>
+        </v-sheet>
       </template>
     </BaseContent>
   </div>
