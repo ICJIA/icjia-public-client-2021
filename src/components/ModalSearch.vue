@@ -90,15 +90,6 @@
             </div>
           </div>
         </v-form>
-
-        <!-- <v-divider></v-divider> -->
-
-        <!-- <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="primary" text @click="searchModal = false">
-          I accept
-        </v-btn>
-      </v-card-actions> -->
       </div>
     </v-card>
   </v-dialog>

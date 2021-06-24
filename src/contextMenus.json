@@ -7,6 +7,14 @@
         "defaultPath": "/gata/about/",
         "items": [
             {
+                "label": "About",
+                "path": "/gata/about/"
+            },
+            {
+                "label": "Funding",
+                "path": "/gata/funding/"
+            },
+            {
                 "label": "Training",
                 "path": "/gata/training/"
             },
@@ -15,12 +23,8 @@
                 "path": "/gata/technical-assistance/"
             },
             {
-                "label": "Funding",
-                "path": "/gata/funding/"
-            },
-            {
-                "label": "About",
-                "path": "/gata/about/"
+                "label": "Search",
+                "event": "search"
             }
         ]
     },
