@@ -39,7 +39,7 @@
                 elevation="0"
                 color="#fff"
                 @click="route(result.item.fullPath)"
-                class="hover px-1 py-3 mb-2 card"
+                class="hover px-2 py-3 mb-2 card"
               >
                 <div style="font-size: 12px">
                   <span style="font-weight: 700">{{
