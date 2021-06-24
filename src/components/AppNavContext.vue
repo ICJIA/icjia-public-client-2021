@@ -6,6 +6,7 @@
       scroll-threshold="0"
       color="#0a3a60"
       id="context-bar"
+      elevate-on-scroll
     >
       <div
         style="font-weight: 900; text-transform: uppercase; color: #fff"
@@ -26,12 +27,18 @@
           optional
         >
           <v-tabs-slider></v-tabs-slider>
+
           <v-tab
             v-for="(item, index) in contextMenu[0].items"
             :key="index"
-            @click="routeToPage(item.path)"
+            @click="
+              item.path && item.path.length
+                ? routeToPage(item.path)
+                : fireEvent(item.event)
+            "
           >
             {{ item.label }}
+            <v-icon v-if="item.icon" right small>{{ item.icon }}</v-icon>
           </v-tab>
         </v-tabs>
       </v-card>
@@ -41,6 +48,7 @@
 </template>
 
 <script>
+import { EventBus } from "@/event-bus";
 export default {
   props: {
     contextMenu: {
@@ -50,15 +58,12 @@ export default {
   },
   watch: {
     // eslint-disable-next-line no-unused-vars
+    contextTab(newValue, oldValue) {},
   },
   mounted() {
     //console.log(this.contextMenu[0].items);
 
-    this.contextMenu[0].items.forEach((item, index) => {
-      if (this.$route.fullPath === item.path) {
-        this.contextTab = index;
-      }
-    });
+    this.selectTab();
 
     let distance = window.$("#context-bar").offset().top;
 
@@ -72,6 +77,20 @@ export default {
     });
   },
   methods: {
+    selectTab() {
+      this.contextMenu[0].items.forEach((item, index) => {
+        if (this.$route.fullPath === item.path) {
+          this.contextTab = index;
+        }
+      });
+    },
+    fireEvent() {
+      EventBus.$emit("search");
+      this.$nextTick(() => {
+        this.contextTab = undefined;
+        this.selectTab();
+      });
+    },
     routeToPage(page) {
       //   if (page === "About the Research Hub") return;
       // console.log("route: ", page);
@@ -106,7 +125,7 @@ export default {
 }
 
 .v-tab--disabled {
-  /* pointer-events: none; */
+  pointer-events: inherit;
   opacity: 1 !important;
 }
 

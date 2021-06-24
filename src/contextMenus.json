@@ -7,6 +7,14 @@
         "defaultPath": "/gata/about/",
         "items": [
             {
+                "label": "Training",
+                "path": "/gata/training/"
+            },
+            {
+                "label": "Technical Assistance",
+                "path": "/gata/technical-assistance/"
+            },
+            {
                 "label": "Funding",
                 "path": "/gata/funding/"
             },
@@ -42,6 +50,10 @@
             {
                 "label": "Documentation",
                 "path": "/researchhub/documentation/"
+            },
+            {
+                "label": "Search",
+                "event": "search"
             }
         ]
     }
