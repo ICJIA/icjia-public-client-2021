@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pb-12">
     <div class="markdown-body">
       <div
         style="background: #ddd; border-bottom: 1px solid #ccc"
@@ -111,6 +111,7 @@
                 :item="dataset"
                 :textOnly="true"
                 :cardHeight="450"
+                orientation="grid"
                 :showUpdated="true"
               ></HubCard>
             </v-col>
@@ -139,7 +140,7 @@
                 :item="app"
                 :textOnly="false"
                 :cardHeight="600"
-                :orientation="grid"
+                orientation="grid"
                 :showUpdated="true"
               ></HubCard>
             </v-col>

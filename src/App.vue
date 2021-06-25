@@ -27,6 +27,12 @@
         :key="`context-${$route.fullPath}`"
       ></AppNavContext>
       <router-view :key="`routerView-${$route.fullPath}`"></router-view>
+      <Disclaimer
+        v-if="disclaimer"
+        :disclaimer="disclaimer"
+        id="disclaimer"
+        :key="`disclaimer-${$route.fullPath}`"
+      ></Disclaimer>
     </v-main>
 
     <ModalSearch></ModalSearch>
@@ -39,12 +45,14 @@ export default {
     // eslint-disable-next-line no-unused-vars
     $route(to, from) {
       this.checkForContextMenu();
+      this.checkForDisclaimer();
     },
   },
   name: "App",
   data() {
     return {
       contextMenu: null,
+      disclaimer: null,
     };
   },
   methods: {
@@ -52,9 +60,9 @@ export default {
       console.log("fix a11y here.");
     },
     scrollFix: function () {},
-    checkForContextMenu() {
+    checkForDisclaimer() {
       if (this.$route.fullPath === "/") {
-        this.contextMenu = null;
+        this.disclaimer = null;
         return;
       }
       //console.log("app path: ", this.$route.fullPath);
@@ -62,9 +70,27 @@ export default {
       fullPath += fullPath.endsWith("/") ? "" : "/";
       let context = fullPath.split("/").slice(1, -1);
       context = "/" + context.slice(0, 1).join("/") + "/";
-      //console.log("search for context:", context);
-      //console.log("context json: ", this.$myApp.context);
-      // const key = "pathPrefix";
+      let disclaimer = this.$myApp.disclaimers.filter((obj) => {
+        if (obj["pathPrefix"] === context) {
+          return obj;
+        }
+      });
+      if (disclaimer && disclaimer.length) {
+        this.disclaimer = disclaimer;
+      } else {
+        this.disclaimer = null;
+      }
+    },
+    checkForContextMenu() {
+      if (this.$route.fullPath === "/") {
+        this.contextMenu = null;
+        return;
+      }
+
+      let fullPath = this.$route.fullPath;
+      fullPath += fullPath.endsWith("/") ? "" : "/";
+      let context = fullPath.split("/").slice(1, -1);
+      context = "/" + context.slice(0, 1).join("/") + "/";
 
       let contextMenu = this.$myApp.context.filter((obj) => {
         if (obj["pathPrefix"] === context) {
@@ -82,6 +108,7 @@ export default {
   mounted() {
     console.log(this.$myApp);
     this.checkForContextMenu();
+    this.checkForDisclaimer();
   },
 };
 </script>

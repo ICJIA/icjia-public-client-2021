@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-10 markdown-body">
+  <div class="pt-10 pb-12 markdown-body">
     <v-container>
       <v-row>
         <v-col cols="12">
@@ -13,20 +13,18 @@
       </v-row>
 
       <v-row v-if="!initialLoad">
-        <v-col cols="12">
+        <v-col cols="12" class="hidden-sm-and-down">
           <div class="text-right">
             <v-btn-toggle v-model="orientation" borderless>
               <v-btn value="list" small aria-label="List view">
-                <span class="hidden-sm-and-down">List</span>
+                <span>List</span>
 
                 <span aria-hidden="true" class="mdi mdi-format-list-bulleted">
                 </span>
               </v-btn>
 
               <v-btn value="grid" small>
-                <span class="hidden-sm-and-down" aria-label="Grid view"
-                  >Grid</span
-                >
+                <span aria-label="Grid view">Grid</span>
 
                 <span class="mdi mdi-view-module" aria-hidden="true"> </span>
               </v-btn>

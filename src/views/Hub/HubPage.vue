@@ -2,7 +2,7 @@
   <div>
     <BaseContent :error="error" :loading="loading">
       <template slot="content" v-if="!loading">
-        <v-sheet color="white" class="pt-5">
+        <v-sheet color="white" class="pt-5 pb-12">
           <v-container class="markdown-body">
             <Splash
               v-if="content && content.splash"
