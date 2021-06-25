@@ -124,11 +124,6 @@ export default {
   color: #fff !important;
 }
 
-.v-tab--disabled {
-  pointer-events: inherit;
-  opacity: 1 !important;
-}
-
 * >>> .v-slide-group__next,
 * >>> .v-slide-group__prev {
   background: #616161 !important;
