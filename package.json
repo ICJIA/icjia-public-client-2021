@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "node generateHubIndex && node generateHubImages && npm run schema && vue-cli-service serve",
-    "build": "node generateHubIndex && node generateHubImages && npm run schema && vue-cli-service build --modern",
+    "serve": "node generateHubImages && node generateHubIndex && npm run schema && vue-cli-service serve",
+    "build": "node generateHubImages && node generateHubIndex && npm run schema && vue-cli-service build --modern",
     "lint": "vue-cli-service lint",
     "schema": "get-graphql-schema https://agency.icjia-api.cloud/graphql -j > schema.json",
-    "scripts": "node generateHubIndex && node generateHubImages && npm run schema"
+    "scripts": "node generateHubImages && node generateHubIndex && npm run schema"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",

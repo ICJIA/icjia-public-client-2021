@@ -33,11 +33,15 @@
         "label": "ICJIA Research Hub",
         "shortLabel": "Research Hub",
         "pathPrefix": "/researchhub/",
-        "defaultPath": "/researchhub/about/",
+        "defaultPath": "/researchhub/",
         "items": [
             {
+                "label": "Hub Home",
+                "path": "/researchhub/"
+            },
+            {
                 "label": "About",
-                "path": "/researchhub/about/"
+                "path": "/researchhub/about-the-research-hub/"
             },
             {
                 "label": "Articles",

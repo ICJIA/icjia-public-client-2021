@@ -4,10 +4,7 @@
       <template slot="content" v-if="!loading">
         <v-sheet color="white" class="pt-5">
           <v-container class="markdown-body">
-            <NewsSplash
-              v-if="news && news.splash"
-              :splash="news.splash"
-            ></NewsSplash>
+            <Splash v-if="news && news.splash" :splash="news.splash"></Splash>
             <v-row>
               <v-col cols="12" :md="news.showTOC ? 9 : 12">
                 <h1 v-html="render(news.title)"></h1>

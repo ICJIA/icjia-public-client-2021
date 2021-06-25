@@ -8840,6 +8840,35 @@
         "possibleTypes": null
       },
       {
+        "kind": "ENUM",
+        "name": "ENUM_PAGE_CATEGORY",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "general",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "grants",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "researchhub",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
         "kind": "OBJECT",
         "name": "Page",
         "description": null,
@@ -8972,6 +9001,18 @@
                 "name": "ComponentClickthroughClickthrough",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "category",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "ENUM",
+              "name": "ENUM_PAGE_CATEGORY",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -9264,6 +9305,22 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "PageConnectionSplash",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "category",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PageConnectionCategory",
                 "ofType": null
               }
             },
@@ -9574,6 +9631,41 @@
       },
       {
         "kind": "OBJECT",
+        "name": "PageConnectionCategory",
+        "description": null,
+        "fields": [
+          {
+            "name": "key",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "connection",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "PageConnection",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "PageConnectionPublished_at",
         "description": null,
         "fields": [
@@ -9700,6 +9792,16 @@
             "defaultValue": null
           },
           {
+            "name": "category",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "ENUM_PAGE_CATEGORY",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "published_at",
             "description": null,
             "type": {
@@ -9815,6 +9917,16 @@
                 "name": "editComponentClickthroughClickthroughInput",
                 "ofType": null
               }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "category",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "ENUM_PAGE_CATEGORY",
+              "ofType": null
             },
             "defaultValue": null
           },
@@ -20892,6 +21004,11 @@
           {
             "kind": "OBJECT",
             "name": "PageConnectionSplash",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "PageConnectionCategory",
             "ofType": null
           },
           {
