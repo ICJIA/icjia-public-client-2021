@@ -7,7 +7,7 @@
     "build": "node generateHubIndex && node generateHubImages && npm run schema && vue-cli-service build --modern",
     "lint": "vue-cli-service lint",
     "schema": "get-graphql-schema https://agency.icjia-api.cloud/graphql -j > schema.json",
-    "scripts": "npm run schema"
+    "scripts": "node generateHubIndex && node generateHubImages && npm run schema"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",

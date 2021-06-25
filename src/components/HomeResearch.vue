@@ -151,7 +151,8 @@ export default {
     },
   },
   async mounted() {
-    console.log("fetch here");
+    //console.log("fetch here");
+
     this.hubApplications = await getHubApplications(3);
     this.hubApplications = this.hubApplications.map((e) => ({
       ...e,

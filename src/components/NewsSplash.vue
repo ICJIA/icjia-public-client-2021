@@ -18,7 +18,9 @@
           ></v-progress-circular>
         </v-row> </template
     ></v-img>
-    <div class="splash-caption" v-if="splash.caption">{{ splash.caption }}</div>
+    <div class="splash-caption font-lato" v-if="splash.caption">
+      {{ splash.caption }}
+    </div>
   </div>
 </template>
 
@@ -55,7 +57,7 @@ export default {
 
 <style>
 .splash-caption {
-  font-size: 14px;
+  font-size: 12px;
   margin-top: -15px;
   margin-bottom: 25px;
   color: #777;

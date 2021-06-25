@@ -1,14 +1,14 @@
 <template>
   <div class="pt-10 markdown-body">
     <v-container>
+      <v-row>
+        <v-col cols="12">
+          <h1>ICJIA Web Applications</h1>
+        </v-col>
+      </v-row>
       <v-row v-if="loading">
         <v-col cols="12" md="4" v-for="n in 3" :key="n">
           <Loader loaderType="skeleton" :repeat="1"></Loader>
-        </v-col>
-      </v-row>
-      <v-row v-if="!loading">
-        <v-col cols="12">
-          <h1>ICJIA Web Applications</h1>
         </v-col>
       </v-row>
 

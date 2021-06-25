@@ -63,7 +63,7 @@ axios
       abstract: e.description,
       fullPath: `/researchhub/apps/${e.slug}/`,
       imagePath: `https://icjia.illinois.gov/researchhub/images/${e.id}-image.jpeg`,
-      contentType: "application",
+      contentType: "app",
     }));
 
     datasets = datasets.map((e) => ({
