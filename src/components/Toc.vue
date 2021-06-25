@@ -95,6 +95,7 @@ export default {
       window.onscroll = () => {
         var scrollPosition =
           document.documentElement.scrollTop || document.body.scrollTop;
+        scrollPosition = scrollPosition + this.scrollOffset + 25;
         const tocItems = document.querySelectorAll(".tocItem");
         //console.log(scrollPosition);
         if (scrollPosition < 100) {
