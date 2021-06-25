@@ -44,7 +44,6 @@
             :item="item"
             :orientation="orientation"
             :textOnly="true"
-            :cardHeight="450"
             :showUpdated="true"
           ></HubCard>
         </v-col>

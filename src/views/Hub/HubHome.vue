@@ -138,7 +138,7 @@
               <HubCard
                 :item="app"
                 :textOnly="false"
-                :cardHeight="575"
+                :cardHeight="600"
                 :orientation="grid"
                 :showUpdated="true"
               ></HubCard>

@@ -87,6 +87,7 @@ const getHubApplicationsQuery = (limit) => {
       slug
       description
       image
+      tags
       url
       articles {
         title
