@@ -338,11 +338,11 @@ export default {
   beforeDestroy() {
     window.jQuery('[id*="fnref"]').off("click", (e) => {
       e.preventDefault();
-      this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
+      this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`, { offset: 50 });
     });
     window.jQuery(".footnote-backref").off("click", (e) => {
       e.preventDefault();
-      this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
+      this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`, { offset: 50 });
     });
     console.log("click events removed");
   },
@@ -350,11 +350,15 @@ export default {
     await this.$nextTick(() => {
       window.jQuery('[id*="fnref"]').on("click", (e) => {
         e.preventDefault();
-        this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
+        this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`, {
+          offset: 50,
+        });
       });
       window.jQuery(".footnote-backref").on("click", (e) => {
         e.preventDefault();
-        this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`);
+        this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`, {
+          offset: 50,
+        });
       });
     });
   },

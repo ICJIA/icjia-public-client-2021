@@ -108,7 +108,7 @@ export default {
         },
         {
           label: "Funding",
-          url: "/gata/funding/",
+          url: "/grants/funding/",
         },
         {
           label: "Employment",
@@ -168,7 +168,7 @@ export default {
         // Funding and Employment
         this.grants = ApolloQueryResult.data.grants.map((e) => ({
           ...e,
-          fullPath: `/gata/funding/${e.slug}/`,
+          fullPath: `/grants/funding/${e.slug}/`,
           contentType: "Funding",
         }));
         this.employment = ApolloQueryResult.data.jobs.map((e) => ({

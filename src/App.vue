@@ -23,7 +23,7 @@
       <AppNavContext
         :contextMenu="contextMenu"
         v-if="contextMenu"
-        class="context-bar"
+        id="context-bar"
         :key="`context-${$route.fullPath}`"
       ></AppNavContext>
       <router-view :key="`routerView-${$route.fullPath}`"></router-view>
@@ -102,12 +102,13 @@ export default {
   padding: 0px !important;
 }
 
-.context-bar {
-  position: sticky !important;
-  top: -1px !important;
-  z-index: 1000 !important;
-}
 .btn--context {
   border: 1px solid #fff !important;
+}
+
+#context-bar {
+  position: sticky !important;
+  top: 90px !important;
+  z-index: 1000 !important;
 }
 </style>

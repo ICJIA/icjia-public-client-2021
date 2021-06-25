@@ -5,7 +5,6 @@
       height="45"
       scroll-threshold="0"
       color="#0a3a60"
-      id="context-bar"
       elevate-on-scroll
     >
       <div
@@ -29,6 +28,7 @@
           <v-tabs-slider></v-tabs-slider>
 
           <v-tab
+            style="background: #0a3a60 !important"
             v-for="(item, index) in contextMenu[0].items"
             :key="index"
             @click="

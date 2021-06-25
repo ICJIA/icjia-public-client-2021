@@ -64,7 +64,8 @@ export default {
   methods: {
     scrollTo(id) {
       //console.log(id);
-      this.$vuetify.goTo(`#${id}`, { offset: -70 });
+
+      this.$vuetify.goTo(`#${id}`, { offset: -30 });
     },
     setToc() {
       const sections = Array.from(document.querySelectorAll("h2"));
@@ -91,7 +92,7 @@ export default {
         var scrollPosition =
           document.documentElement.scrollTop || document.body.scrollTop;
         const tocItems = document.querySelectorAll(".tocItem");
-
+        //console.log(scrollPosition);
         if (scrollPosition < 100) {
           tocItems.forEach((toc) => {
             toc.classList.remove("visible");

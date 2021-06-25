@@ -1,15 +1,6 @@
 <template>
   <div>
-    <v-app-bar
-      fixed
-      app
-      color="white"
-      height="90"
-      hide-on-scroll
-      scroll-threshold="80"
-      style="z-index: 99999; border-bottom: 1px solid #eee !important"
-      flat
-    >
+    <v-app-bar fixed app elevate-on-scroll color="white" height="90">
       <div
         class="hover hamburger text-center"
         v-if="$vuetify.breakpoint.sm || $vuetify.breakpoint.xs"

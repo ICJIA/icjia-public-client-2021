@@ -18,7 +18,7 @@
                 v-if="news && news.showTOC"
                 md="3"
                 class="px-3 hidden-sm-and-down"
-                ><Toc></Toc
+                ><Toc :key="news.title"></Toc
               ></v-col>
             </v-row>
           </v-container>

@@ -1,26 +1,26 @@
 [
     {
-        "name": "gata",
-        "label": "ICJIA GATA",
-        "shortLabel": "ICJIA GATA",
-        "pathPrefix": "/gata/",
-        "defaultPath": "/gata/about/",
+        "name": "Grants",
+        "label": "ICJIA Federal and State Grants",
+        "shortLabel": "ICJIA Grants",
+        "pathPrefix": "/grants/",
+        "defaultPath": "/grants/about/",
         "items": [
             {
                 "label": "About",
-                "path": "/gata/about/"
+                "path": "/grants/about/"
             },
             {
                 "label": "Funding",
-                "path": "/gata/funding/"
+                "path": "/grants/funding/"
             },
             {
                 "label": "Training",
-                "path": "/gata/training/"
+                "path": "/grants/training/"
             },
             {
                 "label": "Technical Assistance",
-                "path": "/gata/technical-assistance/"
+                "path": "/grants/technical-assistance/"
             },
             {
                 "label": "Search",
