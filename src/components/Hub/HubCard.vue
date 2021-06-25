@@ -4,6 +4,7 @@
       class="pa-2 grid-item mb-3 info-card py-8 px-3"
       outlined
       :min-height="orientation === 'grid' ? 400 : null"
+      :height="cardHeight"
       @click.prevent="$router.push(item.fullPath)"
     >
       <v-card-text
@@ -99,6 +100,11 @@
         style="margin-top: -15px; color: #111"
         >{{ truncate(item.abstract, this.truncation) }}</v-card-text
       >
+      <v-card-text
+        v-if="item.description"
+        style="margin-top: -15px; color: #111"
+        >{{ truncate(item.description, this.truncation) }}</v-card-text
+      >
       <div class="ml-3">
         <BasePropDisplay name="Contributors" v-if="item.contributors">
           <template>
@@ -157,7 +163,7 @@ export default {
   computed: {
     truncation() {
       if (this.orientation === "grid") {
-        return 60;
+        return 30;
       } else {
         return 999;
       }
@@ -204,7 +210,7 @@ export default {
     },
     cardHeight: {
       type: Number,
-      default: 650,
+      default: null,
     },
     // splashHeight: {
     //   type: Number,

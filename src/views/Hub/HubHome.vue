@@ -1,55 +1,166 @@
 <template>
   <div>
-    <div v-if="loading">
-      <Loader></Loader>
-    </div>
-    <div v-else>
-      <v-carousel height="550">
-        <v-carousel-item v-for="(article, i) in articles" :key="i">
-          <v-card height="100%">
-            <v-row no-gutters>
-              <v-col md="12" cols="12">
-                <v-img
-                  v-if="article && article.splash"
-                  :src="article.splash"
-                  alt="ICJIA Research Hub page splash image"
-                  height="550"
-                >
-                  <v-overlay absolute>
-                    <div class="text-center px-10">
-                      <div class="text-center px-12" style="min-width: 350px">
-                        <h1
-                          class=""
-                          style="color: #fff; font-weight: 900; font-size: 36px"
-                        >
-                          {{ article.title }}
-                        </h1>
+    <div class="markdown-body">
+      <div
+        style="background: #ddd; border-bottom: 1px solid #ccc"
+        class="pt-6 pb-8"
+        v-if="!contentLoading"
+      >
+        <v-container>
+          <v-row>
+            <v-col cols="12">
+              <h1 style="">Home of ICJIA's Data and Research</h1>
+              <div v-html="render(content.body)"></div>
+            </v-col>
+          </v-row>
+        </v-container>
+      </div>
+      <div v-else>
+        <Loader
+          loaderType="skeleton"
+          :repeat="1"
+          loaderDisplayType="article"
+        ></Loader>
+      </div>
+      <v-container class="markdown-body" style="margin-bottom: 25px">
+        <v-row style="border-bottom: 1px solid #ccc">
+          <v-col cols="12" md="6"
+            ><div style="font-size: 28px; font-weight: 900">
+              Latest Publications
+            </div>
+          </v-col>
+          <v-col cols="12" md="6" class="text-right" style="margin-top: 5px"
+            ><v-btn outlined small>See more&nbsp;&raquo;</v-btn></v-col
+          >
+        </v-row>
+      </v-container>
+      <div v-if="!hubLoading">
+        <v-carousel height="550">
+          <v-carousel-item v-for="(article, i) in articles" :key="i">
+            <v-card height="100%">
+              <v-row no-gutters>
+                <v-col md="12" cols="12">
+                  <v-img
+                    v-if="article && article.splash"
+                    :src="article.splash"
+                    alt="ICJIA Research Hub page splash image"
+                    height="550"
+                  >
+                    <v-overlay absolute>
+                      <div class="text-center px-10">
+                        <div class="text-center px-12" style="min-width: 350px">
+                          <h1
+                            class=""
+                            style="
+                              color: #fff;
+                              font-weight: 900;
+                              font-size: 36px;
+                            "
+                          >
+                            {{ article.title }}
+                          </h1>
+                          <div
+                            class="text-center"
+                            style="margin-top: -10px !important"
+                          >
+                            <h3 style="font-size: 16px; font-weight: 300: ">
+                              {{ article.date | format }}
+                            </h3>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </v-overlay>
-                  <template v-slot:placeholder>
-                    <v-row
-                      class="fill-height ma-0"
-                      align="center"
-                      justify="center"
-                    >
-                      <v-progress-circular
-                        indeterminate
-                        color="grey lighten-5"
-                      ></v-progress-circular>
-                    </v-row>
-                  </template>
-                </v-img>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-carousel-item>
-      </v-carousel>
+                    </v-overlay>
+                    <template v-slot:placeholder>
+                      <v-row
+                        class="fill-height ma-0"
+                        align="center"
+                        justify="center"
+                      >
+                        <v-progress-circular
+                          indeterminate
+                          color="grey lighten-5"
+                        ></v-progress-circular>
+                      </v-row>
+                    </template>
+                  </v-img>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-carousel-item>
+        </v-carousel>
+        <v-container class="markdown-body" style="margin-bottom: 25px">
+          <v-row style="border-bottom: 1px solid #ccc" class="mb-10">
+            <v-col cols="12" md="6"
+              ><div style="font-size: 28px; font-weight: 900">
+                Latest Datasets
+              </div>
+            </v-col>
+            <v-col cols="12" md="6" class="text-right" style="margin-top: 5px"
+              ><v-btn outlined small>See more&nbsp;&raquo;</v-btn></v-col
+            >
+          </v-row>
+          <v-row no-gutters>
+            <v-col
+              cols="12"
+              md="4"
+              v-for="(dataset, index) in datasets"
+              :key="`dataset-${index}`"
+              style="border-right: 1px solid #e8e8e8"
+            >
+              <HubCard
+                :item="dataset"
+                :textOnly="true"
+                :cardHeight="450"
+                :showUpdated="true"
+              ></HubCard>
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-container class="markdown-body" style="margin-bottom: 25px">
+          <v-row style="border-bottom: 1px solid #ccc" class="mb-10">
+            <v-col cols="12" md="6"
+              ><div style="font-size: 28px; font-weight: 900">
+                Latest Web Applications
+              </div>
+            </v-col>
+            <v-col cols="12" md="6" class="text-right" style="margin-top: 5px"
+              ><v-btn outlined small>See more&nbsp;&raquo;</v-btn></v-col
+            >
+          </v-row>
+          <v-row no-gutters>
+            <v-col
+              cols="12"
+              md="4"
+              v-for="(app, index) in apps"
+              :key="`app-${index}`"
+              style="border-right: 1px solid #e8e8e8"
+            >
+              <HubCard
+                :item="app"
+                :textOnly="false"
+                :cardHeight="575"
+                :orientation="grid"
+                :showUpdated="true"
+              ></HubCard>
+            </v-col>
+          </v-row>
+        </v-container>
+      </div>
+      <div v-else>
+        <Loader
+          loaderType="skeleton"
+          :repeat="1"
+          loaderDisplayType="card, article, article, article, article, article"
+        ></Loader>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
+import { renderToHtml } from "@/services/Markdown";
+import NProgress from "nprogress";
 import {
   getHubApplications,
   getHubArticles,
@@ -61,32 +172,74 @@ export default {
       apps: null,
       articles: null,
       datasets: null,
-      loading: true,
+      hubLoading: true,
+      contentLoading: true,
+      content: null,
+      appModel: null,
+      datasetModel: null,
     };
   },
   async mounted() {
+    NProgress.start();
     //console.log("fetch here");
 
-    this.apps = await getHubApplications(2);
+    this.apps = await getHubApplications(3);
     this.apps = this.apps.map((e) => ({
       ...e,
       fullPath: `/researchhub/apps/${e.slug}/`,
       contentType: "app",
     }));
-    this.articles = await getHubArticles(5);
+    this.articles = await getHubArticles(10);
     this.articles = this.articles.map((e) => ({
       ...e,
       fullPath: `/researchhub/articles/${e.slug}/`,
       contentType: "article",
     }));
-    this.datasets = await getHubDatasets(2);
+    this.datasets = await getHubDatasets(3);
     this.datasets = this.datasets.map((e) => ({
       ...e,
       fullPath: `/researchhub/datasets/${e.slug}/`,
       contentType: "dataset",
     }));
     //console.log(this.hubArticles);
-    this.loading = false;
+    this.hubLoading = false;
+    NProgress.done();
+  },
+  methods: {
+    render(content) {
+      return renderToHtml(content);
+    },
+  },
+  apollo: {
+    pages: {
+      prefetch: true,
+      fetchPolicy: "no-cache",
+      query: GET_SINGLE_PAGE_QUERY,
+      variables() {
+        return {
+          slug: "hub-home",
+        };
+      },
+      error(error) {
+        this.error = JSON.stringify(error.message);
+      },
+      result(ApolloQueryResult) {
+        if (
+          ApolloQueryResult.data &&
+          ApolloQueryResult.data.pages.length > 0 === false
+        ) {
+          // eslint-disable-next-line no-unused-vars
+          this.$router.push("/404").catch((err) => {
+            console.log(err);
+          });
+        } else {
+          //console.log(this.id);
+          this.content = ApolloQueryResult.data.pages[0];
+          this.contentLoading = false;
+          NProgress.done();
+        }
+      },
+    },
   },
 };
 </script>
