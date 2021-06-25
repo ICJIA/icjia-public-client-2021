@@ -11,6 +11,7 @@
         style="font-weight: 900; text-transform: uppercase; color: #fff"
         class="hidden-sm-and-down hover"
         id="context-title"
+        data-aos="zoom-in"
         @click="routeToPage(contextMenu[0].defaultPath)"
       >
         {{ contextMenu[0].label }}

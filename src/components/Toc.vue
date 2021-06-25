@@ -44,6 +44,10 @@ export default {
     };
   },
   props: {
+    scrollOffset: {
+      type: Number,
+      default: 10,
+    },
     selector: {
       type: String,
       default: "#scrollArea",
@@ -65,7 +69,7 @@ export default {
     scrollTo(id) {
       //console.log(id);
 
-      this.$vuetify.goTo(`#${id}`, { offset: -30 });
+      this.$vuetify.goTo(`#${id}`, { offset: this.scrollOffset });
     },
     setToc() {
       const sections = Array.from(document.querySelectorAll("h2"));
@@ -147,7 +151,7 @@ export default {
 .toc {
   position: -webkit-sticky !important;
   position: sticky !important;
-  top: 115px !important;
+  top: 145px !important;
   font-size: 13px;
 }
 
