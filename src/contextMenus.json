@@ -58,10 +58,6 @@
             {
                 "label": "Documentation",
                 "path": "/researchhub/documentation/"
-            },
-            {
-                "label": "Search",
-                "event": "search"
             }
         ]
     }

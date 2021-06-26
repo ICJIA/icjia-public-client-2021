@@ -256,6 +256,7 @@ export default {
       }
     },
     truncate(string, maxWords = 30) {
+      if (!string) return "";
       var strippedString = string.trim();
       var array = strippedString.split(" ");
       var wordCount = array.length;
