@@ -5,6 +5,7 @@
         style="background: #31597a; border-bottom: 1px solid #ccc"
         class="pt-6 pb-8"
         v-if="!contentLoading"
+        data-aos="fade-in"
       >
         <v-container>
           <v-row>
