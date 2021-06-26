@@ -131,24 +131,8 @@ export default {
       limit: 3,
       researchMenuItems: [
         {
-          label: "Research Hub Home",
+          label: "Research Hub",
           url: "/researchhub/",
-        },
-        {
-          label: "About the Research Hub",
-          url: "/researchhub/about-the-research-hub/",
-        },
-        {
-          label: "Articles",
-          url: "/researchhub/articles/",
-        },
-        {
-          label: "Applications",
-          url: "/researchhub/apps/",
-        },
-        {
-          label: "Datasets",
-          url: "/researchhub/datasets/",
         },
       ],
     };

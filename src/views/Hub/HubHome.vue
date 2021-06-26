@@ -2,15 +2,15 @@
   <div class="pb-12">
     <div class="markdown-body">
       <div
-        style="background: #ddd; border-bottom: 1px solid #ccc"
+        style="background: #31597a; border-bottom: 1px solid #ccc"
         class="pt-6 pb-8"
         v-if="!contentLoading"
       >
         <v-container>
           <v-row>
             <v-col cols="12">
-              <h1 style="">Home of ICJIA's Data and Research</h1>
-              <div v-html="render(content.body)"></div>
+              <h1 style="color: #fff">Home of ICJIA's Data and Research</h1>
+              <div v-html="render(content.body)" style="color: #fff"></div>
             </v-col>
           </v-row>
         </v-container>
@@ -30,7 +30,9 @@
             </div>
           </v-col>
           <v-col cols="12" md="6" class="text-right" style="margin-top: 5px"
-            ><v-btn outlined small>See more&nbsp;&raquo;</v-btn></v-col
+            ><v-btn outlined small to="/researchhub/articles/"
+              >See more&nbsp;&raquo;</v-btn
+            ></v-col
           >
         </v-row>
       </v-container>
@@ -45,27 +47,47 @@
                     :src="article.splash"
                     alt="ICJIA Research Hub page splash image"
                     height="550"
+                    class="hover"
+                    @click="
+                      $router.push(`/researchhub/articles/${article.slug}`)
+                    "
                   >
                     <v-overlay absolute>
-                      <div class="text-center px-10">
-                        <div class="text-center px-12" style="min-width: 350px">
+                      <div class="text-center px-5">
+                        <div
+                          class="text-center px-12"
+                          style="min-width: 350px; max-width: 850px"
+                        >
+                          <div class="text-center hidden-sm-and-down" style="">
+                            <h3 style="font-size: 18px; font-weight: 300: ">
+                              {{ article.date | format }}
+                            </h3>
+                          </div>
                           <h1
                             class=""
                             style="
                               color: #fff;
                               font-weight: 900;
                               font-size: 36px;
+                              margin-top: -5px;
                             "
                           >
                             {{ article.title }}
                           </h1>
+
                           <div
-                            class="text-center"
-                            style="margin-top: -10px !important"
+                            style="margin-top: -10px"
+                            class="hidden-sm-and-down"
                           >
-                            <h3 style="font-size: 16px; font-weight: 300: ">
-                              {{ article.date | format }}
-                            </h3>
+                            <span
+                              v-for="(author, i) in article.authors"
+                              :key="i"
+                            >
+                              <template v-if="i > 0">{{
+                                article.authors.length > i + 1 ? ", " : " and "
+                              }}</template>
+                              {{ author.title }}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -96,7 +118,9 @@
               </div>
             </v-col>
             <v-col cols="12" md="6" class="text-right" style="margin-top: 5px"
-              ><v-btn outlined small>See more&nbsp;&raquo;</v-btn></v-col
+              ><v-btn outlined small to="/researchhub/datasets/"
+                >See more&nbsp;&raquo;</v-btn
+              ></v-col
             >
           </v-row>
           <v-row no-gutters>
@@ -110,7 +134,6 @@
               <HubCard
                 :item="dataset"
                 :textOnly="true"
-                :cardHeight="450"
                 orientation="grid"
                 :showUpdated="true"
               ></HubCard>
@@ -125,7 +148,9 @@
               </div>
             </v-col>
             <v-col cols="12" md="6" class="text-right" style="margin-top: 5px"
-              ><v-btn outlined small>See more&nbsp;&raquo;</v-btn></v-col
+              ><v-btn outlined small to="/researchhub/apps/"
+                >See more&nbsp;&raquo;</v-btn
+              ></v-col
             >
           </v-row>
           <v-row no-gutters>
@@ -139,7 +164,6 @@
               <HubCard
                 :item="app"
                 :textOnly="false"
-                :cardHeight="600"
                 orientation="grid"
                 :showUpdated="true"
               ></HubCard>

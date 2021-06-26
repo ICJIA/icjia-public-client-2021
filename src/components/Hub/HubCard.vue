@@ -96,15 +96,14 @@
         </v-img>
       </div>
       <v-card-text
-        v-if="item.abstract"
-        style="margin-top: -15px; color: #111"
-        >{{ truncate(item.abstract, this.truncation) }}</v-card-text
-      >
-      <v-card-text
         v-if="item.description"
         style="margin-top: -15px; color: #111"
         >{{ truncate(item.description, this.truncation) }}</v-card-text
       >
+      <v-card-text v-else style="margin-top: -15px; color: #111">{{
+        truncate(item.abstract, this.truncation)
+      }}</v-card-text>
+
       <div class="ml-3">
         <BasePropDisplay name="Contributors" v-if="item.contributors">
           <template>

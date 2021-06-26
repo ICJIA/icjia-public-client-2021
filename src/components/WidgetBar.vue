@@ -58,9 +58,8 @@
         </div>
       </v-list>
     </v-menu>
-    <v-btn large text v-else style="font-weight: 900" :to="menuItems[0].url"
-      >{{ menuItems[0].label }}
-      <v-icon right>mdi mdi-greater-than</v-icon></v-btn
+    <v-btn small outlined v-else style="font-weight: 900" :to="menuItems[0].url"
+      >{{ menuItems[0].label }}&nbsp;&raquo;</v-btn
     ></v-app-bar
   >
 </template>
