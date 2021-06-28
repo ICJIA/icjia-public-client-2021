@@ -10,7 +10,7 @@
         <v-container>
           <v-row>
             <v-col cols="12">
-              <h1 style="color: #fff">Home of ICJIA's Data and Research</h1>
+              <h1 style="color: #fff">Research & Analysis Unit</h1>
               <div v-html="render(content.body)" style="color: #fff"></div>
             </v-col>
           </v-row>

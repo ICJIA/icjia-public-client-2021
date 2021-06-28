@@ -19,7 +19,7 @@ export default {
     chipClick(e) {
       //console.log("chip click: ", e.target.innerHTML);
       let opts = {
-        query: e.target.innerText.toLowerCase(),
+        query: e.target.innerText,
         type: "hub",
       };
       EventBus.$emit("search", opts);

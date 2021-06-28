@@ -32,6 +32,7 @@
 import NProgress from "nprogress";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
+import { EventBus } from "@/event-bus";
 export default {
   data() {
     return {
@@ -42,6 +43,27 @@ export default {
   },
   created() {
     NProgress.start();
+  },
+  watch: {
+    // eslint-disable-next-line no-unused-vars
+    loading(newValue, oldValue) {
+      if (!newValue) {
+        this.$nextTick(() => {
+          let eventAnchors = document.querySelectorAll("[data-event-search]");
+          for (const eventAnchor of eventAnchors) {
+            eventAnchor.classList.add("event-anchor");
+            eventAnchor.addEventListener("click", function (e) {
+              e.preventDefault();
+              let opts = {
+                query: e.target.innerText,
+                type: "hub",
+              };
+              EventBus.$emit("search", opts);
+            });
+          }
+        });
+      }
+    },
   },
   methods: {
     render(content) {

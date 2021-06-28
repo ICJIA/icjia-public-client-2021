@@ -30,21 +30,25 @@
     },
     {
         "name": "researchhub",
-        "label": "Research at ICJIA",
+        "label": "ICJIA Research Hub",
         "shortLabel": "ICJIA Research",
         "pathPrefix": "/researchhub/",
         "defaultPath": "/researchhub/",
         "items": [
             {
-                "label": "Overview",
+                "label": "Unit Overview",
                 "path": "/researchhub/research-overview/"
+            },
+            {
+                "label": "Staff",
+                "path": "/researchhub/staff/"
             },
             {
                 "label": "Articles",
                 "path": "/researchhub/articles/"
             },
             {
-                "label": "Web Apps",
+                "label": "Apps",
                 "path": "/researchhub/apps/"
             },
             {

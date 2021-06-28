@@ -164,3 +164,12 @@
   background: #000;
   color: #fff;
 }
+
+.event-anchor {
+  font-weight: bold;
+}
+
+.event-anchor:hover {
+  color: #aaa !important;
+  text-decoration: underline !important;
+}
