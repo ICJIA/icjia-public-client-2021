@@ -26,7 +26,10 @@
         id="context-bar"
         :key="`context-${$route.fullPath}`"
       ></AppNavContext>
-      <router-view :key="`routerView-${$route.fullPath}`"></router-view>
+      <router-view
+        :key="`routerView-${$route.fullPath}`"
+        style="min-height: 100vh !important"
+      ></router-view>
       <Disclaimer
         v-if="disclaimer"
         :disclaimer="disclaimer"
