@@ -48,6 +48,7 @@ export default {
       return renderToHtml(content);
     },
   },
+  mounted() {},
   apollo: {
     pages: {
       prefetch: true,

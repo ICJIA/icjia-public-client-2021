@@ -30,18 +30,14 @@
     },
     {
         "name": "researchhub",
-        "label": "ICJIA Research Hub",
-        "shortLabel": "Research Hub",
+        "label": "Research at ICJIA",
+        "shortLabel": "ICJIA Research",
         "pathPrefix": "/researchhub/",
         "defaultPath": "/researchhub/",
         "items": [
             {
-                "label": "Hub Home",
-                "path": "/researchhub/"
-            },
-            {
-                "label": "About",
-                "path": "/researchhub/about-the-research-hub/"
+                "label": "Overview",
+                "path": "/researchhub/research-overview/"
             },
             {
                 "label": "Articles",
@@ -56,8 +52,8 @@
                 "path": "/researchhub/datasets/"
             },
             {
-                "label": "Documentation",
-                "path": "/researchhub/documentation/"
+                "label": "IRB",
+                "path": "/irb/"
             }
         ]
     }
