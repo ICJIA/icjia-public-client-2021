@@ -37,7 +37,7 @@
         "items": [
             {
                 "label": "Unit Overview",
-                "path": "/researchhub/research-overview/"
+                "path": "/researchhub/hub-overview/"
             },
             {
                 "label": "Staff",

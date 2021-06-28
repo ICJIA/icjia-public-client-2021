@@ -49,9 +49,12 @@ export default {
     loading(newValue, oldValue) {
       if (!newValue) {
         this.$nextTick(() => {
-          let eventAnchors = document.querySelectorAll("[data-event-search]");
-          for (const eventAnchor of eventAnchors) {
-            eventAnchor.classList.add("event-anchor");
+          let eventSearchAnchors = document.querySelectorAll(
+            "[data-event-search]"
+          );
+
+          for (const eventAnchor of eventSearchAnchors) {
+            eventAnchor.classList.add("event-search-anchor");
             eventAnchor.addEventListener("click", function (e) {
               e.preventDefault();
               let opts = {
@@ -61,6 +64,8 @@ export default {
               EventBus.$emit("search", opts);
             });
           }
+          let eventLinkAnchors = document.querySelectorAll("[data-event-link]");
+          console.log(eventLinkAnchors);
         });
       }
     },

@@ -73,6 +73,16 @@
   text-decoration: underline;
 }
 
+.white-link {
+  color: #fff;
+  font-weight: bold;
+}
+
+.white-link:hover {
+  color: #ccc !important;
+  text-decoration: underline !important;
+}
+
 .reduce-85 {
   font-size: 85% !important;
 }
@@ -165,11 +175,11 @@
   color: #fff;
 }
 
-.event-anchor {
+.event-search-anchor {
   font-weight: bold;
 }
 
-.event-anchor:hover {
+.event-search-anchor:hover {
   color: #aaa !important;
   text-decoration: underline !important;
 }
