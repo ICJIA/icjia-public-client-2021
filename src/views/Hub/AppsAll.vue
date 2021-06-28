@@ -13,6 +13,11 @@
       </v-row>
 
       <v-row v-if="!loading">
+        <v-col class="text-left" style="margin-top: -35px">
+          <div style="font-weight: 900; font-size: 12px">
+            Showing: {{ content.length }} of {{ content.length }} web apps
+          </div>
+        </v-col>
         <v-col cols="12" class="hidden-sm-and-down">
           <div class="text-right">
             <v-btn-toggle v-model="orientation" borderless>
@@ -96,7 +101,7 @@ export default {
   apollo: {
     apps: {
       prefetch: true,
-      fetchPolicy: "no-cache",
+      // fetchPolicy: "no-cache",
       query: GET_ALL_APPS_QUERY,
       variables() {
         return {};

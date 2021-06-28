@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container class="markdown-body">
+    <v-container class="pt-10 pb-12 markdown-body">
       <v-row>
         <v-col>
           <h1>Research & Analysis Staff</h1>
@@ -11,8 +11,14 @@
     <div v-if="!loading" class="mb-12 markdown-body">
       <v-container>
         <v-row>
+          <v-col class="text-left" style="margin-top: -35px">
+            <div style="font-weight: 900; font-size: 12px" class="mb-12">
+              Showing: {{ content.length }} of {{ content.length }} R&A staff
+              members
+            </div>
+          </v-col>
           <v-col v-for="(item, i) in content" :key="i" cols="12">
-            <v-card elevation="0">
+            <v-card elevation="0" data-aos="fade-up">
               <div class="d-flex flex-no-wrap">
                 <v-avatar
                   class="ma-3"
@@ -41,7 +47,7 @@
       </v-container>
     </div>
     <div v-else>
-      <Loader></Loader>
+      <Loader loaderType="skeleton" :repeat="1"></Loader>
     </div>
   </div>
 </template>

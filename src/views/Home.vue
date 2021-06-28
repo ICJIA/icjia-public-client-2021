@@ -7,7 +7,11 @@
       v-if="!loading"
     ></HomeSplash>
     <v-card height="550" class="px-3 py-3" v-if="loading">
-      <Loader></Loader>
+      <Loader
+        loaderType="skeleton"
+        :repeat="3"
+        loaderDisplayType="card"
+      ></Loader>
     </v-card>
 
     <HomeResearch></HomeResearch>

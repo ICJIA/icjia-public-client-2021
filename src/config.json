@@ -108,6 +108,14 @@
                 {
                     "name": "abstract",
                     "weight": 2
+                },
+                {
+                    "name": "start",
+                    "weight": 3
+                },
+                {
+                    "name": "end",
+                    "weight": 3
                 }
             ]
         }
