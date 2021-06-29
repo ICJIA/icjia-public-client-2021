@@ -24,8 +24,12 @@
         </v-row>
       </v-container>
     </div>
-    <div v-else>
-      <Loader></Loader>
+    <div v-if="contentLoading">
+      <Loader
+        loaderType="skeleton"
+        :repeat="1"
+        loaderDisplayType="article"
+      ></Loader>
     </div>
   </div>
 </template>
@@ -40,6 +44,7 @@ import NProgress from "nprogress";
 export default {
   data() {
     return {
+      contentLoading: true,
       content: null,
     };
   },
@@ -64,6 +69,8 @@ export default {
       },
       error(error) {
         this.error = JSON.stringify(error.message);
+        this.contentLoading = false;
+        NProgress.done();
       },
       result(ApolloQueryResult) {
         if (

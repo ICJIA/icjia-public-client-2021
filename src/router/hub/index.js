@@ -12,7 +12,7 @@ const hub = [
       import(/* webpackChunkName: "hub" */ "@/views/Hub/Search.vue"),
   },
   {
-    path: "/researchhub/staff",
+    path: "/researchhub/hub-staff",
     name: "hubStaff",
     component: () =>
       import(/* webpackChunkName: "hub" */ "@/views/Hub/HubStaff.vue"),

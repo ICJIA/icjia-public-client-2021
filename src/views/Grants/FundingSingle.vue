@@ -23,7 +23,7 @@
 <script>
 import NProgress from "nprogress";
 import { renderToHtml } from "@/services/Markdown";
-import { GET_SINGLE_FUNDING_QUERY } from "@/graphql/funding";
+import { GET_SINGLE_FUNDING_QUERY } from "@/graphql/grants";
 export default {
   data() {
     return {

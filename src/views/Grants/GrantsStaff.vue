@@ -18,7 +18,7 @@
             </div>
           </v-col>
           <v-col v-for="(item, i) in content" :key="i" cols="12">
-            <v-card elevation="0" data-aos="fade-up">
+            <v-card elevation="0">
               <div class="d-flex flex-no-wrap">
                 <v-avatar
                   class="ma-3"

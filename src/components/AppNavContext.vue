@@ -2,6 +2,23 @@
   <div>
     <v-app-bar
       dense
+      height="35"
+      color="#133e60"
+      class="hidden-md-and-up hover"
+      style="border-bottom: 1px solid #aaa"
+    >
+      <v-spacer></v-spacer>
+      <span
+        style="color: #fff; font-size: 12px; font-weight: 900"
+        @click="routeToPage(contextMenu[0].defaultPath)"
+      >
+        {{ contextMenu[0].label.toUpperCase() }}</span
+      >
+
+      <v-spacer></v-spacer>
+    </v-app-bar>
+    <v-app-bar
+      dense
       height="45"
       scroll-threshold="0"
       color="#0a3a60"

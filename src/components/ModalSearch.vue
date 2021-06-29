@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="searchModal" ref="searchTop" style="z-index: 999999">
-    <v-card color="#eee" min-height="600" class="px-1 py-1">
+    <v-card color="#eee" min-height="600" class="px-3 py-1">
       <v-card-title class="text-h5 grey lighten-2">
         Search ICJIA<v-spacer></v-spacer
         ><v-btn small @click="searchModal = false">Close</v-btn>
@@ -50,12 +50,23 @@
                   }}</span>
                   | {{ result.item.date | format }}
                 </div>
-                <div style="font-size: 12px" v-else>
+                <div
+                  style="font-size: 12px"
+                  v-if="result.item && result.item.start"
+                >
                   <span style="font-weight: 700">{{
                     result.item.contentType.toUpperCase()
                   }}</span>
                   | {{ result.item.start | format }} to
                   {{ result.item.end | format }}
+                </div>
+                <div
+                  style="font-size: 12px"
+                  v-if="result.item && result.item.category"
+                >
+                  <span style="font-weight: 700">{{
+                    result.item.contentType.toUpperCase()
+                  }}</span>
                 </div>
                 <div v-if="result.item.title" class="mt-2">
                   <span
@@ -112,7 +123,8 @@ import { EventBus } from "@/event-bus";
 import DOMPurify from "dompurify";
 import Fuse from "fuse.js";
 import _ from "lodash";
-// import hub from "@/hub.json";
+import hub from "@/hub.json";
+import grants from "@/grants.json";
 function arrayToList(array) {
   return array.join(", ").replace(/, ((?:.(?!, ))+)$/, " and $1");
 }
@@ -131,7 +143,7 @@ export default {
     };
   },
   created() {
-    let searchIndex = [...this.$myApp.hub, ...this.$myApp.grants];
+    let searchIndex = [...hub, ...grants];
     this.fuse = new Fuse(searchIndex, this.$myApp.config.search.hub);
   },
   mounted() {

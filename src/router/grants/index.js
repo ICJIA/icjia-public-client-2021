@@ -1,5 +1,11 @@
 const grants = [
   {
+    path: "/grants/",
+    name: "FSGUHome",
+    component: () =>
+      import(/* webpackChunkName: "funding" */ "@/views/Grants/GrantsHome.vue"),
+  },
+  {
     path: "/grants/staff",
     name: "FSGUStaff",
     component: () =>

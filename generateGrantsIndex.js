@@ -20,6 +20,21 @@ const query = `query {
       slug
     }
   }
+
+   programs {
+    id
+    updated_at
+    title
+    slug
+    status
+    category
+    summary
+    published_at
+    tags {
+      title
+      slug
+    }
+  }
 }`;
 
 axios
@@ -27,6 +42,7 @@ axios
   .post("/graphql", { query, validateStatus: (status) => status === 200 })
   .then((res) => {
     let grants = res.data.data.grants;
+    let programs = res.data.data.programs;
 
     grants = grants.map((e) => ({
       ...e,
@@ -35,7 +51,14 @@ axios
       contentType: "grant",
     }));
 
-    let content = [...grants];
+    programs = programs.map((e) => ({
+      ...e,
+      fullPath: `/grants/programs/${e.slug}/`,
+      imagePath: null,
+      contentType: "program",
+    }));
+
+    let content = [...grants, ...programs];
     content = _.orderBy(content, ["date"], ["desc"]);
 
     jsonfile.writeFile(`./src/grants.json`, content, function (err) {

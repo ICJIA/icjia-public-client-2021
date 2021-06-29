@@ -187,10 +187,10 @@
 .author-name {
   font-weight: 700 !important;
   color: #555 !important;
-  text-decoration: underline !important;
+  text-decoration: none !important;
 }
 .author-name:hover {
-  text-decoration: none !important;
+  text-decoration: underline !important;
   color: #777 !important;
 }
 
