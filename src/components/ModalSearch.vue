@@ -13,7 +13,8 @@
             Displaying {{ queryResults.length }} result{{ resultNumber }}</span
           >
 
-          <!-- <v-btn-toggle v-model="hubOnly" mandatory>
+          <!-- <v-btn-toggle v-model="searchFilter" mandatory>
+            <v-btn x-small>Grants Only</v-btn>
             <v-btn x-small>ResearchHub Only</v-btn>
             <v-btn x-small>All ICJIA</v-btn>
           </v-btn-toggle> -->
@@ -123,15 +124,14 @@ import { EventBus } from "@/event-bus";
 import DOMPurify from "dompurify";
 import Fuse from "fuse.js";
 import _ from "lodash";
-import hub from "@/config/hub.json";
-import grants from "@/config/grants.json";
+// import searchIndex from "@/config/searchIndex.json";
 function arrayToList(array) {
   return array.join(", ").replace(/, ((?:.(?!, ))+)$/, " and $1");
 }
 export default {
   data() {
     return {
-      hubOnly: true,
+      searchFilter: null,
       searchModal: false,
       opts: null,
       query: null,
@@ -143,8 +143,10 @@ export default {
     };
   },
   created() {
-    let searchIndex = [...hub, ...grants];
-    this.fuse = new Fuse(searchIndex, this.$myApp.config.search.hub);
+    this.fuse = new Fuse(
+      this.$myApp.searchIndex,
+      this.$myApp.config.search.site
+    );
   },
   mounted() {
     EventBus.$on("closeSearch", () => {

@@ -67,7 +67,7 @@
     },
     "hoursToShowUpdated": 1,
     "search": {
-        "hub": {
+        "site": {
             "isCaseSensitive": false,
             "includeScore": true,
             "shouldSort": true,
