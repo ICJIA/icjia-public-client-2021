@@ -28,7 +28,7 @@
       ></AppNavContext>
       <router-view
         :key="`routerView-${$route.fullPath}`"
-        style="min-height: 100vh !important"
+        style="min-height: 97vh !important"
       ></router-view>
       <Disclaimer
         v-if="disclaimer"
