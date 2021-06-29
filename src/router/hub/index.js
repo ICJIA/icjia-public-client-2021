@@ -1,5 +1,10 @@
 const hub = [
   {
+    path: "/researchhub/hub-home/",
+    redirect: { name: "hubHome" },
+  },
+
+  {
     path: "/researchhub/",
     name: "hubHome",
     component: () =>
