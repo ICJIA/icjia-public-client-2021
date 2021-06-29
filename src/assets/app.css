@@ -179,7 +179,17 @@
   font-weight: bold;
 }
 
-.event-search-anchor:hover {
+/* .event-search-anchor:hover {
   color: #aaa !important;
   text-decoration: underline !important;
+} */
+
+.author-name {
+  font-weight: 700 !important;
+  color: #555 !important;
+  text-decoration: underline !important;
+}
+.author-name:hover {
+  text-decoration: none !important;
+  color: #777 !important;
 }

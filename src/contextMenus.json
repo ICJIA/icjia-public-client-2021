@@ -4,11 +4,15 @@
         "label": "ICJIA Federal and State Grants",
         "shortLabel": "ICJIA Grants",
         "pathPrefix": "/grants/",
-        "defaultPath": "/grants/about/",
+        "defaultPath": "/grants/grants-overview/",
         "items": [
             {
-                "label": "About",
-                "path": "/grants/about/"
+                "label": "FSGU Overview",
+                "path": "/grants/grants-overview/"
+            },
+            {
+                "label": "Staff",
+                "path": "/grants/staff/"
             },
             {
                 "label": "Funding",
@@ -23,8 +27,8 @@
                 "path": "/grants/technical-assistance/"
             },
             {
-                "label": "Search",
-                "event": "search"
+                "label": "GATA Information",
+                "path": "/grants/gata/"
             }
         ]
     },
@@ -36,7 +40,7 @@
         "defaultPath": "/researchhub/",
         "items": [
             {
-                "label": "Unit Overview",
+                "label": "R&A Overview",
                 "path": "/researchhub/hub-overview/"
             },
             {

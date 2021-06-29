@@ -41,11 +41,21 @@
                 @click="route(result.item.fullPath)"
                 class="hover px-2 py-3 mb-2 card"
               >
-                <div style="font-size: 12px">
+                <div
+                  style="font-size: 12px"
+                  v-if="result.item && result.item.date"
+                >
                   <span style="font-weight: 700">{{
                     result.item.contentType.toUpperCase()
                   }}</span>
                   | {{ result.item.date | format }}
+                </div>
+                <div style="font-size: 12px" v-else>
+                  <span style="font-weight: 700">{{
+                    result.item.contentType.toUpperCase()
+                  }}</span>
+                  | {{ result.item.start | format }} to
+                  {{ result.item.end | format }}
                 </div>
                 <div v-if="result.item.title" class="mt-2">
                   <span
@@ -76,6 +86,7 @@
                 <v-card-text v-if="result.item.abstract">{{
                   result.item.abstract
                 }}</v-card-text>
+                <v-card-text v-else>{{ result.item.summary }}</v-card-text>
 
                 <template v-if="result.item.tags">
                   <BasePropChip
@@ -101,7 +112,7 @@ import { EventBus } from "@/event-bus";
 import DOMPurify from "dompurify";
 import Fuse from "fuse.js";
 import _ from "lodash";
-import searchIndex from "@/hub.json";
+// import hub from "@/hub.json";
 function arrayToList(array) {
   return array.join(", ").replace(/, ((?:.(?!, ))+)$/, " and $1");
 }
@@ -120,6 +131,7 @@ export default {
     };
   },
   created() {
+    let searchIndex = [...this.$myApp.hub, ...this.$myApp.grants];
     this.fuse = new Fuse(searchIndex, this.$myApp.config.search.hub);
   },
   mounted() {

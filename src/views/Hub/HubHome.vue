@@ -184,6 +184,7 @@
 </template>
 
 <script>
+import { attachInternalLinks } from "@/utils/dom";
 import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
 import { renderToHtml } from "@/services/Markdown";
 import NProgress from "nprogress";
@@ -227,9 +228,12 @@ export default {
       fullPath: `/researchhub/datasets/${e.slug}/`,
       contentType: "dataset",
     }));
-    //console.log(this.hubArticles);
+
     this.hubLoading = false;
     NProgress.done();
+    this.$nextTick(() => {
+      attachInternalLinks(this);
+    });
   },
   methods: {
     render(content) {

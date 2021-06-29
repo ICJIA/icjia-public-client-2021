@@ -54,7 +54,7 @@ export default {
           );
 
           for (const eventAnchor of eventSearchAnchors) {
-            eventAnchor.classList.add("event-search-anchor");
+            eventAnchor.classList.add("author-name");
             eventAnchor.addEventListener("click", function (e) {
               e.preventDefault();
               let opts = {
@@ -64,8 +64,8 @@ export default {
               EventBus.$emit("search", opts);
             });
           }
-          let eventLinkAnchors = document.querySelectorAll("[data-event-link]");
-          console.log(eventLinkAnchors);
+          // let eventLinkAnchors = document.querySelectorAll("[data-event-link]");
+          // console.log(eventLinkAnchors);
         });
       }
     },

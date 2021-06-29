@@ -16,6 +16,7 @@
       >
         {{ contextMenu[0].label }}
       </div>
+
       <v-spacer></v-spacer>
       <v-card elevation="0">
         <v-tabs

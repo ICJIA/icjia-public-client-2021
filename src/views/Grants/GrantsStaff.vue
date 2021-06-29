@@ -3,7 +3,7 @@
     <v-container class="pt-10 pb-12 markdown-body">
       <v-row>
         <v-col>
-          <h1>Research & Analysis Staff</h1>
+          <h1>Federal and State Grants Unit Staff</h1>
         </v-col>
       </v-row>
     </v-container>
@@ -91,7 +91,7 @@ export default {
       query: GET_BIOGRAPHIES_BY_UNIT_QUERY,
       variables() {
         return {
-          shortName: "R&A",
+          shortName: "FSGU",
         };
       },
       error(error) {
@@ -119,3 +119,4 @@ export default {
   },
 };
 </script>
+<style></style>
