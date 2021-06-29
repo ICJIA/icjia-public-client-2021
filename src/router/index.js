@@ -9,10 +9,11 @@ import { EventBus } from "@/event-bus";
 import { hub } from "@/router/hub";
 import { news } from "@/router/news";
 import { grants } from "@/router/grants";
+import { irb } from "@/router/irb";
 import { sandboxes } from "@/router/sandbox";
 import { fourOhFour } from "@/router/404";
 import { meetings } from "@/router/meetings";
-import { preview } from "@/router/preview";
+// import { preview } from "@/router/preview";
 Vue.use(VueRouter);
 
 const home = [
@@ -26,6 +27,7 @@ const home = [
 const routes = [
   ...home,
   ...hub,
+  ...irb,
   ...news,
   ...grants,
   ...meetings,

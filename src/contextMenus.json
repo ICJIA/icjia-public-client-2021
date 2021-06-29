@@ -64,5 +64,34 @@
                 "path": "/irb/"
             }
         ]
+    },
+    {
+        "name": "irb",
+        "label": "Institutional Review Board",
+        "shortLabel": "ICJIA IRB",
+        "pathPrefix": "/irb/",
+        "defaultPath": "/irb/",
+        "items": [
+            {
+                "label": "IRB Overview",
+                "path": "/irb/"
+            },
+            {
+                "label": "Members & Staff",
+                "path": "/irb/members-and-staff/"
+            },
+            {
+                "label": "Meetings",
+                "path": "/irb/meetings/"
+            },
+            {
+                "label": "Policies",
+                "path": "/irb/irb-policies/"
+            },
+            {
+                "label": "Resources",
+                "path": "/irb/irb-resources/"
+            }
+        ]
     }
 ]
