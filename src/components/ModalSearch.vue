@@ -123,8 +123,8 @@ import { EventBus } from "@/event-bus";
 import DOMPurify from "dompurify";
 import Fuse from "fuse.js";
 import _ from "lodash";
-import hub from "@/hub.json";
-import grants from "@/grants.json";
+import hub from "@/config/hub.json";
+import grants from "@/config/grants.json";
 function arrayToList(array) {
   return array.join(", ").replace(/, ((?:.(?!, ))+)$/, " and $1");
 }

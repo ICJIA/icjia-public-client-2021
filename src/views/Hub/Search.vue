@@ -64,7 +64,7 @@
 import DOMPurify from "dompurify";
 import Fuse from "fuse.js";
 import _ from "lodash";
-import searchIndex from "@/hub.json";
+import searchIndex from "@/config/hub.json";
 function arrayToList(array) {
   return array.join(", ").replace(/, ((?:.(?!, ))+)$/, " and $1");
 }

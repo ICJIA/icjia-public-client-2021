@@ -77,9 +77,9 @@ axios
     let content = [...articles, ...apps, ...datasets];
     content = _.orderBy(content, ["date"], ["desc"]);
 
-    jsonfile.writeFile(`./src/hub.json`, content, function (err) {
+    jsonfile.writeFile(`./src/config/hub.json`, content, function (err) {
       if (err) console.error(err);
-      console.log(`Created: ./src/hub.json`);
+      console.log(`Created: ./src/config/hub.json`);
     });
   })
   .catch((err) => console.error(err));

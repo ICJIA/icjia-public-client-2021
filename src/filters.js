@@ -3,10 +3,7 @@ const moment = require("moment");
 // eslint-disable-next-line no-unused-vars
 const tz = require("moment-timezone");
 
-import appConfig from "./config.json";
-
-// import * as data from "./config.json";
-// const appConfig = data;
+import appConfig from "@/config/config.json";
 
 Vue.filter("format", function (d) {
   var monthNames = [

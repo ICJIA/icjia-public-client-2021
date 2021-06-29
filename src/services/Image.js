@@ -1,4 +1,4 @@
-const appConfig = require("@/config.json");
+const appConfig = require("@/config/config.json");
 const ThumborUrlBuilder = require("thumbor-url-builder");
 
 const getImageURL = (path, imgWidth = 0, imgHeight = 0, imgQuality = 70) => {

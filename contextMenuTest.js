@@ -3,7 +3,7 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable no-prototype-builtins */
 
-const json = require("./src/contextMenus.json");
+const json = require("./src/config/contextMenus.json");
 // const _ = require("lodash");
 
 let fullPath = "/researchhubd/articles/test-article";

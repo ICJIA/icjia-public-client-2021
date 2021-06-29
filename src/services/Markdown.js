@@ -1,4 +1,4 @@
-// const config = require("@/config.json");
+// const config = require("@/config/config.json");
 // import { EventBus } from "@/event-bus.js";
 // const namedHeaders = require("markdown-it-named-headers");
 // const attrs = require("markdown-it-attrs/markdown-it-attrs.browser.js");

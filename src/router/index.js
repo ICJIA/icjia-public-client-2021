@@ -3,7 +3,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "@/views/Home.vue";
 import NProgress from "nprogress";
-import appConfig from "@/config.json";
+import appConfig from "@/config/config.json";
 import { EventBus } from "@/event-bus";
 // Add routes
 import { hub } from "@/router/hub";

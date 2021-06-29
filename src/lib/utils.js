@@ -1,6 +1,6 @@
 /* eslint-disable no-prototype-builtins */
 
-const json = require("../contextMenus.json");
+const json = require("../config/contextMenus.json");
 // const _ = require("lodash");
 
 const getObjects = function (obj, key, val) {

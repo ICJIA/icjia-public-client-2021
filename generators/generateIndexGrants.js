@@ -61,9 +61,9 @@ axios
     let content = [...grants, ...programs];
     content = _.orderBy(content, ["date"], ["desc"]);
 
-    jsonfile.writeFile(`./src/grants.json`, content, function (err) {
+    jsonfile.writeFile(`./src/config/grants.json`, content, function (err) {
       if (err) console.error(err);
-      console.log(`Created: ./src/grants.json`);
+      console.log(`Created: ./src/config/grants.json`);
     });
   })
   .catch((err) => console.error(err));
