@@ -4,14 +4,14 @@
       <div
         style="background: #31597a; border-bottom: 1px solid #ccc"
         class="pt-6 pb-8"
-        v-if="!contentLoading"
+        v-if="content"
         data-aos="fade-in"
       >
-        <v-container>
+        <v-container v-if="content">
           <v-row>
             <v-col cols="12">
-              <h1 style="color: #fff">Research & Analysis Unit</h1>
-              <div v-html="render(content.body)" style="color: #fff"></div>
+              <h1 style="color: #fff" v-html="render(content.title)"></h1>
+              <div v-html="render(content.summary)" style="color: #fff"></div>
             </v-col>
           </v-row>
         </v-container>

@@ -1,10 +1,24 @@
 <template>
   <div class="pb-12">
     <div class="markdown-body" v-if="!contentLoading">
-      <v-container v-if="content">
+      <div
+        style="background: #31597a; border-bottom: 1px solid #ccc"
+        class="pt-6 pb-8"
+        v-if="content"
+        data-aos="fade-in"
+      >
+        <v-container>
+          <v-row>
+            <v-col cols="12">
+              <h1 v-html="render(content.title)" style="color: #fff"></h1>
+              <div v-html="render(content.summary)" style="color: #fff"></div>
+            </v-col>
+          </v-row>
+        </v-container>
+      </div>
+      <v-container v-if="content" class="mt-3">
         <v-row>
           <v-col cols="12">
-            <h1 v-html="render(content.title)"></h1>
             <div v-html="render(content.body)"></div>
           </v-col>
         </v-row>
