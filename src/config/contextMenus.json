@@ -7,7 +7,7 @@
         "defaultPath": "/grants/",
         "items": [
             {
-                "label": "FSGU Overview",
+                "label": "FSGU Home",
                 "path": "/grants/"
             },
             {
@@ -34,13 +34,17 @@
     },
     {
         "name": "researchhub",
-        "label": "ICJIA Research Hub",
-        "shortLabel": "ICJIA Research",
+        "label": "Research and Analysis",
+        "shortLabel": "Research at ICJIA",
         "pathPrefix": "/researchhub/",
         "defaultPath": "/researchhub/",
         "items": [
             {
-                "label": "R&A Overview",
+                "label": "R&A Home",
+                "path": "/researchhub/"
+            },
+            {
+                "label": "Overview",
                 "path": "/researchhub/hub-overview/"
             },
             {
@@ -73,7 +77,7 @@
         "defaultPath": "/irb/",
         "items": [
             {
-                "label": "IRB Overview",
+                "label": "IRB Home",
                 "path": "/irb/"
             },
             {

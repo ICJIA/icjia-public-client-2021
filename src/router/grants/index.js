@@ -1,5 +1,9 @@
 const grants = [
   {
+    path: "/grants/grants-home/",
+    redirect: { name: "FSGUHome" },
+  },
+  {
     path: "/grants/",
     name: "FSGUHome",
     component: () =>
