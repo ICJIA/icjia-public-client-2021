@@ -78,19 +78,23 @@
             },
             {
                 "label": "Members & Staff",
-                "path": "/irb/members-and-staff/"
+                "path": "/irb/irb-members-and-staff/"
             },
             {
                 "label": "Meetings",
-                "path": "/irb/meetings/"
+                "path": "/irb/irb-meetings/"
             },
             {
                 "label": "Policies",
-                "path": "/irb/irb-policies/"
+                "path": "/irb/irb-policies-and-procedures/"
             },
             {
                 "label": "Resources",
-                "path": "/irb/irb-resources/"
+                "path": "/irb/irb-other-resources/"
+            },
+            {
+                "label": "Research Hub",
+                "path": "/researchhub/"
             }
         ]
     }

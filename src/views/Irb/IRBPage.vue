@@ -1,28 +1,26 @@
 <template>
-  <div>
+  <div class="markdown-body">
     <BaseContent :error="error" :loading="loading">
       <template slot="content" v-if="!loading">
-        <v-sheet color="white" class="pt-5 pb-12">
-          <v-container class="markdown-body">
-            <Splash
-              v-if="content && content.splash"
-              :splash="content.splash"
-            ></Splash>
-            <v-row>
-              <v-col cols="12" :md="content.showTOC ? 9 : 12">
-                <h1 v-html="render(content.title)"></h1>
-                <div v-html="render(content.body)"></div>
-              </v-col>
-              <v-col
-                cols="12"
-                v-if="content && content.showTOC"
-                md="3"
-                class="px-3 hidden-sm-and-down"
-                ><Toc :key="content.title"></Toc
-              ></v-col>
-            </v-row>
-          </v-container>
-        </v-sheet>
+        <v-container>
+          <Splash
+            v-if="content && content.splash"
+            :splash="content.splash"
+          ></Splash>
+          <v-row>
+            <v-col cols="12" :md="content.showTOC ? 9 : 12">
+              <h1 v-html="render(content.title)"></h1>
+              <div v-html="render(content.body)"></div>
+            </v-col>
+            <v-col
+              cols="12"
+              v-if="content && content.showTOC"
+              md="3"
+              class="px-3 hidden-sm-and-down"
+              ><Toc :key="content.title"></Toc
+            ></v-col>
+          </v-row>
+        </v-container>
       </template>
     </BaseContent>
   </div>

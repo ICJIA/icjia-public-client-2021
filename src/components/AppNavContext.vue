@@ -26,6 +26,7 @@
           v-model="contextTab"
           height="45"
           optional
+          class="context"
         >
           <v-tabs-slider></v-tabs-slider>
 
@@ -112,22 +113,4 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-.v-tab {
-  font-size: 12px !important;
-  font-weight: 700 !important;
-  color: #fff !important;
-  /* letter-spacing: 0.01rem !important; */
-  background: #0a3a60 !important;
-}
-.v-tab--active {
-  font-weight: 900 !important;
-  background: #333 !important;
-  color: #fff !important;
-}
-
-* >>> .v-slide-group__next,
-* >>> .v-slide-group__prev {
-  background: #616161 !important;
-}
-</style>
+<style lang="scss"></style>
