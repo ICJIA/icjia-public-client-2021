@@ -118,6 +118,10 @@ export default {
           label: "Employment",
           url: "/employment/",
         },
+        {
+          label: "Events",
+          url: "/events/",
+        },
       ],
     };
   },

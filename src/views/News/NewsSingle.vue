@@ -1,25 +1,23 @@
 <template>
-  <div>
+  <div style="background: #fff; min-height: 100vh !important">
     <BaseContent :error="error" :loading="loading">
       <template slot="content" v-if="!loading">
-        <v-sheet color="white" class="pt-5">
-          <v-container class="markdown-body">
-            <Splash v-if="news && news.splash" :splash="news.splash"></Splash>
-            <v-row>
-              <v-col cols="12" :md="news.showTOC ? 9 : 12">
-                <h1 v-html="render(news.title)"></h1>
-                <div v-html="render(news.body)"></div>
-              </v-col>
-              <v-col
-                cols="12"
-                v-if="news && news.showTOC"
-                md="3"
-                class="px-3 hidden-sm-and-down"
-                ><Toc :key="news.title"></Toc
-              ></v-col>
-            </v-row>
-          </v-container>
-        </v-sheet>
+        <v-container class="markdown-body">
+          <Splash v-if="news && news.splash" :splash="news.splash"></Splash>
+          <v-row>
+            <v-col cols="12" :md="news.showTOC ? 9 : 12">
+              <h1 v-html="render(news.title)"></h1>
+              <div v-html="render(news.body)"></div>
+            </v-col>
+            <v-col
+              cols="12"
+              v-if="news && news.showTOC"
+              md="3"
+              class="px-3 hidden-sm-and-down"
+              ><Toc :key="news.title"></Toc
+            ></v-col>
+          </v-row>
+        </v-container>
       </template>
     </BaseContent>
   </div>

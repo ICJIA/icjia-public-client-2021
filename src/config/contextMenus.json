@@ -11,6 +11,10 @@
                 "path": "/grants/fsgu-home/"
             },
             {
+                "label": "GATA Information",
+                "path": "/grants/fsgu-gata/"
+            },
+            {
                 "label": "Staff",
                 "path": "/grants/fsgu-staff/"
             },
@@ -25,10 +29,6 @@
             {
                 "label": "Technical Assistance",
                 "path": "/grants/fsgu-technical-assistance/"
-            },
-            {
-                "label": "GATA Information",
-                "path": "/grants/fsgu-gata/"
             }
         ]
     },
@@ -99,6 +99,93 @@
             {
                 "label": "Research Hub",
                 "path": "/researchhub/"
+            }
+        ]
+    },
+    {
+        "name": "newsAndInfo",
+        "label": "ICJIA News & Information",
+        "shortLabel": "ICJIA News & Info",
+        "pathPrefix": "/news/",
+        "defaultPath": "/news/",
+        "items": [
+            {
+                "label": "Latest News",
+                "path": "/news/"
+            },
+            {
+                "label": "Meetings",
+                "path": "/meetings/"
+            },
+            {
+                "label": "Funding",
+                "path": "/grants/fsgu-funding/"
+            },
+            {
+                "label": "Employment",
+                "path": "/employment/"
+            },
+            {
+                "label": "Events",
+                "path": "/events/"
+            }
+        ]
+    },
+    {
+        "name": "meetings",
+        "label": "ICJIA Meetings",
+        "shortLabel": "ICJIA Meetings",
+        "pathPrefix": "/meetings/",
+        "defaultPath": "/meetings/",
+        "items": [
+            {
+                "label": "Latest News",
+                "path": "/news/"
+            },
+            {
+                "label": "Meetings",
+                "path": "/meetings/"
+            },
+            {
+                "label": "Funding",
+                "path": "/grants/fsgu-funding/"
+            },
+            {
+                "label": "Employment",
+                "path": "/employment/"
+            },
+            {
+                "label": "Events",
+                "path": "/events/"
+            }
+        ]
+    },
+    {
+        "name": "events",
+        "label": "ICJIA Events",
+        "shortLabel": "ICJIA Events",
+        "pathPrefix": "/events/",
+        "defaultPath": "/events/",
+        "items": [
+            {
+                "label": "Latest News",
+                "path": "/news/"
+            },
+            {
+                "label": "Meetings",
+                "path": "/meetings/"
+            },
+            {
+                "label": "Funding",
+                "path": "/grants/fsgu-funding/"
+            },
+            {
+                "label": "Employment",
+                "path": "/employment/"
+            },
+            {
+                "label": "Events",
+                "path": "/events/"
             }
         ]
     }
