@@ -21,16 +21,8 @@ Vue.config.productionTip = false;
 nprogress.start();
 // Set up app wide read-only configs and install as plugin
 import { myApp } from "./services/AppInit";
-// myApp.install = function () {
-//   Object.defineProperty(Vue.prototype, "$myApp", {
-//     get() {
-//       return myApp;
-//     },
-//   });
-// };
-// Vue.use(myApp);
 
-// scaffold this for future config from API
+// scaffold this for future config from remote API instead of local json
 (async function init() {
   myApp.install = function () {
     Object.defineProperty(Vue.prototype, "$myApp", {
@@ -40,7 +32,7 @@ import { myApp } from "./services/AppInit";
     });
   };
   Vue.use(myApp);
-  console.log("initialized");
+  console.log("App initialized");
 })();
 
 import VueMeta from "vue-meta";

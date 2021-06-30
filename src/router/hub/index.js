@@ -62,7 +62,7 @@ const hub = [
     path: "/researchhub/:slug",
     name: "hubPageSingle",
     component: () =>
-      import(/* webpackChunkName: "hub" */ "@/views/Hub/HubPage.vue"),
+      import(/* webpackChunkName: "hub" */ "@/views/BasePage.vue"),
   },
 ];
 

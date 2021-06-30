@@ -53,7 +53,7 @@
                 </div>
                 <div
                   style="font-size: 12px"
-                  v-if="result.item && result.item.start"
+                  v-else-if="result.item && result.item.start"
                 >
                   <span style="font-weight: 700">{{
                     result.item.contentType.toUpperCase()
@@ -63,8 +63,13 @@
                 </div>
                 <div
                   style="font-size: 12px"
-                  v-if="result.item && result.item.category"
+                  v-else-if="result.item && result.item.category"
                 >
+                  <span style="font-weight: 700">{{
+                    result.item.contentType.toUpperCase()
+                  }}</span>
+                </div>
+                <div style="font-size: 12px" v-else>
                   <span style="font-weight: 700">{{
                     result.item.contentType.toUpperCase()
                   }}</span>
@@ -95,10 +100,15 @@
                     </span>
                   </div>
                 </div>
-                <v-card-text v-if="result.item.abstract">{{
-                  result.item.abstract
-                }}</v-card-text>
-                <v-card-text v-else>{{ result.item.summary }}</v-card-text>
+                <v-card-text
+                  v-if="result.item.abstract"
+                  v-html="result.item.abstract"
+                ></v-card-text>
+                <v-card-text
+                  v-else-if="result.item.summary"
+                  v-html="result.item.summary"
+                ></v-card-text>
+                <v-card-text v-else>No summary available.</v-card-text>
 
                 <template v-if="result.item.tags">
                   <BasePropChip

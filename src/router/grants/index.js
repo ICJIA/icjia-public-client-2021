@@ -1,6 +1,6 @@
 const grants = [
   {
-    path: "/grants/grants-home/",
+    path: "/grants/fsgu-home/",
     redirect: { name: "FSGUHome" },
   },
   {
@@ -10,7 +10,7 @@ const grants = [
       import(/* webpackChunkName: "funding" */ "@/views/Grants/GrantsHome.vue"),
   },
   {
-    path: "/grants/staff",
+    path: "/grants/fsgu-staff",
     name: "FSGUStaff",
     component: () =>
       import(
@@ -18,7 +18,32 @@ const grants = [
       ),
   },
   {
+    path: "/grants/ta/",
+    // eslint-disable-next-line no-unused-vars
+    redirect: (route) => {
+      return "/grants/fsgu-technical-assistance/";
+    },
+  },
+
+  {
+    path: "/grants/technical-assistance/",
+    // eslint-disable-next-line no-unused-vars
+    redirect: (route) => {
+      return "/grants/fsgu-technical-assistance/";
+    },
+  },
+  {
+    path: "/grants/:slug",
+    name: "FSGUPage",
+    component: () =>
+      import(/* webpackChunkName: "funding" */ "@/views/BasePage.vue"),
+  },
+  {
     path: "/grants/funding/:slug",
+    redirect: { name: "FundingSingle" },
+  },
+  {
+    path: "/grants/fsgu-funding/:slug",
     name: "FundingSingle",
     component: () =>
       import(

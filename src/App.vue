@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     fixA11y() {
-      console.log("fix a11y here.");
+      console.log("Fix a11y.");
     },
     scrollFix: function () {},
     checkForDisclaimer() {
@@ -109,7 +109,7 @@ export default {
   },
 
   mounted() {
-    console.log(this.$myApp);
+    console.dir(this.$myApp);
     this.checkForContextMenu();
     this.checkForDisclaimer();
   },

@@ -4,31 +4,31 @@
         "label": "ICJIA Federal and State Grants",
         "shortLabel": "ICJIA Grants",
         "pathPrefix": "/grants/",
-        "defaultPath": "/grants/",
+        "defaultPath": "/grants/fsgu-home/",
         "items": [
             {
                 "label": "FSGU Home",
-                "path": "/grants/"
+                "path": "/grants/fsgu-home/"
             },
             {
                 "label": "Staff",
-                "path": "/grants/staff/"
+                "path": "/grants/fsgu-staff/"
             },
             {
                 "label": "Funding",
-                "path": "/grants/funding/"
+                "path": "/grants/fsgu-funding/"
             },
             {
                 "label": "Training",
-                "path": "/grants/training/"
+                "path": "/grants/fsgu-training/"
             },
             {
                 "label": "Technical Assistance",
-                "path": "/grants/technical-assistance/"
+                "path": "/grants/fsgu-technical-assistance/"
             },
             {
                 "label": "GATA Information",
-                "path": "/grants/gata/"
+                "path": "/grants/fsgu-gata/"
             }
         ]
     },

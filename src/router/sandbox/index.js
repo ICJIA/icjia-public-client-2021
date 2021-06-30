@@ -3,13 +3,13 @@ const sandboxes = [
     path: "/sandbox",
     name: "Sandbox",
     component: () =>
-      import(/* webpackChunkName: "sandbox" */ "@/views/Sandbox.vue"),
+      import(/* webpackChunkName: "sandbox" */ "@/views/Sandbox/Sandbox.vue"),
   },
   {
     path: "/sandbox2",
     name: "Sandbox2",
     component: () =>
-      import(/* webpackChunkName: "sandbox" */ "@/views/Sandbox2.vue"),
+      import(/* webpackChunkName: "sandbox" */ "@/views/Sandbox/Sandbox2.vue"),
   },
 ];
 

@@ -7,7 +7,9 @@ const _ = require("lodash");
 const hub = require("../src/config/hub.json");
 const grants = require("../src/config/grants.json");
 const pages = require("../src/config/pages.json");
-let siteIndex = [...hub, ...grants, ...pages];
+const biographies = require("../src/config/biographies.json");
+
+let siteIndex = [...biographies, ...hub, ...grants, ...pages];
 
 // siteIndex = _.orderBy(siteIndex, ["date"], ["desc"]);
 

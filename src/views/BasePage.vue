@@ -7,8 +7,8 @@
             v-if="content && content.splash"
             :splash="content.splash"
           ></Splash>
-          <v-row>
-            <v-col cols="12" :md="content.showTOC ? 9 : 12">
+          <v-row v-if="content">
+            <v-col cols="12" :md="content && content.showTOC ? 9 : 12">
               <h1 v-html="render(content.title)"></h1>
               <div v-html="render(content.body)"></div>
             </v-col>
@@ -30,7 +30,7 @@
 import NProgress from "nprogress";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
-import { EventBus } from "@/event-bus";
+import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 export default {
   data() {
     return {
@@ -42,32 +42,7 @@ export default {
   created() {
     NProgress.start();
   },
-  watch: {
-    // eslint-disable-next-line no-unused-vars
-    loading(newValue, oldValue) {
-      if (!newValue) {
-        this.$nextTick(() => {
-          let eventSearchAnchors = document.querySelectorAll(
-            "[data-event-search]"
-          );
 
-          for (const eventAnchor of eventSearchAnchors) {
-            eventAnchor.classList.add("author-name");
-            eventAnchor.addEventListener("click", function (e) {
-              e.preventDefault();
-              let opts = {
-                query: e.target.innerText,
-                type: "hub",
-              };
-              EventBus.$emit("search", opts);
-            });
-          }
-          // let eventLinkAnchors = document.querySelectorAll("[data-event-link]");
-          // console.log(eventLinkAnchors);
-        });
-      }
-    },
-  },
   methods: {
     render(content) {
       return renderToHtml(content);
@@ -86,6 +61,8 @@ export default {
       },
       error(error) {
         this.error = JSON.stringify(error.message);
+        this.loading = false;
+        NProgress.done();
       },
       result(ApolloQueryResult) {
         if (
@@ -95,17 +72,19 @@ export default {
           // eslint-disable-next-line no-unused-vars
           this.$router.push("/404").catch((err) => {
             console.log(err);
+            this.loading = false;
+            NProgress.done();
           });
         } else {
           //console.log(this.id);
           this.content = ApolloQueryResult.data.pages[0];
           this.loading = false;
           NProgress.done();
+          attachInternalLinks(this);
+          attachSearchEvents(this);
         }
       },
     },
   },
 };
 </script>
-
-<style lang="scss" scoped></style>

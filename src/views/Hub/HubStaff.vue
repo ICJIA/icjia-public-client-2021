@@ -40,7 +40,10 @@
                   >
 
                   <v-card-subtitle v-text="item.title"></v-card-subtitle>
-                  <v-card-text class="text-left">{{ item.body }} </v-card-text>
+                  <v-card-text
+                    class="text-left"
+                    v-html="render(item.body)"
+                  ></v-card-text>
                 </div>
               </div>
             </v-card>

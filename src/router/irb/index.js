@@ -15,7 +15,7 @@ const irb = [
     path: "/irb/:slug",
     name: "IRBpage",
     component: () =>
-      import(/* webpackChunkName: "meetings" */ "@/views/Irb/IRBPage.vue"),
+      import(/* webpackChunkName: "meetings" */ "@/views/BasePage.vue"),
   },
 ];
 

@@ -1,5 +1,8 @@
 <template>
-  <div>Drafts here</div>
+  <div>
+    <h1>List single biography here</h1>
+    <h2>{{ $route.params.slug }}</h2>
+  </div>
 </template>
 
 <script>

@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "@/views/Home.vue";
+import Home from "@/views/Home/Home.vue";
 import NProgress from "nprogress";
 import appConfig from "@/config/config.json";
 import { EventBus } from "@/event-bus";
