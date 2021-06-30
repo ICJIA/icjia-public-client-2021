@@ -10,6 +10,7 @@ import { hub } from "@/router/hub";
 import { news } from "@/router/news";
 import { grants } from "@/router/grants";
 import { irb } from "@/router/irb";
+import { biographies } from "@/router/biographies";
 import { sandboxes } from "@/router/sandbox";
 import { fourOhFour } from "@/router/404";
 import { meetings } from "@/router/meetings";
@@ -32,6 +33,7 @@ const routes = [
   ...grants,
   ...meetings,
   ...sandboxes,
+  ...biographies,
   ...fourOhFour,
 ];
 

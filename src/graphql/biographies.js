@@ -33,14 +33,11 @@ const GET_SINGLE_BIOGRAPHY_QUERY = gql`
 
 const GET_ALL_BIOGRAPHIES_QUERY = gql`
   query allBiographies {
-    biographies(sort: "lastName:asc") {
-      id
-      title
+    biographies(sort: "sortField:asc") {
+      fullName
       firstName
       lastName
-      fullName
-      suffix
-      body: bio
+      bio
       unit {
         title
         shortName
