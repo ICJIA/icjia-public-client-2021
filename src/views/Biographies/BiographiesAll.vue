@@ -22,8 +22,8 @@
             </v-tab>
           </v-tabs>
 
-          <v-tabs-items v-model="tab" v-if="listing">
-            <v-tab-item>
+          <v-tabs-items v-model="tab">
+            <v-tab-item v-if="listing">
               <v-col v-for="(item, i) in listing" :key="i" cols="12">
                 <v-card
                   elevation="0"
@@ -61,7 +61,14 @@
                 </v-card>
               </v-col>
             </v-tab-item>
-            <v-tab-item>
+            <v-tab-item v-else
+              ><Loader
+                loaderType="skeleton"
+                loaderDisplayType="card"
+                :repeat="5"
+              ></Loader
+            ></v-tab-item>
+            <v-tab-item v-if="listing">
               <v-col v-for="(item, i) in listing" :key="i" cols="12">
                 <v-card
                   elevation="0"
@@ -99,6 +106,7 @@
                 </v-card>
               </v-col>
             </v-tab-item>
+            <v-tab-item v-else><Loader></Loader></v-tab-item>
           </v-tabs-items>
         </v-col>
       </v-row>
