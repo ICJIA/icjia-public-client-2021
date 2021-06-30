@@ -46,7 +46,7 @@ export default {
   props: {
     scrollOffset: {
       type: Number,
-      default: 10,
+      default: 60,
     },
     selector: {
       type: String,
@@ -152,7 +152,7 @@ export default {
 .toc {
   position: -webkit-sticky !important;
   position: sticky !important;
-  top: 145px !important;
+  top: 165px !important;
   font-size: 13px;
 }
 

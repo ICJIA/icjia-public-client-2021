@@ -45,6 +45,7 @@ const GET_SINGLE_PAGE_QUERY = gql`
       slug
       summary
       category
+      showTOC
       body
       published_at
       tags {

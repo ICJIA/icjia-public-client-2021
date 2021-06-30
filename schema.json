@@ -9036,6 +9036,18 @@
             "deprecationReason": null
           },
           {
+            "name": "showTOC",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "published_at",
             "description": null,
             "args": [],
@@ -9339,6 +9351,22 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "PageConnectionCategory",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "showTOC",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PageConnectionShowTOC",
                 "ofType": null
               }
             },
@@ -9684,6 +9712,41 @@
       },
       {
         "kind": "OBJECT",
+        "name": "PageConnectionShowTOC",
+        "description": null,
+        "fields": [
+          {
+            "name": "key",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "connection",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "PageConnection",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "PageConnectionPublished_at",
         "description": null,
         "fields": [
@@ -9820,6 +9883,16 @@
             "defaultValue": null
           },
           {
+            "name": "showTOC",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "published_at",
             "description": null,
             "type": {
@@ -9944,6 +10017,16 @@
             "type": {
               "kind": "ENUM",
               "name": "ENUM_PAGE_CATEGORY",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "showTOC",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
               "ofType": null
             },
             "defaultValue": null
@@ -21144,6 +21227,11 @@
           {
             "kind": "OBJECT",
             "name": "PageConnectionCategory",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "PageConnectionShowTOC",
             "ofType": null
           },
           {
