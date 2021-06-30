@@ -80,6 +80,15 @@
                     class=""
                     v-html="result.item.title"
                   ></span>
+
+                  <div v-if="result.item.position">
+                    <span
+                      style="font-size: 14px"
+                      class=""
+                      v-html="result.item.position"
+                    ></span>
+                  </div>
+
                   <div v-if="result.item.authors">
                     <span
                       style="font-size: 14px"

@@ -13,6 +13,7 @@ const query = `query {
     firstName
     lastName
     title: fullName
+    position: title
     suffix
     summary: bio
     unit {
