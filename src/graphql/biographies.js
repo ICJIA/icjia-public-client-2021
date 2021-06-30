@@ -37,7 +37,8 @@ const GET_ALL_BIOGRAPHIES_QUERY = gql`
       fullName
       firstName
       lastName
-      bio
+      title
+      body: bio
       unit {
         title
         shortName
