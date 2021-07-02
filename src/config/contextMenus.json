@@ -11,12 +11,12 @@
                 "path": "/grants/fsgu-home/"
             },
             {
-                "label": "GATA Information",
-                "path": "/grants/fsgu-gata/"
-            },
-            {
                 "label": "Staff",
                 "path": "/grants/fsgu-staff/"
+            },
+            {
+                "label": "GATA Information",
+                "path": "/grants/fsgu-gata/"
             },
             {
                 "label": "Funding",
@@ -198,23 +198,31 @@
         "label": "ICJIA Overview",
         "shortLabel": "ICJIA Overview",
         "pathPrefix": "/about/",
-        "defaultPath": "/about/",
+        "defaultPath": "/about/icjia-mission/",
         "items": [
             {
-                "label": "About",
-                "path": "/about/"
-            },
-            {
                 "label": "Mission",
-                "path": "/about/mission/"
+                "path": "/about/icjia-mission/"
             },
             {
-                "label": "Members & Staff",
-                "path": "/about/biographies/"
+                "label": "Composition & Membership",
+                "path": "/about/icjia-board/"
+            },
+            {
+                "label": "Staff Organization",
+                "path": "/about/icjia-staff/"
+            },
+            {
+                "label": "Values",
+                "path": "/about/icjia-values/"
+            },
+            {
+                "label": "Committees",
+                "path": "/about/icjia-committees/"
             },
             {
                 "label": "Publications",
-                "path": "/about/publications/"
+                "path": "/about/icjia-publications/"
             }
         ]
     }
