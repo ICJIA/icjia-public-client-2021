@@ -4,7 +4,6 @@
       <div
         style="background: #31597a; border-bottom: 1px solid #ccc"
         class="pt-6 pb-8"
-        v-if="content"
         data-aos="fade-in"
       >
         <v-container v-if="unit">
@@ -15,14 +14,11 @@
             </v-col>
           </v-row>
         </v-container>
+        <v-container v-else>
+          <Loader loaderType="skeleton"></Loader>
+        </v-container>
       </div>
-      <div v-else>
-        <Loader
-          loaderType="skeleton"
-          :repeat="1"
-          loaderDisplayType="article"
-        ></Loader>
-      </div>
+
       <v-container class="markdown-body" style="margin-bottom: 25px">
         <v-row style="border-bottom: 1px solid #ccc">
           <v-col cols="12" md="6"
@@ -185,7 +181,7 @@
 
 <script>
 import { attachInternalLinks } from "@/utils/dom";
-import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
+
 import { GET_SINGLE_UNIT_QUERY } from "@/graphql/units";
 import { renderToHtml } from "@/services/Markdown";
 import NProgress from "nprogress";
@@ -268,35 +264,6 @@ export default {
           //console.log(this.id);
           this.unit = ApolloQueryResult.data.units[0];
 
-          NProgress.done();
-        }
-      },
-    },
-    pages: {
-      prefetch: true,
-      fetchPolicy: "no-cache",
-      query: GET_SINGLE_PAGE_QUERY,
-      variables() {
-        return {
-          slug: "hub-home",
-        };
-      },
-      error(error) {
-        this.error = JSON.stringify(error.message);
-      },
-      result(ApolloQueryResult) {
-        if (
-          ApolloQueryResult.data &&
-          ApolloQueryResult.data.pages.length > 0 === false
-        ) {
-          // eslint-disable-next-line no-unused-vars
-          this.$router.push("/404").catch((err) => {
-            console.log(err);
-          });
-        } else {
-          //console.log(this.id);
-          this.content = ApolloQueryResult.data.pages[0];
-          this.contentLoading = false;
           NProgress.done();
         }
       },
