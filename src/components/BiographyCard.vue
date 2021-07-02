@@ -36,7 +36,17 @@
 </template>
 
 <script>
+import { EventBus } from "@/event-bus";
 export default {
+  methods: {
+    search(name) {
+      let opts = {
+        query: name,
+        type: "general",
+      };
+      EventBus.$emit("search", opts);
+    },
+  },
   props: {
     item: {
       type: Object,

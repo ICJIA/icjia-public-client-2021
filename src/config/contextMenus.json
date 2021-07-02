@@ -64,10 +64,6 @@
                 "path": "/researchhub/datasets/"
             },
             {
-                "label": "Publication List",
-                "path": "/about/publications/"
-            },
-            {
                 "label": "IRB",
                 "path": "/irb/"
             }

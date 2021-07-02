@@ -23,7 +23,7 @@
         <v-row style="border-bottom: 1px solid #ccc">
           <v-col cols="12" md="6"
             ><div style="font-size: 28px; font-weight: 900">
-              Latest Publications
+              Latest Articles
             </div>
           </v-col>
           <v-col cols="12" md="6" class="text-right" style="margin-top: 5px"

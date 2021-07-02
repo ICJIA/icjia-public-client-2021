@@ -28,7 +28,7 @@
           </div>
         </v-col>
         <v-col cols="12" md="3" v-if="pageContent.showTOC"
-          ><Toc :key="pageContent.title"></Toc
+          ><Toc :key="pageContent.title" :tocHeading="pageContent.title"></Toc
         ></v-col>
       </v-row>
     </v-container>

@@ -11,7 +11,7 @@
             </v-col>
           </v-row>
         </v-container>
-        <v-container class="view-container" :fluid="view === 'grid'">
+        <v-container class="view-container">
           <v-row v-if="view === 'grid'" class="masonry" dense>
             <v-col
               v-for="(item, index) in news"
