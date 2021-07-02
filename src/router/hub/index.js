@@ -28,12 +28,7 @@ const hub = [
     component: () =>
       import(/* webpackChunkName: "hub" */ "@/views/Hub/ArticlesAll.vue"),
   },
-  {
-    path: "/researchhub/publication-list",
-    name: "hubPublications",
-    component: () =>
-      import(/* webpackChunkName: "hub" */ "@/views/Hub/PublicationList.vue"),
-  },
+
   {
     path: "/researchhub/articles/:slug",
     name: "hubArticlesSingle",

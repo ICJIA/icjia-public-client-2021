@@ -3,15 +3,37 @@
     <v-container class="pt-10 pb-12 markdown-body">
       <v-row>
         <v-col>
-          <h1>ICJIA Members & Staff</h1>
+          <h1>Authority Members & Staff</h1>
         </v-col>
       </v-row>
     </v-container>
-
-    <v-container>
+    <v-container style="margin-top: -25px">
+      <v-row>
+        <v-col
+          cols="12"
+          class="markdown-body"
+          style="margin-top: -40px"
+          v-if="pageContent"
+        >
+          <div v-html="render(pageContent.body)"></div>
+        </v-col>
+        <v-col v-else>
+          <Loader></Loader>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-container class="mt-12">
       <v-row>
         <v-col cols="12" class="markdown-body" style="margin-top: -40px">
-          <v-tabs v-model="tab" background-color="transparent" grow>
+          <div v-if="!content">
+            <Loader loaderType="skeleton"></Loader>
+          </div>
+          <v-tabs
+            v-model="tab"
+            background-color="transparent"
+            grow
+            v-if="content"
+          >
             <v-tab
               v-for="item in items"
               :key="item"
@@ -51,7 +73,9 @@
                         >{{ item.suffix }}</v-card-title
                       >
 
-                      <v-card-subtitle v-text="item.title"></v-card-subtitle>
+                      <v-card-subtitle>
+                        <span>{{ item.title }}</span>
+                      </v-card-subtitle>
                       <v-card-text
                         class="text-left"
                         v-html="item.body"
@@ -96,7 +120,25 @@
                         >{{ item.suffix }}</v-card-title
                       >
 
-                      <v-card-subtitle v-text="item.title"></v-card-subtitle>
+                      <v-card-subtitle
+                        v-if="
+                          item.unit &&
+                          item.unit.url &&
+                          item.unit.url.length &&
+                          item.unit.title
+                        "
+                      >
+                        <router-link :to="item.unit.url" class="unit">
+                          {{ item.unit.title }}
+                        </router-link>
+                        | <span>{{ item.title }}</span>
+                      </v-card-subtitle>
+                      <v-card-subtitle
+                        v-else-if="item.unit && item.unit.title && !item.url"
+                      >
+                        <span> {{ item.unit.title }} </span>
+                      </v-card-subtitle>
+
                       <v-card-text
                         class="text-left"
                         v-html="item.body"
@@ -106,7 +148,9 @@
                 </v-card>
               </v-col>
             </v-tab-item>
-            <v-tab-item v-else><Loader></Loader></v-tab-item>
+            <v-tab-item v-else
+              ><Loader loaderType="skeleton"></Loader
+            ></v-tab-item>
           </v-tabs-items>
         </v-col>
       </v-row>
@@ -120,6 +164,8 @@ import NProgress from "nprogress";
 import { EventBus } from "@/event-bus";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_ALL_BIOGRAPHIES_QUERY } from "@/graphql/biographies";
+import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
+import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import _ from "lodash";
 export default {
   data() {
@@ -127,10 +173,10 @@ export default {
       loading: true,
       error: null,
       content: null,
+      pageContent: null,
       listing: null,
       tab: 0,
-      items: ["Board Members", "Staff"],
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      items: ["Board Members", "ICJIA Staff"],
     };
   },
   watch: {
@@ -168,6 +214,41 @@ export default {
     },
   },
   apollo: {
+    pages: {
+      prefetch: true,
+
+      query: GET_SINGLE_PAGE_QUERY,
+      variables() {
+        return {
+          slug: "icjia-members-and-staff",
+        };
+      },
+      error(error) {
+        this.error = JSON.stringify(error.message);
+        this.loading = false;
+        NProgress.done();
+      },
+      result(ApolloQueryResult) {
+        //console.log(ApolloQueryResult);
+        if (
+          ApolloQueryResult.data &&
+          ApolloQueryResult.data.pages.length > 0 === false
+        ) {
+          // eslint-disable-next-line no-unused-vars
+          this.$router.push("/404").catch((err) => {
+            console.log(err);
+            this.loading = false;
+            NProgress.done();
+          });
+        } else {
+          //console.log(this.id);
+          this.pageContent = ApolloQueryResult.data.pages[0];
+          NProgress.done();
+          attachInternalLinks(this);
+          attachSearchEvents(this);
+        }
+      },
+    },
     biographies: {
       prefetch: true,
       //   fetchPolicy: "no-cache",
@@ -207,4 +288,8 @@ export default {
   },
 };
 </script>
-<style></style>
+<style>
+a.unit {
+  font-weight: bold;
+}
+</style>

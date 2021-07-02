@@ -65,7 +65,7 @@
             },
             {
                 "label": "Publication List",
-                "path": "/researchhub/publication-list/"
+                "path": "/about/publications/"
             },
             {
                 "label": "IRB",
@@ -190,6 +190,31 @@
             {
                 "label": "Events",
                 "path": "/events/"
+            }
+        ]
+    },
+    {
+        "name": "About",
+        "label": "ICJIA Overview",
+        "shortLabel": "ICJIA Overview",
+        "pathPrefix": "/about/",
+        "defaultPath": "/about/",
+        "items": [
+            {
+                "label": "About",
+                "path": "/about/"
+            },
+            {
+                "label": "Mission",
+                "path": "/about/mission/"
+            },
+            {
+                "label": "Members & Staff",
+                "path": "/about/biographies/"
+            },
+            {
+                "label": "Publications",
+                "path": "/about/publications/"
             }
         ]
     }

@@ -28,7 +28,6 @@
         style="font-weight: 900; text-transform: uppercase; color: #fff"
         class="hidden-sm-and-down hover"
         id="context-title"
-        data-aos="zoom-in"
         @click="routeToPage(contextMenu[0].defaultPath)"
       >
         {{ contextMenu[0].label }}
@@ -63,6 +62,9 @@
         </v-tabs>
       </v-card>
       <!-- <v-spacer v-if="!isAtTop"></v-spacer> -->
+      <v-spacer
+        v-if="$vuetify.breakpoint.xs || $vuetify.breakpoint.sm"
+      ></v-spacer>
     </v-app-bar>
   </div>
 </template>

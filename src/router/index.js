@@ -10,11 +10,12 @@ import { hub } from "@/router/hub";
 import { news } from "@/router/news";
 import { grants } from "@/router/grants";
 import { irb } from "@/router/irb";
-import { biographies } from "@/router/biographies";
+
 import { events } from "@/router/events";
 import { sandboxes } from "@/router/sandbox";
 import { fourOhFour } from "@/router/404";
 import { meetings } from "@/router/meetings";
+import { about } from "@/router/about";
 // import { preview } from "@/router/preview";
 Vue.use(VueRouter);
 
@@ -28,6 +29,7 @@ const home = [
 
 const routes = [
   ...home,
+  ...about,
   ...hub,
   ...irb,
   ...events,
@@ -35,7 +37,7 @@ const routes = [
   ...grants,
   ...meetings,
   ...sandboxes,
-  ...biographies,
+
   ...fourOhFour,
 ];
 

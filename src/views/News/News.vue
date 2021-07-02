@@ -2,7 +2,7 @@
   <div>
     <BaseContent :error="error" :loading="$apollo.loading">
       <template slot="content">
-        <v-container fluid>
+        <v-container>
           <v-row>
             <v-col cols="12">
               <div class="text-right">

@@ -7,11 +7,11 @@
         v-if="content"
         data-aos="fade-in"
       >
-        <v-container v-if="content">
+        <v-container v-if="unit">
           <v-row>
             <v-col cols="12">
-              <h1 style="color: #fff" v-html="render(content.title)"></h1>
-              <div v-html="render(content.summary)" style="color: #fff"></div>
+              <h1 style="color: #fff" v-html="render(unit.title)"></h1>
+              <div v-html="render(unit.summary)" style="color: #fff"></div>
             </v-col>
           </v-row>
         </v-container>
@@ -186,6 +186,7 @@
 <script>
 import { attachInternalLinks } from "@/utils/dom";
 import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
+import { GET_SINGLE_UNIT_QUERY } from "@/graphql/units";
 import { renderToHtml } from "@/services/Markdown";
 import NProgress from "nprogress";
 import {
@@ -204,6 +205,7 @@ export default {
       content: null,
       appModel: null,
       datasetModel: null,
+      unit: null,
     };
   },
   async mounted() {
@@ -241,6 +243,35 @@ export default {
     },
   },
   apollo: {
+    units: {
+      prefetch: true,
+      fetchPolicy: "no-cache",
+      query: GET_SINGLE_UNIT_QUERY,
+      variables() {
+        return {
+          slug: "research-and-analysis-unit",
+        };
+      },
+      error(error) {
+        this.error = JSON.stringify(error.message);
+      },
+      result(ApolloQueryResult) {
+        if (
+          ApolloQueryResult.data &&
+          ApolloQueryResult.data.units.length > 0 === false
+        ) {
+          // eslint-disable-next-line no-unused-vars
+          this.$router.push("/404").catch((err) => {
+            console.log(err);
+          });
+        } else {
+          //console.log(this.id);
+          this.unit = ApolloQueryResult.data.units[0];
+
+          NProgress.done();
+        }
+      },
+    },
     pages: {
       prefetch: true,
       fetchPolicy: "no-cache",

@@ -15,6 +15,7 @@ const GET_SINGLE_BIOGRAPHY_QUERY = gql`
         title
         shortName
         slug
+        url
       }
       slug
       updated_at
@@ -43,6 +44,7 @@ const GET_ALL_BIOGRAPHIES_QUERY = gql`
         title
         shortName
         slug
+        url
       }
       slug
       updated_at
