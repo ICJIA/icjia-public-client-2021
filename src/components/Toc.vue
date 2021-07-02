@@ -54,7 +54,7 @@ export default {
     },
     tocHeading: {
       type: String,
-      default: "NAVIGATION",
+      default: "CONTENTS",
     },
     top: {
       type: String,
