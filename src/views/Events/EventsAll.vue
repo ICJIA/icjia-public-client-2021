@@ -6,8 +6,8 @@
 
 <script>
 /* eslint-disable no-unused-vars */
-import { GET_EVENTS } from "@/graphql/queries/events";
-import { fixButtonText } from "@/a11y";
+import { GET_EVENTS } from "@/graphql/events";
+// import { fixButtonText } from "@/a11y";
 
 // import NProgress from "nprogress";
 const moment = require("moment");
