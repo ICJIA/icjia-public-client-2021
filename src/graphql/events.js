@@ -16,7 +16,7 @@ const GET_EVENTS = gql`
       slug
       details
     }
-    meetings(sort: "published_at:desc") {
+    meetings(sort: "start:asc", where: { addToEventCalendar: true }) {
       id
       name: title
       summary

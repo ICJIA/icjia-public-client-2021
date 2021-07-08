@@ -8,7 +8,7 @@
           width: 100% !important;
         "
       >
-        <v-toolbar :color="getColor(item)" dark elevation="0">
+        <v-toolbar :color="item.color" dark elevation="0">
           <v-toolbar-title v-html="item.name" style="font-weight: 700">
           </v-toolbar-title>
 
@@ -28,13 +28,24 @@
               item.category | upperCase
             }}</span>
             <span
+              style="color: #333; font-weight: bold"
+              v-if="item.contentType === 'meeting'"
+            >
+              MEETING</span
+            >
+            <span
+              style="color: #333; font-weight: bold"
+              v-if="item.contentType === 'event'"
+            >
+              EVENT</span
+            >
+
+            <span
               style="color: #555"
               v-html="getRange(item.start, item.end, item.timed)"
             ></span
             >&nbsp;&nbsp;&nbsp;<span v-if="showURL">|&nbsp;</span>
-            <v-icon
-              v-if="showURL"
-              @click="$router.push(`/events/${item.slug}/`)"
+            <v-icon v-if="showURL" @click="$router.push(`${item.fullPath}/`)"
               >link</v-icon
             >
           </div>

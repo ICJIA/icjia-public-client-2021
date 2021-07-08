@@ -369,7 +369,7 @@ export default {
       }
       return range;
     },
-    isItMultiday(start, end, timed) {
+    isItMultiday(start, end) {
       let range;
       let localStart = moment(start).tz(this.$myApp.config.timezone);
       let localEnd = moment(end).tz(this.$myApp.config.timezone);
@@ -408,13 +408,10 @@ export default {
             .tz(this.$myApp.config.timezone)
             .toDate();
 
-          if (this.$myApp.config.events[event.category]) {
-            event.color = this.$myApp.config.events[event.category]["color"];
-          } else {
-            event.color = "grey darken-4";
-          }
-          //event.color = this.colors[this.rnd(0, this.colors.length - 1)];
+          event.color = "green darken-4";
           event.show = false;
+          event.fullPath = `/events/${event.slug}`;
+          event.contentType = "event";
           return event;
         });
         let meetings = ApolloQueryResult.data.meetings.map((meeting) => {
@@ -425,15 +422,10 @@ export default {
             .tz(this.$myApp.config.timezone)
             .toDate();
           meeting.timed = true;
-          meeting.category = meeting.category + " meeting";
-          if (this.$myApp.config.events[meeting.category]) {
-            meeting.color =
-              this.$myApp.config.events[meeting.category]["color"];
-          } else {
-            meeting.color = "grey darken-4";
-          }
-          //event.color = this.colors[this.rnd(0, this.colors.length - 1)];
+          meeting.color = "blue darken-4";
           meeting.show = false;
+          meeting.fullPath = `/meetings/${meeting.slug}`;
+          meeting.contentType = "meeting";
           return meeting;
         });
 
