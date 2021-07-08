@@ -232,7 +232,7 @@
 /* eslint-disable no-unused-vars */
 import { GET_EVENTS } from "@/graphql/events";
 // import { fixButtonText } from "@/a11y";
-
+import _ from "lodash";
 import NProgress from "nprogress";
 const moment = require("moment");
 const tz = require("moment-timezone");
@@ -274,15 +274,8 @@ export default {
     filteredEvents: [],
     display: "calendar",
     events: [],
-    colors: [
-      "blue",
-      "indigo",
-      "deep-purple",
-      "cyan",
-      "green",
-      "orange",
-      "grey darken-1",
-    ],
+    meetings: [],
+    allEvents: [],
     eventKicker: "",
     isLoading: true,
   }),
@@ -306,7 +299,7 @@ export default {
     },
     filterUpcoming() {
       let now = new Date();
-      this.filteredEvents = this.events.filter((event) => {
+      this.filteredEvents = this.allEvents.filter((event) => {
         if (event.end >= now) {
           return event;
         }
@@ -317,7 +310,7 @@ export default {
       if (val) {
         this.filterUpcoming();
       } else {
-        this.filteredEvents = this.events;
+        this.filteredEvents = this.allEvents;
       }
       this.$refs.calendar.checkChange();
     },
@@ -406,7 +399,8 @@ export default {
         NProgress.done();
       },
       result(ApolloQueryResult) {
-        this.events = this.events.map((event) => {
+        //console.log("Result: ", ApolloQueryResult.data.events);
+        let events = ApolloQueryResult.data.events.map((event) => {
           event.start = moment(event.start)
             .tz(this.$myApp.config.timezone)
             .toDate();
@@ -423,8 +417,28 @@ export default {
           event.show = false;
           return event;
         });
-        //this.filteredEvents = this.events;
+        let meetings = ApolloQueryResult.data.meetings.map((meeting) => {
+          meeting.start = moment(meeting.start)
+            .tz(this.$myApp.config.timezone)
+            .toDate();
+          meeting.end = moment(meeting.end)
+            .tz(this.$myApp.config.timezone)
+            .toDate();
+          meeting.timed = true;
+          meeting.category = meeting.category + " meeting";
+          if (this.$myApp.config.events[meeting.category]) {
+            meeting.color =
+              this.$myApp.config.events[meeting.category]["color"];
+          } else {
+            meeting.color = "grey darken-4";
+          }
+          //event.color = this.colors[this.rnd(0, this.colors.length - 1)];
+          meeting.show = false;
+          return meeting;
+        });
 
+        let allEvents = [...events, ...meetings];
+        this.allEvents = _.orderBy(allEvents, ["start"], ["asc"]);
         this.filterUpcoming();
         this.isLoading = false;
         NProgress.done();

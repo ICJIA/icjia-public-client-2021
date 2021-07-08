@@ -16,6 +16,18 @@ const GET_EVENTS = gql`
       slug
       details
     }
+    meetings(sort: "published_at:desc") {
+      id
+      name: title
+      summary
+      slug
+      start
+      end
+      category
+      created_at
+      updated_at
+      published_at
+    }
   }
 `;
 
