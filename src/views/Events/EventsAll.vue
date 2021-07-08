@@ -421,7 +421,16 @@ export default {
           meeting.end = moment(meeting.end)
             .tz(this.$myApp.config.timezone)
             .toDate();
-          meeting.timed = true;
+
+          let localStart = moment(meeting.start).tz(
+            this.$myApp.config.timezone
+          );
+
+          if (!this.isItMultiday(meeting.start, meeting.end)) {
+            meeting.timed = true;
+          } else {
+            meeting.timed = false;
+          }
           meeting.color = "blue darken-4";
           meeting.show = false;
           meeting.fullPath = `/meetings/${meeting.slug}`;
