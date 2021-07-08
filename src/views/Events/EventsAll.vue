@@ -113,7 +113,7 @@
                 class="mb-5 hover card"
                 elevation="0"
                 style="border: 1px solid #bbb"
-                @click="$router.push(`/events/${event.slug}/`)"
+                @click="$router.push(`${event.fullPath}/`)"
                 data-aos="fade-up"
                 data-aos-offset="100"
                 data-aos-delay="0"
@@ -214,14 +214,6 @@
               </v-card>
             </div>
           </div>
-          <div
-            class="text-right mt-3"
-            style="font-size: 12px; font-weight: 400"
-          >
-            For access to the FSGU Project Calendar, please
-            <a href="https://calendar.icjia.cloud" target="_blank">click here</a
-            >.
-          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -275,6 +267,7 @@ export default {
     display: "calendar",
     events: [],
     meetings: [],
+    grants: [],
     allEvents: [],
     eventKicker: "",
     isLoading: true,
@@ -437,8 +430,29 @@ export default {
           meeting.contentType = "meeting";
           return meeting;
         });
+        let grants = ApolloQueryResult.data.grants.map((grant) => {
+          grant.start = moment(grant.start)
+            .tz(this.$myApp.config.timezone)
+            .toDate();
+          grant.end = moment(grant.end)
+            .tz(this.$myApp.config.timezone)
+            .toDate();
 
-        let allEvents = [...events, ...meetings];
+          let localStart = moment(grant.start).tz(this.$myApp.config.timezone);
+
+          if (!this.isItMultiday(grant.start, grant.end)) {
+            grant.timed = true;
+          } else {
+            grant.timed = false;
+          }
+          grant.color = "grey darken-4";
+          grant.show = false;
+          grant.fullPath = `/grants/fsgu-funding/${grant.slug}`;
+          grant.contentType = "grant";
+          return grant;
+        });
+
+        let allEvents = [...events, ...meetings, ...grants];
         this.allEvents = _.orderBy(allEvents, ["start"], ["asc"]);
         this.filterUpcoming();
         this.isLoading = false;

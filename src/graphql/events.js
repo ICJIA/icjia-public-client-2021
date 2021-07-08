@@ -28,6 +28,23 @@ const GET_EVENTS = gql`
       updated_at
       published_at
     }
+
+    grants(sort: "start:asc") {
+      id
+      name: title
+      slug
+      summary
+      start
+      category
+      end
+      created_at
+      updated_at
+      published_at
+      tags(sort: "title:asc") {
+        title
+        slug
+      }
+    }
   }
 `;
 

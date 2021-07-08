@@ -1,6 +1,6 @@
 <template>
   <div class="markdown-body reduce-85">
-    <v-card color="grey lighten-3" class="mb-5" elevation="0">
+    <v-card color="white" class="mb-5" elevation="0">
       <div
         style="
           border-left: 0px solid #ccc;
