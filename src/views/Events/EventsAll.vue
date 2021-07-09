@@ -107,8 +107,14 @@
             <div
               v-for="(event, index) in filteredEvents"
               :key="index + event.id"
+              class="mb-5"
             >
-              <v-card
+              <EventCard
+                :item="event"
+                :showClose="false"
+                class="hover"
+              ></EventCard>
+              <!-- <v-card
                 color="grey lighten-4"
                 class="mb-5 hover card"
                 elevation="0"
@@ -211,7 +217,7 @@
                     </div>
                   </div>
                 </div>
-              </v-card>
+              </v-card> -->
             </div>
           </div>
         </v-col>

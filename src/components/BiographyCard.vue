@@ -19,7 +19,9 @@
           ></v-img>
         </v-avatar>
         <span>
-          <span class="text-h5 author-name hover" @click="search(item.fullName)"
+          <span
+            class="text-h5 author-name hover ml-3"
+            @click="search(item.fullName)"
             >{{ item.fullName }}<span v-if="item.suffix">,&nbsp;</span
             >{{ item.suffix }}
           </span>
@@ -33,8 +35,8 @@
             >
           </span>
 
-          <v-card-subtitle>
-            <span>{{ item.title }}</span>
+          <v-card-subtitle style="margin-top: -10px">
+            <span style="font-weight: 700">{{ item.title }}</span>
           </v-card-subtitle>
           <v-card-text class="text-left" v-html="item.body"></v-card-text>
         </span>

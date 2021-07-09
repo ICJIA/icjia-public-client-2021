@@ -1,6 +1,11 @@
 <template>
   <div class="markdown-body reduce-85">
-    <v-card color="white" class="mb-5" elevation="0">
+    <v-card
+      color="white"
+      class="mb-5"
+      elevation="1"
+      @click="$router.push(item.fullPath)"
+    >
       <div
         style="
           border-left: 0px solid #ccc;
