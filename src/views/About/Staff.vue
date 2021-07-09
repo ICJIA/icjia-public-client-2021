@@ -31,7 +31,7 @@
                 <v-card-text v-else>No description available.</v-card-text>
                 <v-card-actions v-if="unit.url">
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-4" text :to="unit.url"
+                  <v-btn dark color="blue darken-4" :to="unit.url"
                     >Read more&nbsp;&raquo;</v-btn
                   >
                 </v-card-actions>

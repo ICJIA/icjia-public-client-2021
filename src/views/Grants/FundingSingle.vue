@@ -6,7 +6,12 @@
           <v-container class="markdown-body">
             <v-row>
               <v-col cols="12" md="9" class="markdown-body">
-                <h1 v-html="render(funding.title)"></h1>
+                <div v-if="funding.category === 'nofo'">
+                  <div style="font-weight: 900; font-size: 18px; color: #555">
+                    Notice of Funding Opportunity
+                  </div>
+                </div>
+                <h1 v-html="render(funding.title)" style="margin-top: 5px"></h1>
                 <div v-html="render(funding.body)"></div>
               </v-col>
               <v-col cols="12" md="3" class="px-3 hidden-sm-and-down"

@@ -18,7 +18,8 @@
             </div>
           </v-col>
           <v-col v-for="(item, i) in content" :key="i" cols="12">
-            <v-card elevation="0">
+            <BiographyCard :item="item"></BiographyCard>
+            <!-- <v-card elevation="0">
               <div class="d-flex flex-no-wrap">
                 <v-avatar
                   class="ma-3"
@@ -46,7 +47,7 @@
                   ></v-card-text>
                 </div>
               </div>
-            </v-card>
+            </v-card> -->
             <!-- <div v-if="item.sortModifier < 100" class="mt-1"></div> -->
           </v-col>
         </v-row>
@@ -64,7 +65,9 @@ import { EventBus } from "@/event-bus";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_BIOGRAPHIES_BY_UNIT_QUERY } from "@/graphql/biographies";
 import _ from "lodash";
+import BiographyCard from "../../components/BiographyCard.vue";
 export default {
+  components: { BiographyCard },
   data() {
     return {
       loading: true,

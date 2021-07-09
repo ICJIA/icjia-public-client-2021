@@ -26,8 +26,9 @@
             >{{ item.suffix }}
           </span>
           <span v-if="showLink">
+            <span>&nbsp;|&nbsp;</span>
             <v-btn
-              style="margin-bottom: 6px !important; margin-left: -3px"
+              style="margin-bottom: 4px !important; margin-left: -3px"
               :to="`/about/biographies/${item.slug}`"
               text
               x-small

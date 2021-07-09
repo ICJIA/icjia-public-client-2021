@@ -114,110 +114,6 @@
                 :showClose="false"
                 class="hover"
               ></EventCard>
-              <!-- <v-card
-                color="grey lighten-4"
-                class="mb-5 hover card"
-                elevation="0"
-                style="border: 1px solid #bbb"
-                @click="$router.push(`${event.fullPath}/`)"
-                data-aos="fade-up"
-                data-aos-offset="100"
-                data-aos-delay="0"
-              >
-                <div class="d-flex flex-no-wrap" style="border: 1px solid #bbb">
-                  <div
-                    class="px-5 hidden-sm-and-down"
-                    style="max-height: 150px"
-                  >
-                    <v-container fill-height>
-                      <v-row
-                        align="center"
-                        justify="center"
-                        fill-height
-                        style="width: 100px"
-                      >
-                        <v-col
-                          fill-height
-                          class="text-center hover"
-                          @click.prevent="event.show = !event.show"
-                        >
-                          <span
-                            style="
-                              font-size: 14px;
-                              color: #222;
-                              font-weight: 900;
-                            "
-                          >
-                            {{ event.start | shortMonth }}
-                          </span>
-                          <br />
-                          <span
-                            style="
-                              font-size: 22px;
-                              font-weight: 900;
-                              color: #0d4474;
-                            "
-                            >{{ event.start | day }}</span
-                          ><span
-                            style="
-                              font-size: 22px;
-                              font-weight: 900;
-                              color: #0d4474;
-                            "
-                            v-if="
-                              isItMultiday(event.start, event.end, event.timed)
-                            "
-                          >
-                            - {{ event.end | day }}
-                          </span>
-                          <div
-                            style="font-size: 12px"
-                            v-if="
-                              !isItMultiday(event.start, event.end, event.timed)
-                            "
-                          >
-                            {{ event.start | dayName }}
-                          </div>
-                          <div v-else style="font-size: 12px">
-                            {{ event.start | dayName }} --
-                            {{ event.end | dayName }}
-                          </div>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </div>
-
-                  <div
-                    style="border-left: 1px solid #ccc; width: 100% !important"
-                    :class="{
-                      'event-border':
-                        $vuetify.breakpoint.md ||
-                        $vuetify.breakpoint.lg ||
-                        $vuetify.breakpoint.xl,
-                    }"
-                  >
-                    <div class="px-5 py-6">
-                      <div
-                        style="font-size: 12px; font-weight: 900; color: #222"
-                      >
-                        <span style="color: #333">{{
-                          event.category | upperCase
-                        }}</span>
-                        <span
-                          v-html="getRange(event.start, event.end, event.timed)"
-                        ></span>
-                      </div>
-                      <h2 class="mt-2 hover">
-                        {{ event.name }}
-                      </h2>
-
-                      <v-card-subtitle>{{ event.summary }}</v-card-subtitle>
-
-                      <div class="hover readMore text-right"></div>
-                    </div>
-                  </div>
-                </div>
-              </v-card> -->
             </div>
           </div>
         </v-col>
@@ -451,7 +347,7 @@ export default {
           } else {
             grant.timed = false;
           }
-          grant.color = "grey darken-4";
+          grant.color = "indigo darken-4";
           grant.show = false;
           grant.fullPath = `/grants/fsgu-funding/${grant.slug}`;
           grant.contentType = "grant";
