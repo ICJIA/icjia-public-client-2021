@@ -41,7 +41,7 @@ axios
       let obj = {
         ...b,
         contentType: "biography",
-        fullPath: `/biographies/${b.slug}/`,
+        fullPath: `/about/biographies/${b.slug}/`,
         imagePath: null,
       };
 

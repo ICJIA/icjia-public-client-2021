@@ -2,8 +2,9 @@
   <div>
     <v-card
       elevation="0"
-      class="mb-2 py-2 px-2"
+      class="mb-2 py-8 px-2"
       style="border-bottom: 1px solid #eee"
+      v-if="item"
     >
       <div class="d-flex flex-no-wrap">
         <v-avatar
@@ -17,19 +18,26 @@
             :lazy-src="`https://agency.icjia-api.cloud${item.headshot.formats.thumbnail.url}`"
           ></v-img>
         </v-avatar>
-        <div>
-          <v-card-title
-            class="text-h5 author-name hover"
-            @click="search(item.fullName)"
+        <span>
+          <span class="text-h5 author-name hover" @click="search(item.fullName)"
             >{{ item.fullName }}<span v-if="item.suffix">,&nbsp;</span
-            >{{ item.suffix }}</v-card-title
-          >
+            >{{ item.suffix }}
+          </span>
+          <span v-if="showLink">
+            <v-btn
+              style="margin-bottom: 6px !important; margin-left: -3px"
+              :to="`/about/biographies/${item.slug}`"
+              text
+              x-small
+              ><v-icon>link</v-icon></v-btn
+            >
+          </span>
 
           <v-card-subtitle>
             <span>{{ item.title }}</span>
           </v-card-subtitle>
           <v-card-text class="text-left" v-html="item.body"></v-card-text>
-        </div>
+        </span>
       </div>
     </v-card>
   </div>
@@ -51,6 +59,10 @@ export default {
     item: {
       type: Object,
       default: () => {},
+    },
+    showLink: {
+      type: Boolean,
+      default: true,
     },
   },
 };
