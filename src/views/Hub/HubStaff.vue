@@ -19,36 +19,6 @@
           </v-col>
           <v-col v-for="(item, i) in content" :key="i" cols="12">
             <BiographyCard :item="item"></BiographyCard>
-            <!-- <v-card elevation="0">
-              <div class="d-flex flex-no-wrap">
-                <v-avatar
-                  class="ma-3"
-                  size="125"
-                  tile
-                  v-if="item.headshot && item.headshot.url"
-                >
-                  <v-img
-                    :src="`https://agency.icjia-api.cloud${item.headshot.formats.thumbnail.url}`"
-                    :lazy-src="`https://agency.icjia-api.cloud${item.headshot.formats.thumbnail.url}`"
-                  ></v-img>
-                </v-avatar>
-                <div>
-                  <v-card-title
-                    class="text-h5 author-name hover"
-                    @click="search(item.fullName)"
-                    >{{ item.fullName }}<span v-if="item.suffix">,&nbsp;</span
-                    >{{ item.suffix }}</v-card-title
-                  >
-
-                  <v-card-subtitle v-text="item.title"></v-card-subtitle>
-                  <v-card-text
-                    class="text-left"
-                    v-html="render(item.body)"
-                  ></v-card-text>
-                </div>
-              </div>
-            </v-card> -->
-            <!-- <div v-if="item.sortModifier < 100" class="mt-1"></div> -->
           </v-col>
         </v-row>
       </v-container>
