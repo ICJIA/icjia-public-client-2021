@@ -19,20 +19,51 @@
         }}</span>
 
         <v-spacer></v-spacer>
-        <div
-          v-if="item.status"
-          style="
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 3px;
-            border: 1px solid #ccc;
-          "
-        >
-          {{ item.status }}
+
+        <div v-if="item.status && item.status.length && item.status">
+          <span
+            style="
+              font-size: 10px;
+              font-weight: 700;
+              padding: 2px 3px;
+              border: 1px solid #ccc;
+            "
+          >
+            {{ item.status }}
+          </span>
+        </div>
+
+        <div v-else>
+          <span
+            style="
+              font-size: 10px;
+              font-weight: 700;
+              padding: 2px 3px;
+              border: 1px solid #ccc;
+              background: green;
+              color: #fff;
+            "
+            v-if="new Date(item.end) > new Date()"
+          >
+            Current
+          </span>
+          <span
+            style="
+              font-size: 10px;
+              font-weight: 700;
+              background: red;
+              color: #fff;
+              padding: 2px 3px;
+              border: 1px solid #ccc;
+            "
+            v-if="new Date(item.end) < new Date()"
+          >
+            Expired
+          </span>
         </div>
       </div>
       <h2
-        style="margin-top: -20px"
+        style="margin-top: -10px"
         @click="
           openSearch === true ? search(item.title) : routeTo(item.fullPath)
         "
