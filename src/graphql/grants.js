@@ -1,6 +1,30 @@
 /* eslint-disable graphql/template-strings */
 import gql from "graphql-tag";
 
+const GET_ALL_PROGRAMS_QUERY = gql`
+  query allPrograms {
+    programs {
+      id
+      updated_at
+      title
+      slug
+      summary
+      status
+      body
+      category
+      published_at
+      tags {
+        title
+        slug
+      }
+      attachments {
+        url
+        name
+      }
+    }
+  }
+`;
+
 const GET_SINGLE_FUNDING_QUERY = gql`
   query grant($slug: String!) {
     grants(where: { slug: $slug }) {
@@ -26,4 +50,4 @@ const GET_SINGLE_FUNDING_QUERY = gql`
   }
 `;
 
-export { GET_SINGLE_FUNDING_QUERY };
+export { GET_SINGLE_FUNDING_QUERY, GET_ALL_PROGRAMS_QUERY };

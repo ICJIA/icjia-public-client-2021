@@ -29,7 +29,7 @@ const about = [
     name: "BiosSingle",
     component: () =>
       import(
-        /* webpackChunkName: "bios" */ "@/views/About/BiographiesSingle.vue"
+        /* webpackChunkName: "bios" */ "@/views/About/StaffAndBoardSingle.vue"
       ),
   },
   {
