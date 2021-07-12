@@ -63,9 +63,8 @@
                 :key="program.id"
                 class="mb-3"
               >
-                {{ program }}
-              </div></v-col
-            >
+                <BaseCardExpandable :item="program"></BaseCardExpandable></div
+            ></v-col>
           </v-row>
         </v-container>
         <v-container v-if="!allPrograms">
