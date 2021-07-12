@@ -41,11 +41,11 @@
         <v-container v-if="allPrograms">
           <v-row>
             <v-col cols="12" sm="6">
-              <v-btn-toggle v-model="toggle_category">
-                <v-btn small> All Programs </v-btn>
+              <v-btn-toggle v-model="toggle_category" dark>
+                <v-btn small color="blue darken-3"> All Programs </v-btn>
 
-                <v-btn small> Federal </v-btn>
-                <v-btn small> State </v-btn>
+                <v-btn small color="blue darken-3"> Federal </v-btn>
+                <v-btn small color="blue darken-3"> State </v-btn>
               </v-btn-toggle>
             </v-col>
             <v-col cols="12" sm="6" class="text-right">
