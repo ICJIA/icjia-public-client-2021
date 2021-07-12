@@ -5,7 +5,14 @@
         class="d-flex mb-8"
         style="text-transform: uppercase; font-weight: 900; margin-top: -10px"
       >
-        <span style="font-size: 14px; color: #666"> {{ item.category }} </span>
+        <span
+          style="font-size: 14px; color: #666"
+          v-if="item.category === 'nofo'"
+          >NOTICE OF FUNDING OPPORTUNITY
+        </span>
+        <span style="font-size: 14px; color: #666" v-else>{{
+          item.category
+        }}</span>
 
         <v-spacer></v-spacer>
         <div
@@ -21,13 +28,29 @@
         </div>
       </div>
       <h2
-        style="margin-top: 15px"
+        style="margin-top: -20px"
         @click="search(item.title)"
         class="hover program-title"
       >
         {{ item.title }}
       </h2>
-      <div v-if="item.body" v-html="render(item.body)" class="pl-3 pt-3"></div>
+      <div
+        v-if="item.start && item.end"
+        class="mb-3"
+        style="margin-top: -10px; font-size: 12px; font-weight: 900"
+      >
+        <span>{{ item.start | format }} to {{ item.end | format }}</span>
+      </div>
+      <div
+        v-if="item.summary && summaryOnly"
+        v-html="render(item.summary)"
+        class="pl-3 pt-3"
+      ></div>
+      <div
+        v-if="item.body && !summaryOnly"
+        v-html="render(item.body)"
+        class="pl-3 pt-3"
+      ></div>
       <v-card-actions v-if="item.attachments && item.attachments.length">
         <v-btn small color="grey lighten-4" @click="show = !show">
           Attachments
@@ -83,6 +106,10 @@ export default {
     item: {
       type: Object,
       default: () => {},
+    },
+    summaryOnly: {
+      type: Boolean,
+      default: false,
     },
   },
 };

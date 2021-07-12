@@ -24,6 +24,31 @@ const GET_ALL_PROGRAMS_QUERY = gql`
     }
   }
 `;
+const GET_ALL_FUNDING_QUERY = gql`
+  query grant {
+    grants {
+      id
+      created_at
+      updated_at
+      title
+      slug
+      summary
+      body
+      start
+      end
+      category
+      published_at
+      attachments {
+        name
+        url
+      }
+      tags {
+        title
+        slug
+      }
+    }
+  }
+`;
 
 const GET_SINGLE_FUNDING_QUERY = gql`
   query grant($slug: String!) {
@@ -41,6 +66,7 @@ const GET_SINGLE_FUNDING_QUERY = gql`
       published_at
       attachments {
         name
+        url
       }
       tags {
         title
@@ -50,4 +76,8 @@ const GET_SINGLE_FUNDING_QUERY = gql`
   }
 `;
 
-export { GET_SINGLE_FUNDING_QUERY, GET_ALL_PROGRAMS_QUERY };
+export {
+  GET_SINGLE_FUNDING_QUERY,
+  GET_ALL_PROGRAMS_QUERY,
+  GET_ALL_FUNDING_QUERY,
+};

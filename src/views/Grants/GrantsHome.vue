@@ -37,17 +37,59 @@
           </v-col>
         </v-row>
       </v-container>
+      <div>
+        <v-container v-if="allGrants">
+          <v-row>
+            <v-col cols="12"><h2>ICJIA Funding Opportunities</h2></v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" class="text-right">
+              <v-btn-toggle v-model="toggle_nofoStatus">
+                <v-btn small> Current </v-btn>
+
+                <v-btn small> Expired </v-btn>
+              </v-btn-toggle>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <div
+                v-for="grant in filteredAndSortedGrants"
+                :key="grant.id"
+                class="mb-6"
+              >
+                <BaseCardExpandable
+                  :item="grant"
+                  :summaryOnly="true"
+                ></BaseCardExpandable>
+              </div>
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-container v-if="!allGrants">
+          <v-row>
+            <v-col cols="12"> <Loader loaderType="skeleton"></Loader></v-col>
+          </v-row>
+        </v-container>
+      </div>
       <div style="" class="mt-3 pt-3">
         <v-container v-if="allPrograms">
           <v-row>
+            <v-col cols="12">
+              <h2>ICJIA Grant Programs</h2>
+            </v-col>
+          </v-row>
+
+          <v-row style="margin-top: -20px">
             <v-col cols="12" sm="6">
               <v-btn-toggle v-model="toggle_category" dark>
-                <v-btn small color="blue darken-3"> All Programs </v-btn>
+                <v-btn small color="grey darken-1"> All Programs </v-btn>
 
-                <v-btn small color="blue darken-3"> Federal </v-btn>
-                <v-btn small color="blue darken-3"> State </v-btn>
+                <v-btn small color="grey darken-1"> Federal </v-btn>
+                <v-btn small color="grey darken-1"> State </v-btn>
               </v-btn-toggle>
             </v-col>
+
             <v-col cols="12" sm="6" class="text-right">
               <v-btn-toggle v-model="toggle_status">
                 <v-btn small> Current </v-btn>
@@ -84,7 +126,10 @@
 import { attachInternalLinks } from "@/utils/dom";
 
 import { GET_SINGLE_UNIT_QUERY } from "@/graphql/units";
-import { GET_ALL_PROGRAMS_QUERY } from "@/graphql/grants";
+import {
+  GET_ALL_PROGRAMS_QUERY,
+  GET_ALL_FUNDING_QUERY,
+} from "@/graphql/grants";
 import { renderToHtml } from "@/services/Markdown";
 import _ from "lodash";
 import NProgress from "nprogress";
@@ -96,10 +141,13 @@ export default {
       content: null,
       unit: null,
       allPrograms: null,
+      allGrants: null,
       filteredAndSortedPrograms: [],
+      filteredAndSortedGrants: [],
       category: "all",
       toggle_category: 0,
       toggle_status: 0,
+      toggle_nofoStatus: 0,
       status: "current",
     };
   },
@@ -128,6 +176,15 @@ export default {
         this.filterPrograms();
       }
     },
+    toggle_nofoStatus(newVal) {
+      if (newVal === 0) {
+        this.filterGrants("current");
+      }
+      if (newVal === 1) {
+        this.status = "archived";
+        this.filterGrants("expired");
+      }
+    },
   },
   async mounted() {
     NProgress.start();
@@ -136,6 +193,22 @@ export default {
   methods: {
     render(content) {
       return renderToHtml(content);
+    },
+    filterGrants(status) {
+      if (status === "current") {
+        this.filteredAndSortedGrants = _.filter(this.allGrants, (grant) => {
+          if (new Date(grant.end) > new Date()) {
+            return grant;
+          }
+        });
+      }
+      if (status === "expired") {
+        this.filteredAndSortedGrants = _.filter(this.allGrants, (grant) => {
+          if (new Date(grant.end) < new Date()) {
+            return grant;
+          }
+        });
+      }
     },
     filterPrograms() {
       this.filteredAndSortedPrograms = this.allPrograms.filter((program) => {
@@ -153,7 +226,7 @@ export default {
   apollo: {
     units: {
       prefetch: true,
-      fetchPolicy: "no-cache",
+
       query: GET_SINGLE_UNIT_QUERY,
       variables() {
         return {
@@ -162,6 +235,7 @@ export default {
       },
       error(error) {
         this.error = JSON.stringify(error.message);
+        NProgress.done();
       },
       result(ApolloQueryResult) {
         if (
@@ -181,13 +255,14 @@ export default {
     },
     programs: {
       prefetch: true,
-      fetchPolicy: "no-cache",
+
       query: GET_ALL_PROGRAMS_QUERY,
       variables() {
         return {};
       },
       error(error) {
         this.error = JSON.stringify(error.message);
+        NProgress.done();
       },
       result(ApolloQueryResult) {
         if (
@@ -203,7 +278,40 @@ export default {
           this.allPrograms = _.orderBy(ApolloQueryResult.data.programs, [
             "title",
           ]);
+
           this.filterPrograms();
+          NProgress.done();
+        }
+      },
+    },
+    grants: {
+      prefetch: true,
+
+      query: GET_ALL_FUNDING_QUERY,
+      variables() {
+        return {};
+      },
+      error(error) {
+        this.error = JSON.stringify(error.message);
+        NProgress.done();
+      },
+      result(ApolloQueryResult) {
+        if (
+          ApolloQueryResult.data &&
+          ApolloQueryResult.data.grants.length > 0 === false
+        ) {
+          // eslint-disable-next-line no-unused-vars
+          this.$router.push("/404").catch((err) => {
+            console.log(err);
+          });
+        } else {
+          //console.log(this.id);
+          this.allGrants = _.orderBy(
+            ApolloQueryResult.data.grants,
+            ["end"],
+            ["desc"]
+          );
+          this.filterGrants("current");
           NProgress.done();
         }
       },
