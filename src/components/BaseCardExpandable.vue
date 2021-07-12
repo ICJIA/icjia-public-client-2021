@@ -63,7 +63,7 @@
         </div>
       </div>
       <h2
-        style="margin-top: -10px"
+        style="margin-top: -5px"
         @click="
           openSearch === true ? search(item.title) : routeTo(item.fullPath)
         "
