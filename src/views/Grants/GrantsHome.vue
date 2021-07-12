@@ -61,6 +61,7 @@
                 <BaseCardExpandable
                   :item="grant"
                   :summaryOnly="true"
+                  :openSearch="false"
                 ></BaseCardExpandable>
               </div>
             </v-col>
@@ -275,9 +276,15 @@ export default {
           });
         } else {
           //console.log(this.id);
+          // TODO: Full path here
           this.allPrograms = _.orderBy(ApolloQueryResult.data.programs, [
             "title",
           ]);
+          this.allPrograms = this.allPrograms.map((e) => ({
+            ...e,
+            fullPath: `/grants/programs/${e.slug}/`,
+            contentType: "program",
+          }));
 
           this.filterPrograms();
           NProgress.done();
@@ -311,6 +318,11 @@ export default {
             ["end"],
             ["desc"]
           );
+          this.allGrants = this.allGrants.map((e) => ({
+            ...e,
+            fullPath: `/grants/fsgu-funding/${e.slug}/`,
+            contentType: "grant",
+          }));
           this.filterGrants("current");
           NProgress.done();
         }

@@ -1,6 +1,10 @@
 <template>
   <div>
-    <v-card elevation="0" class="pt-8 px-3">
+    <v-card
+      elevation="0"
+      class="pt-8 px-3"
+      @click="item.contentType === 'grant' ? routeTo(item.fullPath) : null"
+    >
       <div
         class="d-flex mb-8"
         style="text-transform: uppercase; font-weight: 900; margin-top: -10px"
@@ -29,7 +33,9 @@
       </div>
       <h2
         style="margin-top: -20px"
-        @click="search(item.title)"
+        @click="
+          openSearch === true ? search(item.title) : routeTo(item.fullPath)
+        "
         class="hover program-title"
       >
         {{ item.title }}
@@ -91,6 +97,10 @@ export default {
     };
   },
   methods: {
+    routeTo(fullPath) {
+      if (!fullPath) return;
+      this.$router.push(fullPath);
+    },
     render(content) {
       return renderToHtml(content);
     },
@@ -110,6 +120,10 @@ export default {
     summaryOnly: {
       type: Boolean,
       default: false,
+    },
+    openSearch: {
+      type: Boolean,
+      default: true,
     },
   },
 };
