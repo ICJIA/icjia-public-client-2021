@@ -1,6 +1,21 @@
 <template>
   <div>
     <BaseContent :error="error" :loading="loading">
+      <template slot="isExpired" v-if="!loading && isExpired"
+        ><div
+          style="
+            background: red;
+            color: #fff;
+            padding: 15px 10px;
+            font-weight: 900;
+            font-size: 18px;
+          "
+          class="text-center"
+        >
+          This Funding Opportunity Expired on
+          {{ funding.end | format }}
+        </div></template
+      >
       <template slot="content" v-if="!loading">
         <v-sheet color="white">
           <v-container class="markdown-body">
@@ -36,6 +51,15 @@ export default {
       error: null,
       funding: null,
     };
+  },
+  computed: {
+    isExpired() {
+      if (new Date(this.funding.end) < new Date()) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
   created() {
     NProgress.start();

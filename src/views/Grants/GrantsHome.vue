@@ -61,7 +61,7 @@
               <div
                 v-for="program in filteredAndSortedPrograms"
                 :key="program.id"
-                class="mb-3"
+                class="mb-6"
               >
                 <BaseCardExpandable :item="program"></BaseCardExpandable></div
             ></v-col>
