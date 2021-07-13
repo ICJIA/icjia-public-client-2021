@@ -1,10 +1,6 @@
 <template>
   <div>
-    <v-card
-      elevation="0"
-      class="pt-8 px-3"
-      @click="item.contentType === 'grant' ? routeTo(item.fullPath) : null"
-    >
+    <v-card elevation="0" class="pt-8 px-3" @click="routeTo(item.fullPath)">
       <div
         class="d-flex mb-8"
         style="text-transform: uppercase; font-weight: 900; margin-top: -10px"
@@ -14,9 +10,9 @@
           v-if="item.category === 'nofo'"
           >NOTICE OF FUNDING OPPORTUNITY
         </span>
-        <span style="font-size: 14px; color: #666" v-else>{{
-          item.category
-        }}</span>
+        <span style="font-size: 14px; color: #666" v-else
+          >{{ item.category }} PROGRAM</span
+        >
 
         <v-spacer></v-spacer>
 

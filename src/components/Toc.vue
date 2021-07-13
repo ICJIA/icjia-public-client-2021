@@ -153,7 +153,7 @@ export default {
   position: -webkit-sticky !important;
   position: sticky !important;
   top: 165px !important;
-  font-size: 13px;
+  font-size: 20px;
 }
 
 ul.toc-list {

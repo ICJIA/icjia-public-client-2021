@@ -29,7 +29,7 @@
                 <h1 v-html="render(funding.title)" style="margin-top: 5px"></h1>
                 <div v-html="render(funding.body)"></div>
               </v-col>
-              <v-col cols="12" md="3" class="px-3 hidden-sm-and-down"
+              <v-col cols="12" md="3" class="hidden-sm-and-down"
                 ><Toc :key="funding.title" :scrollOffset="55"></Toc
               ></v-col>
             </v-row>

@@ -76,8 +76,34 @@ const GET_SINGLE_FUNDING_QUERY = gql`
   }
 `;
 
+const GET_SINGLE_PROGRAM_QUERY = gql`
+  query singleProgram($slug: String!) {
+    programs(where: { slug: $slug }) {
+      id
+      created_at
+      updated_at
+      title
+      slug
+      summary
+      body
+      category
+      status
+      published_at
+      attachments {
+        name
+        url
+      }
+      tags {
+        title
+        slug
+      }
+    }
+  }
+`;
+
 export {
   GET_SINGLE_FUNDING_QUERY,
   GET_ALL_PROGRAMS_QUERY,
   GET_ALL_FUNDING_QUERY,
+  GET_SINGLE_PROGRAM_QUERY,
 };
