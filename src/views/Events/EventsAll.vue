@@ -349,7 +349,7 @@ export default {
           }
           grant.color = "indigo darken-4";
           grant.show = false;
-          grant.fullPath = `/grants/fsgu-funding/${grant.slug}`;
+          grant.fullPath = `/grants/funding/${grant.slug}`;
           grant.contentType = "grant";
           return grant;
         });

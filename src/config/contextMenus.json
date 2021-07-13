@@ -16,23 +16,23 @@
             },
             {
                 "label": "GATA Info",
-                "path": "/grants/fsgu-gata/"
+                "path": "/grants/gata/"
             },
             {
                 "label": "Programs",
-                "path": "/grants/fsgu-programs/"
+                "path": "/grants/programs/"
             },
             {
                 "label": "Funding",
-                "path": "/grants/fsgu-funding/"
+                "path": "/grants/funding/"
             },
             {
-                "label": "Training",
-                "path": "/grants/fsgu-training/"
+                "label": "Workshops",
+                "path": "/grants/workshops/"
             },
             {
                 "label": "Technical Assistance",
-                "path": "/grants/fsgu-technical-assistance/"
+                "path": "/grants/technical-assistance/"
             }
         ]
     },
@@ -123,7 +123,7 @@
             },
             {
                 "label": "Funding",
-                "path": "/grants/fsgu-funding/"
+                "path": "/grants/funding/"
             },
             {
                 "label": "Employment",
@@ -152,7 +152,7 @@
             },
             {
                 "label": "Funding",
-                "path": "/grants/fsgu-funding/"
+                "path": "/grants/funding/"
             },
             {
                 "label": "Employment",
@@ -181,7 +181,7 @@
             },
             {
                 "label": "Funding",
-                "path": "/grants/fsgu-funding/"
+                "path": "/grants/funding/"
             },
             {
                 "label": "Employment",

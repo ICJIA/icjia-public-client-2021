@@ -12,10 +12,10 @@
       <v-container>
         <v-row>
           <v-col class="text-left" style="margin-top: -35px">
-            <div style="font-weight: 900; font-size: 12px" class="mb-12">
+            <!-- <div style="font-weight: 900; font-size: 12px" class="mb-12">
               Showing: {{ content.length }} of {{ content.length }} R&A staff
               members
-            </div>
+            </div> -->
           </v-col>
           <v-col v-for="(item, i) in content" :key="i" cols="12">
             <BiographyCard :item="item" />

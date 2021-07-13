@@ -1,18 +1,37 @@
 <template>
-  <div class="pb-12 markdown-body">
+  <div class="markdown-body">
     <v-container>
       <v-row>
         <v-col cols="12">
-          <v-container fluid v-if="allGrants">
+          <v-container fluid v-if="allPrograms">
             <v-row>
-              <v-col cols="12"
-                ><h1 id="current-funding-opportunities">
-                  ICJIA Funding Opportunities
-                </h1>
+              <v-col cols="12">
+                <h1 id="icjia-grant-programs">ICJIA Grant Programs</h1>
               </v-col>
 
               <v-col
                 cols="12"
+                sm="6"
+                :class="{
+                  'text-center':
+                    $vuetify.breakpoint.sm || $vuetify.breakpoint.xs,
+                  'text-left':
+                    $vuetify.breakpoint.md ||
+                    $vuetify.breakpoint.lg ||
+                    $vuetify.breakpoint.xl,
+                }"
+              >
+                <v-btn-toggle v-model="toggle_category">
+                  <v-btn small> All Programs </v-btn>
+
+                  <v-btn small> Federal </v-btn>
+                  <v-btn small> State </v-btn>
+                </v-btn-toggle>
+              </v-col>
+
+              <v-col
+                cols="12"
+                sm="6"
                 :class="{
                   'text-center':
                     $vuetify.breakpoint.sm || $vuetify.breakpoint.xs,
@@ -22,28 +41,21 @@
                     $vuetify.breakpoint.xl,
                 }"
               >
-                <v-btn-toggle v-model="toggle_nofoStatus">
+                <v-btn-toggle v-model="toggle_status">
                   <v-btn small> Current </v-btn>
 
-                  <v-btn small> Expired </v-btn>
+                  <v-btn small> Archived </v-btn>
                 </v-btn-toggle>
               </v-col>
 
-              <v-col cols="12">
+              <v-col>
                 <div
-                  v-for="grant in filteredAndSortedGrants"
-                  :key="grant.id"
+                  v-for="program in filteredAndSortedPrograms"
+                  :key="program.id"
                   class="mb-6"
                 >
-                  <BaseCardExpandable
-                    :item="grant"
-                    :summaryOnly="true"
-                    :openSearch="false"
-                    :showLink="false"
-                    :showReadMore="true"
-                  ></BaseCardExpandable>
-                </div>
-              </v-col>
+                  <BaseCardExpandable :item="program"></BaseCardExpandable></div
+              ></v-col>
             </v-row>
           </v-container>
           <v-container v-else>
@@ -63,11 +75,7 @@
 // eslint-disable-next-line no-unused-vars
 import { attachInternalLinks } from "@/utils/dom";
 
-import { GET_SINGLE_UNIT_QUERY } from "@/graphql/units";
-import {
-  GET_ALL_PROGRAMS_QUERY,
-  GET_ALL_FUNDING_QUERY,
-} from "@/graphql/grants";
+import { GET_ALL_PROGRAMS_QUERY } from "@/graphql/grants";
 import { renderToHtml } from "@/services/Markdown";
 import _ from "lodash";
 import NProgress from "nprogress";
@@ -114,15 +122,6 @@ export default {
         this.filterPrograms();
       }
     },
-    toggle_nofoStatus(newVal) {
-      if (newVal === 0) {
-        this.filterGrants("current");
-      }
-      if (newVal === 1) {
-        this.status = "archived";
-        this.filterGrants("expired");
-      }
-    },
   },
   async mounted() {
     NProgress.start();
@@ -132,22 +131,7 @@ export default {
     render(content) {
       return renderToHtml(content);
     },
-    filterGrants(status) {
-      if (status === "current") {
-        this.filteredAndSortedGrants = _.filter(this.allGrants, (grant) => {
-          if (new Date(grant.end) > new Date()) {
-            return grant;
-          }
-        });
-      }
-      if (status === "expired") {
-        this.filteredAndSortedGrants = _.filter(this.allGrants, (grant) => {
-          if (new Date(grant.end) < new Date()) {
-            return grant;
-          }
-        });
-      }
-    },
+
     filterPrograms() {
       this.filteredAndSortedPrograms = this.allPrograms.filter((program) => {
         if (this.category === "all") {
@@ -162,35 +146,6 @@ export default {
     },
   },
   apollo: {
-    units: {
-      prefetch: true,
-
-      query: GET_SINGLE_UNIT_QUERY,
-      variables() {
-        return {
-          slug: "federal-and-state-grants-unit",
-        };
-      },
-      error(error) {
-        this.error = JSON.stringify(error.message);
-        NProgress.done();
-      },
-      result(ApolloQueryResult) {
-        if (
-          ApolloQueryResult.data &&
-          ApolloQueryResult.data.units.length > 0 === false
-        ) {
-          // eslint-disable-next-line no-unused-vars
-          this.$router.push("/404").catch((err) => {
-            console.log(err);
-          });
-        } else {
-          //console.log(this.id);
-          this.unit = ApolloQueryResult.data.units[0];
-          NProgress.done();
-        }
-      },
-    },
     programs: {
       prefetch: true,
 
@@ -208,9 +163,10 @@ export default {
           ApolloQueryResult.data.programs.length > 0 === false
         ) {
           // eslint-disable-next-line no-unused-vars
-          this.$router.push("/404").catch((err) => {
-            console.log(err);
-          });
+          //   this.$router.push("/404").catch((err) => {
+          //     console.log(err);
+          //   });
+          console.log(ApolloQueryResult);
         } else {
           //console.log(this.id);
 
@@ -224,43 +180,6 @@ export default {
           }));
 
           this.filterPrograms();
-          NProgress.done();
-        }
-      },
-    },
-    grants: {
-      prefetch: true,
-
-      query: GET_ALL_FUNDING_QUERY,
-      variables() {
-        return {};
-      },
-      error(error) {
-        this.error = JSON.stringify(error.message);
-        NProgress.done();
-      },
-      result(ApolloQueryResult) {
-        if (
-          ApolloQueryResult.data &&
-          ApolloQueryResult.data.grants.length > 0 === false
-        ) {
-          // eslint-disable-next-line no-unused-vars
-          this.$router.push("/404").catch((err) => {
-            console.log(err);
-          });
-        } else {
-          //console.log(this.id);
-          this.allGrants = _.orderBy(
-            ApolloQueryResult.data.grants,
-            ["end"],
-            ["desc"]
-          );
-          this.allGrants = this.allGrants.map((e) => ({
-            ...e,
-            fullPath: `/grants/funding/${e.slug}/`,
-            contentType: "grant",
-          }));
-          this.filterGrants("current");
           NProgress.done();
         }
       },

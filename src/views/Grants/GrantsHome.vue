@@ -44,7 +44,7 @@
             <v-row>
               <v-col cols="12"
                 ><h2 id="current-funding-opportunities">
-                  Current Funding Opportunities
+                  ICJIA Funding Opportunities
                 </h2></v-col
               >
 
@@ -83,7 +83,7 @@
               </v-col>
 
               <v-col cols="12">
-                <h2 id="current-grant-programs">Current Grant Programs</h2>
+                <h2 id="current-grant-programs">ICJIA Grant Programs</h2>
               </v-col>
 
               <v-col
@@ -349,7 +349,7 @@ export default {
           );
           this.allGrants = this.allGrants.map((e) => ({
             ...e,
-            fullPath: `/grants/fsgu-funding/${e.slug}/`,
+            fullPath: `/grants/funding/${e.slug}/`,
             contentType: "grant",
           }));
           this.filterGrants("current");
