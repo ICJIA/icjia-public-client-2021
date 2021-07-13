@@ -25,7 +25,7 @@ const GET_ALL_PROGRAMS_QUERY = gql`
   }
 `;
 const GET_ALL_FUNDING_QUERY = gql`
-  query grant {
+  query allGrants {
     grants {
       id
       created_at
@@ -51,7 +51,7 @@ const GET_ALL_FUNDING_QUERY = gql`
 `;
 
 const GET_SINGLE_FUNDING_QUERY = gql`
-  query grant($slug: String!) {
+  query singleGrant($slug: String!) {
     grants(where: { slug: $slug }) {
       id
       created_at

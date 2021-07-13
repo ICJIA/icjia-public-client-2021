@@ -20,8 +20,12 @@
 
         <v-spacer></v-spacer>
 
-        <div v-if="item.status && item.status.length && item.status">
+        <div v-if="item.status && item.status.length">
           <span
+            :class="{
+              green: item.status === 'current',
+              red: item.status === 'archived',
+            }"
             style="
               font-size: 10px;
               font-weight: 700;
@@ -62,19 +66,32 @@
           </span>
         </div>
       </div>
-      <h2
-        style="margin-top: -5px"
-        @click="
-          openSearch === true ? search(item.title) : routeTo(item.fullPath)
-        "
-        class="hover program-title"
-      >
-        {{ item.title }}
-      </h2>
+      <div style="margin-top: -15px">
+        <span
+          @click="
+            openSearch === true ? search(item.title) : routeTo(item.fullPath)
+          "
+          class="hover program-title"
+          style="
+            line-height: 1.3em;
+
+            font-weight: 900;
+            font-size: 22px;
+          "
+        >
+          {{ item.title }}</span
+        >
+        <span v-if="showLink">
+          |
+          <v-icon class="link" @click.stop.prevent="$router.push(item.fullPath)"
+            >link</v-icon
+          ></span
+        >
+      </div>
       <div
         v-if="item.start && item.end"
-        class="mb-3"
-        style="margin-top: -10px; font-size: 12px; font-weight: 900"
+        class="mb-3 mt-3"
+        style="font-size: 12px; font-weight: 900"
       >
         <span>{{ item.start | format }} to {{ item.end | format }}</span>
       </div>
@@ -88,13 +105,22 @@
         v-html="render(item.body)"
         class="pl-3 pt-3"
       ></div>
-      <v-card-actions v-if="item.attachments && item.attachments.length">
-        <v-btn small color="grey lighten-4" @click="show = !show">
+      <v-card-actions>
+        <v-btn
+          small
+          color="grey lighten-4"
+          @click="show = !show"
+          v-if="item.attachments && item.attachments.length"
+        >
           Attachments
           <v-icon right>{{
             show ? "mdi-chevron-up" : "mdi-chevron-down"
           }}</v-icon>
         </v-btn>
+        <v-spacer v-if="item.attachments && item.attachments.length"></v-spacer>
+        <v-btn small outlined :to="item.fullPath" v-if="showReadMore"
+          >Read More&nbsp;&raquo;</v-btn
+        >
       </v-card-actions>
 
       <v-expand-transition>
@@ -156,15 +182,37 @@ export default {
       type: Boolean,
       default: true,
     },
+    showLink: {
+      type: Boolean,
+      default: true,
+    },
+    showReadMore: {
+      type: Boolean,
+      default: false,
+    },
   },
 };
 </script>
 
 <style>
-.program-title {
+.red {
+  background: red;
+}
+
+.green {
+  background: green;
+}
+
+.red,
+.green {
+  color: white;
+}
+.program-title,
+.link {
   text-decoration: none;
 }
-.program-title:hover {
+.program-title:hover,
+.link:hover {
   text-decoration: underline;
 }
 </style>

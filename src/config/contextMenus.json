@@ -15,8 +15,12 @@
                 "path": "/grants/fsgu-staff/"
             },
             {
-                "label": "GATA Information",
+                "label": "GATA Info",
                 "path": "/grants/fsgu-gata/"
+            },
+            {
+                "label": "Programs",
+                "path": "/grants/fsgu-programs/"
             },
             {
                 "label": "Funding",

@@ -56,6 +56,14 @@ const grants = [
     redirect: { name: "FundingSingle" },
   },
   {
+    path: "/grants/programs/:slug",
+    name: "ProgramsSingle",
+    component: () =>
+      import(
+        /* webpackChunkName: "funding" */ "@/views/Grants/ProgramsSingle.vue"
+      ),
+  },
+  {
     path: "/grants/fsgu-funding/:slug",
     name: "FundingSingle",
     component: () =>
