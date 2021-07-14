@@ -1,30 +1,36 @@
 <template>
   <div class="markdown-body">
-    <div v-if="publications">
-      <h1>ICJIA Publications</h1>
-      <v-card>
-        <v-card-title>
-          <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="Search"
-            single-line
-            hide-details
-          ></v-text-field>
-        </v-card-title>
-        <v-data-table
-          :headers="headers"
-          :items="publications"
-          :search="search"
-          :footer-props="{
-            'items-per-page-options': [50, 100, 150, 200],
-          }"
-          :items-per-page="100"
-        ></v-data-table>
-      </v-card>
-    </div>
-    <div v-else>
-      <Loader loaderType="skeleton"></Loader>
+    <div>
+      <v-container v-if="publications"
+        ><v-row
+          ><v-card>
+            <h1>ICJIA Publications</h1>
+            <v-card>
+              <v-card-title>
+                <v-text-field
+                  v-model="search"
+                  append-icon="mdi-magnify"
+                  label="Search"
+                  single-line
+                  hide-details
+                ></v-text-field>
+              </v-card-title>
+              <v-data-table
+                :headers="headers"
+                :items="publications"
+                :search="search"
+                :footer-props="{
+                  'items-per-page-options': [50, 100, 150, 200],
+                }"
+                :items-per-page="100"
+              ></v-data-table>
+            </v-card> </v-card></v-row
+      ></v-container>
+      <v-container v-else
+        ><v-row
+          ><v-col><Loader loaderType="skeleton"></Loader></v-col
+        ></v-row>
+      </v-container>
     </div>
   </div>
 </template>

@@ -105,7 +105,7 @@
         <v-btn
           small
           color="grey lighten-4"
-          @click="show = !show"
+          @click.stop.prevent="show = !show"
           v-if="item.attachments && item.attachments.length"
         >
           Attachments
