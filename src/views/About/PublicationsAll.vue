@@ -4,7 +4,7 @@
       <v-container v-if="publications"
         ><v-row
           ><v-card
-            class="px-5 py-5 mt-5 text-center"
+            class="px-5 py-5 mt-10 text-center"
             style="width: 100% !important"
           >
             <h1>ICJIA Publications</h1>
@@ -29,8 +29,15 @@
               :items-per-page="200"
             >
               <template v-slot:item.publicationDate="{ item }">
-                <div>
-                  {{ item.publicationDate | dateFormat }}
+                <div
+                  style="
+                    width: 90px;
+                    font-size: 14px;
+                    font-weight: 700;
+                    color: #555;
+                  "
+                >
+                  {{ item.publicationDate | dateFormatAlt }}
                 </div>
               </template>
               <template v-slot:item.title="{ item }">
@@ -64,7 +71,7 @@
               <template v-slot:item.fileURL="{ item }">
                 <div class="my-2">
                   <span v-if="item.pubType !== 'application'"
-                    ><v-btn x-small
+                    ><v-btn :href="item.fileURL" target="_blank" x-small
                       >Download PDF<v-icon right>download</v-icon></v-btn
                     ></span
                   >
@@ -101,7 +108,7 @@ export default {
       getPublicationType,
       search: "",
       headers: [
-        { text: "Publication Date", value: "publicationDate" },
+        { text: "Date", value: "publicationDate" },
         {
           text: "Title",
           align: "start",
@@ -111,13 +118,13 @@ export default {
         { text: "Type", value: "pubType" },
 
         {
-          text: "Article Link",
+          text: "Article",
           value: "articleURL",
           align: "center",
           sortable: false,
         },
         {
-          text: "File Link",
+          text: "File",
           value: "fileURL",
           align: "center",
           sortable: false,

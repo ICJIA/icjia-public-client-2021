@@ -128,6 +128,10 @@ Vue.filter("dateFormatShort", function (timestamp) {
   return moment(timestamp).format("MM/DD/YY");
 });
 
+Vue.filter("dateFormatAlt", function (timestamp) {
+  return moment(timestamp).format("MMM DD, YYYY");
+});
+
 Vue.filter("timeAgoFormat", function (timestamp) {
   return moment(timestamp).fromNow();
 });
