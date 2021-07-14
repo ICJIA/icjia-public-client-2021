@@ -56,8 +56,7 @@ export default {
           });
         } else {
           //console.log(this.id);
-          let publications = ApolloQueryResult.data.publications;
-          this.publication = publications.map((e) => ({
+          let publications = ApolloQueryResult.data.publications.map((e) => ({
             ...e,
             fullPath: `/about/publications/${e.slug}/`,
             contentType: "publication",
@@ -67,7 +66,23 @@ export default {
                 ? e.articleURL.replace("https://icjia.illinois.gov", "")
                 : null,
           }));
-          this.publication = this.publication[0];
+
+          //TODO: ad hoc mutations for URL capitalization
+          publications.forEach((p) => {
+            if (p.fileURL && p.fileURL.includes("/Compiler/")) {
+              p.fileURL = p.fileURL.replace("/Compiler/", "/compiler/");
+            }
+            if (p.fileURL && p.fileURL.includes("/OGA/")) {
+              p.fileURL = p.fileURL.replace("/OGA/", "/oga/");
+            }
+            if (p.fileURL && p.fileURL.includes("/researchreports/")) {
+              p.fileURL = p.fileURL.replace(
+                "/researchreports/",
+                "/ResearchReports/"
+              );
+            }
+          });
+          this.publication = publications[0];
           NProgress.done();
         }
       },

@@ -16,6 +16,7 @@ import { sandboxes } from "@/router/sandbox";
 import { fourOhFour } from "@/router/404";
 import { meetings } from "@/router/meetings";
 import { about } from "@/router/about";
+import { admin } from "@/router/admin";
 // import { preview } from "@/router/preview";
 Vue.use(VueRouter);
 
@@ -37,7 +38,7 @@ const routes = [
   ...grants,
   ...meetings,
   ...sandboxes,
-
+  ...admin,
   ...fourOhFour,
 ];
 

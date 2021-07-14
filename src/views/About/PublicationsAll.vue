@@ -200,6 +200,12 @@ export default {
           if (p.fileURL && p.fileURL.includes("/OGA/")) {
             p.fileURL = p.fileURL.replace("/OGA/", "/oga/");
           }
+          if (p.fileURL && p.fileURL.includes("/researchreports/")) {
+            p.fileURL = p.fileURL.replace(
+              "/researchreports/",
+              "/ResearchReports/"
+            );
+          }
         });
 
         this.publications = _.orderBy(
