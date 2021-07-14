@@ -1,14 +1,14 @@
 <template>
   <div>
     <v-card class="px-5 py-5 my-1 mx-1 text-left" color="#fafafa">
+      <span style="font-weight: 400; font-size: 12px" class="mb-5 px-3">{{
+        item.publicationDate | dateFormatAlt
+      }}</span>
       <div
-        style="font-weight: 900; text-transform: uppercase; font-size: 16px"
-        class="mb-3 px-3"
+        style="font-weight: 900; text-transform: uppercase; font-size: 26px"
+        class="mb-3 mt-2 px-3"
       >
-        {{ item.title }} |
-        <span style="font-weight: 300">{{
-          item.publicationDate | dateFormatAlt
-        }}</span>
+        {{ item.title }}
       </div>
       <div v-if="item.summary && item.summary.length" class="px-3">
         {{ item.summary }}
@@ -32,7 +32,8 @@
         style="background: #f1f1f1; font-size: 12px"
         class="text-center mt-8 px-3 py-3"
       >
-        All publications are also available in the ICJIA Archive:
+        Individual publications are also available for download from the ICJIA
+        Archive:
         <a href="https://archive.icjia.cloud" target="_blank"
           >https://archive.icjia.cloud</a
         >

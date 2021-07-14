@@ -1,4 +1,3 @@
-/* eslint-disable graphql/template-strings */
 import gql from "graphql-tag";
 
 const GET_ALL_PUBLICATIONS_QUERY = gql`
@@ -17,4 +16,20 @@ const GET_ALL_PUBLICATIONS_QUERY = gql`
   }
 `;
 
-export { GET_ALL_PUBLICATIONS_QUERY };
+const GET_SINGLE_PUBLICATION_QUERY = gql`
+  query singlePub($slug: String!) {
+    publications(where: { slug: $slug }) {
+      id
+      published_at
+      publicationDate
+      title
+      slug
+      summary
+      fileURL
+      articleURL
+      pubType
+    }
+  }
+`;
+
+export { GET_ALL_PUBLICATIONS_QUERY, GET_SINGLE_PUBLICATION_QUERY };

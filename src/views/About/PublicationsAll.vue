@@ -197,6 +197,9 @@ export default {
           if (p.fileURL && p.fileURL.includes("/Compiler/")) {
             p.fileURL = p.fileURL.replace("/Compiler/", "/compiler/");
           }
+          if (p.fileURL && p.fileURL.includes("/OGA/")) {
+            p.fileURL = p.fileURL.replace("/OGA/", "/oga/");
+          }
         });
 
         this.publications = _.orderBy(

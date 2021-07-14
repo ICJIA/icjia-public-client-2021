@@ -10,14 +10,23 @@ const about = [
     path: "/publications/",
     // eslint-disable-next-line no-unused-vars
     redirect: (route) => {
-      return "/about/icjia-publications/";
+      return "/about/publications/";
     },
   },
+
   {
-    path: "/about/icjia-publications",
+    path: "/about/publications",
     name: "ICJIAPublications",
     component: () =>
       import(/* webpackChunkName: "hub" */ "@/views/About/PublicationsAll.vue"),
+  },
+  {
+    path: "/about/publications/:slug",
+    name: "ICJIAPublicationsSingle",
+    component: () =>
+      import(
+        /* webpackChunkName: "hub" */ "@/views/About/PublicationsSingle.vue"
+      ),
   },
   {
     path: "/about/icjia-board/",
