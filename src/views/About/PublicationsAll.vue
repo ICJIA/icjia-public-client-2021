@@ -192,6 +192,13 @@ export default {
               : null,
         }));
 
+        //TODO: ad hoc mutations for URL capitalization
+        publications.forEach((p) => {
+          if (p.fileURL && p.fileURL.includes("/Compiler/")) {
+            p.fileURL = p.fileURL.replace("/Compiler/", "/compiler/");
+          }
+        });
+
         this.publications = _.orderBy(
           publications,
           ["publicationDate"],

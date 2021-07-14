@@ -7,7 +7,7 @@
       >
         {{ item.title }} |
         <span style="font-weight: 300">{{
-          item.publicationDate | format
+          item.publicationDate | dateFormatAlt
         }}</span>
       </div>
       <div v-if="item.summary && item.summary.length" class="px-3">
@@ -28,6 +28,15 @@
           <a :href="item.fileURL" target="_blank">{{ item.fileURL }}</a>
         </li>
       </ul>
+      <div
+        style="background: #f1f1f1; font-size: 12px"
+        class="text-center mt-8 px-3 py-3"
+      >
+        All publications are also available in the ICJIA Archive:
+        <a href="https://archive.icjia.cloud" target="_blank"
+          >https://archive.icjia.cloud</a
+        >
+      </div>
     </v-card>
   </div>
 </template>
