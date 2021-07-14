@@ -44,8 +44,14 @@
 </template>
 
 <script>
+import NProgress from "nprogress";
 export default {
-  mounted() {},
+  mounted() {
+    NProgress.start();
+  },
+  beforeDestroy() {
+    NProgress.done();
+  },
   data() {
     return {};
   },

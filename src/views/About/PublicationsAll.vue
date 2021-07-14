@@ -22,7 +22,15 @@
               :headers="headers"
               :items="publications"
               :search="search"
+              show-expand
+              item-key="id"
+              :single-expand="singleExpand"
+              :expanded.sync="expanded"
+              @click:row="clicked"
+              dense
               class="text-center"
+              :sort-by.sync="sortBy"
+              :sort-desc.sync="sortDesc"
               :footer-props="{
                 'items-per-page-options': [100, 150, 200, 250],
               }"
@@ -81,11 +89,16 @@
                     ></span
                   >
                 </div>
-              </template></v-data-table
-            >
-          </v-card></v-row
-        ></v-container
-      >
+              </template>
+              <template v-slot:expanded-item="{ headers, item }">
+                <td
+                  :colspan="headers.length"
+                  style="padding: 0 !important; margin: 0 !important"
+                >
+                  <PublicationCard :item="item"></PublicationCard>
+                </td> </template
+            ></v-data-table> </v-card></v-row
+      ></v-container>
       <v-container v-else
         ><v-row
           ><v-col><Loader loaderType="skeleton"></Loader></v-col
@@ -104,9 +117,14 @@ export default {
   name: "Publications",
   data() {
     return {
+      sortBy: "publicationDate",
+      sortDesc: true,
+      expanded: [],
+      search: "",
+      singleExpand: true,
       publications: null,
       getPublicationType,
-      search: "",
+
       headers: [
         { text: "Date", value: "publicationDate" },
         {
@@ -134,6 +152,21 @@ export default {
   },
   mounted() {
     NProgress.start();
+  },
+  methods: {
+    clicked(value) {
+      //console.log(value);
+      if (value === this.expanded[0]) {
+        this.expanded = [];
+      } else {
+        if (this.expanded.length) {
+          this.expanded.shift();
+          this.expanded.push(value);
+        } else {
+          this.expanded.push(value);
+        }
+      }
+    },
   },
   apollo: {
     publications: {
@@ -171,4 +204,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style>
+tr {
+  cursor: pointer !important;
+}
+</style>
