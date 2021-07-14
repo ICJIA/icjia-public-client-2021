@@ -63,6 +63,65 @@ const getContextMenu = function (jsonKey = "path", appRoute) {
   return contextMenu;
 };
 
+const getPublicationType = function (type) {
+  let cleanType;
+  switch (type) {
+    case "researchReport":
+      cleanType = "Research Report";
+      break;
+    case "researchBulletin":
+      cleanType = "Research Bulletin";
+      break;
+    case "researchAtAGlance":
+      cleanType = "Research At A Glance";
+      break;
+    case "trendsAndIssuesUpdate":
+      cleanType = "Trends and Issues Update";
+      break;
+    case "motorVehicleTheftPublications":
+      cleanType = "Motor Vehicle Theft Publication";
+      break;
+    case "barj":
+      cleanType = "BARJ";
+      break;
+    case "compiler":
+      cleanType = "Compiler";
+      break;
+    case "getTheFacts":
+      cleanType = "GET THE FACTS";
+      break;
+    case "Program Evaluation Summary":
+      cleanType = "programEvaluationSummary";
+      break;
+    case "MEG Profiles":
+      cleanType = "megProfiles";
+      break;
+    case "annualReport":
+      cleanType = "Annual Report";
+      break;
+
+    case "article":
+      cleanType = "Article";
+      break;
+    case "report":
+      cleanType = "Report";
+      break;
+    case "evaluation":
+      cleanType = "Evaluation";
+      break;
+    case "toolkit":
+      cleanType = "Toolkit";
+      break;
+    case "application":
+      cleanType = "Application";
+      break;
+
+    default:
+      cleanType = "General";
+  }
+  return cleanType;
+};
+
 // let value = "/test/test1/";
 // value += value.endsWith("/") ? "" : "/";
 // const key = "path";
@@ -71,4 +130,4 @@ const getContextMenu = function (jsonKey = "path", appRoute) {
 //   ? console.log(getContextMenu(json, key, value))
 //   : console.log("not found");
 
-export { getObjects, getValues, getKeys, getContextMenu };
+export { getObjects, getValues, getKeys, getContextMenu, getPublicationType };
