@@ -56,7 +56,18 @@ export default {
           });
         } else {
           //console.log(this.id);
-          this.publication = ApolloQueryResult.data.publications[0];
+          let publications = ApolloQueryResult.data.publications;
+          this.publication = publications.map((e) => ({
+            ...e,
+            fullPath: `/about/publications/${e.slug}/`,
+            contentType: "publication",
+            localArticlePath:
+              e.articleURL &&
+              e.articleURL.includes("https://icjia.illinois.gov/researchhub")
+                ? e.articleURL.replace("https://icjia.illinois.gov", "")
+                : null,
+          }));
+          this.publication = this.publication[0];
           NProgress.done();
         }
       },

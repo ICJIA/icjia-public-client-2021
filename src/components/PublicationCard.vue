@@ -17,14 +17,14 @@
 
       <ul style="font-size: 14px" class="mt-5 ml-2">
         <li v-if="item.localArticlePath" class="mt-2">
-          <span style="font-weight: 700">Article:&nbsp;</span>
+          <span style="font-weight: 700">Article&nbsp;</span><br />
           <router-link :to="item.localArticlePath">{{
             item.articleURL
           }}</router-link>
         </li>
 
         <li v-if="item.fileURL" class="mt-2">
-          <span style="font-weight: 700">Download:&nbsp;</span>
+          <span style="font-weight: 700">Download&nbsp;</span><br />
           <a :href="item.fileURL" target="_blank">{{ item.fileURL }}</a>
         </li>
       </ul>
