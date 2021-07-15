@@ -74,7 +74,13 @@
                   </template>
                   <template v-slot:item.verified="{ item }">
                     <div class="my-2" v-if="item.verified" style="width: 90px">
-                      <span class="">{{ item.verified | dateFormatAlt }}</span>
+                      <v-icon color="green" style="font-weight: 900"
+                        >check</v-icon
+                      >
+                      <!-- <br /> -->
+                      <!-- <span class="" style="font-size: 10px">{{
+                        item.verified | dateFormatAlt
+                      }}</span> -->
                     </div>
                     <div class="my-2" v-else style="width: 90px">
                       <span class=""></span>
@@ -90,6 +96,38 @@
             </div>
             <div v-else>
               <v-card class="px-5 py-10">
+                <v-container
+                  class="text-right"
+                  style="margin-top: -50px; margin-right: -30px"
+                  ><v-row
+                    ><v-col>
+                      <span
+                        style="
+                          background: green;
+                          color: #fff;
+                          padding: 5px;
+                          font-size: 14px;
+                          font-weight: 900;
+                        "
+                        v-if="singlePublication.verified"
+                      >
+                        Verified:
+                        {{ singlePublication.verified | dateFormatAlt }}
+                      </span>
+                      <span
+                        v-else
+                        style="
+                          background: red;
+                          color: #fff;
+                          padding: 5px;
+                          font-size: 14px;
+                          font-weight: 900;
+                        "
+                        >Unverified</span
+                      >
+                    </v-col></v-row
+                  ></v-container
+                >
                 <v-text-field
                   :value="singlePublication.title"
                   style="font-weight: 900 !important; font-size: 24px"
@@ -372,6 +410,33 @@ export default {
         console.log(e);
         this.error = e;
         this.notify("Error. Not saved. Please contact ISU.");
+        NProgress.done();
+      }
+      this.fetchAllPublications();
+      // this.$vuetify.goTo(0, { duration: 10 });
+    },
+    async saveAndVerify(id) {
+      let headers = {
+        headers: { Authorization: `Bearer ${this.$store.state.auth.jwt}` },
+      };
+      let saveData = {
+        title: this.singlePublication.title,
+        summary: this.singlePublication.summary,
+        pubType: this.pubTypeSelect.value,
+        fileURL: this.singlePublication.fileURL,
+        articleURL: this.singlePublication.articleURL,
+        verified: new Date(),
+      };
+      console.log(id, saveData);
+      try {
+        const res = await api.put(`/publications/${id}`, saveData, headers);
+        console.log(res);
+        this.notify("Successfully saved and verified");
+        NProgress.done();
+      } catch (e) {
+        console.log(e);
+        this.error = e;
+        this.notify("Error. Not saved and verified. Please contact ISU.");
         NProgress.done();
       }
       this.fetchAllPublications();
