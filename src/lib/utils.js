@@ -90,16 +90,15 @@ const getPublicationType = function (type) {
     case "getTheFacts":
       cleanType = "GET THE FACTS";
       break;
-    case "Program Evaluation Summary":
-      cleanType = "programEvaluationSummary";
+    case "programEvaluationSummary":
+      cleanType = "Program Evaluation Summary";
       break;
-    case "MEG Profiles":
-      cleanType = "megProfiles";
+    case "megProfiles":
+      cleanType = "MEG Profiles";
       break;
     case "annualReport":
       cleanType = "Annual Report";
       break;
-
     case "article":
       cleanType = "Article";
       break;
@@ -111,6 +110,9 @@ const getPublicationType = function (type) {
       break;
     case "toolkit":
       cleanType = "Toolkit";
+      break;
+    case "onGoodAuthority":
+      cleanType = "On Good Authority";
       break;
     case "application":
       cleanType = "Application";
