@@ -90,28 +90,15 @@
             </div>
             <div v-else>
               <v-card class="px-5 py-10">
-                <div
-                  class="text-left px-5 py-5"
-                  style="font-size: 12px; font-weight: 900; background: #eee"
-                >
-                  Permalink<br />
-
-                  <a
-                    :href="getPermaLink(singlePublication.slug)"
-                    target="_blank"
-                    class="permalink"
-                  >
-                    {{ getPermaLink(singlePublication.slug) }}</a
-                  >
-                </div>
                 <v-text-field
                   :value="singlePublication.title"
-                  style="font-weight: 900 !important"
+                  style="font-weight: 900 !important; font-size: 24px"
                   label="Title"
                   ref="title"
                   class="mt-8"
                   v-model="singlePublication.title"
                 ></v-text-field>
+
                 <div
                   d-flex
                   class="text-left"
@@ -214,7 +201,21 @@
                     >
                   </div>
                 </div>
-                <v-card-actions class="mt-5">
+                <div
+                  class="text-left px-5 py-5 mt-8"
+                  style="font-size: 12px; font-weight: 900; background: #eee"
+                >
+                  Permalink<br />
+
+                  <a
+                    :href="getPermaLink(singlePublication.slug)"
+                    target="_blank"
+                    class="permalink"
+                  >
+                    {{ getPermaLink(singlePublication.slug) }}</a
+                  >
+                </div>
+                <v-card-actions class="mt-10">
                   <v-btn outlined @click.stop.prevent="cancel">Cancel</v-btn>
                   <v-btn
                     outlined
@@ -222,8 +223,17 @@
                     >Unpublish</v-btn
                   >
                   <v-spacer></v-spacer>
-                  <v-btn color="grey lighten-2">Save only</v-btn>
-                  <v-btn dark color="green darken-4">Save and Verify</v-btn>
+                  <v-btn
+                    color="grey lighten-2"
+                    @click="saveOnly(singlePublication.id)"
+                    >Save only</v-btn
+                  >
+                  <v-btn
+                    dark
+                    color="green darken-4"
+                    @click="saveAndVerify(singlePublication.id)"
+                    >Save and Verify</v-btn
+                  >
                 </v-card-actions>
               </v-card>
             </div>
@@ -341,6 +351,32 @@ export default {
     this.pubTypes = _.orderBy(this.pubTypes, ["text"], ["asc"]);
   },
   methods: {
+    async saveOnly(id) {
+      let headers = {
+        headers: { Authorization: `Bearer ${this.$store.state.auth.jwt}` },
+      };
+      let saveData = {
+        title: this.singlePublication.title,
+        summary: this.singlePublication.summary,
+        pubType: this.pubTypeSelect.value,
+        fileURL: this.singlePublication.fileURL,
+        articleURL: this.singlePublication.articleURL,
+      };
+      console.log(id, saveData);
+      try {
+        const res = await api.put(`/publications/${id}`, saveData, headers);
+        console.log(res);
+        this.notify("Successfully saved");
+        NProgress.done();
+      } catch (e) {
+        console.log(e);
+        this.error = e;
+        this.notify("Error. Not saved. Please contact ISU.");
+        NProgress.done();
+      }
+      this.fetchAllPublications();
+      // this.$vuetify.goTo(0, { duration: 10 });
+    },
     notify(msg) {
       //console.log(msg);
       this.snackbarText = msg;
