@@ -154,14 +154,20 @@
                   "
                   ref="summary"
                 ></v-textarea>
-                <div style="border: 1px solid #ccc; padding: 15px">
+                <div
+                  style="
+                    border: 1px solid #ccc;
+                    padding: 15px;
+                    background: #eee;
+                  "
+                >
                   <v-text-field
                     v-model="singlePublication.articleURL"
                     :value="
                       singlePublication.articleURL &&
                       singlePublication.articleURL.length
                         ? singlePublication.articleURL
-                        : null
+                        : 'n/a'
                     "
                     style="font-weight: 900 !important; font-size: 12px"
                     label="Article URL"
@@ -187,7 +193,7 @@
                       singlePublication.fileURL &&
                       singlePublication.fileURL.length
                         ? singlePublication.fileURL
-                        : null
+                        : 'n/a'
                     "
                     style="font-weight: 900 !important; font-size: 12px"
                     label="File URL"
@@ -208,6 +214,17 @@
                     >
                   </div>
                 </div>
+                <v-card-actions class="mt-5">
+                  <v-btn outlined @click.stop.prevent="cancel">Cancel</v-btn>
+                  <v-btn
+                    outlined
+                    @click.stop.prevent="unpublish(singlePublication.id)"
+                    >Unpublish</v-btn
+                  >
+                  <v-spacer></v-spacer>
+                  <v-btn color="grey lighten-2">Save only</v-btn>
+                  <v-btn dark color="green darken-4">Save and Verify</v-btn>
+                </v-card-actions>
               </v-card>
             </div>
           </v-col>
@@ -220,6 +237,15 @@
         ></v-row>
       </v-container>
     </div>
+    <v-snackbar top v-model="snackbar">
+      {{ snackbarText }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -228,6 +254,7 @@ import NProgress from "nprogress";
 // eslint-disable-next-line no-unused-vars
 import { renderToHtml } from "@/services/Markdown";
 const axios = require("axios");
+
 const api = axios.create({
   baseURL: "https://agency.icjia-api.cloud",
   timeout: 15000,
@@ -250,7 +277,8 @@ export default {
     return {
       sortBy: "publicationDate",
       sortDesc: true,
-
+      snackbar: false,
+      snackbarText: null,
       expanded: [],
       search: "",
       singleExpand: true,
@@ -313,6 +341,42 @@ export default {
     this.pubTypes = _.orderBy(this.pubTypes, ["text"], ["asc"]);
   },
   methods: {
+    notify(msg) {
+      //console.log(msg);
+      this.snackbarText = msg;
+      this.snackbar = true;
+    },
+    cancel() {
+      this.singlePublication = null;
+      this.$vuetify.goTo(0, { duration: 10 });
+    },
+    // eslint-disable-next-line no-unused-vars
+    async unpublish(id) {
+      let headers = {
+        headers: { Authorization: `Bearer ${this.$store.state.auth.jwt}` },
+      };
+      //console.log(headers);
+      try {
+        const res = await api.put(
+          `/publications/${id}`,
+          {
+            published_at: null,
+          },
+          headers
+        );
+        console.log(res);
+        this.notify("Successfully unpublished");
+        NProgress.done();
+      } catch (e) {
+        console.log(e);
+        this.error = e;
+        this.notify("Error. Not unpublished. Please contact ISU.");
+        NProgress.done();
+      }
+      this.fetchAllPublications();
+      this.singlePublication = null;
+      this.$vuetify.goTo(0, { duration: 10 });
+    },
     checkArticleURL() {
       let url = this.$refs.articleURL.value;
       //TODO: Fix replacement when site is live
