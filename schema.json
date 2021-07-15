@@ -13286,6 +13286,18 @@
             "deprecationReason": null
           },
           {
+            "name": "checked",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Date",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "published_at",
             "description": null,
             "args": [],
@@ -13548,6 +13560,22 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "PublicationConnectionPubType",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "checked",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PublicationConnectionChecked",
                 "ofType": null
               }
             },
@@ -13928,6 +13956,41 @@
       },
       {
         "kind": "OBJECT",
+        "name": "PublicationConnectionChecked",
+        "description": null,
+        "fields": [
+          {
+            "name": "key",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "ID",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "connection",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "PublicationConnection",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "PublicationConnectionPublished_at",
         "description": null,
         "fields": [
@@ -14042,6 +14105,16 @@
             "defaultValue": null
           },
           {
+            "name": "checked",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Date",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "published_at",
             "description": null,
             "type": {
@@ -14148,6 +14221,16 @@
             "type": {
               "kind": "ENUM",
               "name": "ENUM_PUBLICATION_PUBTYPE",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "checked",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Date",
               "ofType": null
             },
             "defaultValue": null
@@ -22955,6 +23038,11 @@
           {
             "kind": "OBJECT",
             "name": "PublicationConnectionPubType",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "PublicationConnectionChecked",
             "ofType": null
           },
           {

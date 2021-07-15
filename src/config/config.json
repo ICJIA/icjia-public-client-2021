@@ -11,7 +11,7 @@
         "resetPasswordCallback": "/reset",
         "posts": "/posts",
         "login": "/auth/local",
-        "timeout": 10000,
+        "timeout": 15000,
         "register": "/auth/local/register"
     },
     "daysToShowNew": 10,

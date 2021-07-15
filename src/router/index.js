@@ -4,6 +4,7 @@ import VueRouter from "vue-router";
 import Home from "@/views/Home/Home.vue";
 import NProgress from "nprogress";
 import appConfig from "@/config/config.json";
+import store from "@/store";
 import { EventBus } from "@/event-bus";
 // Add routes
 import { hub } from "@/router/hub";
@@ -54,6 +55,14 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   NProgress.start();
   EventBus.$emit("closeSearch");
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  let jwt = localStorage.getItem("jwt");
+  if (requiresAuth && !store.state.auth.isAuthenticated) {
+    return next({
+      path: "/admin/login/",
+      query: { redirect: to.fullPath },
+    });
+  }
   next();
 });
 
