@@ -244,6 +244,10 @@
             {
                 "label": "Infonet",
                 "path": "/information-systems/infonet/"
+            },
+            {
+                "label": "Drone Reporting",
+                "path": "/information-systems/drone/"
             }
         ]
     }
