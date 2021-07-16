@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="background: #fafafa">
     <v-container v-if="$apollo.loading">
       <v-row>
         <v-col>
@@ -18,34 +18,46 @@
       <v-row>
         <v-col
           cols="12"
-          :md="pageContent && pageContent.showTOC ? 9 : 12"
+          :md="pageContent && pageContent.showTOC ? 12 : 12"
           class="markdown-body"
           style="margin-top: -40px"
         >
           <div v-if="pageContent" v-html="render(pageContent.body)"></div>
-          <div v-if="units">
+
+          <v-container class="mt-10 mb-8">
+            <v-row>
+              <v-col cols="12" md="6">
+                <h2 v-if="staffToggle === 1">ICJIA Units</h2>
+                <h2 v-else>All ICJIA Staff</h2>
+              </v-col>
+              <v-col cols="12" md="6" class="text-right">
+                <v-btn-toggle
+                  v-model="staffToggle"
+                  mandatory
+                  style="margin-top: 25px"
+                >
+                  <v-btn small> All Staff </v-btn>
+                  <v-btn small>By Unit </v-btn>
+                </v-btn-toggle>
+              </v-col>
+            </v-row>
+          </v-container>
+
+          <div v-if="staffToggle === 1 && units">
             <div v-for="unit in units" :key="unit.title" class="mb-2">
-              <v-card elevation="0" class="px-2 py-3">
-                <v-card-title>{{ unit.title }}</v-card-title>
-                <v-card-text v-if="unit.body">{{ unit.body }}</v-card-text>
-                <v-card-text v-else>No description available.</v-card-text>
-                <v-card-actions v-if="unit.url">
-                  <v-spacer></v-spacer>
-                  <v-btn dark color="blue darken-4" :to="unit.url"
-                    >Read more&nbsp;&raquo;</v-btn
-                  >
-                </v-card-actions>
-              </v-card>
+              <UnitCard :item="unit" :shortName="unit.shortName"></UnitCard>
             </div>
           </div>
-          <h2 id="icjia-staff">Staff</h2>
-          <div class="markdown-body" v-for="(item, i) in listing" :key="i">
-            <BiographyCard :item="item"></BiographyCard>
+
+          <div v-if="staffToggle === 0 && listing">
+            <div class="markdown-body" v-for="(item, i) in listing" :key="i">
+              <BiographyCard :item="item"></BiographyCard>
+            </div>
           </div>
         </v-col>
-        <v-col cols="12" md="3" v-if="pageContent && pageContent.showTOC"
+        <!-- <v-col cols="12" md="3" v-if="pageContent && pageContent.showTOC"
           ><Toc :key="pageContent.title" :tocHeading="pageContent.title"></Toc
-        ></v-col>
+        ></v-col> -->
       </v-row>
     </v-container>
   </div>
@@ -71,6 +83,7 @@ export default {
       listing: null,
       units: null,
       tab: 0,
+      staffToggle: 0,
     };
   },
 
@@ -177,6 +190,12 @@ export default {
           console.log(ApolloQueryResult);
         } else {
           this.units = ApolloQueryResult.data.units;
+          this.units = this.units.map((u) => ({
+            ...u,
+            fullPath: `/about/units/${u.slug}/`,
+            contentType: "unit",
+            show: false,
+          }));
 
           this.units = _.orderBy(this.units, ["title"], ["asc"]);
         }

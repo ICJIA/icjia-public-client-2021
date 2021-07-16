@@ -1,10 +1,11 @@
 <template>
   <div>
     <v-card
-      elevation="0"
+      elevation="2"
       class="mb-2 py-8 px-2"
       style="border-bottom: 1px solid #eee"
       v-if="item"
+      :color="color"
     >
       <div class="d-flex flex-no-wrap">
         <v-avatar
@@ -37,7 +38,10 @@
           </span>
 
           <v-card-subtitle style="margin-top: -10px">
-            <span style="font-weight: 700">{{ item.title }}</span>
+            <span style="font-weight: 700">{{ item.unit.title }}</span>
+            <span style="font-weight: 700; color: #444" v-if="item.title">
+              | {{ item.title }}</span
+            >
           </v-card-subtitle>
           <v-card-text class="text-left" v-html="item.body"></v-card-text>
         </span>
@@ -66,6 +70,10 @@ export default {
     showLink: {
       type: Boolean,
       default: true,
+    },
+    color: {
+      type: String,
+      default: "white",
     },
   },
 };

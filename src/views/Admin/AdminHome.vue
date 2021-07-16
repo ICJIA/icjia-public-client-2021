@@ -5,11 +5,11 @@
       <ul>
         <li>
           <router-link to="/admin/publications/">
-            Publications Editor</router-link
+            Publications List Checker</router-link
           >
         </li>
         <li>
-          <router-link to="/admin/inventory/"> Publications Editor</router-link>
+          <router-link to="/admin/inventory/"> Site inventory</router-link>
         </li>
       </ul>
     </div>

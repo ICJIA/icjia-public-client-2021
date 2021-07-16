@@ -6,6 +6,14 @@ const about = [
       return "/about/icjia-mission/";
     },
   },
+
+  {
+    path: "/about/units/:slug",
+    name: "UnitSingle",
+    component: () =>
+      import(/* webpackChunkName: "hub" */ "@/views/About/UnitsSingle.vue"),
+  },
+
   {
     path: "/publications/",
     // eslint-disable-next-line no-unused-vars
