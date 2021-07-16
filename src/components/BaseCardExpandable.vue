@@ -18,6 +18,7 @@
 
         <div v-if="item.status && item.status.length">
           <span
+            v-if="item.contentType === 'program' && item.status != 'current'"
             :class="{
               green: item.status === 'current',
               red: item.status === 'archived',
@@ -29,14 +30,14 @@
               border: 1px solid #ccc;
             "
           >
-            {{ item.status }}
+            <span>{{ item.status }}</span>
           </span>
         </div>
 
         <div v-else>
           <span
             style="
-              font-size: 10px;
+              font-size: 14px;
               font-weight: 700;
               padding: 2px 3px;
               border: 1px solid #ccc;
@@ -45,11 +46,11 @@
             "
             v-if="new Date(item.end) > new Date()"
           >
-            Current
+            Deadline: {{ item.end | dateFormatAlt }}
           </span>
           <span
             style="
-              font-size: 10px;
+              font-size: 14px;
               font-weight: 700;
               background: red;
               color: #fff;
@@ -62,7 +63,7 @@
           </span>
         </div>
       </div>
-      <div style="margin-top: -15px">
+      <div style="margin-top: 25px">
         <span
           @click="
             openSearch === true ? search(item.title) : routeTo(item.fullPath)
@@ -185,6 +186,10 @@ export default {
     showReadMore: {
       type: Boolean,
       default: false,
+    },
+    showStatus: {
+      type: Boolean,
+      default: true,
     },
   },
 };
