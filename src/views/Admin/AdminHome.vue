@@ -8,6 +8,9 @@
             Publications Editor</router-link
           >
         </li>
+        <li>
+          <router-link to="/admin/inventory/"> Publications Editor</router-link>
+        </li>
       </ul>
     </div>
   </div>
