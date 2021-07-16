@@ -6,18 +6,20 @@ import NProgress from "nprogress";
 import appConfig from "@/config/config.json";
 import store from "@/store";
 import { EventBus } from "@/event-bus";
-// Add routes
+
+// Unit and content routes
 import { hub } from "@/router/hub";
 import { news } from "@/router/news";
 import { grants } from "@/router/grants";
 import { irb } from "@/router/irb";
-
 import { events } from "@/router/events";
 import { sandboxes } from "@/router/sandbox";
 import { fourOhFour } from "@/router/404";
 import { meetings } from "@/router/meetings";
 import { about } from "@/router/about";
 import { admin } from "@/router/admin";
+import { informationSystems } from "@/router/informationSystems";
+
 // import { preview } from "@/router/preview";
 Vue.use(VueRouter);
 
@@ -40,6 +42,7 @@ const routes = [
   ...meetings,
   ...sandboxes,
   ...admin,
+  ...informationSystems,
   ...fourOhFour,
 ];
 

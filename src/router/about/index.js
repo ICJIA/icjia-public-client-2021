@@ -1,17 +1,15 @@
 const about = [
   {
     path: "/about/",
-    // eslint-disable-next-line no-unused-vars
-    redirect: (route) => {
-      return "/about/icjia-mission/";
-    },
+    name: "ICJIAAbout",
+    component: () =>
+      import(/* webpackChunkName: "hub" */ "@/views/About/AboutHome.vue"),
   },
-
   {
     path: "/about/units/:slug",
-    name: "UnitSingle",
+    name: "ICJIAPublicationsAll",
     component: () =>
-      import(/* webpackChunkName: "hub" */ "@/views/About/UnitsSingle.vue"),
+      import(/* webpackChunkName: "hub" */ "@/views/About/PublicationsAll.vue"),
   },
 
   {
@@ -37,10 +35,12 @@ const about = [
       ),
   },
   {
-    path: "/about/icjia-board/",
+    path: "/about/composition-and-membership/",
     name: "Board",
     component: () =>
-      import(/* webpackChunkName: "bios" */ "@/views/About/Board.vue"),
+      import(
+        /* webpackChunkName: "bios" */ "@/views/About/CompositionAndMembership.vue"
+      ),
   },
   {
     path: "/about/icjia-staff/",

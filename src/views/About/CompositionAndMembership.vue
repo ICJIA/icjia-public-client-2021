@@ -78,7 +78,7 @@ export default {
       query: GET_SINGLE_PAGE_QUERY,
       variables() {
         return {
-          slug: "icjia-board",
+          slug: "composition-and-membership",
         };
       },
       error(error) {

@@ -198,15 +198,15 @@
         "label": "ICJIA Overview",
         "shortLabel": "ICJIA Overview",
         "pathPrefix": "/about/",
-        "defaultPath": "/about/icjia-mission/",
+        "defaultPath": "/about/",
         "items": [
             {
-                "label": "Mission",
-                "path": "/about/icjia-mission/"
+                "label": "About ICJIA",
+                "path": "/about/"
             },
             {
                 "label": "Composition & Membership",
-                "path": "/about/icjia-board/"
+                "path": "/about/composition-and-membership/"
             },
             {
                 "label": "Staff Organization",
@@ -223,6 +223,27 @@
             {
                 "label": "Publications",
                 "path": "/about/publications/"
+            }
+        ]
+    },
+    {
+        "name": "ISU",
+        "label": "Information Systems Overview",
+        "shortLabel": "Information Systems Overview",
+        "pathPrefix": "/information-systems/",
+        "defaultPath": "/information-systems/",
+        "items": [
+            {
+                "label": "About Information Systems",
+                "path": "/information-systems/"
+            },
+            {
+                "label": "Staff",
+                "path": "/information-systems/isu-staff/"
+            },
+            {
+                "label": "Infonet",
+                "path": "/information-systems/infonet/"
             }
         ]
     }

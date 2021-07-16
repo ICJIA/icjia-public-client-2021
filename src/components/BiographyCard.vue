@@ -38,7 +38,11 @@
           </span>
 
           <v-card-subtitle style="margin-top: -10px">
-            <span style="font-weight: 700">{{ item.unit.title }}</span>
+            <span
+              style="font-weight: 700"
+              v-if="item && item.unit && item.unit.title"
+              >{{ item.unit.title }}</span
+            >
             <span style="font-weight: 700; color: #444" v-if="item.title">
               | {{ item.title }}</span
             >

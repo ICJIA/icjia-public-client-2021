@@ -23,6 +23,7 @@
           style="margin-top: -40px"
         >
           <div v-if="pageContent" v-html="render(pageContent.body)"></div>
+          <div v-else><Loader loaderType="skeleton"></Loader></div>
 
           <v-container class="mt-10 mb-8">
             <v-row>
@@ -49,8 +50,8 @@
             </div>
           </div>
 
-          <div v-if="staffToggle === 0 && listing">
-            <div class="markdown-body" v-for="(item, i) in listing" :key="i">
+          <div v-if="staffToggle === 0 && content">
+            <div class="markdown-body" v-for="(item, i) in content" :key="i">
               <BiographyCard :item="item"></BiographyCard>
             </div>
           </div>
@@ -156,7 +157,7 @@ export default {
           this.content = ApolloQueryResult.data.biographies;
 
           this.content = _.orderBy(this.content, ["sortModifier"], ["asc"]);
-          this.listing = this.content.filter((item) => {
+          this.content = this.content.filter((item) => {
             if (item.affiliation === "staff") {
               return item;
             }
