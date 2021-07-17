@@ -1,7 +1,7 @@
 [
     {
         "name": "Grants",
-        "label": "ICJIA Federal and State Grants",
+        "label": "Federal and State Grants Unit",
         "shortLabel": "ICJIA Grants",
         "pathPrefix": "/grants/",
         "defaultPath": "/grants/fsgu-home/",
@@ -38,7 +38,7 @@
     },
     {
         "name": "researchhub",
-        "label": "Research and Analysis",
+        "label": "Research and Analysis Unit",
         "shortLabel": "Research at ICJIA",
         "pathPrefix": "/researchhub/",
         "defaultPath": "/researchhub/",
@@ -75,7 +75,7 @@
     },
     {
         "name": "irb",
-        "label": "Institutional Review Board",
+        "label": "ICJIA Institutional Review Board",
         "shortLabel": "ICJIA IRB",
         "pathPrefix": "/irb/",
         "defaultPath": "/irb/",
@@ -108,8 +108,8 @@
     },
     {
         "name": "newsAndInfo",
-        "label": "ICJIA News & Information",
-        "shortLabel": "ICJIA News & Info",
+        "label": "News & Information",
+        "shortLabel": "News & Info",
         "pathPrefix": "/news/",
         "defaultPath": "/news/",
         "items": [
