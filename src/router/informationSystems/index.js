@@ -1,12 +1,5 @@
 const informationSystems = [
   {
-    path: "/drone/",
-    // eslint-disable-next-line no-unused-vars
-    redirect: (route) => {
-      return "/information-systems/drone/";
-    },
-  },
-  {
     path: "/information-systems/",
     name: "ISUOvervierw",
     component: () =>

@@ -13,14 +13,6 @@ const about = [
   },
 
   {
-    path: "/publications/",
-    // eslint-disable-next-line no-unused-vars
-    redirect: (route) => {
-      return "/about/publications/";
-    },
-  },
-
-  {
     path: "/about/publications",
     name: "ICJIAPublications",
     component: () =>

@@ -8,6 +8,7 @@ import store from "@/store";
 import { EventBus } from "@/event-bus";
 
 // Unit and content routes
+import { redirects } from "@/router/redirects";
 import { hub } from "@/router/hub";
 import { news } from "@/router/news";
 import { grants } from "@/router/grants";
@@ -33,6 +34,7 @@ const home = [
 
 const routes = [
   ...home,
+  ...redirects,
   ...about,
   ...hub,
   ...irb,
