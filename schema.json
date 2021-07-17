@@ -10223,6 +10223,12 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "infonet",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "news",
             "description": null,
             "isDeprecated": false,

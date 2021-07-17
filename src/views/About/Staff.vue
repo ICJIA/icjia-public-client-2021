@@ -28,17 +28,16 @@
           <v-container class="mt-10 mb-8">
             <v-row>
               <v-col cols="12" md="6">
-                <h2 v-if="staffToggle === 1">ICJIA Units</h2>
+                <h2 v-if="staffToggle === 1">ICJIA Staff by Unit</h2>
                 <h2 v-else>All ICJIA Staff</h2>
-              </v-col>
-              <v-col cols="12" md="6" class="text-right">
+
                 <v-btn-toggle
                   v-model="staffToggle"
                   mandatory
-                  style="margin-top: 25px"
+                  style="margin-top: 5px"
                 >
-                  <v-btn small> All Staff </v-btn>
-                  <v-btn small>By Unit </v-btn>
+                  <v-btn small>Show All Staff </v-btn>
+                  <v-btn small>Show Staff By Unit </v-btn>
                 </v-btn-toggle>
               </v-col>
             </v-row>

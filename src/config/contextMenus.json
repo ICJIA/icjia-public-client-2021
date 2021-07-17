@@ -228,13 +228,13 @@
     },
     {
         "name": "ISU",
-        "label": "Information Systems Overview",
-        "shortLabel": "Information Systems Overview",
+        "label": "Information Systems Unit ",
+        "shortLabel": "Information Systems",
         "pathPrefix": "/information-systems/",
         "defaultPath": "/information-systems/",
         "items": [
             {
-                "label": "About Information Systems",
+                "label": "ISU Home",
                 "path": "/information-systems/"
             },
             {

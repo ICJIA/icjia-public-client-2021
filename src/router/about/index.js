@@ -9,7 +9,7 @@ const about = [
     path: "/about/units/:slug",
     name: "ICJIAPublicationsAll",
     component: () =>
-      import(/* webpackChunkName: "hub" */ "@/views/About/PublicationsAll.vue"),
+      import(/* webpackChunkName: "hub" */ "@/views/About/UnitsSingle.vue"),
   },
 
   {

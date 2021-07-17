@@ -4,6 +4,7 @@ import gql from "graphql-tag";
 const GET_ALL_UNITS_QUERY = gql`
   query allUnits {
     units {
+      id
       title
       shortName
       url
@@ -16,10 +17,12 @@ const GET_ALL_UNITS_QUERY = gql`
 const GET_SINGLE_UNIT_QUERY = gql`
   query unit($slug: String!) {
     units(where: { slug: $slug }) {
+      id
       title
       shortName
       url
       summary
+      slug
       body
     }
   }

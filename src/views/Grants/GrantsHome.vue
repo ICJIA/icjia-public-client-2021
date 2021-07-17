@@ -84,6 +84,12 @@
 
               <v-col cols="12">
                 <h2 id="current-grant-programs">ICJIA Grant Programs</h2>
+                <p class="mb-8">
+                  ICJIA administers a variety of federal grant programs. Most
+                  federal awards to states may be spent over a three-year
+                  period. Federal funds disbursed during the fiscal year may
+                  differ from the total designated to each program.
+                </p>
               </v-col>
 
               <v-col
