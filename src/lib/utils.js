@@ -87,6 +87,9 @@ const getPublicationType = function (type) {
     case "compiler":
       cleanType = "Compiler";
       break;
+    case "dataset":
+      cleanType = "Dataset";
+      break;
     case "getTheFacts":
       cleanType = "GET THE FACTS";
       break;

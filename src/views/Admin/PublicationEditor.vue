@@ -345,6 +345,7 @@ export default {
         },
         { text: "barj", value: "barj" },
         { text: "compiler", value: "compiler" },
+        { text: "dataset", value: "dataset" },
         { text: "getTheFacts", value: "getTheFacts" },
         { text: "programEvaluationSummary", value: "programEvaluationSummary" },
         { text: "megProfiles", value: "megProfiles" },
@@ -412,7 +413,9 @@ export default {
         this.notify("Error. Not saved. Please contact ISU.");
         NProgress.done();
       }
+      this.fetchSinglePublication(id);
       this.fetchAllPublications();
+      this.$vuetify.goTo(0, { duration: 10 });
       // this.$vuetify.goTo(0, { duration: 10 });
     },
     async saveAndVerify(id) {
@@ -431,6 +434,7 @@ export default {
       try {
         const res = await api.put(`/publications/${id}`, saveData, headers);
         console.log(res);
+
         this.notify("Successfully saved and verified");
         NProgress.done();
       } catch (e) {
@@ -439,7 +443,9 @@ export default {
         this.notify("Error. Not saved and verified. Please contact ISU.");
         NProgress.done();
       }
+      this.fetchSinglePublication(id);
       this.fetchAllPublications();
+      this.$vuetify.goTo(0, { duration: 10 });
       // this.$vuetify.goTo(0, { duration: 10 });
     },
     notify(msg) {

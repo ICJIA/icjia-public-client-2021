@@ -11,6 +11,8 @@ const GET_ALL_PUBLICATIONS_QUERY = gql`
       summary
       fileURL
       articleURL
+      datasetURL
+      applicationURL
       pubType
     }
   }
@@ -27,6 +29,8 @@ const GET_SINGLE_PUBLICATION_QUERY = gql`
       summary
       fileURL
       articleURL
+      datasetURL
+      applicationURL
       pubType
     }
   }

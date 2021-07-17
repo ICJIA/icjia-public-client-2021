@@ -15,6 +15,8 @@ const query = `query {
       summary
       fileURL
       articleURL
+      datasetURL
+      applicationURL
       pubType
     }
 }`;
