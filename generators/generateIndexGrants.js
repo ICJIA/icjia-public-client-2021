@@ -48,6 +48,7 @@ axios
       ...e,
       fullPath: `/grants/funding/${e.slug}/`,
       imagePath: null,
+      altTitle: e.title.toLowerCase(),
       contentType: "grant",
     }));
 
@@ -55,6 +56,7 @@ axios
       ...e,
       fullPath: `/grants/programs/${e.slug}/`,
       imagePath: null,
+      altTitle: e.title.toLowerCase(),
       contentType: "program",
     }));
 

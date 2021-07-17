@@ -29,6 +29,7 @@ axios
     publications = publications.map((p) => {
       let obj = {
         ...p,
+        altTitle: p.title.toLowerCase(),
         localArticlePath:
           p.articleURL &&
           p.articleURL.includes("https://icjia.illinois.gov/researchhub")

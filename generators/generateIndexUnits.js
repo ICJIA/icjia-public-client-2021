@@ -27,6 +27,7 @@ axios
     units = units.map((u) => ({
       ...u,
       fullPath: `/about/units/${u.slug}/`,
+      altTitle: u.title.toLowerCase(),
       imagePath: null,
       contentType: "unit",
     }));

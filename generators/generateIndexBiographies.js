@@ -40,6 +40,7 @@ axios
     biographies = biographies.map((b) => {
       let obj = {
         ...b,
+        altTitle: b.title.toLowerCase(),
         contentType: "biography",
         fullPath: `/about/biographies/${b.slug}/`,
         imagePath: null,

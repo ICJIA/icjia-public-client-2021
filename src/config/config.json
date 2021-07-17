@@ -86,6 +86,10 @@
                     "weight": 1
                 },
                 {
+                    "name": "altTitle",
+                    "weight": 1
+                },
+                {
                     "name": "date",
                     "weight": 2
                 },

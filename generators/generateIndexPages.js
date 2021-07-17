@@ -45,6 +45,7 @@ axios
       }
       let obj = {
         ...p,
+        altTitle: p.title.toLowerCase(),
         fullPath:
           p.category === "general"
             ? `/${p.slug}/`
