@@ -6,6 +6,7 @@
       color="#133e60"
       class="hidden-md-and-up hover"
       style="border-bottom: 1px solid #aaa"
+      absolute
     >
       <v-spacer></v-spacer>
       <span
