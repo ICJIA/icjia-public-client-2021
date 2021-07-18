@@ -1,11 +1,28 @@
 <template>
   <div id="contextBar">
+    <div
+      class="pl-3 pr-9 py-2"
+      style="background: #0d4474; color: #fff; font-size: 16px"
+      :class="{
+        'text-left':
+          $vuetify.breakpoint.md ||
+          $vuetify.breakpoint.lg ||
+          $vuetify.breakpoint.xl,
+        'text-center': $vuetify.breakpoint.sm || $vuetify.breakpoint.xs,
+      }"
+    >
+      <span>
+        <span style="font-weight: 700">ICJIA Overview</span>
+        <span style="font-weight: 300"
+          >&nbsp;&raquo;&nbsp;{{ currentLabel }}</span
+        >
+      </span>
+    </div>
     <v-app-bar
       height="45"
       scroll-threshold="0"
       color="#0a3a60"
       elevate-on-scroll
-      v-resize="resize"
     >
       <v-tabs
         dark
@@ -15,7 +32,7 @@
         center-active
         height="45"
         optional
-        class="context"
+        class="context px-8"
       >
         <v-tabs-slider color="white"></v-tabs-slider>
 
@@ -23,6 +40,7 @@
           style="background: #0a3a60 !important; font-size: 12px"
           v-for="(item, index) in contextMenu[0].items"
           :key="index"
+          @click="test(item)"
         >
           {{ item.label }}
           <v-icon v-if="item.icon" right small>{{ item.icon }}</v-icon>
@@ -65,12 +83,20 @@ export default {
     this.selectTab();
   },
   methods: {
+    test(item) {
+      this.currentLabel = item.label;
+    },
     selectTab() {
       this.contextMenu[0].items.forEach((item, index) => {
-        if (this.$route.fullPath === item.path) {
+        let url = this.$route.fullPath;
+        // add trailing slash if not present
+        url = url.replace(/\/$|$/, "/");
+        if (url === item.path) {
           this.contextTab = index;
+          this.currentLabel = item.label;
         }
       });
+      this.currentTab = "test";
     },
     fireEvent() {
       EventBus.$emit("search");
@@ -80,8 +106,6 @@ export default {
       });
     },
     routeToPage(page) {
-      //   if (page === "About the Research Hub") return;
-      // console.log("route: ", page);
       this.$router.push(page).catch(() => {
         this.$vuetify.goTo(0);
       });
@@ -91,6 +115,7 @@ export default {
     return {
       contextDrawer: true,
       contextTab: null,
+      currentLabel: null,
       isAtTop: false,
       disabled: false,
       more: [],
@@ -102,6 +127,10 @@ export default {
           pathPrefix: "/news/",
           defaultPath: "/news/",
           items: [
+            {
+              label: "Sandbox",
+              path: "/sandbox/",
+            },
             {
               label: "Latest News",
               path: "/news/",
@@ -126,26 +155,26 @@ export default {
               label: "MeetingsA",
               path: "/meetings/",
             },
-            {
-              label: "FundingA",
-              path: "/grants/funding/",
-            },
-            {
-              label: "EmploymentA",
-              path: "/employment/",
-            },
-            {
-              label: "EventsB",
-              path: "/events/",
-            },
-            {
-              label: "MeetingsB",
-              path: "/meetings/",
-            },
-            {
-              label: "FundingB",
-              path: "/grants/funding/",
-            },
+            // {
+            //   label: "FundingA",
+            //   path: "/grants/funding/",
+            // },
+            // {
+            //   label: "EmploymentA",
+            //   path: "/employment/",
+            // },
+            // {
+            //   label: "EventsB",
+            //   path: "/events/",
+            // },
+            // {
+            //   label: "MeetingsB",
+            //   path: "/meetings/",
+            // },
+            // {
+            //   label: "FundingB",
+            //   path: "/grants/funding/",
+            // },
             {
               label: "EmploymentB",
               path: "/employment/",
