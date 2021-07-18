@@ -17,7 +17,8 @@
       }"
     >
       <span>
-        <span style="font-weight: 600">ICJIA Overview</span> &raquo;
+        <span style="font-weight: 600">ICJIA Overview</span>
+        &raquo;
         <span style="font-weight: 300">{{
           currentItem.replace("tab-", "")
         }}</span>
@@ -28,15 +29,13 @@
         v-model="currentItem"
         fixed-tabs
         slider-color="white"
-        justify-end
         show-arrows
-        row
-        wrap
+        dense
       >
         <v-tab
           v-for="(item, index) in tabs"
           :key="`context${index}`"
-          :href="'#tab-' + item"
+          :to="'#' + item"
         >
           {{ item }}
         </v-tab>
@@ -68,7 +67,7 @@
 export default {
   data() {
     return {
-      currentItem: "tab-Web",
+      currentItem: "Shopping",
       items: ["Web", "Shopping", "Videos", "Images", "Tab 5", "Tab 6"],
       tabs: [],
       more: [],
@@ -81,7 +80,7 @@ export default {
       this.tabs.push(...this.more.splice(this.more.indexOf(item), 1));
       this.more.push(...removed);
       this.$nextTick(() => {
-        this.currentItem = "tab-" + item;
+        this.currentItem = item;
       });
     },
     onResize() {
