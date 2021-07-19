@@ -90,6 +90,7 @@
                   <div>
                     <ClickthroughBoxes
                       :boxes="page.clickthrough"
+                      v-if="page.clickthrough"
                     ></ClickthroughBoxes>
                   </div>
                 </v-col>

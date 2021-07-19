@@ -12,6 +12,12 @@
             <v-col cols="12" :md="content && content.showTOC ? 9 : 12">
               <h1 v-html="render(content.title)"></h1>
               <div v-html="render(content.body)"></div>
+              <div>
+                <ClickthroughBoxes
+                  :boxes="content.clickthrough"
+                  v-if="content.clickthrough && content.clickthrough.length"
+                ></ClickthroughBoxes>
+              </div>
             </v-col>
             <v-col
               cols="12"

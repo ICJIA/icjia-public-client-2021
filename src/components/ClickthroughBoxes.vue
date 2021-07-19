@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="boxes && boxes.length">
     <v-container fluid>
       <v-row>
         <v-col cols="12">
