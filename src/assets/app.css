@@ -225,8 +225,16 @@
   background: #0d4474 !important;
 } */
 
+.context .v-tab {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #444 !important;
+
+  background: #0a3a60 !important;
+}
+
 .context .v-tab--active {
   font-weight: 900 !important;
   background: #333 !important;
-  color: #fff !important;
+  color: #000 !important;
 }

@@ -20,12 +20,12 @@
     <AppNav @hook:mounted="fixA11y()"></AppNav>
 
     <v-main style="background: #f8f8f8">
-      <AppNavContext
+      <AppNavContextV2
         :contextMenu="contextMenu"
         v-if="contextMenu"
         id="context-bar"
         :key="`context-${$route.fullPath}`"
-      ></AppNavContext>
+      ></AppNavContextV2>
       <router-view
         :key="`routerView-${$route.fullPath}`"
         style="min-height: 100vh !important"

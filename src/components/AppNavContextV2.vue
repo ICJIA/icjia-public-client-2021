@@ -1,8 +1,8 @@
 <template>
-  <div id="contextBar">
+  <div id="contextBar" style="border-bottom: 1px solid #fff">
     <div
       class="pl-3 pr-9 py-2"
-      style="background: #0d4474; color: #fff; font-size: 16px"
+      style="background: #0a3a60; color: #fff; font-size: 16px"
       :class="{
         'text-left':
           $vuetify.breakpoint.md ||
@@ -12,20 +12,21 @@
       }"
     >
       <span>
-        <span style="font-weight: 700">{{ contextMenu[0].label }}</span>
-        <span style="font-weight: 300"
+        <span
+          style="font-weight: 700"
+          @click="routeToPage(contextMenu[0].defaultPath)"
+          >{{ contextMenu[0].label }}</span
+        >
+        <span
+          style="font-weight: 300"
+          v-if="currentLabel && currentLabel.length"
           >&nbsp;&raquo;&nbsp;{{ currentLabel }}</span
         >
       </span>
     </div>
-    <v-app-bar
-      height="45"
-      scroll-threshold="0"
-      color="#0a3a60"
-      elevate-on-scroll
-    >
+
+    <v-app-bar height="45" scroll-threshold="0" color="#eee" elevate-on-scroll>
       <v-tabs
-        dark
         show-arrows
         centered
         v-model="contextTab"
@@ -34,13 +35,17 @@
         optional
         class="context px-8"
       >
-        <v-tabs-slider color="white"></v-tabs-slider>
+        <v-tabs-slider color="black"></v-tabs-slider>
 
         <v-tab
-          style="background: #0a3a60 !important; font-size: 12px"
+          style="background: #eee !important"
           v-for="(item, index) in contextMenu[0].items"
           :key="index"
-          @click="test(item)"
+          @click="
+            item.path && item.path.length
+              ? routeToPage(item.path)
+              : fireEvent(item.event)
+          "
         >
           {{ item.label }}
           <v-icon v-if="item.icon" right small>{{ item.icon }}</v-icon>
@@ -67,12 +72,12 @@
 <script>
 import { EventBus } from "@/event-bus";
 export default {
-  // props: {
-  //   contextMenu: {
-  //     type: Array,
-  //     default: () => [],
-  //   },
-  // },
+  props: {
+    contextMenu: {
+      type: Array,
+      default: () => [],
+    },
+  },
   watch: {
     // eslint-disable-next-line no-unused-vars
     contextTab(newValue, oldValue) {},
@@ -119,73 +124,6 @@ export default {
       isAtTop: false,
       disabled: false,
       more: [],
-      contextMenu: [
-        {
-          name: "newsAndInfo",
-          label: "News & Information",
-          shortLabel: "News & Info",
-          pathPrefix: "/news/",
-          defaultPath: "/news/",
-          items: [
-            {
-              label: "Sandbox",
-              path: "/sandbox/",
-            },
-            {
-              label: "Latest News",
-              path: "/news/",
-            },
-            {
-              label: "Meetings",
-              path: "/meetings/",
-            },
-            {
-              label: "Funding",
-              path: "/grants/funding/",
-            },
-            {
-              label: "Employment",
-              path: "/employment/",
-            },
-            {
-              label: "Events",
-              path: "/events/",
-            },
-            {
-              label: "MeetingsA",
-              path: "/meetings/",
-            },
-            // {
-            //   label: "FundingA",
-            //   path: "/grants/funding/",
-            // },
-            // {
-            //   label: "EmploymentA",
-            //   path: "/employment/",
-            // },
-            // {
-            //   label: "EventsB",
-            //   path: "/events/",
-            // },
-            // {
-            //   label: "MeetingsB",
-            //   path: "/meetings/",
-            // },
-            // {
-            //   label: "FundingB",
-            //   path: "/grants/funding/",
-            // },
-            {
-              label: "EmploymentB",
-              path: "/employment/",
-            },
-            {
-              label: "EventsB",
-              path: "/events/",
-            },
-          ],
-        },
-      ],
     };
   },
 };
