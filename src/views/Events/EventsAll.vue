@@ -354,7 +354,35 @@ export default {
           return grant;
         });
 
+        // let GrantStartEvents = grants.map((grant) => {
+        //   let obj = {};
+        //   obj.name = grant.name;
+        //   obj.start = grant.start;
+        //   obj.end = grant.start;
+        //   obj.timed = false;
+        //   obj.color = "indigo darken-4";
+        //   obj.show = false;
+        //   obj.fullPath = grant.fullPath;
+        //   obj.contentType = "grant";
+        //   return obj;
+        // });
+
+        // let GrantEndEvents = grants.map((grant) => {
+        //   let obj = {};
+        //   obj.start = grant.end;
+        //   obj.name = grant.name;
+        //   obj.end = grant.end;
+        //   obj.timed = false;
+        //   obj.color = "indigo darken-4";
+        //   obj.show = false;
+        //   obj.fullPath = grant.fullPath;
+        //   obj.contentType = "grant";
+        //   return obj;
+        // });
+
         let allEvents = [...events, ...meetings, ...grants];
+        // let calendarEvents = [...events, ...meetings, ...grants];
+        // this.calendarEvents = _.orderBy(calendarEvents, ["start"], ["asc"]);
         this.allEvents = _.orderBy(allEvents, ["start"], ["asc"]);
         this.filterUpcoming();
         this.isLoading = false;

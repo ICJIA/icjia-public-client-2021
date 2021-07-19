@@ -1,3 +1,4 @@
+import NProgress from "nprogress";
 const about = [
   {
     path: "/about/",
@@ -15,6 +16,11 @@ const about = [
   {
     path: "/about/publications",
     name: "ICJIAPublications",
+    // eslint-disable-next-line no-unused-vars
+    beforeRouteEnter(to, from, next) {
+      NProgress.start();
+      next();
+    },
     component: () =>
       import(/* webpackChunkName: "hub" */ "@/views/About/PublicationsAll.vue"),
   },

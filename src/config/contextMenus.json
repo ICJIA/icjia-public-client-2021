@@ -225,12 +225,16 @@
                 "path": "/about/publications/"
             },
             {
-                "label": "Contact",
-                "path": "/about/contact/"
+                "label": "Events",
+                "path": "/events/"
             },
             {
                 "label": "FOIA",
                 "path": "/about/foia/"
+            },
+            {
+                "label": "Contact",
+                "path": "/about/contact/"
             }
         ]
     },
