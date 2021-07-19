@@ -37,14 +37,12 @@ const GET_HOME = gql`
         url
         teaser
         icon
-        color
       }
       clickThroughBoxesSecondTier {
         title
         url
         teaser
         icon
-        color
       }
     }
 

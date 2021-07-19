@@ -22,7 +22,6 @@ const GET_ALL_PAGES_QUERY = gql`
         teaser
         icon
         url
-        color
       }
       splash {
         name
@@ -58,7 +57,6 @@ const GET_SINGLE_PAGE_QUERY = gql`
         teaser
         icon
         url
-        color
       }
       splash {
         name

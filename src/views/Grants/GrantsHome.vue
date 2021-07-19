@@ -1,76 +1,116 @@
 <template>
   <div class="pb-12 markdown-body">
-    <v-container style="margin-top: -25px">
+    <!-- <v-container v-if="allGrants && allPrograms">
       <v-row>
-        <v-col cols="12" md="12">
-          <v-container class="mt-3" v-if="page">
-            <v-row>
-              <v-col cols="12">
-                <h1
-                  v-html="render(page.title)"
-                  style="color: #000"
-                  v-if="page.title"
-                ></h1>
-                <div v-html="render(page.body)" v-if="page.body"></div>
-              </v-col>
-            </v-row>
-          </v-container>
+        <v-col cols="12" :md="page && page.showTOC ? 9 : 12"
+          ><h2 id="current-funding-opportunities">
+            ICJIA Funding Opportunities
+          </h2></v-col
+        >
 
-          <v-container fluid v-if="allGrants && allPrograms">
-            <v-row>
-              <v-col cols="12"
-                ><h2 id="current-funding-opportunities">
-                  ICJIA Funding Opportunities
-                </h2></v-col
-              >
+        <v-col
+          cols="12"
+          :class="{
+            'text-center': $vuetify.breakpoint.sm || $vuetify.breakpoint.xs,
+            'text-right':
+              $vuetify.breakpoint.md ||
+              $vuetify.breakpoint.lg ||
+              $vuetify.breakpoint.xl,
+          }"
+        >
+          <v-btn-toggle v-model="toggle_nofoStatus">
+            <v-btn small> Current </v-btn>
 
-              <v-col
-                cols="12"
-                :class="{
-                  'text-center':
-                    $vuetify.breakpoint.sm || $vuetify.breakpoint.xs,
-                  'text-right':
-                    $vuetify.breakpoint.md ||
-                    $vuetify.breakpoint.lg ||
-                    $vuetify.breakpoint.xl,
-                }"
-              >
-                <v-btn-toggle v-model="toggle_nofoStatus">
-                  <v-btn small> Current </v-btn>
+            <v-btn small> Expired </v-btn>
+          </v-btn-toggle>
+          <div
+            v-for="grant in filteredAndSortedGrants"
+            :key="grant.id"
+            class="mb-6"
+          >
+            <BaseCardExpandable
+              :item="grant"
+              :summaryOnly="true"
+              :openSearch="false"
+              :showLink="false"
+              :showReadMore="true"
+            ></BaseCardExpandable>
+          </div>
+        </v-col>
+        <v-col
+          cols="12"
+          v-if="page && page.showTOC"
+          md="3"
+          class="px-3 hidden-sm-and-down"
+          ><Toc :key="page.title"></Toc
+        ></v-col>
 
-                  <v-btn small> Expired </v-btn>
-                </v-btn-toggle>
-              </v-col>
+        <v-col cols="12"> </v-col>
+      </v-row>
+      <ClickthroughBoxes :boxes="page.clickthrough"></ClickthroughBoxes>
+    </v-container>
 
-              <v-col cols="12">
-                <div
-                  v-for="grant in filteredAndSortedGrants"
-                  :key="grant.id"
-                  class="mb-6"
-                >
-                  <BaseCardExpandable
-                    :item="grant"
-                    :summaryOnly="true"
-                    :openSearch="false"
-                    :showLink="false"
-                    :showReadMore="true"
-                  ></BaseCardExpandable>
-                </div>
-              </v-col>
-            </v-row>
-            <ClickthroughBoxes :boxes="page.clickthrough"></ClickthroughBoxes>
-          </v-container>
-
-          <v-container v-else>
-            <v-row>
-              <v-col>
-                <Loader loaderType="skeleton"></Loader>
-              </v-col>
-            </v-row>
-          </v-container>
+    <v-container v-else>
+      <v-row>
+        <v-col>
+          <Loader loaderType="skeleton"></Loader>
         </v-col>
       </v-row>
-    </v-container>
+    </v-container> -->
+    <template>
+      <div class="markdown-body">
+        <BaseContent :error="error" :loading="$apollo.loading">
+          <template slot="content">
+            <v-container style="margin-top: -15px">
+              <v-row v-if="page">
+                <v-col cols="12" :md="page && page.showTOC ? 9 : 12">
+                  <h1 v-html="render(page.title)"></h1>
+                  <div v-html="render(page.body)"></div>
+                  <h2 id="current-funding-opportunities">
+                    ICJIA Funding Opportunities
+                  </h2>
+                  <v-btn-toggle v-model="toggle_nofoStatus" class="mb-5">
+                    <v-btn small> Current </v-btn>
+
+                    <v-btn small> Expired </v-btn>
+                  </v-btn-toggle>
+                  <div
+                    v-for="grant in filteredAndSortedGrants"
+                    :key="grant.id"
+                    class="mb-6"
+                  >
+                    <BaseCardExpandable
+                      :item="grant"
+                      :summaryOnly="true"
+                      :openSearch="false"
+                      :showLink="false"
+                      :showReadMore="true"
+                    ></BaseCardExpandable>
+                  </div>
+                  <div>
+                    <ClickthroughBoxes
+                      :boxes="page.clickthrough"
+                    ></ClickthroughBoxes>
+                  </div>
+                </v-col>
+                <v-col
+                  cols="12"
+                  v-if="page && page.showTOC"
+                  md="3"
+                  class="px-3 hidden-sm-and-down"
+                  ><Toc :key="page.title"></Toc>
+                  <div
+                    v-for="grant in filteredAndSortedGrants"
+                    :key="grant.id"
+                    class="mb-6"
+                  ></div
+                ></v-col>
+              </v-row>
+            </v-container>
+          </template>
+        </BaseContent>
+      </div>
+    </template>
   </div>
 </template>
 

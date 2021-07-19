@@ -4,6 +4,7 @@
       :elevation="elevation"
       class="pt-8 px-3"
       @click="routeTo(item.fullPath)"
+      color="#fcfcfc"
     >
       <div
         class="d-flex mb-8"
