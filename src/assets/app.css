@@ -238,3 +238,40 @@
   background: #333 !important;
   color: #000 !important;
 }
+
+/* Summary/details */
+
+summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+details {
+  margin-bottom: 15px;
+}
+
+summary > * {
+  display: inline;
+}
+
+.markdown-body summary h2 {
+  border-bottom: none !important;
+}
+
+details[open] summary ~ * {
+  padding-left: 15px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  animation: sweep 0.5s ease-in-out;
+}
+
+@keyframes sweep {
+  0% {
+    opacity: 0;
+    margin-left: -20px;
+  }
+  100% {
+    opacity: 1;
+    margin-left: 0px;
+  }
+}

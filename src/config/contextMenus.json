@@ -223,6 +223,14 @@
             {
                 "label": "Publications",
                 "path": "/about/publications/"
+            },
+            {
+                "label": "Contact",
+                "path": "/about/contact/"
+            },
+            {
+                "label": "FOIA",
+                "path": "/about/foia/"
             }
         ]
     },

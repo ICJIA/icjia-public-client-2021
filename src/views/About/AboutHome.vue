@@ -1,35 +1,19 @@
 <template>
   <div class="markdown-body">
-    <div style="background: #fff" class="pt-6 pb-8" v-if="content">
-      <v-container v-if="loading">
-        <v-row>
-          <v-col>
-            <Loader loaderType="skeleton"></Loader>
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-container>
-        <v-row>
-          <v-col cols="12">
-            <h1
-              v-html="render(content.title)"
-              style="color: #000"
-              v-if="content.title"
-            ></h1>
-            <!-- <div
-              v-html="render(content.summary)"
-              style="color: #000"
-              v-if="content.summary"
-            ></div> -->
-          </v-col>
-        </v-row>
-      </v-container>
-    </div>
-    <BaseContent :error="error" :loading="loading" style="margin-top: -35px">
-      <template slot="content" v-if="!loading">
+    <BaseContent
+      :error="error"
+      :loading="$apollo.loading"
+      style="margin-top: -35px"
+    >
+      <template slot="content">
         <v-container class="">
           <v-row v-if="content">
             <v-col cols="12" :md="content && content.showTOC ? 9 : 12">
+              <h1
+                v-html="render(content.title)"
+                style="color: #000"
+                v-if="content.title"
+              ></h1>
               <div v-html="render(content.body)"></div>
             </v-col>
             <v-col
@@ -37,7 +21,7 @@
               v-if="content && content.showTOC"
               md="3"
               class="px-3 hidden-sm-and-down"
-              ><Toc :key="content.title"></Toc
+              ><Toc :key="content.title" :title="content.title"></Toc
             ></v-col>
           </v-row>
         </v-container>

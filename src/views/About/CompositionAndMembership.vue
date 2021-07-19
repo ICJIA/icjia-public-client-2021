@@ -1,37 +1,35 @@
 <template>
-  <div>
-    <v-container v-if="$apollo.loading">
-      <v-row>
-        <v-col>
-          <Loader loaderType="skeleton"></Loader>
-        </v-col>
-      </v-row>
-    </v-container>
-    <v-container class="pt-10 pb-12 markdown-body" v-if="pageContent">
-      <v-row>
-        <v-col>
-          <h1>{{ pageContent.title }}</h1>
-        </v-col>
-      </v-row>
-    </v-container>
-    <v-container style="margin-top: -25px" v-if="pageContent">
-      <v-row>
-        <v-col
-          cols="12"
-          :md="pageContent.showTOC ? 9 : 12"
-          class="markdown-body"
-          style="margin-top: -40px"
-        >
-          <div v-html="render(pageContent.body)"></div>
-          <div class="markdown-body" v-for="(item, i) in listing" :key="i">
-            <BiographyCard :item="item"></BiographyCard>
-          </div>
-        </v-col>
-        <v-col cols="12" md="3" v-if="pageContent.showTOC"
-          ><Toc :key="pageContent.title" :tocHeading="pageContent.title"></Toc
-        ></v-col>
-      </v-row>
-    </v-container>
+  <div class="markdown-body">
+    <BaseContent :error="error" :loading="$apollo.loading">
+      <template slot="content">
+        <v-container class="">
+          <v-row v-if="pageContent">
+            <v-col cols="12" :md="content && pageContent.showTOC ? 9 : 12">
+              <h1
+                v-html="render(pageContent.title)"
+                style="color: #000"
+                v-if="pageContent.title"
+              ></h1>
+              <div
+                v-html="render(pageContent.body)"
+                v-if="pageContent.body"
+                class="mb-8"
+              ></div>
+              <div class="markdown-body" v-for="(item, i) in listing" :key="i">
+                <BiographyCard :item="item"></BiographyCard>
+              </div>
+            </v-col>
+            <v-col
+              cols="12"
+              v-if="pageContent && pageContent.showTOC"
+              md="3"
+              class="px-3 hidden-sm-and-down"
+              ><Toc :key="pageContent.title" :title="pageContent.title"></Toc
+            ></v-col>
+          </v-row>
+        </v-container>
+      </template>
+    </BaseContent>
   </div>
 </template>
 

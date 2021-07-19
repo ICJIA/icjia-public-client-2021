@@ -2,18 +2,15 @@
   <div class="markdown-body">
     <BaseContent :error="error" :loading="loading">
       <template slot="content" v-if="!loading">
-        <v-container v-if="content"
-          ><v-row
-            ><v-col cols="12">
-              <h1 v-html="render(content.title)"></h1></v-col></v-row
-        ></v-container>
-        <v-container>
-          <!-- <Splash
-            v-if="content && content.splash"
-            :splash="content.splash"
-          ></Splash> -->
+        <Splash
+          v-if="content && content.splash"
+          :splash="content.splash"
+        ></Splash>
+
+        <v-container style="margin-top: -15px">
           <v-row v-if="content">
             <v-col cols="12" :md="content && content.showTOC ? 9 : 12">
+              <h1 v-html="render(content.title)"></h1>
               <div v-html="render(content.body)"></div>
             </v-col>
             <v-col
