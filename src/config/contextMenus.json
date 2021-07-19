@@ -48,7 +48,7 @@
                 "path": "/researchhub/"
             },
             {
-                "label": "Overview",
+                "label": "R&A Overview",
                 "path": "/researchhub/hub-overview/"
             },
             {
@@ -119,19 +119,19 @@
             },
             {
                 "label": "Meetings",
-                "path": "/meetings/"
+                "path": "/news/meetings/"
             },
             {
                 "label": "Funding",
-                "path": "/grants/funding/"
+                "path": "/news/funding/"
             },
             {
                 "label": "Employment",
-                "path": "/employment/"
+                "path": "/news/employment/"
             },
             {
                 "label": "Events",
-                "path": "/events/"
+                "path": "/news/events/"
             }
         ]
     },

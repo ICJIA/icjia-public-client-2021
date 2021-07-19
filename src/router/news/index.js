@@ -6,6 +6,30 @@ const news = [
       import(/* webpackChunkName: "news" */ "@/views/News/News.vue"),
   },
   {
+    path: "/news/meetings/",
+    name: "NewsMeetings",
+    component: () =>
+      import(/* webpackChunkName: "news" */ "@/views/Meetings/MeetingsAll.vue"),
+  },
+  {
+    path: "/news/events/",
+    name: "NewsEvents",
+    component: () =>
+      import(/* webpackChunkName: "news" */ "@/views/Events/EventsAll.vue"),
+  },
+  {
+    path: "/news/funding/",
+    name: "NewsFunding",
+    component: () =>
+      import(/* webpackChunkName: "news" */ "@/views/Grants/FundingAll.vue"),
+  },
+  // {
+  //   path: "/news/employment/",
+  //   name: "NewsFunding",
+  //   component: () =>
+  //     import(/* webpackChunkName: "news" */ "@/views/Events/EventsAll.vue"),
+  // },
+  {
     path: "/news/:slug",
     name: "NewsSingle",
     component: () =>

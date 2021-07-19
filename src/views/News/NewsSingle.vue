@@ -2,7 +2,7 @@
   <div style="background: #fff; min-height: 100vh !important">
     <BaseContent :error="error" :loading="loading">
       <template slot="content" v-if="!loading">
-        <v-container class="markdown-body">
+        <v-container class="markdown-body mt-8">
           <Splash v-if="news && news.splash" :splash="news.splash"></Splash>
           <v-row>
             <v-col cols="12" :md="news.showTOC ? 9 : 12">

@@ -3,7 +3,7 @@ const irb = [
     path: "/irb/",
     name: "IRBoverview",
     component: () =>
-      import(/* webpackChunkName: "meetings" */ "@/views/Irb/IRBOverview.vue"),
+      import(/* webpackChunkName: "meetings" */ "@/views/Irb/IRBHome.vue"),
   },
   {
     path: "/irb/irb-meetings/",

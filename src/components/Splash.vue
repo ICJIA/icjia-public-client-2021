@@ -6,7 +6,7 @@
       width="100%"
       :height="splashHeight"
       class="mb-5"
-      style="border: 1px solid #fafafa"
+      style="border: 1px solid #aaa"
       aria-label="ICJIA Internet news item image"
       :alt="getAltText()"
       ><template v-slot:placeholder>

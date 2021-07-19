@@ -64,7 +64,7 @@ export default {
       query: GET_SINGLE_PAGE_QUERY,
       variables() {
         return {
-          slug: "irb-overview",
+          slug: "irb-home",
         };
       },
       error(error) {

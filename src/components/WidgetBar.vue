@@ -2,7 +2,8 @@
   <v-app-bar
     flat
     color="grey lighten-5"
-    style="border-top: 2px solid #ddd !important"
+    style="border-top: 1px solid #ddd !important"
+    class="mb-0"
   >
     <div
       style="font-size: 26px; font-weight: 900; text-transform: uppercase"

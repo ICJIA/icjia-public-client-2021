@@ -15,12 +15,12 @@
     </v-card>
 
     <HomeResearch></HomeResearch>
-    <HomeClickThroughBoxes
+    <!-- <HomeClickThroughBoxes
       :boxes="boxes"
       v-if="!loading && boxes.length > 0"
       style="margin-top: -30px"
-    ></HomeClickThroughBoxes>
-    <div style="background: #fff; z-index: 1">
+    ></HomeClickThroughBoxes> -->
+    <div style="background: #fff; z-index: 1; margin-top: -20px">
       <WidgetBar
         title="News & Information"
         mobileTitle="Latest News"
@@ -62,11 +62,11 @@
       </v-container>
     </div>
 
-    <HomeClickThroughBoxes
+    <!-- <HomeClickThroughBoxes
       :boxes="boxesSecondTier"
       v-if="!loading && boxesSecondTier.length > 0"
       style="margin-top: 10px"
-    ></HomeClickThroughBoxes>
+    ></HomeClickThroughBoxes> -->
 
     <HomeEvents
       :meetings="meetingEvents"
