@@ -15,6 +15,13 @@
                 v-if="content.title"
               ></h1>
               <div v-html="render(content.body)"></div>
+              <div>
+                <ClickthroughBoxes
+                  :boxes="content.clickthrough"
+                  v-if="content.clickthrough"
+                  :boxesPerRow="content && content.showTOC ? 2 : 3"
+                ></ClickthroughBoxes>
+              </div>
             </v-col>
             <v-col
               cols="12"

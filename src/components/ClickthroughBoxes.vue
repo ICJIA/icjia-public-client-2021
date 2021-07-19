@@ -8,25 +8,21 @@
 
         <div class="flex-container">
           <v-card
-            class="
-              flex-item
-              elevation-2
-              px-8
-              py-10
-              box
-              text-center
-              hover
-              info-card
-            "
+            class="elevation-2 px-8 py-10 box text-center hover info-card"
             style="border: 1px solid #ddd"
             v-for="(box, index) in boxes"
             :key="index"
             :color="getBoxColor(index)"
-            @click="$router.push(box.url)"
+            @click="box.url ? $router.push(box.url) : null"
+            :class="{
+              'flex-item-3': boxesPerRow === 3,
+              'flex-item-2': boxesPerRow === 2,
+            }"
           >
             <v-icon style="font-size: 70px" v-if="box.icon">{{
               box.icon
             }}</v-icon>
+            <v-icon style="font-size: 70px" v-else>dns</v-icon>
             <h3
               class="text-center box-head mt-3"
               style="
@@ -76,6 +72,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    boxesPerRow: {
+      type: Number,
+      default: 3,
+    },
   },
 };
 </script>
@@ -89,7 +89,15 @@ export default {
   position: relative;
 }
 
-.flex-item {
+.flex-item-2 {
+  background: blue;
+
+  margin: 5px;
+  flex: 0 1 calc(50% - 15px); /* <-- adjusting for margin */
+  flex-grow: 1;
+}
+
+.flex-item-3 {
   background: blue;
 
   margin: 5px;
