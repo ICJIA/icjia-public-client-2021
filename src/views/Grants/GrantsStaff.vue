@@ -1,17 +1,13 @@
 <template>
   <div>
-    <v-container class="pt-10 pb-12 markdown-body">
-      <v-row>
-        <v-col>
-          <h1>Federal and State Grants Unit Staff</h1>
-        </v-col>
-      </v-row>
-    </v-container>
-
     <div v-if="!loading" class="mb-12 markdown-body">
       <v-container>
         <v-row>
-          <v-col class="text-left" style="margin-top: -35px">
+          <v-col cols="12">
+            <h1>Federal and State Grants Unit Staff</h1>
+            <div v-html="render(unit.summary)"></div
+          ></v-col>
+          <v-col class="text-left" cols="12">
             <!-- <div style="font-weight: 900; font-size: 12px" class="mb-12">
               Showing: {{ content.length }} of {{ content.length }} R&A staff
               members
@@ -34,6 +30,7 @@ import NProgress from "nprogress";
 import { EventBus } from "@/event-bus";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_BIOGRAPHIES_BY_UNIT_QUERY } from "@/graphql/biographies";
+import { GET_SINGLE_UNIT_QUERY } from "@/graphql/units";
 import _ from "lodash";
 export default {
   data() {
@@ -41,6 +38,7 @@ export default {
       loading: true,
       error: null,
       content: null,
+      unit: null,
     };
   },
   created() {
@@ -59,6 +57,35 @@ export default {
     },
   },
   apollo: {
+    units: {
+      prefetch: true,
+
+      query: GET_SINGLE_UNIT_QUERY,
+      variables() {
+        return {
+          slug: "federal-and-state-grants-unit",
+        };
+      },
+      error(error) {
+        this.error = JSON.stringify(error.message);
+        NProgress.done();
+      },
+      result(ApolloQueryResult) {
+        if (
+          ApolloQueryResult.data &&
+          ApolloQueryResult.data.units.length > 0 === false
+        ) {
+          // eslint-disable-next-line no-unused-vars
+          this.$router.push("/404").catch((err) => {
+            console.log(err);
+          });
+        } else {
+          //console.log(this.id);
+          this.unit = ApolloQueryResult.data.units[0];
+          NProgress.done();
+        }
+      },
+    },
     biographies: {
       prefetch: true,
       //   fetchPolicy: "no-cache",

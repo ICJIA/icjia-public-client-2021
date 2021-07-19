@@ -1,37 +1,17 @@
 <template>
   <div class="pb-12 markdown-body">
-    <div style="background: #fff" class="pt-6" v-if="unit">
-      <v-container v-if="!unit">
-        <v-row>
-          <v-col>
-            <Loader loaderType="skeleton"></Loader>
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-container>
-        <v-row>
-          <v-col cols="12">
-            <h1
-              v-html="render(unit.title)"
-              style="color: #000"
-              v-if="unit.title"
-            ></h1>
-            <!-- <div
-              v-html="render(unit.summary)"
-              style="color: #000"
-              v-if="unit.summary"
-            ></div> -->
-          </v-col>
-        </v-row>
-      </v-container>
-    </div>
     <v-container style="margin-top: -25px">
       <v-row>
-        <v-col cols="12" md="9">
-          <v-container class="mt-3" v-if="unit">
+        <v-col cols="12" md="12">
+          <v-container class="mt-3" v-if="page">
             <v-row>
               <v-col cols="12">
-                <div v-html="render(unit.body)" v-if="unit.body"></div>
+                <h1
+                  v-html="render(page.title)"
+                  style="color: #000"
+                  v-if="page.title"
+                ></h1>
+                <div v-html="render(page.body)" v-if="page.body"></div>
               </v-col>
             </v-row>
           </v-container>
@@ -77,66 +57,10 @@
                   ></BaseCardExpandable>
                 </div>
               </v-col>
-
-              <v-col cols="12">
-                <h2 id="current-grant-programs">ICJIA Grant Programs</h2>
-                <p class="mb-8">
-                  ICJIA administers a variety of federal grant programs. Most
-                  federal awards to states may be spent over a three-year
-                  period. Federal funds disbursed during the fiscal year may
-                  differ from the total designated to each program.
-                </p>
-              </v-col>
-
-              <v-col
-                cols="12"
-                sm="6"
-                :class="{
-                  'text-center':
-                    $vuetify.breakpoint.sm || $vuetify.breakpoint.xs,
-                  'text-left':
-                    $vuetify.breakpoint.md ||
-                    $vuetify.breakpoint.lg ||
-                    $vuetify.breakpoint.xl,
-                }"
-              >
-                <v-btn-toggle v-model="toggle_category">
-                  <v-btn small> All Programs </v-btn>
-
-                  <v-btn small> Federal </v-btn>
-                  <v-btn small> State </v-btn>
-                </v-btn-toggle>
-              </v-col>
-
-              <v-col
-                cols="12"
-                sm="6"
-                :class="{
-                  'text-center':
-                    $vuetify.breakpoint.sm || $vuetify.breakpoint.xs,
-                  'text-right':
-                    $vuetify.breakpoint.md ||
-                    $vuetify.breakpoint.lg ||
-                    $vuetify.breakpoint.xl,
-                }"
-              >
-                <v-btn-toggle v-model="toggle_status">
-                  <v-btn small> Current </v-btn>
-
-                  <v-btn small> Archived </v-btn>
-                </v-btn-toggle>
-              </v-col>
-
-              <v-col>
-                <div
-                  v-for="program in filteredAndSortedPrograms"
-                  :key="program.id"
-                  class="mb-6"
-                >
-                  <BaseCardExpandable :item="program"></BaseCardExpandable></div
-              ></v-col>
             </v-row>
+            <ClickthroughBoxes :boxes="page.clickthrough"></ClickthroughBoxes>
           </v-container>
+
           <v-container v-else>
             <v-row>
               <v-col>
@@ -145,9 +69,6 @@
             </v-row>
           </v-container>
         </v-col>
-        <v-col cols="12" md="3" class="hidden-sm-and-down mt-5"
-          ><Toc v-if="allGrants && allPrograms"></Toc
-        ></v-col>
       </v-row>
     </v-container>
   </div>
@@ -155,9 +76,9 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { attachInternalLinks } from "@/utils/dom";
+import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
+import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
 
-import { GET_SINGLE_UNIT_QUERY } from "@/graphql/units";
 import {
   GET_ALL_PROGRAMS_QUERY,
   GET_ALL_FUNDING_QUERY,
@@ -170,8 +91,8 @@ export default {
   data() {
     return {
       contentLoading: true,
-      content: null,
-      unit: null,
+      page: null,
+
       allPrograms: null,
       allGrants: null,
       filteredAndSortedPrograms: [],
@@ -256,32 +177,38 @@ export default {
     },
   },
   apollo: {
-    units: {
+    pages: {
       prefetch: true,
-
-      query: GET_SINGLE_UNIT_QUERY,
+      fetchPolicy: "no-cache",
+      query: GET_SINGLE_PAGE_QUERY,
       variables() {
         return {
-          slug: "federal-and-state-grants-unit",
+          slug: "fsgu-home",
         };
       },
       error(error) {
         this.error = JSON.stringify(error.message);
+        this.loading = false;
         NProgress.done();
       },
       result(ApolloQueryResult) {
         if (
           ApolloQueryResult.data &&
-          ApolloQueryResult.data.units.length > 0 === false
+          ApolloQueryResult.data.pages.length > 0 === false
         ) {
           // eslint-disable-next-line no-unused-vars
           this.$router.push("/404").catch((err) => {
             console.log(err);
+            this.loading = false;
+            NProgress.done();
           });
         } else {
           //console.log(this.id);
-          this.unit = ApolloQueryResult.data.units[0];
+          this.page = ApolloQueryResult.data.pages[0];
+          this.loading = false;
           NProgress.done();
+          attachInternalLinks(this);
+          attachSearchEvents(this);
         }
       },
     },
