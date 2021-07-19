@@ -14,6 +14,7 @@
       <span>
         <span
           style="font-weight: 700"
+          class="hover"
           @click="routeToPage(contextMenu[0].defaultPath)"
           >{{ contextMenu[0].label }}</span
         >

@@ -13,7 +13,13 @@
             v-for="(box, index) in boxes"
             :key="index"
             :color="getBoxColor(index)"
-            @click="box.url ? $router.push(box.url) : null"
+            @click="
+              box.url
+                ? $router.push(box.url).catch((err) => {
+                    $vuetify.goTo(0);
+                  })
+                : null
+            "
             :class="{
               'flex-item-3': boxesPerRow === 3,
               'flex-item-2': boxesPerRow === 2,

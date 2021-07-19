@@ -16,6 +16,7 @@
                 <ClickthroughBoxes
                   :boxes="content.clickthrough"
                   v-if="content.clickthrough && content.clickthrough.length"
+                  :boxesPerRow="content && content.showTOC ? 2 : 3"
                 ></ClickthroughBoxes>
               </div>
             </v-col>
