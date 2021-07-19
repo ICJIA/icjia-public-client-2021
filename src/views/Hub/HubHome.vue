@@ -1,16 +1,12 @@
 <template>
   <div class="pb-12">
     <div class="markdown-body">
-      <div
-        style="background: #31597a; border-bottom: 1px solid #ccc"
-        class="pt-6 pb-8"
-        data-aos="fade-in"
-      >
+      <div style="background: #fff" class="pt-6 pb-8" data-aos="fade-in">
         <v-container v-if="unit">
           <v-row>
             <v-col cols="12">
-              <h1 style="color: #fff" v-html="render(unit.title)"></h1>
-              <div v-html="render(unit.summary)" style="color: #fff"></div>
+              <h1 style="color: #000" v-html="render(unit.title)"></h1>
+              <div v-html="render(unit.summary)" style="color: #000"></div>
             </v-col>
           </v-row>
         </v-container>
@@ -19,7 +15,7 @@
         </v-container>
       </div>
 
-      <v-container class="markdown-body" style="margin-bottom: 25px">
+      <v-container class="markdown-body mt-4" style="margin-bottom: 25px">
         <v-row style="border-bottom: 1px solid #ccc">
           <v-col cols="12" md="6"
             ><div style="font-size: 28px; font-weight: 900">

@@ -1,10 +1,6 @@
 <template>
   <div class="markdown-body">
-    <div
-      style="background: #31597a; border-bottom: 1px solid #ccc"
-      class="pt-6 pb-8"
-      v-if="content"
-    >
+    <div style="background: #fff" class="pt-6 pb-8" v-if="content">
       <v-container v-if="loading">
         <v-row>
           <v-col>
@@ -17,21 +13,21 @@
           <v-col cols="12">
             <h1
               v-html="render(content.title)"
-              style="color: #fff"
+              style="color: #000"
               v-if="content.title"
             ></h1>
-            <div
+            <!-- <div
               v-html="render(content.summary)"
-              style="color: #fff"
+              style="color: #000"
               v-if="content.summary"
-            ></div>
+            ></div> -->
           </v-col>
         </v-row>
       </v-container>
     </div>
-    <BaseContent :error="error" :loading="loading">
+    <BaseContent :error="error" :loading="loading" style="margin-top: -35px">
       <template slot="content" v-if="!loading">
-        <v-container class="mt-8">
+        <v-container class="">
           <v-row v-if="content">
             <v-col cols="12" :md="content && content.showTOC ? 9 : 12">
               <div v-html="render(content.body)"></div>

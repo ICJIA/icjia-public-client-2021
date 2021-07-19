@@ -25,7 +25,7 @@
       </span>
     </div>
 
-    <v-app-bar height="45" scroll-threshold="0" color="#eee" elevate-on-scroll>
+    <v-app-bar height="45" scroll-threshold="0" color="#eee">
       <v-tabs
         show-arrows
         centered

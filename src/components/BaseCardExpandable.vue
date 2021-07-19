@@ -1,6 +1,10 @@
 <template>
   <div>
-    <v-card elevation="0" class="pt-8 px-3" @click="routeTo(item.fullPath)">
+    <v-card
+      :elevation="elevation"
+      class="pt-8 px-3"
+      @click="routeTo(item.fullPath)"
+    >
       <div
         class="d-flex mb-8"
         style="text-transform: uppercase; font-weight: 900; margin-top: -10px"
@@ -190,6 +194,10 @@ export default {
     showStatus: {
       type: Boolean,
       default: true,
+    },
+    elevation: {
+      type: Number,
+      default: 2,
     },
   },
 };

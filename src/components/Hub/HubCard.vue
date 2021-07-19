@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-card
+      elevation="2"
       class="pa-2 grid-item mb-3 info-card py-8 px-3"
       outlined
       :min-height="orientation === 'grid' ? 400 : null"

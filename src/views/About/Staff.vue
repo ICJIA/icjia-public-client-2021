@@ -1,5 +1,5 @@
 <template>
-  <div style="background: #fafafa">
+  <div style="background: #fff">
     <v-container v-if="$apollo.loading">
       <v-row>
         <v-col>

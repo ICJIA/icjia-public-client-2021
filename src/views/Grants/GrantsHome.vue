@@ -1,10 +1,6 @@
 <template>
   <div class="pb-12 markdown-body">
-    <div
-      style="background: #31597a; border-bottom: 1px solid #ccc"
-      class="pt-6 pb-8"
-      v-if="unit"
-    >
+    <div style="background: #fff" class="pt-6" v-if="unit">
       <v-container v-if="!unit">
         <v-row>
           <v-col>
@@ -17,19 +13,19 @@
           <v-col cols="12">
             <h1
               v-html="render(unit.title)"
-              style="color: #fff"
+              style="color: #000"
               v-if="unit.title"
             ></h1>
-            <div
+            <!-- <div
               v-html="render(unit.summary)"
-              style="color: #fff"
+              style="color: #000"
               v-if="unit.summary"
-            ></div>
+            ></div> -->
           </v-col>
         </v-row>
       </v-container>
     </div>
-    <v-container>
+    <v-container style="margin-top: -25px">
       <v-row>
         <v-col cols="12" md="9">
           <v-container class="mt-3" v-if="unit">

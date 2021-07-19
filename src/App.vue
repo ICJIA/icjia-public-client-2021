@@ -19,7 +19,7 @@
     </div>
     <AppNav @hook:mounted="fixA11y()"></AppNav>
 
-    <v-main style="background: #f8f8f8">
+    <v-main style="background: #fff">
       <AppNavContextV2
         :contextMenu="contextMenu"
         v-if="contextMenu"

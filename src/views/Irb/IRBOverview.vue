@@ -2,7 +2,7 @@
   <div class="pb-12">
     <div class="markdown-body" v-if="!contentLoading">
       <div
-        style="background: #31597a; border-bottom: 1px solid #ccc"
+        style="background: #fff"
         class="pt-6 pb-8"
         v-if="content"
         data-aos="fade-in"
@@ -10,8 +10,8 @@
         <v-container>
           <v-row>
             <v-col cols="12">
-              <h1 v-html="render(content.title)" style="color: #fff"></h1>
-              <div v-html="render(content.summary)" style="color: #fff"></div>
+              <h1 v-html="render(content.title)" style="color: #000"></h1>
+              <div v-html="render(content.summary)" style="color: #000"></div>
             </v-col>
           </v-row>
         </v-container>
