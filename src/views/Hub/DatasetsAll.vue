@@ -71,6 +71,7 @@ import { GET_ALL_DATASETS_QUERY } from "@/graphql/hub";
 import moment from "moment";
 import _ from "lodash";
 import nprogress from "nprogress";
+import { EventBus } from "@/event-bus";
 export default {
   name: "Datasets",
   data() {
@@ -130,6 +131,7 @@ export default {
         this.content = content;
         this.initialLoad = false;
         nprogress.done();
+        EventBus.$emit("context-label", "Datasets");
       },
     },
   },

@@ -1,6 +1,6 @@
 <template>
-  <v-container class="markdown-body">
-    <v-card class="px-2 py-10">
+  <v-container class="markdown-body pb-10">
+    <v-card class="px-5 py-10" color="#fafafa" style="border: 1px solid #ddd">
       <v-col cols="12" class="text-left">
         <h1>{{ dataset.title }}</h1>
       </v-col>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="markdown-body mt-8">
     <DatasetView v-if="dataset" :downloader="downloader" :item="dataset" />
   </div>
 </template>
@@ -9,6 +9,7 @@
 import NProgress from "nprogress";
 import { renderToHtml, parseHeadings } from "@/services/Markdown";
 import { getImageURL } from "@/services/Image";
+import { EventBus } from "@/event-bus";
 const axios = require("axios");
 const api = axios.create({
   baseURL: "https://researchhub.icjia-api.cloud",
@@ -87,6 +88,7 @@ export default {
 
         NProgress.done();
         this.loading = false;
+        EventBus.$emit("context-label", this.dataset.title);
       } catch (e) {
         console.log(e);
         this.error = e;

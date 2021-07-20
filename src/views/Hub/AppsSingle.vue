@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="markdown-body mt-8">
     <AppView v-if="app" :downloader="downloader" :item="app" />
   </div>
 </template>
@@ -9,6 +9,7 @@
 import NProgress from "nprogress";
 import { renderToHtml, parseHeadings } from "@/services/Markdown";
 import { getImageURL } from "@/services/Image";
+import { EventBus } from "@/event-bus";
 const axios = require("axios");
 const api = axios.create({
   baseURL: "https://researchhub.icjia-api.cloud",
@@ -83,7 +84,7 @@ export default {
           },
         });
         this.app = content.data.data.apps[0];
-
+        EventBus.$emit("context-label", this.app.title);
         NProgress.done();
         this.loading = false;
       } catch (e) {

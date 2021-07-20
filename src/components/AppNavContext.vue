@@ -1,5 +1,5 @@
 <template>
-  <div id="contextBar" style="border-bottom: 1px solid #fff">
+  <div id="contextBar" style="border-bottom: 1px solid #fff" v-resize="resize">
     <div
       class="pl-3 pr-9 py-2"
       style="background: #0a3a60; color: #fff; font-size: 15px"
@@ -19,8 +19,11 @@
         >
           {{ contextMenu[0].label }}</span
         >
-        <span style="font-weight: 300" v-if="contextTitle"
-          >&nbsp;&raquo;&nbsp;{{ contextTitle }}
+        <span
+          style="font-weight: 300"
+          class="hidden-sm-and-down"
+          v-if="contextTitle"
+          >&nbsp;&raquo;&nbsp;{{ contextTitle | truncate(words) }}
         </span>
         <!-- <span style="font-weight: 300" v-else
           >&nbsp;&raquo;&nbsp;{{ currentLabel }}</span
@@ -85,6 +88,7 @@ export default {
     // eslint-disable-next-line no-unused-vars
     contextTab(newValue, oldValue) {},
   },
+
   mounted() {
     //console.log(this.contextMenu[0].items);
     EventBus.$on("context-label", (title) => {
@@ -93,8 +97,16 @@ export default {
     this.selectTab();
   },
   methods: {
-    test(item) {
-      this.currentLabel = item.label;
+    resize() {
+      let words;
+      if (this.$vuetify.breakpoint.xs) {
+        words = 5;
+      } else if (this.$vuetify.breakpoint.sm) {
+        words = 8;
+      } else {
+        words = 40;
+      }
+      this.words = words;
     },
     selectTab() {
       this.contextMenu[0].items.forEach((item, index) => {
@@ -130,6 +142,7 @@ export default {
       isAtTop: false,
       disabled: false,
       more: [],
+      words: null,
     };
   },
 };

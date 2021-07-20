@@ -1,9 +1,13 @@
 <template>
   <div>
-    <v-container class="markdown-body">
+    <v-container class="markdown-body pb-12">
       <v-row>
         <v-col cols="12">
-          <v-card class="px-3 py-5">
+          <v-card
+            class="px-3 py-5"
+            color="#fafafa"
+            style="border: 1px solid #ddd"
+          >
             <h1 style="border: 0px">{{ app.title }}</h1>
 
             <v-row class="py-10" style="margin-top: -55px">
