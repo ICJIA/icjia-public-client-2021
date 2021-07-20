@@ -44,6 +44,7 @@
 import NProgress from "nprogress";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_FUNDING_QUERY } from "@/graphql/grants";
+import { EventBus } from "@/event-bus";
 export default {
   data() {
     return {
@@ -96,6 +97,7 @@ export default {
           this.funding = ApolloQueryResult.data.grants[0];
           this.loading = false;
           NProgress.done();
+          EventBus.$emit("context-label", this.funding.title);
         }
       },
     },

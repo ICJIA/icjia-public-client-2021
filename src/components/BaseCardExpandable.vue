@@ -5,6 +5,7 @@
       class="pt-8 px-3"
       @click="routeTo(item.fullPath)"
       color="#fcfcfc"
+      style="border: 1px solid #ddd"
     >
       <div
         class="d-flex mb-8"

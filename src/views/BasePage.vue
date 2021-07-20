@@ -1,5 +1,5 @@
 <template>
-  <div class="markdown-body">
+  <div class="markdown-body mt-4">
     <BaseContent :error="error" :loading="loading">
       <template slot="content" v-if="!loading">
         <Splash
@@ -39,6 +39,7 @@ import NProgress from "nprogress";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
+import { EventBus } from "@/event-bus.js";
 export default {
   data() {
     return {
@@ -87,6 +88,7 @@ export default {
           //console.log(this.id);
           this.content = ApolloQueryResult.data.pages[0];
           this.loading = false;
+          EventBus.$emit("context-label", this.content.title);
           NProgress.done();
           attachInternalLinks(this);
           attachSearchEvents(this);

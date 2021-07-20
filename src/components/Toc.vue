@@ -69,7 +69,7 @@ export default {
     scrollTo(id) {
       //console.log(id);
 
-      this.$vuetify.goTo(`#${id}`, { offset: this.scrollOffset });
+      this.$vuetify.goTo(`#${id}`, { offset: 88 });
     },
     setToc() {
       const sections = Array.from(document.querySelectorAll("h2"));
@@ -95,7 +95,7 @@ export default {
       window.onscroll = () => {
         var scrollPosition =
           document.documentElement.scrollTop || document.body.scrollTop;
-        scrollPosition = scrollPosition + this.scrollOffset + 10;
+        scrollPosition = scrollPosition + this.scrollOffset + 35;
         const tocItems = document.querySelectorAll(".tocItem");
         console.log(scrollPosition);
         if (scrollPosition < 150) {

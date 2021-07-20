@@ -16,11 +16,13 @@
           style="font-weight: 700"
           class="hover"
           @click="routeToPage(contextMenu[0].defaultPath)"
-          >{{ contextMenu[0].label }}</span
         >
-        <span
-          style="font-weight: 300"
-          v-if="currentLabel && currentLabel.length"
+          {{ contextMenu[0].label }}</span
+        >
+        <span style="font-weight: 300" v-if="contextTitle"
+          >&nbsp;&raquo;&nbsp;{{ contextTitle }}
+        </span>
+        <span style="font-weight: 300" v-else
           >&nbsp;&raquo;&nbsp;{{ currentLabel }}</span
         >
       </span>
@@ -85,7 +87,9 @@ export default {
   },
   mounted() {
     //console.log(this.contextMenu[0].items);
-
+    EventBus.$on("context-label", (title) => {
+      this.contextTitle = title;
+    });
     this.selectTab();
   },
   methods: {
@@ -122,6 +126,7 @@ export default {
       contextDrawer: true,
       contextTab: null,
       currentLabel: null,
+      contextTitle: null,
       isAtTop: false,
       disabled: false,
       more: [],

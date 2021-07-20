@@ -16,11 +16,12 @@
                 :class="{
                   'text-center':
                     $vuetify.breakpoint.sm || $vuetify.breakpoint.xs,
-                  'text-right':
+                  'text-left':
                     $vuetify.breakpoint.md ||
                     $vuetify.breakpoint.lg ||
                     $vuetify.breakpoint.xl,
                 }"
+                style="margin-top: -25px"
               >
                 <v-btn-toggle v-model="toggle_nofoStatus">
                   <v-btn small> Current </v-btn>
@@ -62,7 +63,7 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 import { attachInternalLinks } from "@/utils/dom";
-
+import { EventBus } from "@/event-bus";
 import { GET_SINGLE_UNIT_QUERY } from "@/graphql/units";
 import {
   GET_ALL_PROGRAMS_QUERY,
@@ -262,6 +263,7 @@ export default {
           }));
           this.filterGrants("current");
           NProgress.done();
+          EventBus.$emit("context-label", "ICJIA Funding Opportunities");
         }
       },
     },

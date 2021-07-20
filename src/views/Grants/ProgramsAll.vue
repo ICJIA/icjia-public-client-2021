@@ -26,6 +26,7 @@
                     $vuetify.breakpoint.lg ||
                     $vuetify.breakpoint.xl,
                 }"
+                style="margin-top: -25px"
               >
                 <v-btn-toggle v-model="toggle_category">
                   <v-btn small> All Programs </v-btn>
@@ -46,6 +47,7 @@
                     $vuetify.breakpoint.lg ||
                     $vuetify.breakpoint.xl,
                 }"
+                style="margin-top: -30px"
               >
                 <v-btn-toggle v-model="toggle_status">
                   <v-btn small> Current </v-btn>
