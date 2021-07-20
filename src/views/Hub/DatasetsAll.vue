@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-10 pb-12 markdown-body">
+  <div class="mt-2 pb-12 markdown-body">
     <v-container>
       <v-row>
         <v-col cols="12">
@@ -12,13 +12,13 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="!initialLoad">
-        <v-col class="text-left" style="margin-top: -35px">
+      <v-row v-if="!initialLoad" style="margin-top: -25px">
+        <v-col class="text-left" md="6">
           <div style="font-weight: 900; font-size: 12px">
             Showing: {{ content.length }} of {{ content.length }} datasets
           </div>
         </v-col>
-        <v-col cols="12" class="hidden-sm-and-down">
+        <v-col cols="12" md="6" class="hidden-sm-and-down">
           <div class="text-right">
             <v-btn-toggle v-model="orientation" borderless>
               <v-btn value="list" small aria-label="List view">

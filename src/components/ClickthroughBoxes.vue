@@ -13,13 +13,7 @@
             v-for="(box, index) in boxes"
             :key="index"
             :color="getBoxColor(index)"
-            @click="
-              box.url
-                ? $router.push(box.url).catch((err) => {
-                    $vuetify.goTo(0);
-                  })
-                : null
-            "
+            @click="routeToURL(box.url)"
             :class="{
               'flex-item-3': boxesPerRow === 3,
               'flex-item-2': boxesPerRow === 2,
@@ -71,6 +65,16 @@ export default {
     // eslint-disable-next-line no-unused-vars
     getBoxColor(index) {
       return "#f1f1f1";
+    },
+    routeToURL(url) {
+      if (url.indexOf("http") === 0) {
+        //external
+        window.open(url, "noopener,resizable,scrollbars").focus();
+      } else {
+        this.$router.push(url).catch(() => {
+          this.$vuetify.goTo(0);
+        });
+      }
     },
   },
   props: {

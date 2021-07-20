@@ -347,6 +347,7 @@ export default {
     console.log("click events removed");
   },
   async mounted() {
+    EventBus.$emit("context-label", this.item.title);
     await this.$nextTick(() => {
       window.jQuery('[id*="fnref"]').on("click", (e) => {
         e.preventDefault();

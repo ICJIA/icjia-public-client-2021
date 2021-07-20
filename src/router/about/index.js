@@ -25,6 +25,14 @@ const about = [
       import(/* webpackChunkName: "hub" */ "@/views/About/PublicationsAll.vue"),
   },
   {
+    path: "/about/employment",
+    name: "ICJIAAllEmployment",
+    // eslint-disable-next-line no-unused-vars
+
+    component: () =>
+      import(/* webpackChunkName: "hub" */ "@/views/About/EmploymentAll.vue"),
+  },
+  {
     path: "/about/publications/:slug",
     name: "ICJIAPublicationsSingle",
     component: () =>

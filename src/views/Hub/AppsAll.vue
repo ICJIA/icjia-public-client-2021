@@ -13,12 +13,17 @@
       </v-row>
 
       <v-row v-if="!loading">
-        <v-col class="text-left" style="margin-top: -35px">
+        <v-col class="text-left" style="margin-top: -35px" cols="12" md="6">
           <div style="font-weight: 900; font-size: 12px">
             Showing: {{ content.length }} of {{ content.length }} web apps
           </div>
         </v-col>
-        <v-col cols="12" class="hidden-sm-and-down">
+        <v-col
+          cols="12"
+          md="6"
+          style="margin-top: -35px"
+          class="hidden-sm-and-down"
+        >
           <div class="text-right">
             <v-btn-toggle v-model="orientation" borderless>
               <v-btn value="list" small aria-label="List view">
@@ -68,6 +73,7 @@ import { GET_ALL_APPS_QUERY } from "@/graphql/hub";
 import moment from "moment";
 import _ from "lodash";
 import nprogress from "nprogress";
+import { EventBus } from "@/event-bus";
 export default {
   name: "Apps",
   data() {
@@ -128,6 +134,7 @@ export default {
         this.initialLoad = false;
         this.loading = false;
         nprogress.done();
+        EventBus.$emit("context-label", "Applications");
       },
     },
   },

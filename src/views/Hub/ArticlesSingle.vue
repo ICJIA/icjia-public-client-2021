@@ -20,6 +20,7 @@
 <script>
 import NProgress from "nprogress";
 import { renderToHtml } from "@/services/Markdown";
+//import { EventBus } from "@/event-bus";
 const axios = require("axios");
 const api = axios.create({
   baseURL: "https://researchhub.icjia-api.cloud",

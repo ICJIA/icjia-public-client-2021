@@ -21,7 +21,7 @@
           </div>
 
           <div class="text-center mb-10">
-            <h1 class="mb-6">ICJIA Events</h1>
+            <h1 class="mb-6">ICJIA Event Calendar</h1>
             <EventToggle
               @toggleEventView="toggleEventView"
               @toggleUpcoming="toggleUpcoming"
@@ -387,6 +387,7 @@ export default {
         this.filterUpcoming();
         this.isLoading = false;
         NProgress.done();
+        EventBus.$emit("context-label", "ICJIA Event Calendar");
       },
     },
   },

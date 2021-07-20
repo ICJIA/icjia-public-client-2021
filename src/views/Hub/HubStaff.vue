@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container class="pt-10 markdown-body">
+    <v-container class="markdown-body">
       <v-row>
         <v-col>
           <h1>Research & Analysis Staff</h1>
@@ -11,14 +11,19 @@
     <div v-if="!loading" class="mb-12 markdown-body">
       <v-container>
         <v-row>
-          <v-col class="text-right" style="margin-top: -50px">
+          <v-col class="text-left" style="margin-top: -50px">
             <div style="font-weight: 900; font-size: 12px" class="mb-12">
               Showing: {{ content.length }} of {{ content.length }} R&A staff
               members
             </div>
           </v-col>
-          <v-col v-for="(item, i) in content" :key="i" cols="12">
-            <BiographyCard :item="item"></BiographyCard>
+          <v-col
+            v-for="(item, i) in content"
+            :key="i"
+            cols="12"
+            style="margin-top: -25px"
+          >
+            <BiographyCard :item="item" class="mb-5"></BiographyCard>
           </v-col>
         </v-row>
       </v-container>
@@ -89,6 +94,7 @@ export default {
           this.content = _.orderBy(this.content, ["sortModifier"], ["asc"]);
           this.loading = false;
           NProgress.done();
+          EventBus.$emit("context-label", "Staff");
         }
       },
     },

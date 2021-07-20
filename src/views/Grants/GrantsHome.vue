@@ -1,7 +1,7 @@
 <template>
   <div class="pb-12 markdown-body mt-2">
     <template>
-      <div class="markdown-body">
+      <div>
         <BaseContent :error="error" :loading="$apollo.loading">
           <template slot="content">
             <v-container style="margin-top: -15px">
@@ -62,7 +62,7 @@
 // eslint-disable-next-line no-unused-vars
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
-
+import { EventBus } from "@/event-bus";
 import {
   GET_ALL_PROGRAMS_QUERY,
   GET_ALL_FUNDING_QUERY,
@@ -267,6 +267,7 @@ export default {
           }));
           this.filterGrants("current");
           NProgress.done();
+          EventBus.$emit("context-label", "Home");
         }
       },
     },

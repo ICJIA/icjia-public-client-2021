@@ -12,11 +12,13 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="!initialLoad">
-        <div style="font-weight: 900; font-size: 12px">
-          Showing: {{ start + articleLimit }} of {{ articleCount }} articles
-        </div>
-        <v-col cols="12" class="hidden-sm-and-down">
+      <v-row v-if="!initialLoad" style="margin-top: -25px">
+        <v-col cols="12" md="6" class="hidden-sm-and-down">
+          <div style="font-weight: 900; font-size: 12px">
+            Showing: {{ start + articleLimit }} of {{ articleCount }} articles
+          </div>
+        </v-col>
+        <v-col cols="12" md="6" class="hidden-sm-and-down">
           <div class="text-right">
             <v-btn-toggle v-model="orientation" borderless>
               <v-btn value="list" small aria-label="List view">
@@ -94,6 +96,7 @@ import {
 import moment from "moment";
 import _ from "lodash";
 import nprogress from "nprogress";
+import { EventBus } from "@/event-bus";
 export default {
   name: "Articles",
   data() {
@@ -185,6 +188,7 @@ export default {
         this.initialLoad = false;
         this.loading = false;
         nprogress.done();
+        EventBus.$emit("context-label", "Articles");
       },
     },
   },

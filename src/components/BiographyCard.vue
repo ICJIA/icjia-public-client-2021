@@ -3,7 +3,7 @@
     <v-card
       elevation="2"
       class="mb-2 py-8 px-2"
-      style="border-bottom: 1px solid #eee"
+      style="border: 1px solid #ddd"
       v-if="item"
       :color="color"
     >

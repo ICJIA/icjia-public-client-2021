@@ -1,10 +1,11 @@
 <template>
-  <div>
+  <div class="markdown-body">
     <BaseContent :error="error" :loading="$apollo.loading">
       <template slot="content">
         <v-container>
           <v-row>
             <v-col cols="12">
+              <h1>Latest News</h1>
               <div class="text-right">
                 <Toggle @toggle="toggle"></Toggle>
               </div>
@@ -57,6 +58,7 @@
 <script>
 import NProgress from "nprogress";
 import { GET_ALL_NEWS_QUERY } from "@/graphql/news";
+import { EventBus } from "@/event-bus";
 // import moment from "moment";
 // import _ from "lodash";
 
@@ -106,13 +108,14 @@ export default {
         this.error = JSON.stringify(error.message);
       },
       result(ApolloQueryResult) {
-        NProgress.done();
         let posts = ApolloQueryResult.data.posts.map((e) => ({
           ...e,
           fullPath: `/news/${e.slug}/`,
           contentType: "News",
         }));
         this.news = posts;
+        EventBus.$emit("context-label", "Latest News");
+        NProgress.done();
       },
     },
   },

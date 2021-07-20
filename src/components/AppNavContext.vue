@@ -22,9 +22,9 @@
         <span style="font-weight: 300" v-if="contextTitle"
           >&nbsp;&raquo;&nbsp;{{ contextTitle }}
         </span>
-        <span style="font-weight: 300" v-else
+        <!-- <span style="font-weight: 300" v-else
           >&nbsp;&raquo;&nbsp;{{ currentLabel }}</span
-        >
+        > -->
       </span>
     </div>
 
