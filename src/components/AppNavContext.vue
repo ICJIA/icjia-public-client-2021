@@ -1,71 +1,71 @@
 <template>
-  <div>
-    <v-app-bar
-      dense
-      height="35"
-      color="#133e60"
-      class="hidden-md-and-up hover"
-      style="border-bottom: 1px solid #aaa"
-      absolute
+  <div id="contextBar" style="border-bottom: 1px solid #fff">
+    <div
+      class="pl-3 pr-9 py-2"
+      style="background: #0a3a60; color: #fff; font-size: 15px"
+      :class="{
+        'text-left':
+          $vuetify.breakpoint.md ||
+          $vuetify.breakpoint.lg ||
+          $vuetify.breakpoint.xl,
+        'text-center': $vuetify.breakpoint.sm || $vuetify.breakpoint.xs,
+      }"
     >
-      <v-spacer></v-spacer>
-      <span
-        style="color: #fff; font-size: 12px; font-weight: 900"
-        @click="routeToPage(contextMenu[0].defaultPath)"
-      >
-        {{ contextMenu[0].label.toUpperCase() }}</span
-      >
-
-      <v-spacer></v-spacer>
-    </v-app-bar>
-    <v-app-bar
-      dense
-      height="45"
-      scroll-threshold="0"
-      color="#0a3a60"
-      elevate-on-scroll
-    >
-      <div
-        style="font-weight: 900; text-transform: uppercase; color: #fff"
-        class="hidden-sm-and-down hover"
-        id="context-title"
-        @click="routeToPage(contextMenu[0].defaultPath)"
-      >
-        {{ contextMenu[0].label }}
-      </div>
-
-      <v-spacer></v-spacer>
-      <v-card elevation="0">
-        <v-tabs
-          dark
-          show-arrows
-          center-active
-          v-model="contextTab"
-          height="45"
-          optional
-          class="context"
+      <span>
+        <span
+          style="font-weight: 700"
+          class="hover"
+          @click="routeToPage(contextMenu[0].defaultPath)"
+          >{{ contextMenu[0].label }}</span
         >
-          <v-tabs-slider></v-tabs-slider>
+        <span
+          style="font-weight: 300"
+          v-if="currentLabel && currentLabel.length"
+          >&nbsp;&raquo;&nbsp;{{ currentLabel }}</span
+        >
+      </span>
+    </div>
 
-          <v-tab
-            style="background: #0a3a60 !important"
-            v-for="(item, index) in contextMenu[0].items"
-            :key="index"
-            @click="
-              item.path && item.path.length
-                ? routeToPage(item.path)
-                : fireEvent(item.event)
-            "
-          >
-            {{ item.label }}
-            <v-icon v-if="item.icon" right small>{{ item.icon }}</v-icon>
-          </v-tab>
-        </v-tabs>
-      </v-card>
-      <!-- <v-spacer v-if="!isAtTop"></v-spacer> -->
-      <v-spacer
-        v-if="$vuetify.breakpoint.xs || $vuetify.breakpoint.sm"
-      ></v-spacer>
+    <v-app-bar height="30" scroll-threshold="0" color="#eee">
+      <v-tabs
+        show-arrows
+        centered
+        v-model="contextTab"
+        center-active
+        height="30"
+        optional
+        class="context px-8"
+      >
+        <v-tabs-slider color="black"></v-tabs-slider>
+
+        <v-tab
+          style="background: #eee !important"
+          v-for="(item, index) in contextMenu[0].items"
+          :key="index"
+          @click="
+            item.path && item.path.length
+              ? routeToPage(item.path)
+              : fireEvent(item.event)
+          "
+        >
+          {{ item.label }}
+          <v-icon v-if="item.icon" right small>{{ item.icon }}</v-icon>
+        </v-tab>
+        <v-menu v-if="more.length" bottom left>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn text class="align-self-center mr-4" v-bind="attrs" v-on="on">
+              more
+              <v-icon right> mdi-menu-down </v-icon>
+            </v-btn>
+          </template>
+
+          <v-list class="grey lighten-3">
+            <v-list-item v-for="item in more" :key="item">
+              {{ item }}
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-tabs>
     </v-app-bar>
   </div>
 </template>
@@ -87,25 +87,22 @@ export default {
     //console.log(this.contextMenu[0].items);
 
     this.selectTab();
-
-    let distance = window.$("#context-bar").offset().top;
-
-    let vm = this;
-    window.$(window).scroll(function () {
-      if (window.$(this).scrollTop() >= distance) {
-        vm.isAtTop = true;
-      } else {
-        vm.isAtTop = false;
-      }
-    });
   },
   methods: {
+    test(item) {
+      this.currentLabel = item.label;
+    },
     selectTab() {
       this.contextMenu[0].items.forEach((item, index) => {
-        if (this.$route.fullPath === item.path) {
+        let url = this.$route.fullPath;
+        // add trailing slash if not present
+        url = url.replace(/\/$|$/, "/");
+        if (url === item.path) {
           this.contextTab = index;
+          this.currentLabel = item.label;
         }
       });
+      this.currentTab = "test";
     },
     fireEvent() {
       EventBus.$emit("search");
@@ -115,8 +112,6 @@ export default {
       });
     },
     routeToPage(page) {
-      //   if (page === "About the Research Hub") return;
-      // console.log("route: ", page);
       this.$router.push(page).catch(() => {
         this.$vuetify.goTo(0);
       });
@@ -126,8 +121,10 @@ export default {
     return {
       contextDrawer: true,
       contextTab: null,
+      currentLabel: null,
       isAtTop: false,
       disabled: false,
+      more: [],
     };
   },
 };
