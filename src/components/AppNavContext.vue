@@ -107,7 +107,7 @@ export default {
       } else if (this.$vuetify.breakpoint.sm) {
         words = 8;
       } else {
-        words = 40;
+        words = 15;
       }
       this.words = words;
     },
