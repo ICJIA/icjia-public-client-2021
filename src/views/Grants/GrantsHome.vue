@@ -126,6 +126,7 @@ export default {
   async mounted() {
     NProgress.start();
     //console.log("fetch here");
+    EventBus.$emit("context-label", "Home");
   },
   methods: {
     render(content) {
@@ -267,7 +268,6 @@ export default {
           }));
           this.filterGrants("current");
           NProgress.done();
-          EventBus.$emit("context-label", "Home");
         }
       },
     },

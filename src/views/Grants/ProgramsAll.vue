@@ -82,7 +82,7 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 import { attachInternalLinks } from "@/utils/dom";
-
+import { EventBus } from "@/event-bus";
 import { GET_ALL_PROGRAMS_QUERY } from "@/graphql/grants";
 import { renderToHtml } from "@/services/Markdown";
 import _ from "lodash";
@@ -134,6 +134,7 @@ export default {
   async mounted() {
     NProgress.start();
     //console.log("fetch here");
+    EventBus.$emit("context-label", "Grant Programs");
   },
   methods: {
     render(content) {

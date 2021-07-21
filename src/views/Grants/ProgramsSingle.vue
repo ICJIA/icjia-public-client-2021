@@ -23,7 +23,7 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 import { attachInternalLinks } from "@/utils/dom";
-
+import { EventBus } from "@/event-bus";
 import { GET_SINGLE_PROGRAM_QUERY } from "@/graphql/grants";
 import { renderToHtml } from "@/services/Markdown";
 // import _ from "lodash";
@@ -77,6 +77,7 @@ export default {
             contentType: "program",
           }));
           this.program = this.program[0];
+          EventBus.$emit("context-label", this.program.title);
           NProgress.done();
         }
       },
