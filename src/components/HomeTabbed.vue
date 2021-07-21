@@ -6,10 +6,12 @@
         v-model="fundingModel"
         grow
         class="mt-2"
-        style="border-top: 1px solid #d8d8d8"
+        style="border-top: 0px solid #d8d8d8"
       >
         <v-tab>Funding</v-tab>
+        <v-tab>Meetings </v-tab>
         <v-tab>Employment </v-tab>
+
         <v-tab-item :style="`background: #fff !important; `">
           <div style="height: 15px; background: #fff !important"></div>
 
@@ -109,6 +111,13 @@
               <p>{{ grant.summary }}</p>
             </div>
           </v-card>
+        </v-tab-item>
+
+        <v-tab-item :style="`background: #fff !important;`">
+          <div style="height: 15px; background: #fff !important"></div>
+          <v-sheet style="min-height: 200px !important">
+            <h2>TODO: Upcoming Meetings here</h2>
+          </v-sheet>
         </v-tab-item>
 
         <v-tab-item :style="`background: #fff !important;`">
@@ -252,6 +261,7 @@ export default {
   font-weight: 900 !important;
   background: #e8e8e8;
   color: #333 !important;
+  border: 1px solid #ccc;
 }
 
 * >>> .theme--light.v-tabs-items {
