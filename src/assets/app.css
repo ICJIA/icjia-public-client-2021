@@ -187,11 +187,11 @@
 .author-name {
   font-weight: 700 !important;
   color: #555 !important;
-  text-decoration: none !important;
+  text-decoration: underline !important;
 }
 .author-name:hover {
-  text-decoration: underline !important;
   color: #777 !important;
+  text-decoration: none !important;
 }
 
 .videoWrapper {

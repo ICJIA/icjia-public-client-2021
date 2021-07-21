@@ -20,12 +20,19 @@
           ></v-img>
         </v-avatar>
         <span>
-          <span
-            class="text-h5 author-name hover ml-3"
-            @click="search(item.fullName)"
-            >{{ item.fullName }}<span v-if="item.suffix">,&nbsp;</span
-            >{{ item.suffix }}
-          </span>
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <span
+                class="text-h5 author-name hover ml-3"
+                @click="search(item.fullName)"
+                v-bind="attrs"
+                v-on="on"
+                >{{ item.fullName }}<span v-if="item.suffix">,&nbsp;</span
+                >{{ item.suffix }}
+              </span>
+            </template>
+            <span>Search ICJIA for {{ item.fullName }}</span>
+          </v-tooltip>
           <span v-if="showLink">
             <span>&nbsp;|&nbsp;</span>
             <v-btn
