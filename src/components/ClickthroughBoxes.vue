@@ -98,7 +98,7 @@ export default {
     },
     disableAnimation: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
 };
