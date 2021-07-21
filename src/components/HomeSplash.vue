@@ -67,6 +67,7 @@
                                   <v-list-item
                                     v-for="(item, index) in button.menuItem"
                                     :key="index"
+                                    class="hover"
                                   >
                                     <v-list-item-title>{{
                                       item.label
