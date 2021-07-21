@@ -12,6 +12,9 @@
       }"
     >
       <span>
+        <span style="font-weight: 700" class="hover" @click="$router.push('/')"
+          >ICJIA &nbsp;&raquo;&nbsp;</span
+        >
         <span
           style="font-weight: 700"
           class="hover"
@@ -31,13 +34,13 @@
       </span>
     </div>
 
-    <v-app-bar height="30" scroll-threshold="0" color="#eee">
+    <v-app-bar height="35" scroll-threshold="0" color="#eee">
       <v-tabs
         show-arrows
         centered
         v-model="contextTab"
         center-active
-        height="30"
+        height="35"
         optional
         class="context px-8"
       >

@@ -17,11 +17,10 @@
         <v-col>
           <div v-if="$apollo.error" class="text-center error apollo">
             {{ error }}
-            <div>Please <a href="/login">login again</a>.</div>
           </div>
 
           <div class="text-center mb-10">
-            <h1 class="mb-6">ICJIA Event Calendar</h1>
+            <h1 class="mb-6">ICJIA Events</h1>
             <EventToggle
               @toggleEventView="toggleEventView"
               @toggleUpcoming="toggleUpcoming"
@@ -326,7 +325,7 @@ export default {
           } else {
             meeting.timed = false;
           }
-          meeting.color = "blue darken-4";
+          meeting.color = "grey darken-4";
           meeting.show = false;
           meeting.fullPath = `/meetings/${meeting.slug}`;
           meeting.contentType = "meeting";

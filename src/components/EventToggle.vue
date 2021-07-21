@@ -29,7 +29,7 @@
           aria-label="Show/Hide Upcoming events"
           style="font-size: 12px"
         >
-          Upcoming and current events only</label
+          Upcoming and ongoing events only</label
         >
       </div>
     </div>

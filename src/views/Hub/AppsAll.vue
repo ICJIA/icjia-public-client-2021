@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col cols="12">
-          <h1>ICJIA Web Applications</h1>
+          <h1>Web Applications</h1>
         </v-col>
       </v-row>
       <v-row v-if="loading">
@@ -103,6 +103,7 @@ export default {
   },
   mounted() {
     nprogress.start();
+    EventBus.$emit("context-label", "Web Applications");
   },
   apollo: {
     apps: {
@@ -134,7 +135,6 @@ export default {
         this.initialLoad = false;
         this.loading = false;
         nprogress.done();
-        EventBus.$emit("context-label", "Applications");
       },
     },
   },

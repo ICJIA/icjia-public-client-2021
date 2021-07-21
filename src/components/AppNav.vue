@@ -58,7 +58,7 @@
             v-bind="attrs"
             v-on="on"
             style="font-weight: 900 !important; font-size: 16px"
-            >TEST MENU<v-icon right small>arrow_drop_down</v-icon>
+            >DEVELOPMENT MENU<v-icon right small>arrow_drop_down</v-icon>
           </v-btn>
         </template>
         <v-list nav dense elevation="2">
@@ -126,7 +126,7 @@
         <span>Search</span>
       </v-tooltip>
 
-      <span
+      <!-- <span
         style="
           font-weight: 900;
           background: #0e4471;
@@ -136,7 +136,7 @@
         "
         class="mr-3 ml-5"
         >THIS IS A DRAFT SITE</span
-      >
+      > -->
     </v-app-bar>
 
     <v-navigation-drawer

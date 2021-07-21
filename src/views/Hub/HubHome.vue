@@ -187,6 +187,7 @@ import {
   getHubArticles,
   getHubDatasets,
 } from "@/services/ResearchHub";
+
 export default {
   data() {
     return {
@@ -204,6 +205,7 @@ export default {
   async mounted() {
     NProgress.start();
     //console.log("fetch here");
+    EventBus.$emit("context-label", "Home");
 
     this.apps = await getHubApplications(3);
     this.apps = this.apps.map((e) => ({

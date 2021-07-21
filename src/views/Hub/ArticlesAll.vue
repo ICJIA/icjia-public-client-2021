@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col cols="12">
-          <h1>ICJIA Articles</h1>
+          <h1>Articles</h1>
         </v-col>
       </v-row>
       <v-row v-if="initialLoad">
@@ -136,6 +136,7 @@ export default {
   },
   mounted() {
     nprogress.start();
+    EventBus.$emit("context-label", "Articles");
   },
   apollo: {
     articlesConnection: {
@@ -188,7 +189,6 @@ export default {
         this.initialLoad = false;
         this.loading = false;
         nprogress.done();
-        EventBus.$emit("context-label", "Articles");
       },
     },
   },
