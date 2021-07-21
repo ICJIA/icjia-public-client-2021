@@ -1,8 +1,8 @@
 <template>
   <v-app-bar
     flat
-    color="grey lighten-5"
-    style="border-top: 1px solid #ddd !important"
+    color="white"
+    style="border-top: 1px solid #aaa !important"
     class="mb-0"
   >
     <div

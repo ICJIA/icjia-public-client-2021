@@ -39,13 +39,7 @@
               border-right: 1px solid #e8e8e8;
             "
           >
-            <div
-              style="
-                height: 15px;
-                background: #fff !important;
-                border-top: 1px solid #e8e8e8;
-              "
-            ></div>
+            <div style="height: 15px; background: #fff !important"></div>
             <HomeNews :items="news" :loading="loading"></HomeNews
           ></v-col>
           <v-col

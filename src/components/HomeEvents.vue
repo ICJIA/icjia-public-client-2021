@@ -7,12 +7,7 @@
     ></WidgetBar>
     <v-card
       elevation="0"
-      style="
-        margin-top: -5px;
-        margin-bottom: 18px;
-        border-top: 1px solid #e8e8e8;
-        border-bottom: 1px solid #d8d8d8;
-      "
+      style="margin-top: -5px; margin-bottom: 18px"
       v-if="!loading"
     >
       <div
