@@ -11,6 +11,7 @@
             class="elevation-2 px-8 py-10 box text-center hover info-card"
             style="border: 1px solid #ddd"
             v-for="(box, index) in boxes"
+            :data-aos="getAnimation()"
             :key="index"
             :color="getBoxColor(index)"
             @click="routeToURL(box.url)"
@@ -63,6 +64,11 @@ export default {
   },
   methods: {
     // eslint-disable-next-line no-unused-vars
+    getAnimation() {
+      if (this.disableAnimation) return null;
+      return this.animation;
+    },
+    // eslint-disable-next-line no-unused-vars
     getBoxColor(index) {
       return "#f1f1f1";
     },
@@ -85,6 +91,14 @@ export default {
     boxesPerRow: {
       type: Number,
       default: 3,
+    },
+    animation: {
+      type: String,
+      default: "zoom-in",
+    },
+    disableAnimation: {
+      type: Boolean,
+      default: true,
     },
   },
 };

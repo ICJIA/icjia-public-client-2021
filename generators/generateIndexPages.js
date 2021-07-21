@@ -36,6 +36,11 @@ axios
   .post("/graphql", { query, validateStatus: (status) => status === 200 })
   .then((res) => {
     let pages = res.data.data.pages;
+    pages.forEach((page) => {
+      if (page.category === "informationSystems") {
+        page.category = "information-systems";
+      }
+    });
     pages = pages.map((p) => {
       let imagePath;
       if (p.splash) {

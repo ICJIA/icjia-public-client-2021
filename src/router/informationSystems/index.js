@@ -1,14 +1,14 @@
 const informationSystems = [
   {
     path: "/information-systems/",
-    name: "ISUOvervierw",
+    name: "ISUOverview",
     component: () =>
       import(
         /* webpackChunkName: "isu" */ "@/views/InformationSystems/ISUHome.vue"
       ),
   },
   {
-    path: "/information-systems/infonet",
+    path: "/information-systems/infonet/",
     name: "Infonet",
     component: () =>
       import(
@@ -17,7 +17,7 @@ const informationSystems = [
   },
 
   {
-    path: "/information-systems/isu-staff",
+    path: "/information-systems/isu-staff/",
     name: "ISUStaff",
     component: () =>
       import(

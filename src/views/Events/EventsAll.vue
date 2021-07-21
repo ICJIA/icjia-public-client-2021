@@ -166,7 +166,7 @@ export default {
     selectedID: null,
     selectedOpen: false,
     filteredEvents: [],
-    display: "calendar",
+    display: "list",
     events: [],
     meetings: [],
     grants: [],
@@ -387,6 +387,7 @@ export default {
         this.filterUpcoming();
         this.isLoading = false;
         NProgress.done();
+
         EventBus.$emit("context-label", "ICJIA Event Calendar");
       },
     },
