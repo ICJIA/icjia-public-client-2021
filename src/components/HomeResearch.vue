@@ -173,5 +173,6 @@ export default {
   font-weight: 900 !important;
   background: #e8e8e8 !important;
   color: #000 !important;
+  border: 1px solid #ddd;
 }
 </style>

@@ -2,7 +2,7 @@
   <v-app-bar
     flat
     color="white"
-    style="border-top: 1px solid #aaa !important"
+    style="border-top: 1px solid #ccc !important"
     class="mb-0"
   >
     <div
