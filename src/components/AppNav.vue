@@ -42,99 +42,80 @@
 
       <v-spacer></v-spacer>
 
-      <span
-        style="font-weight: 900; background: #0e4471; color: #fff; padding: 5px"
-        class="mr-3"
-        >THIS IS A DRAFT SITE</span
-      >
-
-      <!-- <v-menu
+      <v-menu
         bottom
         offset-y
         origin="center center"
         transition="scale-transition"
-        nudge-left="100px"
+        nudge-left="20px"
         style="z-index: 100000"
-        open-on-hover
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             text
+            large
             class="hidden-sm-and-down navItem"
             v-bind="attrs"
             v-on="on"
-            >Home 1<v-icon right small>arrow_drop_down</v-icon>
+            style="font-weight: 900 !important; font-size: 16px"
+            >TEST MENU<v-icon right small>arrow_drop_down</v-icon>
           </v-btn>
         </template>
         <v-list nav dense elevation="2">
           <v-list-item class="appNav" to="/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
-                >Version A: Original with tabbed content</v-list-item-title
+                >Home</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item class="appNav" to="/version-b">
+          <v-list-item class="appNav" to="/grants/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
-                >Version B: Original without tabbed content</v-list-item-title
+                >Federal and State Grants Unit</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item class="appNav" to="/information-systems/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >Information Systems Unit</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item class="appNav" to="/researchhub/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >Research Hub</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item class="appNav" to="/irb/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >Institutional Review Board</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
           <v-divider></v-divider>
-
-          <v-list-item class="appNav" to="/version-c">
+          <v-list-item class="appNav" to="/news/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
-                >Version C: Click-through boxes near top (Four
-                boxes)</v-list-item-title
+                >News & Information</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
-          <v-list-item class="appNav" to="/version-d">
+          <v-list-item class="appNav" to="/events/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
-                >Version D: Click-through boxes near bottom (Four
-                boxes)</v-list-item-title
-              >
-            </v-list-item-content>
-          </v-list-item>
-          <v-divider> </v-divider>
-          <v-list-item class="appNav" to="/version-e">
-            <v-list-item-content class="hover">
-              <v-list-item-title style="font-size: 12px !important"
-                >Version E: News Column. Featured Programs. Research in
-                horizontal tabs.</v-list-item-title
-              >
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item class="appNav" to="/version-f">
-            <v-list-item-content class="hover">
-              <v-list-item-title style="font-size: 12px !important"
-                >Version F: Featured Programs v2 (Research in horizontal
-                tabs)</v-list-item-title
-              >
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item class="appNav" to="/version-g">
-            <v-list-item-content class="hover">
-              <v-list-item-title style="font-size: 12px !important"
-                >Version G: 'Spotlight' instead of 'Featured' (Research in
-                horizontal tabs)</v-list-item-title
-              >
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item class="appNav" to="/version-h">
-            <v-list-item-content class="hover">
-              <v-list-item-title style="font-size: 12px !important"
-                >Version H: Vertical Tabs for Research</v-list-item-title
+                >Events</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
         </v-list>
-      </v-menu> -->
+      </v-menu>
 
       <v-tooltip left>
         <template v-slot:activator="{ on, attrs }">
@@ -144,6 +125,18 @@
         </template>
         <span>Search</span>
       </v-tooltip>
+
+      <span
+        style="
+          font-weight: 900;
+          background: #0e4471;
+          color: #fff;
+          padding: 5px;
+          font-size: 12px;
+        "
+        class="mr-3 ml-5"
+        >THIS IS A DRAFT SITE</span
+      >
     </v-app-bar>
 
     <v-navigation-drawer
