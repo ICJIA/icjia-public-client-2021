@@ -2,9 +2,10 @@
   <div class="markdown-body reduce-85">
     <v-card
       color="white"
-      class="mb-5"
+      class="mb-5 card"
       elevation="1"
       @click="$router.push(item.fullPath)"
+      style="border: 1px solid #ddd !important"
     >
       <div
         style="

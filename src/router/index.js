@@ -16,7 +16,6 @@ import { irb } from "@/router/irb";
 import { events } from "@/router/events";
 import { sandboxes } from "@/router/sandbox";
 import { fourOhFour } from "@/router/404";
-import { meetings } from "@/router/meetings";
 import { about } from "@/router/about";
 import { admin } from "@/router/admin";
 import { informationSystems } from "@/router/informationSystems";
@@ -41,7 +40,6 @@ const routes = [
   ...events,
   ...news,
   ...grants,
-  ...meetings,
   ...sandboxes,
   ...admin,
   ...informationSystems,

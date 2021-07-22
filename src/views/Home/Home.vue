@@ -76,6 +76,7 @@
 <script>
 import { GET_HOME } from "@/graphql/home";
 import nprogress from "nprogress";
+import _ from "lodash";
 export default {
   data() {
     return {
@@ -143,7 +144,7 @@ export default {
           postLimit: 5,
           fundingLimit: 4,
           meetingLimit: 5,
-          employmentLimit: 5,
+          employmentLimit: 3,
         };
       },
 
@@ -173,11 +174,13 @@ export default {
           fullPath: `/grants/funding/${e.slug}/`,
           contentType: "Funding",
         }));
+        this.grants = _.orderBy(this.grants, ["end"], ["asc"]);
         this.employment = ApolloQueryResult.data.jobs.map((e) => ({
           ...e,
-          fullPath: `/employment/${e.slug}/`,
+          fullPath: `/about/employment/${e.slug}/`,
           contentType: "Employment",
         }));
+        this.employment = _.orderBy(this.employment, ["end"], ["desc"]);
         //Home page UI
         this.slider = ApolloQueryResult.data.home.homeCarousel;
         this.buttons = ApolloQueryResult.data.home.homeCarouselButton;

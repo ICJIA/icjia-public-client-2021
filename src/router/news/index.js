@@ -9,7 +9,13 @@ const news = [
     path: "/news/meetings/",
     name: "NewsMeetings",
     component: () =>
-      import(/* webpackChunkName: "news" */ "@/views/Meetings/MeetingsAll.vue"),
+      import(/* webpackChunkName: "news" */ "@/views/News/MeetingsAll.vue"),
+  },
+  {
+    path: "/news/meetings/:slug",
+    name: "NewsMeetingsSingle",
+    component: () =>
+      import(/* webpackChunkName: "news" */ "@/views/News/MeetingsSingle.vue"),
   },
   {
     path: "/news/events/",
@@ -31,6 +37,7 @@ const news = [
     component: () =>
       import(/* webpackChunkName: "hub" */ "@/views/About/EmploymentAll.vue"),
   },
+
   {
     path: "/news/:slug",
     name: "NewsSingle",

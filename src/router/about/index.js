@@ -13,6 +13,14 @@ const about = [
       import(/* webpackChunkName: "hub" */ "@/views/About/EmploymentAll.vue"),
   },
   {
+    path: "/about/employment/:slug",
+    name: "ICJIAAboutEmploymentSingle",
+    component: () =>
+      import(
+        /* webpackChunkName: "hub" */ "@/views/About/EmploymentSingle.vue"
+      ),
+  },
+  {
     path: "/about/units/:slug",
     name: "ICJIAPublicationsAll",
     component: () =>

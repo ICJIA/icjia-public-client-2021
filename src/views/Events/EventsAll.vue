@@ -106,7 +106,7 @@
             <div
               v-for="(event, index) in filteredEvents"
               :key="index + event.id"
-              class="mb-5"
+              class="mb-8"
             >
               <EventCard
                 :item="event"
@@ -327,7 +327,7 @@ export default {
           }
           meeting.color = "grey darken-4";
           meeting.show = false;
-          meeting.fullPath = `/meetings/${meeting.slug}`;
+          meeting.fullPath = `/news/meetings/${meeting.slug}`;
           meeting.contentType = "meeting";
           return meeting;
         });

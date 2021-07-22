@@ -135,6 +135,11 @@ const GET_HOME = gql`
 
     jobs(sort: "published_at:desc", limit: $employmentLimit) {
       title
+      slug
+      start
+      end
+      category
+      summary
     }
 
     grants(sort: "start:desc", limit: $fundingLimit) {

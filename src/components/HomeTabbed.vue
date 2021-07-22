@@ -134,15 +134,8 @@
                 :class="{ 'rule-top': index > 0 }"
                 @click="routeTo(job.fullPath)"
               >
-                <div
-                  class=""
-                  v-for="(job, index) in employment"
-                  :key="`funding-${index}`"
-                >
-                  <h2>{{ job.title }}</h2>
-                  <p>{{ job.summary }}</p>
-                </div></v-card
-              >
+                {{ job }}
+              </v-card>
             </div>
           </div>
           <div v-else>
