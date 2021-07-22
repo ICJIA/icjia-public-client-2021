@@ -102,7 +102,7 @@
                 class="mr-1"
                 color="blue darken-4"
                 style="font-weight: 700"
-                >Expires {{ grant.end | format }}</v-chip
+                >Expires {{ grant.end | fromNow }}</v-chip
               >
               <span style="font-weight: 700; font-size: 16px; color: #666">
                 {{ getCategory(grant.category) }}

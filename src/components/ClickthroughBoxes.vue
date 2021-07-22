@@ -8,7 +8,7 @@
 
         <div class="flex-container">
           <v-card
-            class="elevation-2 px-8 py-10 box text-center hover info-card"
+            class="elevation-1 px-8 py-10 box text-center hover card"
             style="border: 1px solid #ddd"
             v-for="(box, index) in boxes"
             :data-aos="getAnimation()"

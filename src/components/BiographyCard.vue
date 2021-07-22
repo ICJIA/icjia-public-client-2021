@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card
-      elevation="2"
+      elevation="0"
       class="mb-2 py-8 px-2"
       style="border: 1px solid #ddd"
       v-if="item"

@@ -143,3 +143,11 @@ Vue.filter("yearFormat", function (timestamp) {
 Vue.filter("dayName", function (timestamp) {
   return moment(timestamp).format("dddd");
 });
+
+Vue.filter("toNow", function (timestamp) {
+  return moment(timestamp).toNow();
+});
+
+Vue.filter("fromNow", function (timestamp) {
+  return moment(timestamp).fromNow();
+});
