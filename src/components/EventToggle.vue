@@ -1,8 +1,5 @@
 <template>
   <div>
-    <!-- <div class="mb-2" style="font-size: 12px; color: #555; font-weight: bold">
-      Show as:
-    </div> -->
     <div>
       <v-btn-toggle v-model="icon" borderless v-if="!listViewOnly">
         <v-btn value="list" small elevation="2">

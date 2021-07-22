@@ -128,13 +128,33 @@
               :key="`employment-${index}`"
             >
               <v-card
-                :min-height="cardHeight"
                 elevation="0"
-                class="px-8 hover card"
+                class="px-8 py-8 hover card"
                 :class="{ 'rule-top': index > 0 }"
                 @click="routeTo(job.fullPath)"
               >
-                {{ job }}
+                <v-chip
+                  small
+                  v-if="isItExpired(job.end)"
+                  class="mr-1"
+                  color="grey lighten-2"
+                  style="font-weight: 700"
+                  >Expired</v-chip
+                >
+                <v-chip
+                  small
+                  dark
+                  v-if="!isItExpired(job.end)"
+                  class="mr-1"
+                  :color="getColor(job.start, job.end)"
+                  style="font-weight: 700"
+                  >Expires {{ job.end | fromNow }}</v-chip
+                >
+                <span style="font-weight: 700; font-size: 16px; color: #666">
+                  Employment Opportunity
+                </span>
+                <h2 class="mt-2">{{ job.title }}</h2>
+                <p>{{ job.summary }}</p>
               </v-card>
             </div>
           </div>
@@ -181,7 +201,7 @@ export default {
       let localStart = moment().tz(this.$myApp.config.timezone);
       let localEnd = moment(end).tz(this.$myApp.config.timezone);
       let daysBetween = moment(localEnd).diff(moment(localStart), "days") + 1;
-      if (daysBetween > 7) {
+      if (daysBetween >= 7) {
         return "green darken-4";
       } else {
         return "yellow darken-3";
