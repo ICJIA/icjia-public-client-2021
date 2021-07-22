@@ -31,7 +31,7 @@ export default {
   methods: {
     scrollTo(id) {
       //console.log(id);
-      this.$vuetify.goTo(`#${id}`, { offset: 50 });
+      this.$vuetify.goTo(`#${id}`, { offset: 80 });
     },
   },
   props: {

@@ -299,7 +299,7 @@ export default {
         headings.forEach((heading) => {
           let elHeading = this.$el.querySelector(`#${heading.id}`);
           let rect = elHeading.getBoundingClientRect();
-          if (rect.top < 91 && this.activeHeading !== heading.id) {
+          if (rect.top < 181 && this.activeHeading !== heading.id) {
             this.activeHeading = heading.id;
           }
         });
@@ -308,7 +308,7 @@ export default {
     onScrollTOC(e) {
       if (typeof window === "undefined") return;
       const top = window.pageYOffset || e.target.scrollTop || 0;
-      const threshold = this.splashHeight + this.viewTitleHeight;
+      const threshold = this.splashHeight + this.viewTitleHeight + 20;
 
       this.isTOCSticky = top > threshold;
     },
