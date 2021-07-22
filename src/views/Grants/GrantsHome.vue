@@ -76,7 +76,7 @@ export default {
     return {
       contentLoading: true,
       page: null,
-
+      error: null,
       allPrograms: null,
       allGrants: null,
       filteredAndSortedPrograms: [],
@@ -164,6 +164,7 @@ export default {
   apollo: {
     pages: {
       prefetch: true,
+
       fetchPolicy: "no-cache",
       query: GET_SINGLE_PAGE_QUERY,
       variables() {
