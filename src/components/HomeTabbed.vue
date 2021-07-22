@@ -9,8 +9,9 @@
         style="border-top: 0px solid #d8d8d8"
       >
         <v-tab>Funding</v-tab>
-        <v-tab>Meetings </v-tab>
+
         <v-tab>Employment </v-tab>
+        <v-tab>Meetings </v-tab>
 
         <v-tab-item :style="`background: #fff !important; `">
           <div style="height: 15px; background: #fff !important"></div>
@@ -115,13 +116,6 @@
 
         <v-tab-item :style="`background: #fff !important;`">
           <div style="height: 15px; background: #fff !important"></div>
-          <v-sheet style="min-height: 200px !important">
-            <h2>TODO: Upcoming Meetings here</h2>
-          </v-sheet>
-        </v-tab-item>
-
-        <v-tab-item :style="`background: #fff !important;`">
-          <div style="height: 15px; background: #fff !important"></div>
           <div v-if="employment.length > 0">
             <div
               v-for="(job, index) in employment"
@@ -171,6 +165,12 @@
               </v-container></v-card
             >
           </div>
+        </v-tab-item>
+        <v-tab-item :style="`background: #fff !important;`">
+          <div style="height: 15px; background: #fff !important"></div>
+          <v-sheet style="min-height: 200px !important">
+            <h2>TODO: Recent Meetings here</h2>
+          </v-sheet>
         </v-tab-item>
       </v-tabs>
     </div>
