@@ -100,7 +100,7 @@
                 dark
                 v-if="!isItExpired(grant.end)"
                 class="mr-1"
-                color="blue darken-4"
+                :color="getColor(grant.start, grant.end)"
                 style="font-weight: 700"
                 >Expires {{ grant.end | fromNow }}</v-chip
               >
@@ -172,6 +172,7 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   computed: {
     tabViewHeight() {
@@ -183,6 +184,16 @@ export default {
     },
   },
   methods: {
+    getColor(start, end) {
+      let localStart = moment().tz(this.$myApp.config.timezone);
+      let localEnd = moment(end).tz(this.$myApp.config.timezone);
+      let daysBetween = moment(localEnd).diff(moment(localStart), "days") + 1;
+      if (daysBetween > 7) {
+        return "green darken-4";
+      } else {
+        return "yellow darken-3";
+      }
+    },
     isItExpired(expiration) {
       //console.log(expiration);
       let now = new Date();

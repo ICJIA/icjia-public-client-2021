@@ -18,7 +18,7 @@
     "daysToShowNewResearch": 14,
     "home": {
         "eventLimit": 5,
-        "postLimit": 4
+        "postLimit": 5
     },
     "image": {
         "server": "https://image.icjia.cloud",

@@ -140,7 +140,7 @@ export default {
         return {
           now: new Date(),
           eventLimit: 3,
-          postLimit: 4,
+          postLimit: 5,
           fundingLimit: 4,
           meetingLimit: 5,
           employmentLimit: 5,

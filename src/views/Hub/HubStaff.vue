@@ -12,18 +12,14 @@
       <v-container>
         <v-row>
           <v-col class="text-left" style="margin-top: -50px">
-            <div style="font-weight: 900; font-size: 12px" class="mb-12">
+            <div v-if="unit" v-html="render(unit.body)"></div>
+            <!-- <div style="font-weight: 900; font-size: 12px" class="mb-12">
               Showing: {{ content.length }} of {{ content.length }} R&A staff
               members
-            </div>
+            </div> -->
           </v-col>
-          <v-col
-            v-for="(item, i) in content"
-            :key="i"
-            cols="12"
-            style="margin-top: -25px"
-          >
-            <BiographyCard :item="item" class="mb-5"></BiographyCard>
+          <v-col v-for="(item, i) in content" :key="i" cols="12">
+            <BiographyCard :item="item" class="mb-0"></BiographyCard>
           </v-col>
         </v-row>
       </v-container>
@@ -39,6 +35,7 @@ import NProgress from "nprogress";
 import { EventBus } from "@/event-bus";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_BIOGRAPHIES_BY_UNIT_QUERY } from "@/graphql/biographies";
+import { GET_SINGLE_UNIT_QUERY } from "@/graphql/units";
 import _ from "lodash";
 import BiographyCard from "../../components/BiographyCard.vue";
 export default {
@@ -48,6 +45,7 @@ export default {
       loading: true,
       error: null,
       content: null,
+      unit: null,
     };
   },
   created() {
@@ -66,6 +64,35 @@ export default {
     },
   },
   apollo: {
+    units: {
+      prefetch: true,
+
+      query: GET_SINGLE_UNIT_QUERY,
+      variables() {
+        return {
+          slug: "research-and-analysis-unit",
+        };
+      },
+      error(error) {
+        this.error = JSON.stringify(error.message);
+        NProgress.done();
+      },
+      result(ApolloQueryResult) {
+        if (
+          ApolloQueryResult.data &&
+          ApolloQueryResult.data.units.length > 0 === false
+        ) {
+          // eslint-disable-next-line no-unused-vars
+          this.$router.push("/404").catch((err) => {
+            console.log(err);
+          });
+        } else {
+          //console.log(this.id);
+          this.unit = ApolloQueryResult.data.units[0];
+          NProgress.done();
+        }
+      },
+    },
     biographies: {
       prefetch: true,
       //   fetchPolicy: "no-cache",
