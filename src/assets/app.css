@@ -6,16 +6,15 @@
   min-height: 100vh !important;
 } */
 
-/* a {
+a {
   font-weight: 900;
   text-decoration: none;
   background: #fff;
-} */
+}
 
-/* a:hover {
-
-    color: #777 !important;
-} */
+a:hover {
+  color: #777 !important;
+}
 
 #nprogress .bar {
   background: #212e5a !important;
