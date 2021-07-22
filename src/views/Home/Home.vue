@@ -174,13 +174,13 @@ export default {
           fullPath: `/grants/funding/${e.slug}/`,
           contentType: "Funding",
         }));
-        this.grants = _.orderBy(this.grants, ["start"], ["desc"]);
+        this.grants = _.orderBy(this.grants, ["end"], ["desc"]);
         this.employment = ApolloQueryResult.data.jobs.map((e) => ({
           ...e,
           fullPath: `/about/employment/${e.slug}/`,
           contentType: "Employment",
         }));
-        this.employment = _.orderBy(this.employment, ["start"], ["desc"]);
+        this.employment = _.orderBy(this.employment, ["end"], ["desc"]);
         //Home page UI
         this.slider = ApolloQueryResult.data.home.homeCarousel;
         this.buttons = ApolloQueryResult.data.home.homeCarouselButton;
