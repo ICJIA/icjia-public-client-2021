@@ -15,7 +15,11 @@
                 v-if="pageContent.body"
                 class="mb-8"
               ></div>
-              <div class="markdown-body" v-for="(item, i) in listing" :key="i">
+              <div
+                class="markdown-body mb-4"
+                v-for="(item, i) in listing"
+                :key="i"
+              >
                 <BiographyCard :item="item"></BiographyCard>
               </div>
             </v-col>

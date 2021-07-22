@@ -156,7 +156,7 @@
             },
             {
                 "label": "Employment",
-                "path": "/employment/"
+                "path": "/about/employment/"
             },
             {
                 "label": "Events",
@@ -185,7 +185,7 @@
             },
             {
                 "label": "Employment",
-                "path": "/employment/"
+                "path": "/about/employment/"
             },
             {
                 "label": "Events",
@@ -231,6 +231,10 @@
             {
                 "label": "FOIA",
                 "path": "/about/foia/"
+            },
+            {
+                "label": "Employment",
+                "path": "/about/employment/"
             },
             {
                 "label": "Contact",

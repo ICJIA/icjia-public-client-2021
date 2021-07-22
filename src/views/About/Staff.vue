@@ -44,13 +44,21 @@
           </v-container>
 
           <div v-if="staffToggle === 1 && units">
-            <div v-for="unit in units" :key="unit.title" class="mb-2">
-              <UnitCard :item="unit" :shortName="unit.shortName"></UnitCard>
+            <div v-for="unit in units" :key="unit.title" class="mb-4">
+              <UnitCard
+                :item="unit"
+                :shortName="unit.shortName"
+                style="border: 1px solid #eee"
+              ></UnitCard>
             </div>
           </div>
 
           <div v-if="staffToggle === 0 && content">
-            <div class="markdown-body" v-for="(item, i) in content" :key="i">
+            <div
+              class="markdown-body mb-4"
+              v-for="(item, i) in content"
+              :key="i"
+            >
               <BiographyCard :item="item"></BiographyCard>
             </div>
           </div>
