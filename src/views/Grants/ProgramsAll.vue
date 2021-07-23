@@ -6,7 +6,9 @@
           <v-container fluid v-if="allPrograms">
             <v-row>
               <v-col cols="12">
-                <h1 id="icjia-grant-programs">ICJIA Grant Programs</h1>
+                <div class="page-heading">
+                  <h1 id="icjia-grant-programs">ICJIA Grant Programs</h1>
+                </div>
                 <p class="mb-8">
                   ICJIA administers a variety of federal grant programs. Most
                   federal awards to states may be spent over a three-year
@@ -17,17 +19,20 @@
 
               <v-col
                 cols="12"
-                class="text-center mb-6"
+                class="mb-6 page-heading"
                 style="margin-top: -25px"
               >
-                <v-btn-toggle v-model="toggle_category" mandatory>
+                <v-btn-toggle v-model="toggle_category" mandatory class="mb-4">
                   <v-btn small> All Programs </v-btn>
 
                   <v-btn small> Federal </v-btn>
                   <v-btn small> State </v-btn>
                 </v-btn-toggle>
-                &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
-                <v-btn-toggle v-model="toggle_status" mandatory>
+
+                <span class="hidden-sm-and-down"
+                  >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span
+                >
+                <v-btn-toggle v-model="toggle_status" mandatory class="mb-4">
                   <v-btn small> Current </v-btn>
 
                   <v-btn small> Archived </v-btn>

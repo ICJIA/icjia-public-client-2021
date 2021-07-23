@@ -5,7 +5,7 @@
         <v-col cols="12">
           <v-container fluid v-if="allGrants">
             <v-row>
-              <v-col cols="12"
+              <v-col cols="12" class="page-heading"
                 ><h1 id="current-funding-opportunities">
                   ICJIA Funding Opportunities
                 </h1>
@@ -13,7 +13,7 @@
 
               <v-col
                 cols="12"
-                class="text-center mb-6"
+                class="page-heading mb-6"
                 style="margin-top: -25px"
               >
                 <v-btn-toggle v-model="toggle_nofoStatus" mandatory>

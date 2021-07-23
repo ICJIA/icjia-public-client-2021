@@ -140,7 +140,7 @@ export default {
     },
     heading: {
       type: String,
-      default: "All Meetings",
+      default: "",
     },
     text: {
       type: String,

@@ -5,22 +5,30 @@
         <v-container class="mb-6">
           <v-row>
             <v-col cols="12" :md="viewToggle === 'category' ? 9 : 12">
-              <v-btn-toggle v-model="viewToggle" mandatory>
-                <v-btn value="category" small aria-label="List view">
-                  <span style="font-weight: 900">Meetings by Category</span>
+              <div class="markdown-body mb-10 page-heading">
+                <h1>ICJIA Meetings</h1>
 
-                  <span aria-hidden="true" class="mdi mdi-format-list-bulleted">
-                  </span>
-                </v-btn>
+                <v-btn-toggle v-model="viewToggle" mandatory>
+                  <v-btn value="category" small aria-label="List view">
+                    <span style="font-weight: 900">Meetings by Category</span>
 
-                <v-btn value="all" small>
-                  <span style="font-weight: 900" aria-label="Grid view"
-                    >All Meetings</span
-                  >
+                    <span
+                      aria-hidden="true"
+                      class="mdi mdi-format-list-bulleted"
+                    >
+                    </span>
+                  </v-btn>
 
-                  <span class="mdi mdi-view-module" aria-hidden="true"> </span>
-                </v-btn>
-              </v-btn-toggle>
+                  <v-btn value="all" small>
+                    <span style="font-weight: 900" aria-label="Grid view"
+                      >All Meetings</span
+                    >
+
+                    <span class="mdi mdi-view-module" aria-hidden="true">
+                    </span>
+                  </v-btn>
+                </v-btn-toggle>
+              </div>
             </v-col>
           </v-row>
         </v-container>

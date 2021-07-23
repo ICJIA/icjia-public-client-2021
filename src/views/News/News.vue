@@ -3,10 +3,10 @@
     <BaseContent :error="error" :loading="$apollo.loading">
       <template slot="content">
         <v-container>
-          <v-row class="mb-10">
+          <v-row class="mb-10 page-heading">
             <v-col cols="12">
               <h1>Latest News</h1>
-              <div class="text-left">
+              <div>
                 <Toggle @toggle="toggle"></Toggle>
               </div>
             </v-col>

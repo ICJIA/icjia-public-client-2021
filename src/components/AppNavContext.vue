@@ -42,7 +42,7 @@
         center-active
         height="35"
         optional
-        class="context px-8"
+        class="context px-3"
       >
         <v-tabs-slider color="black"></v-tabs-slider>
 

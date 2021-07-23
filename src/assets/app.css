@@ -274,3 +274,9 @@ details[open] summary ~ * {
     margin-left: 0px;
   }
 }
+
+@media only screen and (max-width: 600px) {
+  .page-heading {
+    text-align: center;
+  }
+}
