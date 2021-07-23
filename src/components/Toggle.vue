@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-btn-toggle v-model="icon" borderless>
+    <v-btn-toggle v-model="icon" borderless mandatory>
       <v-btn value="list" small aria-label="List view">
         <span class="hidden-sm-and-down">List</span>
 

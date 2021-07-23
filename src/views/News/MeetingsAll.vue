@@ -2,7 +2,7 @@
   <div class="mt-10">
     <BaseContent :error="error" :loading="$apollo.loading">
       <template slot="content">
-        <v-container class="text-center">
+        <v-container class="text-center mb-6">
           <v-row>
             <v-col cols="12" :md="viewToggle === 'category' ? 9 : 12">
               <v-btn-toggle v-model="viewToggle" borderless mandatory>

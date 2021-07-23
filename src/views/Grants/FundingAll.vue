@@ -13,17 +13,10 @@
 
               <v-col
                 cols="12"
-                :class="{
-                  'text-center':
-                    $vuetify.breakpoint.sm || $vuetify.breakpoint.xs,
-                  'text-left':
-                    $vuetify.breakpoint.md ||
-                    $vuetify.breakpoint.lg ||
-                    $vuetify.breakpoint.xl,
-                }"
+                class="text-center mb-6"
                 style="margin-top: -25px"
               >
-                <v-btn-toggle v-model="toggle_nofoStatus">
+                <v-btn-toggle v-model="toggle_nofoStatus" mandatory>
                   <v-btn small> Current </v-btn>
 
                   <v-btn small> Expired </v-btn>

@@ -17,39 +17,17 @@
 
               <v-col
                 cols="12"
-                sm="6"
-                :class="{
-                  'text-center':
-                    $vuetify.breakpoint.sm || $vuetify.breakpoint.xs,
-                  'text-left':
-                    $vuetify.breakpoint.md ||
-                    $vuetify.breakpoint.lg ||
-                    $vuetify.breakpoint.xl,
-                }"
+                class="text-center mb-6"
                 style="margin-top: -25px"
               >
-                <v-btn-toggle v-model="toggle_category">
+                <v-btn-toggle v-model="toggle_category" mandatory>
                   <v-btn small> All Programs </v-btn>
 
                   <v-btn small> Federal </v-btn>
                   <v-btn small> State </v-btn>
                 </v-btn-toggle>
-              </v-col>
-
-              <v-col
-                cols="12"
-                sm="6"
-                :class="{
-                  'text-center':
-                    $vuetify.breakpoint.sm || $vuetify.breakpoint.xs,
-                  'text-right':
-                    $vuetify.breakpoint.md ||
-                    $vuetify.breakpoint.lg ||
-                    $vuetify.breakpoint.xl,
-                }"
-                style="margin-top: -30px"
-              >
-                <v-btn-toggle v-model="toggle_status">
+                &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+                <v-btn-toggle v-model="toggle_status" mandatory>
                   <v-btn small> Current </v-btn>
 
                   <v-btn small> Archived </v-btn>
@@ -62,7 +40,10 @@
                   :key="program.id"
                   class="mb-6"
                 >
-                  <BaseCardExpandable :item="program"></BaseCardExpandable></div
+                  <BaseCardExpandable
+                    :item="program"
+                    :openSearch="true"
+                  ></BaseCardExpandable></div
               ></v-col>
             </v-row>
           </v-container>

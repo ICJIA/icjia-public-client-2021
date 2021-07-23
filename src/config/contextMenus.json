@@ -177,19 +177,19 @@
             },
             {
                 "label": "Meetings",
-                "path": "/meetings/"
+                "path": "/news/meetings/"
             },
             {
                 "label": "Funding",
-                "path": "/grants/funding/"
+                "path": "/news/funding/"
             },
             {
                 "label": "Employment",
-                "path": "/about/employment/"
+                "path": "/news/employment/"
             },
             {
                 "label": "Events",
-                "path": "/events/"
+                "path": "/news/events/"
             }
         ]
     },

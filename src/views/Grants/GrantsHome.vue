@@ -12,11 +12,17 @@
                   <h2 id="current-funding-opportunities">
                     ICJIA Funding Opportunities
                   </h2>
-                  <v-btn-toggle v-model="toggle_nofoStatus" class="mb-5">
-                    <v-btn small> Current </v-btn>
+                  <div class="text-center">
+                    <v-btn-toggle
+                      mandatory
+                      v-model="toggle_nofoStatus"
+                      class="mb-10"
+                    >
+                      <v-btn small> Current </v-btn>
 
-                    <v-btn small> Expired </v-btn>
-                  </v-btn-toggle>
+                      <v-btn small> Expired </v-btn>
+                    </v-btn-toggle>
+                  </div>
                   <div
                     v-for="grant in filteredAndSortedGrants"
                     :key="grant.id"
@@ -164,7 +170,6 @@ export default {
   apollo: {
     pages: {
       prefetch: true,
-
       fetchPolicy: "no-cache",
       query: GET_SINGLE_PAGE_QUERY,
       variables() {

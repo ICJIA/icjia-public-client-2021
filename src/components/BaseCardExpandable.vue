@@ -23,55 +23,48 @@
         <v-spacer></v-spacer>
 
         <div v-if="item.status && item.status.length">
-          <span
+          <v-chip
             v-if="item.contentType === 'program' && item.status != 'current'"
             :class="{
               green: item.status === 'current',
               red: item.status === 'archived',
             }"
-            style="
-              font-size: 10px;
-              font-weight: 700;
-              padding: 2px 3px;
-              border: 1px solid #ccc;
-            "
+            style="font-size: 12px; font-weight: 700"
           >
             <span>{{ item.status }}</span>
-          </span>
+          </v-chip>
         </div>
 
         <div v-else>
-          <span
+          <v-chip
+            small
             style="
-              font-size: 14px;
+              font-size: 12px;
               font-weight: 700;
-              padding: 2px 3px;
-              border: 1px solid #ccc;
+
               background: green;
               color: #fff;
             "
             v-if="new Date(item.end) > new Date()"
+            >&nbsp;Deadline: {{ item.end | dateFormatAlt }}&nbsp;</v-chip
           >
-            Deadline: {{ item.end | dateFormatAlt }}
-          </span>
-          <span
+          <v-chip
+            small
             style="
-              font-size: 14px;
+              font-size: 12px;
               font-weight: 700;
               background: red;
               color: #fff;
-              padding: 2px 3px;
-              border: 1px solid #ccc;
             "
             v-if="new Date(item.end) < new Date()"
           >
-            Expired
-          </span>
+            &nbsp;Expired: {{ item.end | dateFormatAlt }} &nbsp;
+          </v-chip>
         </div>
       </div>
-      <div style="margin-top: 25px">
+      <div style="margin-top: 35px">
         <span
-          @click="
+          @click.stop.prevent="
             openSearch === true ? search(item.title) : routeTo(item.fullPath)
           "
           class="hover program-title"
@@ -216,7 +209,7 @@ export default {
 
 .red,
 .green {
-  color: white;
+  color: white !important;
 }
 .program-title,
 .link {
