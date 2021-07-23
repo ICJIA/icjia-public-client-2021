@@ -56,6 +56,15 @@
         </v-sheet>
       </template>
     </v-data-table>
+    <div v-if="showDisclaimer">
+      <p class="text-center mt-2" style="font-size: 11px; font-weight: 700">
+        For meeting materials prior to {{ $myApp.config.archiveDate }} please
+        see the
+        <a href="https://archive.icjia.cloud" target="_blank"
+          >ICJIA Document Archive.</a
+        >
+      </p>
+    </div>
   </div>
 </template>
 
@@ -136,6 +145,10 @@ export default {
     text: {
       type: String,
       default: "",
+    },
+    showDisclaimer: {
+      type: Boolean,
+      default: true,
     },
   },
 };

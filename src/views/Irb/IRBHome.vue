@@ -16,7 +16,8 @@
           </v-row>
         </v-container>
       </div>
-      <v-container v-if="content" class="mt-3">
+
+      <v-container v-if="content" style="margin-top: -35px">
         <v-row>
           <v-col cols="12">
             <div v-html="render(content.body)"></div>

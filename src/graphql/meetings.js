@@ -67,4 +67,40 @@ const GET_SINGLE_MEETING_QUERY = gql`
   }
 `;
 
-export { GET_ALL_MEETINGS_QUERY, GET_SINGLE_MEETING_QUERY };
+const GET_MEETINGS_BY_CATEGORY_QUERY = gql`
+  query meetingsByCat($category: String!) {
+    meetings(where: { category: $category }) {
+      id
+      title
+      slug
+      summary
+      body
+      start
+      end
+      category
+      created_at
+      updated_at
+      published_at
+      attachments {
+        id
+        formats
+        name
+        ext
+        url
+        updated_at
+        created_at
+        hash
+      }
+      tags {
+        title
+        slug
+      }
+    }
+  }
+`;
+
+export {
+  GET_ALL_MEETINGS_QUERY,
+  GET_SINGLE_MEETING_QUERY,
+  GET_MEETINGS_BY_CATEGORY_QUERY,
+};
