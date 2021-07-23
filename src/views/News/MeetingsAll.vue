@@ -33,14 +33,14 @@
           </v-row>
         </v-container>
 
-        <v-container v-if="viewToggle == 'all'">
+        <v-container v-if="viewToggle == 'all'" style="margin-top: -25px">
           <v-row>
             <v-col cols="12">
               <MeetingTable :items="meetings" v-if="meetings"></MeetingTable>
             </v-col>
           </v-row>
         </v-container>
-        <v-container v-if="viewToggle == 'category'">
+        <v-container v-if="viewToggle == 'category'" style="margin-top: -25px">
           <v-row>
             <v-col cols="12" md="9">
               <div

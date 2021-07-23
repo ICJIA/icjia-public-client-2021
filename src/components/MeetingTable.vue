@@ -38,7 +38,9 @@
 
       <template v-slot:top>
         <v-sheet class="px-5 py-5 markdown-body">
-          <h2 :id="generateSlug(heading)">{{ heading }}</h2>
+          <h2 :id="generateSlug(heading)" v-if="heading && heading.length">
+            {{ heading }}
+          </h2>
           <div
             v-if="text && text.length"
             style="font-size: 14px"
