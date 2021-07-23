@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <v-btn-toggle v-model="icon" borderless v-if="!listViewOnly">
+      <v-btn-toggle v-model="icon" v-if="!listViewOnly">
         <v-btn value="list" small elevation="2">
           <span>List View</span>
 

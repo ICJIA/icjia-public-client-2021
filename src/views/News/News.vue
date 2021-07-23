@@ -3,16 +3,15 @@
     <BaseContent :error="error" :loading="$apollo.loading">
       <template slot="content">
         <v-container>
-          <v-row>
+          <v-row class="mb-10">
             <v-col cols="12">
               <h1>Latest News</h1>
-              <div class="text-right">
+              <div class="text-left">
                 <Toggle @toggle="toggle"></Toggle>
               </div>
             </v-col>
           </v-row>
-        </v-container>
-        <v-container class="view-container">
+
           <v-row v-if="view === 'grid'" class="masonry" dense>
             <v-col
               v-for="(item, index) in news"
@@ -31,12 +30,7 @@
               ></info-card>
             </v-col>
           </v-row>
-          <v-row
-            v-if="view === 'list'"
-            style="margin-top: -20px"
-            class="masonry"
-            no-gutters
-          >
+          <v-row v-if="view === 'list'" class="masonry" no-gutters>
             <v-col cols="12" sm="12" class="child">
               <div v-for="(item, index) in news" :key="`list-${index}`">
                 <info-card

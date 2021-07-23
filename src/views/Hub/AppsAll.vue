@@ -25,7 +25,7 @@
           class="hidden-sm-and-down"
         >
           <div class="text-right">
-            <v-btn-toggle v-model="orientation" borderless>
+            <v-btn-toggle v-model="orientation">
               <v-btn value="list" small aria-label="List view">
                 <span>List</span>
 

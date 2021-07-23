@@ -13,7 +13,7 @@
     <v-container v-else>
       <v-row>
         <v-col>
-          <Loader loaderType="skeleton"></Loader>
+          <Loader></Loader>
         </v-col>
       </v-row>
     </v-container>

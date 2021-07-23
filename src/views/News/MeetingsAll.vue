@@ -2,10 +2,10 @@
   <div class="mt-10">
     <BaseContent :error="error" :loading="$apollo.loading">
       <template slot="content">
-        <v-container class="text-center mb-6">
+        <v-container class="mb-6">
           <v-row>
             <v-col cols="12" :md="viewToggle === 'category' ? 9 : 12">
-              <v-btn-toggle v-model="viewToggle" borderless mandatory>
+              <v-btn-toggle v-model="viewToggle" mandatory>
                 <v-btn value="category" small aria-label="List view">
                   <span style="font-weight: 900">Meetings by Category</span>
 

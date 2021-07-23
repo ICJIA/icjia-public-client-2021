@@ -20,7 +20,7 @@
       </v-container>
     </div>
     <div v-else>
-      <Loader loaderType="skeleton" :repeat="1"></Loader>
+      <Loader :repeat="1"></Loader>
     </div>
   </div>
 </template>
