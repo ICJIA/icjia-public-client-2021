@@ -135,7 +135,7 @@
                   style="font-weight: 700"
                   >Expired</v-chip
                 >
-                <v-chip
+                <!-- <v-chip
                   small
                   dark
                   v-if="!isItExpired(job.end)"
@@ -143,7 +143,7 @@
                   :color="getColor(job.start, job.end)"
                   style="font-weight: 700"
                   >Expires {{ job.end | fromNow }}</v-chip
-                >
+                > -->
                 <span style="font-weight: 700; font-size: 16px; color: #666">
                   Employment Opportunity
                 </span>

@@ -66,6 +66,26 @@
         }
     },
     "hoursToShowUpdated": 1,
+    "maps": {
+        "meetings": [
+            {
+                "category": "board",
+                "label": "Authority Board"
+            },
+            {
+                "category": "budget",
+                "label": "Budget Committee"
+            },
+            {
+                "category": "irb",
+                "label": "Institutional Review Board"
+            },
+            {
+                "category": "special",
+                "label": "Special"
+            }
+        ]
+    },
     "search": {
         "site": {
             "isCaseSensitive": false,

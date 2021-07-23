@@ -122,6 +122,13 @@
               >
             </v-list-item-content>
           </v-list-item>
+          <v-list-item class="appNav" to="/news/meetings/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >Meetings</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
         </v-list>
       </v-menu>
 
