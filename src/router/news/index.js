@@ -31,7 +31,7 @@ const news = [
   },
   {
     path: "/news/employment",
-    name: "ICJIAAllEmployment",
+    name: "NewsAllEmployment",
     // eslint-disable-next-line no-unused-vars
 
     component: () =>

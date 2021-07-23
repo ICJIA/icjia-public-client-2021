@@ -7,7 +7,12 @@
 </template>
 
 <script>
+import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 export default {
+  mounted() {
+    attachInternalLinks(this);
+    attachSearchEvents(this);
+  },
   props: {
     item: {
       type: Object,

@@ -100,7 +100,7 @@
               >
             </v-list-item-content>
           </v-list-item>
-          <v-list-item class="appNav" to="/irb/">
+          <v-list-item class="appNav" exact to="/irb/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
                 >Institutional Review Board</v-list-item-title
@@ -108,21 +108,21 @@
             </v-list-item-content>
           </v-list-item>
           <v-divider></v-divider>
-          <v-list-item class="appNav" to="/news/">
+          <v-list-item class="appNav" exact to="/news/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
                 >News & Information</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
-          <v-list-item class="appNav" to="/events/">
+          <v-list-item class="appNav" exact to="/events/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
                 >Events</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
-          <v-list-item class="appNav" to="/news/meetings/">
+          <v-list-item class="appNav" exact to="/news/meetings/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
                 >Meetings</v-list-item-title

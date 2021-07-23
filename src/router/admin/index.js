@@ -10,13 +10,13 @@ const admin = [
   },
   {
     path: "/admin/login/",
-    name: "adminIndex",
+    name: "login",
     component: () =>
       import(/* webpackChunkName: "admin" */ "@/views/Admin/Login.vue"),
   },
   {
     path: "/admin/logout/",
-    name: "adminIndex",
+    name: "logout",
     component: () =>
       import(/* webpackChunkName: "admin" */ "@/views/Admin/Logout.vue"),
   },
