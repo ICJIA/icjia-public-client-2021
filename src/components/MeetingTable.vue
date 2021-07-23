@@ -7,7 +7,7 @@
       :expanded.sync="expanded"
       item-key="title"
       show-expand
-      class="elevation-1 hover"
+      class="elevation-0 hover"
       :search="search"
       :sort-by.sync="sortBy"
       :sort-desc.sync="sortDesc"
@@ -16,6 +16,7 @@
         'items-per-page-options': [100, 150, 200, 250],
       }"
       :items-per-page="150"
+      style="border: 1px solid #ddd"
     >
       <template v-slot:item.start="{ item }">
         <div
@@ -36,8 +37,15 @@
       </template>
 
       <template v-slot:top>
-        <v-sheet class="px-5 py-5">
+        <v-sheet class="px-5 py-5 markdown-body">
           <h2>{{ heading }}</h2>
+          <div
+            v-if="text && text.length"
+            style="font-size: 14px"
+            class="px-2 py-4"
+          >
+            {{ text }}
+          </div>
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
@@ -120,6 +128,10 @@ export default {
     heading: {
       type: String,
       default: "All Meetings",
+    },
+    text: {
+      type: String,
+      default: "",
     },
   },
 };

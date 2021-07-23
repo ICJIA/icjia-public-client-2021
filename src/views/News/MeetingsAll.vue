@@ -2,10 +2,51 @@
   <div class="mt-10">
     <BaseContent :error="error" :loading="$apollo.loading">
       <template slot="content">
-        <v-container>
+        <v-container class="text-center">
+          <v-row>
+            <v-col cols="12">
+              <v-btn-toggle v-model="viewToggle" borderless mandatory>
+                <v-btn value="category" small aria-label="List view">
+                  <span style="font-weight: 900">Meetings by Category</span>
+
+                  <span aria-hidden="true" class="mdi mdi-format-list-bulleted">
+                  </span>
+                </v-btn>
+
+                <v-btn value="all" small>
+                  <span style="font-weight: 900" aria-label="Grid view"
+                    >All Meetings</span
+                  >
+
+                  <span class="mdi mdi-view-module" aria-hidden="true"> </span>
+                </v-btn>
+              </v-btn-toggle>
+            </v-col>
+          </v-row>
+        </v-container>
+
+        <v-container v-if="viewToggle == 'all'">
           <v-row>
             <v-col cols="12">
               <MeetingTable :items="meetings" v-if="meetings"></MeetingTable>
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-container v-if="viewToggle == 'category'">
+          <v-row>
+            <v-col cols="12">
+              <div
+                v-for="(category, index) in categoryMap"
+                :key="index"
+                class="mb-10"
+              >
+                <MeetingTable
+                  v-if="meetings"
+                  :items="filterMeetingsByCategory(category.category)"
+                  :heading="category.label"
+                  :text="category.text || null"
+                ></MeetingTable>
+              </div>
             </v-col>
           </v-row>
         </v-container>
@@ -27,17 +68,28 @@ import _ from "lodash";
 export default {
   data() {
     return {
+      viewToggle: "category",
       loading: true,
       error: null,
       content: null,
       meetings: null,
+      categoryMap: this.$myApp.config.maps.meetings,
     };
   },
 
   created() {
     NProgress.start();
   },
-  methods: {},
+  methods: {
+    filterMeetingsByCategory(category) {
+      let filteredMeetings = this.meetings.filter((meeting) => {
+        if (meeting.category === category) {
+          return meeting;
+        }
+      });
+      return filteredMeetings;
+    },
+  },
   apollo: {
     meetings: {
       prefetch: true,

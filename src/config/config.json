@@ -70,15 +70,18 @@
         "meetings": [
             {
                 "category": "board",
-                "label": "Authority Board"
+                "label": "Authority Board",
+                "text": "ICJIA Board meetings are held at the offices of ICJIA, 300 West Adams Street, 2nd Floor, Large Conference Room, Chicago, Illinois, 60606."
             },
             {
                 "category": "budget",
-                "label": "Budget Committee"
+                "label": "Budget Committee",
+                "text": "Budget Committee meetings are held at the offices of ICJIA, 300 West Adams Street, 2nd Floor, Large Conference Room, Chicago, Illinois, 60606."
             },
             {
                 "category": "irb",
-                "label": "Institutional Review Board"
+                "label": "Institutional Review Board",
+                "text": "IRB meetings are held at the offices of ICJIA, 300 West Adams Street, 2nd Floor, Large Conference Room, Chicago, Illinois, 60606."
             },
             {
                 "category": "special",
