@@ -155,7 +155,7 @@ export default {
 </script>
 
 <style>
-tbody tr:nth-of-type(odd) {
+tbody tr:nth-of-type(even) {
   background-color: rgba(0, 0, 0, 0.02);
 }
 </style>
