@@ -4,7 +4,7 @@
       <template slot="content">
         <v-container class="text-center">
           <v-row>
-            <v-col cols="12">
+            <v-col cols="12" :md="viewToggle === 'category' ? 9 : 12">
               <v-btn-toggle v-model="viewToggle" borderless mandatory>
                 <v-btn value="category" small aria-label="List view">
                   <span style="font-weight: 900">Meetings by Category</span>
@@ -34,7 +34,7 @@
         </v-container>
         <v-container v-if="viewToggle == 'category'">
           <v-row>
-            <v-col cols="12">
+            <v-col cols="12" md="9">
               <div
                 v-for="(category, index) in categoryMap"
                 :key="index"
@@ -47,6 +47,14 @@
                   :text="category.text || null"
                 ></MeetingTable>
               </div>
+            </v-col>
+            <v-col
+              cols="12"
+              v-if="meetings"
+              md="3"
+              class="px-3 hidden-sm-and-down"
+            >
+              <Toc :key="viewToggle" tocHeading="Meetings"></Toc>
             </v-col>
           </v-row>
         </v-container>

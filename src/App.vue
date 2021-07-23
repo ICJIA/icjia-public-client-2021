@@ -68,11 +68,15 @@ export default {
         this.disclaimer = null;
         return;
       }
-      //console.log("app path: ", this.$route.fullPath);
+      console.log("app path: ", this.$route.fullPath);
       let fullPath = this.$route.fullPath;
       fullPath += fullPath.endsWith("/") ? "" : "/";
       let context = fullPath.split("/").slice(1, -1);
       context = "/" + context.slice(0, 1).join("/") + "/";
+      // let altContext = this.$myApp.disclaimers.find(
+      //   (o) => o.pathPrefix === fullPath
+      // );
+      // console.log(altContext);
       let disclaimer = this.$myApp.disclaimers.filter((obj) => {
         if (obj["pathPrefix"] === context) {
           return obj;

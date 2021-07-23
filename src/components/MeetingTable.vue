@@ -13,9 +13,9 @@
       :sort-desc.sync="sortDesc"
       @click:row="clicked"
       :footer-props="{
-        'items-per-page-options': [100, 150, 200, 250],
+        'items-per-page-options': [25, 50, 100, 150],
       }"
-      :items-per-page="150"
+      :items-per-page="25"
       style="border: 1px solid #ddd"
     >
       <template v-slot:item.start="{ item }">
@@ -38,7 +38,7 @@
 
       <template v-slot:top>
         <v-sheet class="px-5 py-5 markdown-body">
-          <h2>{{ heading }}</h2>
+          <h2 :id="generateSlug(heading)">{{ heading }}</h2>
           <div
             v-if="text && text.length"
             style="font-size: 14px"
@@ -64,6 +64,7 @@
 import NProgress from "nprogress";
 // eslint-disable-next-line no-unused-vars
 import { EventBus } from "@/event-bus";
+import slug from "slug";
 import { renderToHtml } from "@/services/Markdown";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import _ from "lodash";
@@ -94,6 +95,9 @@ export default {
     attachSearchEvents(this);
   },
   methods: {
+    generateSlug(heading) {
+      return slug(heading);
+    },
     render(content) {
       return renderToHtml(content);
     },
