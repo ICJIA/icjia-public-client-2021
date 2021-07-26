@@ -8,12 +8,13 @@
 
 a {
   font-weight: 900;
-  text-decoration: none;
+  text-decoration: underline;
   background: #fff;
 }
 
 a:hover {
   color: #777 !important;
+  text-decoration: none;
 }
 
 #nprogress .bar {

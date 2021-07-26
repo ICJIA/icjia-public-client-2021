@@ -1,9 +1,9 @@
 <template>
   <div>
     <v-card
-      elevation="0"
+      elevation="1"
       class="mb-2 py-8 px-2"
-      style="border: 1px solid #ccc"
+      style="border: 1px solid #ddd"
       v-if="item"
       :color="color"
     >

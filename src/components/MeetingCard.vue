@@ -25,6 +25,7 @@
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import { renderToHtml } from "@/services/Markdown";
 import moment from "moment";
+import _ from "lodash";
 export default {
   mounted() {
     attachInternalLinks(this);

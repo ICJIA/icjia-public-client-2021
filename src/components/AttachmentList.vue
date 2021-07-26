@@ -12,7 +12,7 @@
       {{ title }}
     </div>
     <ul v-for="(attachment, index) in attachments" :key="index" class="mt-6">
-      <li>
+      <li class="attachment-link">
         <a
           :href="`https://agency.icjia-api.cloud${attachment.url}`"
           target="_blank"
@@ -47,4 +47,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.attachment-link {
+  font-size: 13px;
+}
+</style>
