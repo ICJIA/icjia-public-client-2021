@@ -90,6 +90,9 @@ export default {
       console.log("layout resized");
     },
   },
+  mounted() {
+    EventBus.$emit("context-label", "Latest News");
+  },
   apollo: {
     posts: {
       prefetch: true,
@@ -108,7 +111,7 @@ export default {
           contentType: "News",
         }));
         this.news = posts;
-        EventBus.$emit("context-label", "Latest News");
+
         NProgress.done();
       },
     },

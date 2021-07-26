@@ -17,6 +17,15 @@
         alt="research content image"
         v-if="type === 'article'"
       >
+        <v-chip
+          dark
+          color="#0D4474"
+          style="margin-top: -1px !important"
+          v-if="isItNew(item)"
+          class="icjia-card"
+        >
+          NEW!
+        </v-chip>
         <template v-slot:placeholder>
           <v-row class="fill-height ma-0" align="center" justify="center">
             <v-progress-circular
@@ -80,6 +89,7 @@
 
 <script>
 import { getImageURL, getGrayscaleImageURL } from "@/services/Image";
+import moment from "moment";
 export default {
   props: {
     item: {
@@ -92,6 +102,17 @@ export default {
     },
   },
   methods: {
+    isItNew(item) {
+      let now = moment(new Date()); //todays date
+      let end = moment(item.date); // another date
+      let duration = moment.duration(now.diff(end));
+      let days = duration.asDays();
+      if (days <= this.$myApp.config.daysToShowNewResearch) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     routeTo(item) {
       console.log(item);
       this.$router.push(`${item.fullPath}`);

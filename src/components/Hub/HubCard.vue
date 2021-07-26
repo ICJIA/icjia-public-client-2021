@@ -1,157 +1,150 @@
 <template>
-  <div>
-    <v-card
-      elevation="2"
-      class="pa-2 grid-item mb-3 info-card py-8 px-3"
-      outlined
-      :min-height="orientation === 'grid' ? 400 : null"
-      :height="cardHeight"
-      @click.prevent="$router.push(item.fullPath)"
-      :data-aos="animation"
+  <v-card
+    elevation="2"
+    class="pa-2 grid-item mb-3 card py-8 px-3 mx-1"
+    outlined
+    :min-height="orientation === 'grid' ? 400 : null"
+    :height="cardHeight"
+    @click.prevent="$router.push(item.fullPath)"
+    :data-aos="animation"
+  >
+    <v-card-text
+      ><span v-if="!showUpdated" class="font-lato">{{
+        item.date | format
+      }}</span></v-card-text
     >
-      <v-card-text
-        ><span v-if="!showUpdated" class="font-lato">{{
-          item.date | format
-        }}</span></v-card-text
-      >
-      <v-card-text v-if="item.title"
-        ><h2 style="margin-top: -20px; line-height: 25px">
-          {{ item.title }}
-        </h2></v-card-text
-      >
-      <v-card-text
-        v-if="item.authors"
-        style="
-          font-weight: 700;
-          color: #888;
-          font-size: 12px;
-          margin-top: -25px;
-        "
-        >{{ displayAuthors(item.authors) }}</v-card-text
-      >
-      <div v-if="!textOnly">
-        <v-img
-          v-if="item.image"
-          :src="item.image"
-          width="100%"
-          :height="splashHeight"
-          class="mb-5"
-          :ref="'img_' + item.id"
-          @error="errorHandler(item.id)"
-          style="border: 1px solid #fafafa"
-          alt="ICJIA News image"
-          @load="resize"
-          ><template #placeholder>
-            <v-row class="fill-height ma-0" align="center" justify="center">
-              <v-progress-circular
-                indeterminate
-                color="blue darken-3"
-                aria-label="progress"
-              ></v-progress-circular>
-            </v-row>
-          </template>
-        </v-img>
-        <v-img
-          v-if="item.imagePath && !item.image && !textOnly && imageOK"
-          :src="getImagePath(item.imagePath, 0, 0, 40)"
-          :lazy-src="getImagePath(item.imagePath, 0, 0, 1)"
-          width="100%"
-          :height="splashHeight"
-          class="mb-5"
-          :ref="'img_' + item.id"
-          @error="errorHandler(item.id)"
-          style="border: 1px solid #fafafa"
-          alt="ICJIA News image"
-          @load="resize"
-          ><template #placeholder>
-            <v-row class="fill-height ma-0" align="center" justify="center">
-              <v-progress-circular
-                indeterminate
-                color="blue darken-3"
-                aria-label="progress"
-              ></v-progress-circular>
-            </v-row>
-          </template>
-        </v-img>
+    <v-card-text v-if="item.title"
+      ><h2 style="margin-top: -20px; line-height: 25px">
+        {{ item.title }}
+      </h2></v-card-text
+    >
+    <v-card-text
+      v-if="item.authors"
+      style="font-weight: 700; color: #888; font-size: 12px; margin-top: -25px"
+      >{{ displayAuthors(item.authors) }}</v-card-text
+    >
+    <div v-if="!textOnly">
+      <v-img
+        v-if="item.image"
+        :src="item.image"
+        width="100%"
+        :height="splashHeight"
+        class="mb-5"
+        :ref="'img_' + item.id"
+        @error="errorHandler(item.id)"
+        style="border: 1px solid #fafafa"
+        alt="ICJIA News image"
+        @load="resize"
+        ><template #placeholder>
+          <v-row class="fill-height ma-0" align="center" justify="center">
+            <v-progress-circular
+              indeterminate
+              color="blue darken-3"
+              aria-label="progress"
+            ></v-progress-circular>
+          </v-row>
+        </template>
+      </v-img>
+      <v-img
+        v-if="item.imagePath && !item.image && !textOnly && imageOK"
+        :src="getImagePath(item.imagePath, 0, 0, 40)"
+        :lazy-src="getImagePath(item.imagePath, 0, 0, 1)"
+        width="100%"
+        :height="splashHeight"
+        class="mb-5"
+        :ref="'img_' + item.id"
+        @error="errorHandler(item.id)"
+        style="border: 1px solid #fafafa"
+        alt="ICJIA News image"
+        @load="resize"
+        ><template #placeholder>
+          <v-row class="fill-height ma-0" align="center" justify="center">
+            <v-progress-circular
+              indeterminate
+              color="blue darken-3"
+              aria-label="progress"
+            ></v-progress-circular>
+          </v-row>
+        </template>
+      </v-img>
 
-        <v-img
-          v-if="item.imagePath && !item.image && !textOnly && !imageOK"
-          src="/icjia-half-splash-thumb.jpg"
-          lazy-src="/icjia-half-splash-thumb.jpg"
-          width="100%"
-          :height="splashHeight"
-          class="mb-5"
-          :ref="'img_' + item.id"
-          @error="errorHandler(item.id)"
-          style="border: 1px solid #fafafa"
-          alt="ICJIA News image"
-          @load="resize"
-          ><template #placeholder>
-            <v-row class="fill-height ma-0" align="center" justify="center">
-              <v-progress-circular
-                indeterminate
-                color="blue darken-3"
-                aria-label="progress"
-              ></v-progress-circular>
-            </v-row>
-          </template>
-        </v-img>
-      </div>
-      <v-card-text
-        v-if="item.description"
-        style="margin-top: -15px; color: #111"
-        >{{ truncate(item.description, this.truncation) }}</v-card-text
+      <v-img
+        v-if="item.imagePath && !item.image && !textOnly && !imageOK"
+        src="/icjia-half-splash-thumb.jpg"
+        lazy-src="/icjia-half-splash-thumb.jpg"
+        width="100%"
+        :height="splashHeight"
+        class="mb-5"
+        :ref="'img_' + item.id"
+        @error="errorHandler(item.id)"
+        style="border: 1px solid #fafafa"
+        alt="ICJIA News image"
+        @load="resize"
+        ><template #placeholder>
+          <v-row class="fill-height ma-0" align="center" justify="center">
+            <v-progress-circular
+              indeterminate
+              color="blue darken-3"
+              aria-label="progress"
+            ></v-progress-circular>
+          </v-row>
+        </template>
+      </v-img>
+    </div>
+    <v-card-text
+      v-if="item.description"
+      style="margin-top: -15px; color: #111"
+      >{{ truncate(item.description, this.truncation) }}</v-card-text
+    >
+    <v-card-text v-else style="margin-top: -15px; color: #111">{{
+      truncate(item.abstract, this.truncation)
+    }}</v-card-text>
+
+    <div class="ml-3">
+      <BasePropDisplay name="Contributors" v-if="item.contributors">
+        <template>
+          <span v-for="(contributor, i) in item.contributors" :key="i">
+            <template v-if="i > 1">{{
+              app.contributors.length > i + 1 ? ", " : " and "
+            }}</template>
+
+            <a
+              v-if="contributor.url"
+              :href="contributor.url"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <template>{{ contributor.title }}</template>
+            </a>
+            <template v-else>{{ contributor.title }}</template>
+          </span>
+        </template>
+      </BasePropDisplay>
+
+      <BasePropDisplay v-if="showUpdated" name="Updated">
+        {{ item.date | format }}
+      </BasePropDisplay>
+      <BasePropDisplay
+        v-if="item.categories && item.categories.length"
+        name="Categories"
       >
-      <v-card-text v-else style="margin-top: -15px; color: #111">{{
-        truncate(item.abstract, this.truncation)
-      }}</v-card-text>
-
-      <div class="ml-3">
-        <BasePropDisplay name="Contributors" v-if="item.contributors">
-          <template>
-            <span v-for="(contributor, i) in item.contributors" :key="i">
-              <template v-if="i > 1">{{
-                app.contributors.length > i + 1 ? ", " : " and "
-              }}</template>
-
-              <a
-                v-if="contributor.url"
-                :href="contributor.url"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <template>{{ contributor.title }}</template>
-              </a>
-              <template v-else>{{ contributor.title }}</template>
-            </span>
-          </template>
-        </BasePropDisplay>
-
-        <BasePropDisplay v-if="showUpdated" name="Updated">
-          {{ item.date | format }}
-        </BasePropDisplay>
-        <BasePropDisplay
-          v-if="item.categories && item.categories.length"
-          name="Categories"
+        <span
+          v-for="(category, index) in item.categories"
+          :key="index"
+          class="mr-1 category"
+          style=""
+          @click.prevent.stop="categoryClick($event)"
+          >{{ category.toUpperCase() }}</span
         >
-          <span
-            v-for="(category, index) in item.categories"
-            :key="index"
-            class="mr-1 category"
-            style=""
-            @click.prevent.stop="categoryClick($event)"
-            >{{ category.toUpperCase() }}</span
-          >
-        </BasePropDisplay>
+      </BasePropDisplay>
 
-        <BasePropDisplay v-if="item.tags" name="">
-          <BasePropChip v-for="tag in item.tags" :key="tag">
-            <template>{{ tag }}</template>
-          </BasePropChip>
-        </BasePropDisplay>
-      </div>
-    </v-card>
-  </div>
+      <BasePropDisplay v-if="item.tags" name="">
+        <BasePropChip v-for="tag in item.tags" :key="tag">
+          <template>{{ tag }}</template>
+        </BasePropChip>
+      </BasePropDisplay>
+    </div>
+  </v-card>
 </template>
 
 <script>
