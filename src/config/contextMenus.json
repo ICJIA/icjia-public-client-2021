@@ -132,6 +132,10 @@
             {
                 "label": "Events",
                 "path": "/news/events/"
+            },
+            {
+                "label": "Publications",
+                "path": "/news/publications/"
             }
         ]
     },

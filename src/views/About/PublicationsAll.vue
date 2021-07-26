@@ -77,7 +77,7 @@
                 </div>
               </template>
               <template v-slot:item.fileURL="{ item }">
-                <div class="my-2">
+                <div class="my-2" v-if="item.fileURL && item.fileURL.length">
                   <span v-if="item.pubType !== 'application'"
                     ><v-btn :href="item.fileURL" target="_blank" x-small
                       >Download PDF<v-icon right>download</v-icon></v-btn

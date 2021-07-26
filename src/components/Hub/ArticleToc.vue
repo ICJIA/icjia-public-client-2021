@@ -1,5 +1,5 @@
 <template>
-  <div id="article-toc">
+  <div id="article-toc" style="z-index: 1 !important">
     <h3 class="text-uppercase font-oswald mb-2" style="font-weight: 700">
       Table of contents
     </h3>
@@ -14,10 +14,10 @@
         dense
       >
         <div
-          class="font-lato toc-item py-2 pl-6 hover"
+          class="font-lato toc-item pl-6 hover"
           :class="{ 'toc-item-active': heading.id === activeHeading }"
           @click="scrollTo(heading.id)"
-          style="font-size: 16px"
+          style="font-size: 14px"
         >
           {{ heading.innerText }}
         </div>
@@ -28,6 +28,28 @@
 
 <script>
 export default {
+  mounted() {
+    const disclaimer = document.querySelector("#disclaimer");
+    const toc = document.querySelector(".article-toc");
+    const observer = new window.IntersectionObserver(
+      ([entry]) => {
+        console.log(entry.boundingClientRect.top);
+        if (entry.isIntersecting) {
+          console.log("Disclaimer Enter");
+          toc.classList.remove("article-toc-sticky");
+          return;
+        }
+        console.log("Disclaimer Leave");
+        toc.classList.add("article-toc-sticky");
+      },
+      {
+        root: null,
+        threshold: 0,
+      }
+    );
+
+    observer.observe(disclaimer);
+  },
   methods: {
     scrollTo(id) {
       //console.log(id);

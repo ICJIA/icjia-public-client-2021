@@ -1,11 +1,12 @@
 <template>
-  <div v-if="disclaimer && disclaimer.length">
+  <div v-if="disclaimer && disclaimer.length" id="disclaimer">
     <div
       style="
         background: #31597a;
         border-top: 1px solid #ddd;
         border-bottom: 1px solid #ddd;
         color: #fff !important;
+        z-index: 99999;
       "
       class="px-5 py-5"
     >
