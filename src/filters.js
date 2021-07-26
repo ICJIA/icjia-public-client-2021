@@ -152,9 +152,10 @@ Vue.filter("fromNow", function (timestamp) {
   //let now = moment().tz(this.$myApp.config.timezone);
 
   // return moment.utc(timestamp).locale("en").fromNow();
-  // moment.tz.setDefault("America/Chicago");
-  //let dayPlusOne = moment(timestamp).utc().add(1, "day");
+  moment.tz.setDefault("America/Chicago");
+  //let dayPlusOne = moment(timestamp).utc().add(, "days");
   //var time = moment(timestamp);
   // console.log(moment(timestamp).utc().fromNow());
   return moment(timestamp).fromNow(true);
+  //return moment.utc(timestamp).locale("en").fromNow(true);
 });

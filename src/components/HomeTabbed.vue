@@ -103,7 +103,7 @@
                 class="mr-1"
                 :color="getColor(grant.start, grant.end)"
                 style="font-weight: 700"
-                >Expires in {{ grant.end | fromNow }}</v-chip
+                >Expires on {{ grant.end | dateFormatAlt }}</v-chip
               >
               <span style="font-weight: 700; font-size: 16px; color: #666">
                 {{ getCategory(grant.category) }}
