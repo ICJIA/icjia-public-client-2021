@@ -41,6 +41,11 @@
 </template>
 
 <script>
+const addOneDayToDate = function (date) {
+  const newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + 1);
+  return newDate;
+};
 import NProgress from "nprogress";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_FUNDING_QUERY } from "@/graphql/grants";
@@ -54,8 +59,9 @@ export default {
     };
   },
   computed: {
+    // add one day to js to get the correct date
     isExpired() {
-      if (new Date(this.funding.end) < new Date()) {
+      if (new Date(addOneDayToDate(this.funding.end)) < new Date()) {
         return true;
       } else {
         return false;

@@ -65,6 +65,11 @@
 </template>
 
 <script>
+const addOneDayToDate = function (date) {
+  const newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + 1);
+  return newDate;
+};
 // eslint-disable-next-line no-unused-vars
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
@@ -141,14 +146,14 @@ export default {
     filterGrants(status) {
       if (status === "current") {
         this.filteredAndSortedGrants = _.filter(this.allGrants, (grant) => {
-          if (new Date(grant.end) > new Date()) {
+          if (new Date(addOneDayToDate(grant.end)) > new Date()) {
             return grant;
           }
         });
       }
       if (status === "expired") {
         this.filteredAndSortedGrants = _.filter(this.allGrants, (grant) => {
-          if (new Date(grant.end) < new Date()) {
+          if (new Date(addOneDayToDate(grant.end)) < new Date()) {
             return grant;
           }
         });

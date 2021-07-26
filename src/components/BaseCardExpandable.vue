@@ -45,7 +45,7 @@
               background: green;
               color: #fff;
             "
-            v-if="new Date(item.end) > new Date()"
+            v-if="new Date(addOneDayToDate(item.end)) >= new Date()"
             >&nbsp;Deadline: {{ item.end | dateFormatAlt }}&nbsp;</v-chip
           >
           <v-chip
@@ -56,7 +56,7 @@
               background: red;
               color: #fff;
             "
-            v-if="new Date(item.end) < new Date()"
+            v-if="new Date(addOneDayToDate(item.end)) < new Date()"
           >
             &nbsp;Expired: {{ item.end | dateFormatAlt }} &nbsp;
           </v-chip>
@@ -141,12 +141,18 @@
 </template>
 
 <script>
+const addOneDayToDate = function (date) {
+  const newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + 1);
+  return newDate;
+};
 import { renderToHtml } from "@/services/Markdown";
 import { EventBus } from "@/event-bus";
 export default {
   data() {
     return {
       show: false,
+      addOneDayToDate,
     };
   },
   methods: {
