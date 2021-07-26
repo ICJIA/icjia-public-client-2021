@@ -1,27 +1,26 @@
 <template>
-  <div v-if="attachments">
-    <v-sheet color="#fff" class="px-5 py-5">
-      <div
-        style="
-          font-weight: 700;
-          border-bottom: 1px solid #ccc;
-          padding-bottom: 8px;
-          text-transform: uppercase;
-        "
-      >
-        {{ title }}
-      </div>
-      <ul v-for="(attachment, index) in attachments" :key="index" class="mt-3">
-        <li>
-          <a
-            :href="`https://agency.icjia-api.cloud${attachment.url}`"
-            target="_blank"
-            >{{ attachment.name }}</a
-          >
-        </li>
-      </ul>
-    </v-sheet>
-  </div>
+  <v-sheet v-if="attachments">
+    <div
+      style="
+        font-weight: 700;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 8px;
+        text-transform: uppercase;
+      "
+      v-if="title && title.length"
+    >
+      {{ title }}
+    </div>
+    <ul v-for="(attachment, index) in attachments" :key="index" class="mt-6">
+      <li>
+        <a
+          :href="`https://agency.icjia-api.cloud${attachment.url}`"
+          target="_blank"
+          >{{ attachment.name }}</a
+        >
+      </li>
+    </ul>
+  </v-sheet>
 </template>
 
 <script>
@@ -38,7 +37,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: "Attachments",
+      default: "",
     },
     items: {
       type: Array,

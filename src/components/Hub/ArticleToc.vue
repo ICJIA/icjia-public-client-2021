@@ -29,7 +29,7 @@
 <script>
 export default {
   mounted() {
-    // ** for long tocs -- need to tweak this
+    // TODO: for long TOCs -- need to tweak this
     // const disclaimer = document.querySelector("#disclaimer");
     // const toc = document.querySelector(".article-toc");
     // const observer = new window.IntersectionObserver(
