@@ -97,7 +97,7 @@ export default {
           document.documentElement.scrollTop || document.body.scrollTop;
         scrollPosition = scrollPosition + this.scrollOffset + 35;
         const tocItems = document.querySelectorAll(".tocItem");
-        console.log(scrollPosition);
+        //console.log(scrollPosition);
         if (scrollPosition < 150) {
           tocItems.forEach((toc) => {
             toc.classList.remove("visible");

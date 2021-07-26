@@ -4,6 +4,8 @@
       class="pa-2 grid-item mb-3 info-card py-3 px-3"
       outlined
       @click="$router.push(item.fullPath)"
+      elevation="1"
+      color="#fafafa"
     >
       <div style="font-size: 12px; margin-left: 15px">
         <v-chip

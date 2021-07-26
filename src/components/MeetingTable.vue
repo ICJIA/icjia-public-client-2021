@@ -16,7 +16,7 @@
         'items-per-page-options': [25, 50, 100, 150],
       }"
       :items-per-page="25"
-      style="border: 1px solid #ddd"
+      style="border: 1px solid #eee; background: #fff"
     >
       <template v-slot:item.start="{ item }">
         <div
@@ -58,7 +58,7 @@
         </v-sheet>
       </template>
     </v-data-table>
-    <div v-if="showDisclaimer">
+    <!-- <div v-if="showDisclaimer">
       <p class="text-center mt-2" style="font-size: 11px; font-weight: 700">
         For meeting materials prior to {{ $myApp.config.archiveDate }} please
         see the
@@ -66,7 +66,7 @@
           >ICJIA Document Archive.</a
         >
       </p>
-    </div>
+    </div> -->
   </div>
 </template>
 

@@ -103,7 +103,7 @@ export default {
         },
         {
           label: "Meetings",
-          url: "/meetings/",
+          url: "/news/meetings/",
         },
         {
           label: "Funding",
@@ -111,11 +111,11 @@ export default {
         },
         {
           label: "Employment",
-          url: "/employment/",
+          url: "/about/employment/",
         },
         {
           label: "Events",
-          url: "/events/",
+          url: "/news/events/",
         },
       ],
     };

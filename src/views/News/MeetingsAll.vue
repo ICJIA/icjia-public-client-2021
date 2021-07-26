@@ -53,6 +53,7 @@
                   :items="filterMeetingsByCategory(category.category)"
                   :heading="category.label"
                   :text="category.text || null"
+                  class="elevation-1"
                 ></MeetingTable>
               </div>
             </v-col>
@@ -61,6 +62,7 @@
               v-if="meetings"
               md="3"
               class="px-3 hidden-sm-and-down"
+              style="margin-top: -150px"
             >
               <Toc :key="viewToggle" tocHeading="Meetings"></Toc>
             </v-col>
