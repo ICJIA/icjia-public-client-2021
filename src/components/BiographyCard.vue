@@ -54,7 +54,10 @@
               item.title
             }}</span>
           </v-card-subtitle>
-          <v-card-text class="text-left" v-html="item.body"></v-card-text>
+          <v-card-text
+            class="text-left"
+            v-html="render(item.body)"
+          ></v-card-text>
         </span>
       </div>
     </v-card>
@@ -62,6 +65,7 @@
 </template>
 
 <script>
+import { renderToHtml } from "@/services/Markdown";
 import { EventBus } from "@/event-bus";
 export default {
   methods: {
@@ -71,6 +75,9 @@ export default {
         type: "general",
       };
       EventBus.$emit("search", opts);
+    },
+    render(content) {
+      return renderToHtml(content);
     },
   },
   props: {
