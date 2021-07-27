@@ -77,7 +77,7 @@
             </div>
 
             <p style="color: #000" class="mt-3">
-              {{ truncate(event.summary) }}
+              {{ event.summary }}
             </p>
             <router-link
               to="/"
