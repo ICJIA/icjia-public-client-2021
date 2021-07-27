@@ -127,6 +127,14 @@
               >
             </v-list-item-content>
           </v-list-item>
+
+          <v-list-item class="appNav" exact to="/about/foia/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >FOIA Requests</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
         </v-list>
       </v-menu>
 
