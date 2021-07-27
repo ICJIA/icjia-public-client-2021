@@ -7,11 +7,27 @@
       class="hover px-4 py-3 mb-2 card"
       v-if="item"
     >
-      <div style="font-size: 12px" v-if="item && item.date">
+      <div
+        style="font-size: 12px"
+        v-if="item && item.published_at && item.contentType === 'news'"
+      >
+        <span style="font-weight: 700" v-if="item.contentType">{{
+          item.contentType.toUpperCase()
+        }}</span>
+        | {{ item.published_at | format }}
+      </div>
+
+      <div style="font-size: 12px" v-else-if="item && item.date">
         <span style="font-weight: 700" v-if="item.contentType">{{
           item.contentType.toUpperCase()
         }}</span>
         | {{ item.date | format }}
+      </div>
+      <div style="font-size: 12px" v-else-if="item && item.publicationDate">
+        <span style="font-weight: 700" v-if="item.contentType">{{
+          item.contentType.toUpperCase()
+        }}</span>
+        | {{ item.publicationDate | format }}
       </div>
       <div style="font-size: 12px" v-else-if="item && item.start">
         <span style="font-weight: 700">{{
@@ -57,7 +73,10 @@
           </span>
         </div>
       </div>
-      <v-card-text v-if="item.abstract" v-html="item.abstract"></v-card-text>
+      <v-card-text
+        v-if="item.abstract"
+        v-html="render(item.abstract)"
+      ></v-card-text>
       <v-card-text
         v-else-if="item.summary"
         v-html="render(item.summary)"
