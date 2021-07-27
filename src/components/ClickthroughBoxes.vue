@@ -8,7 +8,7 @@
 
         <div class="flex-container">
           <v-card
-            class="elevation-1 px-8 py-10 box text-center hover card"
+            class="elevation-1 px-8 py-10 box text-center hover card mr-1"
             style="border: 1px solid #ddd"
             v-for="(box, index) in boxes"
             :data-aos="getAnimation()"
@@ -120,24 +120,23 @@ export default {
 .flex-item-1 {
   background: #fff;
 
-  margin: 0px;
-  flex: 0 1 calc(100%); /* <-- adjusting for margin */
+  flex: 0 1; /* <-- adjusting for margin */
   flex-grow: 1;
 }
 
 .flex-item-2 {
   background: #fff;
 
-  margin: 5px;
-  flex: 0 1 calc(50% - 15px); /* <-- adjusting for margin */
+  margin: 0px;
+  flex: 0 1; /* <-- adjusting for margin */
   flex-grow: 1;
 }
 
 .flex-item-3 {
   background: #fff;
 
-  margin: 5px;
-  flex: 0 1 calc(33% - 15px); /* <-- adjusting for margin */
+  margin: 0px;
+  flex: 0 1; /* <-- adjusting for margin */
   flex-grow: 1;
 }
 

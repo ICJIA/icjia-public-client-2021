@@ -46,6 +46,7 @@
                 <HomeEventCard
                   :event="community[n - 1]"
                   tag="community"
+                  class="mr-1"
                   :class="{
                     'flex-item-3': n === 3,
                     'flex-item-2': n === 2,
@@ -75,6 +76,7 @@
               >
                 <HomeEventCard
                   :event="meetings[n - 1]"
+                  class="mr-1"
                   tag="meeting"
                   :class="{
                     'flex-item-3': n === 3,
@@ -105,6 +107,7 @@
               >
                 <HomeEventCard
                   :event="training[n - 1]"
+                  class="mr-1"
                   tag="training"
                   :class="{
                     'flex-item-3': n === 3,
@@ -131,6 +134,7 @@
               >
                 <HomeEventCard
                   :event="funding[n - 1]"
+                  class="mr-1"
                   tag="funding"
                   :class="{
                     'flex-item-3': n === 3,
@@ -218,6 +222,6 @@ export default {
 }
 
 .rule-left {
-  border-left: 1px solid #e8e8e8 !important;
+  /* border-left: 1px solid #e8e8e8 !important; */
 }
 </style>

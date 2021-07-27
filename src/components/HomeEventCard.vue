@@ -1,9 +1,9 @@
 <template>
   <div>
     <v-card
-      class="mr-2 mt-1 mb-1 hover card"
+      class="card hover"
       style="overflow-y: auto; background: #fff"
-      elevation="0"
+      elevation="1"
       height="100%"
       @click="$router.push(event.fullPath)"
     >
@@ -77,7 +77,7 @@
             </div>
 
             <p style="color: #000" class="mt-3">
-              {{ event.summary }}
+              {{ truncate(event.summary) }}
             </p>
             <router-link
               to="/"

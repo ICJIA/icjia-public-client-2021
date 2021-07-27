@@ -12,10 +12,8 @@
             <v-col cols="12" :md="content && content.showTOC ? 9 : 12">
               <h1 v-html="render(content.title)"></h1>
               <div v-html="render(content.body)"></div>
-              <h2>InfoNet News</h2>
-              <div>TODO: news tagged with 'infonet' here</div>
-              <h2>InfoNet Articles</h2>
-              <div>TODO: articles tagged with 'infonet' here</div>
+              <h2 id="more-about-infonet">More About InfoNet</h2>
+              <StaticSearch query="infonet" class="mt-3"></StaticSearch>
               <div>
                 <ClickthroughBoxes
                   :boxes="content.clickthrough"
