@@ -14,7 +14,7 @@ const query = `query {
     slug
     summary
     category
-    
+    searchMeta
     published_at
     tags {
       title

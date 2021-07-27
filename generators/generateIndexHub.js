@@ -10,7 +10,7 @@ const query = `query {
     id
     title
     slug
-    abstract
+    summary: abstract
     authors
     tags
     date
@@ -25,7 +25,7 @@ const query = `query {
     authors: contributors
     date
     slug
-    description
+    summary: description
     url
     tags
     categories
@@ -40,7 +40,7 @@ const query = `query {
     categories
     tags
     project
-   description
+   summary: description
     categories
   }
 }`;
