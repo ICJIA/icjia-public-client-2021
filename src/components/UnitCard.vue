@@ -1,12 +1,12 @@
 <template>
   <div>
-    <v-card elevation="1" color="white" class="px-2 py-3">
-      <v-card-title>{{ item.title }}</v-card-title>
+    <v-card elevation="1" color="white" class="px-2 py-3 markdown-body">
+      <h2>{{ item.title }}</h2>
       <v-card-text v-if="item.body" v-html="render(item.body)"></v-card-text>
       <v-card-text v-else>No description available.</v-card-text>
 
       <v-card-actions>
-        <v-btn @click="item.show = !item.show">
+        <v-btn text @click="item.show = !item.show">
           {{ item.shortName }} Staff
           <v-icon>{{
             item.show ? "mdi-chevron-up" : "mdi-chevron-down"

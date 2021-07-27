@@ -2,14 +2,14 @@
   <div>
     <div>
       <v-btn-toggle v-model="icon" v-if="!listViewOnly">
-        <v-btn value="list" small elevation="2">
-          <span>List View</span>
+        <v-btn value="list" small elevation="1">
+          <span class="button-weight">List View</span>
 
           <v-icon right small>mdi-format-list-bulleted</v-icon>
         </v-btn>
 
-        <v-btn value="calendar" small elevation="2">
-          <span>Calendar View</span>
+        <v-btn value="calendar" small elevation="1">
+          <span class="button-weight">Calendar View</span>
 
           <v-icon right small> calendar_today </v-icon>
         </v-btn>

@@ -58,7 +58,10 @@
         </div>
       </div>
       <v-card-text v-if="item.abstract" v-html="item.abstract"></v-card-text>
-      <v-card-text v-else-if="item.summary" v-html="item.summary"></v-card-text>
+      <v-card-text
+        v-else-if="item.summary"
+        v-html="render(item.summary)"
+      ></v-card-text>
       <v-card-text v-else>No summary available.</v-card-text>
 
       <template v-if="item.tags">
@@ -74,11 +77,14 @@
 /* eslint-disable no-unused-vars */
 import { EventBus } from "@/event-bus";
 import DOMPurify from "dompurify";
-
+import { renderToHtml } from "@/services/Markdown";
 import _ from "lodash";
 // import searchIndex from "@/config/searchIndex.json";
 export default {
   methods: {
+    render(content) {
+      return renderToHtml(content);
+    },
     truncate(string, maxWords = 50) {
       var strippedString = string.trim();
       var array = strippedString.split(" ");

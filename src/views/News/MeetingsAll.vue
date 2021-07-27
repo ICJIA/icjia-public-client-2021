@@ -15,7 +15,7 @@
                     small
                     aria-label="List view"
                   >
-                    <span style="font-weight: 900">By category</span>
+                    <span class="button-weight">By category</span>
 
                     <span
                       aria-hidden="true"
@@ -25,7 +25,7 @@
                   </v-btn>
 
                   <v-btn value="all" small elevation="1">
-                    <span style="font-weight: 900" aria-label="Grid view"
+                    <span class="button-weight" aria-label="Grid view"
                       >By date</span
                     >
 

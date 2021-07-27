@@ -14,13 +14,12 @@
               <div v-html="render(content.body)"></div>
               <h2 id="more-about-infonet">More About InfoNet</h2>
               <StaticSearch query="infonet" class="mt-3"></StaticSearch>
-              <div>
-                <ClickthroughBoxes
-                  :boxes="content.clickthrough"
-                  v-if="content.clickthrough && content.clickthrough.length"
-                  :boxesPerRow="content && content.showTOC ? 2 : 3"
-                ></ClickthroughBoxes>
-              </div>
+
+              <ClickthroughBoxes
+                :boxes="content.clickthrough"
+                v-if="content.clickthrough && content.clickthrough.length"
+                :boxesPerRow="content && content.showTOC ? 2 : 3"
+              ></ClickthroughBoxes>
             </v-col>
             <v-col
               cols="12"

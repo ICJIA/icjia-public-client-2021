@@ -36,8 +36,12 @@
                   mandatory
                   style="margin-top: 5px"
                 >
-                  <v-btn small>Show All Staff </v-btn>
-                  <v-btn small>Show Staff By Unit </v-btn>
+                  <v-btn small class="button-weight" elevation="1"
+                    >All Staff
+                  </v-btn>
+                  <v-btn small class="button-weight" elevation="1"
+                    >Staff By Unit
+                  </v-btn>
                 </v-btn-toggle>
               </v-col>
             </v-row>
