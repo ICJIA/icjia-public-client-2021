@@ -4,7 +4,7 @@
       color="white"
       class="mb-5 card"
       elevation="1"
-      @click="$router.push(item.fullPath)"
+      @click="isClickable ? $router.push(item.fullPath) : null"
       style="border: 1px solid #ddd !important"
     >
       <div
@@ -212,6 +212,10 @@ export default {
       default: true,
     },
     showClose: {
+      type: Boolean,
+      default: true,
+    },
+    isClickable: {
       type: Boolean,
       default: true,
     },

@@ -48,7 +48,7 @@ const GET_EVENTS = gql`
   }
 `;
 
-const GET_SINGLE_EVENT = gql`
+const GET_SINGLE_EVENT_QUERY = gql`
   query singleEvent($slug: String!) {
     events(where: { slug: $slug }) {
       id
@@ -67,4 +67,4 @@ const GET_SINGLE_EVENT = gql`
   }
 `;
 
-export { GET_EVENTS, GET_SINGLE_EVENT };
+export { GET_EVENTS, GET_SINGLE_EVENT_QUERY };
