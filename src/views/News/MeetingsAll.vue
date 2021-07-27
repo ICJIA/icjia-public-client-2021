@@ -10,7 +10,7 @@
 
                 <v-btn-toggle v-model="viewToggle" mandatory>
                   <v-btn value="category" small aria-label="List view">
-                    <span style="font-weight: 900">Meetings by Category</span>
+                    <span style="font-weight: 900">By category</span>
 
                     <span
                       aria-hidden="true"
@@ -21,11 +21,10 @@
 
                   <v-btn value="all" small>
                     <span style="font-weight: 900" aria-label="Grid view"
-                      >All Meetings</span
+                      >By date</span
                     >
 
-                    <span class="mdi mdi-view-module" aria-hidden="true">
-                    </span>
+                    <span class="mdi mdi-calendar" aria-hidden="true"> </span>
                   </v-btn>
                 </v-btn-toggle>
               </div>

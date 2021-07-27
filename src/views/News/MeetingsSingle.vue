@@ -1,12 +1,20 @@
 <template>
-  <div class="markdown-body" v-if="meeting">
-    <v-container>
-      <v-row>
-        <v-col>
-          <MeetingCard :item="meeting" class="mx-2 my-4"></MeetingCard>
-        </v-col>
-      </v-row>
-    </v-container>
+  <div class="markdown-body">
+    <BaseContent :error="error" :loading="$apollo.loading">
+      <template slot="content">
+        <v-container>
+          <v-row>
+            <v-col>
+              <MeetingCard
+                :item="meeting"
+                class="mx-2 my-4"
+                v-if="meeting"
+              ></MeetingCard>
+            </v-col>
+          </v-row>
+        </v-container>
+      </template>
+    </BaseContent>
   </div>
 </template>
 

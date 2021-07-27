@@ -4,6 +4,7 @@
       class="mr-2 mt-1 mb-1 hover card"
       style="overflow-y: auto; background: #fff"
       elevation="0"
+      @click="$router.push(event.fullPath)"
     >
       <v-container fluid>
         <v-row no-gutters>
@@ -11,7 +12,7 @@
             <div class="text-right">
               <span
                 style="
-                  background: #333;
+                  background: #0d4474;
                   color: white;
                   font-size: 11px;
                   font-weight: 700;
@@ -50,6 +51,7 @@
               {{ getEventDateSpan() }}
             </h2>
             <div
+              v-if="event.category !== 'nofo'"
               class="eventTime mt-4 text-left"
               style="
                 color: #333;
@@ -71,6 +73,7 @@
                 {{ event.name }}</span
               >
             </div>
+
             <p style="color: #000" class="mt-3">
               {{ truncate(event.summary) }}
             </p>

@@ -163,7 +163,7 @@ export default {
         this.news = posts;
         let meetings = ApolloQueryResult.data.meetings.map((e) => ({
           ...e,
-          fullPath: `/meetings/${e.slug}/`,
+          fullPath: `/news/meetings/${e.slug}/`,
           contentType: "Meeting",
         }));
         this.meetings = meetings;
@@ -194,16 +194,28 @@ export default {
           (e) => ({
             ...e,
             title: e.name,
+            fullPath: `/events/${e.slug}/`,
+            contentType: "Event",
           })
         );
         this.communityEvents = ApolloQueryResult.data.communityEvents.map(
           (e) => ({
             ...e,
             title: e.name,
+            fullPath: `/events/${e.slug}/`,
+            contentType: "Event",
           })
         );
-        this.meetingEvents = ApolloQueryResult.data.meetingEvents;
-        this.fundingEvents = ApolloQueryResult.data.fundingEvents;
+        this.meetingEvents = ApolloQueryResult.data.meetingEvents.map((e) => ({
+          ...e,
+          fullPath: `/news/meetings/${e.slug}/`,
+          contentType: "Meeting",
+        }));
+        this.fundingEvents = ApolloQueryResult.data.fundingEvents.map((e) => ({
+          ...e,
+          fullPath: `/grants/funding/${e.slug}/`,
+          contentType: "Funding",
+        }));
         this.loading = false;
         nprogress.done();
       },

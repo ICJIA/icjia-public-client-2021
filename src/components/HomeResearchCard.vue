@@ -17,7 +17,7 @@
         alt="research content image"
         v-if="type === 'article'"
       >
-        <v-chip
+        <!-- <v-chip
           dark
           color="#0D4474"
           style="margin-top: -1px !important"
@@ -25,7 +25,19 @@
           class="icjia-card"
         >
           NEW!
-        </v-chip>
+        </v-chip> -->
+        <v-btn
+          v-if="isItNew(item)"
+          dark
+          elevation="2"
+          fab
+          absolute
+          small
+          class="mt-3 ml-3"
+          color="#0D4474"
+          >NEW!</v-btn
+        >
+
         <template v-slot:placeholder>
           <v-row class="fill-height ma-0" align="center" justify="center">
             <v-progress-circular
