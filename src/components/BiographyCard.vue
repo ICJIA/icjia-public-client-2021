@@ -44,9 +44,22 @@
             >
           </span>
 
+          <!-- <v-card-subtitle style="margin-top: -10px">
+            <span
+              style="font-weight: 700"
+              class="unit-title"
+              v-if="item && item.unit && item.unit.title"
+              @click="search(item.unit.title)"
+              >{{ item.unit.title }}&nbsp;|&nbsp;</span
+            >
+            <span style="font-weight: 700; color: #444" v-if="item.title">{{
+              item.title
+            }}</span>
+          </v-card-subtitle> -->
           <v-card-subtitle style="margin-top: -10px">
             <span
               style="font-weight: 700"
+              class=""
               v-if="item && item.unit && item.unit.title"
               >{{ item.unit.title }}&nbsp;|&nbsp;</span
             >
@@ -98,4 +111,12 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style>
+.unit-title {
+  text-decoration: underline;
+}
+.unit-title:hover {
+  text-decoration: none;
+  cursor: pointer;
+}
+</style>

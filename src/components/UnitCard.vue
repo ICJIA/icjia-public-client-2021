@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card elevation="0" color="grey lighten-5" class="px-2 py-3">
+    <v-card elevation="1" color="white" class="px-2 py-3">
       <v-card-title>{{ item.title }}</v-card-title>
       <v-card-text v-if="item.body" v-html="render(item.body)"></v-card-text>
       <v-card-text v-else>No description available.</v-card-text>
@@ -29,8 +29,7 @@
             >
               <BiographyCard
                 :item="item"
-                color="grey lighten-4"
-                style="border: 1px solid #ddd"
+                color="grey lighten-5"
               ></BiographyCard>
             </div>
           </div>

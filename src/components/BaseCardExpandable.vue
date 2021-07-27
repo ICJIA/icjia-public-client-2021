@@ -2,7 +2,7 @@
   <div>
     <v-card
       :elevation="elevation"
-      class="pt-8 px-3"
+      class="pt-8 px-3 card"
       @click="routeTo(item.fullPath)"
       color="#fff"
       style="border: 1px solid #ddd"
