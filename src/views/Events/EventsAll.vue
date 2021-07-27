@@ -112,6 +112,7 @@
                 :item="event"
                 :showClose="false"
                 class="hover"
+                :key="`${index}-${nanoid()}`"
               ></EventCard>
             </div>
           </div>
@@ -122,6 +123,7 @@
 </template>
 
 <script>
+import { nanoid } from "nanoid";
 /* eslint-disable no-unused-vars */
 import { GET_EVENTS } from "@/graphql/events";
 // import { fixButtonText } from "@/a11y";
@@ -151,6 +153,7 @@ export default {
     }
   },
   data: () => ({
+    nanoid,
     focus: "",
     error: "",
     upcomingOnly: true,
@@ -287,6 +290,7 @@ export default {
     events: {
       query: GET_EVENTS,
       variables() {},
+      fetchPolicy: "no-cache",
       error(error) {
         this.error = JSON.stringify(error.message);
         this.isLoading = false;
@@ -380,18 +384,18 @@ export default {
         // });
 
         let allEvents = [...events, ...meetings, ...grants];
-        // allEvents.forEach((event) => {
-        //   if (event.tags && event.tags.length > 0) {
-        //     let tagArray = [];
-        //     const tagValues = Object.values(event.tags);
-        //     tagValues.forEach((t) => {
-        //       tagArray.push(t.title);
-        //     });
-        //     // console.log(tagArray);
-        //     delete event.tags;
-        //     event.tags = tagArray;
-        //   }
-        // });
+        allEvents.forEach((event) => {
+          if (event.tags && event.tags.length > 0) {
+            let tagArray = [];
+            const tagValues = Object.values(event.tags);
+            tagValues.forEach((t) => {
+              tagArray.push(t.title);
+            });
+            console.log(tagArray);
+            delete event.tags;
+            event.tags = tagArray;
+          }
+        });
         // let calendarEvents = [...events, ...meetings, ...grants];
         // this.calendarEvents = _.orderBy(calendarEvents, ["start"], ["asc"]);
         this.allEvents = _.orderBy(allEvents, ["start"], ["asc"]);

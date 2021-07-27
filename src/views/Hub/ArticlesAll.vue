@@ -46,11 +46,13 @@
           :key="index"
           cols="12"
           md="4"
+          class="flex-container"
         >
           <HubCard
             :item="item"
             :orientation="orientation"
             :textOnly="false"
+            class="flex-item"
           ></HubCard>
         </v-col>
       </v-row>

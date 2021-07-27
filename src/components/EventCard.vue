@@ -128,7 +128,11 @@
             </v-sheet>
           </div>
           <template v-if="item.tags">
-            <BasePropChip v-for="tag of item.tags" :key="tag" class="mt-1">
+            <BasePropChip
+              v-for="(tag, index) of item.tags"
+              :key="index + nanoid()"
+              class="mt-1"
+            >
               <template>{{ tag }}</template>
             </BasePropChip>
           </template>
@@ -139,12 +143,18 @@
 </template>
 
 <script>
+import { nanoid } from "nanoid";
 /* eslint-disable no-unused-vars */
 const moment = require("moment");
 const tz = require("moment-timezone");
 // import { handleClicks } from "@/mixins/handleClicks";
 import { renderToHtml } from "@/services/Markdown";
 export default {
+  data() {
+    return {
+      nanoid,
+    };
+  },
   //   mixins: [handleClicks],
   methods: {
     getColor(item) {

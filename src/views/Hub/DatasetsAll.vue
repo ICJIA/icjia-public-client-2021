@@ -42,12 +42,19 @@
       </v-row>
 
       <v-row dense v-if="orientation === 'grid' && !initialLoad">
-        <v-col v-for="(item, index) in content" :key="index" cols="12" md="4">
+        <v-col
+          v-for="(item, index) in content"
+          :key="index"
+          cols="12"
+          md="4"
+          class="flex-container"
+        >
           <HubCard
             :item="item"
             :orientation="orientation"
             :textOnly="true"
             :showUpdated="true"
+            class="flex-item"
           ></HubCard>
         </v-col>
       </v-row>

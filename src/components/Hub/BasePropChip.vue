@@ -2,6 +2,8 @@
   <v-btn
     class="chip mr-1"
     x-small
+    color="grey darken-1"
+    dark
     depressed
     rounded
     @click.prevent.stop="chipClick($event)"
