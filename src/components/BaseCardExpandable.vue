@@ -4,7 +4,7 @@
       :elevation="elevation"
       class="pt-8 px-3"
       @click="routeTo(item.fullPath)"
-      color="#fcfcfc"
+      color="#fff"
       style="border: 1px solid #ddd"
     >
       <div
@@ -198,7 +198,7 @@ export default {
     },
     elevation: {
       type: Number,
-      default: 0,
+      default: 2,
     },
   },
 };

@@ -5,7 +5,7 @@
       outlined
       @click="$router.push(item.fullPath)"
       elevation="1"
-      color="#fafafa"
+      color="#fff"
     >
       <div style="font-size: 12px; margin-left: 15px">
         <v-chip

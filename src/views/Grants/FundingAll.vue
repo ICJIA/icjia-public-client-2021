@@ -17,9 +17,9 @@
                 style="margin-top: -25px"
               >
                 <v-btn-toggle v-model="toggle_nofoStatus" mandatory>
-                  <v-btn small> Current </v-btn>
+                  <v-btn small elevation="1"> Current </v-btn>
 
-                  <v-btn small> Expired </v-btn>
+                  <v-btn small elevation="1"> Expired </v-btn>
                 </v-btn-toggle>
               </v-col>
 

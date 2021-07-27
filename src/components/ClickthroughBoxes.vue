@@ -70,7 +70,7 @@ export default {
     },
     // eslint-disable-next-line no-unused-vars
     getBoxColor(index) {
-      return "#f1f1f1";
+      return "#fff";
     },
     routeToURL(url) {
       if (url.indexOf("http") === 0) {

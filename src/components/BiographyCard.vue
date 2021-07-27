@@ -56,6 +56,7 @@
           </v-card-subtitle>
           <v-card-text
             class="text-left"
+            v-if="item.body && item.body.length"
             v-html="render(item.body)"
           ></v-card-text>
         </span>
@@ -91,7 +92,7 @@ export default {
     },
     color: {
       type: String,
-      default: "#fafafa",
+      default: "#fff",
     },
   },
 };
