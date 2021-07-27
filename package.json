@@ -7,7 +7,7 @@
     "build": "npm run scripts && vue-cli-service build --modern",
     "lint": "vue-cli-service lint",
     "schema": "get-graphql-schema https://agency.icjia-api.cloud/graphql -j > schema.json",
-    "scripts": "node ./generators/generateImagesHub && node ./generators/generateIndexHub && node ./generators/generateIndexUnits && node ./generators/generateIndexGrants && node ./generators/generateIndexPages && node ./generators/generateIndexMeetings && node ./generators/generateIndexJobs && node ./generators/generateIndexBiographies &&  node ./generators/generateIndexPublications && node ./generators/generateIndexFull && npm run schema"
+    "scripts": "node ./generators/generateImagesHub && node ./generators/generateIndexHub && node ./generators/generateIndexUnits && node ./generators/generateIndexGrants && node ./generators/generateIndexPages && node ./generators/generateIndexMeetings && node ./generators/generateIndexPosts && node ./generators/generateIndexJobs && node ./generators/generateIndexBiographies &&  node ./generators/generateIndexPublications && node ./generators/generateIndexFull && npm run schema"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
