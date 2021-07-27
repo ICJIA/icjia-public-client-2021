@@ -13,6 +13,7 @@ const units = require("../src/config/units.json");
 const jobs = require("../src/config/jobs.json");
 const meetings = require("../src/config/meetings.json");
 const posts = require("../src/config/posts.json");
+const events = require("../src/config/events.json");
 
 let siteIndex = [
   ...biographies,
@@ -24,6 +25,7 @@ let siteIndex = [
   ...jobs,
   ...meetings,
   ...posts,
+  ...events,
 ];
 
 // siteIndex = _.orderBy(siteIndex, ["date"], ["desc"]);

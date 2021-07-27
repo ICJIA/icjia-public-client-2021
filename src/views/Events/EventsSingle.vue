@@ -13,9 +13,9 @@
                 :isClickable="false"
                 class="mt-8"
               ></EventCard>
-              <div class="mt-3 text-right" style="font-size: 12px">
-                <router-link to="/events/"
-                  >Event Calendar&nbsp;&raquo;</router-link
+              <div class="mt-5 text-right">
+                <v-btn small text to="/events/"
+                  >View all events&nbsp;&raquo;</v-btn
                 >
               </div>
             </v-col>
@@ -31,6 +31,7 @@ import NProgress from "nprogress";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_EVENT_QUERY } from "@/graphql/events";
 import { EventBus } from "@/event-bus";
+import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import moment from "moment";
 export default {
   data() {
@@ -90,10 +91,24 @@ export default {
             event.contentType = "event";
             return event;
           });
+          this.event.forEach((event) => {
+            if (event.tags && event.tags.length > 0) {
+              let tagArray = [];
+              const tagValues = Object.values(event.tags);
+              tagValues.forEach((t) => {
+                tagArray.push(t.title);
+              });
+              // console.log(tagArray);
+              delete event.tags;
+              event.tags = tagArray;
+            }
+          });
           this.event = this.event[0];
           this.loading = false;
           NProgress.done();
           EventBus.$emit("context-label", this.event.title);
+          attachInternalLinks(this);
+          attachSearchEvents(this);
         }
       },
     },

@@ -62,7 +62,7 @@
             </div>
           </div>
 
-          <div class="py-3" v-if="item.summary && !item.details">
+          <div class="py-3" v-else-if="item.summary">
             <div class="pl-2" style="margin-top: 10px">
               <div v-html="render(item.summary)"></div>
             </div>
@@ -127,6 +127,11 @@
               </ul>
             </v-sheet>
           </div>
+          <template v-if="item.tags">
+            <BasePropChip v-for="tag of item.tags" :key="tag" class="mt-1">
+              <template>{{ tag }}</template>
+            </BasePropChip>
+          </template>
         </div>
       </div>
     </v-card>

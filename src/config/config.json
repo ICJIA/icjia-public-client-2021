@@ -134,6 +134,10 @@
                     "weight": 2
                 },
                 {
+                    "name": "category",
+                    "weight": 1
+                },
+                {
                     "name": "abstract",
                     "weight": 2
                 },

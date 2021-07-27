@@ -15,6 +15,10 @@ const GET_EVENTS = gql`
       category
       slug
       details
+      tags {
+        title
+        slug
+      }
     }
     meetings(sort: "start:asc", where: { addToEventCalendar: true }) {
       id
@@ -63,6 +67,10 @@ const GET_SINGLE_EVENT_QUERY = gql`
       category
       slug
       details
+      tags {
+        title
+        slug
+      }
     }
   }
 `;

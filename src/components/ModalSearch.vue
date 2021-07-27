@@ -46,7 +46,13 @@
                   style="font-size: 12px"
                   v-if="result.item && result.item.date"
                 >
-                  <span style="font-weight: 700">{{
+                  <span
+                    v-if="
+                      result.item.category && result.item.contentType !== 'news'
+                    "
+                    style="font-weight: 700"
+                    >{{ result.item.category.toUpperCase() }}</span
+                  >&nbsp;<span style="font-weight: 700">{{
                     result.item.contentType.toUpperCase()
                   }}</span>
                   | {{ result.item.date | format }}
@@ -55,7 +61,13 @@
                   style="font-size: 12px"
                   v-else-if="result.item && result.item.start"
                 >
-                  <span style="font-weight: 700">{{
+                  <span
+                    v-if="
+                      result.item.category && result.item.contentType !== 'news'
+                    "
+                    style="font-weight: 700"
+                    >{{ result.item.category.toUpperCase() }}</span
+                  >&nbsp;<span style="font-weight: 700">{{
                     result.item.contentType.toUpperCase()
                   }}</span>
                   | {{ result.item.start | format }} to
@@ -65,12 +77,21 @@
                   style="font-size: 12px"
                   v-else-if="result.item && result.item.category"
                 >
-                  <span style="font-weight: 700">{{
+                  <span
+                    v-if="
+                      result.item.category && result.item.contentType !== 'news'
+                    "
+                    style="font-weight: 700"
+                    >{{ result.item.category.toUpperCase() }}</span
+                  >&nbsp;<span style="font-weight: 700">{{
                     result.item.contentType.toUpperCase()
                   }}</span>
                 </div>
                 <div style="font-size: 12px" v-else>
-                  <span style="font-weight: 700">{{
+                  <span v-if="result.item.category" style="font-weight: 700">{{
+                    result.item.category.toUpperCase()
+                  }}</span
+                  >&nbsp;<span style="font-weight: 700">{{
                     result.item.contentType.toUpperCase()
                   }}</span>
                 </div>
