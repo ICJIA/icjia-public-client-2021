@@ -380,18 +380,18 @@ export default {
         // });
 
         let allEvents = [...events, ...meetings, ...grants];
-        allEvents.forEach((event) => {
-          if (event.tags && event.tags.length > 0) {
-            let tagArray = [];
-            const tagValues = Object.values(event.tags);
-            tagValues.forEach((t) => {
-              tagArray.push(t.title);
-            });
-            // console.log(tagArray);
-            delete event.tags;
-            event.tags = tagArray;
-          }
-        });
+        // allEvents.forEach((event) => {
+        //   if (event.tags && event.tags.length > 0) {
+        //     let tagArray = [];
+        //     const tagValues = Object.values(event.tags);
+        //     tagValues.forEach((t) => {
+        //       tagArray.push(t.title);
+        //     });
+        //     // console.log(tagArray);
+        //     delete event.tags;
+        //     event.tags = tagArray;
+        //   }
+        // });
         // let calendarEvents = [...events, ...meetings, ...grants];
         // this.calendarEvents = _.orderBy(calendarEvents, ["start"], ["asc"]);
         this.allEvents = _.orderBy(allEvents, ["start"], ["asc"]);
