@@ -13,6 +13,7 @@ const query = `query {
     slug
     summary
     start
+    category
     end
     published_at
     searchMeta

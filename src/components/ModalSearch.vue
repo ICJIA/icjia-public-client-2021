@@ -67,9 +67,11 @@
                     "
                     style="font-weight: 700"
                     >{{ result.item.category.toUpperCase() }}</span
-                  >&nbsp;<span style="font-weight: 700">{{
-                    result.item.contentType.toUpperCase()
-                  }}</span>
+                  >&nbsp;<span
+                    style="font-weight: 700"
+                    v-if="result.item.contentType !== 'funding'"
+                    >{{ result.item.contentType.toUpperCase() }}</span
+                  >
                   | {{ result.item.start | format }} to
                   {{ result.item.end | format }}
                 </div>
