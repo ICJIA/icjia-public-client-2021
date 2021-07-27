@@ -23,19 +23,29 @@
                 style="margin-top: -25px"
               >
                 <v-btn-toggle v-model="toggle_category" mandatory class="mb-4">
-                  <v-btn small elevation="1"> All Programs </v-btn>
+                  <v-btn small elevation="1" class="button-weight">
+                    All Programs
+                  </v-btn>
 
-                  <v-btn small elevation="1"> Federal </v-btn>
-                  <v-btn small elevation="1"> State </v-btn>
+                  <v-btn small elevation="1" class="button-weight">
+                    Federal
+                  </v-btn>
+                  <v-btn small elevation="1" class="button-weight">
+                    State
+                  </v-btn>
                 </v-btn-toggle>
 
                 <span class="hidden-sm-and-down"
                   >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span
                 >
                 <v-btn-toggle v-model="toggle_status" mandatory class="mb-4">
-                  <v-btn small elevation="1"> Current </v-btn>
+                  <v-btn small elevation="1" class="button-weight">
+                    Current
+                  </v-btn>
 
-                  <v-btn small elevation="1"> Archived </v-btn>
+                  <v-btn small elevation="1" class="button-weight">
+                    Archived
+                  </v-btn>
                 </v-btn-toggle>
               </v-col>
 

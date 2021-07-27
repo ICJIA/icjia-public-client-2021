@@ -18,9 +18,13 @@
                       v-model="toggle_nofoStatus"
                       class="mb-10"
                     >
-                      <v-btn small elevation="1"> Current </v-btn>
+                      <v-btn small elevation="1" class="button-weight">
+                        Current
+                      </v-btn>
 
-                      <v-btn small elevation="1"> Expired </v-btn>
+                      <v-btn small elevation="1" class="button-weight">
+                        Expired
+                      </v-btn>
                     </v-btn-toggle>
                   </div>
                   <div

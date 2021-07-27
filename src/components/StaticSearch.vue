@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-for="(result, index) in queryResults" :key="index">
-      <SearchCard :item="result.item" :threshold="0.3"></SearchCard>
+      <SearchCard :item="result.item" :threshold="0.2"></SearchCard>
     </div>
   </div>
 </template>

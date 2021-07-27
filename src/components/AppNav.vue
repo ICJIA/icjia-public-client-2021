@@ -58,7 +58,7 @@
             v-bind="attrs"
             v-on="on"
             style="font-weight: 900 !important; font-size: 16px"
-            >DEVELOPMENT MENU<v-icon right small>arrow_drop_down</v-icon>
+            >DEV 1<v-icon right small>arrow_drop_down</v-icon>
           </v-btn>
         </template>
         <v-list nav dense elevation="2">
@@ -70,10 +70,30 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item class="appNav" to="/about/">
+          <v-list-item class="appNav" exact to="/about/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
                 >About ICJIA</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item class="appNav" exact to="/about/icjia-staff/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >ICJIA Staff</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item
+            class="appNav"
+            exact
+            to="/about/composition-and-membership/"
+          >
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >ICJIA Board</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
@@ -107,7 +127,29 @@
               >
             </v-list-item-content>
           </v-list-item>
-          <v-divider></v-divider>
+        </v-list>
+      </v-menu>
+
+      <v-menu
+        bottom
+        offset-y
+        origin="center center"
+        transition="scale-transition"
+        nudge-left="20px"
+        style="z-index: 100000"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            text
+            large
+            class="hidden-sm-and-down navItem"
+            v-bind="attrs"
+            v-on="on"
+            style="font-weight: 900 !important; font-size: 16px"
+            >DEV 2<v-icon right small>arrow_drop_down</v-icon>
+          </v-btn>
+        </template>
+        <v-list nav dense elevation="2">
           <v-list-item class="appNav" exact to="/news/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
@@ -129,6 +171,27 @@
               >
             </v-list-item-content>
           </v-list-item>
+          <v-list-item class="appNav" exact to="/grants/programs/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >Grant Programs</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item class="appNav" exact to="/grants/funding/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >Funding Opportunities</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item class="appNav" exact to="/about/publications/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >Publications</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
         </v-list>
       </v-menu>
 
@@ -140,18 +203,6 @@
         </template>
         <span>Search</span>
       </v-tooltip>
-
-      <!-- <span
-        style="
-          font-weight: 900;
-          background: #0e4471;
-          color: #fff;
-          padding: 5px;
-          font-size: 12px;
-        "
-        class="mr-3 ml-5"
-        >THIS IS A DRAFT SITE</span
-      > -->
     </v-app-bar>
 
     <v-navigation-drawer

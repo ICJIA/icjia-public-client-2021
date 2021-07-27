@@ -114,7 +114,7 @@
           }}</v-icon>
         </v-btn>
         <v-spacer v-if="item.attachments && item.attachments.length"></v-spacer>
-        <v-btn small outlined :to="item.fullPath" v-if="showReadMore"
+        <v-btn small text :to="item.fullPath" v-if="showReadMore"
           >Read More&nbsp;&raquo;</v-btn
         >
       </v-card-actions>

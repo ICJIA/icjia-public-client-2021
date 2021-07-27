@@ -13,7 +13,11 @@
               <h1 v-html="render(content.title)"></h1>
               <div v-html="render(content.body)"></div>
               <h2 id="more-about-infonet">More About InfoNet</h2>
-              <StaticSearch query="infonet" class="mt-3"></StaticSearch>
+              <StaticSearch
+                query="infonet"
+                :threshold="0.2"
+                class="mt-3"
+              ></StaticSearch>
 
               <ClickthroughBoxes
                 :boxes="content.clickthrough"
