@@ -325,7 +325,7 @@ export default {
           } else {
             meeting.timed = false;
           }
-          meeting.color = "grey darken-4";
+          meeting.color = "blue darken-2";
           meeting.show = false;
           meeting.fullPath = `/news/meetings/${meeting.slug}`;
           meeting.contentType = "meeting";

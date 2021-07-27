@@ -41,11 +41,16 @@
                 :md="getCardWidth(community.length)"
                 v-for="n in community.length"
                 :key="`community-${n}`"
-                class="rule-left"
+                class="rule-left flex-container"
               >
                 <HomeEventCard
                   :event="community[n - 1]"
                   tag="community"
+                  :class="{
+                    'flex-item-3': n === 3,
+                    'flex-item-2': n === 2,
+                    'flex-item-1': n === 1,
+                  }"
                 ></HomeEventCard>
               </v-col>
             </v-row>
@@ -66,11 +71,16 @@
                 :md="getCardWidth(meetings.length)"
                 v-for="n in meetings.length"
                 :key="`meeting-${n}`"
-                class="rule-left"
+                class="rule-left flex-container"
               >
                 <HomeEventCard
                   :event="meetings[n - 1]"
                   tag="meeting"
+                  :class="{
+                    'flex-item-3': n === 3,
+                    'flex-item-2': n === 2,
+                    'flex-item-1': n === 1,
+                  }"
                 ></HomeEventCard>
               </v-col>
             </v-row>
@@ -91,11 +101,16 @@
                 :md="getCardWidth(training.length)"
                 v-for="n in training.length"
                 :key="`training-${n}`"
-                class="rule-left"
+                class="rule-left flex-container"
               >
                 <HomeEventCard
                   :event="training[n - 1]"
                   tag="training"
+                  :class="{
+                    'flex-item-3': n === 3,
+                    'flex-item-2': n === 2,
+                    'flex-item-1': n === 1,
+                  }"
                 ></HomeEventCard>
               </v-col>
             </v-row>
@@ -112,11 +127,16 @@
                 :md="getCardWidth(funding.length)"
                 v-for="n in funding.length"
                 :key="`funding-${n}`"
-                class="rule-left"
+                class="rule-left flex-container"
               >
                 <HomeEventCard
                   :event="funding[n - 1]"
                   tag="funding"
+                  :class="{
+                    'flex-item-3': n === 3,
+                    'flex-item-2': n === 2,
+                    'flex-item-1': n === 1,
+                  }"
                 ></HomeEventCard>
               </v-col>
             </v-row>

@@ -117,8 +117,16 @@ export default {
   position: relative;
 }
 
+.flex-item-1 {
+  background: #fff;
+
+  margin: 0px;
+  flex: 0 1 calc(100%); /* <-- adjusting for margin */
+  flex-grow: 1;
+}
+
 .flex-item-2 {
-  background: blue;
+  background: #fff;
 
   margin: 5px;
   flex: 0 1 calc(50% - 15px); /* <-- adjusting for margin */
@@ -126,7 +134,7 @@ export default {
 }
 
 .flex-item-3 {
-  background: blue;
+  background: #fff;
 
   margin: 5px;
   flex: 0 1 calc(33% - 15px); /* <-- adjusting for margin */

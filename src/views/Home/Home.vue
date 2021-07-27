@@ -196,6 +196,7 @@ export default {
             title: e.name,
             fullPath: `/events/${e.slug}/`,
             contentType: "Event",
+            color: "green darken-4",
           })
         );
         this.communityEvents = ApolloQueryResult.data.communityEvents.map(
@@ -204,17 +205,20 @@ export default {
             title: e.name,
             fullPath: `/events/${e.slug}/`,
             contentType: "Event",
+            color: "green darken-4",
           })
         );
         this.meetingEvents = ApolloQueryResult.data.meetingEvents.map((e) => ({
           ...e,
           fullPath: `/news/meetings/${e.slug}/`,
           contentType: "Meeting",
+          color: "blue darken-2",
         }));
         this.fundingEvents = ApolloQueryResult.data.fundingEvents.map((e) => ({
           ...e,
           fullPath: `/grants/funding/${e.slug}/`,
           contentType: "Funding",
+          color: "indigo darken-4",
         }));
         this.loading = false;
         nprogress.done();

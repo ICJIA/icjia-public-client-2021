@@ -4,23 +4,25 @@
       class="mr-2 mt-1 mb-1 hover card"
       style="overflow-y: auto; background: #fff"
       elevation="0"
+      height="100%"
       @click="$router.push(event.fullPath)"
     >
       <v-container fluid>
         <v-row no-gutters>
           <v-col>
             <div class="text-right">
-              <span
+              <v-chip
+                dark
+                small
                 style="
-                  background: #0d4474;
-                  color: white;
-                  font-size: 11px;
+                  font-size: 12px;
                   font-weight: 700;
                   text-transform: uppercase;
                 "
-                class="px-2 py-2"
-                >{{ tag }}</span
+                :color="event.color"
               >
+                <span>{{ tag }}</span>
+              </v-chip>
             </div>
           </v-col>
         </v-row>
@@ -75,7 +77,7 @@
             </div>
 
             <p style="color: #000" class="mt-3">
-              {{ truncate(event.summary) }}
+              {{ event.summary }}
             </p>
             <router-link
               to="/"

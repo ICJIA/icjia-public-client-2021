@@ -9,7 +9,12 @@
                 <h1>ICJIA Meetings</h1>
 
                 <v-btn-toggle v-model="viewToggle" mandatory>
-                  <v-btn value="category" small aria-label="List view">
+                  <v-btn
+                    value="category"
+                    elevation="1"
+                    small
+                    aria-label="List view"
+                  >
                     <span style="font-weight: 900">By category</span>
 
                     <span
@@ -19,7 +24,7 @@
                     </span>
                   </v-btn>
 
-                  <v-btn value="all" small>
+                  <v-btn value="all" small elevation="1">
                     <span style="font-weight: 900" aria-label="Grid view"
                       >By date</span
                     >
