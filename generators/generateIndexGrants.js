@@ -15,6 +15,7 @@ const query = `query {
     start
     end
     published_at
+    searchMeta
     tags {
       title
       slug
@@ -30,6 +31,7 @@ const query = `query {
     category
     summary
     published_at
+    searchMeta
     tags {
       title
       slug

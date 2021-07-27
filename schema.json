@@ -4262,6 +4262,18 @@
             "deprecationReason": null
           },
           {
+            "name": "searchMeta",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "published_at",
             "description": null,
             "args": [],
@@ -4654,6 +4666,22 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "GrantConnectionCategory",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "searchMeta",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "GrantConnectionSearchMeta",
                 "ofType": null
               }
             },
@@ -5069,6 +5097,41 @@
       },
       {
         "kind": "OBJECT",
+        "name": "GrantConnectionSearchMeta",
+        "description": null,
+        "fields": [
+          {
+            "name": "key",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "connection",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "GrantConnection",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "GrantConnectionPublished_at",
         "description": null,
         "fields": [
@@ -5221,6 +5284,16 @@
             "defaultValue": null
           },
           {
+            "name": "searchMeta",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "published_at",
             "description": null,
             "type": {
@@ -5365,6 +5438,16 @@
             "type": {
               "kind": "ENUM",
               "name": "ENUM_GRANT_CATEGORY",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "searchMeta",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
@@ -6129,6 +6212,18 @@
             "deprecationReason": null
           },
           {
+            "name": "searchMeta",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "published_at",
             "description": null,
             "args": [],
@@ -6448,6 +6543,22 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "JobConnectionCategory",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "searchMeta",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "JobConnectionSearchMeta",
                 "ofType": null
               }
             },
@@ -6828,6 +6939,41 @@
       },
       {
         "kind": "OBJECT",
+        "name": "JobConnectionSearchMeta",
+        "description": null,
+        "fields": [
+          {
+            "name": "key",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "connection",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "JobConnection",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "JobConnectionPublished_at",
         "description": null,
         "fields": [
@@ -6962,6 +7108,16 @@
                 "name": "ComponentExternalExternalUrlInput",
                 "ofType": null
               }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "searchMeta",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "defaultValue": null
           },
@@ -7101,6 +7257,16 @@
                 "name": "editComponentExternalExternalUrlInput",
                 "ofType": null
               }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "searchMeta",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "defaultValue": null
           },
@@ -11895,6 +12061,18 @@
             "deprecationReason": null
           },
           {
+            "name": "searchMeta",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "published_at",
             "description": null,
             "args": [],
@@ -12262,6 +12440,22 @@
             "deprecationReason": null
           },
           {
+            "name": "searchMeta",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "ProgramConnectionSearchMeta",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "published_at",
             "description": null,
             "args": [],
@@ -12600,6 +12794,41 @@
       },
       {
         "kind": "OBJECT",
+        "name": "ProgramConnectionSearchMeta",
+        "description": null,
+        "fields": [
+          {
+            "name": "key",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "connection",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ProgramConnection",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "ProgramConnectionPublished_at",
         "description": null,
         "fields": [
@@ -12740,6 +12969,16 @@
             "defaultValue": null
           },
           {
+            "name": "searchMeta",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "published_at",
             "description": null,
             "type": {
@@ -12864,6 +13103,16 @@
             "type": {
               "kind": "ENUM",
               "name": "ENUM_PROGRAM_CATEGORY",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "searchMeta",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
@@ -16024,6 +16273,18 @@
             "deprecationReason": null
           },
           {
+            "name": "searchMeta",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "published_at",
             "description": null,
             "args": [],
@@ -16270,6 +16531,22 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "UnitConnectionBody",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "searchMeta",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "UnitConnectionSearchMeta",
                 "ofType": null
               }
             },
@@ -16615,6 +16892,41 @@
       },
       {
         "kind": "OBJECT",
+        "name": "UnitConnectionSearchMeta",
+        "description": null,
+        "fields": [
+          {
+            "name": "key",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "connection",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "UnitConnection",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "UnitConnectionPublished_at",
         "description": null,
         "fields": [
@@ -16727,6 +17039,16 @@
             "defaultValue": null
           },
           {
+            "name": "searchMeta",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "published_at",
             "description": null,
             "type": {
@@ -16819,6 +17141,16 @@
           },
           {
             "name": "body",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "searchMeta",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -22637,6 +22969,11 @@
           },
           {
             "kind": "OBJECT",
+            "name": "GrantConnectionSearchMeta",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
             "name": "GrantConnectionPublished_at",
             "ofType": null
           },
@@ -22738,6 +23075,11 @@
           {
             "kind": "OBJECT",
             "name": "JobConnectionCategory",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "JobConnectionSearchMeta",
             "ofType": null
           },
           {
@@ -23102,6 +23444,11 @@
           },
           {
             "kind": "OBJECT",
+            "name": "ProgramConnectionSearchMeta",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
             "name": "ProgramConnectionPublished_at",
             "ofType": null
           },
@@ -23353,6 +23700,11 @@
           {
             "kind": "OBJECT",
             "name": "UnitConnectionBody",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "UnitConnectionSearchMeta",
             "ofType": null
           },
           {

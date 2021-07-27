@@ -97,7 +97,7 @@
             "shouldSort": true,
             "includeMatches": true,
             "findAllMatches": true,
-            "minMatchCharLength": 3,
+            "minMatchCharLength": 2,
             "location": 0,
             "threshold": 0.3,
             "distance": 100,
@@ -107,6 +107,10 @@
             "keys": [
                 {
                     "name": "title",
+                    "weight": 1
+                },
+                {
+                    "name": "searchMeta",
                     "weight": 1
                 },
                 {

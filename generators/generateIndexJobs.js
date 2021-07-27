@@ -13,6 +13,7 @@ const query = `query {
     end
     slug
     summary
+    searchMeta
     published_at
   }
 }`;

@@ -13,6 +13,7 @@ const query = `query {
     slug
     summary
     shortName
+    searchMeta
     url
     published_at
   }
