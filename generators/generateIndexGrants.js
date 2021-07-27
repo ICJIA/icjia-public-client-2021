@@ -49,7 +49,7 @@ axios
       fullPath: `/grants/funding/${e.slug}/`,
       imagePath: null,
       altTitle: e.title.toLowerCase(),
-      contentType: "grant",
+      contentType: "funding",
     }));
 
     programs = programs.map((e) => ({

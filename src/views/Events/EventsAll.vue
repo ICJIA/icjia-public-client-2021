@@ -105,7 +105,7 @@
           <div v-show="display === 'list'">
             <div
               v-for="(event, index) in filteredEvents"
-              :key="index + event.id"
+              :key="index + new Date()"
               class="mb-8"
             >
               <EventCard
@@ -380,9 +380,22 @@ export default {
         // });
 
         let allEvents = [...events, ...meetings, ...grants];
+        allEvents.forEach((event) => {
+          if (event.tags && event.tags.length > 0) {
+            let tagArray = [];
+            const tagValues = Object.values(event.tags);
+            tagValues.forEach((t) => {
+              tagArray.push(t.title);
+            });
+            // console.log(tagArray);
+            delete event.tags;
+            event.tags = tagArray;
+          }
+        });
         // let calendarEvents = [...events, ...meetings, ...grants];
         // this.calendarEvents = _.orderBy(calendarEvents, ["start"], ["asc"]);
         this.allEvents = _.orderBy(allEvents, ["start"], ["asc"]);
+
         this.filterUpcoming();
         this.isLoading = false;
         NProgress.done();
