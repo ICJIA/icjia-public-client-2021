@@ -38,9 +38,9 @@
 
             <v-card-text
               class="px-2 mt-1 font-weight-heavy box-text text-center"
-              v-if="box.teaser"
+              v-if="box.teaser && box.teaser.length"
             >
-              <span v-html="box.teaser" style="font-size: 14px"></span>
+              <span v-html="render(box.teaser)" style="font-size: 14px"></span>
             </v-card-text>
           </v-card>
         </div>
@@ -50,6 +50,7 @@
 </template>
 
 <script>
+import { renderToHtml } from "@/services/Markdown";
 export default {
   computed: {
     // rows() {
@@ -63,6 +64,9 @@ export default {
     return {};
   },
   methods: {
+    render(content) {
+      return renderToHtml(content);
+    },
     // eslint-disable-next-line no-unused-vars
     getAnimation() {
       if (this.disableAnimation) return null;
