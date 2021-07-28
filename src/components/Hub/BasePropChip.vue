@@ -6,7 +6,7 @@
     depressed
     rounded
     @click.prevent.stop="chipClick($event)"
-    style="font-size: 11px; font-weight: bold"
+    style="font-size: 10px; font-weight: bold"
   >
     <slot></slot>
   </v-btn>

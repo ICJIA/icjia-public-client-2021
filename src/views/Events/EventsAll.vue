@@ -132,6 +132,7 @@ import NProgress from "nprogress";
 const moment = require("moment");
 const tz = require("moment-timezone");
 import { EventBus } from "@/event-bus";
+import { getUnifiedTags } from "@/utils/content";
 export default {
   watch: {
     isLoading(newValue, oldValue) {
@@ -384,18 +385,8 @@ export default {
         // });
 
         let allEvents = [...events, ...meetings, ...grants];
-        allEvents.forEach((event) => {
-          if (event.tags && event.tags.length > 0) {
-            let tagArray = [];
-            const tagValues = Object.values(event.tags);
-            tagValues.forEach((t) => {
-              tagArray.push(t.title);
-            });
-            console.log(tagArray);
-            delete event.tags;
-            event.tags = tagArray;
-          }
-        });
+
+        allEvents = getUnifiedTags(allEvents);
         // let calendarEvents = [...events, ...meetings, ...grants];
         // this.calendarEvents = _.orderBy(calendarEvents, ["start"], ["asc"]);
         this.allEvents = _.orderBy(allEvents, ["start"], ["asc"]);

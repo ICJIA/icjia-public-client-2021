@@ -18,7 +18,7 @@ const query = `query {
     published_at
     tags {
       title
-      
+      slug
     }
     
     splash {
@@ -48,7 +48,7 @@ axios
           tagArray.push(t.title);
         });
         // console.log(tagArray);
-        delete post.tags;
+        post.tagsAlt = post.tags;
         post.tags = tagArray;
       }
     });

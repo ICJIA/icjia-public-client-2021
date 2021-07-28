@@ -16,12 +16,7 @@
                   md="3"
                   class="px-3 hidden-sm-and-down"
                   ><Toc :key="page.title"></Toc>
-                  <div
-                    v-for="grant in filteredAndSortedGrants"
-                    :key="grant.id"
-                    class="mb-6"
-                  ></div
-                ></v-col>
+                </v-col>
               </v-row>
             </v-container>
           </template>
@@ -46,6 +41,7 @@ export default {
     return {
       contentLoading: true,
       page: null,
+      error: null,
     };
   },
   watch: {},

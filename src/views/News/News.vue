@@ -23,7 +23,6 @@
               <NewsCard
                 :item="item"
                 class="flex-item"
-                :orientation="orientation"
                 :textOnly="false"
                 :showUpdated="false"
               ></NewsCard>
@@ -41,8 +40,6 @@
                   :item="item"
                   :view="view"
                   :text-only="true"
-                  @init="resize"
-                  @imageLoaded="resize"
                 ></info-card>
               </div>
             </v-col>
@@ -57,6 +54,7 @@
 import NProgress from "nprogress";
 import { GET_ALL_NEWS_QUERY } from "@/graphql/news";
 import { EventBus } from "@/event-bus";
+import { getUnifiedTags } from "@/utils/content";
 // import moment from "moment";
 // import _ from "lodash";
 
@@ -98,18 +96,7 @@ export default {
           fullPath: `/news/${e.slug}/`,
           contentType: "News",
         }));
-        posts.forEach((post) => {
-          if (post.tags && post.tags.length > 0) {
-            let tagArray = [];
-            const tagValues = Object.values(post.tags);
-            tagValues.forEach((t) => {
-              tagArray.push(t.title);
-            });
-            // console.log(tagArray);
-            delete post.tags;
-            post.tags = tagArray;
-          }
-        });
+        posts = getUnifiedTags(posts);
         this.news = posts;
 
         NProgress.done();

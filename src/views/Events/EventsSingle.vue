@@ -4,7 +4,7 @@
       <template slot="content" v-if="!loading">
         <v-container>
           <v-row>
-            <v-col>
+            <v-col class="markdown-body">
               <h1 v-if="event">ICJIA Events</h1>
               <EventCard
                 v-if="event"
@@ -33,6 +33,8 @@ import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_EVENT_QUERY } from "@/graphql/events";
 import { EventBus } from "@/event-bus";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
+// eslint-disable-next-line no-unused-vars
+import { getUnifiedTags } from "@/utils/content";
 import moment from "moment";
 export default {
   data() {
@@ -78,7 +80,7 @@ export default {
         } else {
           //console.log(this.id);
 
-          this.event = ApolloQueryResult.data.events.map((event) => {
+          let events = ApolloQueryResult.data.events.map((event) => {
             event.start = moment(event.start)
               .tz(this.$myApp.config.timezone)
               .toDate();
@@ -92,19 +94,9 @@ export default {
             event.contentType = "event";
             return event;
           });
-          this.event.forEach((event) => {
-            if (event.tags && event.tags.length > 0) {
-              let tagArray = [];
-              const tagValues = Object.values(event.tags);
-              tagValues.forEach((t) => {
-                tagArray.push(t.title);
-              });
-              // console.log(tagArray);
-              delete event.tags;
-              event.tags = tagArray;
-            }
-          });
-          this.event = this.event[0];
+          events = getUnifiedTags(events);
+          this.event = events[0];
+
           this.loading = false;
           NProgress.done();
           EventBus.$emit("context-label", this.event.name);

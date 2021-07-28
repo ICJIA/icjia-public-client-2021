@@ -40,7 +40,7 @@ axios
           tagArray.push(t.title);
         });
         // console.log(tagArray);
-        delete event.tags;
+        event.tagsAlt = event.tags;
         event.tags = tagArray;
       }
     });

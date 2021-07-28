@@ -211,8 +211,14 @@ export default {
         }
       });
     });
+    this.$nextTick(() => {
+      console.log(this.$refs);
+    });
   },
   methods: {
+    focusInput() {
+      this.$refs.textfield.focus();
+    },
     truncate(string, maxWords = 50) {
       var strippedString = string.trim();
       var array = strippedString.split(" ");

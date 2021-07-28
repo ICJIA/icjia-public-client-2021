@@ -9,7 +9,7 @@
 
         <v-container style="margin-top: -15px">
           <v-row v-if="content">
-            <v-col cols="12" :md="content && content.showTOC ? 9 : 12">
+            <v-col cols="12" :md="content && content.showTOC ? 12 : 12">
               <h1 v-html="render(content.title)"></h1>
               <div v-html="render(content.body)"></div>
               <h2 id="more-about-infonet">More About InfoNet</h2>
@@ -25,13 +25,13 @@
                 :boxesPerRow="content && content.showTOC ? 2 : 3"
               ></ClickthroughBoxes>
             </v-col>
-            <v-col
+            <!-- <v-col
               cols="12"
               v-if="content && content.showTOC"
               md="3"
               class="px-3 hidden-sm-and-down"
               ><Toc :key="content.title" :tocHeading="content.title"></Toc
-            ></v-col>
+            ></v-col> -->
           </v-row>
         </v-container>
       </template>
