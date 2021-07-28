@@ -68,13 +68,12 @@
         >
           <template>{{ tag }}</template>
         </BasePropChip>
-        <div>&nbsp;</div>
       </div>
       <RelatedList
         v-if="isRelated"
         :content="item"
         title="Related"
-        class="mt-10"
+        class="mt-4"
       ></RelatedList>
     </v-card>
   </div>
