@@ -34,7 +34,7 @@
               <div
                 v-for="(item, index) in news"
                 :key="`list-${index}`"
-                class="mb-2"
+                class="mb-8"
               >
                 <info-card
                   :item="item"

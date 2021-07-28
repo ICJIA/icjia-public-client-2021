@@ -1,17 +1,16 @@
 <template>
-  <v-sheet v-if="relatedList" color="grey lighten-5" class="px-8 py-8">
+  <v-sheet color="grey lighten-4" class="px-8 py-4" v-if="relatedList">
     <div
       style="
-        font-weight: 700;
-        border-bottom: 1px solid #ccc;
-        padding-bottom: 8px;
+        font-weight: 900;
+
         text-transform: uppercase;
       "
       v-if="title && title.length"
     >
       {{ title }}
     </div>
-    <ul v-for="(item, index) in relatedList" :key="index" class="mt-6">
+    <ul v-for="(item, index) in relatedList" :key="index" class="mt-3">
       <li class="related-link">
         <router-link :to="`${item.fullPath}`">{{
           item.displayTitle
@@ -22,6 +21,7 @@
 </template>
 
 <script>
+// eslint-disable-next-line no-unused-vars
 import _ from "lodash";
 export default {
   data() {
@@ -31,8 +31,11 @@ export default {
   },
   mounted() {
     // eslint-disable-next-line no-unused-vars
-    let events, posts, meetings;
-    if (this.content.events) {
+    let events = [];
+    let posts = [];
+    let meetings = [];
+    let grants = [];
+    if (this.content.events && this.content.events.length) {
       let relatedType = "Event";
       events = this.content.events.map((e) => ({
         ...e,
@@ -40,24 +43,43 @@ export default {
         fullPath: `/events/${e.slug}`,
         displayTitle: `[${relatedType}]: ${e.title}`,
       }));
+      //console.log(events);
     }
-
-    if (this.content.posts) {
-      console.log("has posts");
+    if (this.content.posts && this.content.posts.length) {
+      let relatedType = "News";
+      posts = this.content.posts.map((e) => ({
+        ...e,
+        relatedType,
+        fullPath: `/news/${e.slug}/`,
+        displayTitle: `[${relatedType}]: ${e.title}`,
+      }));
+      //console.log("posts: ", posts);
     }
-
-    if (this.content.meetings) {
+    if (this.content.meetings && this.content.meetings.length) {
       let relatedType = "Meeting";
       meetings = this.content.meetings.map((e) => ({
         ...e,
         relatedType,
-        fullPath: `/news/meetings/${e.slug}`,
+        fullPath: `/news/meetings/${e.slug}/`,
         displayTitle: `[${relatedType}]: ${e.title}`,
       }));
+      //console.log("meetings: ", meetings);
     }
-    // console.log(events);
-    this.relatedList = [...events, ...meetings];
-    this.relatedList = _.orderBy(this.relatedList, "displayTitle", "asc");
+
+    if (this.content.grants && this.content.grants.length) {
+      let relatedType = "Funding";
+      grants = this.content.grants.map((e) => ({
+        ...e,
+        relatedType,
+        fullPath: `/grants/funding/${e.slug}/`,
+        displayTitle: `[${relatedType}]: ${e.title}`,
+      }));
+      //console.log("meetings: ", grants);
+    }
+
+    let relatedList = [...events, ...meetings, ...posts, ...grants];
+
+    this.relatedList = _.orderBy(relatedList, "displayTitle", "asc");
   },
   props: {
     title: {

@@ -41,6 +41,10 @@ const GET_SINGLE_POST_QUERY = gql`
         title
         slug
       }
+      grants {
+        title
+        slug
+      }
       events {
         title: name
         slug

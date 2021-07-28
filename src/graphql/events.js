@@ -15,6 +15,14 @@ const GET_EVENTS = gql`
       category
       slug
       details
+      meetings {
+        title
+        slug
+      }
+      posts {
+        title
+        slug
+      }
       tags {
         title
         slug
@@ -67,6 +75,14 @@ const GET_SINGLE_EVENT_QUERY = gql`
       category
       slug
       details
+      meetings {
+        title
+        slug
+      }
+      posts {
+        title
+        slug
+      }
       tags {
         title
         slug

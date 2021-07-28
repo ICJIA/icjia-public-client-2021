@@ -19,7 +19,8 @@ const isRelatedContent = function (content) {
   if (
     (content.events && content.events.length) ||
     (content.posts && content.posts.length) ||
-    (content.meetings && content.meetings.length)
+    (content.meetings && content.meetings.length) ||
+    (content.grants && content.grants.length)
   )
     return true;
   return false;

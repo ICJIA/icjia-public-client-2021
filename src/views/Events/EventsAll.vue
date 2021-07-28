@@ -1,7 +1,6 @@
 <template>
   <div>
-    <!-- <Breadcrumb :key="$route.path" title="Events"></Breadcrumb> -->
-    <v-container v-if="$apollo.loading">
+    <v-container v-if="isLoading">
       <v-row>
         <v-col class="text-center">
           <Loader loadingText="Loading events..."></Loader>
@@ -10,7 +9,7 @@
     </v-container>
 
     <v-container
-      v-if="!$apollo.loading"
+      v-if="!isLoading"
       :fluid="$vuetify.breakpoint.xs || $vuetify.breakpoint.sm"
     >
       <v-row class="fill-height" v-if="display">
