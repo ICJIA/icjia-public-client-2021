@@ -99,37 +99,6 @@
           <v-row style="border-bottom: 1px solid #ccc" class="mb-10">
             <v-col cols="12" md="6"
               ><div style="font-size: 28px; font-weight: 900">
-                Latest Datasets
-              </div>
-            </v-col>
-            <v-col cols="12" md="6" class="text-right" style="margin-top: 5px"
-              ><v-btn outlined small to="/researchhub/datasets/"
-                >See more&nbsp;&raquo;</v-btn
-              ></v-col
-            >
-          </v-row>
-          <v-row no-gutters>
-            <v-col
-              cols="12"
-              md="4"
-              v-for="(dataset, index) in datasets"
-              :key="`dataset-${index}`"
-              class="flex-container"
-            >
-              <HubCard
-                class="px-2 flex-item"
-                :item="dataset"
-                :textOnly="true"
-                orientation="grid"
-                :showUpdated="true"
-              ></HubCard>
-            </v-col>
-          </v-row>
-        </v-container>
-        <v-container class="markdown-body" style="margin-bottom: 25px">
-          <v-row style="border-bottom: 1px solid #ccc" class="mb-10">
-            <v-col cols="12" md="6"
-              ><div style="font-size: 28px; font-weight: 900">
                 Latest Web Applications
               </div>
             </v-col>
@@ -157,6 +126,36 @@
               ></HubCard>
             </v-col>
           </v-row>
+          <v-row style="border-bottom: 1px solid #ccc" class="mb-10">
+            <v-col cols="12" md="6"
+              ><div style="font-size: 28px; font-weight: 900">
+                Latest Datasets
+              </div>
+            </v-col>
+            <v-col cols="12" md="6" class="text-right" style="margin-top: 5px"
+              ><v-btn outlined small to="/researchhub/datasets/"
+                >See more&nbsp;&raquo;</v-btn
+              ></v-col
+            >
+          </v-row>
+          <v-row no-gutters>
+            <v-col
+              cols="12"
+              md="4"
+              v-for="(dataset, index) in datasets"
+              :key="`dataset-${index}`"
+              class="flex-container"
+            >
+              <HubCard
+                class="px-2 flex-item"
+                :item="dataset"
+                :textOnly="true"
+                orientation="grid"
+                :showUpdated="true"
+              ></HubCard>
+            </v-col>
+          </v-row>
+
           <v-row>
             <v-col cols="12">
               <ClickthroughBoxes
