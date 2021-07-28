@@ -2,14 +2,16 @@
   <div class="markdown-body">
     <BaseContent :error="error" :loading="$apollo.loading">
       <template slot="content">
-        <v-container>
+        <v-container v-if="meeting">
           <v-row>
             <v-col>
-              <MeetingCard
-                :item="meeting"
-                class="mx-2 my-4"
-                v-if="meeting"
-              ></MeetingCard>
+              <h1>ICJIA Meetings</h1>
+              <MeetingCard :item="meeting" class="mx-2 my-4"></MeetingCard>
+              <div class="mt-5 text-right">
+                <v-btn small text to="/news/meetings/"
+                  >View all meetings&nbsp;&raquo;</v-btn
+                >
+              </div>
             </v-col>
           </v-row>
         </v-container>
@@ -22,6 +24,8 @@
 import NProgress from "nprogress";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_MEETING_QUERY } from "@/graphql/meetings";
+import { EventBus } from "@/event-bus";
+import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 export default {
   data() {
     return {
@@ -67,6 +71,9 @@ export default {
 
           this.meeting = ApolloQueryResult.data.meetings[0];
           NProgress.done();
+          EventBus.$emit("context-label", this.meeting.title);
+          attachInternalLinks(this);
+          attachSearchEvents(this);
         }
       },
     },

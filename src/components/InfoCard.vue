@@ -1,7 +1,6 @@
 <template>
   <div>
     <v-card
-      class="pa-2 grid-item mb-3 info-card py-3 px-3"
       outlined
       @click="$router.push(item.fullPath)"
       elevation="1"
@@ -32,8 +31,6 @@
         v-if="item.splash && !textOnly"
         :src="getSplash(item)"
         :lazy-src="`https://agency.icjia-api.cloud${item.splash.formats.thumbnail.url}`"
-        width="100%"
-        :height="splashHeight"
         class="mb-5"
         style="border: 1px solid #fafafa"
         alt="ICJIA News image"
@@ -48,26 +45,6 @@
           </v-row>
         </template>
       </v-img>
-      <!-- <v-img
-        aria-label="News post image"
-        src="/icjia-half-splash-thumb.jpg"
-        height="165px"
-        class=""
-        @load="resize"
-        style="border: 0px solid #fafafa"
-        alt="ICJIA Intranet image"
-        v-else
-      >
-        <template v-slot:placeholder>
-          <v-row class="fill-height ma-0" align="center" justify="center">
-            <v-progress-circular
-              indeterminate
-              aria-label="Progress bar: Loading"
-              color="blue darken-3"
-            ></v-progress-circular>
-          </v-row>
-        </template>
-      </v-img> -->
 
       <v-card-text v-if="item.summary" style="margin-top: -15px; color: #111">{{
         item.summary

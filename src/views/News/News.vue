@@ -12,27 +12,31 @@
             </v-col>
           </v-row>
 
-          <v-row v-if="view === 'grid'" class="masonry" dense>
+          <v-row v-if="view === 'grid'" dense>
             <v-col
               v-for="(item, index) in news"
               :key="index"
-              class="child"
+              class="flex-container"
               cols="12"
               md="4"
-              v-resize="resize"
             >
-              <info-card
+              <NewsCard
                 :item="item"
-                :view="view"
-                :text-only="false"
-                @init="resize"
-                @imageLoaded="resize"
-              ></info-card>
+                class="flex-item"
+                :orientation="orientation"
+                :textOnly="false"
+                :showUpdated="false"
+              ></NewsCard>
             </v-col>
           </v-row>
-          <v-row v-if="view === 'list'" class="masonry" no-gutters>
-            <v-col cols="12" sm="12" class="child">
-              <div v-for="(item, index) in news" :key="`list-${index}`">
+
+          <v-row v-if="view === 'list'" no-gutters>
+            <v-col cols="12" sm="12">
+              <div
+                v-for="(item, index) in news"
+                :key="`list-${index}`"
+                class="mb-2"
+              >
                 <info-card
                   :item="item"
                   :view="view"
@@ -68,26 +72,10 @@ export default {
     };
   },
   methods: {
-    // eslint-disable-next-line no-unused-vars
-    // mergePostsAndMeetings(posts, meetings) {
-    //   let news = posts.concat(meetings);
-    //   news.sort((b, a) => {
-    //     return a.published_at.localeCompare(b.published_at);
-    //   });
-    //   this.news = news.slice(0, this.totalNewsItems);
-    // },
     toggle(e) {
       this.view = e;
       // console.log('view: ', this.view)
       this.resize();
-    },
-    resize() {
-      const elem = document.querySelector(".masonry");
-      const masonry = new window.Masonry(elem, {
-        itemSelector: ".child",
-      });
-      masonry.layout();
-      console.log("layout resized");
     },
   },
   mounted() {
@@ -110,6 +98,18 @@ export default {
           fullPath: `/news/${e.slug}/`,
           contentType: "News",
         }));
+        posts.forEach((post) => {
+          if (post.tags && post.tags.length > 0) {
+            let tagArray = [];
+            const tagValues = Object.values(post.tags);
+            tagValues.forEach((t) => {
+              tagArray.push(t.title);
+            });
+            // console.log(tagArray);
+            delete post.tags;
+            post.tags = tagArray;
+          }
+        });
         this.news = posts;
 
         NProgress.done();

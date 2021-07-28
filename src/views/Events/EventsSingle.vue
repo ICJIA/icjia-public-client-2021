@@ -5,6 +5,7 @@
         <v-container>
           <v-row>
             <v-col>
+              <h1 v-if="event">ICJIA Events</h1>
               <EventCard
                 v-if="event"
                 :item="event"
@@ -106,7 +107,7 @@ export default {
           this.event = this.event[0];
           this.loading = false;
           NProgress.done();
-          EventBus.$emit("context-label", this.event.title);
+          EventBus.$emit("context-label", this.event.name);
           attachInternalLinks(this);
           attachSearchEvents(this);
         }

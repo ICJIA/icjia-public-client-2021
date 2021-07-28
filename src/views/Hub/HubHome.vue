@@ -114,9 +114,10 @@
               md="4"
               v-for="(dataset, index) in datasets"
               :key="`dataset-${index}`"
+              class="flex-container"
             >
               <HubCard
-                class="px-2"
+                class="px-2 flex-item"
                 :item="dataset"
                 :textOnly="true"
                 orientation="grid"
@@ -145,9 +146,10 @@
               md="4"
               v-for="(app, index) in apps"
               :key="`app-${index}`"
+              class="flex-container"
             >
               <HubCard
-                class="px-2"
+                class="px-2 flex-item"
                 :item="app"
                 :textOnly="false"
                 orientation="grid"

@@ -11,7 +11,7 @@ const GET_ALL_NEWS_QUERY = gql`
       created_at
       updated_at
       published_at
-      tags(sort: "title:asc") {
+      tags {
         title
         slug
       }
