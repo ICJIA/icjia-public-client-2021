@@ -17,12 +17,11 @@ export default {
   data() {
     return {
       queryResults: null,
+      fuse: this.$myApp.fuse,
     };
   },
   created() {
-    let searchConfigUpdated = this.$myApp.config.search.site;
-    searchConfigUpdated.threshold = this.threshold;
-    this.fuse = new Fuse(this.$myApp.searchIndex, searchConfigUpdated);
+    this.fuse.options.threshold = this.threshold;
   },
   mounted() {
     this.instantSearch(this.query);

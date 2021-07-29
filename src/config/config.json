@@ -88,6 +88,28 @@
                 "category": "special",
                 "label": "Special"
             }
+        ],
+        "news": [
+            {
+                "category": "news",
+                "label": "News",
+                "text": ""
+            },
+            {
+                "category": "pressRelease",
+                "label": "Press Release",
+                "text": ""
+            },
+            {
+                "category": "outreach",
+                "label": "Community Outreach",
+                "text": ""
+            },
+            {
+                "category": "mediaAdvisory",
+                "label": "Media Advisory",
+                "text": ""
+            }
         ]
     },
     "search": {

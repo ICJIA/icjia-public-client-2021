@@ -285,3 +285,14 @@ details[open] summary ~ * {
 .button-weight {
   font-weight: 700 !important;
 }
+
+.category {
+  font-size: 12px;
+  color: #0e4471;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.category:hover {
+  color: #444;
+  text-decoration: none;
+}

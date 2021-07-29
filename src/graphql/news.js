@@ -8,6 +8,7 @@ const GET_ALL_NEWS_QUERY = gql`
       title
       slug
       summary
+      dateOverride
       created_at
       updated_at
       published_at
@@ -34,8 +35,10 @@ const GET_SINGLE_POST_QUERY = gql`
       summary
       showTOC
       body
+      dateOverride
       created_at
       updated_at
+      category
       published_at
       meetings {
         title

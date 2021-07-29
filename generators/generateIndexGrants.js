@@ -53,6 +53,11 @@ axios
       imagePath: null,
       altTitle: e.title.toLowerCase(),
       contentType: "funding",
+      category: "funding",
+      searchMeta:
+        e.searchMeta && e.searchMeta.length
+          ? e.searchMeta + " nofo notice funding "
+          : "nofo notice funding",
     }));
 
     programs = programs.map((e) => ({

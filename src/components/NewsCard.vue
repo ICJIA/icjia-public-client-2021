@@ -8,7 +8,7 @@
   >
     <v-card-text
       ><span v-if="!showUpdated" class="font-lato">{{
-        item.published_at | format
+        item.publicationDate | format
       }}</span></v-card-text
     >
     <v-card-text v-if="item.title"
@@ -27,7 +27,7 @@
         :lazy-src="`https://agency.icjia-api.cloud${item.splash.formats.thumbnail.url}`"
         width="100%"
         height="250"
-        class="mb-5"
+        class="mb-8"
         :ref="'img_' + item.id"
         @error="errorHandler(item.id)"
         style="border: 1px solid #fafafa"
@@ -49,7 +49,7 @@
       <span style="width: 100% !important">&nbsp;</span>
     </div>
 
-    <v-card-text v-if="item.summary" style="margin-top: -15px; color: #111"
+    <v-card-text v-if="item.summary" style="margin-top: -35px; color: #111"
       >{{ item.summary }}
     </v-card-text>
 
@@ -210,14 +210,4 @@ export default {
 };
 </script>
 
-<style>
-.category {
-  font-size: 12px;
-  color: #0e4471;
-  cursor: pointer;
-}
-.category:hover {
-  color: #444;
-  text-decoration: underline;
-}
-</style>
+<style></style>

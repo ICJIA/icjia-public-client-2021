@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 const getUnifiedTags = function (content) {
   content.forEach((item) => {
     if (item.tags && item.tags.length > 0) {
@@ -26,4 +28,28 @@ const isRelatedContent = function (content) {
   return false;
 };
 
-export { getUnifiedTags, isRelatedContent };
+const getPublicationDate = function (posts) {
+  let updated = posts.map((e) => ({
+    ...e,
+    publicationDate:
+      e.dateOverride && e.dateOverride.length ? e.dateOverride : e.published_at,
+  }));
+  return updated;
+};
+
+const getProperCategory = function (categoryMap, category) {
+  //let categoryMap = this.$myApp.config.maps.meetings;
+  let obj = categoryMap.find((o) => o.category === category);
+  if (_.isEmpty(obj)) {
+    return "Undefined";
+  } else {
+    return obj.label;
+  }
+};
+
+export {
+  getUnifiedTags,
+  isRelatedContent,
+  getPublicationDate,
+  getProperCategory,
+};

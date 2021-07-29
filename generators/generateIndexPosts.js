@@ -14,7 +14,7 @@ const query = `query {
     slug
     summary
     category
-    
+    searchMeta
     published_at
     tags {
       title
@@ -38,9 +38,9 @@ axios
     let posts = res.data.data.posts;
 
     posts.forEach((post) => {
-      if (post.category === "informationSystems") {
-        post.category = "information-systems";
-      }
+      // if (post.category === "informationSystems") {
+      //   post.category = "information-systems";
+      // }
       if (post.tags && post.tags.length > 0) {
         let tagArray = [];
         const tagValues = Object.values(post.tags);
@@ -64,6 +64,7 @@ axios
         altTitle: p.title.toLowerCase(),
         fullPath: `/news/${p.slug}`,
         imagePath,
+        displayCategory: p.category,
         contentType: "news",
       };
       return obj;

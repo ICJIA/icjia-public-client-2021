@@ -25,57 +25,8 @@
             :class="{ 'rule-top': index > 0 }"
             @click="routeTo(grant.fullPath)"
           >
-            <div class="text-right">
-              <!-- <span
-                style="
-                  font-size: 12px;
-                  color: #fff;
-                  font-weight: 400;
-                  padding: 3px 3px;
-                  background: rgb(42, 114, 196);
-                  margin-right: 1px;
-                "
-              >
-                {{ getCategory(grant.category) }}
-              </span> -->
-
-              <!-- <span
-                v-if="isItExpired(grant.end)"
-                style="
-                  font-size: 12px;
-                  color: #fff;
-                  padding: 3px 3px;
-                  background: #cc2222;
-                "
-              >
-                Expired
-              </span> -->
-              <!-- <span
-                v-if="!isItExpired(grant.end)"
-                style="
-                  font-size: 12px;
-                  color: #fff;
-                  padding: 3px 3px;
-                  background: green;
-                "
-              >
-                Expires {{ grant.end | format }}
-              </span> -->
-            </div>
+            <div class="text-right"></div>
             <div>
-              <!-- <span
-                v-if="isItExpired(grant.end)"
-                style="
-                  font-size: 12px;
-                  font-weight: 700;
-                  color: #222;
-                  padding: 3px;
-                  background: #fff;
-                  border: 1px solid #ddd;
-                "
-                class="mr-2"
-                >EXPIRED</span
-              > -->
               <v-chip
                 small
                 v-if="isItExpired(grant.end)"
@@ -84,19 +35,8 @@
                 style="font-weight: 700"
                 >Expired</v-chip
               >
-              <!-- <span
-                v-if="!isItExpired(grant.end)"
-                class="mr-2"
-                style="
-                  font-size: 12px;
-                  font-weight: 700;
-                  color: #fff;
-                  padding: 3px;
-                  background: #0e4472;
-                "
-                >Expires {{ grant.end | format }}</span
-              > -->
-              <v-chip
+
+              <!-- <v-chip
                 small
                 dark
                 v-if="!isItExpired(grant.end)"
@@ -104,12 +44,21 @@
                 :color="getColor(grant.start, grant.end)"
                 style="font-weight: 700"
                 >Expires on {{ grant.end | dateFormatAlt }}</v-chip
-              >
-              <span style="font-weight: 700; font-size: 16px; color: #666">
-                {{ getCategory(grant.category) }}
-              </span>
-              <h2 style="font-size: 18px" class="mt-1">{{ grant.title }}</h2>
-              <p>{{ grant.summary }}</p>
+              > -->
+              <div class="d-flex">
+                <span style="font-weight: 700; font-size: 16px; color: #666">
+                  {{ getCategory(grant.category) }}
+                </span>
+                <v-spacer></v-spacer>
+                <span style="font-size: 12px" class="hidden-sm-and-down">
+                  {{ grant.start | dateFormatAlt }} to
+                  {{ grant.end | dateFormatAlt }}
+                </span>
+              </div>
+
+              <h2 style="font-size: 18px" class="mt-3">{{ grant.title }}</h2>
+
+              <p style="font-size: 14px" class="mt-2">{{ grant.summary }}</p>
             </div>
           </v-card>
         </v-tab-item>

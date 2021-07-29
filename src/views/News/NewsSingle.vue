@@ -1,12 +1,24 @@
 <template>
-  <div style="background: #fff; min-height: 100vh !important">
+  <div
+    style="background: #fff; min-height: 100vh !important; margin-top: -25px"
+  >
     <BaseContent :error="error" :loading="loading">
       <template slot="content" v-if="!loading">
         <v-container class="markdown-body mt-8">
           <Splash v-if="news && news.splash" :splash="news.splash"></Splash>
           <v-row>
             <v-col cols="12" :md="news.showTOC ? 9 : 12">
-              <h1 v-html="render(news.title)"></h1>
+              <div style="font-weight: 900">
+                <span
+                  class="category"
+                  style="font-size: 16px"
+                  @click="search(getCategory(news.category))"
+                  >{{ getCategory(news.category).toUpperCase() }}</span
+                >
+                |
+                {{ news.publicationDate | format }}
+              </div>
+              <h1 v-html="render(news.title)" style="margin-top: 5px"></h1>
               <div v-html="render(news.body)"></div>
               <div class="my-5">
                 <BasePropDisplay v-if="news.tags" name="">
@@ -40,7 +52,12 @@
 import NProgress from "nprogress";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_POST_QUERY } from "@/graphql/news";
-import { getUnifiedTags, isRelatedContent } from "@/utils/content";
+import { getProperCategory } from "@/utils/content";
+import {
+  getUnifiedTags,
+  isRelatedContent,
+  getPublicationDate,
+} from "@/utils/content";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import { EventBus } from "@/event-bus";
 export default {
@@ -56,6 +73,16 @@ export default {
     NProgress.start();
   },
   methods: {
+    search(name) {
+      let opts = {
+        query: name,
+        type: "general",
+      };
+      EventBus.$emit("search", opts);
+    },
+    getCategory(category) {
+      return getProperCategory(this.$myApp.config.maps.news, category);
+    },
     render(content) {
       return renderToHtml(content);
     },
@@ -85,13 +112,14 @@ export default {
         } else {
           let news = ApolloQueryResult.data.posts;
           news = getUnifiedTags(news);
+          news = getPublicationDate(news);
           this.news = news[0];
           this.isRelated = isRelatedContent(this.news);
-          this.loading = false;
-          NProgress.done();
           EventBus.$emit("context-label", this.news.title);
           attachInternalLinks(this);
           attachSearchEvents(this);
+          this.loading = false;
+          NProgress.done();
         }
       },
     },

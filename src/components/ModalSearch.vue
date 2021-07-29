@@ -85,7 +85,18 @@
                     "
                     style="font-weight: 700"
                     >{{ result.item.category.toUpperCase() }}</span
-                  >&nbsp;<span style="font-weight: 700">{{
+                  >&nbsp;
+                  <span
+                    style="font-weight: 700; margin-left: -5px"
+                    v-if="result.item.displayCategory"
+                    >{{
+                      getProperCategory(
+                        $myApp.config.maps.news,
+                        result.item.displayCategory
+                      ).toUpperCase()
+                    }}</span
+                  >
+                  <span style="font-weight: 700" v-else>{{
                     result.item.contentType.toUpperCase()
                   }}</span>
                 </div>
@@ -97,6 +108,7 @@
                     result.item.contentType.toUpperCase()
                   }}</span>
                 </div>
+
                 <div v-if="result.item.title" class="mt-2">
                   <span
                     style="font-size: 16px; font-weight: bold"
@@ -144,8 +156,8 @@
 
                 <template v-if="result.item.tags">
                   <BasePropChip
-                    v-for="tag of result.item.tags"
-                    :key="tag"
+                    v-for="(tag, index) of result.item.tags"
+                    :key="index"
                     class="mt-1"
                   >
                     <template>{{ tag }}</template>
@@ -162,6 +174,7 @@
 
 <script>
 import { EventBus } from "@/event-bus";
+import { getProperCategory } from "@/utils/content";
 /* eslint-disable no-unused-vars */
 import DOMPurify from "dompurify";
 import Fuse from "fuse.js";
@@ -179,16 +192,17 @@ export default {
       query: null,
       queryResults: [],
       content: "",
-      fuse: null,
+      fuse: this.$myApp.fuse,
       resultNumber: "s",
       arrayToList,
+      getProperCategory,
     };
   },
   created() {
-    this.fuse = new Fuse(
-      this.$myApp.searchIndex,
-      this.$myApp.config.search.site
-    );
+    // this.fuse = new Fuse(
+    //   this.$myApp.searchIndex,
+    //   this.$myApp.config.search.site
+    // );
   },
   mounted() {
     EventBus.$on("closeSearch", () => {
@@ -271,7 +285,8 @@ export default {
     },
     instantSearch() {
       if (!this.query.length) return;
-      this.queryResults = this.fuse.search(this.query);
+      if (this.query.length < 2) return;
+      this.queryResults = this.fuse.search(this.query).slice(0, 50);
     },
     displayHeadings(headings) {
       if (typeof headings === "string") {

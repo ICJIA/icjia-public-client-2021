@@ -54,9 +54,9 @@
 import NProgress from "nprogress";
 import { GET_ALL_NEWS_QUERY } from "@/graphql/news";
 import { EventBus } from "@/event-bus";
-import { getUnifiedTags } from "@/utils/content";
+import { getUnifiedTags, getPublicationDate } from "@/utils/content";
 // import moment from "moment";
-// import _ from "lodash";
+import _ from "lodash";
 
 export default {
   name: "News",
@@ -96,9 +96,10 @@ export default {
           fullPath: `/news/${e.slug}/`,
           contentType: "News",
         }));
+        //TODO: Make these chainable
         posts = getUnifiedTags(posts);
-        this.news = posts;
-
+        posts = getPublicationDate(posts);
+        this.news = _.orderBy(posts, ["publicationDate"], ["desc"]);
         NProgress.done();
       },
     },
