@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-card
+      @click="$router.push(`/about/biographies/${item.slug}`)"
       elevation="1"
       class="mb-2 py-8 px-2"
       style="border: 1px solid #ddd"
@@ -24,7 +25,7 @@
             <template v-slot:activator="{ on, attrs }">
               <span
                 class="text-h5 author-name hover ml-3"
-                @click="search(item.fullName)"
+                @click.prevent="search(item.fullName)"
                 v-bind="attrs"
                 v-on="on"
                 >{{ item.fullName }}<span v-if="item.suffix">,&nbsp;</span
@@ -44,18 +45,6 @@
             >
           </span>
 
-          <!-- <v-card-subtitle style="margin-top: -10px">
-            <span
-              style="font-weight: 700"
-              class="unit-title"
-              v-if="item && item.unit && item.unit.title"
-              @click="search(item.unit.title)"
-              >{{ item.unit.title }}&nbsp;|&nbsp;</span
-            >
-            <span style="font-weight: 700; color: #444" v-if="item.title">{{
-              item.title
-            }}</span>
-          </v-card-subtitle> -->
           <v-card-subtitle style="margin-top: -10px">
             <span
               style="font-weight: 700"
@@ -106,6 +95,14 @@ export default {
     color: {
       type: String,
       default: "#fff",
+    },
+    showStaticSearch: {
+      type: Boolean,
+      default: false,
+    },
+    hideBiography: {
+      type: Boolean,
+      default: false,
     },
   },
 };

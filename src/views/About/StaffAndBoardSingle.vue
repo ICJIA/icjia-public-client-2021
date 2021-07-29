@@ -1,9 +1,18 @@
 <template>
   <div>
-    <v-container>
+    <v-container v-if="item">
       <v-row>
         <v-col cols="12" class="mt-5">
           <BiographyCard :item="item" :showLink="false"></BiographyCard>
+
+          <StaticSearch
+            :query="item.fullName"
+            :threshold="0.3"
+            class="mt-10"
+            :showStaticSearch="true"
+            :hideBiography="true"
+            :title="`Related to ${item.fullName}`"
+          ></StaticSearch>
         </v-col>
       </v-row>
     </v-container>

@@ -63,11 +63,9 @@
             v-for="(author, index) in item.authors"
             :key="index"
           >
-            <span
-              @click.stop.prevent="updateQuery(author.title)"
-              class="author"
-              >{{ author.title }}</span
-            >
+            <span @click.stop.prevent="search(author.title)" class="author">{{
+              author.title
+            }}</span>
             <span v-if="index < item.authors.length - 2">, </span>
             <span v-if="index === item.authors.length - 2"> and </span>
           </span>
@@ -116,10 +114,14 @@ export default {
 
       return string;
     },
-    updateQuery(author) {
-      this.query = author;
-      this.instantSearch();
+    search(name) {
+      let opts = {
+        query: name,
+        type: "general",
+      };
+      EventBus.$emit("search", opts);
     },
+
     goToExternal(url) {
       //
       if (url.indexOf("://") > 0 || url.indexOf("//") === 0) {

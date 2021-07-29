@@ -1,6 +1,8 @@
 <template>
-  <div>
-    <div v-for="(result, index) in queryResults" :key="index">
+  <div v-if="queryResults && queryResults.length" class="markdown-body">
+    <h3 v-if="title">{{ title }}</h3>
+    <div v-for="(result, index) in queryResults" :key="index" class="px-3 mt-6">
+      {{ result.item.fullName }}
       <SearchCard :item="result.item" :threshold="0.2"></SearchCard>
     </div>
   </div>
@@ -18,6 +20,7 @@ export default {
     return {
       queryResults: null,
       fuse: this.$myApp.fuse,
+      filteredQueryResults: null,
     };
   },
   created() {
@@ -29,8 +32,13 @@ export default {
   methods: {
     instantSearch(query) {
       if (!this.query.length) return;
-      this.queryResults = this.fuse.search(this.query);
-      this.queryResults = _.orderBy(this.queryResults, ["category"], ["asc"]);
+      let queryResults = this.fuse.search(this.query);
+      queryResults = _.orderBy(queryResults, ["category"], ["asc"]);
+      let filteredQueryResults = queryResults.filter((result) => {
+        console.log(result.item.contentType);
+        if (result.item.contentType !== "biography") return result;
+      });
+      this.queryResults = filteredQueryResults;
     },
   },
   props: {
@@ -39,6 +47,10 @@ export default {
       default: 0.3,
     },
     query: {
+      type: String,
+      default: "",
+    },
+    title: {
       type: String,
       default: "",
     },
