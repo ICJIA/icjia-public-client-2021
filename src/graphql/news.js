@@ -40,6 +40,10 @@ const GET_SINGLE_POST_QUERY = gql`
       updated_at
       category
       published_at
+      attachments {
+        name
+        url
+      }
       meetings {
         title
         slug

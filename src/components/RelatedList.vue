@@ -1,9 +1,10 @@
 <template>
-  <v-sheet color="grey lighten-4" class="px-8 py-4" v-if="relatedList">
+  <v-sheet :color="background" :class="indentation" v-if="relatedList">
     <div
       style="
-        font-weight: 900;
-
+        font-weight: 700;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 8px;
         text-transform: uppercase;
       "
       v-if="title && title.length"
@@ -86,6 +87,15 @@ export default {
       type: String,
       default: "",
     },
+    background: {
+      type: String,
+      default: "grey lighten-4",
+    },
+    indentation: {
+      type: String,
+      default: "px-2 py-4",
+    },
+
     content: {
       type: Object,
       default: () => {},

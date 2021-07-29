@@ -49,6 +49,5 @@ export default {
 
 <style lang="scss" scoped>
 .attachment-link {
-  font-size: 13px;
 }
 </style>

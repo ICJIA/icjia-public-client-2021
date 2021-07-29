@@ -26,12 +26,22 @@
                     <template>{{ tag }}</template>
                   </BasePropChip>
                 </BasePropDisplay>
+                <AttachmentList
+                  :items="news.attachments"
+                  v-if="news.attachments && news.attachments.length"
+                  class="mt-8 pl-3"
+                  :key="news.slug"
+                  title="Attachments"
+                ></AttachmentList>
               </div>
+
               <RelatedList
                 :content="news"
-                title="Related"
-                class="mt-10"
+                title="Related Content"
+                class="mt-12"
                 v-if="isRelated"
+                background="white"
+                indentation="ml-4 px-0 py-0"
               ></RelatedList>
             </v-col>
             <v-col
