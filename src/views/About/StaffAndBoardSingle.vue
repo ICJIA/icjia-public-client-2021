@@ -7,7 +7,7 @@
 
           <StaticSearch
             :query="item.fullName"
-            :threshold="0.3"
+            :threshold="0.2"
             class="mt-10"
             :showStaticSearch="true"
             :hideBiography="true"

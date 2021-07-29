@@ -84,7 +84,7 @@ import { EventBus } from "@/event-bus";
 import { renderToHtml } from "@/services/Markdown";
 
 import { GET_ALL_MEETINGS_QUERY } from "@/graphql/meetings";
-
+import { getUnifiedTags } from "@/utils/content";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import _ from "lodash";
 export default {
@@ -139,8 +139,9 @@ export default {
           });
         } else {
           //console.log(this.id);
-          this.meetings = ApolloQueryResult.data.meetings;
-          this.meetings = _.orderBy(this.meetings, ["start"], ["desc"]);
+          let meetings = ApolloQueryResult.data.meetings;
+          meetings = getUnifiedTags(meetings);
+          this.meetings = _.orderBy(meetings, ["start"], ["desc"]);
           NProgress.done();
           attachInternalLinks(this);
           attachSearchEvents(this);

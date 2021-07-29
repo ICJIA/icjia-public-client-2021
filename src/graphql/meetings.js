@@ -16,6 +16,14 @@ const GET_ALL_MEETINGS_QUERY = gql`
       end
       category
       body
+      posts {
+        title
+        slug
+      }
+      events {
+        title: name
+        slug
+      }
       tags {
         title
         slug
@@ -48,6 +56,14 @@ const GET_SINGLE_MEETING_QUERY = gql`
       category
       created_at
       updated_at
+      posts {
+        title
+        slug
+      }
+      events {
+        title: name
+        slug
+      }
       published_at
       attachments {
         id

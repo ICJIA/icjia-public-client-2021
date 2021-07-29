@@ -21,11 +21,6 @@
               <h1 v-html="render(news.title)" style="margin-top: 15px"></h1>
               <div v-html="render(news.body)"></div>
               <div class="my-5">
-                <BasePropDisplay v-if="news.tags" name="">
-                  <BasePropChip v-for="tag in news.tags" :key="tag">
-                    <template>{{ tag }}</template>
-                  </BasePropChip>
-                </BasePropDisplay>
                 <AttachmentList
                   :items="news.attachments"
                   v-if="news.attachments && news.attachments.length"
@@ -33,16 +28,24 @@
                   :key="news.slug"
                   title="Attachments"
                 ></AttachmentList>
+                <RelatedList
+                  :content="news"
+                  title="Related Web Content"
+                  class="mt-5"
+                  v-if="isRelated"
+                  background="white"
+                  indentation="ml-4 px-0 py-0"
+                ></RelatedList>
+                <BasePropDisplay v-if="news.tags" name="">
+                  <BasePropChip
+                    v-for="tag in news.tags"
+                    :key="tag"
+                    class="mt-8"
+                  >
+                    <template>{{ tag }}</template>
+                  </BasePropChip>
+                </BasePropDisplay>
               </div>
-
-              <RelatedList
-                :content="news"
-                title="Related Content"
-                class="mt-12"
-                v-if="isRelated"
-                background="white"
-                indentation="ml-4 px-0 py-0"
-              ></RelatedList>
             </v-col>
             <v-col
               cols="12"

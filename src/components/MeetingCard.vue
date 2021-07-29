@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-card class="px-5 py-5 markdown-body" :color="color">
+  <div class="">
+    <v-card class="px-5 py-5 markdown-body reduce-90" :color="color">
       <h2>{{ item.title }}</h2>
       <div>
         <span v-html="displayDate(item.start, item.end)"></span>
@@ -10,26 +10,53 @@
       </div>
       <div v-html="render(item.body)" class="px-3 mt-5"></div>
 
-      <AttachmentList
-        :items="item.attachments"
-        v-if="item.attachments && item.attachments.length"
-        class="mt-8 pl-3"
-        :key="item.slug"
-        title="Attachments"
-      ></AttachmentList>
+      <div class="my-5">
+        <AttachmentList
+          :items="item.attachments"
+          v-if="item.attachments && item.attachments.length"
+          class="mt-8 pl-3"
+          :key="item.slug"
+          title="Attachments"
+        ></AttachmentList>
+        <RelatedList
+          :content="item"
+          title="Related Web Content"
+          class="mt-5"
+          v-if="isRelated"
+          background="grey lighten-4"
+          indentation="mt-8 px-5 py-5"
+        ></RelatedList>
+        <BasePropDisplay v-if="item.tags" name="">
+          <BasePropChip
+            v-for="(tag, index) in item.tags"
+            :key="index"
+            class="mt-8"
+          >
+            <template>{{ tag }}</template>
+          </BasePropChip>
+        </BasePropDisplay>
+      </div>
     </v-card>
   </div>
 </template>
 
 <script>
+/* eslint-disable no-unused-vars */
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import { renderToHtml } from "@/services/Markdown";
 import moment from "moment";
 import _ from "lodash";
+import { getUnifiedTags, isRelatedContent } from "@/utils/content";
 export default {
   mounted() {
     attachInternalLinks(this);
     attachSearchEvents(this);
+    this.isRelated = isRelatedContent(this.item);
+  },
+  data() {
+    return {
+      isRelated: false,
+    };
   },
   methods: {
     render(content) {
