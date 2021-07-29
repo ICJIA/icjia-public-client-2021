@@ -46,7 +46,7 @@ import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import { renderToHtml } from "@/services/Markdown";
 import moment from "moment";
 import _ from "lodash";
-import { getUnifiedTags, isRelatedContent } from "@/utils/content";
+import { isRelatedContent } from "@/utils/content";
 export default {
   mounted() {
     attachInternalLinks(this);

@@ -101,6 +101,15 @@
         v-html="render(item.body)"
         class="pl-3 pt-3"
       ></div>
+      <BasePropDisplay v-if="item.tags" name="">
+        <BasePropChip
+          v-for="(tag, index) in item.tags"
+          :key="index"
+          class="mt-0 mb-5"
+        >
+          <template>{{ tag }}</template>
+        </BasePropChip>
+      </BasePropDisplay>
       <v-card-actions>
         <v-btn
           small
@@ -148,7 +157,14 @@ const addOneDayToDate = function (date) {
 };
 import { renderToHtml } from "@/services/Markdown";
 import { EventBus } from "@/event-bus";
+import { isRelatedContent } from "@/utils/content";
+import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 export default {
+  mounted() {
+    attachInternalLinks(this);
+    attachSearchEvents(this);
+    this.isRelated = isRelatedContent(this.item);
+  },
   data() {
     return {
       show: false,

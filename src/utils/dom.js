@@ -12,7 +12,7 @@ const attachInternalLinks = function (vm) {
         vm.$router.push(url);
       });
     }
-    console.log("attachInternalLinks: ", els);
+    //console.log("attachInternalLinks: ", els);
   });
 };
 
@@ -30,7 +30,7 @@ const attachSearchEvents = function (vm) {
         EventBus.$emit("search", opts);
       });
     }
-    console.log("attachInternalLinks: ", els);
+    //console.log("attachInternalLinks: ", els);
   });
 };
 

@@ -28,6 +28,32 @@
                 </div>
                 <h1 v-html="render(funding.title)" style="margin-top: 5px"></h1>
                 <div v-html="render(funding.body)"></div>
+                <div class="my-5">
+                  <AttachmentList
+                    :items="funding.attachments"
+                    v-if="funding.attachments && funding.attachments.length"
+                    class="mt-8 pl-3"
+                    :key="funding.slug"
+                    title="Attachments"
+                  ></AttachmentList>
+                  <RelatedList
+                    :content="funding"
+                    title="Related Web Content"
+                    class="mt-5"
+                    v-if="isRelated"
+                    background="grey lighten-4"
+                    indentation="mt-8 px-5 py-5"
+                  ></RelatedList>
+                  <BasePropDisplay v-if="funding.tags" name="">
+                    <BasePropChip
+                      v-for="(tag, index) in funding.tags"
+                      :key="index"
+                      class="mt-3"
+                    >
+                      <template>{{ tag }}</template>
+                    </BasePropChip>
+                  </BasePropDisplay>
+                </div>
               </v-col>
               <v-col cols="12" md="3" class="hidden-sm-and-down"
                 ><Toc :key="funding.title" :scrollOffset="55"></Toc
@@ -50,6 +76,8 @@ import NProgress from "nprogress";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_FUNDING_QUERY } from "@/graphql/grants";
 import { EventBus } from "@/event-bus";
+import { getUnifiedTags, isRelatedContent } from "@/utils/content";
+import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 export default {
   data() {
     return {
@@ -100,7 +128,13 @@ export default {
           });
         } else {
           //console.log(this.id);
-          this.funding = ApolloQueryResult.data.grants[0];
+          let funding = ApolloQueryResult.data.grants;
+          funding = getUnifiedTags(funding);
+          this.isRelated = isRelatedContent(funding);
+
+          attachInternalLinks(this);
+          attachSearchEvents(this);
+          this.funding = funding[0];
           this.loading = false;
           NProgress.done();
           EventBus.$emit("context-label", this.funding.title);

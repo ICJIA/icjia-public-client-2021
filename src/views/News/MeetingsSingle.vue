@@ -6,7 +6,11 @@
           <v-row>
             <v-col>
               <h1>ICJIA Meetings</h1>
-              <MeetingCard :item="meeting" class="mx-2 my-4"></MeetingCard>
+              <MeetingCard
+                :item="meeting"
+                class="mx-2 my-4"
+                :key="meeting.title"
+              ></MeetingCard>
               <div class="mt-5 text-right">
                 <v-btn small text to="/news/meetings/"
                   >View all meetings&nbsp;&raquo;</v-btn
@@ -26,6 +30,8 @@ import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_MEETING_QUERY } from "@/graphql/meetings";
 import { EventBus } from "@/event-bus";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
+// eslint-disable-next-line no-unused-vars
+import { getUnifiedTags } from "@/utils/content";
 export default {
   data() {
     return {
@@ -69,7 +75,10 @@ export default {
         } else {
           //console.log(this.id);
 
-          this.meeting = ApolloQueryResult.data.meetings[0];
+          let meetings = ApolloQueryResult.data.meetings;
+          console.log("meetings fetch here");
+          meetings = getUnifiedTags(meetings);
+          this.meeting = meetings[0];
           NProgress.done();
           EventBus.$emit("context-label", this.meeting.title);
           attachInternalLinks(this);

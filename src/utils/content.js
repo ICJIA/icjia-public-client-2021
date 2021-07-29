@@ -2,6 +2,7 @@ import _ from "lodash";
 
 const getUnifiedTags = function (content) {
   content.forEach((item) => {
+    if (item.tagsAlt && item.tagsAlt.length) return content;
     if (item.tags && item.tags.length > 0) {
       let tagArray = [];
       const tagValues = Object.values(item.tags);

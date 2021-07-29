@@ -140,6 +140,7 @@ export default {
         } else {
           //console.log(this.id);
           let meetings = ApolloQueryResult.data.meetings;
+          console.log("meetings fetch here");
           meetings = getUnifiedTags(meetings);
           this.meetings = _.orderBy(meetings, ["start"], ["desc"]);
           NProgress.done();
