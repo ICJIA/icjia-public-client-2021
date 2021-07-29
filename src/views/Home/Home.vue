@@ -23,7 +23,7 @@
     <div style="background: #fff; z-index: 1; margin-top: -20px">
       <WidgetBar
         title="News & Information"
-        mobileTitle="Latest News"
+        mobileTitle="News"
         :menuItems="newsMenuItems"
         style="margin-top: -10px"
       ></WidgetBar>
@@ -76,6 +76,8 @@
 <script>
 import { GET_HOME } from "@/graphql/home";
 import nprogress from "nprogress";
+// eslint-disable-next-line no-unused-vars
+import { getUnifiedTags, getPublicationDate } from "@/utils/content";
 import _ from "lodash";
 export default {
   data() {
@@ -160,6 +162,7 @@ export default {
           fullPath: `/news/${e.slug}/`,
           contentType: "News",
         }));
+        posts = getPublicationDate(posts);
         this.news = posts;
         let meetings = ApolloQueryResult.data.meetings.map((e) => ({
           ...e,

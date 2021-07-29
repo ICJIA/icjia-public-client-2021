@@ -114,7 +114,7 @@
         "defaultPath": "/news/",
         "items": [
             {
-                "label": "Latest News",
+                "label": "News & Information",
                 "path": "/news/"
             },
             {
@@ -147,7 +147,7 @@
         "defaultPath": "/meetings/",
         "items": [
             {
-                "label": "Latest News",
+                "label": "News & Information",
                 "path": "/news/"
             },
             {
@@ -176,7 +176,7 @@
         "defaultPath": "/events/",
         "items": [
             {
-                "label": "Latest News",
+                "label": "News & Information",
                 "path": "/news/"
             },
             {

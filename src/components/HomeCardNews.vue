@@ -65,8 +65,21 @@
                 font-weight: 400;
               "
             >
-              <span style="font-weight: 700">{{ item.contentType }}</span
-              >&nbsp;|&nbsp;{{ item.published_at | format }}
+              <span
+                style="font-weight: 700"
+                class="category"
+                @click.stop.prevent="
+                  search(
+                    getProperCategory($myApp.config.maps.news, item.category)
+                  )
+                "
+                >{{
+                  getProperCategory(
+                    $myApp.config.maps.news,
+                    item.category
+                  ).toUpperCase()
+                }}</span
+              >&nbsp;|&nbsp;{{ item.publicationDate | format }}
             </v-card-text>
 
             <v-card-text
@@ -127,8 +140,22 @@
 </template>
 
 <script>
+import { EventBus } from "@/event-bus";
+import { getProperCategory } from "@/utils/content";
 export default {
+  data() {
+    return {
+      getProperCategory,
+    };
+  },
   methods: {
+    search(name) {
+      let opts = {
+        query: name,
+        type: "general",
+      };
+      EventBus.$emit("search", opts);
+    },
     routeTo(fullPath) {
       //console.log(fullPath);
       this.$router.push(fullPath);

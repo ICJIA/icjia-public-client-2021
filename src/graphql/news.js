@@ -9,6 +9,7 @@ const GET_ALL_NEWS_QUERY = gql`
       slug
       summary
       dateOverride
+      category
       created_at
       updated_at
       published_at
@@ -49,6 +50,10 @@ const GET_SINGLE_POST_QUERY = gql`
         slug
       }
       grants {
+        title
+        slug
+      }
+      programs {
         title
         slug
       }

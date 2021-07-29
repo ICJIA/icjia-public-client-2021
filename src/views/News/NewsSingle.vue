@@ -18,7 +18,7 @@
                 |
                 {{ news.publicationDate | format }}
               </div>
-              <h1 v-html="render(news.title)" style="margin-top: 5px"></h1>
+              <h1 v-html="render(news.title)" style="margin-top: 15px"></h1>
               <div v-html="render(news.body)"></div>
               <div class="my-5">
                 <BasePropDisplay v-if="news.tags" name="">

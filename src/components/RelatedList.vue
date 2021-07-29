@@ -36,6 +36,8 @@ export default {
     let posts = [];
     let meetings = [];
     let grants = [];
+    let programs = [];
+
     if (this.content.events && this.content.events.length) {
       let relatedType = "Event";
       events = this.content.events.map((e) => ({
@@ -78,7 +80,24 @@ export default {
       //console.log("meetings: ", grants);
     }
 
-    let relatedList = [...events, ...meetings, ...posts, ...grants];
+    if (this.content.programs && this.content.programs.length) {
+      let relatedType = "Program";
+      programs = this.content.programs.map((e) => ({
+        ...e,
+        relatedType,
+        fullPath: `/grants/programs/${e.slug}/`,
+        displayTitle: `[${relatedType}]: ${e.title}`,
+      }));
+      //console.log("meetings: ", grants);
+    }
+
+    let relatedList = [
+      ...events,
+      ...meetings,
+      ...posts,
+      ...grants,
+      ...programs,
+    ];
 
     this.relatedList = _.orderBy(relatedList, "displayTitle", "asc");
   },

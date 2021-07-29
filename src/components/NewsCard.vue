@@ -6,8 +6,20 @@
     min-width="300px"
     @click.prevent="$router.push(item.fullPath)"
   >
-    <v-card-text
-      ><span v-if="!showUpdated" class="font-lato">{{
+    <v-card-text>
+      <span
+        style="font-weight: 700"
+        class="category"
+        @click.stop.prevent="
+          search(getProperCategory($myApp.config.maps.news, item.category))
+        "
+        >{{
+          getProperCategory(
+            $myApp.config.maps.news,
+            item.category
+          ).toUpperCase()
+        }}</span
+      >&nbsp;|&nbsp;<span v-if="!showUpdated" class="font-lato">{{
         item.publicationDate | format
       }}</span></v-card-text
     >
@@ -68,6 +80,7 @@ import { EventBus } from "@/event-bus";
 const arrford = require("arrford");
 import { format, parseISO } from "date-fns";
 import { getImageURL } from "@/services/Image";
+import { getProperCategory } from "@/utils/content";
 import moment from "moment";
 export default {
   computed: {
@@ -89,6 +102,7 @@ export default {
   data() {
     return {
       imageOK: true,
+      getProperCategory,
     };
   },
   props: {
@@ -205,6 +219,13 @@ export default {
     resize() {
       //console.log("image loaded");
       this.$emit("resize");
+    },
+    search(name) {
+      let opts = {
+        query: name,
+        type: "general",
+      };
+      EventBus.$emit("search", opts);
     },
   },
 };

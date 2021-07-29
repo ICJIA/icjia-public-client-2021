@@ -5,7 +5,7 @@
         <v-container>
           <v-row class="mb-10 page-heading">
             <v-col cols="12">
-              <h1>Latest News</h1>
+              <h1>News & Information</h1>
               <div>
                 <Toggle @toggle="toggle"></Toggle>
               </div>
@@ -77,7 +77,7 @@ export default {
     },
   },
   mounted() {
-    EventBus.$emit("context-label", "Latest News");
+    EventBus.$emit("context-label", "All News & Information");
   },
   apollo: {
     posts: {
