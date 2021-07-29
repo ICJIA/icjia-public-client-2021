@@ -144,6 +144,10 @@
                     "weight": 2
                 },
                 {
+                    "name": "fullName",
+                    "weight": 1
+                },
+                {
                     "name": "contentType",
                     "weight": 2
                 },

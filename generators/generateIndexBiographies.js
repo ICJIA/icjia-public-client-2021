@@ -12,10 +12,15 @@ const query = `query {
      id
     firstName
     lastName
+    fullName
     title: fullName
     position: title
     suffix
     summary: bio
+    tags {
+      title
+      slug
+    }
     unit {
       title
       shortName
@@ -28,6 +33,7 @@ const query = `query {
     affiliation
     sortField
     sortModifier
+    searchMeta
     
   }
 }`;
