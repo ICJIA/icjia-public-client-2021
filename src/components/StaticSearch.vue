@@ -2,7 +2,6 @@
   <div v-if="queryResults && queryResults.length" class="markdown-body">
     <h3 v-if="title">{{ title }}</h3>
     <div v-for="(result, index) in queryResults" :key="index" class="px-3 mt-6">
-      {{ result.item.fullName }}
       <SearchCard :item="result.item" :threshold="0.2"></SearchCard>
     </div>
   </div>
@@ -36,7 +35,11 @@ export default {
       queryResults = _.orderBy(queryResults, ["category"], ["asc"]);
       let filteredQueryResults = queryResults.filter((result) => {
         console.log(result.item.contentType);
-        if (result.item.contentType !== "biography") return result;
+        if (this.hideBiography) {
+          if (result.item.contentType !== "biography") return result;
+        } else {
+          return result;
+        }
       });
       this.queryResults = filteredQueryResults;
     },
@@ -53,6 +56,10 @@ export default {
     title: {
       type: String,
       default: "",
+    },
+    hideBiography: {
+      type: Boolean,
+      default: true,
     },
   },
 };

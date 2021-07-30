@@ -132,6 +132,10 @@ Vue.filter("dateFormatAlt", function (timestamp) {
   return moment(timestamp).format("MMM DD, YYYY");
 });
 
+Vue.filter("dateFormatFull", function (timestamp) {
+  return moment(timestamp).format("dddd, MMM DD, YYYY");
+});
+
 Vue.filter("timeAgoFormat", function (timestamp) {
   return moment(timestamp).fromNow();
 });

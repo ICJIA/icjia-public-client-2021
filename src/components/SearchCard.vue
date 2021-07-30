@@ -7,7 +7,7 @@
       class="hover px-4 py-3 mb-2 card"
       v-if="item"
     >
-      <div
+      <!-- <div
         style="font-size: 12px"
         v-if="item && item.published_at && item.contentType === 'news'"
       >
@@ -45,8 +45,8 @@
         <span style="font-weight: 700">{{
           item.contentType.toUpperCase()
         }}</span>
-      </div>
-      <div v-if="item.title" class="mt-2">
+      </div> -->
+      <!-- <div v-if="item.title" class="mt-2">
         <span
           style="font-size: 16px; font-weight: bold"
           class=""
@@ -69,6 +69,131 @@
             <span v-if="index < item.authors.length - 2">, </span>
             <span v-if="index === item.authors.length - 2"> and </span>
           </span>
+        </div>
+      </div> -->
+      <div style="font-size: 14px">
+        <!-- ------------------------------------------------
+           News 
+        -----------------------------------------------  -->
+        <div v-if="item.contentType === 'news'">
+          <div>
+            <span style="font-weight: 700">{{
+              getProperCategory(
+                $myApp.config.maps.news,
+                item.category
+              ).toUpperCase()
+            }}</span>
+            | {{ item.publicationDate | format }}
+          </div>
+          <div
+            style="font-size: 16px; font-weight: bold"
+            class="mt-2"
+            v-html="item.title"
+          ></div>
+        </div>
+        <!-- ------------------------------------------------
+           Hub Articles 
+        -----------------------------------------------  -->
+        <div v-else-if="item.contentType === 'article'">
+          <div>
+            <span style="font-weight: 700">
+              {{ item.contentType.toUpperCase() }}
+            </span>
+            | {{ item.date | format }}
+          </div>
+          <div
+            style="font-size: 16px; font-weight: bold"
+            class="mt-2"
+            v-html="item.title"
+          ></div>
+          <div v-if="item.authors" class="mt-1">
+            <span
+              style="font-size: 12px"
+              v-for="(author, index) in item.authors"
+              :key="index"
+            >
+              <span @click.stop.prevent="search(author.title)" class="author">{{
+                author.title
+              }}</span>
+              <span v-if="index < item.authors.length - 2">, </span>
+              <span v-if="index === item.authors.length - 2"> and </span>
+            </span>
+          </div>
+        </div>
+        <!-- ------------------------------------------------
+           Biographies 
+        -----------------------------------------------  -->
+        <div v-else-if="item.contentType === 'biography'">
+          <div>
+            <span style="font-weight: 700">
+              {{ item.contentType.toUpperCase() }}
+            </span>
+          </div>
+
+          <div v-if="item.fullName" class="mt-1">
+            <span
+              style="font-size: 16px; font-weight: bold"
+              class=""
+              v-html="item.fullName"
+            ></span>
+
+            <div v-if="item.position">
+              <span
+                style="font-size: 14px"
+                class=""
+                v-html="item.position"
+              ></span>
+            </div>
+          </div>
+        </div>
+        <!-- ------------------------------------------------
+           Publications 
+        -----------------------------------------------  -->
+        <div v-else-if="item.contentType === 'publication'">
+          <div>
+            <span style="font-weight: 700">
+              {{ item.contentType.toUpperCase() }}
+            </span>
+            | {{ item.publicationDate | format }}
+          </div>
+          <div
+            style="font-size: 16px; font-weight: bold"
+            class="mt-2"
+            v-html="item.title"
+          ></div>
+        </div>
+        <!-- ------------------------------------------------
+           Events 
+        -----------------------------------------------  -->
+        <div v-else-if="item.contentType === 'event'">
+          <div>
+            <span style="font-weight: 700">
+              {{ item.category }} {{ item.contentType.toUpperCase() }}
+            </span>
+            | {{ item.start | dateFormatFull }}
+            {{ getEndText(item.start, item.end) }}
+          </div>
+          <div
+            style="font-size: 16px; font-weight: bold"
+            class="mt-2"
+            v-html="item.title"
+          ></div>
+        </div>
+        <!-- ------------------------------------------------
+           Default 
+        -----------------------------------------------  -->
+        <div v-else>
+          <div>
+            <span style="font-weight: 700">
+              {{ item.contentType.toUpperCase() }}
+            </span>
+          </div>
+          <div
+            style="font-size: 16px; font-weight: bold"
+            class="mt-2"
+            v-html="item.title"
+            v-if="item.title"
+          ></div>
         </div>
       </div>
       <v-card-text
@@ -93,12 +218,34 @@
 <script>
 /* eslint-disable no-unused-vars */
 import { EventBus } from "@/event-bus";
+import { getProperCategory } from "@/utils/content";
 import DOMPurify from "dompurify";
 import { renderToHtml } from "@/services/Markdown";
+import moment from "moment";
 import _ from "lodash";
 // import searchIndex from "@/config/searchIndex.json";
 export default {
+  data() {
+    return {
+      getProperCategory,
+    };
+  },
   methods: {
+    getStartText(eventStart) {
+      let start = moment(eventStart);
+      return `${start.format("dddd, MMM DD, YYYY")}`;
+    },
+    getEndText(eventStart, eventEnd) {
+      let start = moment(eventStart);
+      let end = moment(eventEnd);
+      let days = end.diff(start, "days");
+      let hours = end.diff(start, "hours");
+      if (days > 0) {
+        return ` to ${end.format("dddd, MMM DD, YYYY")}`;
+      } else {
+        return ` | ${start.format("hh:mm A")} to ${end.format("hh:mm A")}`;
+      }
+    },
     render(content) {
       return renderToHtml(content);
     },
@@ -114,6 +261,7 @@ export default {
 
       return string;
     },
+
     search(name) {
       let opts = {
         query: name,

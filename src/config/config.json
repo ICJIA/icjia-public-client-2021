@@ -164,6 +164,10 @@
                     "weight": 1
                 },
                 {
+                    "name": "tagsAlt.title",
+                    "weight": 1
+                },
+                {
                     "name": "categories",
                     "weight": 2
                 },
@@ -178,14 +182,6 @@
                 {
                     "name": "abstract",
                     "weight": 2
-                },
-                {
-                    "name": "start",
-                    "weight": 3
-                },
-                {
-                    "name": "end",
-                    "weight": 3
                 }
             ]
         }
