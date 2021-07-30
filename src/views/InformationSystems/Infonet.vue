@@ -62,7 +62,9 @@ export default {
       return renderToHtml(content);
     },
   },
-  mounted() {},
+  mounted() {
+    EventBus.$emit("context-label", "InfoNet");
+  },
   apollo: {
     pages: {
       prefetch: true,

@@ -107,6 +107,9 @@ export default {
       return renderToHtml(content);
     },
   },
+  mounted() {
+    EventBus.$emit("context-label", "Staff Organization");
+  },
   apollo: {
     pages: {
       prefetch: true,

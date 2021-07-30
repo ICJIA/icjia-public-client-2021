@@ -4,6 +4,11 @@
       <v-row>
         <v-col>
           <PublicationCard :item="publication" class="mt-8"></PublicationCard>
+          <div class="mt-5 text-right">
+            <v-btn small text to="/about/publications/"
+              >View all publications&nbsp;&raquo;</v-btn
+            >
+          </div>
         </v-col>
       </v-row>
     </v-container>

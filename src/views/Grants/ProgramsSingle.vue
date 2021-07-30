@@ -6,7 +6,14 @@
           <BaseCardExpandable
             :item="program"
             :showLink="false"
-          ></BaseCardExpandable
+          ></BaseCardExpandable>
+          <StaticSearch
+            :query="program.title"
+            :threshold="0.3"
+            class="mt-10"
+            :showStaticSearch="true"
+            :title="`Related to ${program.title}`"
+          ></StaticSearch
         ></v-col>
       </v-row>
     </v-container>
@@ -27,6 +34,7 @@ import { EventBus } from "@/event-bus";
 import { GET_SINGLE_PROGRAM_QUERY } from "@/graphql/grants";
 import { renderToHtml } from "@/services/Markdown";
 // import _ from "lodash";
+import { getUnifiedTags } from "@/utils/content";
 import NProgress from "nprogress";
 
 export default {
@@ -76,6 +84,7 @@ export default {
             fullPath: `/grants/programs/${e.slug}/`,
             contentType: "program",
           }));
+          this.program = getUnifiedTags(this.program);
           this.program = this.program[0];
           EventBus.$emit("context-label", this.program.title);
           NProgress.done();

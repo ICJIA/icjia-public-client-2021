@@ -112,6 +112,7 @@
 import NProgress from "nprogress";
 import { GET_ALL_PUBLICATIONS_QUERY } from "@/graphql/publications";
 import { getPublicationType } from "@/lib/utils";
+import { EventBus } from "@/event-bus";
 import _ from "lodash";
 export default {
   name: "Publications",
@@ -152,6 +153,7 @@ export default {
   },
   mounted() {
     NProgress.start();
+    EventBus.$emit("context-label", "Publications");
   },
   methods: {
     clicked(value) {

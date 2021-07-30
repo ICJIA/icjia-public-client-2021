@@ -61,6 +61,9 @@ export default {
   created() {
     NProgress.start();
   },
+  mounted() {
+    EventBus.$emit("context-label", "Composition & Membership");
+  },
   methods: {
     render(content) {
       return renderToHtml(content);

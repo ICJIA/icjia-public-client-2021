@@ -102,6 +102,9 @@ export default {
   created() {
     NProgress.start();
   },
+  mounted() {
+    EventBus.$emit("context-label", "Meetings");
+  },
   methods: {
     filterMeetingsByCategory(category) {
       let filteredMeetings = this.meetings.filter((meeting) => {
@@ -109,6 +112,7 @@ export default {
           return meeting;
         }
       });
+
       return filteredMeetings;
     },
   },

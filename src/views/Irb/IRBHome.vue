@@ -40,6 +40,7 @@
 import { attachInternalLinks } from "@/utils/dom";
 import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
 import { renderToHtml } from "@/services/Markdown";
+import { EventBus } from "@/event-bus";
 import NProgress from "nprogress";
 
 export default {
@@ -52,6 +53,7 @@ export default {
   async mounted() {
     NProgress.start();
     //console.log("fetch here");
+    EventBus.$emit("context-label", "Home");
   },
   methods: {
     render(content) {

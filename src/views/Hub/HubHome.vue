@@ -241,7 +241,7 @@ export default {
   apollo: {
     pages: {
       prefetch: true,
-      fetchPolicy: "no-cache",
+      // fetchPolicy: "no-cache",
       query: GET_SINGLE_PAGE_QUERY,
       variables() {
         return {

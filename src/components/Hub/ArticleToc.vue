@@ -29,26 +29,25 @@
 <script>
 export default {
   mounted() {
-    // TODO: for long TOCs -- need to tweak this
-    // const disclaimer = document.querySelector("#disclaimer");
-    // const toc = document.querySelector(".article-toc");
-    // const observer = new window.IntersectionObserver(
-    //   ([entry]) => {
-    //     console.log(entry.boundingClientRect.top);
-    //     if (entry.isIntersecting) {
-    //       console.log("Disclaimer Enter");
-    //       toc.classList.remove("article-toc-sticky");
-    //       return;
-    //     }
-    //     console.log("Disclaimer Leave");
-    //     //toc.classList.add("article-toc-sticky");
-    //   },
-    //   {
-    //     root: null,
-    //     threshold: 0,
-    //   }
-    // );
-    // observer.observe(disclaimer);
+    const disclaimer = document.querySelector("#disclaimer");
+    const toc = document.querySelector(".article-toc");
+    const observer = new window.IntersectionObserver(
+      ([entry]) => {
+        //console.log(entry.boundingClientRect.top);
+        if (entry.isIntersecting) {
+          console.log("Disclaimer Enter");
+          toc.classList.remove("article-toc-sticky");
+          return;
+        }
+        // TODO:fix to replace TOC if user is scrolled down far enough
+        console.log("Disclaimer Leave");
+      },
+      {
+        root: null,
+        threshold: 0,
+      }
+    );
+    observer.observe(disclaimer);
   },
   methods: {
     scrollTo(id) {

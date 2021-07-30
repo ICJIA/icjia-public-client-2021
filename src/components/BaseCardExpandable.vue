@@ -101,19 +101,21 @@
         v-html="render(item.body)"
         class="pl-3 pt-3"
       ></div>
-      <BasePropDisplay v-if="item.tags" name="">
-        <BasePropChip
-          v-for="(tag, index) in item.tags"
-          :key="index"
-          class="mt-0 mb-5"
-        >
-          <template>{{ tag }}</template>
-        </BasePropChip>
-      </BasePropDisplay>
+      <div class="ml-2">
+        <BasePropDisplay v-if="item.tags" name="">
+          <BasePropChip
+            v-for="(tag, index) in item.tags"
+            :key="index"
+            class="mt-0 mb-5"
+          >
+            <template>{{ tag }}</template>
+          </BasePropChip>
+        </BasePropDisplay>
+      </div>
       <v-card-actions>
         <v-btn
           small
-          color="grey lighten-4"
+          text
           @click.stop.prevent="show = !show"
           v-if="item.attachments && item.attachments.length"
         >
@@ -122,7 +124,7 @@
             show ? "mdi-chevron-up" : "mdi-chevron-down"
           }}</v-icon>
         </v-btn>
-        <v-spacer v-if="item.attachments && item.attachments.length"></v-spacer>
+        <v-spacer></v-spacer>
         <v-btn small text :to="item.fullPath" v-if="showReadMore"
           >Read More&nbsp;&raquo;</v-btn
         >

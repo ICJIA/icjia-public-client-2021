@@ -219,14 +219,16 @@ export default {
         } else {
           //console.log(this.id);
 
-          this.allPrograms = _.orderBy(ApolloQueryResult.data.programs, [
+          let allPrograms = _.orderBy(ApolloQueryResult.data.programs, [
             "title",
           ]);
-          this.allPrograms = this.allPrograms.map((e) => ({
+          allPrograms = allPrograms.map((e) => ({
             ...e,
             fullPath: `/grants/programs/${e.slug}/`,
             contentType: "program",
           }));
+
+          this.allPrograms = allPrograms;
 
           this.filterPrograms();
           NProgress.done();
