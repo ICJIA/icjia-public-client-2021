@@ -18,6 +18,7 @@ const query = `query {
       datasetURL
       applicationURL
       pubType
+      tags
     }
 }`;
 

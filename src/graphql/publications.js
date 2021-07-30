@@ -14,6 +14,7 @@ const GET_ALL_PUBLICATIONS_QUERY = gql`
       datasetURL
       applicationURL
       pubType
+      tags
     }
   }
 `;
@@ -32,6 +33,7 @@ const GET_SINGLE_PUBLICATION_QUERY = gql`
       datasetURL
       applicationURL
       pubType
+      tags
     }
   }
 `;

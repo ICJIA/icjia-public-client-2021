@@ -28,9 +28,18 @@
           <a :href="item.fileURL" target="_blank">{{ item.fileURL }}</a>
         </li>
       </ul>
+      <div v-if="item.tags" class="py-2 px-3">
+        <BasePropChip
+          v-for="(tag, index) of item.tags"
+          :key="index"
+          class="mt-1"
+        >
+          <template>{{ tag }}</template>
+        </BasePropChip>
+      </div>
       <div
-        style="background: #f1f1f1; font-size: 12px"
-        class="text-center mt-8 px-3 py-3"
+        style="background: #fdfdfd; font-size: 12px; border: 1px solid #eee"
+        class="text-center mt-10 px-3 py-3"
       >
         Individual publications are also available for download from the ICJIA
         Archive:

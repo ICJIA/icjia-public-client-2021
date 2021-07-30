@@ -7,70 +7,6 @@
       class="hover px-4 py-3 mb-2 card"
       v-if="item"
     >
-      <!-- <div
-        style="font-size: 12px"
-        v-if="item && item.published_at && item.contentType === 'news'"
-      >
-        <span style="font-weight: 700" v-if="item.contentType">{{
-          item.contentType.toUpperCase()
-        }}</span>
-        | {{ item.published_at | format }}
-      </div>
-
-      <div style="font-size: 12px" v-else-if="item && item.date">
-        <span style="font-weight: 700" v-if="item.contentType">{{
-          item.contentType.toUpperCase()
-        }}</span>
-        | {{ item.date | format }}
-      </div>
-      <div style="font-size: 12px" v-else-if="item && item.publicationDate">
-        <span style="font-weight: 700" v-if="item.contentType">{{
-          item.contentType.toUpperCase()
-        }}</span>
-        | {{ item.publicationDate | format }}
-      </div>
-      <div style="font-size: 12px" v-else-if="item && item.start">
-        <span style="font-weight: 700">{{
-          item.contentType.toUpperCase()
-        }}</span>
-        | {{ item.start | format }} to
-        {{ item.end | format }}
-      </div>
-      <div style="font-size: 12px" v-else-if="item && item.category">
-        <span style="font-weight: 700">{{
-          item.contentType.toUpperCase()
-        }}</span>
-      </div>
-      <div style="font-size: 12px" v-else>
-        <span style="font-weight: 700">{{
-          item.contentType.toUpperCase()
-        }}</span>
-      </div> -->
-      <!-- <div v-if="item.title" class="mt-2">
-        <span
-          style="font-size: 16px; font-weight: bold"
-          class=""
-          v-html="item.title"
-        ></span>
-
-        <div v-if="item.position">
-          <span style="font-size: 14px" class="" v-html="item.position"></span>
-        </div>
-
-        <div v-if="item.authors">
-          <span
-            style="font-size: 14px"
-            v-for="(author, index) in item.authors"
-            :key="index"
-          >
-            <span @click.stop.prevent="search(author.title)" class="author">{{
-              author.title
-            }}</span>
-            <span v-if="index < item.authors.length - 2">, </span>
-            <span v-if="index === item.authors.length - 2"> and </span>
-          </span>
-        </div>
-      </div> -->
       <div style="font-size: 14px">
         <!-- ------------------------------------------------
            News 
@@ -266,13 +202,14 @@
         v-else-if="item.summary"
         v-html="render(item.summary)"
       ></v-card-text>
-      <v-card-text v-else>No summary available.</v-card-text>
-
-      <template v-if="item.tags">
-        <BasePropChip v-for="tag of item.tags" :key="tag" class="mt-1">
-          <template>{{ tag }}</template>
-        </BasePropChip>
-      </template>
+      <v-card-text v-else></v-card-text>
+      <div class="pl-2 pb-3" style="margin-top: -15px">
+        <template v-if="item.tags">
+          <BasePropChip v-for="tag of item.tags" :key="tag" class="mt-1">
+            <template>{{ tag }}</template>
+          </BasePropChip>
+        </template>
+      </div>
     </v-card>
   </div>
 </template>

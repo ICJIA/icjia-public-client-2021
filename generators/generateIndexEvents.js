@@ -17,11 +17,12 @@ const query = `query {
       timed
       summary
       category
+      searchMeta
       slug
-    tags {
-      title
-      slug
-    }
+      tags {
+        title
+        slug
+      }
       
     }
 }`;
@@ -49,7 +50,6 @@ axios
   .post("/graphql", { query, validateStatus: (status) => status === 200 })
   .then((res) => {
     let events = res.data.data.events;
-
     events = getUnifiedTags(events);
     events = events.map((e) => {
       let imagePath;
