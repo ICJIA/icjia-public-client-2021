@@ -82,6 +82,8 @@ import {
   GET_ALL_PROGRAMS_QUERY,
   GET_ALL_FUNDING_QUERY,
 } from "@/graphql/grants";
+// eslint-disable-next-line no-unused-vars
+import { getUnifiedTags } from "@/utils/content";
 import { renderToHtml } from "@/services/Markdown";
 import _ from "lodash";
 import NProgress from "nprogress";
@@ -235,15 +237,17 @@ export default {
         } else {
           //console.log(this.id);
 
-          this.allPrograms = _.orderBy(ApolloQueryResult.data.programs, [
+          let allPrograms = _.orderBy(ApolloQueryResult.data.programs, [
             "title",
           ]);
-          this.allPrograms = this.allPrograms.map((e) => ({
+
+          allPrograms = allPrograms.map((e) => ({
             ...e,
             fullPath: `/grants/programs/${e.slug}/`,
             contentType: "program",
           }));
 
+          this.allPrograms = allPrograms;
           this.filterPrograms();
           NProgress.done();
         }
