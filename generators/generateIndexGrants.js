@@ -40,13 +40,32 @@ const query = `query {
   }
 }`;
 
+const getUnifiedTags = function (content) {
+  content.forEach((item) => {
+    if (item.tagsAlt && item.tagsAlt.length) return content;
+    if (item.tags && item.tags.length > 0) {
+      let tagArray = [];
+      const tagValues = Object.values(item.tags);
+      tagValues.forEach((t) => {
+        tagArray.push(t.title);
+      });
+      // console.log(tagArray);
+      item.tagsAlt = item.tags;
+      item.tags = tagArray;
+    }
+  });
+  //console.log(content);
+  return content;
+};
+
 axios
   .create({ baseURL: "https://agency.icjia-api.cloud" })
   .post("/graphql", { query, validateStatus: (status) => status === 200 })
   .then((res) => {
     let grants = res.data.data.grants;
     let programs = res.data.data.programs;
-
+    grants = getUnifiedTags(grants);
+    programs = getUnifiedTags(programs);
     grants = grants.map((e) => ({
       ...e,
       fullPath: `/grants/funding/${e.slug}/`,

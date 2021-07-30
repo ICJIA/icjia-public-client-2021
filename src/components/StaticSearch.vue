@@ -47,7 +47,7 @@ export default {
   props: {
     threshold: {
       type: Number,
-      default: 0.4,
+      default: 0.3,
     },
     query: {
       type: String,

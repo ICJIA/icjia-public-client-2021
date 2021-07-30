@@ -1,7 +1,7 @@
 <template>
   <div>
     <StaticSearch
-      query="Events"
+      query="page"
       :threshold="0.3"
       class="mt-3"
       :hideBiography="false"

@@ -168,15 +168,77 @@
         <div v-else-if="item.contentType === 'event'">
           <div>
             <span style="font-weight: 700">
-              {{ item.category }} {{ item.contentType.toUpperCase() }}
+              {{ item.category.toUpperCase() }}
+              {{ item.contentType.toUpperCase() }}
             </span>
             | {{ item.start | dateFormatFull }}
-            {{ getEndText(item.start, item.end) }}
+            {{ getEndText(item.start, item.end, item.timed) }}
           </div>
           <div
             style="font-size: 16px; font-weight: bold"
             class="mt-2"
             v-html="item.title"
+          ></div>
+        </div>
+
+        <!-- ------------------------------------------------
+           Meetings 
+        -----------------------------------------------  -->
+        <div v-else-if="item.contentType === 'meeting'">
+          <div>
+            <span style="font-weight: 700"
+              >{{
+                getProperCategory(
+                  $myApp.config.maps.meetings,
+                  item.category
+                ).toUpperCase()
+              }}
+              MEETING</span
+            >
+            | {{ item.start | dateFormatFull }}
+            {{ getEndText(item.start, item.end, true) }}
+          </div>
+          <div
+            style="font-size: 16px; font-weight: bold"
+            class="mt-2"
+            v-html="item.title"
+          ></div>
+        </div>
+        <!-- ------------------------------------------------
+           Funding 
+        -----------------------------------------------  -->
+        <div v-else-if="item.contentType === 'funding'">
+          <div>
+            <span style="font-weight: 700">
+              {{ item.contentType.toUpperCase() }}
+            </span>
+            | {{ item.start | dateFormatFull }} to
+            {{ item.end | dateFormatFull }}
+            &nbsp;
+            <v-chip dark x-small v-if="isItExpired(item.end)" color="grey"
+              >Expired</v-chip
+            >
+          </div>
+          <div
+            style="font-size: 16px; font-weight: bold"
+            class="mt-2"
+            v-html="item.title"
+          ></div>
+        </div>
+        <!-- ------------------------------------------------
+           Page 
+        -----------------------------------------------  -->
+        <div v-else-if="item.contentType === 'page'">
+          <div>
+            <span style="font-weight: 700">
+              {{ item.contentType.toUpperCase() }}
+            </span>
+          </div>
+          <div
+            style="font-size: 16px; font-weight: bold"
+            class="mt-2"
+            v-html="item.title"
+            v-if="item.title"
           ></div>
         </div>
         <!-- ------------------------------------------------
@@ -231,15 +293,28 @@ export default {
     };
   },
   methods: {
+    isItExpired(expiration) {
+      //console.log(expiration);
+      let now = new Date();
+      let expired = new Date(expiration);
+      if (now > expired) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     getStartText(eventStart) {
       let start = moment(eventStart);
       return `${start.format("dddd, MMM DD, YYYY")}`;
     },
-    getEndText(eventStart, eventEnd) {
+    getEndText(eventStart, eventEnd, eventTimed) {
       let start = moment(eventStart);
       let end = moment(eventEnd);
       let days = end.diff(start, "days");
       let hours = end.diff(start, "hours");
+      if (!eventTimed) {
+        return ` | All Day`;
+      }
       if (days > 0) {
         return ` to ${end.format("dddd, MMM DD, YYYY")}`;
       } else {
