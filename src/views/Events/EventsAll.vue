@@ -394,6 +394,7 @@ export default {
           obj.hideFromList = true;
           obj.hideFromCalendar = false;
           obj.details = grant.details;
+          obj.contentType = "funding";
           obj.summary = grant.summary;
           return obj;
         });
@@ -414,6 +415,7 @@ export default {
           obj.hideFromList = true;
           obj.hideFromCalendar = false;
           obj.details = grant.details;
+          obj.contentType = "funding";
           obj.summary = grant.summary;
           return obj;
         });

@@ -57,20 +57,24 @@
            Funding 
         -----------------------------------------------  -->
         <div v-if="item.contentType === 'funding'">
-          <div>
-            <span style="font-weight: 700">
-              {{ item.contentType.toUpperCase() }}
-            </span>
-            | {{ item.startDate | dateFormatFull }} to
-            {{ item.endDate | dateFormatFull }}
-            &nbsp;
-            <v-chip dark x-small v-if="isItExpired(item.endDate)" color="grey"
+          <span style="font-weight: 700">
+            {{ item.contentType.toUpperCase() }}
+          </span>
+          | {{ item.startDate | dateFormatFull }} to
+          {{ item.endDate | dateFormatFull }}
+          &nbsp;
+          <span>
+            <v-chip
+              dark
+              x-small
+              v-if="isItExpired(item.endDate)"
+              color="red darken-2"
               >Expired</v-chip
             >
-            <!-- <v-chip dark small v-else color="grey"
+          </span>
+          <!-- <v-chip dark small v-else color="grey"
               >Deadline: {{ item.endDate | fromNow }}</v-chip
             > -->
-          </div>
         </div>
         <!-- ------------------------------------------------
            Meetings 
