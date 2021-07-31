@@ -20,7 +20,6 @@
 
           <div class="text-center mb-10">
             <h1 class="mb-6">ICJIA Events</h1>
-            Upcoming Only: {{ upcomingOnly }}
             <EventToggle
               @toggleEventView="toggleEventView"
               @toggleUpcoming="toggleUpcoming"
@@ -135,19 +134,20 @@ import { EventBus } from "@/event-bus";
 import { getUnifiedTags } from "@/utils/content";
 export default {
   watch: {
-    isLoading(newValue, oldValue) {
-      console.log(newValue, oldValue);
-      // if (!newValue) {
-      //   this.a11yfixes();
-      // }
-    },
-    // display(newValue, oldValue) {
-    //   if (newValue === "calendar") {
-    //     this.filterForDisplay();
-    //   }
-
+    // display(newValue) {
     //   if (newValue === "list") {
-    //     this.filterForDisplay();
+    //     this.filteredEvents = this.filteredEvents.filter((event) => {
+    //       if (!event.hideFromList) {
+    //         return true;
+    //       }
+    //     });
+    //   }
+    //   if (newValue === "calendar") {
+    //     this.filteredEvents = this.filteredEvents.filter((event) => {
+    //       if (!event.hideFromCalendar) {
+    //         return true;
+    //       }
+    //     });
     //   }
     // },
   },
@@ -156,6 +156,7 @@ export default {
       this.$refs.calendar.checkChange();
     }
   },
+
   updated() {
     //console.log("updated");
     if (this.$refs.calendar) {
@@ -178,7 +179,7 @@ export default {
     selectedID: null,
     selectedOpen: false,
     filteredEvents: [],
-    display: "list",
+    display: null,
     events: [],
     meetings: [],
     grants: [],
@@ -192,117 +193,29 @@ export default {
       await this.$nextTick();
     },
 
-    filterForDisplay() {
-      console.log("filter for display: ", this.display);
-      this.filteredEvents = this.allEvents.filter((event) => {
-        if (event.end >= new Date()) {
-          return event;
-        }
-      });
-      if (this.display === "list") {
-        this.filteredEvents = this.filteredEvents.filter((event) => {
-          if (!event.calendarOnly) {
-            return event;
-          }
-        });
-      }
-      if (this.display === "calendar") {
-        this.filteredEvents = this.filteredEvents.filter((event) => {
-          if (event.calendarOnly) {
-            return event;
-          }
-        });
-      }
-    },
     viewDay({ date }) {
       this.focus = date;
       this.type = "day";
     },
     toggleEventView(val) {
       this.display = val;
-      console.log("toggle", val);
-      if (this.display === "list") {
-        this.filteredEvents = this.allEvents.filter((event) => {
-          if (!event.calendarOnly) {
-            return event;
-          }
-        });
-      }
-      if (this.display === "calendar") {
-        this.filteredEvents = this.allEvents.filter((event) => {
-          if (event.calendarOnly) {
-            return event;
-          }
-        });
-      }
-      if (this.upcomingOnly) {
-        this.filteredEvents = this.filteredEvents.filter((event) => {
-          if (event.end >= new Date()) {
-            return event;
-          }
-        });
-      }
     },
+
     filterUpcoming() {
-      if (this.display === "list") {
-        this.filteredEvents = this.allEvents.filter((event) => {
-          if (!event.calendarOnly) {
-            return event;
-          }
-        });
-      }
-      if (this.display === "calendar") {
-        this.filteredEvents = this.allEvents.filter((event) => {
-          if (event.calendarOnly) {
-            return event;
-          }
-        });
-      }
-      this.filteredEvents = this.filteredEvents.filter((event) => {
-        if (event.end >= new Date()) {
+      let now = new Date();
+      let filteredEvents = this.allEvents.filter((event) => {
+        if (event.end >= now) {
           return event;
         }
       });
+      this.filteredEvents = filteredEvents;
     },
     toggleUpcoming(val) {
-      //console.log("upcoming only: ", val);
+      console.log("upcoming only: ", val);
       if (val) {
-        this.upcomingOnly = true;
-        if (this.display === "list") {
-          this.filteredEvents = this.allEvents.filter((event) => {
-            if (!event.calendarOnly) {
-              return event;
-            }
-          });
-        }
-        if (this.display === "calendar") {
-          this.filteredEvents = this.allEvents.filter((event) => {
-            if (event.calendarOnly) {
-              return event;
-            }
-          });
-        }
-        this.filteredEvents = this.filteredEvents.filter((event) => {
-          if (event.end >= new Date()) {
-            return event;
-          }
-        });
+        this.filterUpcoming();
       } else {
-        this.upcomingOnly = false;
-        if (this.display === "list") {
-          this.filteredEvents = this.allEvents.filter((event) => {
-            if (!event.calendarOnly) {
-              return event;
-            }
-          });
-        }
-        if (this.display === "calendar") {
-          this.filteredEvents = this.allEvents.filter((event) => {
-            if (event.calendarOnly) {
-              return event;
-            }
-          });
-        }
+        this.filteredEvents = this.allEvents;
       }
       this.$refs.calendar.checkChange();
     },
@@ -405,7 +318,8 @@ export default {
           event.show = false;
           event.fullPath = `/events/${event.slug}`;
           event.contentType = "event";
-          event.calendarOnly = false;
+          event.hideFromList = false;
+          event.hideFromCalendar = false;
           return event;
         });
         let meetings = ApolloQueryResult.data.meetings.map((meeting) => {
@@ -429,7 +343,8 @@ export default {
           meeting.show = false;
           meeting.fullPath = `/news/meetings/${meeting.slug}`;
           meeting.contentType = "meeting";
-          meeting.calendarOnly = false;
+          meeting.hideFromList = false;
+          meeting.hideFromCalendar = false;
           return meeting;
         });
         let grants = ApolloQueryResult.data.grants.map((grant) => {
@@ -447,13 +362,12 @@ export default {
           } else {
             grant.timed = false;
           }
-          grant.startDate = grant.start;
-          grant.endDate = grant.end;
           grant.color = "indigo darken-4";
           grant.show = false;
           grant.fullPath = `/grants/funding/${grant.slug}`;
           grant.contentType = "funding";
-          grant.calendarOnly = false;
+          grant.hideFromCalendar = true;
+          grant.hideFromList = false;
           return grant;
         });
 
@@ -461,19 +375,19 @@ export default {
           let obj = {};
           obj.startDate = grant.start;
           obj.endDate = grant.end;
-          obj.name = "NOFO STARTS: " + grant.name;
+          obj.name = "NOFO START: " + grant.name;
           obj.start = grant.start;
           obj.slug = grant.slug;
+          obj.category = grant.category;
           obj.end = grant.start;
           obj.timed = false;
           obj.color = "indigo darken-4";
           obj.show = false;
-          obj.category = grant.category;
           obj.fullPath = grant.fullPath;
-          obj.contentType = "funding";
-          obj.summary = grant.summary;
+          obj.hideFromList = true;
+          obj.hideFromCalendar = false;
           obj.details = grant.details;
-          obj.calendarOnly = true;
+          obj.summary = grant.summary;
           return obj;
         });
 
@@ -481,19 +395,19 @@ export default {
           let obj = {};
           obj.startDate = grant.start;
           obj.endDate = grant.end;
-          obj.name = "APPLICATION DEADLINE: " + grant.name;
-          obj.start = grant.end;
           obj.slug = grant.slug;
+          obj.category = grant.category;
+          obj.start = grant.end;
+          obj.name = "NOFO DEADLINE: " + grant.name;
           obj.end = grant.end;
           obj.timed = false;
           obj.color = "indigo darken-4";
           obj.show = false;
-          obj.category = grant.category;
           obj.fullPath = grant.fullPath;
-          obj.contentType = "funding";
-          obj.summary = grant.summary;
+          obj.hideFromList = true;
+          obj.hideFromCalendar = false;
           obj.details = grant.details;
-          obj.calendarOnly = true;
+          obj.summary = grant.summary;
           return obj;
         });
 
@@ -506,9 +420,21 @@ export default {
         ];
 
         allEvents = getUnifiedTags(allEvents);
+        // let calendarEvents = [...events, ...meetings, ...grants];
+        // this.calendarEvents = _.orderBy(calendarEvents, ["start"], ["asc"]);
         this.allEvents = _.orderBy(allEvents, ["start"], ["asc"]);
 
-        this.filterUpcoming();
+        let filteredEvents = this.allEvents.filter((event) => {
+          if (moment(event.end) >= moment(new Date())) {
+            return event;
+          }
+        });
+        this.filteredEvents = filteredEvents.filter((event) => {
+          if (!event.hideFromList) {
+            return true;
+          }
+        });
+        this.display = "list";
         this.isLoading = false;
         NProgress.done();
 
