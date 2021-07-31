@@ -60,7 +60,36 @@
             | {{ item.startDate | dateFormatFull }} to
             {{ item.endDate | dateFormatFull }}
             &nbsp;
+            <v-chip dark x-small v-if="isItExpired(item.endDate)" color="grey"
+              >Expired</v-chip
+            >
+            <!-- <v-chip dark small v-else color="grey"
+              >Deadline: {{ item.endDate | fromNow }}</v-chip
+            > -->
           </div>
+        </div>
+        <!-- ------------------------------------------------
+           Meetings 
+        -----------------------------------------------  -->
+        <div v-else-if="item.contentType === 'meeting'">
+          <div>
+            <span style="font-weight: 700"
+              >{{
+                getProperCategory(
+                  $myApp.config.maps.meetings,
+                  item.category
+                ).toUpperCase()
+              }}
+              MEETING</span
+            >
+            | {{ item.start | dateFormatFull }}
+            {{ getEndText(item.start, item.end, true) }}
+          </div>
+          <div
+            style="font-size: 16px; font-weight: bold"
+            class="mt-2"
+            v-html="item.title"
+          ></div>
         </div>
       </div>
 
@@ -108,6 +137,7 @@ const tz = require("moment-timezone");
 // import { handleClicks } from "@/mixins/handleClicks";
 import { renderToHtml } from "@/services/Markdown";
 import { isRelatedContent } from "@/utils/content";
+import { getProperCategory } from "@/utils/content";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 export default {
   data() {
@@ -115,6 +145,7 @@ export default {
       nanoid,
       show: false,
       isRelated: false,
+      getProperCategory,
     };
   },
   mounted() {
