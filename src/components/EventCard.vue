@@ -63,7 +63,7 @@
           | {{ item.startDate | dateFormatFull }} to
           {{ item.endDate | dateFormatFull }}
           &nbsp;
-          <span>
+          <!-- <span>
             <v-chip
               dark
               x-small
@@ -74,7 +74,7 @@
             <v-chip dark x-small v-else color="green"
               >Deadline: {{ item.endDate | dateFormatAlt }}</v-chip
             >
-          </span>
+          </span> -->
         </div>
         <!-- ------------------------------------------------
            Meetings 
