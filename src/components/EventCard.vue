@@ -71,10 +71,10 @@
               color="red darken-2"
               >Expired</v-chip
             >
+            <v-chip dark x-small v-else color="green"
+              >Deadline: {{ item.endDate | dateFormatAlt }}</v-chip
+            >
           </span>
-          <!-- <v-chip dark small v-else color="grey"
-              >Deadline: {{ item.endDate | fromNow }}</v-chip
-            > -->
         </div>
         <!-- ------------------------------------------------
            Meetings 

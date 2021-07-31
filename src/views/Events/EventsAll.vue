@@ -361,7 +361,8 @@ export default {
           grant.end = moment(grant.end)
             .tz(this.$myApp.config.timezone)
             .toDate();
-
+          grant.startDate = grant.start;
+          grant.endDate = grant.end;
           let localStart = moment(grant.start).tz(this.$myApp.config.timezone);
 
           if (!this.isItMultiday(grant.start, grant.end)) {
