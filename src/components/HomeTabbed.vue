@@ -46,17 +46,18 @@
                 >Expires on {{ grant.end | dateFormatAlt }}</v-chip
               > -->
               <div class="d-flex">
-                <span style="font-weight: 700; font-size: 16px; color: #666">
-                  {{ getCategory(grant.category) }}
-                </span>
-                <v-spacer></v-spacer>
-                <span style="font-size: 12px" class="hidden-sm-and-down">
+                <span style="font-weight: 700; font-size: 14px; color: #000">
+                  {{ getCategory(grant.category) }} </span
+                >&nbsp;|&nbsp;<span
+                  style="font-size: 14px"
+                  class="hidden-sm-and-down"
+                >
                   {{ grant.start | dateFormatAlt }} to
                   {{ grant.end | dateFormatAlt }}
                 </span>
               </div>
 
-              <h2 style="font-size: 18px" class="mt-3">{{ grant.title }}</h2>
+              <h2 style="font-size: 18px" class="mt-2">{{ grant.title }}</h2>
 
               <p style="font-size: 14px" class="mt-2">{{ grant.summary }}</p>
             </div>

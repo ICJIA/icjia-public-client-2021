@@ -76,10 +76,11 @@ const addOneDayToDate = function (date) {
 };
 // eslint-disable-next-line no-unused-vars
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
+
 import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
 import { EventBus } from "@/event-bus";
 import {
-  GET_ALL_PROGRAMS_QUERY,
+  // GET_ALL_PROGRAMS_QUERY,
   GET_ALL_FUNDING_QUERY,
 } from "@/graphql/grants";
 // eslint-disable-next-line no-unused-vars
@@ -214,45 +215,45 @@ export default {
         }
       },
     },
-    programs: {
-      prefetch: true,
+    // programs: {
+    //   prefetch: true,
 
-      query: GET_ALL_PROGRAMS_QUERY,
-      variables() {
-        return {};
-      },
-      error(error) {
-        this.error = JSON.stringify(error.message);
-        NProgress.done();
-      },
-      result(ApolloQueryResult) {
-        if (
-          ApolloQueryResult.data &&
-          ApolloQueryResult.data.programs.length > 0 === false
-        ) {
-          // eslint-disable-next-line no-unused-vars
-          this.$router.push("/404").catch((err) => {
-            console.log(err);
-          });
-        } else {
-          //console.log(this.id);
+    //   query: GET_ALL_PROGRAMS_QUERY,
+    //   variables() {
+    //     return {};
+    //   },
+    //   error(error) {
+    //     this.error = JSON.stringify(error.message);
+    //     NProgress.done();
+    //   },
+    //   result(ApolloQueryResult) {
+    //     if (
+    //       ApolloQueryResult.data &&
+    //       ApolloQueryResult.data.programs.length > 0 === false
+    //     ) {
+    //       // eslint-disable-next-line no-unused-vars
+    //       this.$router.push("/404").catch((err) => {
+    //         console.log(err);
+    //       });
+    //     } else {
+    //       //console.log(this.id);
 
-          let allPrograms = _.orderBy(ApolloQueryResult.data.programs, [
-            "title",
-          ]);
+    //       let allPrograms = _.orderBy(ApolloQueryResult.data.programs, [
+    //         "title",
+    //       ]);
 
-          allPrograms = allPrograms.map((e) => ({
-            ...e,
-            fullPath: `/grants/programs/${e.slug}/`,
-            contentType: "program",
-          }));
+    //       allPrograms = allPrograms.map((e) => ({
+    //         ...e,
+    //         fullPath: `/grants/programs/${e.slug}/`,
+    //         contentType: "program",
+    //       }));
 
-          this.allPrograms = allPrograms;
-          this.filterPrograms();
-          NProgress.done();
-        }
-      },
-    },
+    //       this.allPrograms = allPrograms;
+    //       this.filterPrograms();
+    //       NProgress.done();
+    //     }
+    //   },
+    // },
     grants: {
       prefetch: true,
 
@@ -280,6 +281,7 @@ export default {
             ["end"],
             ["desc"]
           );
+          this.allGrants = getUnifiedTags(this.allGrants);
           this.allGrants = this.allGrants.map((e) => ({
             ...e,
             fullPath: `/grants/funding/${e.slug}/`,
