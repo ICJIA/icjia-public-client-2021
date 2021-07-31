@@ -199,6 +199,7 @@ export default {
     },
     toggleEventView(val) {
       this.display = val;
+      console.log("toggle event view ", val);
     },
 
     filterUpcoming() {
