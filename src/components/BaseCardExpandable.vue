@@ -112,10 +112,10 @@
           </BasePropChip>
         </BasePropDisplay>
       </div>
-      <v-card-actions>
+      <v-card-actions class="mt-3">
         <v-btn
           small
-          text
+          outlined
           @click.stop.prevent="show = !show"
           v-if="item.attachments && item.attachments.length"
         >

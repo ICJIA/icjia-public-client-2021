@@ -34,12 +34,12 @@ export default {
       let queryResults = this.fuse.search(this.query);
       queryResults = _.orderBy(queryResults, ["category"], ["asc"]);
       let filteredQueryResults = queryResults.filter((result) => {
-        console.log(result.item.contentType);
-        if (this.hideBiography) {
-          if (result.item.contentType !== "biography") return result;
-        } else {
-          return result;
-        }
+        let currentPath = this.$route.fullPath;
+        currentPath += currentPath.endsWith("/") ? "" : "/";
+        let searchResultPath = result.item.fullPath;
+        searchResultPath += searchResultPath.endsWith("/") ? "" : "/";
+        if (currentPath !== searchResultPath) return result;
+        //console.log(currentPath === searchResultPath);
       });
       this.queryResults = filteredQueryResults;
     },
