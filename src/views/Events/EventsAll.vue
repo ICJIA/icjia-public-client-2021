@@ -77,7 +77,7 @@
                 ref="calendar"
                 v-model="focus"
                 color="primary"
-                :events="filteredEvents"
+                :events="filterDisplay()"
                 :event-color="getEventColor"
                 :type="type"
                 @change="change"
@@ -103,8 +103,8 @@
           </div>
           <div v-show="display === 'list'">
             <div
-              v-for="(event, index) in filteredEvents"
-              :key="index + new Date()"
+              v-for="(event, index) in filterDisplay()"
+              :key="`${index}${nanoid()}`"
               class="mb-8"
             >
               <EventCard
@@ -133,24 +133,7 @@ const tz = require("moment-timezone");
 import { EventBus } from "@/event-bus";
 import { getUnifiedTags } from "@/utils/content";
 export default {
-  watch: {
-    // display(newValue) {
-    //   if (newValue === "list") {
-    //     this.filteredEvents = this.filteredEvents.filter((event) => {
-    //       if (!event.hideFromList) {
-    //         return true;
-    //       }
-    //     });
-    //   }
-    //   if (newValue === "calendar") {
-    //     this.filteredEvents = this.filteredEvents.filter((event) => {
-    //       if (!event.hideFromCalendar) {
-    //         return true;
-    //       }
-    //     });
-    //   }
-    // },
-  },
+  watch: {},
   async mounted() {
     if (this.$refs.calendar) {
       this.$refs.calendar.checkChange();
@@ -167,7 +150,7 @@ export default {
     nanoid,
     focus: "",
     error: "",
-    upcomingOnly: true,
+    upcomingOnly: null,
     type: "month",
     typeToLabel: {
       month: "Month",
@@ -188,8 +171,43 @@ export default {
     isLoading: true,
   }),
   methods: {
+    filterDisplay() {
+      // console.log(
+      //   "filter for: ",
+      //   this.display,
+      //   " upcomingOnly: ",
+      //   this.upcomingOnly
+      // );
+      let newItems;
+      if (this.display === "list") {
+        newItems = this.allEvents.filter((item) => {
+          if (!item.hideFromList) {
+            return item;
+          }
+        });
+      }
+
+      if (this.display === "calendar") {
+        newItems = this.allEvents.filter((item) => {
+          if (!item.hideFromCalendar) {
+            return item;
+          }
+        });
+      }
+      let filteredNewItems;
+      if (this.upcomingOnly) {
+        filteredNewItems = newItems.filter((item) => {
+          if (item.end >= new Date()) {
+            return item;
+          }
+        });
+        return filteredNewItems;
+      } else {
+        return newItems;
+      }
+    },
     async change() {
-      console.log("change here");
+      //console.log("change here");
       await this.$nextTick();
     },
 
@@ -199,25 +217,13 @@ export default {
     },
     toggleEventView(val) {
       this.display = val;
-      console.log("toggle event view ", val);
+      // console.log("toggle event view ", val);
     },
 
-    filterUpcoming() {
-      let now = new Date();
-      let filteredEvents = this.allEvents.filter((event) => {
-        if (event.end >= now) {
-          return event;
-        }
-      });
-      this.filteredEvents = filteredEvents;
-    },
     toggleUpcoming(val) {
-      console.log("upcoming only: ", val);
-      if (val) {
-        this.filterUpcoming();
-      } else {
-        this.filteredEvents = this.allEvents;
-      }
+      //console.log("upcoming only: ", val);
+      this.upcomingOnly = val;
+      this.filterDisplay(this.display, val);
       this.$refs.calendar.checkChange();
     },
     getEventColor(event) {
@@ -425,17 +431,8 @@ export default {
         // this.calendarEvents = _.orderBy(calendarEvents, ["start"], ["asc"]);
         this.allEvents = _.orderBy(allEvents, ["start"], ["asc"]);
 
-        let filteredEvents = this.allEvents.filter((event) => {
-          if (moment(event.end) >= moment(new Date())) {
-            return event;
-          }
-        });
-        this.filteredEvents = filteredEvents.filter((event) => {
-          if (!event.hideFromList) {
-            return true;
-          }
-        });
         this.display = "list";
+        this.upcomingOnly = true;
         this.isLoading = false;
         NProgress.done();
 

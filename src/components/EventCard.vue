@@ -48,10 +48,10 @@
           >link</v-icon
         
       </div> -->
-      hide from calendar: {{ item.hideFromCalendar }}
+      <!-- hide from calendar: {{ item.hideFromCalendar }}
       <br />
       hide from list: {{ item.hideFromList }}
-      <br />
+      <br /> -->
       <div style="font-size: 14px" class="mt-2 pl-3">
         <!-- ------------------------------------------------
            Funding 
