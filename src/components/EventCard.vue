@@ -22,7 +22,7 @@
         >
       </v-toolbar>
 
-      <div style="font-size: 16px" class="px-3 py-3">
+      <!-- <div style="font-size: 16px" class="px-3 py-3">
         <span style="color: #333; font-weight: bold">{{
           item.category | upperCase
         }}</span>
@@ -46,9 +46,30 @@
         >&nbsp;&nbsp;&nbsp;<span v-if="showURL">|&nbsp;</span>
         <v-icon v-if="showURL" @click="$router.push(`${item.fullPath}/`)"
           >link</v-icon
-        >
+        
+      </div> -->
+      <div style="font-size: 14px" class="mt-2 pl-3">
+        <!-- ------------------------------------------------
+           Funding 
+        -----------------------------------------------  -->
+        <div v-if="item.contentType === 'funding'">
+          <div>
+            <span style="font-weight: 700">
+              {{ item.contentType.toUpperCase() }}
+            </span>
+            | {{ item.startDate | dateFormatFull }} to
+            {{ item.endDate | dateFormatFull }}
+            &nbsp;
+          </div>
+        </div>
       </div>
-      <div class="py-3 px-3" v-if="item.details">
+
+      <!-- <div
+        style="font-size: 16px; font-weight: bold"
+        class="mt-2"
+        v-html="item.title"
+      ></div> -->
+      <div class="py-0 px-3" v-if="item.details">
         <div class="pl-2" style="margin-top: 10px">
           <div v-html="render(item.details)"></div>
         </div>
@@ -102,6 +123,34 @@ export default {
     attachSearchEvents(this);
   },
   methods: {
+    isItExpired(expiration) {
+      //console.log(expiration);
+      let now = new Date();
+      let expired = new Date(expiration);
+      if (now > expired) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    getStartText(eventStart) {
+      let start = moment(eventStart);
+      return `${start.format("dddd, MMM DD, YYYY")}`;
+    },
+    getEndText(eventStart, eventEnd, eventTimed) {
+      let start = moment(eventStart);
+      let end = moment(eventEnd);
+      let days = end.diff(start, "days");
+      let hours = end.diff(start, "hours");
+      if (!eventTimed) {
+        return ` | All Day`;
+      }
+      if (days > 0) {
+        return ` to ${end.format("dddd, MMM DD, YYYY")}`;
+      } else {
+        return ` | ${start.format("hh:mm A")} to ${end.format("hh:mm A")}`;
+      }
+    },
     getColor(item) {
       let color = "#0d4474";
       if (this.$myApp.config.events[item.category] && this.showColor) {

@@ -73,7 +73,7 @@ export default {
     toggle(e) {
       this.view = e;
       // console.log('view: ', this.view)
-      this.resize();
+      //this.resize();
     },
   },
   mounted() {

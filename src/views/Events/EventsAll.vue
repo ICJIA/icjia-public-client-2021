@@ -20,6 +20,7 @@
 
           <div class="text-center mb-10">
             <h1 class="mb-6">ICJIA Events</h1>
+            Upcoming Only: {{ upcomingOnly }}
             <EventToggle
               @toggleEventView="toggleEventView"
               @toggleUpcoming="toggleUpcoming"
@@ -140,6 +141,15 @@ export default {
       //   this.a11yfixes();
       // }
     },
+    // display(newValue, oldValue) {
+    //   if (newValue === "calendar") {
+    //     this.filterForDisplay();
+    //   }
+
+    //   if (newValue === "list") {
+    //     this.filterForDisplay();
+    //   }
+    // },
   },
   async mounted() {
     if (this.$refs.calendar) {
@@ -180,34 +190,119 @@ export default {
     async change() {
       console.log("change here");
       await this.$nextTick();
-      // this.a11yfixes();
     },
-    // a11yfixes() {
-    //   console.log("a11y fixes here");
-    //   fixButtonText("mdi-chevron-right", "Click to move forward");
-    //   fixButtonText("mdi-chevron-left", "Click to move previous");
-    // },
+
+    filterForDisplay() {
+      console.log("filter for display: ", this.display);
+      this.filteredEvents = this.allEvents.filter((event) => {
+        if (event.end >= new Date()) {
+          return event;
+        }
+      });
+      if (this.display === "list") {
+        this.filteredEvents = this.filteredEvents.filter((event) => {
+          if (!event.calendarOnly) {
+            return event;
+          }
+        });
+      }
+      if (this.display === "calendar") {
+        this.filteredEvents = this.filteredEvents.filter((event) => {
+          if (event.calendarOnly) {
+            return event;
+          }
+        });
+      }
+    },
     viewDay({ date }) {
       this.focus = date;
       this.type = "day";
     },
     toggleEventView(val) {
       this.display = val;
+      console.log("toggle", val);
+      if (this.display === "list") {
+        this.filteredEvents = this.allEvents.filter((event) => {
+          if (!event.calendarOnly) {
+            return event;
+          }
+        });
+      }
+      if (this.display === "calendar") {
+        this.filteredEvents = this.allEvents.filter((event) => {
+          if (event.calendarOnly) {
+            return event;
+          }
+        });
+      }
+      if (this.upcomingOnly) {
+        this.filteredEvents = this.filteredEvents.filter((event) => {
+          if (event.end >= new Date()) {
+            return event;
+          }
+        });
+      }
     },
     filterUpcoming() {
-      let now = new Date();
-      this.filteredEvents = this.allEvents.filter((event) => {
-        if (event.end >= now) {
+      if (this.display === "list") {
+        this.filteredEvents = this.allEvents.filter((event) => {
+          if (!event.calendarOnly) {
+            return event;
+          }
+        });
+      }
+      if (this.display === "calendar") {
+        this.filteredEvents = this.allEvents.filter((event) => {
+          if (event.calendarOnly) {
+            return event;
+          }
+        });
+      }
+      this.filteredEvents = this.filteredEvents.filter((event) => {
+        if (event.end >= new Date()) {
           return event;
         }
       });
     },
     toggleUpcoming(val) {
-      console.log("upcoming only: ", val);
+      //console.log("upcoming only: ", val);
       if (val) {
-        this.filterUpcoming();
+        this.upcomingOnly = true;
+        if (this.display === "list") {
+          this.filteredEvents = this.allEvents.filter((event) => {
+            if (!event.calendarOnly) {
+              return event;
+            }
+          });
+        }
+        if (this.display === "calendar") {
+          this.filteredEvents = this.allEvents.filter((event) => {
+            if (event.calendarOnly) {
+              return event;
+            }
+          });
+        }
+        this.filteredEvents = this.filteredEvents.filter((event) => {
+          if (event.end >= new Date()) {
+            return event;
+          }
+        });
       } else {
-        this.filteredEvents = this.allEvents;
+        this.upcomingOnly = false;
+        if (this.display === "list") {
+          this.filteredEvents = this.allEvents.filter((event) => {
+            if (!event.calendarOnly) {
+              return event;
+            }
+          });
+        }
+        if (this.display === "calendar") {
+          this.filteredEvents = this.allEvents.filter((event) => {
+            if (event.calendarOnly) {
+              return event;
+            }
+          });
+        }
       }
       this.$refs.calendar.checkChange();
     },
@@ -310,6 +405,7 @@ export default {
           event.show = false;
           event.fullPath = `/events/${event.slug}`;
           event.contentType = "event";
+          event.calendarOnly = false;
           return event;
         });
         let meetings = ApolloQueryResult.data.meetings.map((meeting) => {
@@ -333,6 +429,7 @@ export default {
           meeting.show = false;
           meeting.fullPath = `/news/meetings/${meeting.slug}`;
           meeting.contentType = "meeting";
+          meeting.calendarOnly = false;
           return meeting;
         });
         let grants = ApolloQueryResult.data.grants.map((grant) => {
@@ -350,44 +447,65 @@ export default {
           } else {
             grant.timed = false;
           }
+          grant.startDate = grant.start;
+          grant.endDate = grant.end;
           grant.color = "indigo darken-4";
           grant.show = false;
           grant.fullPath = `/grants/funding/${grant.slug}`;
-          grant.contentType = "grant";
+          grant.contentType = "funding";
+          grant.calendarOnly = false;
           return grant;
         });
 
-        // let GrantStartEvents = grants.map((grant) => {
-        //   let obj = {};
-        //   obj.name = grant.name;
-        //   obj.start = grant.start;
-        //   obj.end = grant.start;
-        //   obj.timed = false;
-        //   obj.color = "indigo darken-4";
-        //   obj.show = false;
-        //   obj.fullPath = grant.fullPath;
-        //   obj.contentType = "grant";
-        //   return obj;
-        // });
+        let grantStartEvents = grants.map((grant) => {
+          let obj = {};
+          obj.startDate = grant.start;
+          obj.endDate = grant.end;
+          obj.name = "NOFO STARTS: " + grant.name;
+          obj.start = grant.start;
+          obj.slug = grant.slug;
+          obj.end = grant.start;
+          obj.timed = false;
+          obj.color = "indigo darken-4";
+          obj.show = false;
+          obj.category = grant.category;
+          obj.fullPath = grant.fullPath;
+          obj.contentType = "funding";
+          obj.summary = grant.summary;
+          obj.details = grant.details;
+          obj.calendarOnly = true;
+          return obj;
+        });
 
-        // let GrantEndEvents = grants.map((grant) => {
-        //   let obj = {};
-        //   obj.start = grant.end;
-        //   obj.name = grant.name;
-        //   obj.end = grant.end;
-        //   obj.timed = false;
-        //   obj.color = "indigo darken-4";
-        //   obj.show = false;
-        //   obj.fullPath = grant.fullPath;
-        //   obj.contentType = "grant";
-        //   return obj;
-        // });
+        let grantEndEvents = grants.map((grant) => {
+          let obj = {};
+          obj.startDate = grant.start;
+          obj.endDate = grant.end;
+          obj.name = "APPLICATION DEADLINE: " + grant.name;
+          obj.start = grant.end;
+          obj.slug = grant.slug;
+          obj.end = grant.end;
+          obj.timed = false;
+          obj.color = "indigo darken-4";
+          obj.show = false;
+          obj.category = grant.category;
+          obj.fullPath = grant.fullPath;
+          obj.contentType = "funding";
+          obj.summary = grant.summary;
+          obj.details = grant.details;
+          obj.calendarOnly = true;
+          return obj;
+        });
 
-        let allEvents = [...events, ...meetings, ...grants];
+        let allEvents = [
+          ...events,
+          ...meetings,
+          ...grants,
+          ...grantStartEvents,
+          ...grantEndEvents,
+        ];
 
         allEvents = getUnifiedTags(allEvents);
-        // let calendarEvents = [...events, ...meetings, ...grants];
-        // this.calendarEvents = _.orderBy(calendarEvents, ["start"], ["asc"]);
         this.allEvents = _.orderBy(allEvents, ["start"], ["asc"]);
 
         this.filterUpcoming();

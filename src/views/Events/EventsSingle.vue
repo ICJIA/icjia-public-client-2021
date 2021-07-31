@@ -87,7 +87,8 @@ export default {
             event.end = moment(event.end)
               .tz(this.$myApp.config.timezone)
               .toDate();
-
+            event.startDate = event.start;
+            event.endDate = event.end;
             event.color = "green darken-4";
             event.show = false;
             event.fullPath = `/events/${event.slug}`;
