@@ -47,7 +47,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.attachment-link {
-}
-</style>
+<style lang="scss" scoped></style>
