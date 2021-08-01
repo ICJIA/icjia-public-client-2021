@@ -20,31 +20,31 @@
               </div>
               <h1 v-html="render(news.title)" style="margin-top: 15px"></h1>
               <div v-html="render(news.body)"></div>
-              <div class="my-5">
+              <BasePropDisplay v-if="news.tags" name="">
+                <BasePropChip v-for="tag in news.tags" :key="tag" class="mt-0">
+                  <template>{{ tag }}</template>
+                </BasePropChip>
+              </BasePropDisplay>
+              <div class="my-5 mt-12">
                 <AttachmentList
                   :items="news.attachments"
                   v-if="news.attachments && news.attachments.length"
                   class="mt-8 pl-3"
                   :key="news.slug"
-                  title="Attachments"
+                  :label="
+                    news.attachmentLabel && news.attachmentLabel.length
+                      ? news.attachmentLabel
+                      : ''
+                  "
                 ></AttachmentList>
                 <RelatedList
                   :content="news"
                   title="Related Web Content"
-                  class="mt-5"
+                  class="mt-10"
                   v-if="isRelated"
                   background="white"
                   indentation="ml-4 px-0 py-0"
                 ></RelatedList>
-                <BasePropDisplay v-if="news.tags" name="">
-                  <BasePropChip
-                    v-for="tag in news.tags"
-                    :key="tag"
-                    class="mt-8"
-                  >
-                    <template>{{ tag }}</template>
-                  </BasePropChip>
-                </BasePropDisplay>
               </div>
             </v-col>
             <v-col

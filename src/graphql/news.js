@@ -41,6 +41,7 @@ const GET_SINGLE_POST_QUERY = gql`
       updated_at
       category
       published_at
+      attachmentLabel
       attachments {
         name
         url

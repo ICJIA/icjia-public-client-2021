@@ -7,9 +7,9 @@
         padding-bottom: 8px;
         text-transform: uppercase;
       "
-      v-if="title && title.length"
     >
-      {{ title }}
+      <span v-if="label && label.length"> {{ label }}</span
+      ><span v-else>Attachments</span>
     </div>
     <ul v-for="(attachment, index) in attachments" :key="index" class="mt-6">
       <li class="attachment-link">
@@ -35,9 +35,9 @@ export default {
     this.attachments = _.orderBy(this.items, "name", "asc");
   },
   props: {
-    title: {
+    label: {
       type: String,
-      default: "",
+      default: null,
     },
     items: {
       type: Array,

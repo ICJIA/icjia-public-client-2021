@@ -16,7 +16,6 @@
           v-if="item.attachments && item.attachments.length"
           class="mt-8 pl-3"
           :key="item.slug"
-          title="Attachments"
         ></AttachmentList>
         <RelatedList
           :content="item"

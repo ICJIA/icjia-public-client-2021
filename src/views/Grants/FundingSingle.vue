@@ -34,7 +34,6 @@
                     v-if="funding.attachments && funding.attachments.length"
                     class="mt-8 pl-3"
                     :key="funding.slug"
-                    title="Attachments"
                   ></AttachmentList>
                   <RelatedList
                     :content="funding"
