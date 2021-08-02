@@ -11,6 +11,7 @@
                 :openSearch="true"
                 :showLink="false"
                 :showReadMore="false"
+                :isClickable="false"
               ></JobCard>
             </v-col>
           </v-row>

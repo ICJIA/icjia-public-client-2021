@@ -2,10 +2,12 @@
   <div>
     <v-card
       :elevation="elevation"
-      class="pt-8 px-3 card"
-      @click="routeTo(item.fullPath)"
+      class="pt-8 px-3"
+      @click="isClickable ? routeTo(item.fullPath) : null"
       color="#fff"
       style="border: 1px solid #ddd"
+      :class="{ card: isClickable }"
+      :ripple="isClickable ? true : false"
     >
       <div
         class="d-flex mb-8"
@@ -96,8 +98,28 @@
             <template>{{ tag }}</template>
           </BasePropChip>
         </BasePropDisplay>
+        <AttachmentList
+          :items="item.attachments"
+          v-if="item.attachments && item.attachments.length"
+          class="mt-8 pl-3"
+          :key="item.slug"
+        ></AttachmentList>
+        <ExternalLinksList
+          :items="item.external"
+          v-if="item.external && item.external.length"
+          class="mt-8 pl-3"
+          :key="item.url"
+        ></ExternalLinksList>
+        <RelatedList
+          :content="item"
+          title="Related ICJIA Content"
+          class="mt-12"
+          v-if="isRelated"
+          background="grey lighten-4"
+          indentation="px-3 py-3"
+        ></RelatedList>
       </div>
-      <v-card-actions class="mt-3">
+      <!-- <v-card-actions class="mt-3">
         <v-btn
           small
           outlined
@@ -113,7 +135,7 @@
         <v-btn small :to="item.fullPath" v-if="showReadMore"
           >Read More&nbsp;&raquo;</v-btn
         >
-      </v-card-actions>
+      </v-card-actions> -->
 
       <v-expand-transition>
         <div v-show="show" class="pl-3 pr-3">
@@ -157,6 +179,7 @@ export default {
     return {
       show: false,
       addOneDayToDate,
+      isRelated: false,
     };
   },
   methods: {
@@ -203,6 +226,10 @@ export default {
     elevation: {
       type: Number,
       default: 0,
+    },
+    isClickable: {
+      type: Boolean,
+      default: true,
     },
   },
 };
