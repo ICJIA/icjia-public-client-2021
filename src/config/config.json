@@ -110,6 +110,28 @@
                 "label": "Media Advisory",
                 "text": ""
             }
+        ],
+        "jobs": [
+            {
+                "category": "contract",
+                "label": "Contract",
+                "text": ""
+            },
+            {
+                "category": "fullTime",
+                "label": "Full Time",
+                "text": ""
+            },
+            {
+                "category": "internship",
+                "label": "Internship",
+                "text": ""
+            },
+            {
+                "category": "partTime",
+                "label": "Part Time",
+                "text": ""
+            }
         ]
     },
     "search": {

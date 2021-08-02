@@ -13,8 +13,11 @@
         class="d-flex mb-8"
         style="text-transform: uppercase; font-weight: 900; margin-top: -10px"
       >
-        <span style="font-size: 14px; color: #666"
+        <!-- <span style="font-size: 14px; color: #666"
           >{{ item.category }} EMPLOYMENT</span
+        > -->
+        <span class="" style="font-size: 16px"
+          >{{ getCategory(item.category).toUpperCase() }} EMPLOYMENT</span
         >
 
         <v-spacer></v-spacer>
@@ -69,7 +72,11 @@
         >
       </div>
       <div
-        v-if="item.start && item.end"
+        v-if="
+          item.start &&
+          item.end &&
+          new Date(addOneDayToDate(item.end)) >= new Date()
+        "
         class="mb-3 mt-3"
         style="font-size: 12px; font-weight: 900"
       >
@@ -88,7 +95,7 @@
         v-html="render(item.body)"
         class="pl-3 pt-3"
       ></div>
-      <div class="ml-2">
+      <div class="ml-2" v-if="!summaryOnly">
         <BasePropDisplay v-if="item.tags" name="">
           <BasePropChip
             v-for="(tag, index) in item.tags"
@@ -104,12 +111,12 @@
           class="mt-8 pl-3"
           :key="item.slug"
         ></AttachmentList>
-        <ExternalLinksList
+        <ExternalLinkList
           :items="item.external"
           v-if="item.external && item.external.length"
           class="mt-8 pl-3"
           :key="item.url"
-        ></ExternalLinksList>
+        ></ExternalLinkList>
         <RelatedList
           :content="item"
           title="Related ICJIA Content"
@@ -166,7 +173,7 @@ const addOneDayToDate = function (date) {
 };
 import { renderToHtml } from "@/services/Markdown";
 import { EventBus } from "@/event-bus";
-import { isRelatedContent } from "@/utils/content";
+import { isRelatedContent, getProperCategory } from "@/utils/content";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 export default {
   mounted() {
@@ -183,6 +190,9 @@ export default {
     };
   },
   methods: {
+    getCategory(category) {
+      return getProperCategory(this.$myApp.config.maps.jobs, category);
+    },
     routeTo(fullPath) {
       if (!fullPath) return;
       this.$router.push(fullPath);
