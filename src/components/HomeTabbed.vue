@@ -77,27 +77,27 @@
                 :class="{ 'rule-top': index > 0 }"
                 @click="routeTo(job.fullPath)"
               >
-                <v-chip
-                  small
-                  v-if="isItExpired(job.end)"
-                  class="mr-1"
-                  color="grey lighten-2"
-                  style="font-weight: 700"
-                  >Expired</v-chip
-                >
-                <!-- <v-chip
-                  small
-                  dark
-                  v-if="!isItExpired(job.end)"
-                  class="mr-1"
-                  :color="getColor(job.start, job.end)"
-                  style="font-weight: 700"
-                  >Expires {{ job.end | fromNow }}</v-chip
-                > -->
                 <span style="font-weight: 700; font-size: 16px; color: #666">
                   Employment Opportunity
                 </span>
+                <span v-if="isItExpired(job.end)">
+                  &nbsp;|&nbsp;
+                  <v-chip
+                    x-small
+                    class="mr-1"
+                    color="grey lighten-2"
+                    style="font-weight: 700"
+                    >Expired</v-chip
+                  >
+                </span>
+                <span
+                  v-if="!isItExpired(job.end)"
+                  style="font-size: 14px; font-weight: 400"
+                  >&nbsp;|&nbsp; {{ job.start | dateFormatAlt }} to
+                  {{ job.end | dateFormatAlt }}
+                </span>
                 <h2 class="mt-2">{{ job.title }}</h2>
+
                 <p>{{ job.summary }}</p>
               </v-card>
             </div>
