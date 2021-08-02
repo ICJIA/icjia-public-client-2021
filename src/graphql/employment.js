@@ -34,7 +34,7 @@ const GET_ALL_JOBS_QUERY = gql`
 `;
 
 const GET_SINGLE_JOB_QUERY = gql`
-  query allJobs($slug: String!) {
+  query singleJob($slug: String!) {
     jobs(where: { slug: $slug }) {
       id
       updated_at
