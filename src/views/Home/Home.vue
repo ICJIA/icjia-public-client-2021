@@ -144,7 +144,7 @@ export default {
           now: new Date(),
           eventLimit: 3,
           postLimit: 4,
-          fundingLimit: 3,
+          fundingLimit: 4,
           meetingLimit: 4,
           employmentLimit: 4,
         };
