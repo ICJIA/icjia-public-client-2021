@@ -164,6 +164,7 @@ import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 export default {
   mounted() {
     attachInternalLinks(this);
+
     attachSearchEvents(this);
     this.isRelated = isRelatedContent(this.item);
   },
@@ -216,7 +217,7 @@ export default {
     },
     elevation: {
       type: Number,
-      default: 2,
+      default: 0,
     },
   },
 };

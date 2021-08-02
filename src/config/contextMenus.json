@@ -27,10 +27,6 @@
                 "path": "/grants/funding/"
             },
             {
-                "label": "Workshops",
-                "path": "/grants/workshops/"
-            },
-            {
                 "label": "Technical Assistance",
                 "path": "/grants/technical-assistance/"
             }

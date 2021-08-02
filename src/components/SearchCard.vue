@@ -75,6 +75,13 @@
 
             <div v-if="item.position">
               <span
+                v-if="item.unit.title"
+                style="font-weight: 700"
+                @click.stop.prevent="search(item.unit.title)"
+              >
+                {{ item.unit.title }}&nbsp;|&nbsp;
+              </span>
+              <span
                 style="font-size: 14px"
                 class=""
                 v-html="item.position"

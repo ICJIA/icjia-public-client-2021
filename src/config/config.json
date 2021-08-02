@@ -182,6 +182,10 @@
                 {
                     "name": "abstract",
                     "weight": 2
+                },
+                {
+                    "name": "unit.title",
+                    "weight": 2
                 }
             ]
         }

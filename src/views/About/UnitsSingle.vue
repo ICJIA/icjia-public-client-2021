@@ -3,7 +3,7 @@
     <v-container
       ><r-row
         ><v-col>
-          <div v-if="unit">
+          <div v-if="unit" style="border: 1px solid #ccc">
             <UnitCard :item="unit[0]" :shortName="unit[0].shortName"></UnitCard>
           </div>
           <div v-else>

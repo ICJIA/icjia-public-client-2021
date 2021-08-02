@@ -9,13 +9,13 @@
                 <v-col cols="12" :md="page && page.showTOC ? 9 : 12">
                   <h1 v-html="render(page.title)"></h1>
                   <div v-html="render(page.body)"></div>
-                  <h2 id="current-employment-opportunities">
+                  <h2 id="current-icjia-opportunities">
                     Employment Opportunities
                   </h2>
                   <div class="text-left">
                     <v-btn-toggle
                       mandatory
-                      v-model="toggle_nofoStatus"
+                      v-model="toggle_employmentStatus"
                       class="mb-10"
                     >
                       <v-btn small elevation="1" class="button-weight">
@@ -28,19 +28,19 @@
                     </v-btn-toggle>
                   </div>
 
-                  <div
-                    v-for="grant in filteredAndSortedGrants"
-                    :key="grant.id"
+                  <!-- <div
+                    v-for="job in filteredAndSortedEmployment"
+                    :key="job.id"
                     class="mb-6"
                   >
                     <BaseCardExpandable
-                      :item="grant"
+                      :item="job"
                       :summaryOnly="true"
                       :openSearch="false"
                       :showLink="false"
                       :showReadMore="true"
                     ></BaseCardExpandable>
-                  </div>
+                  </div> -->
                   <div>
                     <ClickthroughBoxes
                       :boxes="page.clickthrough"
@@ -54,12 +54,7 @@
                   md="3"
                   class="px-3 hidden-sm-and-down"
                   ><Toc :key="page.title" :tocHeading="page.title"></Toc>
-                  <div
-                    v-for="grant in filteredAndSortedGrants"
-                    :key="grant.id"
-                    class="mb-6"
-                  ></div
-                ></v-col>
+                </v-col>
               </v-row>
             </v-container>
           </template>
@@ -80,10 +75,7 @@ import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 
 import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
 import { EventBus } from "@/event-bus";
-import {
-  // GET_ALL_PROGRAMS_QUERY,
-  GET_ALL_FUNDING_QUERY,
-} from "@/graphql/grants";
+
 // eslint-disable-next-line no-unused-vars
 import { getUnifiedTags } from "@/utils/content";
 import { renderToHtml } from "@/services/Markdown";
@@ -96,94 +88,62 @@ export default {
       contentLoading: true,
       page: null,
       error: null,
-      allPrograms: null,
-      allGrants: null,
-      filteredAndSortedPrograms: [],
-      filteredAndSortedGrants: [],
+      allEmployment: null,
+      filteredAndSortedEmployment: [],
       category: "all",
       toggle_category: 0,
-      toggle_status: 0,
-      toggle_nofoStatus: 0,
+      toggle_employmentStatus: 0,
       status: "current",
     };
   },
   watch: {
-    toggle_category(newVal) {
-      if (newVal === 0) {
-        this.category = "all";
-        this.filterPrograms();
-      }
-      if (newVal === 1) {
-        this.category = "federal";
-        this.filterPrograms();
-      }
-      if (newVal === 2) {
-        this.category = "state";
-        this.filterPrograms();
-      }
-    },
     toggle_status(newVal) {
       if (newVal === 0) {
         this.status = "current";
-        this.filterPrograms();
+        this.filterEmployment();
       }
       if (newVal === 1) {
         this.status = "archived";
-        this.filterPrograms();
-      }
-    },
-    toggle_nofoStatus(newVal) {
-      if (newVal === 0) {
-        this.filterGrants("current");
-      }
-      if (newVal === 1) {
-        this.status = "archived";
-        this.filterGrants("expired");
+        this.filterEmployment();
       }
     },
   },
   async mounted() {
     NProgress.start();
     //console.log("fetch here");
-    EventBus.$emit("context-label", "Home");
+    EventBus.$emit("context-label", "Employment");
   },
   methods: {
     render(content) {
       return renderToHtml(content);
     },
-    filterGrants(status) {
+    filterEmployment(status) {
       if (status === "current") {
-        this.filteredAndSortedGrants = _.filter(this.allGrants, (grant) => {
-          if (new Date(addOneDayToDate(grant.end)) > new Date()) {
-            return grant;
+        this.filteredAndSortedEmployment = _.filter(
+          this.allEmployment,
+          (job) => {
+            if (new Date(addOneDayToDate(job.end)) > new Date()) {
+              return job;
+            }
           }
-        });
+        );
       }
       if (status === "expired") {
-        this.filteredAndSortedGrants = _.filter(this.allGrants, (grant) => {
-          if (new Date(addOneDayToDate(grant.end)) < new Date()) {
-            return grant;
+        this.filteredAndSortedEmployment = _.filter(
+          this.allEmployment,
+          (job) => {
+            if (new Date(addOneDayToDate(job.end)) < new Date()) {
+              return job;
+            }
           }
-        });
+        );
       }
-    },
-    filterPrograms() {
-      this.filteredAndSortedPrograms = this.allPrograms.filter((program) => {
-        if (this.category === "all") {
-          return (this.filteredAndSortedPrograms =
-            program.status === this.status);
-        } else {
-          return (
-            program.category === this.category && program.status === this.status
-          );
-        }
-      });
     },
   },
   apollo: {
     pages: {
       prefetch: true,
-      fetchPolicy: "no-cache",
+      // fetchPolicy: "no-cache",
       query: GET_SINGLE_PAGE_QUERY,
       variables() {
         return {
@@ -213,45 +173,6 @@ export default {
           NProgress.done();
           attachInternalLinks(this);
           attachSearchEvents(this);
-        }
-      },
-    },
-
-    grants: {
-      prefetch: true,
-
-      query: GET_ALL_FUNDING_QUERY,
-      variables() {
-        return {};
-      },
-      error(error) {
-        this.error = JSON.stringify(error.message);
-        NProgress.done();
-      },
-      result(ApolloQueryResult) {
-        if (
-          ApolloQueryResult.data &&
-          ApolloQueryResult.data.grants.length > 0 === false
-        ) {
-          // eslint-disable-next-line no-unused-vars
-          this.$router.push("/404").catch((err) => {
-            console.log(err);
-          });
-        } else {
-          //console.log(this.id);
-          this.allGrants = _.orderBy(
-            ApolloQueryResult.data.grants,
-            ["end"],
-            ["desc"]
-          );
-          this.allGrants = getUnifiedTags(this.allGrants);
-          this.allGrants = this.allGrants.map((e) => ({
-            ...e,
-            fullPath: `/grants/funding/${e.slug}/`,
-            contentType: "grant",
-          }));
-          this.filterGrants("current");
-          NProgress.done();
         }
       },
     },
