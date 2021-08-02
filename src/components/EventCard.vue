@@ -8,7 +8,18 @@
       @click="isClickable ? $router.push(item.fullPath) : null"
     >
       <v-toolbar :color="item.color" dark elevation="0">
-        <v-toolbar-title v-html="item.name" style="font-weight: 700">
+        <v-toolbar-title
+          v-html="item.name"
+          v-if="item.name"
+          style="font-weight: 700"
+        >
+        </v-toolbar-title>
+
+        <v-toolbar-title
+          v-html="item.title"
+          v-if="item.title"
+          style="font-weight: 700"
+        >
         </v-toolbar-title>
 
         <v-spacer></v-spacer>
@@ -22,36 +33,6 @@
         >
       </v-toolbar>
 
-      <!-- <div style="font-size: 16px" class="px-3 py-3">
-        <span style="color: #333; font-weight: bold">{{
-          item.category | upperCase
-        }}</span>
-        <span
-          style="color: #333; font-weight: bold"
-          v-if="item.contentType === 'meeting'"
-        >
-          MEETING</span
-        >
-        <span
-          style="color: #333; font-weight: bold"
-          v-if="item.contentType === 'event'"
-        >
-          EVENT</span
-        >
-
-        <span
-          style="color: #555"
-          v-html="getRange(item.start, item.end, item.timed)"
-        ></span
-        >&nbsp;&nbsp;&nbsp;<span v-if="showURL">|&nbsp;</span>
-        <v-icon v-if="showURL" @click="$router.push(`${item.fullPath}/`)"
-          >link</v-icon
-        
-      </div> -->
-      <!-- hide from calendar: {{ item.hideFromCalendar }}
-      <br />
-      hide from list: {{ item.hideFromList }}
-      <br /> -->
       <div style="font-size: 14px" class="mt-2 pl-3">
         <!-- ------------------------------------------------
            Funding 
@@ -63,18 +44,6 @@
           | {{ item.startDate | dateFormatFull }} to
           {{ item.endDate | dateFormatFull }}
           &nbsp;
-          <!-- <span>
-            <v-chip
-              dark
-              x-small
-              v-if="isItExpired(item.endDate)"
-              color="red darken-2"
-              >Expired</v-chip
-            >
-            <v-chip dark x-small v-else color="green"
-              >Deadline: {{ item.endDate | dateFormatAlt }}</v-chip
-            >
-          </span> -->
         </div>
         <!-- ------------------------------------------------
            Meetings 
@@ -93,6 +62,39 @@
             | {{ item.start | dateFormatFull }}
             {{ getEndText(item.start, item.end, true) }}
           </div>
+          <div
+            style="font-size: 16px; font-weight: bold"
+            class="mt-2"
+            v-html="item.title"
+          ></div>
+        </div>
+        <!-- ------------------------------------------------
+           Employment 
+        -----------------------------------------------  -->
+        <div v-else-if="item.contentType === 'employment'">
+          <div>
+            <span style="font-weight: 700"
+              >{{
+                getProperCategory(
+                  $myApp.config.maps.jobs,
+                  item.category
+                ).toUpperCase()
+              }}
+              EMPLOYMENT OPENING</span
+            >
+            | {{ item.start | dateFormatFull }}
+            {{ getEndText(item.start, item.end, true) }}
+          </div>
+          <div
+            style="font-size: 16px; font-weight: bold"
+            class="mt-2"
+            v-html="item.title"
+          ></div>
+        </div>
+        <!-- ------------------------------------------------
+           Default 
+        -----------------------------------------------  -->
+        <div v-else>
           <div
             style="font-size: 16px; font-weight: bold"
             class="mt-2"

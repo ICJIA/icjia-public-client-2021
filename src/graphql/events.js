@@ -39,6 +39,26 @@ const GET_EVENTS = gql`
       created_at
       updated_at
       published_at
+      tags {
+        title
+        slug
+      }
+    }
+    jobs(sort: "start:asc") {
+      id
+      title
+      summary
+      slug
+      start
+      end
+      category
+      created_at
+      updated_at
+      published_at
+      tags {
+        title
+        slug
+      }
     }
 
     grants(sort: "start:asc") {

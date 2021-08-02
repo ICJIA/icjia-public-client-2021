@@ -96,6 +96,7 @@
                   <EventCard
                     :item="selectedEvent"
                     @clicked="selectedOpen = false"
+                    :key="nanoid()"
                   ></EventCard>
                 </v-card>
               </v-menu>
@@ -111,7 +112,7 @@
                 :item="event"
                 :showClose="false"
                 class="hover"
-                :key="`${index}-${nanoid()}`"
+                :key="`${nanoid()}`"
               ></EventCard>
             </div>
           </div>
@@ -383,7 +384,7 @@ export default {
           let obj = {};
           obj.startDate = grant.start;
           obj.endDate = grant.end;
-          obj.name = "NOFO START: " + grant.name;
+          obj.name = "OPEN: " + grant.name;
           obj.start = grant.start;
           obj.slug = grant.slug;
           obj.category = grant.category;
@@ -407,7 +408,7 @@ export default {
           obj.slug = grant.slug;
           obj.category = grant.category;
           obj.start = grant.end;
-          obj.name = "NOFO DEADLINE: " + grant.name;
+          obj.name = "DEADLINE: " + grant.name;
           obj.end = grant.end;
           obj.timed = false;
           obj.color = "indigo darken-4";
@@ -420,6 +421,70 @@ export default {
           obj.summary = grant.summary;
           return obj;
         });
+        let jobs = ApolloQueryResult.data.jobs.map((job) => {
+          job.start = moment(job.start)
+            .tz(this.$myApp.config.timezone)
+            .toDate();
+          job.end = moment(job.end).tz(this.$myApp.config.timezone).toDate();
+          job.startDate = job.start;
+          job.endDate = job.end;
+
+          if (!this.isItMultiday(job.start, job.end)) {
+            job.timed = true;
+          } else {
+            job.timed = false;
+          }
+          job.color = "purple darken-4";
+          job.show = false;
+          job.fullPath = `/about/employment/${job.slug}`;
+          job.contentType = "employment";
+          job.hideFromCalendar = true;
+          job.hideFromList = false;
+          job.name = job.title;
+          return job;
+        });
+
+        let jobStartEvents = jobs.map((job) => {
+          let obj = {};
+          obj.startDate = job.start;
+          obj.endDate = job.end;
+          obj.name = "OPEN: " + job.title;
+          obj.start = job.start;
+          obj.slug = job.slug;
+          obj.category = job.category;
+          obj.end = job.start;
+          obj.timed = false;
+          obj.color = "purple darken-4";
+          obj.show = false;
+          obj.fullPath = job.fullPath;
+          obj.hideFromList = true;
+          obj.hideFromCalendar = false;
+          obj.details = job.details;
+          obj.contentType = "employment";
+          obj.summary = job.summary;
+          return obj;
+        });
+
+        let jobEndEvents = jobs.map((job) => {
+          let obj = {};
+          obj.startDate = job.start;
+          obj.endDate = job.end;
+          obj.slug = job.slug;
+          obj.category = job.category;
+          obj.start = job.end;
+          obj.name = "DEADLINE: " + job.title;
+          obj.end = job.end;
+          obj.timed = false;
+          obj.color = "purple darken-4";
+          obj.show = false;
+          obj.fullPath = job.fullPath;
+          obj.hideFromList = true;
+          obj.hideFromCalendar = false;
+          obj.details = job.details;
+          obj.contentType = "employment";
+          obj.summary = job.summary;
+          return obj;
+        });
 
         let allEvents = [
           ...events,
@@ -427,6 +492,9 @@ export default {
           ...grants,
           ...grantStartEvents,
           ...grantEndEvents,
+          ...jobs,
+          ...jobEndEvents,
+          ...jobStartEvents,
         ];
 
         allEvents = getUnifiedTags(allEvents);

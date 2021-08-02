@@ -36,15 +36,6 @@
                 >Expired</v-chip
               >
 
-              <!-- <v-chip
-                small
-                dark
-                v-if="!isItExpired(grant.end)"
-                class="mr-1"
-                :color="getColor(grant.start, grant.end)"
-                style="font-weight: 700"
-                >Expires on {{ grant.end | dateFormatAlt }}</v-chip
-              > -->
               <div class="d-flex">
                 <span style="font-weight: 700; font-size: 14px; color: #000">
                   {{ getCategory(grant.category) }} </span
@@ -77,7 +68,7 @@
                 :class="{ 'rule-top': index > 0 }"
                 @click="routeTo(job.fullPath)"
               >
-                <span style="font-weight: 700; font-size: 16px; color: #666">
+                <span style="font-weight: 700; font-size: 16px; color: #000">
                   Employment Opportunity
                 </span>
                 <span v-if="isItExpired(job.end)">
