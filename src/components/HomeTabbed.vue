@@ -119,7 +119,7 @@
         <v-tab-item :style="`background: #fff !important;`">
           <div style="height: 15px; background: #fff !important"></div>
           <v-sheet style="min-height: 200px !important">
-            <h2>TODO: Recent Meetings here</h2>
+            {{ meetings }}
           </v-sheet>
         </v-tab-item>
       </v-tabs>
@@ -209,6 +209,10 @@ export default {
       default: () => [],
     },
     employment: {
+      type: Array,
+      default: () => [],
+    },
+    meetings: {
       type: Array,
       default: () => [],
     },

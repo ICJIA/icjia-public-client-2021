@@ -49,6 +49,7 @@
             ><HomeTabbed
               :grants="grants"
               :employment="employment"
+              :meetings="meetings"
               :loading="loading"
             ></HomeTabbed
           ></v-col>
@@ -169,8 +170,8 @@ export default {
           fullPath: `/news/meetings/${e.slug}/`,
           contentType: "Meeting",
         }));
-        this.meetings = meetings;
-        //this.mergePostsAndMeetings(posts, meetings);
+        this.meetings = _.orderBy(meetings, ["end"], ["desc"]);
+        console.log("meetings: ", meetings);
         // Funding and Employment
         this.grants = ApolloQueryResult.data.grants.map((e) => ({
           ...e,
