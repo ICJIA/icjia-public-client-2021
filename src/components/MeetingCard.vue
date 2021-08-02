@@ -10,7 +10,16 @@
       </div>
       <div v-html="render(item.body)" class="px-3 mt-5"></div>
 
-      <div class="my-5">
+      <div class="mb-5">
+        <BasePropDisplay v-if="item.tags" name="">
+          <BasePropChip
+            v-for="(tag, index) in item.tags"
+            :key="index"
+            class="mt-8"
+          >
+            <template>{{ tag }}</template>
+          </BasePropChip>
+        </BasePropDisplay>
         <AttachmentList
           :items="item.attachments"
           v-if="item.attachments && item.attachments.length"
@@ -25,15 +34,6 @@
           background="grey lighten-4"
           indentation="mt-8 px-5 py-5"
         ></RelatedList>
-        <BasePropDisplay v-if="item.tags" name="">
-          <BasePropChip
-            v-for="(tag, index) in item.tags"
-            :key="index"
-            class="mt-8"
-          >
-            <template>{{ tag }}</template>
-          </BasePropChip>
-        </BasePropDisplay>
       </div>
     </v-card>
   </div>
