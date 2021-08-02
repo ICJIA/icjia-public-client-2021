@@ -39,6 +39,7 @@ const GET_SINGLE_POST_QUERY = gql`
       dateOverride
       created_at
       updated_at
+      hideSplash
       category
       published_at
       attachmentLabel

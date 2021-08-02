@@ -5,7 +5,10 @@
     <BaseContent :error="error" :loading="loading">
       <template slot="content" v-if="!loading">
         <v-container class="markdown-body mt-8">
-          <Splash v-if="news && news.splash" :splash="news.splash"></Splash>
+          <Splash
+            v-if="news && news.splash && !news.hideSplash"
+            :splash="news.splash"
+          ></Splash>
           <v-row>
             <v-col cols="12" :md="news.showTOC ? 9 : 12">
               <div style="font-weight: 900">
