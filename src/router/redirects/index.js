@@ -18,6 +18,7 @@ const redirects = [
     path: "/information-systems/information-systems-home/",
     redirect: { name: "ISUOverview" },
   },
+
   {
     path: "/drone/",
     // eslint-disable-next-line no-unused-vars

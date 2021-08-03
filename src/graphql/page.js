@@ -47,6 +47,11 @@ const GET_SINGLE_PAGE_QUERY = gql`
       showTOC
       body
       published_at
+      attachments {
+        name
+        url
+      }
+      attachmentLabel
       tags {
         title
         slug

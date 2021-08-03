@@ -1,6 +1,11 @@
 <template>
   <v-sheet v-if="attachments">
+    <div v-if="useSecondLevelHeading">
+      <h2 v-if="label && label.length" id="attachments">{{ label }}</h2>
+      <h2 v-else class="" id="attachments">Attachments</h2>
+    </div>
     <div
+      v-else
       style="
         font-weight: 700;
         border-bottom: 1px solid #ccc;
@@ -9,7 +14,7 @@
       "
     >
       <span v-if="label && label.length"> {{ label }}</span
-      ><span v-else>Attachments</span>
+      ><span v-else class="">Attachments</span>
     </div>
     <ul v-for="(attachment, index) in attachments" :key="index" class="mt-6">
       <li class="attachment-link">
@@ -42,6 +47,10 @@ export default {
     items: {
       type: Array,
       default: () => [],
+    },
+    useSecondLevelHeading: {
+      type: Boolean,
+      default: false,
     },
   },
 };

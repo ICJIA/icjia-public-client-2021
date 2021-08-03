@@ -11,19 +11,20 @@
           <v-row v-if="content">
             <v-col cols="12" :md="content && content.showTOC ? 9 : 12">
               <h1 v-html="render(content.title)"></h1>
+              <AttachmentList
+                :items="content.attachments"
+                v-if="content.attachments && content.attachments.length"
+                class="mt-6 pl-0"
+                :key="content.attachments.title"
+                :useSecondLevelHeading="true"
+                :label="
+                  content.attachmentLabel && content.attachmentLabel.length
+                    ? content.attachmentLabel
+                    : ''
+                "
+              ></AttachmentList>
               <div v-html="render(content.body)"></div>
               <div>
-                <AttachmentList
-                  :items="content.attachments"
-                  v-if="content.attachments && content.attachments.length"
-                  class="mt-6 pl-0"
-                  :key="content.attachments.title"
-                  :label="
-                    content.attachmentLabel && content.attachmentLabel.length
-                      ? content.attachmentLabel
-                      : ''
-                  "
-                ></AttachmentList>
                 <ClickthroughBoxes
                   :boxes="content.clickthrough"
                   v-if="content.clickthrough && content.clickthrough.length"
@@ -76,7 +77,7 @@ export default {
       query: GET_SINGLE_PAGE_QUERY,
       variables() {
         return {
-          slug: this.$route.params.slug,
+          slug: "covid-19",
         };
       },
       error(error) {

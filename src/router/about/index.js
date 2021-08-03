@@ -13,6 +13,12 @@ const about = [
       import(/* webpackChunkName: "hub" */ "@/views/About/EmploymentAll.vue"),
   },
   {
+    path: "/about/covid-19/",
+    name: "ICJIACovid",
+    component: () =>
+      import(/* webpackChunkName: "hub" */ "@/views/About/Covid.vue"),
+  },
+  {
     path: "/about/employment/:slug",
     name: "ICJIAAboutEmploymentSingle",
     component: () =>

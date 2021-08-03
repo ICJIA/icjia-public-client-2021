@@ -72,12 +72,14 @@ export default {
       this.$vuetify.goTo(`#${id}`, { offset: 88 });
     },
     setToc() {
-      const sections = Array.from(document.querySelectorAll("h2"));
-      sections.forEach((section) => {
-        let obj = {};
-        obj.text = section.innerText;
-        obj.id = section.id;
-        this.toc.push(obj);
+      this.$nextTick(() => {
+        const sections = Array.from(document.querySelectorAll("h2"));
+        sections.forEach((section) => {
+          let obj = {};
+          obj.text = section.innerText;
+          obj.id = section.id;
+          this.toc.push(obj);
+        });
       });
     },
   },
