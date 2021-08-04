@@ -11,16 +11,8 @@
                 "path": "/grants/fsgu-home/"
             },
             {
-                "label": "Staff",
-                "path": "/grants/fsgu-staff/"
-            },
-            {
                 "label": "Resources",
                 "path": "/grants/resources/"
-            },
-            {
-                "label": "Programs",
-                "path": "/grants/programs/"
             },
             {
                 "label": "Funding Opportunities",
