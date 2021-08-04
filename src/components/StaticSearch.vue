@@ -1,6 +1,18 @@
 <template>
   <div v-if="queryResults && queryResults.length" class="markdown-body">
-    <h3 v-if="title">{{ title }}</h3>
+    <h2 v-if="title" class="ml-4">{{ title }}</h2>
+    <div class="ml-4" v-if="queryResults && queryResults.length > 2">
+      <!-- <span style="font-size: 12px; font-weight: 900">SORT BY:</span> -->
+      <v-btn-toggle v-model="toggle_sort" mandatory class="mb-4">
+        <v-btn x-small elevation="1" class="button-weight"> Title </v-btn>
+        <v-btn x-small elevation="1" class="button-weight"> Date </v-btn>
+      </v-btn-toggle>
+      &nbsp;&nbsp;
+      <v-btn-toggle v-model="toggle_direction" mandatory class="mb-4">
+        <v-btn x-small elevation="1" class="button-weight"> Ascending </v-btn>
+        <v-btn x-small elevation="1" class="button-weight"> Descending </v-btn>
+      </v-btn-toggle>
+    </div>
     <div v-for="(result, index) in queryResults" :key="index" class="px-3 mt-6">
       <SearchCard :item="result.item" :threshold="0.2"></SearchCard>
     </div>
@@ -20,7 +32,23 @@ export default {
       queryResults: null,
       fuse: this.$myApp.fuse,
       filteredQueryResults: null,
+      toggle_sort: 1,
+      toggle_direction: 1,
     };
+  },
+  watch: {
+    toggle_sort(newValue) {
+      if (this.toggle_sort === 0) {
+        this.toggle_direction = 0;
+      }
+      if (this.toggle_sort === 1) {
+        this.toggle_direction = 1;
+      }
+      this.sort();
+    },
+    toggle_direction(newValue) {
+      this.sort();
+    },
   },
   created() {
     this.fuse.options.threshold = this.threshold;
@@ -29,15 +57,44 @@ export default {
     this.instantSearch(this.query);
   },
   methods: {
+    sort() {
+      let direction;
+      if (this.toggle_direction === 0) {
+        direction = "asc";
+      } else {
+        direction = "desc";
+      }
+      switch (this.toggle_sort) {
+        case 0:
+          this.queryResults = _.orderBy(
+            this.queryResults,
+            ["item.title"],
+            [direction]
+          );
+          break;
+        case 1:
+          this.queryResults = _.orderBy(
+            this.queryResults,
+            ["item.date", "item.end"],
+            [direction, direction]
+          );
+          break;
+
+        default:
+          console.log("Default case -- not sorted");
+      }
+    },
     instantSearch(query) {
       if (!this.query.length) return;
       let queryResults = this.fuse.search(this.query);
-      console.log(queryResults);
-      queryResults = _.orderBy(
-        queryResults,
-        ["item.contentType", "item.date", "item.end"],
-        ["asc", "desc", "desc"]
-      );
+      //console.log(queryResults);
+      // queryResults = _.orderBy(
+      //   queryResults,
+      //   ["item.contentType", "item.date", "item.end"],
+      //   ["asc", "desc", "desc"]
+      // );
+
+      // prevent duplicated item
       let filteredQueryResults = queryResults.filter((result) => {
         let currentPath = this.$route.fullPath;
         currentPath += currentPath.endsWith("/") ? "" : "/";
@@ -47,12 +104,13 @@ export default {
         //console.log(currentPath === searchResultPath);
       });
       this.queryResults = filteredQueryResults;
+      this.sort();
     },
   },
   props: {
     threshold: {
       type: Number,
-      default: 0.3,
+      default: 0.2,
     },
     query: {
       type: String,

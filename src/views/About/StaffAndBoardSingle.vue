@@ -11,7 +11,7 @@
             class="mt-10"
             :showStaticSearch="true"
             :hideBiography="true"
-            :title="`Related to ${item.fullName}`"
+            :title="`Related Web Content`"
           ></StaticSearch>
         </v-col>
       </v-row>
