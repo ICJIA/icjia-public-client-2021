@@ -60,11 +60,11 @@
            Biographies 
         -----------------------------------------------  -->
         <div v-else-if="item.contentType === 'biography'">
-          <div>
+          <!-- <div>
             <span style="font-weight: 700">
               {{ item.contentType.toUpperCase() }}
             </span>
-          </div>
+          </div> -->
 
           <div v-if="item.fullName" class="mt-1">
             <span
@@ -75,7 +75,7 @@
 
             <div v-if="item.position">
               <span
-                v-if="item.unit.title"
+                v-if="item.unit && item.unit.title"
                 style="font-weight: 700"
                 @click.stop.prevent="search(item.unit.title)"
               >
@@ -188,7 +188,7 @@
            Default 
         -----------------------------------------------  -->
         <div v-else>
-          <div>
+          <!-- <div>
             <span style="font-weight: 700">
               {{ item.contentType.toUpperCase() }}
             </span>
@@ -198,7 +198,8 @@
             class="mt-2"
             v-html="item.title"
             v-if="item.title"
-          ></div>
+          ></div> -->
+          Default here
         </div>
       </div>
       <v-card-text
@@ -318,7 +319,8 @@ export default {
       return cleanExt.substring(1);
     },
     route(path) {
-      this.searchModal = false;
+      EventBus.$emit("closeSearch");
+
       this.$router.push(path).catch((err) => {
         this.$vuetify.goTo(0);
       });
