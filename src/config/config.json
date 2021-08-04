@@ -186,6 +186,10 @@
                     "weight": 1
                 },
                 {
+                    "name": "position",
+                    "weight": 2
+                },
+                {
                     "name": "tagsAlt.title",
                     "weight": 1
                 },

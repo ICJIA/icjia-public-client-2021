@@ -172,14 +172,11 @@
            Page 
         -----------------------------------------------  -->
         <div v-else-if="item.contentType === 'page'">
-          <div>
+          <div class="d-flex">
             <span style="font-weight: 700">
               {{ item.contentType.toUpperCase() }}
             </span>
-            <span style="font-weight: 700" v-if="item.updated_at">
-              &nbsp;|&nbsp;
-              {{ item.updated_at }}
-            </span>
+            <v-spacer></v-spacer>
           </div>
           <div
             style="font-size: 16px; font-weight: bold"
@@ -221,6 +218,9 @@
           </BasePropChip>
         </template>
       </div>
+      <!-- <span style="font-weight: 400; font-size: 12px" v-if="item.updated_at">
+        Last updated: {{ item.updated_at | format }}
+      </span> -->
     </v-card>
   </div>
 </template>
