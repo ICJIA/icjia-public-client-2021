@@ -146,7 +146,7 @@ export default {
     instantSearch() {
       if (!this.query.length) return;
       if (this.query.length < 2) return;
-      this.queryResults = this.fuse.search(this.query).slice(0, 99);
+      this.queryResults = this.fuse.search(this.query).slice(0, 50);
     },
     displayHeadings(headings) {
       if (typeof headings === "string") {

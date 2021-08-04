@@ -13,6 +13,15 @@
               <h1 v-html="render(content.title)"></h1>
               <div v-html="render(content.body)"></div>
               <div>
+                <BasePropDisplay v-if="content.tags" name="">
+                  <BasePropChip
+                    v-for="tag in content.tags"
+                    :key="tag"
+                    class="mt-0"
+                  >
+                    <template>{{ tag }}</template>
+                  </BasePropChip>
+                </BasePropDisplay>
                 <AttachmentList
                   :items="content.attachments"
                   v-if="content.attachments && content.attachments.length"
@@ -49,6 +58,7 @@
 import NProgress from "nprogress";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
+import { getUnifiedTags } from "@/utils/content";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import { EventBus } from "@/event-bus.js";
 export default {
@@ -97,7 +107,9 @@ export default {
           });
         } else {
           //console.log(this.id);
-          this.content = ApolloQueryResult.data.pages[0];
+          let content = ApolloQueryResult.data.pages;
+          content = getUnifiedTags(content);
+          this.content = content[0];
           this.loading = false;
           EventBus.$emit("context-label", this.content.title);
           NProgress.done();

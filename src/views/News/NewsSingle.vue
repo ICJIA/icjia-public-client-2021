@@ -40,6 +40,7 @@
                       : ''
                   "
                 ></AttachmentList>
+
                 <RelatedList
                   :content="news"
                   title="Related Web Content"
@@ -143,4 +144,14 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.markdown-body .caption {
+  font-size: 12px !important;
+  color: #333;
+  margin-top: -45px !important;
+  margin-bottom: 30px;
+}
+.markdown-body img {
+  margin-bottom: 30px !important;
+}
+</style>

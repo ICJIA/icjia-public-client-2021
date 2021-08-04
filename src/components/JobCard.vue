@@ -16,14 +16,24 @@
         <!-- <span style="font-size: 14px; color: #666"
           >{{ item.category }} EMPLOYMENT</span
         > -->
-        <span class="" style="font-size: 16px"
+        <span class="mb-8" style="font-size: 14px"
           >{{ getCategory(item.category).toUpperCase() }} EMPLOYMENT</span
+        >
+        <span
+          class="mb-8"
+          style="
+           color: #666;
+font-size: 14px
+            font-weight: 400;
+          "
+        >
+          &nbsp;|&nbsp;Posted {{ item.start | format }}</span
         >
 
         <v-spacer></v-spacer>
 
         <div>
-          <v-chip
+          <!-- <v-chip
             small
             style="
               font-size: 12px;
@@ -34,7 +44,7 @@
             "
             v-if="new Date(addOneDayToDate(item.end)) >= new Date()"
             >&nbsp;Deadline: {{ item.end | dateFormatAlt }}&nbsp;</v-chip
-          >
+          > -->
           <v-chip
             small
             style="
@@ -64,6 +74,7 @@
         >
           {{ item.title }}</span
         >
+
         <span v-if="showLink">
           |
           <v-icon class="link" @click.stop.prevent="$router.push(item.fullPath)"
@@ -80,10 +91,7 @@
         class="mb-3 mt-3"
         style="font-size: 12px; font-weight: 900"
       >
-        <span
-          >Accepting applications from {{ item.start | format }} to
-          {{ item.end | format }}</span
-        >
+        <span>Accepting applications until {{ item.end | format }}</span>
       </div>
       <div
         v-if="item.summary && summaryOnly"

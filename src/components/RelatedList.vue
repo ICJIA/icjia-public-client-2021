@@ -98,7 +98,7 @@ export default {
       ...grants,
       ...programs,
     ];
-
+    console.log(relatedList);
     this.relatedList = _.orderBy(relatedList, "displayTitle", "asc");
   },
   props: {

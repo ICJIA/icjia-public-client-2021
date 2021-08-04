@@ -23,7 +23,8 @@ const isRelatedContent = function (content) {
     (content.events && content.events.length) ||
     (content.posts && content.posts.length) ||
     (content.meetings && content.meetings.length) ||
-    (content.grants && content.grants.length)
+    (content.grants && content.grants.length) ||
+    (content.programs && content.programs.length)
   )
     return true;
   return false;
