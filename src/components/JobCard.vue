@@ -81,7 +81,7 @@
         style="font-size: 12px; font-weight: 900"
       >
         <span
-          >Applications accepted {{ item.start | format }} to
+          >Accepting applications from {{ item.start | format }} to
           {{ item.end | format }}</span
         >
       </div>

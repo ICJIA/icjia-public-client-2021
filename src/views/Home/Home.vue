@@ -164,7 +164,8 @@ export default {
           contentType: "News",
         }));
         posts = getPublicationDate(posts);
-        this.news = posts;
+        this.news = _.orderBy(posts, ["publicationDate"], ["desc"]);
+
         let meetings = ApolloQueryResult.data.meetings.map((e) => ({
           ...e,
           fullPath: `/news/meetings/${e.slug}/`,

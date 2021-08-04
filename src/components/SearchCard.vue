@@ -176,6 +176,10 @@
             <span style="font-weight: 700">
               {{ item.contentType.toUpperCase() }}
             </span>
+            <span style="font-weight: 700" v-if="item.updated_at">
+              &nbsp;|&nbsp;
+              {{ item.updated_at }}
+            </span>
           </div>
           <div
             style="font-size: 16px; font-weight: bold"
@@ -188,7 +192,7 @@
            Default 
         -----------------------------------------------  -->
         <div v-else>
-          <!-- <div>
+          <div>
             <span style="font-weight: 700">
               {{ item.contentType.toUpperCase() }}
             </span>
@@ -198,8 +202,7 @@
             class="mt-2"
             v-html="item.title"
             v-if="item.title"
-          ></div> -->
-          Default here
+          ></div>
         </div>
       </div>
       <v-card-text

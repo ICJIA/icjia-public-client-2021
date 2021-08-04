@@ -84,8 +84,8 @@
                 <span
                   v-if="!isItExpired(job.end)"
                   style="font-size: 14px; font-weight: 400"
-                  >&nbsp;|&nbsp; {{ job.start | dateFormatAlt }} to
-                  {{ job.end | dateFormatAlt }}
+                  >&nbsp;|&nbsp; Accepting applications until
+                  {{ job.end | format }}
                 </span>
                 <h2 class="mt-2">{{ job.title }}</h2>
 
