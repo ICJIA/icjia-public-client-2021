@@ -40,10 +40,6 @@
                 "path": "/researchhub/hub-overview/"
             },
             {
-                "label": "Staff",
-                "path": "/researchhub/hub-staff/"
-            },
-            {
                 "label": "Articles",
                 "path": "/researchhub/articles/"
             },
@@ -256,10 +252,6 @@
             {
                 "label": "ISU Home",
                 "path": "/information-systems/"
-            },
-            {
-                "label": "Staff",
-                "path": "/information-systems/isu-staff/"
             },
             {
                 "label": "Infonet",

@@ -32,7 +32,12 @@ export default {
     instantSearch(query) {
       if (!this.query.length) return;
       let queryResults = this.fuse.search(this.query);
-      queryResults = _.orderBy(queryResults, ["category"], ["asc"]);
+      console.log(queryResults);
+      queryResults = _.orderBy(
+        queryResults,
+        ["item.contentType", "item.date", "item.end"],
+        ["asc", "desc", "desc"]
+      );
       let filteredQueryResults = queryResults.filter((result) => {
         let currentPath = this.$route.fullPath;
         currentPath += currentPath.endsWith("/") ? "" : "/";
