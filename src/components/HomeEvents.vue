@@ -220,8 +220,4 @@ export default {
   color: #000 !important;
   border: 1px solid #ddd;
 }
-
-.rule-left {
-  /* border-left: 1px solid #e8e8e8 !important; */
-}
 </style>

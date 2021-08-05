@@ -65,7 +65,7 @@
         <span
           v-for="tag of item.tags"
           :key="tag"
-          class="px-2 py-1 mt-2 mr-2 search-tag lato"
+          class="px-2 py-1 mr-3 search-tag lato"
           @click.prevent.stop="click($event)"
           >{{ tag }}
         </span>
