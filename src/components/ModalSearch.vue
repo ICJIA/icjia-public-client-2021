@@ -147,7 +147,7 @@ export default {
       if (!this.query) return;
       if (!this.query.length) return;
       if (this.query.length < 2) return;
-      this.queryResults = this.fuse.search(this.query);
+      this.queryResults = this.fuse.search(this.query.trim());
     },
     displayHeadings(headings) {
       if (typeof headings === "string") {

@@ -113,12 +113,12 @@ font-size: 14px
             <template>{{ tag }}</template>
           </BasePropChip>
         </BasePropDisplay>
-        <!-- <AttachmentList
+        <AttachmentList
           :items="item.attachments"
           v-if="item.attachments && item.attachments.length"
           class="mt-8 pl-3"
           :key="item.slug"
-        ></AttachmentList> -->
+        ></AttachmentList>
         <ExternalLinkList
           :items="item.external"
           v-if="item.external && item.external.length"
