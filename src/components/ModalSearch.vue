@@ -144,6 +144,7 @@ export default {
       });
     },
     instantSearch() {
+      if (!this.query) return;
       if (!this.query.length) return;
       if (this.query.length < 2) return;
       this.queryResults = this.fuse.search(this.query);

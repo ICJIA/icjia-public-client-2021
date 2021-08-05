@@ -2,7 +2,7 @@
   <div>
     <div
       style="background: #fff; border: 1px solid #eee"
-      class="px-3 py-3 mb-3 search-card"
+      class="px-3 py-3 mb-3 card"
       @click="route(item.fullPath)"
     >
       <div style="font-size: 14px">
@@ -17,8 +17,37 @@
               class="search-content-type"
               @click.prevent.stop="click($event)"
             >
-              {{ item.contentType.toUpperCase() }}
+              <span v-if="item.category && item.contentType === 'news'"
+                >{{
+                  getProperCategory(
+                    $myApp.config.maps.news,
+                    item.category
+                  ).toUpperCase()
+                }}
+              </span>
+              <span v-if="item.category && item.contentType === 'meeting'">{{
+                getProperCategory(
+                  $myApp.config.maps.meetings,
+                  item.category
+                ).toUpperCase()
+              }}</span>
+              <span v-if="item.category && item.contentType === 'program'">{{
+                item.category.toUpperCase()
+              }}</span>
+              <span v-if="item.contentType !== 'news'">
+                {{ item.contentType.toUpperCase() }}</span
+              >
             </span>
+            <span v-if="item.publicationDate"
+              >&nbsp;|&nbsp;{{ item.publicationDate | format }}</span
+            >
+            <span v-if="item.date">&nbsp;|&nbsp;{{ item.date | format }}</span>
+            <span v-if="item.start && item.end"
+              >&nbsp;|&nbsp;{{ item.start | format
+              }}<span v-if="isWithinOneDay(item.start, item.end) >= 24">
+                to {{ item.end | format }}</span
+              ></span
+            >
           </div>
           <div
             style="font-size: 16px; font-weight: bold; display: inline"
@@ -61,6 +90,12 @@ export default {
     };
   },
   methods: {
+    isWithinOneDay(eventStart, eventEnd) {
+      let start = moment(eventStart);
+      let end = moment(eventEnd);
+      let hours = end.diff(start, "hours");
+      return hours;
+    },
     isItExpired(expiration) {
       //console.log(expiration);
       let now = new Date();
