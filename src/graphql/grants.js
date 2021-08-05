@@ -64,6 +64,10 @@ const GET_SINGLE_FUNDING_QUERY = gql`
       end
       category
       published_at
+      biographies {
+        title: fullName
+        slug
+      }
       attachments {
         name
         url

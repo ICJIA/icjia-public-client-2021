@@ -24,7 +24,8 @@ const isRelatedContent = function (content) {
     (content.posts && content.posts.length) ||
     (content.meetings && content.meetings.length) ||
     (content.grants && content.grants.length) ||
-    (content.programs && content.programs.length)
+    (content.programs && content.programs.length) ||
+    (content.biographies && content.biographies.length)
   )
     return true;
   return false;

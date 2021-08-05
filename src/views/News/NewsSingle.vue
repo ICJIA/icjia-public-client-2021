@@ -47,7 +47,7 @@
                   class="mt-10"
                   v-if="isRelated"
                   background="white"
-                  indentation="ml-4 px-0 py-0"
+                  indentation="ml-0 px-0 py-0"
                 ></RelatedList>
               </div>
             </v-col>

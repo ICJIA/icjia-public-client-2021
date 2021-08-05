@@ -59,6 +59,14 @@ const GET_SINGLE_POST_QUERY = gql`
         title
         slug
       }
+      posts {
+        title
+        slug
+      }
+      biographies {
+        title: fullName
+        slug
+      }
       events {
         title: name
         slug

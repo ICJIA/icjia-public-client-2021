@@ -37,6 +37,7 @@ export default {
     let meetings = [];
     let grants = [];
     let programs = [];
+    let biographies = [];
 
     if (this.content.events && this.content.events.length) {
       let relatedType = "Event";
@@ -91,12 +92,24 @@ export default {
       //console.log("meetings: ", grants);
     }
 
+    if (this.content.biographies && this.content.biographies.length) {
+      let relatedType = "Biography";
+      biographies = this.content.biographies.map((e) => ({
+        ...e,
+        relatedType,
+        fullPath: `/about/biographies/${e.slug}/`,
+        displayTitle: `[${relatedType}]: ${e.title}`,
+      }));
+      //console.log("meetings: ", grants);
+    }
+
     let relatedList = [
       ...events,
       ...meetings,
       ...posts,
       ...grants,
       ...programs,
+      ...biographies,
     ];
     console.log(relatedList);
     this.relatedList = _.orderBy(relatedList, "displayTitle", "asc");

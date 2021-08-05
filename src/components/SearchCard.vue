@@ -65,7 +65,7 @@
         <span
           v-for="tag of item.tags"
           :key="tag"
-          class="px-2 py-1 mt-2 mr-2 search-tag"
+          class="px-2 py-1 mt-2 mr-2 search-tag lato"
           @click.prevent.stop="click($event)"
           >{{ tag }}
         </span>
@@ -205,10 +205,10 @@ export default {
 .search-tag {
   background: #eee;
   border-radius: 25px;
-
-  font-size: 11px;
+  font-family: "Lato", sans-serif !important;
+  font-size: 10px;
   font-weight: 700;
-  color: #333;
+  color: #000;
   text-transform: uppercase;
   cursor: pointer;
 }
