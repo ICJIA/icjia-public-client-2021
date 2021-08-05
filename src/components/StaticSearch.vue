@@ -14,7 +14,7 @@
       </v-btn-toggle>
     </div>
     <div v-for="(result, index) in queryResults" :key="index" class="px-3 mt-6">
-      <SearchCard :item="result.item" :threshold="0.2"></SearchCard>
+      <SearchCardAlt :item="result.item" :threshold="0.2"></SearchCardAlt>
     </div>
   </div>
 </template>
