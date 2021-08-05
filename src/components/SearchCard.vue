@@ -1,227 +1,47 @@
 <template>
   <div>
-    <v-card
-      elevation="1"
-      color="#fff"
+    <div
+      style="background: #fff; border: 1px solid #eee"
+      class="px-3 py-3 mb-3 search-card"
       @click="route(item.fullPath)"
-      class="hover px-4 py-3 mb-2 card"
-      v-if="item"
     >
       <div style="font-size: 14px">
         <!-- ------------------------------------------------
-           News 
-        -----------------------------------------------  -->
-        <div v-if="item.contentType === 'news'">
+                Default 
+                -----------------------------------------------  -->
+        <div>
           <div>
-            <span style="font-weight: 700">{{
-              getProperCategory(
-                $myApp.config.maps.news,
-                item.category
-              ).toUpperCase()
-            }}</span>
-            | {{ item.publicationDate | format }}
-          </div>
-          <div
-            style="font-size: 16px; font-weight: bold"
-            class="mt-2"
-            v-html="item.title"
-          ></div>
-        </div>
-        <!-- ------------------------------------------------
-           Hub Articles 
-        -----------------------------------------------  -->
-        <div v-else-if="item.contentType === 'article'">
-          <div>
-            <span style="font-weight: 700">
-              {{ item.contentType.toUpperCase() }}
-            </span>
-            | {{ item.date | format }}
-          </div>
-          <div
-            style="font-size: 16px; font-weight: bold"
-            class="mt-2"
-            v-html="item.title"
-          ></div>
-          <div v-if="item.authors" class="mt-1">
             <span
-              style="font-size: 12px"
-              v-for="(author, index) in item.authors"
-              :key="index"
+              style="font-weight: 700"
+              v-if="item.contentType"
+              class="search-content-type"
+              @click.prevent.stop="click($event)"
             >
-              <span @click.stop.prevent="search(author.title)" class="author">{{
-                author.title
-              }}</span>
-              <span v-if="index < item.authors.length - 2">, </span>
-              <span v-if="index === item.authors.length - 2"> and </span>
-            </span>
-          </div>
-        </div>
-        <!-- ------------------------------------------------
-           Biographies 
-        -----------------------------------------------  -->
-        <div v-else-if="item.contentType === 'biography'">
-          <!-- <div>
-            <span style="font-weight: 700">
               {{ item.contentType.toUpperCase() }}
             </span>
-          </div> -->
-
-          <div v-if="item.fullName" class="mt-1">
-            <span
-              style="font-size: 16px; font-weight: bold"
-              class=""
-              v-html="item.fullName"
-            ></span>
-
-            <div v-if="item.position">
-              <span
-                v-if="item.unit && item.unit.title"
-                style="font-weight: 700"
-                @click.stop.prevent="search(item.unit.title)"
-              >
-                {{ item.unit.title }}&nbsp;|&nbsp;
-              </span>
-              <span
-                style="font-size: 14px"
-                class=""
-                v-html="item.position"
-              ></span>
-            </div>
-          </div>
-        </div>
-        <!-- ------------------------------------------------
-           Publications 
-        -----------------------------------------------  -->
-        <div v-else-if="item.contentType === 'publication'">
-          <div>
-            <span style="font-weight: 700">
-              {{ item.contentType.toUpperCase() }}
-            </span>
-            | {{ item.publicationDate | format }}
           </div>
           <div
-            style="font-size: 16px; font-weight: bold"
-            class="mt-2"
-            v-html="item.title"
-          ></div>
-        </div>
-        <!-- ------------------------------------------------
-           Events 
-        -----------------------------------------------  -->
-        <div v-else-if="item.contentType === 'event'">
-          <div>
-            <span style="font-weight: 700">
-              {{ item.category.toUpperCase() }}
-              {{ item.contentType.toUpperCase() }}
-            </span>
-            | {{ item.start | dateFormatFull }}
-            {{ getEndText(item.start, item.end, item.timed) }}
-          </div>
-          <div
-            style="font-size: 16px; font-weight: bold"
-            class="mt-2"
-            v-html="item.title"
-          ></div>
-        </div>
-
-        <!-- ------------------------------------------------
-           Meetings 
-        -----------------------------------------------  -->
-        <div v-else-if="item.contentType === 'meeting'">
-          <div>
-            <span style="font-weight: 700"
-              >{{
-                getProperCategory(
-                  $myApp.config.maps.meetings,
-                  item.category
-                ).toUpperCase()
-              }}
-              MEETING</span
-            >
-            | {{ item.start | dateFormatFull }}
-            {{ getEndText(item.start, item.end, true) }}
-          </div>
-          <div
-            style="font-size: 16px; font-weight: bold"
-            class="mt-2"
-            v-html="item.title"
-          ></div>
-        </div>
-        <!-- ------------------------------------------------
-           Funding 
-        -----------------------------------------------  -->
-        <div v-else-if="item.contentType === 'funding'">
-          <div>
-            <span style="font-weight: 700">
-              {{ item.contentType.toUpperCase() }}
-            </span>
-            | {{ item.start | dateFormatFull }} to
-            {{ item.end | dateFormatFull }}
-            &nbsp;
-            <v-chip dark x-small v-if="isItExpired(item.end)" color="grey"
-              >Expired</v-chip
-            >
-          </div>
-          <div
-            style="font-size: 16px; font-weight: bold"
-            class="mt-2"
-            v-html="item.title"
-          ></div>
-        </div>
-        <!-- ------------------------------------------------
-           Page 
-        -----------------------------------------------  -->
-        <div v-else-if="item.contentType === 'page'">
-          <div class="d-flex">
-            <span style="font-weight: 700">
-              {{ item.contentType.toUpperCase() }}
-            </span>
-            <v-spacer></v-spacer>
-          </div>
-          <div
-            style="font-size: 16px; font-weight: bold"
-            class="mt-2"
+            style="font-size: 16px; font-weight: bold; display: inline"
+            class="mt-2 mb-2"
             v-html="item.title"
             v-if="item.title"
           ></div>
         </div>
-        <!-- ------------------------------------------------
-           Default 
-        -----------------------------------------------  -->
-        <div v-else>
-          <div>
-            <span style="font-weight: 700">
-              {{ item.contentType.toUpperCase() }}
-            </span>
-          </div>
-          <div
-            style="font-size: 16px; font-weight: bold"
-            class="mt-2"
-            v-html="item.title"
-            v-if="item.title"
-          ></div>
-        </div>
+        <div v-if="item.abstract" v-html="truncate(item.abstract)"></div>
+        <div
+          v-else-if="item.summary"
+          v-html="truncate(item.summary)"
+          class="mt-2 mb-2"
+        ></div>
+        <span
+          v-for="tag of item.tags"
+          :key="tag"
+          class="px-2 py-1 mt-2 mr-2 search-tag"
+          @click.prevent.stop="click($event)"
+          >{{ tag }}
+        </span>
       </div>
-      <v-card-text
-        v-if="item.abstract"
-        v-html="render(item.abstract)"
-      ></v-card-text>
-      <v-card-text
-        v-else-if="item.summary"
-        v-html="render(item.summary)"
-      ></v-card-text>
-      <v-card-text v-else></v-card-text>
-      <div class="pl-2 pb-3" style="margin-top: -15px">
-        <template v-if="item.tags">
-          <BasePropChip v-for="tag of item.tags" :key="tag" class="mt-1">
-            <template>{{ tag }}</template>
-          </BasePropChip>
-        </template>
-      </div>
-      <!-- <span style="font-weight: 400; font-size: 12px" v-if="item.updated_at">
-        Last updated: {{ item.updated_at | format }}
-      </span> -->
-    </v-card>
+    </div>
   </div>
 </template>
 
@@ -303,16 +123,24 @@ export default {
         console.log("relative: ", url);
       }
     },
-    download(result) {
-      let download = `${result.path}`;
-      console.log("download: ", download);
-      //console.log("ext: ", result.ext);
-      if (download.includes("pdf")) {
-        window.open(download);
-      } else {
-        location.href = download;
-      }
+    click(e) {
+      //console.log("chip click: ", e.target.innerHTML);
+      let opts = {
+        query: e.target.innerText,
+        type: "general",
+      };
+      EventBus.$emit("search", opts);
     },
+    // download(result) {
+    //   let download = `${path}`;
+    //   console.log("download: ", download);
+    //   //console.log("ext: ", ext);
+    //   if (download.includes("pdf")) {
+    //     window.open(download);
+    //   } else {
+    //     location.href = download;
+    //   }
+    // },
     displayExtension(item) {
       if (!item.ext) return;
       const cleanExt = DOMPurify.sanitize(item.ext).replace(
@@ -338,4 +166,53 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style>
+.search-tag {
+  background: #eee;
+  border-radius: 25px;
+
+  font-size: 11px;
+  font-weight: 700;
+  color: #333;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.search-tag:hover {
+  background: #ddd;
+  text-decoration: underline;
+}
+.search-content-type {
+  color: #333;
+  cursor: pointer;
+}
+
+.search-content-type:hover {
+  color: #666;
+  text-decoration: underline;
+}
+
+.search-title {
+  color: #000;
+  cursor: pointer;
+}
+
+.search-title:hover {
+  color: #333;
+  text-decoration: underline;
+}
+.search-card:hover {
+  /* box-shadow: 0px 0px 8px #aaa;
+  z-index: 2;
+  -webkit-transition: all 100ms ease-in;
+  -webkit-transform: scale(1.001);
+  -ms-transition: all 100ms ease-in;
+  -ms-transform: scale(1.001);
+  -moz-transition: all 100ms ease-in;
+  -moz-transform: scale(1.001);
+  transition: all 100ms ease-in;
+  transform: scale(1.001); */
+  cursor: pointer;
+  background: #fafafa !important;
+  border: 1px solid #ccc !important;
+}
+</style>
