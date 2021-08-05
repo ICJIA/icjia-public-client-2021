@@ -123,6 +123,11 @@
 </template>
 
 <script>
+const addOneDayToDate = function (date) {
+  const newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + 1);
+  return newDate;
+};
 import { nanoid } from "nanoid";
 /* eslint-disable no-unused-vars */
 import { GET_EVENTS } from "@/graphql/events";
@@ -170,6 +175,7 @@ export default {
     allEvents: [],
     eventKicker: "",
     isLoading: true,
+    addOneDayToDate,
   }),
   methods: {
     filterDisplay() {
@@ -198,7 +204,7 @@ export default {
       let filteredNewItems;
       if (this.upcomingOnly) {
         filteredNewItems = newItems.filter((item) => {
-          if (item.end >= new Date()) {
+          if (addOneDayToDate(item.end) >= new Date()) {
             return item;
           }
         });

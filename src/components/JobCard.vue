@@ -91,7 +91,7 @@ font-size: 14px
         class="mb-3 mt-3"
         style="font-size: 12px; font-weight: 900"
       >
-        <span>Accepting applications until {{ item.end | format }}</span>
+        <span>Accepting applications through {{ item.end | format }}</span>
       </div>
       <div
         v-if="item.summary && summaryOnly"

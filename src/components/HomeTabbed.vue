@@ -84,7 +84,7 @@
                 <span
                   v-if="!isItExpired(job.end)"
                   style="font-size: 14px; font-weight: 400"
-                  >&nbsp;|&nbsp; Accepting applications until
+                  >&nbsp;|&nbsp; Accepting applications through
                   {{ job.end | format }}
                 </span>
                 <h2 class="mt-2">{{ job.title }}</h2>
@@ -126,6 +126,11 @@
 </template>
 
 <script>
+const addOneDayToDate = function (date) {
+  const newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + 1);
+  return newDate;
+};
 import moment from "moment";
 export default {
   computed: {
@@ -151,7 +156,7 @@ export default {
     isItExpired(expiration) {
       //console.log(expiration);
       let now = new Date();
-      let expired = new Date(expiration);
+      let expired = addOneDayToDate(new Date(expiration));
       if (now > expired) {
         return true;
       } else {
@@ -188,6 +193,7 @@ export default {
   data() {
     return {
       fundingModel: 0,
+      addOneDayToDate,
     };
   },
   props: {

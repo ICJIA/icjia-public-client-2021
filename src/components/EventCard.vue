@@ -15,11 +15,7 @@
         >
         </v-toolbar-title>
 
-        <v-toolbar-title
-          v-html="item.title"
-          v-if="item.title"
-          style="font-weight: 700"
-        >
+        <v-toolbar-title v-html="item.title" v-else style="font-weight: 700">
         </v-toolbar-title>
 
         <v-spacer></v-spacer>
