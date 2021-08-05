@@ -91,6 +91,25 @@
            Default 
         -----------------------------------------------  -->
         <div v-else>
+          <div>
+            <span style="font-weight: 900" v-if="item.category">{{
+              item.category.toUpperCase()
+            }}</span
+            >&nbsp;
+            <span style="font-weight: 900" v-if="item.contentType">{{
+              item.contentType.toUpperCase()
+            }}</span>
+            <span v-if="item.publicationDate"
+              >&nbsp;|&nbsp;{{ item.publicationDate | format }}</span
+            >
+            <span v-if="item.date">&nbsp;|&nbsp;{{ item.date | format }}</span>
+            <span v-if="item.start && item.end"
+              >&nbsp;|&nbsp;{{ item.start | format
+              }}<span v-if="isWithinOneDay(item.start, item.end) >= 24">
+                to {{ item.end | format }}</span
+              ></span
+            >
+          </div>
           <div
             style="font-size: 16px; font-weight: bold"
             class="mt-2"
@@ -160,6 +179,12 @@ export default {
     attachSearchEvents(this);
   },
   methods: {
+    isWithinOneDay(eventStart, eventEnd) {
+      let start = moment(eventStart);
+      let end = moment(eventEnd);
+      let hours = end.diff(start, "hours");
+      return hours;
+    },
     isItExpired(expiration) {
       //console.log(expiration);
       let now = new Date();
