@@ -14,6 +14,7 @@ import "@/filters";
 // import "material-design-icons-iconfont/dist/material-design-icons.css";
 // import Masonry from "masonry-layout";
 import nprogress from "nprogress";
+// import axios from "axios";
 
 import "@fortawesome/fontawesome-free/css/all.css";
 
@@ -24,6 +25,8 @@ import { myApp } from "./services/AppInit";
 
 // scaffold this for future config from remote API instead of local json
 (async function init() {
+  // let siteConfig = await axios.get("https://agency.icjia-api.cloud/configs/2");
+  // console.log(siteConfig);
   myApp.install = function () {
     Object.defineProperty(Vue.prototype, "$myApp", {
       get() {
@@ -31,8 +34,9 @@ import { myApp } from "./services/AppInit";
       },
     });
   };
+  // myApp.test = "test";
   Vue.use(myApp);
-  console.log("App initialized");
+  console.log("App initialized.");
 })();
 
 import VueMeta from "vue-meta";

@@ -18,8 +18,11 @@
     "daysToShowNewResearch": 21,
     "archiveDate": "January 1, 2021",
     "home": {
-        "eventLimit": 5,
-        "postLimit": 5
+        "eventLimit": 3,
+        "postLimit": 4,
+        "fundingLimit": 4,
+        "meetingLimit": 5,
+        "employmentLimit": 4
     },
     "image": {
         "server": "https://image.icjia.cloud",

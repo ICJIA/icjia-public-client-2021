@@ -143,11 +143,11 @@ export default {
       variables() {
         return {
           now: new Date(),
-          eventLimit: 3,
-          postLimit: 4,
-          fundingLimit: 4,
-          meetingLimit: 4,
-          employmentLimit: 4,
+          eventLimit: this.$myApp.config.home.eventLimit,
+          postLimit: this.$myApp.config.home.postLimit,
+          fundingLimit: this.$myApp.config.home.fundingLimit,
+          meetingLimit: this.$myApp.config.home.meetingLimit,
+          employmentLimit: this.$myApp.config.home.employmentLimit,
         };
       },
 
@@ -172,7 +172,7 @@ export default {
           contentType: "Meeting",
         }));
         this.meetings = _.orderBy(meetings, ["end"], ["desc"]);
-        console.log("meetings: ", meetings);
+        //console.log("meetings: ", meetings);
         // Funding and Employment
         this.grants = ApolloQueryResult.data.grants.map((e) => ({
           ...e,
