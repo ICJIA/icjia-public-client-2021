@@ -1,6 +1,7 @@
 <template>
   <div
     style="background: #fff; min-height: 100vh !important; margin-top: -25px"
+    class="news-item"
   >
     <BaseContent :error="error" :loading="loading">
       <template slot="content" v-if="!loading">
@@ -151,23 +152,26 @@ export default {
   margin-top: -45px !important;
   margin-bottom: 30px;
 } */
-.markdown-body img {
+.news-item .markdown-body img {
   /* margin-bottom: 30px !important; */
   display: block !important;
   margin-left: auto !important;
   margin-right: auto !important;
 }
-figure {
+.news-item figure {
   margin-top: 25px;
   margin-bottom: 15px;
 }
 
-img + em {
+.news-item img + em {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #777;
   font-size: 12px;
   font-style: normal;
+  margin-top: 5px;
   margin-bottom: 20px;
+  font-family: "Lato", sans-serif !important;
 }
 </style>
