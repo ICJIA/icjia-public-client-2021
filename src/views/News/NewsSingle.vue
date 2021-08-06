@@ -145,13 +145,29 @@ export default {
 </script>
 
 <style>
-.markdown-body .caption {
+/* .markdown-body .caption {
   font-size: 12px !important;
   color: #333;
   margin-top: -45px !important;
   margin-bottom: 30px;
-}
+} */
 .markdown-body img {
-  margin-bottom: 30px !important;
+  /* margin-bottom: 30px !important; */
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+figure {
+  margin-top: 25px;
+  margin-bottom: 15px;
+}
+
+img + em {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-style: normal;
+  margin-bottom: 20px;
 }
 </style>

@@ -30,6 +30,13 @@ const mdAttrs = {
   allowedAttributes: [],
 };
 
+const mdImplicitFigureOpts = {
+  dataType: false, // <figure data-type="image">, default: false
+  figcaption: false, // <figcaption>alternative text</figcaption>, default: false
+  tabindex: true, // <figure tabindex="1+n">..., default: false
+  link: false, // <a href="img.png"><img src="img.png"></a>, default: false
+};
+
 let md = require("markdown-it")({
   html: true,
   xhtmlOut: false,
@@ -41,8 +48,10 @@ let md = require("markdown-it")({
 })
   .use(require("markdown-it-anchor").default, mdAnchorOpts)
   .use(require("markdown-it-footnote"))
+
   .use(require("markdown-it-link-attributes"), mdLinkAttrOpts)
   .use(require("markdown-it-multimd-table"), mdMultimdTableOpts)
+  .use(require("markdown-it-implicit-figures"), mdImplicitFigureOpts)
   .use(require("markdown-it-attrs"), mdAttrs);
 
 const renderToHtml = function (markdown) {
