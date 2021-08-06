@@ -27,23 +27,42 @@
           >
             <div class="text-right"></div>
             <div>
-              <v-chip
-                small
-                v-if="isItExpired(grant.end)"
-                class="mr-1"
-                color="grey lighten-2"
-                style="font-weight: 700"
-                >Expired</v-chip
-              >
-
               <div class="d-flex">
-                <span style="font-weight: 700; font-size: 14px; color: #000">
+                <!-- <span style="font-weight: 700; font-size: 14px; color: #000">
                   {{ getCategory(grant.category) }} </span
                 >&nbsp;|&nbsp;<span
+                  v-if="!isItExpired(grant.end)"
                   style="font-size: 14px"
                   class="hidden-sm-and-down"
                 >
                   {{ grant.start | dateFormatAlt }} to
+                  {{ grant.end | dateFormatAlt }}
+                </span>
+                <v-chip
+                  small
+                  v-if="isItExpired(grant.end)"
+                  class="mr-1"
+                  color="grey lighten-2"
+                  style="font-weight: 700"
+                  >Expired</v-chip
+                > -->
+                <span style="font-weight: 700; font-size: 16px; color: #000">
+                  {{ getCategory(grant.category) }}
+                </span>
+                <span v-if="isItExpired(grant.end)">
+                  &nbsp;|&nbsp;
+                  <v-chip
+                    x-small
+                    class="mr-1"
+                    color="grey lighten-2"
+                    style="font-weight: 700"
+                    >Expired</v-chip
+                  >
+                </span>
+                <span
+                  v-if="!isItExpired(grant.end)"
+                  style="font-size: 14px; font-weight: 400"
+                  >&nbsp;|&nbsp; {{ grant.start | dateFormatAlt }} to
                   {{ grant.end | dateFormatAlt }}
                 </span>
               </div>
