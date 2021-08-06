@@ -54,7 +54,7 @@
                   <v-chip
                     x-small
                     class="mr-1"
-                    color="grey lighten-2"
+                    color="red darken-2"
                     style="font-weight: 700"
                     >Expired</v-chip
                   >
@@ -95,7 +95,7 @@
                   <v-chip
                     x-small
                     class="mr-1"
-                    color="grey lighten-2"
+                    color="red darken-2"
                     style="font-weight: 700"
                     >Expired</v-chip
                   >
@@ -129,7 +129,36 @@
         <v-tab-item :style="`background: #fff !important;`">
           <div style="height: 15px; background: #fff !important"></div>
           <v-sheet style="min-height: 200px !important">
-            {{ meetings }}
+            <div v-for="(meeting, index) in meetings" :key="`meeting-${index}`">
+              <v-card
+                elevation="0"
+                class="px-8 py-8 hover card"
+                :class="{ 'rule-top': index > 0 }"
+                @click="routeTo(meeting.fullPath)"
+              >
+                <span style="font-weight: 700; font-size: 16px; color: #000">
+                  MEETING
+                </span>
+
+                <span style="font-size: 14px; font-weight: 400"
+                  >&nbsp;|&nbsp;
+                  {{ meeting.start | format }}
+                </span>
+                <span v-if="!isItExpired(meeting.end)">
+                  &nbsp;|&nbsp;
+                  <v-chip
+                    x-small
+                    class="mr-1"
+                    color="green darken-2"
+                    style="font-weight: 700"
+                    >Upcoming</v-chip
+                  >
+                </span>
+                <h2 class="mt-2">{{ meeting.title }}</h2>
+
+                <p>{{ meeting.summary }}</p>
+              </v-card>
+            </div>
           </v-sheet>
         </v-tab-item>
       </v-tabs>

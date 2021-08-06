@@ -19,16 +19,18 @@
         <span class="mb-8" style="font-size: 14px"
           >{{ getCategory(item.category).toUpperCase() }} EMPLOYMENT</span
         >
+
         <span
-          class="mb-8"
-          style="
-           color: #666;
-font-size: 14px
-            font-weight: 400;
+          v-if="
+            item.start &&
+            item.end &&
+            new Date(addOneDayToDate(item.end)) >= new Date()
           "
-        >
-          &nbsp;|&nbsp;Posted {{ item.start | format }}</span
-        >
+          style="font-size: 14px; font-weight: 900; color: #666"
+          class="mb-8"
+          >&nbsp;|&nbsp;
+          <span>Accepting applications through {{ item.end | format }}</span>
+        </span>
 
         <v-spacer></v-spacer>
 
@@ -82,17 +84,17 @@ font-size: 14px
           ></span
         >
       </div>
-      <div
-        v-if="
-          item.start &&
-          item.end &&
-          new Date(addOneDayToDate(item.end)) >= new Date()
-        "
-        class="mb-3 mt-3"
-        style="font-size: 12px; font-weight: 900"
+      <span
+        class="mb-8"
+        style="
+           color: #666;
+font-size: 14px
+            font-weight: 400;
+          "
       >
-        <span>Accepting applications through {{ item.end | format }}</span>
-      </div>
+        Posted {{ item.start | format }}</span
+      >
+
       <div
         v-if="item.summary && summaryOnly"
         v-html="render(item.summary)"
