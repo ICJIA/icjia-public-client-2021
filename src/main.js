@@ -22,22 +22,23 @@ Vue.config.productionTip = false;
 nprogress.start();
 // Set up app wide read-only configs and install as plugin
 import { myApp } from "./services/AppInit";
+myApp.install = function () {
+  Object.defineProperty(Vue.prototype, "$myApp", {
+    get() {
+      return myApp;
+    },
+  });
+};
 
 // scaffold this for future config from remote API instead of local json
-(async function init() {
-  // let siteConfig = await axios.get("https://agency.icjia-api.cloud/configs/2");
-  // console.log(siteConfig);
-  myApp.install = function () {
-    Object.defineProperty(Vue.prototype, "$myApp", {
-      get() {
-        return myApp;
-      },
-    });
-  };
-  // myApp.test = "test";
-  Vue.use(myApp);
-  console.log("App initialized.");
-})();
+// (async function () {
+//   let configs = await require("./services/Configs");
+//   console.log(configs);
+
+// })();
+
+Vue.use(myApp);
+console.log("App initialized.");
 
 import VueMeta from "vue-meta";
 Vue.use(VueMeta, {
