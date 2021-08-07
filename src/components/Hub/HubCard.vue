@@ -23,6 +23,7 @@
       style="font-weight: 700; color: #888; font-size: 12px; margin-top: -25px"
       >{{ displayAuthors(item.authors) }}</v-card-text
     >
+
     <div v-if="!textOnly">
       <v-img
         v-if="item.image"
