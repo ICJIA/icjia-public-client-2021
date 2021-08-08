@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <SocialSharing></SocialSharing>
     <div
       role="navigation"
       style="z-index: 10000"
@@ -37,7 +38,7 @@
         :key="`disclaimer-${$route.fullPath}`"
       ></Disclaimer>
     </v-main>
-
+    <ModalTranslate></ModalTranslate>
     <ModalSearch></ModalSearch>
   </v-app>
 </template>
