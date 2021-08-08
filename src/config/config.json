@@ -31,10 +31,6 @@
         "splashHeight": 400,
         "splashWidth": 0
     },
-    "unitContentTypes": [
-        "posts",
-        "documents"
-    ],
     "timezone": "America/Chicago",
     "underConstruction": false,
     "events": {
@@ -114,7 +110,7 @@
                 "text": ""
             }
         ],
-        "jobs": [
+        "employment": [
             {
                 "category": "contract",
                 "label": "Contract",

@@ -72,7 +72,7 @@
             <span style="font-weight: 700"
               >{{
                 getProperCategory(
-                  $myApp.config.maps.jobs,
+                  $myApp.config.maps.employment,
                   item.category
                 ).toUpperCase()
               }}

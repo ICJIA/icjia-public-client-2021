@@ -201,7 +201,7 @@ export default {
   },
   methods: {
     getCategory(category) {
-      return getProperCategory(this.$myApp.config.maps.jobs, category);
+      return getProperCategory(this.$myApp.config.maps.employment, category);
     },
     routeTo(fullPath) {
       if (!fullPath) return;

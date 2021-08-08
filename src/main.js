@@ -30,7 +30,8 @@ myApp.install = function () {
   });
 };
 
-// scaffold this for future config from remote API instead of local json
+//TODO: scaffold this for future config from remote API instead of local json
+//
 // (async function () {
 //   let configs = await require("./services/Configs");
 //   console.log(configs);
