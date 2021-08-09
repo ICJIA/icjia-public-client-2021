@@ -117,7 +117,7 @@ export default {
       const route = "https://agency.icjia.cloud" + this.$route.fullPath;
 
       const url =
-        `http://translate.google.com/translate?hl=en&sl=en&u=${route}&tl=` +
+        `https://translate.google.com/translate?hl=en&sl=en&u=${route}&tl=` +
         lang;
       this.translate = false;
       window.open(url);
