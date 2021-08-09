@@ -50,6 +50,7 @@ const GET_SINGLE_PAGE_QUERY = gql`
       attachments {
         name
         url
+        updated_at
       }
       attachmentLabel
       tags {

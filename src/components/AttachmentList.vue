@@ -23,6 +23,9 @@
           target="_blank"
           >{{ attachment.name }}</a
         >
+        <ul v-if="showLastUpdated" style="font-size: 12px">
+          <li>Last updated on {{ attachment.updated_at | format }}</li>
+        </ul>
       </li>
     </ul>
   </v-sheet>
@@ -49,6 +52,10 @@ export default {
       default: () => [],
     },
     useSecondLevelHeading: {
+      type: Boolean,
+      default: false,
+    },
+    showLastUpdated: {
       type: Boolean,
       default: false,
     },

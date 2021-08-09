@@ -16,6 +16,7 @@
                 v-if="content.attachments && content.attachments.length"
                 class="mt-6 pl-0"
                 :key="content.attachments.title"
+                :showLastUpdated="true"
                 :useSecondLevelHeading="true"
                 :label="
                   content.attachmentLabel && content.attachmentLabel.length
