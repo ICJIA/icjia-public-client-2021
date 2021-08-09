@@ -1,29 +1,68 @@
 <template>
-  <v-dialog v-model="translate" width="500">
-    <v-card class="pt-4">
-      <v-card-text>
+  <v-dialog
+    v-model="translate"
+    ref="translateTop"
+    style="z-index: 999999"
+    width="60%"
+  >
+    <v-card class="">
+      <v-card-title class="text-h5 grey lighten-2">
+        <v-spacer class="hidden-md-and-up"></v-spacer>
+        Translation Options<v-spacer></v-spacer
+        ><v-btn small @click="translate = false" class="hidden-sm-and-down"
+          >Close</v-btn
+        >
+      </v-card-title>
+      <v-card-text class="mt-3">
         <v-container fluid>
           <v-row>
-            <v-col>
+            <v-col cols="12" md="4">
               <v-btn small text @click="googleTranslate('es')">Spanish</v-btn>
+              <br />
               <v-btn small text @click="googleTranslate('pt')">Portugese</v-btn>
+              <br />
               <v-btn small text @click="googleTranslate('fr')">French</v-btn>
+              <br />
               <v-btn small text @click="googleTranslate('pl')">Polish</v-btn>
+              <br />
               <v-btn small text @click="googleTranslate('ru')">Russian</v-btn>
+              <br />
+              <v-btn small text @click="googleTranslate('it')">Italian</v-btn>
+              <br />
             </v-col>
-            <v-col>
-              <v-btn small text @click="googleTranslate('es')">Spanish</v-btn>
-              <v-btn small text @click="googleTranslate('pt')">Portugese</v-btn>
-              <v-btn small text @click="googleTranslate('fr')">French</v-btn>
-              <v-btn small text @click="googleTranslate('pl')">Polish</v-btn>
-              <v-btn small text @click="googleTranslate('ru')">Russian</v-btn>
+            <v-col cols="12" md="4">
+              <v-btn small text @click="googleTranslate('ar')">Arabic</v-btn>
+              <br />
+              <v-btn small text @click="googleTranslate('hy')">Armenian</v-btn>
+              <br />
+              <v-btn small text @click="googleTranslate('de')">German</v-btn>
+              <br />
+
+              <v-btn small text @click="googleTranslate('zh-TW')"
+                >Chinese (Traditional)</v-btn
+              >
+              <br />
+              <v-btn small text @click="googleTranslate('zh-CN')"
+                >Chinese (Simplified)</v-btn
+              >
+              <br />
+
+              <v-btn small text @click="googleTranslate('sr')">Serbian</v-btn>
+              <br />
             </v-col>
-            <v-col>
-              <v-btn small text @click="googleTranslate('es')">Spanish</v-btn>
-              <v-btn small text @click="googleTranslate('pt')">Portugese</v-btn>
-              <v-btn small text @click="googleTranslate('fr')">French</v-btn>
-              <v-btn small text @click="googleTranslate('pl')">Polish</v-btn>
-              <v-btn small text @click="googleTranslate('ru')">Russian</v-btn>
+            <v-col cols="12" md="4">
+              <v-btn small text @click="googleTranslate('iw')">Hebrew</v-btn>
+              <br />
+              <v-btn small text @click="googleTranslate('hu')">Hungarian</v-btn>
+              <br />
+              <v-btn small text @click="googleTranslate('is')">Icelandic</v-btn>
+              <br />
+              <v-btn small text @click="googleTranslate('lv')">Latvian</v-btn>
+              <br />
+              <v-btn small text @click="googleTranslate('fa')">Persian</v-btn>
+              <br />
+              <v-btn small text @click="googleTranslate('tr')">Turkish</v-btn>
+              <br />
             </v-col>
           </v-row>
         </v-container>
@@ -35,23 +74,23 @@
       <v-divider></v-divider>
 
       <v-card-actions class="mt-1">
-        <v-btn x-small text @click="show = !show">
+        <v-spacer></v-spacer>
+        <v-btn small text @click="show = !show">
           Disclaimer
           <v-icon right>{{
             show ? "mdi-chevron-up" : "mdi-chevron-down"
           }}</v-icon>
         </v-btn>
-        <v-spacer></v-spacer>
 
-        <v-btn color="grey" dark @click="translate = false" small>
+        <!-- <v-btn color="grey" dark @click="translate = false" small>
           Close
-        </v-btn>
+        </v-btn> -->
       </v-card-actions>
       <v-expand-transition>
         <div v-show="show">
-          <v-divider></v-divider>
+          <!-- <v-divider></v-divider> -->
 
-          <v-card-text style="font-size: 11px">
+          <v-card-text style="font-size: 14px">
             The Illinois Criminal Justice Information Authority ("ICJIA") offers
             translations of the content through Google Translate. Because Google
             Translate is an external website, ICJIA does not control the quality
