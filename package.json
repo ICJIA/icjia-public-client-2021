@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "npm run scripts && vue-cli-service serve",
-    "build": "npm run scripts && vue-cli-service build --modern",
+    "build": "npm run scripts && vue-cli-service build",
     "lint": "vue-cli-service lint",
     "scripts": "npm run generate:images && npm run generate:search && npm run generate:schema",
     "generate:search": "node ./generators/generateIndexHub && node ./generators/generateIndexUnits && node ./generators/generateIndexGrants && node ./generators/generateIndexPages && node ./generators/generateIndexMeetings && node ./generators/generateIndexEvents && node ./generators/generateIndexPosts && node ./generators/generateIndexJobs && node ./generators/generateIndexBiographies &&  node ./generators/generateIndexPublications && node ./generators/generateIndexFull",
