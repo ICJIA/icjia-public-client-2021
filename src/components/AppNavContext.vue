@@ -1,7 +1,8 @@
 <template>
   <div id="contextBar" style="border-bottom: 1px solid #fff" v-resize="resize">
-    <div
-      class="pl-3 pr-9 py-2"
+    <v-app-bar
+      class=""
+      height="35"
       style="background: #0a3a60; color: #fff; font-size: 15px"
       :class="{
         'text-left':
@@ -11,6 +12,7 @@
         'text-center': $vuetify.breakpoint.sm || $vuetify.breakpoint.xs,
       }"
     >
+      <v-spacer class="hidden-md-and-up"></v-spacer>
       <span>
         <span style="font-weight: 700" class="hover" @click="$router.push('/')"
           >ICJIA &nbsp;&raquo;&nbsp;</span
@@ -28,11 +30,18 @@
           v-if="contextTitle"
           >&nbsp;&raquo;&nbsp;{{ contextTitle | truncate(words) }}
         </span>
-        <!-- <span style="font-weight: 300" v-else
-          >&nbsp;&raquo;&nbsp;{{ currentLabel }}</span
-        > -->
       </span>
-    </div>
+      <v-spacer></v-spacer>
+      <v-btn
+        text
+        small
+        dark
+        class="hidden-sm-and-down"
+        @click="openTranslationModal()"
+      >
+        <v-icon small left>fas fa-globe</v-icon> Translate this page
+      </v-btn>
+    </v-app-bar>
 
     <v-app-bar height="35" scroll-threshold="0" color="#eee">
       <v-tabs
@@ -100,6 +109,9 @@ export default {
     this.selectTab();
   },
   methods: {
+    openTranslationModal() {
+      EventBus.$emit("translate", this.$route.fullPath);
+    },
     resize() {
       let words;
       if (this.$vuetify.breakpoint.xs) {
@@ -145,7 +157,7 @@ export default {
       isAtTop: false,
       disabled: false,
       more: [],
-      words: null,
+      words: 10,
     };
   },
 };
