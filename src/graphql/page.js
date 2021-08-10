@@ -48,9 +48,11 @@ const GET_SINGLE_PAGE_QUERY = gql`
       body
       published_at
       attachments {
-        name
-        url
         updated_at
+        size
+        name
+        ext
+        url
       }
       attachmentLabel
       tags {

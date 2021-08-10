@@ -59,8 +59,11 @@ const GET_SINGLE_JOB_QUERY = gql`
         slug
       }
       attachments {
-        url
+        updated_at
+        size
         name
+        ext
+        url
       }
     }
   }

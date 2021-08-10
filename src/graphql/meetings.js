@@ -31,6 +31,7 @@ const GET_ALL_MEETINGS_QUERY = gql`
       attachments {
         id
         formats
+        size
         name
         ext
         url
@@ -68,6 +69,7 @@ const GET_SINGLE_MEETING_QUERY = gql`
       attachments {
         id
         formats
+        size
         name
         ext
         url

@@ -69,7 +69,10 @@ const GET_SINGLE_FUNDING_QUERY = gql`
         slug
       }
       attachments {
+        updated_at
+        size
         name
+        ext
         url
       }
       tags {

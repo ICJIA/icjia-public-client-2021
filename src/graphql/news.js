@@ -44,7 +44,10 @@ const GET_SINGLE_POST_QUERY = gql`
       published_at
       attachmentLabel
       attachments {
+        updated_at
+        size
         name
+        ext
         url
       }
       meetings {

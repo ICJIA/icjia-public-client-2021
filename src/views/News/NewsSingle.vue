@@ -29,11 +29,11 @@
                   <template>{{ tag }}</template>
                 </BasePropChip>
               </BasePropDisplay>
-              <div class="my-5 mt-12">
+              <div class="mt-12">
                 <AttachmentList
                   :items="news.attachments"
                   v-if="news.attachments && news.attachments.length"
-                  class="mt-8 pl-3"
+                  class="mt-8"
                   :key="news.slug"
                   :label="
                     news.attachmentLabel && news.attachmentLabel.length
@@ -48,7 +48,7 @@
                   class="mt-10"
                   v-if="isRelated"
                   background="white"
-                  indentation="ml-0 px-0 py-0"
+                  indentation=""
                 ></RelatedList>
               </div>
             </v-col>
