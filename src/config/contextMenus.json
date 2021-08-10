@@ -52,6 +52,10 @@
                 "path": "/researchhub/datasets/"
             },
             {
+                "label": "Publications",
+                "path": "/researchhub/publications/"
+            },
+            {
                 "label": "Institutional Review Board",
                 "path": "/irb/"
             }

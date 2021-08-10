@@ -1,3 +1,5 @@
+import NProgress from "nprogress";
+
 const hub = [
   {
     path: "/researchhub/",
@@ -53,6 +55,17 @@ const hub = [
     name: "hubDatasetsSingle",
     component: () =>
       import(/* webpackChunkName: "hub" */ "@/views/Hub/DatasetsSingle.vue"),
+  },
+  {
+    path: "/researchhub/publications",
+    name: "ICJIAHubPublications",
+    // eslint-disable-next-line no-unused-vars
+    beforeRouteEnter(to, from, next) {
+      NProgress.start();
+      next();
+    },
+    component: () =>
+      import(/* webpackChunkName: "hub" */ "@/views/About/PublicationsAll.vue"),
   },
   {
     path: "/researchhub/:slug",
