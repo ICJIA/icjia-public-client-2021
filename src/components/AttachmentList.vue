@@ -62,12 +62,21 @@
                     font-weight: 900;
                     text-transform: uppercase;
                     color: #555;
+                    font-size: 12px;
                   "
                   >{{ attachment.ext.replace(/\./g, "") }}</span
                 >
               </td>
-              <td>{{ formatBytes(attachment.size) }}</td>
-              <td>{{ attachment.updated_at | format }}</td>
+              <td style="width: 100px">
+                <span style="font-size: 12px">{{
+                  formatBytes(attachment.size)
+                }}</span>
+              </td>
+              <td>
+                <span style="font-size: 12px">{{
+                  attachment.updated_at | dateFormatAlt
+                }}</span>
+              </td>
             </tr>
           </tbody>
         </template>
@@ -77,7 +86,7 @@
 </template>
 
 <script>
-function formatBytes(bytes, decimals = 2) {
+function formatBytes(bytes, decimals = 0) {
   if (bytes === 0) return "0 Bytes";
 
   const k = 1024;
