@@ -5,11 +5,6 @@
       elevation="0"
       color="#fff"
       min-height="150"
-      v-if="
-        $vuetify.breakpoint.md ||
-        $vuetify.breakpoint.lg ||
-        $vuetify.breakpoint.xl
-      "
       :class="{ 'rule-top': index && index > 0 }"
       style="overflow-y: auto !important"
       @click="routeTo(item.fullPath)"
@@ -20,7 +15,7 @@
             <v-img
               aria-label="News post image"
               :src="`https://agency.icjia-api.cloud${item.splash.formats.thumbnail.url}`"
-              height="100px"
+              :height="getHeight()"
               class=""
               style="border: 0px solid #fafafa"
               alt="ICJIA Intranet image"
@@ -107,7 +102,7 @@
       </v-container>
     </v-card>
 
-    <v-card
+    <!-- <v-card
       v-else
       class="grid-item markdown-body hover card"
       elevation="0"
@@ -135,7 +130,7 @@
           generum.</v-card-text
         >
       </div>
-    </v-card>
+    </v-card> -->
   </div>
 </template>
 
@@ -149,6 +144,13 @@ export default {
     };
   },
   methods: {
+    getHeight() {
+      if (this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs) {
+        return "250px";
+      } else {
+        return "80px;";
+      }
+    },
     search(name) {
       let opts = {
         query: name,
