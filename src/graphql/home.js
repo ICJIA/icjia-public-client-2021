@@ -141,6 +141,7 @@ const GET_HOME = gql`
       end
       category
       summary
+      published_at
     }
 
     grants(sort: "start:desc", limit: $fundingLimit) {
@@ -150,6 +151,7 @@ const GET_HOME = gql`
       summary
       start
       category
+      published_at
       end
       tags(sort: "title:asc") {
         title

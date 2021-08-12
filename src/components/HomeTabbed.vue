@@ -46,6 +46,7 @@
                   style="font-weight: 700"
                   >Expired</v-chip
                 > -->
+
                 <span style="font-weight: 700; font-size: 16px; color: #000">
                   {{ getCategory(grant.category) }}
                 </span>
@@ -54,7 +55,8 @@
                   <v-chip
                     x-small
                     class="mr-1"
-                    color="red darken-2"
+                    dark
+                    color="grey darken-1"
                     style="font-weight: 700"
                     >Expired</v-chip
                   >
@@ -67,7 +69,20 @@
                 </span>
               </div>
 
-              <h2 style="font-size: 18px" class="mt-2">{{ grant.title }}</h2>
+              <h2 style="font-size: 18px" class="mt-2">
+                <v-chip
+                  v-if="isItNew(grant)"
+                  label
+                  small
+                  color="#0D4474"
+                  class="mr-2"
+                >
+                  <span style="color: #fff !important; font-weight: 400">
+                    NEW!
+                  </span>
+                </v-chip>
+                {{ grant.title }}
+              </h2>
 
               <p style="font-size: 14px" class="mt-2">{{ grant.summary }}</p>
             </div>
@@ -95,7 +110,8 @@
                   <v-chip
                     x-small
                     class="mr-1"
-                    color="red darken-2"
+                    dark
+                    color="grey darken-1"
                     style="font-weight: 700"
                     >Expired</v-chip
                   >
@@ -191,6 +207,17 @@ export default {
     },
   },
   methods: {
+    isItNew(item) {
+      const now = moment(new Date());
+      const end = moment(item.published_at); // another date
+      const duration = moment.duration(now.diff(end));
+      const days = duration.asDays();
+      if (days <= this.$myApp.config.daysToShowNew) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     getColor(start, end) {
       let localStart = moment().tz(this.$myApp.config.timezone);
       let localEnd = moment(end).tz(this.$myApp.config.timezone);

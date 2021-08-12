@@ -8,10 +8,11 @@
       :class="{ 'rule-top': index && index > 0 }"
       style="overflow-y: auto !important"
       @click="routeTo(item.fullPath)"
+      v-resize="resize"
     >
       <v-container fluid>
         <v-row>
-          <v-col cols="12" md="3">
+          <v-col cols="12" md="4">
             <v-img
               aria-label="News post image"
               :src="`${getImage(item.splash.formats)}`"
@@ -34,7 +35,7 @@
             <v-img
               aria-label="News post image"
               src="/icjia-half-splash-thumb.jpg"
-              height="100px"
+              :height="getHeight()"
               class=""
               style="border: 0px solid #fafafa"
               alt="ICJIA Intranet image"
@@ -86,7 +87,20 @@
                   line-height: 24px;
                 "
               >
-                <h2 style="font-size: 18px" class="mt-1">{{ item.title }}</h2>
+                <h2 style="font-size: 18px" class="mt-1">
+                  <v-chip
+                    v-if="isItNew(item)"
+                    label
+                    small
+                    color="#0D4474"
+                    class="mr-2"
+                    style="margin-top: 0px"
+                  >
+                    <span style="color: #fff !important; font-weight: 400">
+                      NEW!
+                    </span> </v-chip
+                  >{{ item.title }}
+                </h2>
               </div></v-card-text
             >
 
@@ -107,6 +121,7 @@
 <script>
 import { EventBus } from "@/event-bus";
 import { getProperCategory } from "@/utils/content";
+import moment from "moment";
 export default {
   data() {
     return {
@@ -114,8 +129,24 @@ export default {
     };
   },
   methods: {
+    isItNew(item) {
+      const now = moment(new Date());
+      const end = moment(item.publicationDate); // another date
+      const duration = moment.duration(now.diff(end));
+      const days = duration.asDays();
+      if (days <= this.$myApp.config.daysToShowNew) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    resize() {
+      this.getHeight();
+      this.getImage(this.item.splash.formats);
+      console.log("resize");
+    },
     getImage(formats) {
-      let base = "https://agency.icjia-api.cloud";
+      let base = this.$myApp.config.api.base;
       let imageURL;
 
       if (this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs) {

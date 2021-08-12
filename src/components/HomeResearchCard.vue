@@ -26,7 +26,7 @@
         >
           NEW!
         </v-chip> -->
-        <v-btn
+        <!-- <v-btn
           v-if="isItNew(item)"
           dark
           elevation="2"
@@ -36,7 +36,7 @@
           class="mt-3 ml-3"
           color="#0D4474"
           >NEW!</v-btn
-        >
+        > -->
 
         <template v-slot:placeholder>
           <v-row class="fill-height ma-0" align="center" justify="center">
@@ -84,6 +84,18 @@
               line-height: 28px;
             "
           >
+            <v-chip
+              v-if="isItNew(item)"
+              label
+              small
+              color="#0D4474"
+              class="mr-1"
+              style="margin-top: -2px"
+            >
+              <span style="color: #fff !important; font-weight: 400">
+                NEW!
+              </span>
+            </v-chip>
             {{ item.title }}
           </div></v-card-text
         >

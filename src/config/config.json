@@ -15,7 +15,7 @@
         "register": "/auth/local/register"
     },
     "daysToShowNew": 10,
-    "daysToShowNewResearch": 21,
+    "daysToShowNewResearch": 14,
     "archiveDate": "January 1, 2021",
     "home": {
         "eventLimit": 3,
