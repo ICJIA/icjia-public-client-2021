@@ -108,6 +108,7 @@ const GET_MEETINGS_BY_CATEGORY_QUERY = gql`
         updated_at
         created_at
         hash
+        size
       }
       tags {
         title
