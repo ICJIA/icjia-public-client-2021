@@ -43,6 +43,20 @@
                           class="text-center px-12"
                           style="min-width: 350px; max-width: 850px"
                         >
+                          <v-chip
+                            v-if="isItNew(article.date)"
+                            label
+                            small
+                            color="#0D4474"
+                            class="mr-2"
+                            style="margin-top: 0px"
+                          >
+                            <span
+                              style="color: #fff !important; font-weight: 400"
+                            >
+                              NEW!
+                            </span>
+                          </v-chip>
                           <div class="text-center hidden-sm-and-down" style="">
                             <h3 style="font-size: 18px; font-weight: 300: ">
                               {{ article.date | format }}
@@ -183,6 +197,7 @@ import { EventBus } from "@/event-bus";
 import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
 import { renderToHtml } from "@/services/Markdown";
 import NProgress from "nprogress";
+import moment from "moment";
 import {
   getHubApplications,
   getHubArticles,
@@ -234,6 +249,17 @@ export default {
     });
   },
   methods: {
+    isItNew(articleDate) {
+      const now = moment(new Date());
+      const end = moment(articleDate); // another date
+      const duration = moment.duration(now.diff(end));
+      const days = duration.asDays();
+      if (days <= this.$myApp.config.daysToShowNewResearch) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     render(content) {
       return renderToHtml(content);
     },

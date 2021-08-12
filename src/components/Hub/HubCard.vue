@@ -13,6 +13,18 @@
         item.date | format
       }}</span></v-card-text
     >
+    <div>
+      <v-chip
+        v-if="isItNew(item.date)"
+        label
+        small
+        color="#0D4474"
+        class="mb-3 ml-3"
+        style="margin-top: 0px"
+      >
+        <span style="color: #fff !important; font-weight: 400"> NEW! </span>
+      </v-chip>
+    </div>
     <v-card-text v-if="item.title"
       ><h2 style="margin-top: -20px; line-height: 25px">
         {{ item.title }}
@@ -243,12 +255,12 @@ export default {
     getSplash(item) {
       return `${item.imagePath}`;
     },
-    isItNew(item) {
+    isItNew(itemDate) {
       const now = moment(new Date());
-      const end = moment(item.published_at); // another date
+      const end = moment(itemDate); // another date
       const duration = moment.duration(now.diff(end));
       const days = duration.asDays();
-      if (days <= 14) {
+      if (days <= this.$myApp.config.daysToShowNewResearch) {
         return true;
       } else {
         return false;
