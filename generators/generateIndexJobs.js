@@ -52,6 +52,10 @@ axios
       altTitle: e.title.toLowerCase(),
       imagePath: null,
       contentType: "employment",
+      searchMeta:
+        e.searchMeta && e.searchMeta.length
+          ? e.searchMeta + " jobs help wanted "
+          : " jobs help wanted ",
     }));
 
     let content = [...jobs];

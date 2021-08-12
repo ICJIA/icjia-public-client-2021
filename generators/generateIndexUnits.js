@@ -53,6 +53,10 @@ axios
       altTitle: u.title.toLowerCase(),
       imagePath: null,
       contentType: "unit",
+      searchMeta:
+        u.searchMeta && u.searchMeta.length
+          ? " " + u.searchMeta + " " + u.shortName + " "
+          : " " + u.shortName + " ",
     }));
 
     let content = [...units];

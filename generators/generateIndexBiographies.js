@@ -63,12 +63,24 @@ axios
     let biographies = res.data.data.biographies;
     biographies = getUnifiedTags(biographies);
     biographies = biographies.map((b) => {
+      let additionalSearchMeta;
+      if (b.unit && b.unit.shortName && b.unit.title) {
+        additionalSearchMeta =
+          " " + b.unit.shortName + " " + b.unit.title + " ";
+      } else {
+        additionalSearchMeta = "";
+      }
+
       let obj = {
         ...b,
         altTitle: b.title.toLowerCase(),
         contentType: "biography",
         fullPath: `/about/biographies/${b.slug}/`,
         imagePath: null,
+        searchMeta:
+          b.searchMeta && b.searchMeta.length
+            ? b.searchMeta + additionalSearchMeta
+            : additionalSearchMeta,
       };
 
       return obj;

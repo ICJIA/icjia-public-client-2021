@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-img
-      :src="getImagePath(splash.url, 0, 0, 50)"
+      :src="getImagePath(splash.url, 0, 0, 80)"
       :lazy-src="getImagePath(splash.formats.thumbnail.url)"
       width="100%"
       :height="splashHeight"
