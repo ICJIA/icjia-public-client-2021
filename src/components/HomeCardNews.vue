@@ -14,7 +14,7 @@
           <v-col cols="12" md="3">
             <v-img
               aria-label="News post image"
-              :src="`https://agency.icjia-api.cloud${item.splash.formats.thumbnail.url}`"
+              :src="`${getImage(item.splash.formats)}`"
               :height="getHeight()"
               class=""
               style="border: 0px solid #fafafa"
@@ -101,36 +101,6 @@
         </v-row>
       </v-container>
     </v-card>
-
-    <!-- <v-card
-      v-else
-      class="grid-item markdown-body hover card"
-      elevation="0"
-      color="#fff"
-      style="border: 1px solid #ccc"
-    >
-      <div class="px-5">
-        <v-card-text style="font-size: 12px">January 22, 2022 </v-card-text>
-
-        <v-card-text
-          ><div
-            style="
-              margin-top: -20px;
-              font-size: 22px;
-              font-weight: bold;
-              line-height: 28px;
-            "
-          >
-            News Item Title here
-          </div></v-card-text
-        >
-
-        <v-card-text style="margin-top: -15px"
-          >Orem markdownum Oechalia tenus, bracchia concolor tum, et in tota a
-          generum.</v-card-text
-        >
-      </div>
-    </v-card> -->
   </div>
 </template>
 
@@ -144,11 +114,23 @@ export default {
     };
   },
   methods: {
+    getImage(formats) {
+      let base = "https://agency.icjia-api.cloud";
+      let imageURL;
+
+      if (this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs) {
+        imageURL = formats.small.url;
+      } else {
+        imageURL = formats.thumbnail.url;
+      }
+      //console.log(`${base}${imageURL}`);
+      return `${base}${imageURL}`;
+    },
     getHeight() {
       if (this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs) {
-        return "250px";
+        return "225px";
       } else {
-        return "80px;";
+        return "100px;";
       }
     },
     search(name) {

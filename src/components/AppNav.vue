@@ -3,6 +3,7 @@
     <v-app-bar fixed app elevate-on-scroll color="white" height="90">
       <div
         class="hover hamburger text-center"
+        style="margin-left: -10px"
         v-if="$vuetify.breakpoint.sm || $vuetify.breakpoint.xs"
         @click="drawer = true"
       >
@@ -15,7 +16,7 @@
       ></v-spacer>
       <v-img
         alt="ICJIA Logo"
-        class="shrink mr-2 hover"
+        class="shrink mr-4 hover"
         contain
         src="/icjia-logo.png"
         transition="scale-transition"
@@ -212,7 +213,13 @@
 
       <v-tooltip left>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on" @click="openSearchModal()">
+          <v-btn
+            icon
+            v-bind="attrs"
+            v-on="on"
+            @click="openSearchModal()"
+            class="mr-3"
+          >
             <span class="v-icon mdi mdi-magnify"></span>
           </v-btn>
         </template>
