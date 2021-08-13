@@ -26,6 +26,6 @@ npm run build
 npm run lint
 ```
 
-### Dev site
+### Development site
 
 https://agency.icjia.cloud
