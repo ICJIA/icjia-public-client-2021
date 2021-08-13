@@ -4,16 +4,16 @@ const axios = require("axios");
 const jsonfile = require("jsonfile");
 const _ = require("lodash");
 
-const hub = require("../src/config/hub.json");
-const grants = require("../src/config/grants.json");
-const pages = require("../src/config/pages.json");
-const biographies = require("../src/config/biographies.json");
-const publications = require("../src/config/publications.json");
-const units = require("../src/config/units.json");
-const jobs = require("../src/config/jobs.json");
-const meetings = require("../src/config/meetings.json");
-const posts = require("../src/config/posts.json");
-const events = require("../src/config/events.json");
+const hub = require("../public/api/hub.json");
+const grants = require("../public/api/grants.json");
+const pages = require("../public/api/pages.json");
+const biographies = require("../public/api/biographies.json");
+const publications = require("../public/api/publications.json");
+const units = require("../public/api/units.json");
+const jobs = require("../public/api/jobs.json");
+const meetings = require("../public/api/meetings.json");
+const posts = require("../public/api/posts.json");
+const events = require("../public/api/events.json");
 
 let siteIndex = [
   ...biographies,
@@ -30,7 +30,7 @@ let siteIndex = [
 
 // siteIndex = _.orderBy(siteIndex, ["date"], ["desc"]);
 console.log("Site index length: ", siteIndex.length);
-jsonfile.writeFile(`./src/config/searchIndex.json`, siteIndex, function (err) {
+jsonfile.writeFile(`./public/api/searchIndex.json`, siteIndex, function (err) {
   if (err) console.error(err);
-  console.log(`Created: ./src/config/searchIndex.json`);
+  console.log(`Created: ./public/api/searchIndex.json`);
 });

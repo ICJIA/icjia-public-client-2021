@@ -61,9 +61,9 @@ axios
     let content = [...jobs];
     content = _.orderBy(content, ["end"], ["desc"]);
 
-    jsonfile.writeFile(`./src/config/jobs.json`, content, function (err) {
+    jsonfile.writeFile(`./public/api/jobs.json`, content, function (err) {
       if (err) console.error(err);
-      console.log(`Created: ./src/config/jobs.json`);
+      console.log(`Created: ./public/api/jobs.json`);
     });
   })
   .catch((err) => console.error(err));

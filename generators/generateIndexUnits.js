@@ -62,9 +62,9 @@ axios
     let content = [...units];
     content = _.orderBy(content, ["title"], ["asc"]);
 
-    jsonfile.writeFile(`./src/config/units.json`, content, function (err) {
+    jsonfile.writeFile(`./public/api/units.json`, content, function (err) {
       if (err) console.error(err);
-      console.log(`Created: ./src/config/units.json`);
+      console.log(`Created: ./public/api/units.json`);
     });
   })
   .catch((err) => console.error(err));

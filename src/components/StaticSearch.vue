@@ -25,7 +25,7 @@ import { EventBus } from "@/event-bus";
 import DOMPurify from "dompurify";
 import Fuse from "fuse.js";
 import _ from "lodash";
-// import searchIndex from "@/config/searchIndex.json";
+
 export default {
   data() {
     return {

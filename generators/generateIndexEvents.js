@@ -71,9 +71,9 @@ axios
     let content = [...events];
     content = _.orderBy(content, ["date"], ["desc"]);
 
-    jsonfile.writeFile(`./src/config/events.json`, content, function (err) {
+    jsonfile.writeFile(`./public/api/events.json`, content, function (err) {
       if (err) console.error(err);
-      console.log(`Created: ./src/config/events.json`);
+      console.log(`Created: ./public/api/events.json`);
     });
   })
   .catch((err) => console.error(err));

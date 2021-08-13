@@ -83,9 +83,9 @@ axios
     let content = [...pages];
     content = _.orderBy(content, ["date"], ["desc"]);
 
-    jsonfile.writeFile(`./src/config/pages.json`, content, function (err) {
+    jsonfile.writeFile(`./public/api/pages.json`, content, function (err) {
       if (err) console.error(err);
-      console.log(`Created: ./src/config/pages.json`);
+      console.log(`Created: ./public/api/pages.json`);
     });
   })
   .catch((err) => console.error(err));

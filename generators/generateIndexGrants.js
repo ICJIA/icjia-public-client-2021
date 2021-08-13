@@ -94,9 +94,9 @@ axios
     let content = [...grants, ...programs];
     content = _.orderBy(content, ["date"], ["desc"]);
 
-    jsonfile.writeFile(`./src/config/grants.json`, content, function (err) {
+    jsonfile.writeFile(`./public/api/grants.json`, content, function (err) {
       if (err) console.error(err);
-      console.log(`Created: ./src/config/grants.json`);
+      console.log(`Created: ./public/api/grants.json`);
     });
   })
   .catch((err) => console.error(err));

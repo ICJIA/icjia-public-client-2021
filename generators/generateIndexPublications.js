@@ -46,11 +46,11 @@ axios
     content = _.orderBy(content, ["publicationDate"], ["desc"]);
 
     jsonfile.writeFile(
-      `./src/config/publications.json`,
+      `./public/api/publications.json`,
       content,
       function (err) {
         if (err) console.error(err);
-        console.log(`Created: ./src/config/publications.json`);
+        console.log(`Created: ./public/api/publications.json`);
       }
     );
   })

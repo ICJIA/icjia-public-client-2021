@@ -7,12 +7,7 @@ const hub = [
     component: () =>
       import(/* webpackChunkName: "hub" */ "@/views/Hub/HubHome.vue"),
   },
-  {
-    path: "/researchhub/search",
-    name: "hubSearch",
-    component: () =>
-      import(/* webpackChunkName: "hub" */ "@/views/Hub/Search.vue"),
-  },
+
   {
     path: "/researchhub/hub-staff",
     name: "hubStaff",

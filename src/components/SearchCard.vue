@@ -82,7 +82,7 @@ import DOMPurify from "dompurify";
 import { renderToHtml } from "@/services/Markdown";
 import moment from "moment";
 import _ from "lodash";
-// import searchIndex from "@/config/searchIndex.json";
+
 export default {
   data() {
     return {

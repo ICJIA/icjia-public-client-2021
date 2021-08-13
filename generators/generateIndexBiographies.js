@@ -90,11 +90,11 @@ axios
     //content = _.orderBy(content, ["lastName"], ["asc"]);
 
     jsonfile.writeFile(
-      `./src/config/biographies.json`,
+      `./public/api/biographies.json`,
       content,
       function (err) {
         if (err) console.error(err);
-        console.log(`Created: ./src/config/biographies.json`);
+        console.log(`Created: ./public/api/biographies.json`);
       }
     );
   })

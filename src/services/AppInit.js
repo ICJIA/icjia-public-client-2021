@@ -1,5 +1,5 @@
 import config from "@/config/config.json";
-import searchIndex from "@/config/searchIndex.json";
+import searchIndex from "../../public/api/searchIndex.json";
 import disclaimers from "@/config/disclaimers.json";
 import context from "@/config/contextMenus.json";
 

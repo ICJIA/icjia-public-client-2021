@@ -59,9 +59,9 @@ axios
     let content = [...meetings];
     content = _.orderBy(content, ["end"], ["desc"]);
 
-    jsonfile.writeFile(`./src/config/meetings.json`, content, function (err) {
+    jsonfile.writeFile(`./public/api/meetings.json`, content, function (err) {
       if (err) console.error(err);
-      console.log(`Created: ./src/config/meetings.json`);
+      console.log(`Created: ./public/api/meetings.json`);
     });
   })
   .catch((err) => console.error(err));
