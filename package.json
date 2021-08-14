@@ -48,6 +48,7 @@
     "nprogress": "^0.2.0",
     "regenerator-runtime": "^0.13.7",
     "researchhub-lib": "github:icjia/researchhub-lib#v1.1.6",
+    "sitemap": "^7.0.0",
     "slug": "^5.1.0",
     "thumbor-url-builder": "^0.1.1",
     "vue": "^2.6.14",
