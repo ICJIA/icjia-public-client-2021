@@ -59,6 +59,9 @@ axios
     let content = [...meetings];
     content = _.orderBy(content, ["end"], ["desc"]);
 
+    const dirpath = "./public/api";
+    if (!fs.existsSync(dirpath)) fs.mkdirSync(dirpath);
+
     jsonfile.writeFile(`./public/api/meetings.json`, content, function (err) {
       if (err) console.error(err);
       console.log(`Created: ./public/api/meetings.json`);

@@ -94,6 +94,9 @@ axios
     let content = [...grants, ...programs];
     content = _.orderBy(content, ["date"], ["desc"]);
 
+    const dirpath = "./public/api";
+    if (!fs.existsSync(dirpath)) fs.mkdirSync(dirpath);
+
     jsonfile.writeFile(`./public/api/grants.json`, content, function (err) {
       if (err) console.error(err);
       console.log(`Created: ./public/api/grants.json`);

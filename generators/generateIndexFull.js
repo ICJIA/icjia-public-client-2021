@@ -29,6 +29,8 @@ let siteIndex = [
 ];
 
 // siteIndex = _.orderBy(siteIndex, ["date"], ["desc"]);
+const dirpath = "./public/api";
+if (!fs.existsSync(dirpath)) fs.mkdirSync(dirpath);
 console.log("Site index length: ", siteIndex.length);
 jsonfile.writeFile(`./public/api/searchIndex.json`, siteIndex, function (err) {
   if (err) console.error(err);

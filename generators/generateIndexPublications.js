@@ -45,6 +45,9 @@ axios
     let content = [...publications];
     content = _.orderBy(content, ["publicationDate"], ["desc"]);
 
+    const dirpath = "./public/api";
+    if (!fs.existsSync(dirpath)) fs.mkdirSync(dirpath);
+
     jsonfile.writeFile(
       `./public/api/publications.json`,
       content,

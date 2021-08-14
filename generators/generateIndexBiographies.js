@@ -87,7 +87,9 @@ axios
     });
 
     let content = [...biographies];
-    //content = _.orderBy(content, ["lastName"], ["asc"]);
+
+    const dirpath = "./public/api";
+    if (!fs.existsSync(dirpath)) fs.mkdirSync(dirpath);
 
     jsonfile.writeFile(
       `./public/api/biographies.json`,

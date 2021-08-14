@@ -61,6 +61,9 @@ axios
     let content = [...jobs];
     content = _.orderBy(content, ["end"], ["desc"]);
 
+    const dirpath = "./public/api";
+    if (!fs.existsSync(dirpath)) fs.mkdirSync(dirpath);
+
     jsonfile.writeFile(`./public/api/jobs.json`, content, function (err) {
       if (err) console.error(err);
       console.log(`Created: ./public/api/jobs.json`);
