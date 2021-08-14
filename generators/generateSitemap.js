@@ -5,15 +5,17 @@
 // const _ = require("lodash");
 // const { apiBaseURL } = require("./src/config");
 
-const { createWriteStream } = require("fs");
-const { SitemapStream } = require("sitemap");
+const index = require("../public/api/searchIndex.json");
 
-// Creates a sitemap object given the input configuration with URLs
-const sitemap = new SitemapStream({ hostname: "http://example.com" });
+// const { createWriteStream } = require("fs");
+// const { SitemapStream } = require("sitemap");
 
-const writeStream = createWriteStream("./public/sitemap.xml");
-sitemap.pipe(writeStream);
+// // Creates a sitemap object given the input configuration with URLs
+// const sitemap = new SitemapStream({ hostname: "http://example.com" });
 
-sitemap.write({ url: "/page-1/", changefreq: "daily", priority: 0.3 });
-sitemap.write("/page-2");
-sitemap.end();
+// const writeStream = createWriteStream("./public/sitemap.xml");
+// sitemap.pipe(writeStream);
+
+// sitemap.write({ url: "/page-1/", changefreq: "daily", priority: 0.3 });
+// sitemap.write("/page-2");
+// sitemap.end();

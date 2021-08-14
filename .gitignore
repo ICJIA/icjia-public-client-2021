@@ -30,3 +30,4 @@ package-lock.json
 # src/assets/units.json
 
 public/images
+public/api

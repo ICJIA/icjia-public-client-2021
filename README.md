@@ -26,6 +26,10 @@ npm run build
 npm run lint
 ```
 
+### Environment variables
+
+Rename `.env.example` to `.env` and fill in the values.
+
 ### Development site
 
 https://agency.icjia.cloud
