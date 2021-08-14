@@ -29,5 +29,5 @@ package-lock.json
 # src/assets/site-meta.json
 # src/assets/units.json
 
-public/images
-public/api
+public/images/*
+public/api/*
