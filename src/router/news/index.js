@@ -19,7 +19,7 @@ const news = [
   },
   {
     path: "/news/publications/",
-    name: "NewsMeetings",
+    name: "NewsPublications",
     component: () =>
       import(
         /* webpackChunkName: "news" */ "@/views/About/PublicationsAll.vue"

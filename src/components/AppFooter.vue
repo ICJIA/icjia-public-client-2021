@@ -1,11 +1,11 @@
 <template>
-  <v-footer style="border-top: 1px solid #000" dark>
+  <v-footer dark>
     <v-card
       flat
       tile
       width="100%"
       class="text-center pt-12 pb-4 markdown-body"
-      style="background: #0d4474"
+      style="background: #0d4474; border-top: 2px solid #888 !important"
     >
       <v-container>
         <v-row>
@@ -76,7 +76,7 @@
               >
               |
               <a
-                href="https://github.com/ICJIA/icjia-main-2021"
+                href="https://github.com/ICJIA/icjia-public-2021"
                 style="color: #fff; background: none"
                 target="_blank"
                 >Github</a
