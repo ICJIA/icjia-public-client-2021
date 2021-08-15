@@ -2,6 +2,17 @@
   "name": "icjia-public-2021",
   "version": "0.1.0",
   "private": true,
+  "description": "ICJIA Public Website (2021)",
+  "author": {
+    "name": "Illinois Criminal Justice Information Authority",
+    "email": "christopher.schweda@illinois.gov"
+  },
+  "homepage": "https://icjia.illinois.gov/",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ICJIA/icjia-public-2021"
+  },
   "scripts": {
     "serve": "npm run scripts && vue-cli-service serve",
     "build": "npm run scripts && vue-cli-service build",
@@ -9,7 +20,8 @@
     "scripts": "npm run generate:images && npm run generate:search && npm run generate:schema",
     "generate:search": "node ./generators/generateIndexHub && node ./generators/generateIndexUnits && node ./generators/generateIndexGrants && node ./generators/generateIndexPages && node ./generators/generateIndexMeetings && node ./generators/generateIndexEvents && node ./generators/generateIndexPosts && node ./generators/generateIndexJobs && node ./generators/generateIndexBiographies &&  node ./generators/generateIndexPublications && node ./generators/generateIndexFull",
     "generate:images": "node ./generators/generateImagesHub",
-    "generate:schema": "get-graphql-schema https://agency.icjia-api.cloud/graphql -j > schema.json"
+    "generate:schema": "get-graphql-schema https://agency.icjia-api.cloud/graphql -j > schema.json",
+    "postbuild": "node ./generators/generateBuildInfo"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
