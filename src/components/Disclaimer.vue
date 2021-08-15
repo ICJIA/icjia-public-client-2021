@@ -3,8 +3,8 @@
     <div
       style="
         background: #31597a;
-        border-top: 1px solid #ddd;
-        border-bottom: 1px solid #ddd;
+        border-top: 1px solid #aaa;
+
         color: #fff !important;
         z-index: 99999;
       "

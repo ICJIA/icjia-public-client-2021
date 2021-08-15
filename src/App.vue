@@ -29,7 +29,7 @@
       ></AppNavContext>
       <router-view
         :key="`routerView-${$route.fullPath}`"
-        style="min-height: 100vh !important"
+        style="min-height: 100vh !important; margin-bottom: 20px"
       ></router-view>
       <Disclaimer
         v-if="disclaimer"
@@ -40,6 +40,10 @@
     </v-main>
     <ModalTranslate></ModalTranslate>
     <ModalSearch></ModalSearch>
+    <AppFooter
+      style="margin: 0; padding: 0"
+      @hook:mounted="fixA11y()"
+    ></AppFooter>
   </v-app>
 </template>
 
@@ -61,7 +65,7 @@ export default {
   },
   methods: {
     fixA11y() {
-      console.log("Fix a11y.");
+      console.log("Fix a11y here.");
     },
     scrollFix: function () {},
     checkForDisclaimer() {

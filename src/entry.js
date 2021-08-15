@@ -16,12 +16,10 @@ function createBanner() {
   return `
   <div style="text-align: center; font-size: 0.7em;">
     
-    
-
     <h1 style='font-family: Lato, sans-serif; margin-top: 80px; padding-top: 20px; padding-bottom:20px; background: #eee;'>
-      The ICJIA Internet site does not support Internet Explorer.
+      The ICJIA  website does not support Internet Explorer.
       <br><br>
-      Please upgrade to a modern, secure browser such as
+      Please upgrade to a secure, modern browser such as
       <a href='https://www.google.com/chrome/'>Chrome</a>,
       <a href='https://www.mozilla.org/en-US/firefox/new/'>Firefox</a>, or
       <a href='https://www.microsoft.com/en-us/windows/microsoft-edge'>MS Edge</a>.
