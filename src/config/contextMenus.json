@@ -233,6 +233,10 @@
                 "path": "/about/publications/"
             },
             {
+                "label": "Death in Custody Reporting",
+                "path": "/about/dicra/"
+            },
+            {
                 "label": "FOIA",
                 "path": "/about/foia/"
             },
