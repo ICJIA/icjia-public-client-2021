@@ -140,6 +140,10 @@ import { EventBus } from "@/event-bus";
 import { getUnifiedTags } from "@/utils/content";
 export default {
   watch: {},
+  name: "Events",
+  metaInfo: {
+    title: "Events",
+  },
   async mounted() {
     if (this.$refs.calendar) {
       this.$refs.calendar.checkChange();

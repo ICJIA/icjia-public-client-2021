@@ -81,6 +81,10 @@ import nprogress from "nprogress";
 import { getUnifiedTags, getPublicationDate } from "@/utils/content";
 import _ from "lodash";
 export default {
+  name: "Home",
+  metaInfo: {
+    title: "Home",
+  },
   data() {
     return {
       slides: null,

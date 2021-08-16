@@ -37,6 +37,12 @@ import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import { getUnifiedTags } from "@/utils/content";
 import moment from "moment";
 export default {
+  name: "SingleEvent",
+  metaInfo() {
+    return {
+      title: this.event && this.event.name ? this.event.name : null,
+    };
+  },
   data() {
     return {
       loading: true,
