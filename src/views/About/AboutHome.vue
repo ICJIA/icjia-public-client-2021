@@ -47,7 +47,7 @@ export default {
   name: "About",
   metaInfo() {
     return {
-      title: "About",
+      title: this.content && this.content.title ? this.content.title : null,
     };
   },
   data() {
@@ -108,3 +108,5 @@ export default {
   },
 };
 </script>
+
+<style></style>

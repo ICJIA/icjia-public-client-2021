@@ -1,8 +1,5 @@
 <template>
-  <div
-    style="background: #fff; min-height: 100vh !important; margin-top: -25px"
-    class="news-item"
-  >
+  <div style="background: #fff; margin-top: -25px" class="news-item">
     <BaseContent :error="error" :loading="loading">
       <template slot="content" v-if="!loading">
         <v-container class="markdown-body mt-8">

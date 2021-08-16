@@ -50,7 +50,10 @@ export default {
   name: "Composition",
   metaInfo() {
     return {
-      title: "Composition & Membership",
+      title:
+        this.pageContent && this.pageContent.title
+          ? this.pageContent.title
+          : null,
     };
   },
   data() {

@@ -29,7 +29,9 @@
       ></AppNavContext>
       <router-view
         :key="`routerView-${$route.fullPath}`"
-        style="min-height: 100vh !important; margin-bottom: 20px"
+        class="page"
+        style="margin-bottom: 20px"
+        @hook:mounted="displayFooter()"
       ></router-view>
       <Disclaimer
         v-if="disclaimer"
@@ -43,11 +45,13 @@
     <AppFooter
       style="margin: 0; padding: 0"
       @hook:mounted="fixA11y()"
+      v-if="showFooter"
     ></AppFooter>
   </v-app>
 </template>
 
 <script>
+// import { EventBus } from "@/event-bus";
 export default {
   watch: {
     // eslint-disable-next-line no-unused-vars
@@ -67,9 +71,16 @@ export default {
     return {
       contextMenu: null,
       disclaimer: null,
+      showFooter: null,
     };
   },
+
   methods: {
+    displayFooter() {
+      this.$nextTick(() => {
+        this.showFooter = true;
+      });
+    },
     fixA11y() {
       console.log("Fix a11y here.");
     },

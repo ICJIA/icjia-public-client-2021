@@ -3,7 +3,11 @@
     <v-container>
       <v-row>
         <v-col>
-          <PublicationCard :item="publication" class="mt-8"></PublicationCard>
+          <PublicationCard
+            :item="publication"
+            class="mt-8"
+            v-if="publication"
+          ></PublicationCard>
           <div class="mt-5 text-right">
             <v-btn small text to="/about/publications/"
               >View all publications&nbsp;&raquo;</v-btn
