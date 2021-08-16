@@ -57,7 +57,7 @@ export default {
   name: "Covid",
   metaInfo() {
     return {
-      title: "COVID-19 Information",
+      title: "COVID-19 Response",
     };
   },
   data() {

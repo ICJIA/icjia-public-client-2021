@@ -77,6 +77,12 @@ import _ from "lodash";
 import NProgress from "nprogress";
 
 export default {
+  name: "Funding",
+  metaInfo() {
+    return {
+      title: "Funding Opportunities",
+    };
+  },
   data() {
     return {
       contentLoading: true,

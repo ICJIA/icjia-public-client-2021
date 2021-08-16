@@ -62,6 +62,12 @@ import { getUnifiedTags } from "@/utils/content";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import { EventBus } from "@/event-bus.js";
 export default {
+  name: "BasePage",
+  metaInfo() {
+    return {
+      title: this.content && this.content.title ? this.content.title : null,
+    };
+  },
   data() {
     return {
       loading: true,

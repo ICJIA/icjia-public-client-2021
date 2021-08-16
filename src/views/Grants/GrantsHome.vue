@@ -90,6 +90,12 @@ import _ from "lodash";
 import NProgress from "nprogress";
 
 export default {
+  name: "FSGUHome",
+  metaInfo() {
+    return {
+      title: "FSGU Home",
+    };
+  },
   data() {
     return {
       contentLoading: true,

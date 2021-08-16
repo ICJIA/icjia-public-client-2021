@@ -33,6 +33,12 @@ import { GET_BIOGRAPHIES_BY_UNIT_QUERY } from "@/graphql/biographies";
 import { GET_SINGLE_UNIT_QUERY } from "@/graphql/units";
 import _ from "lodash";
 export default {
+  name: "FSGUStaff",
+  metaInfo() {
+    return {
+      title: "FSGU Staff",
+    };
+  },
   data() {
     return {
       loading: true,

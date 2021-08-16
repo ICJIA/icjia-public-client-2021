@@ -78,6 +78,12 @@ import { EventBus } from "@/event-bus";
 import { getUnifiedTags, isRelatedContent } from "@/utils/content";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 export default {
+  name: "FundingSingle",
+  metaInfo() {
+    return {
+      title: this.funding && this.funding.title ? this.funding.title : null,
+    };
+  },
   data() {
     return {
       loading: true,

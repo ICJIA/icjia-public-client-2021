@@ -38,6 +38,12 @@ import { getUnifiedTags } from "@/utils/content";
 import NProgress from "nprogress";
 
 export default {
+  name: "ProgramSingle",
+  metaInfo() {
+    return {
+      title: this.program && this.program.title ? this.program.title : null,
+    };
+  },
   data() {
     return {
       program: null,

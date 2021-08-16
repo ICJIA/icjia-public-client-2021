@@ -86,6 +86,12 @@ import _ from "lodash";
 import NProgress from "nprogress";
 
 export default {
+  name: "FSGUPrograms",
+  metaInfo() {
+    return {
+      title: "Grant Programs",
+    };
+  },
   data() {
     return {
       contentLoading: true,
