@@ -26,6 +26,12 @@ import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_BIOGRAPHY_QUERY } from "@/graphql/biographies";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 export default {
+  name: "StaffSingle",
+  metaInfo() {
+    return {
+      title: this.item && this.item.fullName ? this.item.fullName : null,
+    };
+  },
   data() {
     return {
       loading: true,

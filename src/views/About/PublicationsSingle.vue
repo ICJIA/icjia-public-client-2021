@@ -20,6 +20,15 @@ import NProgress from "nprogress";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_PUBLICATION_QUERY } from "@/graphql/publications";
 export default {
+  name: "PublicationSingle",
+  metaInfo() {
+    return {
+      title:
+        this.publication && this.publication.title
+          ? this.publication.title
+          : null,
+    };
+  },
   data() {
     return {
       error: null,

@@ -54,6 +54,12 @@ import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import { EventBus } from "@/event-bus.js";
 export default {
+  name: "Covid",
+  metaInfo() {
+    return {
+      title: "COVID-19 Information",
+    };
+  },
   data() {
     return {
       loading: true,

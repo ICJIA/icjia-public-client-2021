@@ -83,6 +83,12 @@ import _ from "lodash";
 import NProgress from "nprogress";
 
 export default {
+  name: "Employment",
+  metaInfo() {
+    return {
+      title: "Employment",
+    };
+  },
   data() {
     return {
       contentLoading: true,

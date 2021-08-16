@@ -116,6 +116,11 @@ import { EventBus } from "@/event-bus";
 import _ from "lodash";
 export default {
   name: "Publications",
+  metaInfo() {
+    return {
+      title: "Publications",
+    };
+  },
   data() {
     return {
       sortBy: "publicationDate",

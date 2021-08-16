@@ -44,6 +44,12 @@ import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 export default {
+  name: "About",
+  metaInfo() {
+    return {
+      title: "About",
+    };
+  },
   data() {
     return {
       loading: true,

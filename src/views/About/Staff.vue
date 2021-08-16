@@ -86,6 +86,12 @@ import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import _ from "lodash";
 export default {
+  name: "Staff",
+  metaInfo() {
+    return {
+      title: "Staff",
+    };
+  },
   data() {
     return {
       loading: true,

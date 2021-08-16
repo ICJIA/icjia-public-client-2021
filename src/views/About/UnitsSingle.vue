@@ -1,14 +1,14 @@
 <template>
   <div>
     <v-container
-      ><r-row
+      ><v-row
         ><v-col>
           <div v-if="unit" style="border: 1px solid #ccc">
-            <UnitCard :item="unit[0]" :shortName="unit[0].shortName"></UnitCard>
+            <UnitCard :item="unit" :shortName="unit.shortName"></UnitCard>
           </div>
           <div v-else>
             <Loader loaderType="skeleton"></Loader>
-          </div> </v-col></r-row
+          </div> </v-col></v-row
     ></v-container>
   </div>
 </template>
@@ -28,6 +28,12 @@ import { GET_SINGLE_UNIT_QUERY } from "@/graphql/units";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import _ from "lodash";
 export default {
+  name: "UnitSingle",
+  metaInfo() {
+    return {
+      title: this.unit && this.unit.title ? this.unit.title : null,
+    };
+  },
   data() {
     return {
       loading: true,
@@ -83,6 +89,7 @@ export default {
           }));
 
           this.unit = _.orderBy(this.unit, ["title"], ["asc"]);
+          this.unit = this.unit[0];
         }
 
         NProgress.done();

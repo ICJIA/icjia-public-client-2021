@@ -34,6 +34,12 @@ import { renderToHtml } from "@/services/Markdown";
 import NProgress from "nprogress";
 
 export default {
+  name: "EmploymentSingle",
+  metaInfo() {
+    return {
+      title: this.job && this.job.title ? this.job.title : null,
+    };
+  },
   data() {
     return {
       contentLoading: true,
