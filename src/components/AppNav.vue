@@ -1,6 +1,13 @@
 <template>
   <div>
-    <v-app-bar fixed app elevate-on-scroll color="white" height="90">
+    <v-app-bar
+      fixed
+      app
+      elevate-on-scroll
+      color="white"
+      height="90"
+      style="z-index: 50"
+    >
       <div
         class="hover hamburger text-center"
         style="margin-left: -10px"
@@ -49,7 +56,7 @@
         origin="center center"
         transition="scale-transition"
         nudge-left="20px"
-        style="z-index: 100000"
+        style="z-index: 500"
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -145,7 +152,7 @@
         origin="center center"
         transition="scale-transition"
         nudge-left="20px"
-        style="z-index: 100000"
+        style="z-index: 500"
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -233,7 +240,7 @@
       temporary
       disable-resize-watcher
       color="white"
-      style="z-index: 99999"
+      style="z-index: 500"
       ><v-list class="mt-5">
         <div v-for="item in items" :key="item.title">
           <div v-if="item.items.length">
@@ -375,7 +382,7 @@ export default {
 .searchResults {
   position: absolute;
   top: 100px;
-  z-index: 500000;
+  z-index: 999;
   background: #000;
 }
 

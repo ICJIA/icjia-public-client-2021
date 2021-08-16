@@ -1,5 +1,9 @@
 <template>
-  <div id="contextBar" style="border-bottom: 1px solid #fff" v-resize="resize">
+  <div
+    id="contextBar"
+    style="border-bottom: 1px solid #fff; z-index: 10 !important"
+    v-resize="resize"
+  >
     <v-app-bar
       class=""
       height="35"

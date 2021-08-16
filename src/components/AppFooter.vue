@@ -1,5 +1,5 @@
 <template>
-  <v-footer dark>
+  <v-footer dark style="z-index: 10000 !important">
     <v-card
       flat
       tile
