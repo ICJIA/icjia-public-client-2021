@@ -4,10 +4,10 @@
       flat
       tile
       width="100%"
-      class="text-center pt-12 pb-4 markdown-body"
+      class="text-center markdown-body pb-4"
       style="background: #0d4474; border-top: 2px solid #888 !important"
     >
-      <v-container>
+      <!-- <v-container>
         <v-row>
           <v-col cols="12" md="4" style="color: white">
             <h3 style="color: white" class="mb-3 h2">Footer Heading 1</h3>
@@ -38,14 +38,22 @@
             </p>
           </v-col>
         </v-row>
-      </v-container>
-      <v-container class="mt-3" style="border-top: 1px solid #fff" fill-height>
+      </v-container> -->
+      <v-container class="mt-0" fill-height>
         <v-row align="center" justify="center">
-          <v-col cols="12" md="6" class="text-center mt-2">
+          <!-- <v-col cols="12" md="6" class="text-center mt-2">
             <img src="/icjia-logo.png" alt="Footer logo" />
-          </v-col>
-          <v-col cols="12" md="6" class="text-center mt-2" style="color: white">
-            <div class="py-4">
+          </v-col> -->
+          <v-col
+            cols="12"
+            md="12"
+            class="text-center mt-2"
+            style="color: white"
+          >
+            <div>
+              <img src="/icjia-logo.png" alt="Footer logo" width="150" />
+            </div>
+            <div class="pb-6">
               <span class="v-icon fab fa-twitter mr-4"></span
               ><span class="v-icon fab fa-facebook mr-4"></span>
               <span class="v-icon fab fa-youtube"></span>
