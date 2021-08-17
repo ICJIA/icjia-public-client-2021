@@ -38,8 +38,8 @@
         :src="`https://agency.icjia-api.cloud${item.splash.formats.small.url}`"
         :lazy-src="`https://agency.icjia-api.cloud${item.splash.formats.thumbnail.url}`"
         width="100%"
-        height="250"
-        class="mb-8"
+        height="175"
+        class=""
         :ref="'img_' + item.id"
         @error="errorHandler(item.id)"
         style="border: 1px solid #fafafa"
@@ -57,11 +57,28 @@
       </v-img>
     </div>
 
-    <div v-else>
-      <span style="width: 100% !important">&nbsp;</span>
-    </div>
+    <v-img
+      aria-label="News post image"
+      src="/icjia-half-splash-thumb.jpg"
+      width="100%"
+      height="175"
+      class=""
+      style="border: 0px solid #fafafa"
+      alt="ICJIA Intranet image"
+      v-else
+    >
+      <template v-slot:placeholder>
+        <v-row class="fill-height ma-0" align="center" justify="center">
+          <v-progress-circular
+            indeterminate
+            aria-label="Progress bar: Loading"
+            color="blue darken-3"
+          ></v-progress-circular>
+        </v-row>
+      </template>
+    </v-img>
 
-    <v-card-text v-if="item.summary" style="margin-top: -35px; color: #111"
+    <v-card-text v-if="item.summary" style="color: #111"
       >{{ item.summary }}
     </v-card-text>
 

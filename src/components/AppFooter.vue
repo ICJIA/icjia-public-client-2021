@@ -51,7 +51,12 @@
             style="color: white"
           >
             <div>
-              <img src="/icjia-logo.png" alt="Footer logo" width="150" />
+              <img
+                src="/icjia-logo.png"
+                alt="Footer logo"
+                width="100"
+                style="border: 0px solid #ddd; display: inline"
+              />
             </div>
             <div class="pb-6">
               <span class="v-icon fab fa-twitter mr-4"></span
