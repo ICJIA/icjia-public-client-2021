@@ -4,6 +4,7 @@ const axios = require("axios");
 const jsonfile = require("jsonfile");
 const _ = require("lodash");
 // const { apiBaseURL } = require("./src/config");
+const allowedHost = "https://icjia.illinois.gov/researchhub";
 
 const query = `query {
   publications {
@@ -32,8 +33,7 @@ axios
         ...p,
         altTitle: p.title.toLowerCase(),
         localArticlePath:
-          p.articleURL &&
-          p.articleURL.includes("https://icjia.illinois.gov/researchhub")
+          p.articleURL && p.articleURL.includes(allowedHost)
             ? p.articleURL.replace("https://icjia.illinois.gov", "")
             : null,
         fullPath: `/about/publications/${p.slug}`,

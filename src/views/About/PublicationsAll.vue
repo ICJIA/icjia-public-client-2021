@@ -124,6 +124,7 @@ export default {
   data() {
     return {
       sortBy: "publicationDate",
+      allowedHost: "https://icjia.illinois.gov/researchhub",
       sortDesc: true,
       expanded: [],
       search: "",
@@ -193,8 +194,7 @@ export default {
           fullPath: `/about/publications/${e.slug}/`,
           contentType: "publication",
           localArticlePath:
-            e.articleURL &&
-            e.articleURL.includes("https://icjia.illinois.gov/researchhub")
+            e.articleURL && e.articleURL.includes(this.allowedHost)
               ? e.articleURL.replace("https://icjia.illinois.gov", "")
               : null,
         }));

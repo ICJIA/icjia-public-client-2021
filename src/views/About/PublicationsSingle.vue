@@ -33,6 +33,7 @@ export default {
     return {
       error: null,
       publication: null,
+      allowedHost: "https://icjia.illinois.gov/researchhub",
     };
   },
   computed: {},
@@ -75,8 +76,7 @@ export default {
             fullPath: `/about/publications/${e.slug}/`,
             contentType: "publication",
             localArticlePath:
-              e.articleURL &&
-              e.articleURL.includes("https://icjia.illinois.gov/researchhub")
+              e.articleURL && e.articleURL.includes(this.allowedHost)
                 ? e.articleURL.replace("https://icjia.illinois.gov", "")
                 : null,
           }));
