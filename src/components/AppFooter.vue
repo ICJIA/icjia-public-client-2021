@@ -99,6 +99,23 @@
   </v-footer>
 </template>
 
+<script>
+import { EventBus } from "@/event-bus";
+export default {
+  mounted() {
+    EventBus.$on("show-footer", () => {
+      console.log("show-footer event");
+      this.showFooter = true;
+    });
+  },
+  data() {
+    return {
+      showFooter: false,
+    };
+  },
+};
+</script>
+
 <style>
 .router-link-exact-active {
   color: #fff !important;

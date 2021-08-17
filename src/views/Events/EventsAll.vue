@@ -84,7 +84,6 @@
                 @click:event="showEvent"
                 @click:more="viewDay"
                 @click:date="viewDay"
-                style="min-height: 100vh !important"
               ></v-calendar>
               <v-menu
                 v-model="selectedOpen"

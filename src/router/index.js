@@ -70,6 +70,7 @@ router.beforeEach((to, from, next) => {
 });
 
 router.afterEach((routeTo, routeFrom) => {
+  EventBus.$emit("show-footer");
   NProgress.done();
 });
 

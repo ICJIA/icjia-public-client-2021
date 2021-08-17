@@ -1,12 +1,16 @@
 <template>
   <div>
     <v-card class="px-5 py-5 my-1 mx-1 text-left" color="#fafafa">
-      <span style="font-weight: 400; font-size: 12px" class="mb-5 px-3">{{
-        item.publicationDate | dateFormatAlt
-      }}</span>
+      <span
+        style="font-weight: 400; font-size: 12px"
+        class="mb-5 px-3"
+        v-if="item && item.publicationDate"
+        >{{ item.publicationDate | dateFormatAlt }}</span
+      >
       <div
         style="font-weight: 900; text-transform: uppercase; font-size: 26px"
         class="mb-3 mt-2 px-3"
+        v-if="item && item.title"
       >
         {{ item.title }}
       </div>
