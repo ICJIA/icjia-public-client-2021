@@ -89,7 +89,10 @@ export default {
   name: "Staff",
   metaInfo() {
     return {
-      title: "Staff",
+      title:
+        this.pageContent && this.pageContent.title
+          ? this.pageContent.title
+          : null,
     };
   },
   data() {
