@@ -40,12 +40,12 @@
                       :showReadMore="true"
                     ></BaseCardExpandable>
                   </div>
-                  <div>
+                  <!-- <div>
                     <ClickthroughBoxes
                       :boxes="page.clickthrough"
                       v-if="page.clickthrough"
                     ></ClickthroughBoxes>
-                  </div>
+                  </div> -->
                 </v-col>
                 <v-col
                   cols="12"
@@ -59,6 +59,16 @@
                     class="mb-6"
                   ></div
                 ></v-col>
+              </v-row>
+            </v-container>
+            <v-container>
+              <v-row>
+                <v-col cols="12">
+                  <ClickthroughBoxes
+                    :boxes="page.clickthrough"
+                    v-if="page && page.clickthrough"
+                  ></ClickthroughBoxes>
+                </v-col>
               </v-row>
             </v-container>
           </template>

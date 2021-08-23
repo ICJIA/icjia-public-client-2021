@@ -36,7 +36,7 @@ export default {
   name: "FSGUStaff",
   metaInfo() {
     return {
-      title: "FSGU Staff",
+      title: "Federal and State Grants Unit Staff",
     };
   },
   data() {

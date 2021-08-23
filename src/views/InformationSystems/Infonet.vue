@@ -18,12 +18,6 @@
                 :threshold="0.2"
                 class="mt-3"
               ></StaticSearch>
-
-              <ClickthroughBoxes
-                :boxes="content.clickthrough"
-                v-if="content.clickthrough && content.clickthrough.length"
-                :boxesPerRow="content && content.showTOC ? 2 : 3"
-              ></ClickthroughBoxes>
             </v-col>
             <!-- <v-col
               cols="12"
@@ -32,6 +26,16 @@
               class="px-3 hidden-sm-and-down"
               ><Toc :key="content.title" :tocHeading="content.title"></Toc
             ></v-col> -->
+          </v-row>
+        </v-container>
+        <v-container>
+          <v-row>
+            <v-col cols="12">
+              <ClickthroughBoxes
+                :boxes="content.clickthrough"
+                v-if="content && content.clickthrough"
+              ></ClickthroughBoxes>
+            </v-col>
           </v-row>
         </v-container>
       </template>

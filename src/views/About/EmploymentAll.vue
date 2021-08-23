@@ -6,7 +6,7 @@
           <template slot="content">
             <v-container style="margin-top: -15px">
               <v-row v-if="page">
-                <v-col cols="12" :md="page && page.showTOC ? 9 : 12">
+                <v-col cols="12" :md="page && page.showTOC ? 8 : 12">
                   <h1 v-html="render(page.title)"></h1>
                   <div v-html="render(page.body)"></div>
                   <h2 id="current-icjia-opportunities">
@@ -41,19 +41,23 @@
                       :showReadMore="true"
                     ></JobCard>
                   </div>
-                  <div>
-                    <ClickthroughBoxes
-                      :boxes="page.clickthrough"
-                      v-if="page.clickthrough"
-                    ></ClickthroughBoxes>
-                  </div>
                 </v-col>
                 <v-col
                   cols="12"
                   v-if="page && page.showTOC"
-                  md="3"
+                  md="4"
                   class="px-3 hidden-sm-and-down"
                   ><Toc :key="page.title" :tocHeading="page.title"></Toc>
+                </v-col>
+              </v-row>
+            </v-container>
+            <v-container>
+              <v-row>
+                <v-col cols="12">
+                  <ClickthroughBoxes
+                    :boxes="page.clickthrough"
+                    v-if="page.clickthrough"
+                  ></ClickthroughBoxes>
                 </v-col>
               </v-row>
             </v-container>

@@ -26,6 +26,7 @@
           v-for="(item, index) in toc"
           :key="index"
           @click="scrollTo(item.id)"
+          class="tocListItem"
         >
           <span :id="`scrollTo-${item.id}`" class="tocItem">{{
             item.text
@@ -129,9 +130,9 @@ export default {
 </script>
 
 <style>
-.divider {
+/* .divider {
   border-left: 1px solid #ccc;
-}
+} */
 
 .visible {
   color: #0d4474;
@@ -175,10 +176,17 @@ ul.toc-list li:hover {
   color: #aaa;
   background: #eee;
 }
+
+.tocListItem {
+  margin-left: -30px !important;
+}
+
+/* .tocItem {
+} */
 @media only screen and (max-width: 1024px) {
-  .divider {
+  /* .divider {
     border-left: 0px solid #ccc;
-  }
+  } */
 
   ul.toc-list li:hover {
     color: #fff;

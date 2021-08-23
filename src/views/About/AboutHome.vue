@@ -8,28 +8,31 @@
       <template slot="content">
         <v-container class="">
           <v-row v-if="content">
-            <v-col cols="12" :md="content && content.showTOC ? 9 : 12">
+            <v-col cols="12" :md="content && content.showTOC ? 8 : 12">
               <h1
                 v-html="render(content.title)"
                 style="color: #000"
                 v-if="content.title"
               ></h1>
               <div v-html="render(content.body)"></div>
-              <div>
-                <ClickthroughBoxes
-                  :boxes="content.clickthrough"
-                  v-if="content.clickthrough"
-                  :boxesPerRow="content && content.showTOC ? 2 : 3"
-                ></ClickthroughBoxes>
-              </div>
             </v-col>
             <v-col
               cols="12"
               v-if="content && content.showTOC"
-              md="3"
+              md="4"
               class="px-3 hidden-sm-and-down"
               ><Toc :key="content.title" :title="content.title"></Toc
             ></v-col>
+          </v-row>
+        </v-container>
+        <v-container>
+          <v-row>
+            <v-col cols="12">
+              <ClickthroughBoxes
+                :boxes="content.clickthrough"
+                v-if="content && content.clickthrough"
+              ></ClickthroughBoxes>
+            </v-col>
           </v-row>
         </v-container>
       </template>
