@@ -130,9 +130,9 @@ export default {
 </script>
 
 <style>
-/* .divider {
+.divider {
   border-left: 1px solid #ccc;
-} */
+}
 
 .visible {
   color: #0d4474;

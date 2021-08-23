@@ -6,9 +6,9 @@
           <h2 id="for-more-information">For more information</h2>
         </v-col>
 
-        <div class="flex-container">
+        <v-col cols="12" class="flex-container">
           <v-card
-            class="elevation-1 px-8 py-10 box text-center hover card mr-1"
+            class="elevation-1 px-8 py-10 box text-center hover card mr-1 my-1"
             style="border: 1px solid #ddd"
             v-for="(box, index) in boxes"
             :data-aos="getAnimation()"
@@ -43,7 +43,7 @@
               <span v-html="render(box.teaser)" style="font-size: 14px"></span>
             </v-card-text>
           </v-card>
-        </div>
+        </v-col>
       </v-row>
     </v-container>
   </div>
@@ -140,13 +140,13 @@ export default {
   flex-grow: 1;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 1024px) {
   .flex-item {
     background: blue;
 
     margin: 0px;
     margin-top: 10px;
-    flex: 0 1 calc(100%); /* <-- adjusting for margin */
+    flex: 0 1;
     flex-grow: 1;
   }
 }

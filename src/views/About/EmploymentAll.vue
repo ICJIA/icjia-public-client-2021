@@ -56,7 +56,7 @@
                 <v-col cols="12">
                   <ClickthroughBoxes
                     :boxes="page.clickthrough"
-                    v-if="page.clickthrough"
+                    v-if="page && page.clickthrough"
                   ></ClickthroughBoxes>
                 </v-col>
               </v-row>
