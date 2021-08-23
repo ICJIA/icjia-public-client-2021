@@ -8,7 +8,6 @@
       :class="{ 'rule-top': index && index > 0 }"
       style="overflow-y: auto !important"
       @click="routeTo(item.fullPath)"
-      v-resize="resize"
     >
       <v-container fluid>
         <v-row>
@@ -141,8 +140,10 @@ export default {
       }
     },
     resize() {
-      this.getHeight();
-      this.getImage(this.item.splash.formats);
+      // this.getHeight();
+      // if (this.item && this.item.splash && this.item.splash.formats) {
+      //   this.getImage(this.item.splash.formats);
+      // }
       console.log("resize");
     },
     getImage(formats) {
