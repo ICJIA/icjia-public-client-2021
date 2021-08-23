@@ -34,8 +34,8 @@ Rename `.env.example` to `.env` and fill in the values.
 
 View the [security policy here](https://github.com/ICJIA/icjia-public-2021/blob/main/SECURITY.md).
 
-### Development site
+### Development
 
 https://agency.icjia.cloud
 
-**This is a work in progress**
+**This is a work in progress. The site is still in development.**
