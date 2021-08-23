@@ -4,7 +4,11 @@
       ><v-row
         ><v-col>
           <div v-if="unit" style="border: 1px solid #ccc">
-            <UnitCard :item="unit" :shortName="unit.shortName"></UnitCard>
+            <UnitCard
+              :item="unit"
+              :shortName="unit.shortName"
+              :showActions="false"
+            ></UnitCard>
           </div>
           <div v-else>
             <Loader loaderType="skeleton"></Loader>
@@ -85,7 +89,7 @@ export default {
             ...u,
             fullPath: `/about/units/${u.slug}/`,
             contentType: "unit",
-            show: false,
+            show: true,
           }));
 
           this.unit = _.orderBy(this.unit, ["title"], ["asc"]);

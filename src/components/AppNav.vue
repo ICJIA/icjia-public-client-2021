@@ -66,7 +66,7 @@
             v-bind="attrs"
             v-on="on"
             style="font-weight: 900 !important; font-size: 16px"
-            >DEV 1<v-icon right small>arrow_drop_down</v-icon>
+            >DEVELOP 1<v-icon right small>arrow_drop_down</v-icon>
           </v-btn>
         </template>
         <v-list nav dense elevation="2">
@@ -162,7 +162,7 @@
             v-bind="attrs"
             v-on="on"
             style="font-weight: 900 !important; font-size: 16px"
-            >DEV 2<v-icon right small>arrow_drop_down</v-icon>
+            >DEVELOP 2<v-icon right small>arrow_drop_down</v-icon>
           </v-btn>
         </template>
         <v-list nav dense elevation="2">

@@ -6,13 +6,13 @@
       <v-card-text v-else>No description available.</v-card-text>
 
       <v-card-actions>
-        <v-btn @click="item.show = !item.show">
+        <v-btn @click="item.show = !item.show" v-if="showActions">
           {{ item.shortName }} Staff
           <v-icon>{{
             item.show ? "mdi-chevron-up" : "mdi-chevron-down"
           }}</v-icon></v-btn
         >
-        <v-spacer></v-spacer>
+        <v-spacer v-if="showActions"></v-spacer>
         <v-btn text :to="item.url" v-if="item.url"
           >Read more&nbsp;&raquo;</v-btn
         >
@@ -27,10 +27,7 @@
               v-for="(item, i) in staff"
               :key="i"
             >
-              <BiographyCard
-                :item="item"
-                color="grey lighten-5"
-              ></BiographyCard>
+              <BiographyCard :item="item" color="#fdfdfd"></BiographyCard>
             </div>
           </div>
         </div>
@@ -66,6 +63,10 @@ export default {
     shortName: {
       type: String,
       default: null,
+    },
+    showActions: {
+      type: Boolean,
+      default: true,
     },
   },
   apollo: {

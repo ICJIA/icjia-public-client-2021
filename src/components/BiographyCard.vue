@@ -2,7 +2,7 @@
   <div>
     <v-card
       @click="$router.push(`/about/biographies/${item.slug}`)"
-      elevation="0"
+      elevation="1"
       class="mb-2 py-8 px-2"
       style="border: 1px solid #ddd"
       v-if="item"
