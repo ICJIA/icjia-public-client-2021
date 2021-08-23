@@ -7,6 +7,18 @@
     @click.prevent="$router.push(item.fullPath)"
   >
     <v-card-text>
+      <span>
+        <v-chip
+          v-if="isItNew(item)"
+          label
+          x-small
+          color="#0D4474"
+          class="mr-2"
+          style="margin-top: -2px"
+        >
+          <span style="color: #fff !important; font-weight: 400"> NEW! </span>
+        </v-chip>
+      </span>
       <span
         style="font-weight: 700"
         class="category"
@@ -21,10 +33,10 @@
         }}</span
       >&nbsp;|&nbsp;<span v-if="!showUpdated" class="font-lato">{{
         item.publicationDate | format
-      }}</span></v-card-text
-    >
+      }}</span>
+    </v-card-text>
     <v-card-text v-if="item.title"
-      ><h2 style="margin-top: -20px; line-height: 25px">
+      ><h2 style="margin-top: -20px; line-height: 28px">
         {{ item.title }}
       </h2></v-card-text
     >
@@ -166,6 +178,23 @@ export default {
   },
 
   methods: {
+    isItNew(item) {
+      const now = moment(new Date());
+      let targetDate;
+      if (item.publicationDate) {
+        targetDate = item.publicationDate;
+      } else {
+        targetDate = item.published_at;
+      }
+      const end = moment(targetDate); // another date
+      const duration = moment.duration(now.diff(end));
+      const days = duration.asDays();
+      if (days <= this.$myApp.config.daysToShowNew) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     categoryClick(e) {
       //console.log("chip click: ", e.target.innerHTML);
       let opts = {
@@ -189,17 +218,7 @@ export default {
     getSplash(item) {
       return `${item.imagePath}`;
     },
-    isItNew(item) {
-      const now = moment(new Date());
-      const end = moment(item.published_at); // another date
-      const duration = moment.duration(now.diff(end));
-      const days = duration.asDays();
-      if (days <= 14) {
-        return true;
-      } else {
-        return false;
-      }
-    },
+
     truncate(string, maxWords = 30) {
       if (!string) return "";
       var strippedString = string.trim();

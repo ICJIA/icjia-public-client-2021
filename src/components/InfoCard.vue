@@ -12,7 +12,7 @@
           v-if="isItNew(item)"
           label
           x-small
-          color="#2296F3"
+          color="#0A3A60"
           class="icjia-card mr-2"
           style="margin-top: -2px"
         >
@@ -107,11 +107,18 @@ export default {
       }
     },
     isItNew(item) {
+      let targetDate;
+      if (item.publicationDate) {
+        targetDate = item.publicationDate;
+      } else {
+        targetDate = item.published_at;
+      }
+
       const now = moment(new Date());
-      const end = moment(item.published_at); // another date
+      const end = moment(targetDate); // another date
       const duration = moment.duration(now.diff(end));
       const days = duration.asDays();
-      if (days <= 14) {
+      if (days <= this.$myApp.config.daysToShowNew) {
         return true;
       } else {
         return false;
