@@ -4,7 +4,8 @@
 
 > August, 2021:
 
-> :sparkler: This is a work in progress. The site is still in development. :sparkler:
+| :warning: This is a work in progress. The site is still in development. :warning: |
+| --------------------------------------------------------------------------------- |
 
 ## Project setup
 
