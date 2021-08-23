@@ -4,7 +4,7 @@
       <template slot="content">
         <v-container class="mb-6">
           <v-row>
-            <v-col cols="12" :md="viewToggle === 'category' ? 9 : 12">
+            <v-col cols="12" :md="viewToggle === 'category' ? 8 : 12">
               <div class="markdown-body mb-10 page-heading">
                 <h1>ICJIA Meetings</h1>
 
@@ -64,7 +64,7 @@
             <v-col
               cols="12"
               v-if="meetings"
-              md="3"
+              md="4"
               class="px-3 hidden-sm-and-down"
               style="margin-top: -150px"
             >

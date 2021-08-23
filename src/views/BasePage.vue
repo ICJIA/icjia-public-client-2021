@@ -9,7 +9,7 @@
 
         <v-container style="margin-top: -15px">
           <v-row v-if="content">
-            <v-col cols="12" :md="content && content.showTOC ? 9 : 12">
+            <v-col cols="12" :md="content && content.showTOC ? 8 : 12">
               <h1 v-html="render(content.title)"></h1>
               <div v-html="render(content.body)"></div>
               <div>
@@ -38,7 +38,7 @@
             <v-col
               cols="12"
               v-if="content && content.showTOC"
-              md="3"
+              md="4"
               class="px-3 hidden-sm-and-down"
               ><Toc :key="content.title"></Toc
             ></v-col>

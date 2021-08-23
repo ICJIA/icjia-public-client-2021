@@ -178,7 +178,7 @@ ul.toc-list li:hover {
 }
 
 .tocListItem {
-  margin-left: -30px !important;
+  margin-left: -20px !important;
 }
 
 /* .tocItem {

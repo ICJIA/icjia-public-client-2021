@@ -8,7 +8,7 @@
             :splash="news.splash"
           ></Splash>
           <v-row>
-            <v-col cols="12" :md="news.showTOC ? 9 : 12">
+            <v-col cols="12" :md="news.showTOC ? 8 : 12">
               <div style="font-weight: 900">
                 <span
                   class="category"
@@ -52,7 +52,7 @@
             <v-col
               cols="12"
               v-if="news && news.showTOC"
-              md="3"
+              md="4"
               class="px-3 hidden-sm-and-down"
               ><Toc :key="news.title"></Toc
             ></v-col>

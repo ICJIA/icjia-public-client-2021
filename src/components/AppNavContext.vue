@@ -32,7 +32,7 @@
           style="font-weight: 300"
           class="hidden-sm-and-down"
           v-if="contextTitle"
-          >&nbsp;&raquo;&nbsp;{{ contextTitle | truncate(words) }}
+          >&nbsp;&raquo;&nbsp;{{ contextTitle | truncate(8) }}
         </span>
       </span>
       <v-spacer></v-spacer>
