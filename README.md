@@ -2,7 +2,9 @@
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/e6614e77-00b4-4772-8034-a3b9c9c9986d/deploy-status)](https://app.netlify.com/sites/icjia-public/deploys)
 
-**This is a work in progress. The site is still in development.**
+> August, 2021:
+
+> :sparkler: This is a work in progress. The site is still in development. :sparkler:
 
 ## Project setup
 
