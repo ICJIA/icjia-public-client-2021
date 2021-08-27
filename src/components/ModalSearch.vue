@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="searchModal" ref="searchTop" style="z-index: 999999">
-    <v-card color="#eee" min-height="600" class="px-3 py-1">
+    <v-card color="#eee" min-height="800" class="px-3 py-1">
       <v-card-title class="text-h5 grey lighten-2">
         Search ICJIA<v-spacer></v-spacer
         ><v-btn small @click="searchModal = false">Close</v-btn>

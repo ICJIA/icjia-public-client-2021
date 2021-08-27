@@ -26,6 +26,20 @@ const redirects = [
       return "/information-systems/drone/";
     },
   },
+  {
+    path: "/dicra/",
+    // eslint-disable-next-line no-unused-vars
+    redirect: (route) => {
+      return "/about/dicra/";
+    },
+  },
+  {
+    path: "/foia/",
+    // eslint-disable-next-line no-unused-vars
+    redirect: (route) => {
+      return "/about/foia/";
+    },
+  },
 ];
 
 export { redirects };
