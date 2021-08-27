@@ -13,7 +13,14 @@
     </div>
     <ul v-for="(item, index) in externalLinks" :key="index" class="mt-6">
       <li class="attachment-link">
-        <a :href="item.url" target="_blank">{{ item.title }}</a>
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <a :href="item.url" target="_blank" v-bind="attrs" v-on="on">{{
+              item.title
+            }}</a>
+          </template>
+          <span style="font-size: 12px !important">{{ item.url }}</span>
+        </v-tooltip>
       </li>
     </ul>
   </v-sheet>

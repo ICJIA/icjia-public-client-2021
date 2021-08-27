@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="error">{{ error }}</div>
+    <div v-if="error" class="error text-center mt-4">{{ error }}</div>
     <HomeSplash
       :slider="slider"
       :buttons="buttons"

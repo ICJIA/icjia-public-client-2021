@@ -27,19 +27,23 @@
                       </v-btn>
                     </v-btn-toggle>
                   </div>
-
-                  <div
-                    v-for="job in filteredAndSortedJobs"
-                    :key="job.id"
-                    class="mb-6"
-                  >
-                    <JobCard
-                      :item="job"
-                      :summaryOnly="true"
-                      :openSearch="true"
-                      :showLink="true"
-                      :showReadMore="true"
-                    ></JobCard>
+                  <div v-if="filteredAndSortedJobs.length">
+                    <div
+                      v-for="job in filteredAndSortedJobs"
+                      :key="job.id"
+                      class="mb-6"
+                    >
+                      <JobCard
+                        :item="job"
+                        :summaryOnly="true"
+                        :openSearch="false"
+                        :showLink="true"
+                        :showReadMore="true"
+                      ></JobCard>
+                    </div>
+                  </div>
+                  <div v-else class="text-left">
+                    <strong>No opportunites listed.</strong>
                   </div>
                 </v-col>
                 <v-col
