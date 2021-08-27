@@ -1,5 +1,5 @@
 <template>
-  <div class="markdown-body text-center">
+  <div class="markdown-body text-center pb-12">
     <div>
       <v-container v-if="publications"
         ><v-row
@@ -110,8 +110,17 @@
                 >
                   <PublicationCard :item="item"></PublicationCard>
                 </td> </template
-            ></v-data-table> </v-card></v-row
-      ></v-container>
+            ></v-data-table>
+          </v-card>
+          <div class="mt-5" style="font-size: 12px; text-align: center">
+            Individual publications are also available for download from the
+            ICJIA Document Archive:
+            <a href="https://archive.icjia.cloud" target="_blank"
+              >https://archive.icjia.cloud</a
+            >
+          </div></v-row
+        ></v-container
+      >
       <v-container v-else
         ><v-row
           ><v-col><Loader loaderType="skeleton"></Loader></v-col

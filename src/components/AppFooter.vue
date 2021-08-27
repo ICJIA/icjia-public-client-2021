@@ -1,5 +1,5 @@
 <template>
-  <v-footer dark style="z-index: 10000 !important">
+  <v-footer dark>
     <v-card
       flat
       tile
@@ -7,38 +7,6 @@
       class="text-center markdown-body pb-4"
       style="background: #0d4474; border-top: 2px solid #888 !important"
     >
-      <!-- <v-container>
-        <v-row>
-          <v-col cols="12" md="4" style="color: white">
-            <h3 style="color: white" class="mb-3 h2">Footer Heading 1</h3>
-            <p class="text-left" style="font-size: 13px">
-              Lorem markdownum nunc, virginea ornabant hanc, Lelex etiam
-              postibus ire, adspicio. Vidit novissima nihil in tamen Plena at
-              lumina adfixa nocuisse quos deceptam utque stravit Philemon et?
-              Questus subibis quoque, formosior committat insignis, cumque nam.
-            </p>
-          </v-col>
-          <v-col cols="12" md="4" style="color: white">
-            <h3 style="color: white" class="mb-3 h2">Footer Heading 2</h3>
-            <p class="text-left" style="font-size: 13px">
-              Blandis fateor causamque membris pulsa quaecumque perosus accedere
-              Aeson adflabitur. Nocebit distent in faciem obsequio in nescit
-              ecce morsa hoc prima exosus. Ortus ferus, quidem! Ostendens
-              longeque maris volucresque, amictu penitus flectit infantem et
-              loca demissaque non.
-            </p>
-          </v-col>
-          <v-col cols="12" md="4" style="color: white">
-            <h3 style="color: white" class="mb-3 h2">Footer Heading 3</h3>
-            <p class="text-left" style="font-size: 13px">
-              Lorem markdownum nunc, virginea ornabant hanc, Lelex etiam
-              postibus ire, adspicio. Vidit novissima nihil in tamen Plena at
-              lumina adfixa nocuisse quos deceptam utque stravit Philemon et?
-              Questus subibis quoque, formosior committat insignis, cumque nam.
-            </p>
-          </v-col>
-        </v-row>
-      </v-container> -->
       <v-container class="mt-0" fill-height>
         <v-row align="center" justify="center">
           <!-- <v-col cols="12" md="6" class="text-center mt-2">

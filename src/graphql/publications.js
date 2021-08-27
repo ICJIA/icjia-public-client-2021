@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 
 const GET_ALL_PUBLICATIONS_QUERY = gql`
   query allPubs {
-    publications {
+    publications(limit: 990, sort: "published_at:desc") {
       id
       published_at
       publicationDate

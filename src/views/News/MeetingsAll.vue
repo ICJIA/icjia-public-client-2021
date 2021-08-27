@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-10">
+  <div class="mt-10 mb-12">
     <BaseContent :error="error" :loading="$apollo.loading">
       <template slot="content">
         <v-container class="mb-6">
