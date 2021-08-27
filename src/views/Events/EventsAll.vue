@@ -11,6 +11,7 @@
     <v-container
       v-if="!isLoading"
       :fluid="$vuetify.breakpoint.xs || $vuetify.breakpoint.sm"
+      style="padding-bottom: 200px"
     >
       <v-row class="fill-height" v-if="display">
         <v-col>
@@ -91,7 +92,12 @@
                 :activator="selectedElement"
                 offset-x
               >
-                <v-card color="grey lighten-4" min-width="250px" flat>
+                <v-card
+                  color="grey lighten-4"
+                  min-width="250px"
+                  flat
+                  style="z-index: 9999 !important"
+                >
                   <EventCard
                     :item="selectedEvent"
                     @clicked="selectedOpen = false"
