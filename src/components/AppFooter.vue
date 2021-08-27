@@ -62,6 +62,10 @@
                 target="_blank"
                 >Github</a
               >
+              |
+              <router-link to="/about/covid-19/">
+                Covid-19 Response</router-link
+              >
             </div>
 
             <div
