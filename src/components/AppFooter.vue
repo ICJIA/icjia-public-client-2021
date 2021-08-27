@@ -63,7 +63,10 @@
                 >Github</a
               >
               |
-              <router-link to="/about/covid-19/">
+              <router-link
+                to="/about/covid-19/"
+                style="color: white !important"
+              >
                 Covid-19 Response</router-link
               >
             </div>
