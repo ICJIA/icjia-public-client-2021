@@ -50,8 +50,21 @@
               </template>
               <template v-slot:item.title="{ item }">
                 <div class="my-2">
-                  <span class=""
-                    ><strong>{{ item.title }}</strong></span
+                  <span class="">
+                    <v-chip
+                      v-if="isItNew(item)"
+                      label
+                      x-small
+                      color="#0D4474"
+                      class="mr-2"
+                      style="margin-top: 0px"
+                    >
+                      <span style="color: #fff !important; font-weight: 400">
+                        NEW!
+                      </span>
+                    </v-chip>
+
+                    <strong>{{ item.title }}</strong></span
                   >
                 </div>
               </template>
@@ -114,6 +127,7 @@ import { GET_ALL_PUBLICATIONS_QUERY } from "@/graphql/publications";
 import { getPublicationType } from "@/lib/utils";
 import { EventBus } from "@/event-bus";
 import _ from "lodash";
+import moment from "moment";
 export default {
   name: "Publications",
   metaInfo() {
@@ -162,6 +176,25 @@ export default {
     EventBus.$emit("context-label", "Publications");
   },
   methods: {
+    isItNew(item) {
+      let targetDate;
+      if (item.publicationDate) {
+        targetDate = item.publicationDate;
+      } else {
+        targetDate = item.created_at;
+      }
+
+      const now = moment(new Date());
+      const end = moment(targetDate); // another date
+      const duration = moment.duration(now.diff(end));
+      const days = duration.asDays();
+
+      if (days <= this.$myApp.config.daysToShowNew) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     clicked(value) {
       //console.log(value);
       if (value === this.expanded[0]) {

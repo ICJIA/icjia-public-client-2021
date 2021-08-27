@@ -22,7 +22,20 @@
           <a
             :href="`https://agency.icjia-api.cloud${attachment.url}`"
             target="_blank"
-            >{{ attachment.name }}</a
+          >
+            <!-- <v-chip
+              v-if="isItNew(attachment)"
+              label
+              x-small
+              color="#0D4474"
+              class="mr-2"
+              style="margin-top: 0px"
+            >
+              <span style="color: #fff !important; font-weight: 400">
+                NEW!
+              </span> </v-chip
+            > -->
+            {{ attachment.name }}</a
           >
           <ul v-if="showLastUpdated" style="font-size: 12px">
             <li>Last updated on {{ attachment.updated_at | format }}</li>
@@ -48,8 +61,21 @@
               class="hover"
             >
               <td>
-                <span
-                  ><a
+                <span>
+                  <!-- <v-chip
+                    v-if="isItNew(attachment)"
+                    label
+                    x-small
+                    color="#0D4474"
+                    class="mr-2"
+                    style="margin-top: 0px"
+                  >
+                    <span style="color: #fff !important; font-weight: 400">
+                      NEW!
+                    </span>
+                  </v-chip> -->
+
+                  <a
                     :href="`https://agency.icjia-api.cloud${attachment.url}`"
                     target="_blank"
                     >{{ attachment.name }}</a
@@ -98,12 +124,34 @@ function formatBytes(bytes, decimals = 0) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 }
 import _ from "lodash";
+import moment from "moment";
 export default {
   data() {
     return {
       attachments: null,
       formatBytes,
     };
+  },
+  methods: {
+    isItNew(item) {
+      let targetDate;
+      if (item.publicationDate) {
+        targetDate = item.publicationDate;
+      } else {
+        targetDate = item.created_at;
+      }
+
+      const now = moment(new Date());
+      const end = moment(targetDate); // another date
+      const duration = moment.duration(now.diff(end));
+      const days = duration.asDays();
+
+      if (days <= 7) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
   mounted() {
     this.attachments = _.orderBy(this.items, "name", "asc");

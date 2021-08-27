@@ -37,6 +37,7 @@ const GET_ALL_MEETINGS_QUERY = gql`
         url
         updated_at
         created_at
+
         hash
       }
     }
