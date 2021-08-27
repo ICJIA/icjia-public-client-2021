@@ -20,7 +20,7 @@
     >
       <template v-slot:item.start="{ item }">
         <div
-          style="width: 140px; font-size: 14px; font-weight: 700; color: #555"
+          style="width: 110px; font-size: 14px; font-weight: 700; color: #555"
         >
           {{ item.start | dateFormat }}
         </div>
@@ -30,9 +30,40 @@
           {{ getCleanCategory(item.category) }}
         </div>
       </template>
+
+      <template v-slot:item.attachments="{ item }">
+        <div style="font-weight: 400; color: #555">
+          <span style=""
+            ><v-chip
+              x-small
+              style="
+                cursor: pointer !important;
+                font-size: 11px !important;
+                font-weight: 900;
+              "
+              v-if="item.attachments && item.attachments.length"
+              >{{ item.attachments.length }}</v-chip
+            >
+            <v-chip
+              x-small
+              style="
+                cursor: pointer !important;
+                font-size: 11px !important;
+                font-weight: 900;
+              "
+              v-else
+              >0</v-chip
+            ></span
+          >
+        </div>
+      </template>
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length">
-          <MeetingCard :item="item" class="mx-2 my-4"></MeetingCard>
+          <MeetingCard
+            :item="item"
+            class="mx-2 my-4"
+            :key="item.id"
+          ></MeetingCard>
         </td>
       </template>
 
@@ -98,6 +129,7 @@ export default {
         },
 
         { text: "Title", value: "title" },
+        { text: "Attachments", align: "center", value: "attachments" },
       ],
     };
   },

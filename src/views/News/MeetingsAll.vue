@@ -46,7 +46,7 @@
         </v-container>
         <v-container v-if="viewToggle == 'category'" style="margin-top: -25px">
           <v-row>
-            <v-col cols="12" md="9">
+            <v-col cols="12" md="8">
               <div
                 v-for="(category, index) in categoryMap"
                 :key="index"
