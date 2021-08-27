@@ -7,7 +7,7 @@ const _ = require("lodash");
 const allowedHost = "https://icjia.illinois.gov/researchhub";
 
 const query = `query {
-  publications {
+  publications(limit: 990, sort: "published_at:desc") {
       id
       published_at
       publicationDate
