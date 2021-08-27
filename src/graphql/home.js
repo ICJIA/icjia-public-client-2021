@@ -10,6 +10,12 @@ const GET_HOME = gql`
     $employmentLimit: Int!
   ) {
     home {
+      homeBanner {
+        id
+        bannerText
+        bannerColor
+        whiteText
+      }
       homeCarousel {
         title
         slide {

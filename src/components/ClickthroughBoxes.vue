@@ -6,7 +6,7 @@
           <h2 id="for-more-information">For more information</h2>
         </v-col>
 
-        <v-col cols="12" class="flex-container">
+        <v-col cols="12" xs="12" class="flex-container">
           <v-card
             class="elevation-1 px-8 py-10 box text-center hover card mr-1 my-1"
             style="border: 1px solid #ddd"
@@ -18,6 +18,7 @@
             :class="{
               'flex-item-3': boxesPerRow === 3,
               'flex-item-2': boxesPerRow === 2,
+              'flex-item-1': boxesPerRow === 1,
             }"
           >
             <v-icon style="font-size: 70px" v-if="box.icon">{{
@@ -120,7 +121,6 @@ export default {
 .flex-item-1 {
   background: #fff;
 
-  flex: 0 1; /* <-- adjusting for margin */
   flex-grow: 1;
 }
 
@@ -128,7 +128,7 @@ export default {
   background: #fff;
 
   margin: 0px;
-  flex: 0 1; /* <-- adjusting for margin */
+
   flex-grow: 1;
 }
 

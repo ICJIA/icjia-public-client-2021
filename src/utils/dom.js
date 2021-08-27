@@ -6,13 +6,14 @@ const attachInternalLinks = function (vm) {
     for (const node of els) {
       node.addEventListener("click", function (e) {
         e.preventDefault();
+        console.log("internal click: ", e.target.href);
         //vm.$router.push(this.dataset.eventLink);
         let url = e.target.href;
         url = url.replace(/^.*\/\/[^/]+/, "");
         vm.$router.push(url);
       });
     }
-    //console.log("attachInternalLinks: ", els);
+    console.log("attachInternalLinks: ", els);
   });
 };
 

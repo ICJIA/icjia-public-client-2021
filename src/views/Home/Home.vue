@@ -1,11 +1,14 @@
 <template>
   <div>
     <div v-if="error" class="error text-center mt-4">{{ error }}</div>
+    <Banner :item="banner"></Banner>
     <HomeSplash
       :slider="slider"
       :buttons="buttons"
       v-if="!loading"
+      style="margin-top: -16px"
     ></HomeSplash>
+
     <v-card height="550" class="px-3 py-3" v-if="loading">
       <Loader
         loaderType="skeleton"
@@ -79,6 +82,8 @@ import { GET_HOME } from "@/graphql/home";
 import nprogress from "nprogress";
 // eslint-disable-next-line no-unused-vars
 import { getUnifiedTags, getPublicationDate } from "@/utils/content";
+import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
+
 import _ from "lodash";
 export default {
   name: "Home",
@@ -92,6 +97,7 @@ export default {
       loading: true,
       hubLoading: true,
       news: null,
+      banner: null,
       meetings: null,
       grants: null,
       employment: null,
@@ -191,6 +197,7 @@ export default {
         }));
         this.employment = _.orderBy(this.employment, ["end"], ["desc"]);
         //Home page UI
+        this.banner = ApolloQueryResult.data.home.homeBanner;
         this.slider = ApolloQueryResult.data.home.homeCarousel;
         this.buttons = ApolloQueryResult.data.home.homeCarouselButton;
         this.boxes = ApolloQueryResult.data.home.clickThroughBoxes;
@@ -231,6 +238,9 @@ export default {
         }));
         this.loading = false;
         nprogress.done();
+        attachInternalLinks(this);
+
+        attachSearchEvents(this);
       },
     },
   },

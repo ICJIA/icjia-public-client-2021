@@ -9,7 +9,7 @@
 a {
   font-weight: 900;
   text-decoration: underline;
-  background: #fff;
+  /* background: #fff; */
 }
 
 a:hover {
@@ -295,7 +295,6 @@ details[open] summary ~ * {
   color: #444;
   text-decoration: underline;
 }
-
 
 .page {
   min-height: 100vh !important;
