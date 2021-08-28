@@ -20,6 +20,7 @@ const query = `query {
       applicationURL
       pubType
       tags
+      searchMeta
     }
 }`;
 
