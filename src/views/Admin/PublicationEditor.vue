@@ -506,11 +506,14 @@ export default {
     },
     async fetchAllPublications() {
       try {
-        let { data } = await api.get("/publications?_limit=1500", {
-          validateStatus: function (status) {
-            return status >= 200 && status < 300;
-          },
-        });
+        let { data } = await api.get(
+          "/publications?_limit=990&_sort=publicationDate:DESC",
+          {
+            validateStatus: function (status) {
+              return status >= 200 && status < 300;
+            },
+          }
+        );
         this.publications = data;
         this.publications = _.orderBy(
           this.publications,

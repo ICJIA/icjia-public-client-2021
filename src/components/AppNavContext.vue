@@ -42,6 +42,7 @@
         dark
         class="hidden-sm-and-down"
         @click="openTranslationModal()"
+        v-if="contextMenu[0].showTranslation"
       >
         <v-icon small left>fas fa-globe</v-icon> Translate this page
       </v-btn>

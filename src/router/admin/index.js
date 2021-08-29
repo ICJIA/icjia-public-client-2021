@@ -21,7 +21,7 @@ const admin = [
       import(/* webpackChunkName: "admin" */ "@/views/Admin/Logout.vue"),
   },
   {
-    path: "/admin/publications",
+    path: "/admin/publications/",
     name: "adminPublicationEditor",
     meta: {
       requiresAuth: true,
@@ -30,6 +30,15 @@ const admin = [
       import(
         /* webpackChunkName: "admin" */ "@/views/Admin/PublicationEditor.vue"
       ),
+  },
+  {
+    path: "/admin/colors/",
+    name: "adminColorPalette",
+    meta: {
+      requiresAuth: true,
+    },
+    component: () =>
+      import(/* webpackChunkName: "admin" */ "@/views/Admin/Colors.vue"),
   },
 ];
 

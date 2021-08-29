@@ -5,6 +5,7 @@
         "shortLabel": "ICJIA Grants",
         "pathPrefix": "/grants/",
         "defaultPath": "/grants/fsgu-home/",
+        "showTranslation": true,
         "items": [
             {
                 "label": "FSGU Home",
@@ -30,6 +31,7 @@
         "shortLabel": "Research at ICJIA",
         "pathPrefix": "/researchhub/",
         "defaultPath": "/researchhub/",
+        "showTranslation": true,
         "items": [
             {
                 "label": "Research Hub",
@@ -67,6 +69,7 @@
         "shortLabel": "ICJIA IRB",
         "pathPrefix": "/irb/",
         "defaultPath": "/irb/",
+        "showTranslation": true,
         "items": [
             {
                 "label": "IRB Home",
@@ -100,6 +103,7 @@
         "shortLabel": "News & Info",
         "pathPrefix": "/news/",
         "defaultPath": "/news/",
+        "showTranslation": true,
         "items": [
             {
                 "label": "News & Information",
@@ -137,6 +141,7 @@
         "shortLabel": "ICJIA Meetings",
         "pathPrefix": "/meetings/",
         "defaultPath": "/meetings/",
+        "showTranslation": true,
         "items": [
             {
                 "label": "News & Information",
@@ -170,6 +175,7 @@
         "shortLabel": "ICJIA Events",
         "pathPrefix": "/events/",
         "defaultPath": "/events/",
+        "showTranslation": true,
         "items": [
             {
                 "label": "News & Information",
@@ -203,6 +209,7 @@
         "shortLabel": "ICJIA Overview",
         "pathPrefix": "/about/",
         "defaultPath": "/about/",
+        "showTranslation": true,
         "items": [
             {
                 "label": "About ICJIA",
@@ -256,6 +263,7 @@
         "shortLabel": "Information Systems",
         "pathPrefix": "/information-systems/",
         "defaultPath": "/information-systems/",
+        "showTranslation": true,
         "items": [
             {
                 "label": "Information Systems Home",
@@ -268,6 +276,28 @@
             {
                 "label": "Drone Reporting",
                 "path": "/information-systems/drone/"
+            }
+        ]
+    },
+    {
+        "name": "Admin",
+        "label": "Site Administration ",
+        "shortLabel": "Admin",
+        "pathPrefix": "/admin/",
+        "defaultPath": "/admin/",
+        "showTranslation": false,
+        "items": [
+            {
+                "label": "Admin Home",
+                "path": "/admin/"
+            },
+            {
+                "label": "Color Palette",
+                "path": "/admin/colors/"
+            },
+            {
+                "label": "Publication List Editor",
+                "path": "/admin/publications/"
             }
         ]
     }
