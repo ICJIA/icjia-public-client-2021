@@ -2,10 +2,9 @@
   <div v-if="item">
     <v-alert
       v-model="alert"
-      close-text="Close Alert"
       :color="item.bannerColor"
       :dark="item.whiteText"
-      dismissible
+      :dismissible="item.dismissable ? true : false"
     >
       <span v-html="item.bannerText" class="banner-text"></span>
     </v-alert>

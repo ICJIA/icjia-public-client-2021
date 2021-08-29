@@ -15,6 +15,7 @@ const GET_HOME = gql`
         bannerText
         bannerColor
         whiteText
+        dismissable
       }
       homeCarousel {
         title
