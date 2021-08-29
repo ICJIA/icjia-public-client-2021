@@ -8,27 +8,26 @@
           v-for="(box, index) in boxes"
           :key="`box-${index}`"
         >
-          <router-link :to="box.url" v-if="box.url">
-            <v-card
-              dark
-              height="300px"
-              class="elevation-0 px-8 py-10 box text-center mb-1"
-              color="#0E4471"
-              :class="{ mr1: index > -1 && index < boxes.length - 1 }"
-            >
-              <v-icon style="font-size: 70px" dark v-if="box.icon">{{
-                box.icon
-              }}</v-icon>
-              <v-icon style="font-size: 70px" dark v-else>people</v-icon>
-              <h2 class="text-center box-head mt-3">{{ box.title }}</h2>
+          <v-card
+            dark
+            height="300px"
+            class="elevation-0 px-8 py-10 box text-center mb-1 hover"
+            color="#0E4471"
+            :class="{ mr1: index > -1 && index < boxes.length - 1 }"
+            @click="routeToURL(box)"
+          >
+            <v-icon style="font-size: 70px" dark v-if="box.icon">{{
+              box.icon
+            }}</v-icon>
+            <v-icon style="font-size: 70px" dark v-else>people</v-icon>
+            <h2 class="text-center box-head mt-3">{{ box.title }}</h2>
 
-              <v-card-text
-                class="px-2 mt-1 font-weight-light box-text text-center"
-              >
-                <span v-html="box.teaser" style="font-size: 16px"></span>
-              </v-card-text>
-            </v-card>
-          </router-link>
+            <v-card-text
+              class="px-2 mt-1 font-weight-light box-text text-center"
+            >
+              <span v-html="box.teaser" style="font-size: 16px"></span>
+            </v-card-text>
+          </v-card>
         </v-col>
       </v-row>
     </v-container>
@@ -44,6 +43,30 @@ export default {
     },
   },
   methods: {
+    routeToURL(box) {
+      if (!box.url) return null;
+      const checkDomain = function (url) {
+        if (url.indexOf("//") === 0) {
+          url = location.protocol + url;
+        }
+        return url
+          .toLowerCase()
+          .replace(/([a-z])?:\/\//, "$1")
+          .split("/")[0];
+      };
+
+      const isExternal = function (url) {
+        return (
+          (url.indexOf(":") > -1 || url.indexOf("//") > -1) &&
+          checkDomain(location.href) !== checkDomain(url)
+        );
+      };
+      if (isExternal(box.url)) {
+        window.open(box.url, "noopener,resizable,scrollbars").focus();
+      } else {
+        this.$router.push(box.url);
+      }
+    },
     getFeatureBoxColor(index) {
       //TODO: Figure this out dynamically
       return this.colors[index];

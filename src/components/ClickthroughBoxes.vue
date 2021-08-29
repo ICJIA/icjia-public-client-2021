@@ -76,14 +76,27 @@ export default {
     getBoxColor(index) {
       return "#fff";
     },
-    routeToURL(url) {
-      if (url.indexOf("http") === 0) {
-        //external
-        window.open(url, "noopener,resizable,scrollbars").focus();
+    routeToURL(originalURL) {
+      const checkDomain = function (url) {
+        if (url.indexOf("//") === 0) {
+          url = location.protocol + url;
+        }
+        return url
+          .toLowerCase()
+          .replace(/([a-z])?:\/\//, "$1")
+          .split("/")[0];
+      };
+
+      const isExternal = function (url) {
+        return (
+          (url.indexOf(":") > -1 || url.indexOf("//") > -1) &&
+          checkDomain(location.href) !== checkDomain(url)
+        );
+      };
+      if (isExternal(originalURL)) {
+        window.open(originalURL, "noopener,resizable,scrollbars").focus();
       } else {
-        this.$router.push(url).catch(() => {
-          this.$vuetify.goTo(0);
-        });
+        this.$router.push(originalURL);
       }
     },
   },
