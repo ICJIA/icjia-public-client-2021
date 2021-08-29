@@ -12,11 +12,14 @@
             <v-card
               dark
               height="300px"
-              class="elevation-0 px-8 py-10 box text-center"
-              :color="box.color"
+              class="elevation-0 px-8 py-10 box text-center mb-1"
+              color="#0E4471"
               :class="{ mr1: index > -1 && index < boxes.length - 1 }"
             >
-              <v-icon style="font-size: 70px" dark>{{ box.icon }}</v-icon>
+              <v-icon style="font-size: 70px" dark v-if="box.icon">{{
+                box.icon
+              }}</v-icon>
+              <v-icon style="font-size: 70px" dark v-else>people</v-icon>
               <h2 class="text-center box-head mt-3">{{ box.title }}</h2>
 
               <v-card-text
