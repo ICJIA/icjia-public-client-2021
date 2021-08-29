@@ -44,12 +44,6 @@ const GET_HOME = gql`
         teaser
         icon
       }
-      clickThroughBoxesSecondTier {
-        title
-        url
-        teaser
-        icon
-      }
     }
 
     fundingEvents: grants(

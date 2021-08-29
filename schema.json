@@ -8113,22 +8113,6 @@
             "deprecationReason": null
           },
           {
-            "name": "clickThroughBoxesSecondTier",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "ComponentClickthroughClickthrough",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "homeBanner",
             "description": null,
             "args": [],
@@ -8190,20 +8174,6 @@
           },
           {
             "name": "clickThroughBoxes",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "INPUT_OBJECT",
-                "name": "ComponentClickthroughClickthroughInput",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "clickThroughBoxesSecondTier",
             "description": null,
             "type": {
               "kind": "LIST",
@@ -8293,20 +8263,6 @@
           },
           {
             "name": "clickThroughBoxes",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "INPUT_OBJECT",
-                "name": "editComponentClickthroughClickthroughInput",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "clickThroughBoxesSecondTier",
             "description": null,
             "type": {
               "kind": "LIST",

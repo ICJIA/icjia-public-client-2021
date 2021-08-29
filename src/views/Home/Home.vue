@@ -60,12 +60,6 @@
       </v-container>
     </div>
 
-    <!-- <HomeClickThroughBoxes
-      :boxes="boxesSecondTier"
-      v-if="!loading && boxesSecondTier.length > 0"
-      style="margin-top: 10px"
-    ></HomeClickThroughBoxes> -->
-
     <HomeEvents
       :meetings="meetingEvents"
       :funding="fundingEvents"
@@ -201,8 +195,6 @@ export default {
         this.slider = ApolloQueryResult.data.home.homeCarousel;
         this.buttons = ApolloQueryResult.data.home.homeCarouselButton;
         this.boxes = ApolloQueryResult.data.home.clickThroughBoxes;
-        this.boxesSecondTier =
-          ApolloQueryResult.data.home.clickThroughBoxesSecondTier;
 
         //Data adjustments
 

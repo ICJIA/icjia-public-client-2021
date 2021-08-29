@@ -11,7 +11,6 @@
             class="elevation-1 px-8 py-10 box text-center hover card mr-1 my-1"
             style="border: 1px solid #ddd"
             v-for="(box, index) in boxes"
-            :data-aos="getAnimation()"
             :key="index"
             :color="getBoxColor(index)"
             @click="routeToURL(box.url)"
