@@ -37,7 +37,7 @@
 export default {
   data() {
     return {
-      icon: "list",
+      icon: "calendar",
       showHideUpcoming: true,
     };
   },
