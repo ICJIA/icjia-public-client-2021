@@ -184,10 +184,18 @@
             style="margin-top: 10px; font-weight: 900; color: #555"
             >Statistical Analysis Center (SAC)&nbsp;</v-list-item-title
           >
-          <v-list-item class="appNav" to="/researchhub/hub-overview/">
+          <v-list-item class="appNav" exact to="/researchhub/hub-overview/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
                 >Overview</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item class="appNav" exact to="/researchhub/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >Research Hub Home</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
