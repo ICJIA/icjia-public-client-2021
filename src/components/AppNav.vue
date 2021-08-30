@@ -55,7 +55,7 @@
         offset-y
         origin="center center"
         transition="scale-transition"
-        nudge-left="60px"
+        nudge-left="65px"
         style="z-index: 500"
       >
         <template v-slot:activator="{ on, attrs }">
@@ -152,12 +152,12 @@
         </v-list>
       </v-menu>
 
-      <!-- <v-menu
+      <v-menu
         bottom
         offset-y
         origin="center center"
         transition="scale-transition"
-        nudge-left="20px"
+        nudge-left="100px"
         style="z-index: 500"
       >
         <template v-slot:activator="{ on, attrs }">
@@ -168,68 +168,54 @@
             v-bind="attrs"
             v-on="on"
             style="font-weight: 900 !important; font-size: 16px"
-            >DEVELOP 1<v-icon right small>arrow_drop_down</v-icon>
+            >RESEARCH<v-icon right small>arrow_drop_down</v-icon>
           </v-btn>
         </template>
         <v-list nav dense elevation="2">
-          <v-list-item class="appNav" to="/">
-            <v-list-item-content class="hover">
-              <v-list-item-title style="font-size: 12px !important"
-                >Home</v-list-item-title
-              >
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item class="appNav" exact to="/about/">
-            <v-list-item-content class="hover">
-              <v-list-item-title style="font-size: 12px !important"
-                >About ICJIA</v-list-item-title
-              >
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item class="appNav" exact to="/about/icjia-staff/">
-            <v-list-item-content class="hover">
-              <v-list-item-title style="font-size: 12px !important"
-                >ICJIA Staff</v-list-item-title
-              >
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item
-            class="appNav"
-            exact
-            to="/about/composition-and-membership/"
+          <v-list-item-title
+            style="margin-top: 10px; font-weight: 900; color: #555"
+            >Statistical Analysis Center (SAC)&nbsp;</v-list-item-title
           >
+          <v-list-item class="appNav" to="/researchhub/hub-overview/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
-                >ICJIA Board</v-list-item-title
+                >Overview</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item class="appNav" to="/grants/">
+          <v-list-item class="appNav" exact to="/researchhub/articles/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
-                >Federal and State Grants Unit</v-list-item-title
+                >Articles</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item class="appNav" to="/information-systems/">
+          <v-list-item class="appNav" exact to="/researchhub/apps/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
-                >Information Systems Unit</v-list-item-title
+                >Web Applications</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
-          <v-list-item class="appNav" to="/researchhub/">
+
+          <v-list-item class="appNav" exact to="/researchhub/datasets/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
-                >Research Hub</v-list-item-title
+                >Datasets</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
+
+          <v-list-item class="appNav" exact to="/researchhub/publications/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >Publications</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+
           <v-list-item class="appNav" exact to="/irb/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
@@ -237,11 +223,15 @@
               >
             </v-list-item-content>
           </v-list-item>
-
-          <v-list-item class="appNav" exact to="/about/foia/">
+          <v-divider></v-divider>
+          <v-list-item-title
+            style="margin-top: 10px; font-weight: 900; color: #555"
+            >InfoNet&nbsp;</v-list-item-title
+          >
+          <v-list-item class="appNav" exact to="/information-systems/infonet/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
-                >FOIA Requests</v-list-item-title
+                >InfoNet Overview</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
@@ -253,7 +243,7 @@
         offset-y
         origin="center center"
         transition="scale-transition"
-        nudge-left="20px"
+        nudge-left="10px"
         style="z-index: 500"
       >
         <template v-slot:activator="{ on, attrs }">
@@ -264,42 +254,28 @@
             v-bind="attrs"
             v-on="on"
             style="font-weight: 900 !important; font-size: 16px"
-            >DEVELOP 2<v-icon right small>arrow_drop_down</v-icon>
+            >FUNDING<v-icon right small>arrow_drop_down</v-icon>
           </v-btn>
         </template>
         <v-list nav dense elevation="2">
-          <v-list-item class="appNav" exact to="/news/">
+          <v-list-item class="appNav" exact to="/grants/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
-                >News & Information</v-list-item-title
-              >
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item class="appNav" exact to="/about/employment/">
-            <v-list-item-content class="hover">
-              <v-list-item-title style="font-size: 12px !important"
-                >Employment</v-list-item-title
-              >
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item class="appNav" exact to="/events/">
-            <v-list-item-content class="hover">
-              <v-list-item-title style="font-size: 12px !important"
-                >Events</v-list-item-title
-              >
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item class="appNav" exact to="/news/meetings/">
-            <v-list-item-content class="hover">
-              <v-list-item-title style="font-size: 12px !important"
-                >Meetings</v-list-item-title
+                >Overview</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
           <v-list-item class="appNav" exact to="/grants/programs/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
-                >Grant Programs</v-list-item-title
+                >ICJIA Grant Programs</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item class="appNav" exact to="/grants/resources/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >Resources</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
@@ -310,15 +286,32 @@
               >
             </v-list-item-content>
           </v-list-item>
-          <v-list-item class="appNav" exact to="/about/publications/">
+          <v-list-item class="appNav" exact to="/grants/technical-assistance/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
-                >Publications</v-list-item-title
+                >Technical Assistance</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
         </v-list>
-      </v-menu> -->
+      </v-menu>
+
+      <v-btn
+        text
+        large
+        class="hidden-sm-and-down navItem"
+        href="https://icjia.illinois.gov/adultredeploy/"
+        style="font-weight: 900 !important; font-size: 16px"
+        >Adult Redeploy
+      </v-btn>
+
+      <!-- <v-btn
+        text
+        large
+        class="hidden-sm-and-down navItem"
+        style="font-weight: 900 !important; font-size: 16px"
+        >Family Violence
+      </v-btn> -->
 
       <v-tooltip left>
         <template v-slot:activator="{ on, attrs }">
@@ -457,7 +450,7 @@ export default {
 
 <style>
 .navItem {
-  color: #000 !important;
+  color: #333 !important;
   font-weight: 900;
 }
 
