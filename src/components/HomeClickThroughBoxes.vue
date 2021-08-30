@@ -16,6 +16,17 @@
             :class="{ mr1: index > -1 && index < boxes.length - 1 }"
             @click="routeToURL(box)"
           >
+            <v-btn
+              color="blue darken-3"
+              fab
+              dark
+              absolute
+              top
+              left
+              v-if="isItNew(box.datePosted)"
+            >
+              <span style="color: #fff !important"> NEW!</span>
+            </v-btn>
             <v-icon style="font-size: 70px" dark v-if="box.icon">{{
               box.icon
             }}</v-icon>
@@ -36,6 +47,7 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   computed: {
     getBoxSize() {
@@ -43,6 +55,18 @@ export default {
     },
   },
   methods: {
+    isItNew(datePosted) {
+      if (!datePosted) return false;
+      let now = moment(new Date()); //todays date
+      let end = moment(datePosted); // another date
+      let duration = moment.duration(now.diff(end));
+      let days = duration.asDays();
+      if (days <= this.$myApp.config.daysToShowNew) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     routeToURL(box) {
       if (!box.url) return null;
       const checkDomain = function (url) {

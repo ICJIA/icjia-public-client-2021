@@ -44,6 +44,7 @@ const GET_HOME = gql`
         url
         teaser
         icon
+        datePosted
       }
     }
 

@@ -20,6 +20,17 @@
               'flex-item-1': boxesPerRow === 1,
             }"
           >
+            <v-btn
+              color="blue darken-3"
+              fab
+              dark
+              absolute
+              top
+              left
+              v-if="isItNew(box.datePosted)"
+            >
+              <span style="color: #fff !important"> NEW!</span>
+            </v-btn>
             <v-icon style="font-size: 70px" v-if="box.icon">{{
               box.icon
             }}</v-icon>
@@ -51,6 +62,7 @@
 
 <script>
 import { renderToHtml } from "@/services/Markdown";
+import moment from "moment";
 export default {
   computed: {
     // rows() {
@@ -64,6 +76,18 @@ export default {
     return {};
   },
   methods: {
+    isItNew(datePosted) {
+      if (!datePosted) return false;
+      let now = moment(new Date()); //todays date
+      let end = moment(datePosted); // another date
+      let duration = moment.duration(now.diff(end));
+      let days = duration.asDays();
+      if (days <= this.$myApp.config.daysToShowNew) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     render(content) {
       return renderToHtml(content);
     },

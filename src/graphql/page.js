@@ -22,6 +22,7 @@ const GET_ALL_PAGES_QUERY = gql`
         teaser
         icon
         url
+        datePosted
       }
       splash {
         name
