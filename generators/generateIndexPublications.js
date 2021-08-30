@@ -6,15 +6,6 @@ const _ = require("lodash");
 // const { apiBaseURL } = require("./src/config");
 const allowedHost = "https://icjia.illinois.gov/researchhub";
 
-const PUBLICATIONS_COUNT = `query {
-    publicationsConnection {
-    aggregate {
-      totalCount
-    }
-  }
-  }
-`;
-
 const init = async () => {
   const limit = 500;
   let pubArray = [];

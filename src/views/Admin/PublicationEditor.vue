@@ -331,6 +331,7 @@ export default {
       search: "",
       singleExpand: true,
       publications: null,
+      content: null,
       getPublicationType,
       singlePublication: null,
       pubTypeSelect: null,
@@ -505,22 +506,40 @@ export default {
       this.fetchSinglePublication(value.id);
     },
     async fetchAllPublications() {
-      try {
-        let { data } = await api.get(
-          "/publications?_limit=990&_sort=publicationDate:DESC",
-          {
-            validateStatus: function (status) {
-              return status >= 200 && status < 300;
-            },
-          }
-        );
-        this.publications = data;
-        this.publications = _.orderBy(
-          this.publications,
-          ["publicationDate"],
-          ["desc"]
-        );
+      let pubArray = [];
+      let limit = 500;
+      let start = 0;
+      let count = await api.get("/publications/count");
+      count = count.data;
+      let iterations = Math.ceil(count / limit);
 
+      console.log("iterations: ", iterations);
+      try {
+        for (let i = 0; i < iterations; i++) {
+          let response = await axios.get(
+            `https://agency.icjia-api.cloud/publications?_limit=${limit}&_start=${start}`
+          );
+          pubArray = pubArray.concat(response.data);
+          start += limit;
+        }
+        pubArray = _.uniqBy(pubArray, "id");
+        const allowedHost = "https://icjia.illinois.gov/researchhub";
+        let publications = pubArray.map((p) => {
+          let obj = {
+            ...p,
+            altTitle: p.title.toLowerCase(),
+            localArticlePath:
+              p.articleURL && p.articleURL.includes(allowedHost)
+                ? p.articleURL.replace("https://icjia.illinois.gov", "")
+                : null,
+            fullPath: `/about/publications/${p.slug}`,
+            contentType: "publication",
+          };
+          return obj;
+        });
+        let content = [...publications];
+        content = _.orderBy(content, ["publicationDate"], ["desc"]);
+        this.publications = content;
         NProgress.done();
       } catch (e) {
         console.log(e);
