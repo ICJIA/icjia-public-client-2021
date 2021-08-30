@@ -55,6 +55,108 @@
         offset-y
         origin="center center"
         transition="scale-transition"
+        nudge-left="60px"
+        style="z-index: 500"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            text
+            large
+            class="hidden-sm-and-down navItem"
+            v-bind="attrs"
+            v-on="on"
+            style="font-weight: 900 !important; font-size: 16px"
+            >ABOUT<v-icon right small>arrow_drop_down</v-icon>
+          </v-btn>
+        </template>
+        <v-list nav dense elevation="2">
+          <v-list-item class="appNav" exact to="/about/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >Overview</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item
+            class="appNav"
+            exact
+            to="/about/composition-and-membership/"
+          >
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >Board Members</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item class="appNav" exact to="/about/icjia-staff/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >ICJIA Staff & Unit Information</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item class="appNav" exact to="/news/meetings/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >Meetings</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-divider></v-divider>
+
+          <v-list-item class="appNav" to="/information-systems/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >Information Systems</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item class="appNav" to="/foia/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >FOIA Requests</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item class="appNav" exact to="/about/employment/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >Employment</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item class="appNav" exact to="/news/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >News & Information</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+          <v-divider></v-divider>
+          <v-list-item
+            class="appNav"
+            exact
+            to="/about/publications/illinois-criminal-justice-information-authority-2020-annual-report"
+          >
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >2020 Annual Report</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
+      <!-- <v-menu
+        bottom
+        offset-y
+        origin="center center"
+        transition="scale-transition"
         nudge-left="20px"
         style="z-index: 500"
       >
@@ -216,7 +318,7 @@
             </v-list-item-content>
           </v-list-item>
         </v-list>
-      </v-menu>
+      </v-menu> -->
 
       <v-tooltip left>
         <template v-slot:activator="{ on, attrs }">

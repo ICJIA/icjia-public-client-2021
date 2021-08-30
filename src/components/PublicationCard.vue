@@ -29,7 +29,18 @@
 
         <li v-if="item.fileURL" class="mt-2">
           <span style="font-weight: 700">Download&nbsp;</span><br />
-          <a :href="item.fileURL" target="_blank">{{ item.fileURL }}</a>
+          <!-- <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <a :href="item.fileURL" target="_blank" v-bind="attrs" v-on="on"
+                >{{ item.title }}
+              </a>
+            </template>
+            <span>{{ item.fileURL }}</span>
+          </v-tooltip> -->
+          <a :href="item.fileURL" target="_blank">{{ item.title }} </a>
+          &nbsp;<v-chip x-small style="font-weight: 900">{{
+            getFileType(item.fileURL)
+          }}</v-chip>
         </li>
       </ul>
       <div v-if="item.tags" class="py-2 px-3">
@@ -45,8 +56,8 @@
         style="background: #fdfdfd; font-size: 12px; border: 1px solid #eee"
         class="text-center mt-10 px-3 py-3"
       >
-        Individual publications are also available for download from the ICJIA
-        Archive:
+        Individual publications, including meeting agendas, minutes, and
+        materials, are also available for download from the ICJIA Archive:
         <a href="https://archive.icjia.cloud" target="_blank"
           >https://archive.icjia.cloud</a
         >
@@ -57,6 +68,11 @@
 
 <script>
 export default {
+  methods: {
+    getFileType(url) {
+      return url.split(/[#?]/)[0].split(".").pop().trim().toUpperCase();
+    },
+  },
   props: {
     item: {
       type: Object,
