@@ -293,6 +293,13 @@
               >
             </v-list-item-content>
           </v-list-item>
+          <v-list-item class="appNav" exact to="/grants/funding/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >Funding Opportunities</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
           <v-list-item class="appNav" exact to="/grants/programs/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
@@ -307,13 +314,7 @@
               >
             </v-list-item-content>
           </v-list-item>
-          <v-list-item class="appNav" exact to="/grants/funding/">
-            <v-list-item-content class="hover">
-              <v-list-item-title style="font-size: 12px !important"
-                >Funding Opportunities</v-list-item-title
-              >
-            </v-list-item-content>
-          </v-list-item>
+
           <v-list-item class="appNav" exact to="/grants/technical-assistance/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
