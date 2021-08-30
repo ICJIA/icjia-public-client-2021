@@ -55,7 +55,7 @@
         offset-y
         origin="center center"
         transition="scale-transition"
-        nudge-left="65px"
+        nudge-left="25px"
         style="z-index: 500"
       >
         <template v-slot:activator="{ on, attrs }">
@@ -93,10 +93,12 @@
           <v-list-item class="appNav" exact to="/about/icjia-staff/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
-                >ICJIA Staff & Unit Information</v-list-item-title
+                >Staff Organization</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
+
+          <v-divider></v-divider>
 
           <v-list-item class="appNav" exact to="/news/meetings/">
             <v-list-item-content class="hover">
@@ -106,22 +108,6 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-divider></v-divider>
-
-          <v-list-item class="appNav" to="/information-systems/">
-            <v-list-item-content class="hover">
-              <v-list-item-title style="font-size: 12px !important"
-                >Information Systems</v-list-item-title
-              >
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item class="appNav" to="/foia/">
-            <v-list-item-content class="hover">
-              <v-list-item-title style="font-size: 12px !important"
-                >FOIA Requests</v-list-item-title
-              >
-            </v-list-item-content>
-          </v-list-item>
           <v-list-item class="appNav" exact to="/about/employment/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
@@ -137,7 +123,29 @@
               >
             </v-list-item-content>
           </v-list-item>
+          <v-list-item class="appNav" exact to="/news/events/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >Event Calendar</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
           <v-divider></v-divider>
+          <v-list-item class="appNav" to="/information-systems/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >Information Systems</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item class="appNav" to="/foia/">
+            <v-list-item-content class="hover">
+              <v-list-item-title style="font-size: 12px !important"
+                >FOIA Requests</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+          <!-- <v-divider></v-divider>
           <v-list-item
             class="appNav"
             exact
@@ -148,7 +156,7 @@
                 >2020 Annual Report</v-list-item-title
               >
             </v-list-item-content>
-          </v-list-item>
+          </v-list-item> -->
         </v-list>
       </v-menu>
 
@@ -268,7 +276,7 @@
           <v-list-item class="appNav" exact to="/grants/programs/">
             <v-list-item-content class="hover">
               <v-list-item-title style="font-size: 12px !important"
-                >ICJIA Grant Programs</v-list-item-title
+                >Grant Programs</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
