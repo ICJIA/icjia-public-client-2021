@@ -36,7 +36,7 @@
         "
       />
 
-      <div
+      <!-- <div
         @click="
           $router.push('/').catch((err) => {
             $vuetify.goTo(0);
@@ -46,7 +46,19 @@
         class="hover hidden-sm-and-down"
       >
         ILLINOIS CRIMINAL JUSTICE INFORMATION AUTHORITY
-      </div>
+      </div> -->
+
+      <v-toolbar-title
+        class="hover hidden-sm-and-down"
+        @click="
+          $router.push('/').catch((err) => {
+            $vuetify.goTo(0);
+          })
+        "
+        ><span style="font-weight: 900 !important" class="agency"
+          >ILLINOIS CRIMINAL JUSTICE INFORMATION AUTHORITY</span
+        ></v-toolbar-title
+      >
 
       <v-spacer></v-spacer>
 
