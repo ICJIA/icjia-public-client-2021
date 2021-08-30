@@ -18,8 +18,11 @@ const GET_ALL_PROGRAMS_QUERY = gql`
         slug
       }
       attachments {
-        url
+        updated_at
+        size
         name
+        ext
+        url
       }
     }
   }
@@ -39,7 +42,10 @@ const GET_ALL_FUNDING_QUERY = gql`
       category
       published_at
       attachments {
+        updated_at
+        size
         name
+        ext
         url
       }
       tags {
@@ -97,7 +103,10 @@ const GET_SINGLE_PROGRAM_QUERY = gql`
       status
       published_at
       attachments {
+        updated_at
+        size
         name
+        ext
         url
       }
       tags {

@@ -16,34 +16,8 @@
       <span v-if="label && label.length"> {{ label }}</span
       ><span v-else class="">Attachments</span>
     </div>
-    <div v-if="!showAsTable">
-      <ul v-for="(attachment, index) in attachments" :key="index" class="mt-6">
-        <li class="attachment-link">
-          <a
-            :href="`https://agency.icjia-api.cloud${attachment.url}`"
-            target="_blank"
-          >
-            <!-- <v-chip
-              v-if="isItNew(attachment)"
-              label
-              x-small
-              color="#0D4474"
-              class="mr-2"
-              style="margin-top: 0px"
-            >
-              <span style="color: #fff !important; font-weight: 400">
-                NEW!
-              </span> </v-chip
-            > -->
-            {{ attachment.name }}</a
-          >
-          <ul v-if="showLastUpdated" style="font-size: 12px">
-            <li>Last updated on {{ attachment.updated_at | format }}</li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-    <div v-else>
+
+    <div>
       <v-simple-table dense>
         <template v-slot:default>
           <thead>
@@ -59,28 +33,17 @@
               v-for="(attachment, index) in attachments"
               :key="index"
               class="hover"
+              @click.stop.prevent="routeTo(attachment.url)"
             >
               <td>
-                <span>
-                  <!-- <v-chip
-                    v-if="isItNew(attachment)"
-                    label
-                    x-small
-                    color="#0D4474"
-                    class="mr-2"
-                    style="margin-top: 0px"
-                  >
-                    <span style="color: #fff !important; font-weight: 400">
-                      NEW!
-                    </span>
-                  </v-chip> -->
-
-                  <a
+                <!-- <a
                     :href="`https://agency.icjia-api.cloud${attachment.url}`"
                     target="_blank"
                     >{{ attachment.name }}</a
-                  ></span
-                >
+                  > -->
+                <span>
+                  {{ attachment.name }}
+                </span>
               </td>
               <td>
                 <span
@@ -90,6 +53,7 @@
                     color: #555;
                     font-size: 12px;
                   "
+                  v-if="attachment && attachment.ext"
                   >{{ attachment.ext.replace(/\./g, "") }}</span
                 >
               </td>
@@ -133,6 +97,9 @@ export default {
     };
   },
   methods: {
+    routeTo(url) {
+      console.log(url);
+    },
     isItNew(item) {
       let targetDate;
       if (item.publicationDate) {

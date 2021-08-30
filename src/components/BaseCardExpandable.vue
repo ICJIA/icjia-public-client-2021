@@ -111,41 +111,14 @@
             <template>{{ tag }}</template>
           </BasePropChip>
         </BasePropDisplay>
-      </div>
-      <v-card-actions class="mt-3">
-        <v-btn
-          small
-          outlined
-          @click.stop.prevent="show = !show"
+        <AttachmentList
+          :items="item.attachments"
           v-if="item.attachments && item.attachments.length"
-        >
-          Attachments
-          <v-icon right>{{
-            show ? "mdi-chevron-up" : "mdi-chevron-down"
-          }}</v-icon>
-        </v-btn>
-        <v-spacer></v-spacer>
-        <v-btn small :to="item.fullPath" v-if="showReadMore"
-          >Read More&nbsp;&raquo;</v-btn
-        >
-      </v-card-actions>
+          class="mt-1 pl-0"
+          :key="item.slug"
+        ></AttachmentList>
+      </div>
 
-      <v-expand-transition>
-        <div v-show="show" class="pl-3 pr-3">
-          <v-card-text>
-            <ul>
-              <li v-for="(doc, index) in item.attachments" :key="index">
-                <a
-                  :href="`https://agency.icjia-api.cloud${doc.url}`"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  >{{ doc.name }}</a
-                >
-              </li>
-            </ul>
-          </v-card-text>
-        </div>
-      </v-expand-transition>
       <div class="pb-6"></div>
     </v-card>
   </div>
@@ -177,7 +150,9 @@ export default {
   methods: {
     routeTo(fullPath) {
       if (!fullPath) return;
-      this.$router.push(fullPath);
+      this.$router.push(fullPath).catch(() => {
+        this.$vuetify.goTo(0);
+      });
     },
     render(content) {
       return renderToHtml(content);
