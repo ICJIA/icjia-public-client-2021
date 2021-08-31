@@ -58,9 +58,9 @@ const init = async () => {
   let sortedItems = _.sortBy(feed.items, "date").reverse();
   feed.items = sortedItems;
 
-  await fs.writeFile("./public/feeds/rss2.xml", feed.rss2());
-  await fs.writeFile("./public/feeds/atom.xml", feed.atom1());
-  await fs.writeFile("./public/feeds/json1.json", feed.json1());
+  await fs.writeFile("./public/rss2.xml", feed.rss2());
+  await fs.writeFile("./public/atom.xml", feed.atom1());
+  await fs.writeFile("./public/json1.json", feed.json1());
 
   console.log("RSS Feeds generated.");
 };

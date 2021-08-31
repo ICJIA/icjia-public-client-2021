@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://agency.icjia.cloud/</id>
+    <title>ICJIA Feed</title>
+    <updated>2021-08-31T21:10:45.252Z</updated>
+    <generator>Feed for Node.js</generator>
+    <author>
+        <name>Illinois Criminal Justice Information Authority</name>
+        <email>cja.info@illinois.gov</email>
+        <uri>https://agency.icjia.cloud/</uri>
+    </author>
+    <link rel="alternate" href="https://agency.icjia.cloud/"/>
+    <link rel="self" href="https://agency.icjia.cloud/feeds/atom.xml"/>
+    <subtitle>This is ICJIA's RSS feed!</subtitle>
+    <logo>http://example.com/image.png</logo>
+    <icon>http://example.com/favicon.ico</icon>
+    <rights>All rights reserved 2021, Illinois Criminal Justice Information Authority</rights>
+    <entry>
+        <title type="html"><![CDATA[Get the Recipe for Grant Success]]></title>
+        <id>https://agency.icjia.cloud/news/get-the-recipe-for-grant-success</id>
+        <link href="https://agency.icjia.cloud/news/get-the-recipe-for-grant-success"/>
+        <updated>2021-08-17T16:11:26.497Z</updated>
+        <summary type="html"><![CDATA[Take the mystery out of securing your grant funding with ICJIA's new online training: Your Recipe for Grant Success]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Join our volunteer reviewer pool]]></title>
+        <id>https://agency.icjia.cloud/news/join-our-volunteer-reviewer-pool</id>
+        <link href="https://agency.icjia.cloud/news/join-our-volunteer-reviewer-pool"/>
+        <updated>2021-08-03T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[ICJIA is seeking diverse, passionate community members to read and review grant applications submitted by organizations across Illinois. This collaborative approach will enhance ICJIA’s application review process with the assistance of individuals with diverse backgrounds, viewpoints, and experiences.]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Webinar: The Pandemic's Impact on Illinois Criminal Justice and Victim Services]]></title>
+        <id>https://agency.icjia.cloud/news/webinar-the-pandemic-s-impact-on-illinois-criminal-justice-and-victim-services</id>
+        <link href="https://agency.icjia.cloud/news/webinar-the-pandemic-s-impact-on-illinois-criminal-justice-and-victim-services"/>
+        <updated>2021-07-26T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Webinar: The Pandemic's Impact on Illinois Criminal Justice and Victim Services: Assessing Outcomes and Moving Forward]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Pritzker Administration Awards $3.5 Million in Restore, Reinvest, and Renew Program Grants in Response to Summer Violence]]></title>
+        <id>https://agency.icjia.cloud/news/pritzker-administration-awards-3-5-million-in-restore-reinvest-and-renew-program-grants-in-response-to-summer-violence</id>
+        <link href="https://agency.icjia.cloud/news/pritzker-administration-awards-3-5-million-in-restore-reinvest-and-renew-program-grants-in-response-to-summer-violence"/>
+        <updated>2021-07-16T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[
+CHICAGO— Using revenue generated from adult-use cannabis sales, the Illinois
+Criminal Justice Information Authority (ICJIA) today announced 21 grants totaling $3.5
+million to organizations offering young people and emerging adults (ages 10 to 25) prosocial activities that may reduce violence and victimization or provide increased street
+intervention this summer. Grant awards will support three months of programming, from
+July 1 to September 30.]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[ICJIA Request Public Input For Promoting Successful and Effective Justice  Assistance Grant Programming]]></title>
+        <id>https://agency.icjia.cloud/news/icjia-request-public-input-for-promoting-successful-and-effective-justice-assistance-grant-programming</id>
+        <link href="https://agency.icjia.cloud/news/icjia-request-public-input-for-promoting-successful-and-effective-justice-assistance-grant-programming"/>
+        <updated>2021-06-28T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[The Illinois Criminal Justice Information Authority (ICJIA), the state administering agency for the federal
+Edward Byrne Memorial Justice Assistance Grant Program (JAG), is seeking public input on its federal fiscal
+year 2021 JAG application.]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Deputy Director Charise Williams joined Lt. Governor Juliana Stratton and Director Yaacov Delaney of Justice, Equity, and Opportunity Initiative for a fireside chat with Young Leaders in Action]]></title>
+        <id>https://agency.icjia.cloud/news/deputy-director-charise-williams-joined-lt-governor-juliana-stratton-and-director-yaacov-delaney-of-justice-equity-and-opportunity-initiative-for-a-fireside-chat-with-young-leaders-in-action</id>
+        <link href="https://agency.icjia.cloud/news/deputy-director-charise-williams-joined-lt-governor-juliana-stratton-and-director-yaacov-delaney-of-justice-equity-and-opportunity-initiative-for-a-fireside-chat-with-young-leaders-in-action"/>
+        <updated>2021-06-18T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Deputy Director Charise Williams joined Lt. Governor Juliana Stratton and Director Yaacov Delaney of Justice, Equity, and Opportunity Initiative for a fireside chat with Young Leaders in Action.]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[ICJIA Celebrates Juneteenth: A Message from the Acting Executive Director]]></title>
+        <id>https://agency.icjia.cloud/news/icjia-celebrates-juneteenth</id>
+        <link href="https://agency.icjia.cloud/news/icjia-celebrates-juneteenth"/>
+        <updated>2021-06-18T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Today ICJIA celebrates Juneteenth in commemoration of the Emancipation Proclamation signed in 1863 and for the freedom that finally came for those still enslaved by the confederates on June 19, 1865. On that day, some 2,000 Union troops arrived in Galveston Bay, Texas. The army announced that the more than 250,000 enslaved Black people in the state were free by executive decree. Upon their freedom, newly freed Black people in Texas organized a Jubilee Day for the next year and in decades to come, this day came to be known as “Juneteenth.” Juneteenth marks our country’s second Independence Day.]]></summary>
+    </entry>
+</feed>
