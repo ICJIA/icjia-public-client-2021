@@ -320,8 +320,16 @@
         "location": "bottom",
         "items": [
             {
+                "label": "Home",
+                "path": "/"
+            },
+            {
                 "label": "Funding",
-                "path": "/grants/"
+                "path": "/grants/funding/"
+            },
+            {
+                "label": "Technical Assistance",
+                "path": "/grants/technical-assistance/"
             },
             {
                 "label": "Research",
@@ -333,7 +341,7 @@
             },
             {
                 "label": "Meetings",
-                "path": "/about/meetings/"
+                "path": "/news/meetings/"
             },
             {
                 "label": "Employment",
@@ -345,7 +353,7 @@
             },
             {
                 "label": "Contact",
-                "path": "/contact/"
+                "path": "/about/contact/"
             }
         ]
     }

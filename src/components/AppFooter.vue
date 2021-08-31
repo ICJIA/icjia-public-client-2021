@@ -1,11 +1,11 @@
 <template>
-  <v-footer dark>
+  <v-footer dark class="">
     <v-card
       flat
       tile
       width="100%"
       class="text-center markdown-body pb-4"
-      style="background: #0d4474; border-top: 2px solid #888 !important"
+      style="background: #0d4474"
     >
       <v-container class="mt-0" fill-height>
         <v-row align="center" justify="center">

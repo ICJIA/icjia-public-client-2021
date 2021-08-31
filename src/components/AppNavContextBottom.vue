@@ -1,0 +1,100 @@
+<template>
+  <div style="border-top: 1px solid #ddd">
+    <v-app-bar height="35" scroll-threshold="0" color="#11568e">
+      <v-tabs
+        show-arrows
+        centered
+        v-model="contextTab"
+        center-active
+        height="35"
+        optional
+        dark
+        class="context px-3"
+      >
+        <v-tabs-slider color="white"></v-tabs-slider>
+
+        <v-tab
+          style="background: #11568e !important; color: #fff !important"
+          v-for="(item, index) in contextMenu[0].items"
+          :key="index"
+          @click="
+            item.path && item.path.length
+              ? routeToPage(item.path)
+              : fireEvent(item.event)
+          "
+        >
+          {{ item.label }}
+          <v-icon v-if="item.icon" right small>{{ item.icon }}</v-icon>
+        </v-tab>
+      </v-tabs>
+    </v-app-bar>
+  </div>
+</template>
+
+<script>
+import { EventBus } from "@/event-bus";
+export default {
+  data() {
+    return {
+      contextDrawer: true,
+      contextTab: null,
+      currentLabel: null,
+      contextTitle: null,
+      isAtTop: false,
+      disabled: false,
+      more: [],
+      words: 10,
+    };
+  },
+  mounted() {
+    EventBus.$on("context-label", (title) => {
+      this.contextTitle = title;
+    });
+    this.selectTab();
+  },
+
+  methods: {
+    openTranslationModal() {
+      EventBus.$emit("translate", this.$route.fullPath);
+    },
+
+    selectTab() {
+      this.contextMenu[0].items.forEach((item, index) => {
+        let url = this.$route.fullPath;
+        // add trailing slash if not present
+        url = url.replace(/\/$|$/, "/");
+        if (url === item.path) {
+          this.contextTab = index;
+          this.currentLabel = item.label;
+        }
+      });
+      //this.currentTab = "test";
+    },
+    fireEvent() {
+      EventBus.$emit("search");
+      this.$nextTick(() => {
+        this.contextTab = undefined;
+        this.selectTab();
+      });
+    },
+    routeToPage(page) {
+      this.$router.push(page).catch(() => {
+        this.$vuetify.goTo(0);
+      });
+    },
+  },
+  props: {
+    contextMenu: {
+      type: Array,
+      default: () => [],
+    },
+  },
+};
+</script>
+
+<style>
+/* .router-link-exact-active {
+  color: #fff !important;
+  font-weight: 900;
+} */
+</style>

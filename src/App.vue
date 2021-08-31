@@ -29,7 +29,7 @@
       ></AppNavContext>
       <router-view
         :key="`routerView-${$route.fullPath}`"
-        class="page"
+        class="page mb-12"
         style="margin-bottom: 20px"
         @hook:mounted="displayFooter()"
       ></router-view>
@@ -42,6 +42,12 @@
     </v-main>
     <ModalTranslate></ModalTranslate>
     <ModalSearch></ModalSearch>
+    <AppNavContextBottom
+      :contextMenu="bottomContextMenu"
+      id="context-bar-bottom"
+      v-if="bottomContextMenu"
+      :key="`bottom-context-${$route.fullPath}`"
+    ></AppNavContextBottom>
     <AppFooter
       style="margin: 0; padding: 0"
       @hook:mounted="fixA11y()"
@@ -84,7 +90,7 @@ export default {
           return obj;
         }
       });
-      console.log("bottom context: ", bottomContextMenu);
+      this.bottomContextMenu = bottomContextMenu;
     },
     displayFooter() {
       this.$nextTick(() => {
@@ -153,6 +159,7 @@ export default {
   mounted() {
     console.dir(this.$myApp);
     this.checkForTopContextMenu();
+    this.getBottomContextMenu();
     this.checkForDisclaimer();
   },
 };
