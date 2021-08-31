@@ -36,12 +36,7 @@
               @click.stop.prevent="routeTo(attachment.url)"
             >
               <td>
-                <!-- <a
-                    :href="`https://agency.icjia-api.cloud${attachment.url}`"
-                    target="_blank"
-                    >{{ attachment.name }}</a
-                  > -->
-                <span>
+                <span class="attachment">
                   {{ attachment.name }}
                 </span>
               </td>
@@ -99,6 +94,7 @@ export default {
   methods: {
     routeTo(url) {
       console.log(url);
+      window.open(`https://agency.icjia-api.cloud${url}`, "_blank");
     },
     isItNew(item) {
       let targetDate;
@@ -149,6 +145,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.attachment {
+  font-weight: 900;
+  color: #0a3a60;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.attachment:hover {
+  color: #aaa;
+  text-decoration: none;
+}
+
 .file-name {
   font-weight: 700;
 }

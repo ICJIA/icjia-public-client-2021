@@ -47,13 +47,32 @@
                 style="color: #fff; background: none"
                 >Contact</router-link
               >
-              |
+              <!-- |
               <router-link to="/sitemap" style="color: #fff; background: none"
                 >Sitemap</router-link
               >
               |
               <router-link to="/rss" style="color: #fff; background: none"
                 >RSS</router-link
+              > -->
+
+              |
+              <router-link
+                to="/about/covid-19/"
+                style="color: #fff; background: none"
+              >
+                Covid-19 Response</router-link
+              >
+              |
+              <router-link to="/foia/" style="color: #fff; background: none">
+                FOIA</router-link
+              >
+              |
+              <a
+                href="https://archive.icjia.cloud"
+                style="color: #fff; background: none"
+                target="_blank"
+                >Document Archive</a
               >
               |
               <a
@@ -61,13 +80,6 @@
                 style="color: #fff; background: none"
                 target="_blank"
                 >Github</a
-              >
-              |
-              <router-link
-                to="/about/covid-19/"
-                style="color: white !important"
-              >
-                Covid-19 Response</router-link
               >
             </div>
 

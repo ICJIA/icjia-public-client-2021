@@ -6,6 +6,7 @@
         "pathPrefix": "/grants/",
         "defaultPath": "/grants/fsgu-home/",
         "showTranslation": true,
+        "location": "top",
         "items": [
             {
                 "label": "FSGU Home",
@@ -32,6 +33,7 @@
         "pathPrefix": "/researchhub/",
         "defaultPath": "/researchhub/",
         "showTranslation": true,
+        "location": "top",
         "items": [
             {
                 "label": "Research Hub",
@@ -70,6 +72,7 @@
         "pathPrefix": "/irb/",
         "defaultPath": "/irb/",
         "showTranslation": true,
+        "location": "top",
         "items": [
             {
                 "label": "IRB Home",
@@ -104,6 +107,7 @@
         "pathPrefix": "/news/",
         "defaultPath": "/news/",
         "showTranslation": true,
+        "location": "top",
         "items": [
             {
                 "label": "News & Information",
@@ -142,6 +146,7 @@
         "pathPrefix": "/meetings/",
         "defaultPath": "/meetings/",
         "showTranslation": true,
+        "location": "top",
         "items": [
             {
                 "label": "News & Information",
@@ -176,6 +181,7 @@
         "pathPrefix": "/events/",
         "defaultPath": "/events/",
         "showTranslation": true,
+        "location": "top",
         "items": [
             {
                 "label": "News & Information",
@@ -210,6 +216,7 @@
         "pathPrefix": "/about/",
         "defaultPath": "/about/",
         "showTranslation": true,
+        "location": "top",
         "items": [
             {
                 "label": "About ICJIA",
@@ -264,6 +271,7 @@
         "pathPrefix": "/information-systems/",
         "defaultPath": "/information-systems/",
         "showTranslation": true,
+        "location": "top",
         "items": [
             {
                 "label": "Information Systems Home",
@@ -286,6 +294,7 @@
         "pathPrefix": "/admin/",
         "defaultPath": "/admin/",
         "showTranslation": false,
+        "location": "top",
         "items": [
             {
                 "label": "Admin Home",
@@ -298,6 +307,45 @@
             {
                 "label": "Publication List Editor",
                 "path": "/admin/publications/"
+            }
+        ]
+    },
+    {
+        "name": "Footer",
+        "label": null,
+        "shortLabel": null,
+        "pathPrefix": null,
+        "defaultPath": null,
+        "showTranslation": false,
+        "location": "bottom",
+        "items": [
+            {
+                "label": "Funding",
+                "path": "/grants/"
+            },
+            {
+                "label": "Research",
+                "path": "/researchhub/"
+            },
+            {
+                "label": "News",
+                "path": "/news/"
+            },
+            {
+                "label": "Meetings",
+                "path": "/about/meetings/"
+            },
+            {
+                "label": "Employment",
+                "path": "/about/employment/"
+            },
+            {
+                "label": "Events",
+                "path": "/events/"
+            },
+            {
+                "label": "Contact",
+                "path": "/contact/"
             }
         ]
     }

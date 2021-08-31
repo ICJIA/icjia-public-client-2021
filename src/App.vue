@@ -22,10 +22,10 @@
 
     <v-main style="background: #fcfcfc">
       <AppNavContext
-        :contextMenu="contextMenu"
-        v-if="contextMenu"
+        :contextMenu="topContextMenu"
+        v-if="topContextMenu"
         id="context-bar"
-        :key="`context-${$route.fullPath}`"
+        :key="`top-context-${$route.fullPath}`"
       ></AppNavContext>
       <router-view
         :key="`routerView-${$route.fullPath}`"
@@ -56,8 +56,9 @@ export default {
   watch: {
     // eslint-disable-next-line no-unused-vars
     $route(to, from) {
-      this.checkForContextMenu();
+      this.checkForTopContextMenu();
       this.checkForDisclaimer();
+      this.getBottomContextMenu();
     },
   },
   name: "App",
@@ -69,13 +70,22 @@ export default {
   },
   data() {
     return {
-      contextMenu: null,
+      topContextMenu: null,
       disclaimer: null,
       showFooter: null,
+      bottomContextMenu: null,
     };
   },
 
   methods: {
+    getBottomContextMenu() {
+      let bottomContextMenu = this.$myApp.context.filter((obj) => {
+        if (obj["location"] === "bottom") {
+          return obj;
+        }
+      });
+      console.log("bottom context: ", bottomContextMenu);
+    },
     displayFooter() {
       this.$nextTick(() => {
         this.showFooter = true;
@@ -116,9 +126,9 @@ export default {
         this.disclaimer = null;
       }
     },
-    checkForContextMenu() {
+    checkForTopContextMenu() {
       if (this.$route.fullPath === "/") {
-        this.contextMenu = null;
+        this.topContextMenu = null;
         return;
       }
 
@@ -127,22 +137,22 @@ export default {
       let context = fullPath.split("/").slice(1, -1);
       context = "/" + context.slice(0, 1).join("/") + "/";
 
-      let contextMenu = this.$myApp.context.filter((obj) => {
-        if (obj["pathPrefix"] === context) {
+      let topContextMenu = this.$myApp.context.filter((obj) => {
+        if (obj["pathPrefix"] === context && obj["location"] === "top") {
           return obj;
         }
       });
-      if (contextMenu && contextMenu.length) {
-        this.contextMenu = contextMenu;
+      if (topContextMenu && topContextMenu.length) {
+        this.topContextMenu = topContextMenu;
       } else {
-        this.contextMenu = null;
+        this.topContextMenu = null;
       }
     },
   },
 
   mounted() {
     console.dir(this.$myApp);
-    this.checkForContextMenu();
+    this.checkForTopContextMenu();
     this.checkForDisclaimer();
   },
 };
