@@ -324,6 +324,10 @@
                 "path": "/"
             },
             {
+                "label": "About",
+                "path": "/about/"
+            },
+            {
                 "label": "Funding",
                 "path": "/grants/funding/"
             },
@@ -336,7 +340,7 @@
                 "path": "/researchhub/"
             },
             {
-                "label": "News",
+                "label": "News & Information",
                 "path": "/news/"
             },
             {
