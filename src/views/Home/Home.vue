@@ -148,7 +148,7 @@ export default {
         return {
           now: new Date(),
           eventLimit: this.$myApp.config.home.eventLimit,
-          postLimit: this.$myApp.config.home.postLimit,
+          postLimit: this.$myApp.config.home.postLimit + 4,
           fundingLimit: this.$myApp.config.home.fundingLimit,
           meetingLimit: this.$myApp.config.home.meetingLimit,
           employmentLimit: this.$myApp.config.home.employmentLimit,
@@ -168,7 +168,10 @@ export default {
           contentType: "News",
         }));
         posts = getPublicationDate(posts);
-        this.news = _.orderBy(posts, ["publicationDate"], ["desc"]);
+        this.news = _.orderBy(posts, ["publicationDate"], ["desc"]).slice(
+          0,
+          this.$myApp.config.home.postLimit
+        );
 
         let meetings = ApolloQueryResult.data.meetings.map((e) => ({
           ...e,
