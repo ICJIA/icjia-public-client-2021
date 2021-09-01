@@ -29,7 +29,8 @@
             <div class="pb-6">
               <span class="v-icon fab fa-twitter mr-4"></span
               ><span class="v-icon fab fa-facebook mr-4"></span>
-              <span class="v-icon fab fa-youtube"></span>
+              <span class="v-icon fab fa-youtube mr-4"></span>
+              <span class="v-icon fa fa-rss"></span>
             </div>
             <div style="font-size: 12px; font-weight: 400">
               <router-link to="/about/" style="color: #fff; background: none"
@@ -50,10 +51,6 @@
               <!-- |
               <router-link to="/sitemap" style="color: #fff; background: none"
                 >Sitemap</router-link
-              >
-              |
-              <router-link to="/rss" style="color: #fff; background: none"
-                >RSS</router-link
               > -->
 
               |
@@ -80,6 +77,10 @@
                 style="color: #fff; background: none"
                 target="_blank"
                 >Github</a
+              >
+              |
+              <router-link to="/rss" style="color: #fff; background: none"
+                >RSS Feeds</router-link
               >
             </div>
 

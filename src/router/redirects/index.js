@@ -27,6 +27,13 @@ const redirects = [
     },
   },
   {
+    path: "/rss/",
+    // eslint-disable-next-line no-unused-vars
+    redirect: (route) => {
+      return "/about/rss/";
+    },
+  },
+  {
     path: "/dicra/",
     // eslint-disable-next-line no-unused-vars
     redirect: (route) => {
