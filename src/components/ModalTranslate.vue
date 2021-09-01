@@ -114,8 +114,8 @@ export default {
   methods: {
     googleTranslate(lang) {
       console.log(lang);
-      const route = "https://agency.icjia.cloud" + this.$route.fullPath;
 
+      const route = `${this.$myApp.config.api.baseClient}${this.$route.fullPath}`;
       const url =
         `https://translate.google.com/translate?hl=en&sl=en&u=${route}&tl=` +
         lang;

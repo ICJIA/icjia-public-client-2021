@@ -56,8 +56,9 @@
         style="background: #fdfdfd; font-size: 12px; border: 1px solid #eee"
         class="text-center mt-10 px-3 py-3"
       >
-        Individual publications, including meeting agendas, minutes, and
-        materials, are also available for download from the ICJIA Archive:
+        Individual publications, as well as old meeting agendas, minutes, and
+        materials, are always available for download from the ICJIA Document
+        Archive:
         <a href="https://archive.icjia.cloud" target="_blank"
           >https://archive.icjia.cloud</a
         >
