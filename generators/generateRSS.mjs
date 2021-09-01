@@ -5,6 +5,7 @@ import { Feed } from "feed";
 import axios from "axios";
 import fs from "fs-extra";
 import _ from "lodash";
+import { renderToHtml } from "./utils/Markdown.mjs";
 
 let feed = new Feed({
   title: "ICJIA Feed",
@@ -19,8 +20,8 @@ let feed = new Feed({
   updated: new Date(), // optional, default = today
   generator: "Feed for Node.js", // optional, default = 'Feed for Node.js'
   feedLinks: {
-    json: "https://agency.icjia.cloud/feeds/json1.json",
-    atom: "https://agency.icjia.cloud/feeds/atom.xml",
+    json: "https://agency.icjia.cloud/news-json1.json",
+    atom: "https://agency.icjia.cloud/news-atom.xml",
   },
   author: {
     name: "Illinois Criminal Justice Information Authority",
@@ -45,8 +46,8 @@ const init = async () => {
       title: post.title,
       id: `https://agency.icjia.cloud/news/${post.slug}`,
       link: `https://agency.icjia.cloud/news/${post.slug}`,
-      description: post.summary,
-      // content: post.body,
+      description: renderToHtml(post.summary),
+      content: renderToHtml(post.body),
       date: new Date(publicationDate),
       image:
         post.splash && post.splash.url
@@ -58,9 +59,9 @@ const init = async () => {
   let sortedItems = _.sortBy(feed.items, "date").reverse();
   feed.items = sortedItems;
 
-  await fs.writeFile("./public/rss2.xml", feed.rss2());
-  await fs.writeFile("./public/atom.xml", feed.atom1());
-  await fs.writeFile("./public/json1.json", feed.json1());
+  await fs.writeFile("./public/news-rss2.xml", feed.rss2());
+  await fs.writeFile("./public/news-atom.xml", feed.atom1());
+  await fs.writeFile("./public/news-json1.json", feed.json1());
 
   console.log("RSS Feeds generated.");
 };
