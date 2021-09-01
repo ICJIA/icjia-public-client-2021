@@ -20,7 +20,7 @@
     "scripts": "npm run generate:schema && npm run generate:images && npm run generate:search && npm run generate:feeds",
     "generate:search": "node ./generators/generateIndexHub && node ./generators/generateIndexUnits && node ./generators/generateIndexGrants && node ./generators/generateIndexPages && node ./generators/generateIndexMeetings && node ./generators/generateIndexEvents && node ./generators/generateIndexPosts && node ./generators/generateIndexJobs && node ./generators/generateIndexBiographies &&  node ./generators/generateIndexPublications && node ./generators/generateIndexFull",
     "generate:images": "node ./generators/generateImagesHub",
-    "generate:feeds": "node ./generators/generateRSS.mjs",
+    "generate:feeds": "node ./generators/generateRSSNews.mjs && node ./generators/generateRSSFunding.mjs",
     "generate:schema": "get-graphql-schema https://agency.icjia-api.cloud/graphql -j > schema.json",
     "postbuild": "node ./generators/generateBuildInfo"
   },

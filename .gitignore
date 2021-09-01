@@ -24,14 +24,14 @@ pnpm-debug.log*
 
 package-lock.json
 
-# public/site-meta.json
-# public/fuse-index.json
-# src/assets/site-meta.json
-# src/assets/units.json
-
 public/images/*
 public/api/*
 
+
+# RSS Feeds
 public/news-rss2.xml
 public/news-atom.xml
 public/news-json1.json
+public/funding-rss2.xml
+public/funding-atom.xml
+public/funding-json1.json
