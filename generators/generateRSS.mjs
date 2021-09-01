@@ -30,10 +30,7 @@ let feed = new Feed({
   },
 });
 
-//TODO: Render markdown for summary and body
 const init = async () => {
-  //console.log("init");
-  //get posts from axios
   const posts = await axios.get("https://agency.icjia-api.cloud/posts");
 
   posts.data.forEach((post) => {
