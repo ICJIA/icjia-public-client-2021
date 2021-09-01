@@ -136,6 +136,10 @@
             {
                 "label": "Covid-19 Response",
                 "path": "/news/covid-19/"
+            },
+            {
+                "label": "Press",
+                "path": "/press/"
             }
         ]
     },
@@ -171,6 +175,10 @@
             {
                 "label": "Covid-19 Response",
                 "path": "/news/covid-19/"
+            },
+            {
+                "label": "Press",
+                "path": "/press/"
             }
         ]
     },
@@ -206,6 +214,10 @@
             {
                 "label": "Covid-19 Response",
                 "path": "/news/covid-19/"
+            },
+            {
+                "label": "Press",
+                "path": "/press/"
             }
         ]
     },
@@ -346,6 +358,10 @@
             {
                 "label": "News & Information",
                 "path": "/news/"
+            },
+            {
+                "label": "Press",
+                "path": "/press/"
             },
             {
                 "label": "Research",

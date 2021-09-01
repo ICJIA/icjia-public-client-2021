@@ -18,6 +18,10 @@ const redirects = [
     path: "/information-systems/information-systems-home/",
     redirect: { name: "ISUOverview" },
   },
+  {
+    path: "/press/",
+    redirect: { name: "NewsPress" },
+  },
 
   {
     path: "/drone/",

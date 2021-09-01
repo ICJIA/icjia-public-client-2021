@@ -44,6 +44,12 @@ const news = [
       import(/* webpackChunkName: "news" */ "@/views/Grants/FundingAll.vue"),
   },
   {
+    path: "/news/press/",
+    name: "NewsPress",
+    component: () =>
+      import(/* webpackChunkName: "news" */ "@/views/News/NewsPress.vue"),
+  },
+  {
     path: "/news/employment",
     name: "NewsAllEmployment",
     // eslint-disable-next-line no-unused-vars
