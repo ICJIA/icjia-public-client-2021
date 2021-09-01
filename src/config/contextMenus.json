@@ -324,24 +324,8 @@
                 "path": "/about/"
             },
             {
-                "label": "Funding",
-                "path": "/grants/funding/"
-            },
-            {
-                "label": "Technical Assistance",
-                "path": "/grants/technical-assistance/"
-            },
-            {
-                "label": "Research",
-                "path": "/researchhub/"
-            },
-            {
-                "label": "News & Information",
-                "path": "/news/"
-            },
-            {
-                "label": "Meetings",
-                "path": "/news/meetings/"
+                "label": "Contact",
+                "path": "/about/contact/"
             },
             {
                 "label": "Employment",
@@ -352,8 +336,24 @@
                 "path": "/events/"
             },
             {
-                "label": "Contact",
-                "path": "/about/contact/"
+                "label": "Funding",
+                "path": "/grants/funding/"
+            },
+            {
+                "label": "Meetings",
+                "path": "/news/meetings/"
+            },
+            {
+                "label": "News & Information",
+                "path": "/news/"
+            },
+            {
+                "label": "Research",
+                "path": "/researchhub/"
+            },
+            {
+                "label": "Technical Assistance",
+                "path": "/grants/technical-assistance/"
             }
         ]
     }

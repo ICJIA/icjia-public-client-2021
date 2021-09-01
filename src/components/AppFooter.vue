@@ -36,12 +36,7 @@
               <router-link to="/about/" style="color: #fff; background: none"
                 >About</router-link
               >
-              |
-              <router-link
-                to="/about/privacy/"
-                style="color: #fff; background: none"
-                >Privacy</router-link
-              >
+
               |
               <router-link
                 to="/about/contact/"
@@ -61,16 +56,17 @@
                 Covid-19 Response</router-link
               >
               |
-              <router-link to="/foia/" style="color: #fff; background: none">
-                FOIA</router-link
-              >
-              |
               <a
                 href="https://archive.icjia.cloud"
                 style="color: #fff; background: none"
                 target="_blank"
                 >Document Archive</a
               >
+              |
+              <router-link to="/foia/" style="color: #fff; background: none">
+                FOIA</router-link
+              >
+
               |
               <a
                 href="https://github.com/ICJIA/icjia-public-2021"
@@ -79,8 +75,21 @@
                 >Github</a
               >
               |
+              <router-link
+                to="/about/privacy/"
+                style="color: #fff; background: none"
+                >Privacy</router-link
+              >
+              |
               <router-link to="/rss" style="color: #fff; background: none"
                 >RSS Feeds</router-link
+              >
+              |
+              <a
+                href="https://visitor.r20.constantcontact.com/manage/optin?v=001MqUcqqvjwLCJXlLMSWbTe3zHHmEQgFeBuHvBcJWTbwgrxFbDSGx4HSUPpI6DJWMUPgbljtLxffqIcGFTgCnr-auak88ybvRxpoJlTMGPtZs%3D"
+                style="color: #fff; background: none"
+                target="_blank"
+                >Subscribe to CJ Dispatch</a
               >
             </div>
 
