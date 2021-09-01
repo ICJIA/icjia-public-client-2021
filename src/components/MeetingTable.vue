@@ -22,7 +22,7 @@
         <div
           style="width: 110px; font-size: 14px; font-weight: 700; color: #555"
         >
-          {{ item.start | dateFormat }}
+          {{ item.start | dateFormatAlt }}
         </div>
       </template>
       <template v-slot:item.category="{ item }">
