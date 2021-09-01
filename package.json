@@ -110,7 +110,7 @@
       "^ #(.{6})\\s": "[$1](https://app.clickup.com/t/$1) - "
     },
     "browserslist": [
-      "last 1 Chrome version"
+      "last 3 years"
     ],
     "includeBranch": [
       "develop",
