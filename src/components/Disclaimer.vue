@@ -1,31 +1,32 @@
 <template>
-  <div v-if="disclaimer && disclaimer.length" id="disclaimer">
-    <div
-      style="
-        background: #31597a;
-        border-top: 1px solid #aaa;
+  <v-card
+    elevation="2"
+    style="
+      background: #31597a;
+      border-top: 1px solid #aaa;
 
-        color: #fff !important;
-        z-index: 99999;
-      "
-      class="px-5 py-5"
-    >
-      <v-container>
-        <v-row>
-          <v-col class="markdown-body font-lato">
-            <div style="font-size: 20px; font-weight: 900; color: #fff">
-              {{ disclaimer[0].label }}
-            </div>
-            <div
-              style="font-size: 14px; color: #fff"
-              class="mt-2"
-              v-html="render(disclaimer[0].body)"
-            ></div>
-          </v-col>
-        </v-row>
-      </v-container>
-    </div>
-  </div>
+      color: #fff !important;
+      z-index: 99999;
+    "
+    class="px-5 py-5 my-0"
+    v-if="disclaimer && disclaimer.length"
+    id="disclaimer"
+  >
+    <v-container>
+      <v-row>
+        <v-col class="markdown-body font-lato">
+          <div style="font-size: 20px; font-weight: 900; color: #fff">
+            {{ disclaimer[0].label }}
+          </div>
+          <div
+            style="font-size: 13px; color: #fff"
+            class="mt-2"
+            v-html="render(disclaimer[0].body)"
+          ></div>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-card>
 </template>
 
 <script>
