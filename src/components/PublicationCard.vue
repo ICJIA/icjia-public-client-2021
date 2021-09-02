@@ -12,7 +12,15 @@
         class="mb-3 mt-2 px-3"
         v-if="item && item.title"
       >
-        {{ item.title }}
+        <span
+          class="item-title"
+          @click.stop.prevent="
+            $router.push(item.fullPath).catch((err) => {
+              $vuetify.goTo(0);
+            })
+          "
+          >{{ item.title }}</span
+        >
       </div>
       <div v-if="item.summary && item.summary.length" class="px-3">
         {{ item.summary }}
@@ -83,4 +91,11 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+.item-title {
+  cursor: pointer;
+}
+.item-title:hover {
+  text-decoration: underline;
+}
+</style>

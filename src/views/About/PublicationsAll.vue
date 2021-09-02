@@ -64,8 +64,8 @@
                       </span>
                     </v-chip>
 
-                    <strong>{{ item.title }}</strong></span
-                  >
+                    <strong>{{ item.title }}</strong>
+                  </span>
                 </div>
               </template>
               <template v-slot:item.pubType="{ item }">
@@ -73,6 +73,13 @@
                   <span class="">{{ getPublicationType(item.pubType) }}</span>
                 </div>
               </template>
+              <!-- <template v-slot:item.fullPath="{ item }">
+                <div class="my-2">
+                  <v-button :to="item.fullPath">
+                    <v-icon>link</v-icon>
+                  </v-button>
+                </div>
+              </template> -->
               <template v-slot:item.articleURL="{ item }">
                 <div
                   class="my-2"
@@ -166,7 +173,7 @@ export default {
         { text: "Type", value: "pubType" },
 
         {
-          text: "Article",
+          text: "Article11",
           value: "articleURL",
           align: "center",
           sortable: false,
