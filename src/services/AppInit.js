@@ -5,12 +5,14 @@ import context from "@/config/contextMenus.json";
 
 import Fuse from "fuse.js";
 const fuse = new Fuse(searchIndex, config.search.site);
+const publications = null;
 
 let myApp = {
   config,
   context,
   disclaimers,
   fuse,
+  publications,
 };
 
 export { myApp };

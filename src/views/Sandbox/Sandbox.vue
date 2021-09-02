@@ -1,208 +1,277 @@
 <template>
-  <v-card color="#eee" min-height="600" class="px-3 py-1">
-    <v-card-title class="text-h5 grey lighten-2">
-      Search ICJIA<v-spacer></v-spacer
-      ><v-btn small @click="searchModal = false">Close</v-btn>
-    </v-card-title>
-
-    <div class="">
-      <div style="font-size: 12px" class="mb-9 d-flex">
-        <v-spacer></v-spacer>
-        <span style="font-weight: 900" v-if="query && query.length">
-          Displaying {{ queryResults.length }} result{{ resultNumber }}</span
-        >
-      </div>
-      <v-form class="pl-2" style="margin-top: -15px">
-        <v-text-field
-          ref="textfield"
-          clearable
-          autofocus
-          v-model="query"
-          label="Search"
-          placeholder="Search"
-          @input="instantSearch"
-          style="font-weight: 900"
-        />
-
-        <div v-if="query && query.length" class="mb-12">
-          <div
-            v-for="(result, index) in queryResults"
-            :key="index"
-            class="my-4"
+  <div class="markdown-body text-center pb-12">
+    <div>
+      <v-container v-if="publications"
+        ><v-row>
+          <v-card
+            class="px-5 py-5 mt-10 text-center"
+            style="width: 100% !important"
           >
-            <div
-              style="background: #fff; border: 1px solid #eee"
-              class="px-3 py-3"
+            <h1>ICJIA Publications</h1>
+
+            <v-card-title class="mb-5">
+              <v-text-field
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-card-title>
+            <v-data-table
+              :headers="headers"
+              :items="publications"
+              :search="search"
+              show-expand
+              item-key="id"
+              :single-expand="singleExpand"
+              :expanded.sync="expanded"
+              @click:row="clicked"
+              dense
+              class="text-center"
+              :sort-by.sync="sortBy"
+              :sort-desc.sync="sortDesc"
+              :footer-props="{
+                'items-per-page-options': [100, 150, 200, 250],
+              }"
+              :items-per-page="200"
             >
-              <div style="font-size: 14px">
-                <!-- ------------------------------------------------
-                Default 
-                -----------------------------------------------  -->
-                <div>
-                  <div>
-                    <span
-                      style="font-weight: 700"
-                      v-if="result.item.contentType"
-                    >
-                      {{ result.item.contentType.toUpperCase() }}
-                    </span>
-                  </div>
-                  <div
-                    style="font-size: 16px; font-weight: bold"
-                    class="mt-2 mb-2"
-                    v-html="result.item.title"
-                    v-if="result.item.title"
-                  ></div>
+              <template v-slot:item.publicationDate="{ item }">
+                <div
+                  style="
+                    width: 90px;
+                    font-size: 14px;
+                    font-weight: 700;
+                    color: #555;
+                  "
+                >
+                  {{ item.publicationDate | dateFormatAlt }}
                 </div>
+              </template>
+              <template v-slot:item.title="{ item }">
+                <div class="my-2">
+                  <span class="">
+                    <v-chip
+                      v-if="isItNew(item)"
+                      label
+                      x-small
+                      color="#0D4474"
+                      class="mr-2"
+                      style="margin-top: 0px"
+                    >
+                      <span style="color: #fff !important; font-weight: 400">
+                        NEW!
+                      </span>
+                    </v-chip>
+
+                    <strong>{{ item.title }}</strong></span
+                  >
+                </div>
+              </template>
+              <template v-slot:item.pubType="{ item }">
+                <div class="my-2">
+                  <span class="">{{ getPublicationType(item.pubType) }}</span>
+                </div>
+              </template>
+              <template v-slot:item.articleURL="{ item }">
                 <div
-                  v-if="result.item.abstract"
-                  v-html="truncate(result.item.abstract)"
-                ></div>
-                <div
-                  v-else-if="result.item.summary"
-                  v-html="truncate(result.item.summary)"
-                  class="mt-2 mb-2"
-                ></div>
-                <span
-                  v-for="tag of result.item.tags"
-                  :key="tag"
-                  class="px-2 mt-2 mr-2 search-tag"
-                  >{{ tag }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </v-form>
+                  class="my-2"
+                  v-if="item.localArticlePath && item.localArticlePath.length"
+                >
+                  <span class=""
+                    ><v-btn
+                      outlined
+                      x-small
+                      color="blue darken-4"
+                      :to="item.localArticlePath"
+                      >Web Article</v-btn
+                    ></span
+                  >
+                </div>
+              </template>
+              <template v-slot:item.fileURL="{ item }">
+                <div class="my-2" v-if="item.fileURL && item.fileURL.length">
+                  <span v-if="item.pubType !== 'application'"
+                    ><v-btn :href="item.fileURL" target="_blank" x-small
+                      >Download PDF<v-icon right>download</v-icon></v-btn
+                    ></span
+                  >
+                  <span v-else
+                    ><v-btn x-small
+                      >Open Application<v-icon right>open_in_new</v-icon></v-btn
+                    ></span
+                  >
+                </div>
+              </template>
+              <template v-slot:expanded-item="{ headers, item }">
+                <td
+                  :colspan="headers.length"
+                  style="padding: 0 !important; margin: 0 !important"
+                >
+                  <PublicationCard :item="item"></PublicationCard>
+                </td> </template
+            ></v-data-table>
+          </v-card>
+          <div class="mt-5" style="font-size: 12px; text-align: center">
+            Individual publications are also available for download from the
+            ICJIA Document Archive:
+            <a href="https://archive.icjia.cloud" target="_blank"
+              >https://archive.icjia.cloud</a
+            >
+          </div></v-row
+        ></v-container
+      >
+      <v-container v-else
+        ><v-row
+          ><v-col><Loader loaderType="skeleton"></Loader></v-col
+        ></v-row>
+      </v-container>
     </div>
-  </v-card>
+  </div>
 </template>
 
 <script>
+import NProgress from "nprogress";
+
+import { getPublicationType } from "@/lib/utils";
 import { EventBus } from "@/event-bus";
-import { getProperCategory } from "@/utils/content";
-/* eslint-disable no-unused-vars */
-import DOMPurify from "dompurify";
-
 import _ from "lodash";
-
-function arrayToList(array) {
-  return array.join(", ").replace(/, ((?:.(?!, ))+)$/, " and $1");
-}
+import moment from "moment";
+import axios from "axios";
 export default {
-  data() {
+  name: "Publications",
+  metaInfo() {
     return {
-      searchFilter: null,
-      searchModal: false,
-      opts: null,
-      query: "",
-      queryResults: [],
-      content: "",
-      searchInput: this.$refs.textfield,
-      fuse: this.$myApp.fuse,
-      resultNumber: "s",
-      arrayToList,
-      getProperCategory,
+      title: "Publications",
     };
   },
-  created() {},
+  data() {
+    return {
+      sortBy: "publicationDate",
+      sortDesc: true,
+      expanded: [],
+      search: "",
+      singleExpand: true,
+      publications: null,
+      getPublicationType,
+
+      headers: [
+        { text: "Date", value: "publicationDate" },
+        {
+          text: "Title",
+          align: "start",
+
+          value: "title",
+        },
+        { text: "Type", value: "pubType" },
+
+        {
+          text: "Article",
+          value: "articleURL",
+          align: "center",
+          sortable: false,
+        },
+        {
+          text: "File",
+          value: "fileURL",
+          align: "center",
+          sortable: false,
+        },
+      ],
+    };
+  },
   mounted() {
-    EventBus.$on("closeSearch", () => {
-      this.searchModal = false;
-    });
-    EventBus.$on("search", (opts) => {
-      this.opts = opts;
-      if (this.opts && this.opts.query && this.opts.query.length) {
-        this.query = this.opts.query;
-        this.instantSearch();
-      } else {
-        this.query = "";
-      }
-      this.searchModal = true;
-      this.$nextTick(() => {
-        let el = document.getElementsByClassName("v-dialog--active");
-        if (el && el.length) {
-          el[0].scrollTop = 0;
-        }
-      });
-    });
+    NProgress.start();
+    EventBus.$emit("context-label", "Publications");
+    this.fetchPublications();
+    NProgress.done();
   },
   methods: {
-    focusInput() {
-      this.$refs.textfield.focus();
-    },
-    truncate(string, maxWords = 50) {
-      var strippedString = string.trim();
-      var array = strippedString.split(" ");
-      var wordCount = array.length;
-      string = array.splice(0, maxWords).join(" ");
-
-      if (wordCount > maxWords) {
-        string += "...";
-      }
-
-      return string;
-    },
-    updateQuery(author) {
-      this.query = author;
-      this.instantSearch();
-    },
-    goToExternal(url) {
-      //
-      if (url.indexOf("://") > 0 || url.indexOf("//") === 0) {
-        window.open(url);
-        console.log("absolute: ", url);
+    async fetchPublications() {
+      if (this.$myApp.publications && this.$myApp.publications.length) {
+        this.publications = this.$myApp.publications;
+        console.warn("Publications cached...");
+        return;
       } else {
-        this.$router.push(url);
-        console.log("relative: ", url);
+        console.warn("Fetching publications...");
       }
-    },
-    download(result) {
-      let download = `${result.path}`;
-      console.log("download: ", download);
-      //console.log("ext: ", result.ext);
-      if (download.includes("pdf")) {
-        window.open(download);
-      } else {
-        location.href = download;
-      }
-    },
-    displayExtension(item) {
-      if (!item.ext) return;
-      const cleanExt = DOMPurify.sanitize(item.ext).replace(
-        /(<([^>]+)>)/gi,
-        ""
+      const limit = 500;
+      let pubArray = [];
+      let start = 0;
+      let count = await axios.get(
+        `${this.$myApp.config.api.base}/publications/count`
       );
-      return cleanExt.substring(1);
-    },
-    route(path) {
-      this.searchModal = false;
-      this.$router.push(path).catch((err) => {
-        this.$vuetify.goTo(0);
-      });
-    },
-    instantSearch() {
-      // if (!this.query.length) return;
-      if (!this.query) return;
-      if (!this.query.length) return;
-      this.queryResults = this.fuse.search(this.query);
-    },
-    displayHeadings(headings) {
-      if (typeof headings === "string") {
-        return headings;
+      count = count.data;
+      let iterations = Math.ceil(count / limit);
+
+      for (let i = 0; i < iterations; i++) {
+        let response = await axios.get(
+          `${this.$myApp.config.api.base}/publications?_limit=${limit}&_start=${start}`
+        );
+        pubArray = pubArray.concat(response.data);
+        start += limit;
       }
-      return null;
+      pubArray = _.uniqBy(pubArray, "id");
+      let publications = pubArray.map((p) => {
+        let obj = {
+          ...p,
+          altTitle: p.title.toLowerCase(),
+          localArticlePath:
+            p.articleURL && p.articleURL.includes("https://icjia.illinois.gov")
+              ? p.articleURL.replace("https://icjia.illinois.gov", "")
+              : null,
+          fullPath: `/about/publications/${p.slug}`,
+          contentType: "publication",
+        };
+        return obj;
+      });
+
+      this.publications = _.orderBy(
+        publications,
+        ["publicationDate"],
+        ["desc"]
+      );
+      this.$myApp.publications = this.publications;
+      NProgress.done();
+    },
+    isItNew(item) {
+      let targetDate;
+      if (item.publicationDate) {
+        targetDate = item.publicationDate;
+      } else {
+        targetDate = item.created_at;
+      }
+
+      const now = moment(new Date());
+      const end = moment(targetDate); // another date
+      const duration = moment.duration(now.diff(end));
+      const days = duration.asDays();
+
+      if (days <= this.$myApp.config.daysToShowNew) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    clicked(value) {
+      //console.log(value);
+      if (value === this.expanded[0]) {
+        this.expanded = [];
+      } else {
+        if (this.expanded.length) {
+          this.expanded.shift();
+          this.expanded.push(value);
+        } else {
+          this.expanded.push(value);
+        }
+      }
     },
   },
 };
 </script>
 
 <style>
-.author {
-  font-weight: 700;
-  color: #666;
-}
-.author:hover {
-  color: #aaa;
+tr {
+  cursor: pointer !important;
 }
 </style>

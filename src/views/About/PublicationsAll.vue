@@ -2,8 +2,8 @@
   <div class="markdown-body text-center pb-12">
     <div>
       <v-container v-if="publications"
-        ><v-row
-          ><v-card
+        ><v-row>
+          <v-card
             class="px-5 py-5 mt-10 text-center"
             style="width: 100% !important"
           >
@@ -132,11 +132,12 @@
 
 <script>
 import NProgress from "nprogress";
-import { GET_ALL_PUBLICATIONS_QUERY } from "@/graphql/publications";
+
 import { getPublicationType } from "@/lib/utils";
 import { EventBus } from "@/event-bus";
 import _ from "lodash";
 import moment from "moment";
+import axios from "axios";
 export default {
   name: "Publications",
   metaInfo() {
@@ -147,7 +148,6 @@ export default {
   data() {
     return {
       sortBy: "publicationDate",
-      allowedHost: "https://icjia.illinois.gov/researchhub",
       sortDesc: true,
       expanded: [],
       search: "",
@@ -183,8 +183,57 @@ export default {
   mounted() {
     NProgress.start();
     EventBus.$emit("context-label", "Publications");
+    this.fetchPublications();
+    NProgress.done();
   },
   methods: {
+    async fetchPublications() {
+      if (this.$myApp.publications && this.$myApp.publications.length) {
+        this.publications = this.$myApp.publications;
+        console.warn("Publications cached...");
+        return;
+      } else {
+        console.warn("Fetching publications...");
+      }
+      const limit = 500;
+      let pubArray = [];
+      let start = 0;
+      let count = await axios.get(
+        `https://agency.icjia-api.cloud/publications/count`
+      );
+      count = count.data;
+      let iterations = Math.ceil(count / limit);
+
+      for (let i = 0; i < iterations; i++) {
+        let response = await axios.get(
+          `https://agency.icjia-api.cloud/publications?_limit=${limit}&_start=${start}`
+        );
+        pubArray = pubArray.concat(response.data);
+        start += limit;
+      }
+      pubArray = _.uniqBy(pubArray, "id");
+      let publications = pubArray.map((p) => {
+        let obj = {
+          ...p,
+          altTitle: p.title.toLowerCase(),
+          localArticlePath:
+            p.articleURL && p.articleURL.includes("https://icjia.illinois.gov")
+              ? p.articleURL.replace("https://icjia.illinois.gov", "")
+              : null,
+          fullPath: `/about/publications/${p.slug}`,
+          contentType: "publication",
+        };
+        return obj;
+      });
+
+      this.publications = _.orderBy(
+        publications,
+        ["publicationDate"],
+        ["desc"]
+      );
+      this.$myApp.publications = this.publications;
+      NProgress.done();
+    },
     isItNew(item) {
       let targetDate;
       if (item.publicationDate) {
@@ -216,54 +265,6 @@ export default {
           this.expanded.push(value);
         }
       }
-    },
-  },
-  apollo: {
-    publications: {
-      prefetch: true,
-      query: GET_ALL_PUBLICATIONS_QUERY,
-      variables() {
-        return {};
-      },
-
-      error(error) {
-        this.error = JSON.stringify(error.message);
-        NProgress.done();
-      },
-      result(ApolloQueryResult) {
-        let publications = ApolloQueryResult.data.publications.map((e) => ({
-          ...e,
-          fullPath: `/about/publications/${e.slug}/`,
-          contentType: "publication",
-          localArticlePath:
-            e.articleURL && e.articleURL.includes(this.allowedHost)
-              ? e.articleURL.replace("https://icjia.illinois.gov", "")
-              : null,
-        }));
-
-        //TODO: ad hoc mutations for URL capitalization
-        publications.forEach((p) => {
-          if (p.fileURL && p.fileURL.includes("/Compiler/")) {
-            p.fileURL = p.fileURL.replace("/Compiler/", "/compiler/");
-          }
-          if (p.fileURL && p.fileURL.includes("/OGA/")) {
-            p.fileURL = p.fileURL.replace("/OGA/", "/oga/");
-          }
-          if (p.fileURL && p.fileURL.includes("/researchreports/")) {
-            p.fileURL = p.fileURL.replace(
-              "/researchreports/",
-              "/ResearchReports/"
-            );
-          }
-        });
-
-        this.publications = _.orderBy(
-          publications,
-          ["publicationDate"],
-          ["desc"]
-        );
-        NProgress.done();
-      },
     },
   },
 };
