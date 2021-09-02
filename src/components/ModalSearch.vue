@@ -45,7 +45,8 @@ import { EventBus } from "@/event-bus";
 import { getProperCategory } from "@/utils/content";
 /* eslint-disable no-unused-vars */
 import DOMPurify from "dompurify";
-
+import NProgress from "nprogress";
+import Fuse from "fuse.js";
 import _ from "lodash";
 
 function arrayToList(array) {
@@ -61,13 +62,22 @@ export default {
       queryResults: [],
       content: "",
       searchInput: this.$refs.textfield,
-      fuse: this.$myApp.fuse,
+      fuse: null,
       resultNumber: "s",
       arrayToList,
       getProperCategory,
     };
   },
-  created() {},
+  created() {
+    if (this.$myApp.fuse && this.$myApp.fuse.length) {
+      console.warn("Search index cached ...");
+    } else {
+      NProgress.start();
+      this.loadSearchIndex();
+      console.warn("Loading Search index ...");
+      NProgress.done();
+    }
+  },
   mounted() {
     EventBus.$on("closeSearch", () => {
       this.searchModal = false;
@@ -90,6 +100,11 @@ export default {
     });
   },
   methods: {
+    async loadSearchIndex() {
+      let fuseData = require("/public/searchIndex.json");
+      this.fuse = new Fuse(fuseData, this.$myApp.config.search.site);
+      this.$myApp.fuse = this.fuse;
+    },
     focusInput() {
       this.$refs.textfield.focus();
     },

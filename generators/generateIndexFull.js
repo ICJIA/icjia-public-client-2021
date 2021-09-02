@@ -32,7 +32,7 @@ let siteIndex = [
 const dirpath = "./public/api";
 if (!fs.existsSync(dirpath)) fs.mkdirSync(dirpath);
 console.log("Site index length: ", siteIndex.length);
-jsonfile.writeFile(`./public/api/searchIndex.json`, siteIndex, function (err) {
+jsonfile.writeFile(`./public/searchIndex.json`, siteIndex, function (err) {
   if (err) console.error(err);
-  console.log(`Created: ./public/api/searchIndex.json`);
+  console.log(`Created: ./public/searchIndex.json`);
 });
