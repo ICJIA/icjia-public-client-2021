@@ -28,7 +28,7 @@ const GET_ALL_NEWS_QUERY = gql`
 `;
 
 const GET_ALL_PRESS_QUERY = gql`
-  query news {
+  query press {
     posts(
       sort: "published_at:desc"
       where: {

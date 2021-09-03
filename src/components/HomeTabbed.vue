@@ -231,8 +231,12 @@ export default {
     isItExpired(expiration) {
       //console.log(expiration);
       let now = new Date();
-      let expired = addOneDayToDate(new Date(expiration));
-      if (now > expired) {
+      // let expired = addOneDayToDate(new Date(expiration));
+      let expired = new Date(expiration);
+      //expired.setHours(0, 0, 0, 0);
+      expired.setHours(24, 0, 0, 0);
+      console.log(expired);
+      if (now >= expired) {
         return true;
       } else {
         return false;
