@@ -42,8 +42,22 @@
                       ></JobCard>
                     </div>
                   </div>
-                  <div v-else class="text-left">
-                    <strong>No opportunites listed.</strong>
+                  <div v-else class="text-center">
+                    <strong v-if="toggle_jobStatus === 0"
+                      >There are no current employment opportunities.</strong
+                    >
+                    <strong v-else
+                      >There are no expired employment opportunities.</strong
+                    ><br /><br />
+                    <p>
+                      Please check back soon or subscribe to the
+                      <a
+                        target="_blank"
+                        href="https://visitor.r20.constantcontact.com/manage/optin?v=001MqUcqqvjwLCJXlLMSWbTe3zHHmEQgFeBuHvBcJWTbwgrxFbDSGx4HSUPpI6DJWMUPgbljtLxffqIcGFTgCnr-auak88ybvRxpoJlTMGPtZs%3D"
+                        >CJ Dispatch</a
+                      >
+                      for the latest ICJIA news and information.
+                    </p>
                   </div>
                 </v-col>
                 <v-col
