@@ -1,6 +1,9 @@
-if (isIE(window.navigator.userAgent))
+if (isIE(window.navigator.userAgent)) {
   document.querySelector("#app").innerHTML = createBanner();
-else require("./main");
+} else {
+  //document.querySelector("#app").innerHTML = "this is entry.js";
+  require("./main");
+}
 
 function isIE(ua) {
   const isIE10orLess = ua.indexOf("MSIE") > -1;

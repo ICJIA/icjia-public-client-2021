@@ -39,29 +39,20 @@
     />
 
     <!-- <script src="https://unpkg.com/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"></script> -->
-    <script
+    <!-- <script
       async
       src="https://platform.twitter.com/widgets.js"
       charset="utf-8"
-    ></script>
+    ></script> -->
 
     <base href="/" />
   </head>
   <body>
-    <div id="app">
-      <!-- <span style="text-align: center !important"> -->
-      <!-- <img
-          src="/icjia-logo-min.png"
-          alt="loading"
-          style="display: block; margin-left: auto; margin-right: auto"
-        /> -->
-      Loading ...
-      <!-- </span> -->
-    </div>
-    <div id="test"></div>
+    <div id="app"></div>
+
     <script>
       document.getElementById("app").innerHTML =
-        "<img src='/icjia-logo-min.png' alt='Logo'/><br><img src='/loading.gif' alt='Loader'/>";
+        "<div style='text-align: center'><img src='/icjia-logo-min.png' alt='Logo' style='margin-top: 100px' /><br><img src='/loading.gif' alt='Loader' style='margin-top: 25px'/></div>";
     </script>
   </body>
 </html>
