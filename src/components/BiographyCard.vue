@@ -52,9 +52,22 @@
               v-if="item && item.unit && item.unit.title"
               >{{ item.unit.title }}&nbsp;|&nbsp;</span
             >
-            <span style="font-weight: 700; color: #444" v-if="item.title">{{
-              item.title
-            }}</span>
+
+            <span style="font-weight: 700; color: #444" v-if="item.title"
+              >{{ item.title }} |
+            </span>
+            <span
+              v-if="item && item.affiliation === 'board'"
+              style="font-weight: 700; color: #444"
+            >
+              ICJIA Board
+            </span>
+            <span
+              v-if="item && item.affiliation === 'staff'"
+              style="font-weight: 700; color: #444"
+            >
+              ICJIA Staff
+            </span>
           </v-card-subtitle>
           <v-card-text
             class="text-left"
