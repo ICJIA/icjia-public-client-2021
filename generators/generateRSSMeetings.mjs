@@ -32,34 +32,34 @@ let feed = new Feed({
 });
 
 const init = async () => {
-  const posts = await axios.get(`${config.api.base}/meetings`);
+  const meetings = await axios.get(`${config.api.base}/meetings`);
 
-  posts.data.forEach((post) => {
-    //console.log(post.splash.url);
+  meetings.data.forEach((meeting) => {
+    //console.log(meeting.splash.url);
     // let publicationDate =
-    //   post.dateOverride && post.dateOverride.length
-    //     ? post.dateOverride
-    //     : post.published_at;
-    let generateFullContent = (post) => {
-      const body = renderToHtml(post.body);
+    //   meeting.dateOverride && meeting.dateOverride.length
+    //     ? meeting.dateOverride
+    //     : meeting.published_at;
+    let generateFullContent = (meeting) => {
+      const body = renderToHtml(meeting.body);
       // iterate through attachments
-      if (post.attachments) {
-        let attachmentBase = "<div><h2>Attachments</h2><ul>";
-        post.attachments.forEach((attachment) => {
+      if (meeting.attachments) {
+        let attachments = "<div><h2>Attachments</h2><ul>";
+        meeting.attachments.forEach((attachment) => {
           let attachmentUrl = `<li><a href="${config.api.base}${attachment.url}">${attachment.name}</a></li>`;
-          attachmentBase += attachmentUrl;
+          attachments += attachmentUrl;
         });
-        attachmentBase += "</ul></div>";
-        return body + attachmentBase;
+        attachments += "</ul></div>";
+        return body + attachments;
       }
     };
     feed.addItem({
-      title: `[${post.category.toUpperCase()}] ${post.title}`,
-      id: `${config.api.baseClient}/news/${post.slug}/`,
-      link: `${config.api.baseClient}/news/${post.slug}/`,
-      description: renderToHtml(post.summary),
-      content: generateFullContent(post),
-      date: new Date(post.published_at),
+      title: `[${meeting.category.toUpperCase()}] ${meeting.title}`,
+      id: `${config.api.baseClient}/news/${meeting.slug}/`,
+      link: `${config.api.baseClient}/news/${meeting.slug}/`,
+      description: renderToHtml(meeting.summary),
+      content: generateFullContent(meeting),
+      date: new Date(meeting.end),
       image: null,
     });
   });
