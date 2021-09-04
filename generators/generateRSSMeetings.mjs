@@ -40,12 +40,25 @@ const init = async () => {
     //   post.dateOverride && post.dateOverride.length
     //     ? post.dateOverride
     //     : post.published_at;
+    let generateFullContent = (post) => {
+      const body = renderToHtml(post.body);
+      // iterate through attachments
+      if (post.attachments) {
+        let attachmentBase = "<div><h2>Attachments</h2><ul>";
+        post.attachments.forEach((attachment) => {
+          let attachmentUrl = `<li><a href="${config.api.base}${attachment.url}">${attachment.name}</a></li>`;
+          attachmentBase += attachmentUrl;
+        });
+        attachmentBase += "</ul></div>";
+        return body + attachmentBase;
+      }
+    };
     feed.addItem({
-      title: post.title,
+      title: `[${post.category.toUpperCase()}] ${post.title}`,
       id: `${config.api.baseClient}/news/${post.slug}/`,
       link: `${config.api.baseClient}/news/${post.slug}/`,
       description: renderToHtml(post.summary),
-      content: renderToHtml(post.body),
+      content: generateFullContent(post),
       date: new Date(post.published_at),
       image: null,
     });
