@@ -1,21 +1,21 @@
 /* eslint-disable no-unused-vars */
-// const fs = require("fs");
-// const axios = require("axios");
-// const jsonfile = require("jsonfile");
-// const _ = require("lodash");
-// const { apiBaseURL } = require("./src/config");
 
-const index = require("../public/api/searchIndex.json");
+const _ = require("lodash");
+const config = require("../src/config/config.json");
+const { createWriteStream } = require("fs");
+const { SitemapStream } = require("sitemap");
 
-// const { createWriteStream } = require("fs");
-// const { SitemapStream } = require("sitemap");
+const siteIndex = require("../public/api/searchIndex.json");
+const sitemap = new SitemapStream({ hostname: `${config.api.baseClient}` });
+const writeStream = createWriteStream("./public/sitemap.xml");
+sitemap.pipe(writeStream);
 
-// // Creates a sitemap object given the input configuration with URLs
-// const sitemap = new SitemapStream({ hostname: "http://example.com" });
+siteIndex.forEach((item) => {
+  let url = `${config.api.baseClient}${item.fullPath}`;
+  url += url.endsWith("/") ? "" : "/";
+  sitemap.write({ url, changefreq: "weekly", priority: 0.3 });
+});
 
-// const writeStream = createWriteStream("./public/sitemap.xml");
-// sitemap.pipe(writeStream);
+sitemap.end();
 
-// sitemap.write({ url: "/page-1/", changefreq: "daily", priority: 0.3 });
-// sitemap.write("/page-2");
-// sitemap.end();
+console.log("Sitemap generated");

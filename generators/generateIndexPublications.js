@@ -32,7 +32,7 @@ const init = async () => {
         p.articleURL && p.articleURL.includes(allowedHost)
           ? p.articleURL.replace("https://icjia.illinois.gov", "")
           : null,
-      fullPath: `/about/publications/${p.slug}`,
+      fullPath: `/about/publications/${p.slug}/`,
       contentType: "publication",
     };
     return obj;

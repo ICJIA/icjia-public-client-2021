@@ -76,7 +76,7 @@ axios
       let obj = {
         ...p,
         altTitle: p.title.toLowerCase(),
-        fullPath: `/news/${p.slug}`,
+        fullPath: `/news/${p.slug}/`,
         imagePath,
         displayCategory: p.category,
         contentType: "news",
