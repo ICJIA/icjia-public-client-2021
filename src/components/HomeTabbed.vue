@@ -124,7 +124,7 @@
                 </span>
                 <h2 class="mt-2" style="font-size: 18px">{{ job.title }}</h2>
 
-                <p style="font-size: 14px">{{ job.summary }}</p>
+                <p style="font-size: 14px" class="mt-2">{{ job.summary }}</p>
               </v-card>
             </div>
           </div>
@@ -174,7 +174,9 @@
                   {{ meeting.title }}
                 </h2>
 
-                <p style="font-size: 14px">{{ meeting.summary }}</p>
+                <p style="font-size: 14px" class="mt-2">
+                  {{ meeting.summary }}
+                </p>
               </v-card>
             </div>
           </v-sheet>
