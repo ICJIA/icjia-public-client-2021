@@ -105,7 +105,7 @@
                 <span style="font-weight: 700; font-size: 16px; color: #000">
                   Employment Opportunity
                 </span>
-                <span v-if="isItExpired(job.end)">
+                <span v-if="isItExpiredEmployment(job.end)">
                   &nbsp;|&nbsp;
                   <v-chip
                     x-small
@@ -117,7 +117,7 @@
                   >
                 </span>
                 <span
-                  v-if="!isItExpired(job.end)"
+                  v-if="!isItExpiredEmployment(job.end)"
                   style="font-size: 14px; font-weight: 400"
                   >&nbsp;|&nbsp; Accepting applications through
                   {{ job.end | format }}
@@ -228,14 +228,26 @@ export default {
         return "yellow darken-3";
       }
     },
+    //TODO: Sort out these expiration dates.
     isItExpired(expiration) {
       //console.log(expiration);
       let now = new Date();
-      // let expired = addOneDayToDate(new Date(expiration));
+      //let expired = addOneDayToDate(new Date(expiration));
       let expired = new Date(expiration);
-      //expired.setHours(0, 0, 0, 0);
       expired.setHours(24, 0, 0, 0);
+      //expired.setHours(24, 0, 0, 0);
       console.log(expired);
+      if (now >= expired) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    isItExpiredEmployment(expiration) {
+      //console.log(expiration);
+      let now = new Date();
+      let expired = addOneDayToDate(new Date(expiration));
+
       if (now >= expired) {
         return true;
       } else {

@@ -213,7 +213,10 @@ export default {
       let filteredNewItems;
       if (this.upcomingOnly) {
         filteredNewItems = newItems.filter((item) => {
-          if (addOneDayToDate(item.end) >= new Date()) {
+          let expired = new Date(item.end);
+          //expired.setHours(0, 0, 0, 0);
+          expired.setHours(24, 0, 0, 0);
+          if (expired >= new Date()) {
             return item;
           }
         });
