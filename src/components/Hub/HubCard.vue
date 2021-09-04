@@ -6,7 +6,6 @@
     :min-height="orientation === 'grid' ? 400 : null"
     :height="cardHeight"
     @click.prevent="$router.push(item.fullPath)"
-    :data-aos="animation"
   >
     <v-card-text
       ><span v-if="!showUpdated" class="font-lato">{{

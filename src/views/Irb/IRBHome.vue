@@ -1,12 +1,7 @@
 <template>
   <div class="pb-12">
     <div class="markdown-body" v-if="!contentLoading">
-      <div
-        style="background: #fff"
-        class="pt-6 pb-8"
-        v-if="content"
-        data-aos="fade-in"
-      >
+      <div style="background: #fff" class="pt-6 pb-8" v-if="content">
         <v-container>
           <v-row>
             <v-col cols="12">
