@@ -337,6 +337,7 @@
         large
         class="hidden-sm-and-down navItem"
         href="https://icjia.illinois.gov/adultredeploy/"
+        target="_blank"
         style="font-weight: 900 !important; font-size: 16px"
         >Adult Redeploy
       </v-btn>
