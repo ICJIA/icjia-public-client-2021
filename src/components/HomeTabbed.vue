@@ -102,7 +102,7 @@
                 :class="{ 'rule-top': index > 0 }"
                 @click="routeTo(job.fullPath)"
               >
-                <span style="font-weight: 700; font-size: 16px; color: #000">
+                <span style="font-weight: 700; font-size: 14px; color: #000">
                   Employment Opportunity
                 </span>
                 <span v-if="isItExpiredEmployment(job.end)">
@@ -122,9 +122,9 @@
                   >&nbsp;|&nbsp; Accepting applications through
                   {{ job.end | format }}
                 </span>
-                <h2 class="mt-2">{{ job.title }}</h2>
+                <h2 class="mt-2" style="font-size: 18px">{{ job.title }}</h2>
 
-                <p>{{ job.summary }}</p>
+                <p style="font-size: 14px">{{ job.summary }}</p>
               </v-card>
             </div>
           </div>
@@ -170,9 +170,11 @@
                     >Upcoming</v-chip
                   >
                 </span>
-                <h2 class="mt-2">{{ meeting.title }}</h2>
+                <h2 class="mt-2" style="font-size: 18px">
+                  {{ meeting.title }}
+                </h2>
 
-                <p>{{ meeting.summary }}</p>
+                <p style="font-size: 14px">{{ meeting.summary }}</p>
               </v-card>
             </div>
           </v-sheet>
