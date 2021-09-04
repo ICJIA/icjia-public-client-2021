@@ -24,13 +24,37 @@
                 alt="Footer logo"
                 width="100"
                 style="border: 0px solid #ddd; display: inline"
+                class="hover"
+                @click="
+                  $router.push('/').catch((err) => {
+                    $vuetify.goTo(0);
+                  })
+                "
               />
             </div>
             <div class="pb-6">
-              <span class="v-icon fab fa-twitter mr-4"></span
-              ><span class="v-icon fab fa-facebook mr-4"></span>
-              <span class="v-icon fab fa-youtube mr-4"></span>
-              <span class="v-icon fa fa-rss"></span>
+              <v-btn
+                small
+                text
+                href="https://twitter.com/icjia_illinois?lang=en"
+                target="_blank"
+                ><v-icon>fab fa-twitter </v-icon></v-btn
+              >
+              <v-btn
+                small
+                text
+                target="_blank"
+                href="https://www.facebook.com/ICJIA/"
+                ><v-icon>fab fa-facebook </v-icon></v-btn
+              >
+              <v-btn
+                small
+                text
+                target="_blank"
+                href="https://www.youtube.com/c/illinoiscriminaljusticeinformationauthority"
+                ><v-icon> fab fa-youtube </v-icon></v-btn
+              >
+              <v-btn small text to="/rss/"><v-icon>fa fa-rss</v-icon></v-btn>
             </div>
             <div style="font-size: 12px; font-weight: 400">
               <router-link to="/about/" style="color: #fff; background: none"
