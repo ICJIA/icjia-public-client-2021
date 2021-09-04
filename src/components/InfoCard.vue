@@ -20,7 +20,7 @@
         </v-chip>
         <span v-if="item.contentType" style="font-weight: 700"
           >{{ item.contentType }} &nbsp;|&nbsp;</span
-        >{{ formatDate(item.published_at) }}
+        >{{ formatDate(item.publicationDate) }}
       </div>
       <v-card-text v-if="item.title"
         ><h2 style="margin-top: -10px">
