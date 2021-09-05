@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="searchModal" ref="searchTop" style="z-index: 999999">
-    <v-card color="#eee" min-height="800" class="px-3 py-1">
+    <v-card color="#eee" min-height="600" class="px-3 py-1">
       <v-card-title class="text-h5 grey lighten-2">
         Search ICJIA<v-spacer></v-spacer
         ><v-btn small @click="searchModal = false">Close</v-btn>
@@ -45,8 +45,7 @@ import { EventBus } from "@/event-bus";
 import { getProperCategory } from "@/utils/content";
 /* eslint-disable no-unused-vars */
 import DOMPurify from "dompurify";
-import NProgress from "nprogress";
-import Fuse from "fuse.js";
+
 import _ from "lodash";
 
 function arrayToList(array) {
@@ -62,22 +61,13 @@ export default {
       queryResults: [],
       content: "",
       searchInput: this.$refs.textfield,
-      fuse: null,
+      fuse: this.$myApp.fuse,
       resultNumber: "s",
       arrayToList,
       getProperCategory,
     };
   },
-  created() {
-    if (this.$myApp.fuse && this.$myApp.fuse.length) {
-      console.warn("Search index cached ...");
-    } else {
-      NProgress.start();
-      this.loadSearchIndex();
-      console.warn("Loading Search index ...");
-      NProgress.done();
-    }
-  },
+  created() {},
   mounted() {
     EventBus.$on("closeSearch", () => {
       this.searchModal = false;
@@ -100,11 +90,6 @@ export default {
     });
   },
   methods: {
-    async loadSearchIndex() {
-      let fuseData = require("/public/searchIndex.json");
-      this.fuse = new Fuse(fuseData, this.$myApp.config.search.site);
-      this.$myApp.fuse = this.fuse;
-    },
     focusInput() {
       this.$refs.textfield.focus();
     },
