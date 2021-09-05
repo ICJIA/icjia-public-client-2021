@@ -1,6 +1,8 @@
-# ICJIA Agency Site 2021
+# ICJIA Public Client 2021
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/e6614e77-00b4-4772-8034-a3b9c9c9986d/deploy-status)](https://app.netlify.com/sites/icjia-public/deploys)
+
+Front-end client.
 
 | :warning: This is a work in progress. The site is still in development. :warning: |
 | --------------------------------------------------------------------------------- |
