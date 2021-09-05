@@ -1,25 +1,86 @@
 <template>
   <div>
     {{ $myApp.menus.menu }}
-    <!-- Simple menu display -- no need for recursion here -->
+    <!-- Simple menu display -- no recursion yet -->
     <div v-for="(menu, index) in $myApp.menus.menu" :key="index">
-      {{ menu.main }}
-
-      <div
-        v-for="(child, index) in menu.children"
-        :key="`child-${index}`"
-        class="ml-2"
-      >
-        <div v-if="child.divider"><v-divider></v-divider></div>
-        <div v-if="child.section">{{ child.section }}</div>
-        {{ child.title }}
+      <div v-if="menu.children" class="d-flex">
+        <v-menu
+          bottom
+          offset-y
+          origin="center center"
+          transition="scale-transition"
+          nudge-left="10px"
+          style="z-index: 500"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              text
+              large
+              class="hidden-sm-and-down navItem"
+              v-bind="attrs"
+              v-on="on"
+              style="font-weight: 900 !important; font-size: 16px"
+            >
+              {{ menu.main }}<v-icon right small>arrow_drop_down</v-icon>
+            </v-btn>
+          </template>
+          <v-list nav dense elevation="2">
+            <span
+              v-for="(child, index) in menu.children"
+              :key="`child-${index}`"
+            >
+              <v-divider v-if="child.divider"></v-divider>
+              <v-list-item-title
+                v-if="child.section"
+                style="margin-top: 10px; font-weight: 900; color: #555"
+                class="pr-5"
+                >{{ child.section }}</v-list-item-title
+              >
+              <v-list-item
+                class="appNav"
+                exact
+                :to="isLinkExternal(child.link) ? null : child.link"
+                :href="isLinkExternal(child.link) ? child.link : null"
+                :target="isLinkExternal(child.link) ? '_blank' : null"
+                v-if="child.link"
+              >
+                <v-list-item-content class="hover">
+                  <v-list-item-title style="font-size: 12px !important">{{
+                    child.title
+                  }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </span>
+          </v-list>
+        </v-menu>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  methods: {
+    isLinkExternal(originalURL) {
+      const checkDomain = function (url) {
+        if (url.indexOf("//") === 0) {
+          url = location.protocol + url;
+        }
+        return url
+          .toLowerCase()
+          .replace(/([a-z])?:\/\//, "$1")
+          .split("/")[0];
+      };
+      const isExternal = function (url) {
+        return (
+          (url.indexOf(":") > -1 || url.indexOf("//") > -1) &&
+          checkDomain(location.href) !== checkDomain(url)
+        );
+      };
+      return isExternal(originalURL);
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped></style>

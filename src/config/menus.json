@@ -2,10 +2,11 @@
     "menu": [
         {
             "main": "About",
+            "nudge-left": "100px",
             "children": [
                 {
                     "title": "Overview",
-                    "link": "/about/"
+                    "link": "https://www.amazon.com"
                 },
                 {
                     "title": "Board Members",
@@ -30,6 +31,7 @@
         },
         {
             "main": "Research",
+            "nudge-left": "100px",
             "children": [
                 {
                     "section": "Statistical Analysis Center (SAC)"
