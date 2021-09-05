@@ -30,6 +30,6 @@ function createBanner() {
    
   </div>
   <div style="text-align: center; margin-top: 55px; padding-left: 50px; padding-right: 50px">
-   <h2>If you're unable to upgrade your browser and want to view current ICJIA content, including the latest news, funding opportunities, and meeting information, please consider using our <a href="/ie11/">RSS feeds</a>.<br/> <br/><a href="/ie11/">Click for more information and direct links to our RSS feeds</a>.</h2>
+   <h2>If you're unable to upgrade your browser and want to view current ICJIA content, including the latest news, funding opportunities, and meeting information, please consider using our <a href="/ie11/">RSS feeds</a>.<br/> <br/><a href="/ie11/">Click for more information about RSS and direct links to our feeds</a>.</h2>
     </div>`;
 }

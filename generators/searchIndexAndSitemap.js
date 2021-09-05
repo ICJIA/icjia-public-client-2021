@@ -40,7 +40,7 @@ jsonfile.writeFile(`./public/searchIndex.json`, siteIndex, function (err) {
   console.log(`Created: ./public/searchIndex.json`);
 });
 
-// Create Sitemap.xmp here
+// Create Sitemap.xml here
 
 const sitemap = new SitemapStream({ hostname: `${config.api.baseClient}` });
 const writeStream = createWriteStream("./public/sitemap.xml");
