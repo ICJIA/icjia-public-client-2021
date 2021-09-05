@@ -57,6 +57,9 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   NProgress.start();
+  document.body.setAttribute("tabindex", "-1");
+  document.body.focus();
+  document.body.removeAttribute("tabindex");
   EventBus.$emit("closeSearch");
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   let jwt = localStorage.getItem("jwt");

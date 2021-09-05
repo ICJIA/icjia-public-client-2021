@@ -29,6 +29,7 @@
         :key="`top-context-${$route.fullPath}`"
       ></AppNavContext>
       <router-view
+        id="content"
         :key="`routerView-${$route.fullPath}`"
         class="page mb-12"
         style="margin-bottom: 20px"
