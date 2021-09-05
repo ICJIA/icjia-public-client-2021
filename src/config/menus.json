@@ -2,14 +2,14 @@
     "menu": [
         {
             "main": "About",
-            "nudgeLeft": "10px",
+            "nudgeLeft": "57px",
             "children": [
                 {
                     "section": "About ICJIA"
                 },
                 {
                     "title": "Overview",
-                    "link": "https://www.amazon.com"
+                    "link": "/about/"
                 },
                 {
                     "title": "Board Members",
@@ -42,10 +42,10 @@
         },
         {
             "main": "Research",
-            "nudgeLeft": "120px",
+            "nudgeLeft": "170px",
             "children": [
                 {
-                    "section": "Statistical Analysis Center (SAC)"
+                    "section": "Illinois Statistical Analysis Center (SAC)"
                 },
                 {
                     "title": "Overview",
@@ -89,7 +89,7 @@
         },
         {
             "main": "Funding",
-            "nudgeLeft": "10px",
+            "nudgeLeft": "78px",
             "children": [
                 {
                     "section": "Funding at ICJIA"
