@@ -36,6 +36,7 @@
               <v-btn
                 small
                 text
+                aria-label="Link to ICJIA on Twitter"
                 href="https://twitter.com/icjia_illinois?lang=en"
                 target="_blank"
                 ><v-icon>fab fa-twitter </v-icon></v-btn
@@ -44,6 +45,7 @@
                 small
                 text
                 target="_blank"
+                aria-label="Link to ICJIA on Facebook"
                 href="https://www.facebook.com/ICJIA/"
                 ><v-icon>fab fa-facebook </v-icon></v-btn
               >
@@ -51,10 +53,17 @@
                 small
                 text
                 target="_blank"
+                aria-label="Link to ICJIA on YouTube"
                 href="https://www.youtube.com/c/illinoiscriminaljusticeinformationauthority"
                 ><v-icon> fab fa-youtube </v-icon></v-btn
               >
-              <v-btn small text to="/rss/"><v-icon>fa fa-rss</v-icon></v-btn>
+              <v-btn
+                small
+                text
+                to="/rss/"
+                aria-label="Link to ICJIA's RSS Feeds"
+                ><v-icon>fa fa-rss</v-icon></v-btn
+              >
             </div>
             <div style="font-size: 12px; font-weight: 400">
               <router-link to="/about/" style="color: #fff; background: none"

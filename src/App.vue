@@ -1,11 +1,6 @@
 <template>
   <v-app>
-    <SocialSharing></SocialSharing>
-    <div
-      role="navigation"
-      style="z-index: 10000"
-      aria-labelledby="skip-to-content"
-    >
+    <nav>
       <router-link
         to="#content"
         aria-label="Skip to content"
@@ -17,7 +12,13 @@
       >
         Skip to content
       </router-link>
-    </div>
+    </nav>
+    <SocialSharing></SocialSharing>
+    <div
+      role="navigation"
+      style="z-index: 10000"
+      aria-labelledby="skip-to-content"
+    ></div>
     <AppNav @hook:mounted="fixA11y()"></AppNav>
 
     <v-main style="background: #fcfcfc">

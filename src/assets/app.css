@@ -340,3 +340,7 @@ details[open] summary ~ * {
     flex-grow: 1;
   }
 }
+
+.v-chip {
+  overflow: visible !important;
+}
