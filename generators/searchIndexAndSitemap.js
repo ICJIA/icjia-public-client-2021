@@ -54,4 +54,16 @@ siteIndex.forEach((item) => {
 
 sitemap.end();
 
-console.log("Created: ./public/Sitemap.xml");
+console.log("Created: ./public/sitemap.xml");
+
+// temp api directory path
+const dir = "./public/api/";
+
+// delete directory recursively
+fs.rm(dir, { recursive: true }, (err) => {
+  if (err) {
+    throw err;
+  }
+
+  console.log(`Deleted: ${dir}`);
+});

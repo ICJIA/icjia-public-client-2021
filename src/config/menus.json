@@ -1,0 +1,86 @@
+{
+    "menu": [
+        {
+            "main": "About",
+            "children": [
+                {
+                    "title": "Overview",
+                    "link": "/about/"
+                },
+                {
+                    "title": "Board Members",
+                    "link": "/about/composition-and-membership/"
+                },
+                {
+                    "title": "Staff Organization",
+                    "link": "/about/icjia-staff/"
+                },
+                {
+                    "divider": true
+                },
+                {
+                    "title": "Meetings",
+                    "link": "/news/meetings/"
+                },
+                {
+                    "title": "Employment",
+                    "link": "/about/employment/"
+                }
+            ]
+        },
+        {
+            "main": "Research",
+            "children": [
+                {
+                    "section": "Statistical Analysis Center (SAC)"
+                },
+                {
+                    "title": "Overview",
+                    "link": "/researchhub/hub-overview/"
+                },
+                {
+                    "title": "Research Hub Home",
+                    "link": "/researchhub/"
+                },
+                {
+                    "title": "Articles",
+                    "link": "/researchhub/articles/"
+                },
+                {
+                    "title": "Web Applications",
+                    "link": "/researchhub/apps/"
+                },
+                {
+                    "title": "Datasets",
+                    "link": "/researchhub/datasets/"
+                },
+                {
+                    "title": "Publications",
+                    "link": "/researchhub/publications/"
+                },
+                {
+                    "title": "Institutional Review Board",
+                    "link": "/irb/"
+                },
+                {
+                    "divider": true
+                },
+                {
+                    "section": "InfoNet"
+                },
+                {
+                    "title": "InfoNet Overview",
+                    "link": "/information-systems/infonet/"
+                }
+            ]
+        },
+        {
+            "main": "Funding"
+        },
+        {
+            "main": "Adult Redeploy",
+            "link": "https://icjia.illinois.gov/adultredeploy/",
+            "icon": "open_in_new"
+        }
+    ]
+}

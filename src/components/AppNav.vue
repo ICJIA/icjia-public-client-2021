@@ -164,18 +164,6 @@
               >
             </v-list-item-content>
           </v-list-item>
-          <!-- <v-divider></v-divider>
-          <v-list-item
-            class="appNav"
-            exact
-            to="/about/publications/illinois-criminal-justice-information-authority-2020-annual-report"
-          >
-            <v-list-item-content class="hover">
-              <v-list-item-title style="font-size: 12px !important"
-                >2020 Annual Report</v-list-item-title
-              >
-            </v-list-item-content>
-          </v-list-item> -->
         </v-list>
       </v-menu>
 
