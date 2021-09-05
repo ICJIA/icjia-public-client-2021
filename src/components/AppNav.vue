@@ -11,8 +11,8 @@
       <div
         class="hover hamburger text-center"
         style="margin-left: -10px"
-        v-if="$vuetify.breakpoint.sm || $vuetify.breakpoint.xs"
         @click="drawer = true"
+        v-if="$vuetify.breakpoint.sm || $vuetify.breakpoint.xs"
       >
         <span class="v-icon mdi mdi-menu"></span>
         <div style="font-size: 10px; font-weight: 900">MENU</div>
@@ -149,48 +149,77 @@
       disable-resize-watcher
       color="white"
       style="z-index: 500"
-      ><v-list class="mt-5">
-        <div v-for="item in items" :key="item.title">
-          <div v-if="item.items.length">
-            <v-list-group v-model="item.active" no-action>
-              <template v-slot:activator>
-                <v-list-item-content>
-                  <v-list-item-title
-                    v-text="item.title"
-                    style="font-size: 18px; font-weight: bold"
-                  ></v-list-item-title>
-                </v-list-item-content>
-              </template>
+    >
+      <v-list class="mt-5">
+        <div v-for="(menu, index) in $myApp.menus.menu" :key="index">
+          <v-list-group v-model="menu.active" no-action v-if="menu.children">
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title
+                  v-text="menu.main"
+                  style="font-size: 18px; font-weight: bold"
+                ></v-list-item-title>
+              </v-list-item-content>
+            </template>
 
-              <v-list-item
-                v-for="child in item.items"
-                :key="child.title"
-                exact
-                @click="drawer = false"
+            <span v-for="child in menu.children" :key="child.title">
+              <v-divider v-if="child.divider"></v-divider>
+              <div
+                v-if="child.section"
+                style="
+                  margin-top: 10px;
+                  font-weight: 700;
+                  color: #777;
+                  font-size: 14px;
+                  line-height: 26px;
+                "
+                class="ml-6 pr-5 mb-1"
               >
-                <v-list-item-content style="margin-left: -40px">
-                  <v-list-item-title
-                    v-text="child.title"
-                    style="
-                      font-size: 14px !important;
-                      font-weight: bold;
-                      color: #555;
-                    "
-                  ></v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list-group>
-          </div>
-          <div v-else>
+                {{ child.section }}
+              </div>
+              <span v-if="child.title">
+                <v-list-item
+                  exact
+                  @click="drawer = false"
+                  :to="isLinkExternal(child.link) ? null : child.link"
+                  :href="isLinkExternal(child.link) ? child.link : null"
+                  :target="isLinkExternal(child.link) ? '_blank' : null"
+                  class="ml-7"
+                  style="color: #111"
+                >
+                  <v-list-item-content>
+                    <v-list-item-title
+                      style="
+                        font-size: 13px !important;
+                        font-weight: bold;
+                        color: #111;
+                      "
+                      >{{ child.title
+                      }}<v-icon v-if="child.icon" small right color="black">{{
+                        child.icon
+                      }}</v-icon></v-list-item-title
+                    >
+                  </v-list-item-content>
+                </v-list-item>
+              </span>
+            </span>
+          </v-list-group>
+          <div v-if="!menu.children">
             <v-list-item
-              style="margin-bottom: -5px"
-              exact
               @click="drawer = false"
+              :to="isLinkExternal(menu.link) ? null : menu.link"
+              :href="isLinkExternal(menu.link) ? menu.link : null"
+              :target="isLinkExternal(menu.link) ? '_blank' : null"
             >
-              <v-list-item-title style="font-size: 18px; font-weight: bold">
-                {{ item.title }}</v-list-item-title
-              >
-            </v-list-item>
+              <v-list-item-content>
+                <v-list-item-title style="font-size: 18px; font-weight: bold"
+                  >{{ menu.main
+                  }}<v-icon v-if="menu.icon" small right color="black">{{
+                    menu.icon
+                  }}</v-icon></v-list-item-title
+                >
+              </v-list-item-content></v-list-item
+            >
           </div>
         </div>
       </v-list>
