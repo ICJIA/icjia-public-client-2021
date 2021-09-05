@@ -32,9 +32,11 @@ let siteIndex = [
   ...events,
 ];
 
+const manualIndex = ["/news/press/"];
+
 const dirpath = "./public/api";
 if (!fs.existsSync(dirpath)) fs.mkdirSync(dirpath);
-console.log("Site index length: ", siteIndex.length);
+
 jsonfile.writeFile(`./public/searchIndex.json`, siteIndex, function (err) {
   if (err) console.error(err);
   console.log(`Created: ./public/searchIndex.json`);
@@ -44,12 +46,21 @@ jsonfile.writeFile(`./public/searchIndex.json`, siteIndex, function (err) {
 
 const sitemap = new SitemapStream({ hostname: `${config.api.baseClient}` });
 const writeStream = createWriteStream("./public/sitemap.xml");
+let sitemapCounter = 0;
 sitemap.pipe(writeStream);
 
 siteIndex.forEach((item) => {
   let url = `${config.api.baseClient}${item.fullPath}`;
   url += url.endsWith("/") ? "" : "/";
   sitemap.write({ url, changefreq: "weekly", priority: 0.3 });
+  sitemapCounter++;
+});
+
+manualIndex.forEach((path) => {
+  let url = `${config.api.baseClient}${path}`;
+  url += url.endsWith("/") ? "" : "/";
+  sitemap.write({ url, changefreq: "weekly", priority: 0.3 });
+  sitemapCounter++;
 });
 
 sitemap.end();
@@ -59,7 +70,8 @@ console.log("Created: ./public/sitemap.xml");
 // temp api directory path
 const dir = "./public/api/";
 
-// delete directory recursively
+//delete directory recursively
+
 fs.rm(dir, { recursive: true }, (err) => {
   if (err) {
     throw err;
@@ -67,3 +79,5 @@ fs.rm(dir, { recursive: true }, (err) => {
 
   console.log(`Deleted: ${dir}`);
 });
+
+console.log("Total pages: ", sitemapCounter);
