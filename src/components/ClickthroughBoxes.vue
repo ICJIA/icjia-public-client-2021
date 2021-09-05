@@ -145,45 +145,4 @@ export default {
 };
 </script>
 
-<style>
-.flex-container {
-  width: 100%;
-
-  display: flex;
-  flex-flow: row wrap;
-  position: relative;
-}
-
-.flex-item-1 {
-  background: #fff;
-
-  flex-grow: 1;
-}
-
-.flex-item-2 {
-  background: #fff;
-
-  margin: 0px;
-
-  flex-grow: 1;
-}
-
-.flex-item-3 {
-  background: #fff;
-
-  margin: 0px;
-  flex: 0 1; /* <-- adjusting for margin */
-  flex-grow: 1;
-}
-
-@media only screen and (max-width: 1024px) {
-  .flex-item {
-    background: blue;
-
-    margin: 0px;
-    margin-top: 10px;
-    flex: 0 1;
-    flex-grow: 1;
-  }
-}
-</style>
+<style></style>

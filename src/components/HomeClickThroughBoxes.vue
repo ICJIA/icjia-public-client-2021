@@ -10,9 +10,9 @@
         >
           <v-card
             dark
-            height="360px"
-            class="elevation-0 px-8 py-10 box text-center hover"
-            style="margin-bottom: 1px"
+            :height="getHeight()"
+            class="elevation-0 px-8 pt-11 box text-center hover"
+            style="margin-bottom: 3px"
             color="#0E4471"
             :class="{ mr1: index > -1 && index < boxes.length - 1 }"
             @click="routeToURL(box)"
@@ -56,6 +56,13 @@ export default {
     },
   },
   methods: {
+    getHeight() {
+      if (this.$vuetify.breakpoint.smAndDown) {
+        return 400;
+      } else {
+        return 350;
+      }
+    },
     isItNew(datePosted) {
       if (!datePosted) return false;
       let now = moment(new Date()); //todays date
