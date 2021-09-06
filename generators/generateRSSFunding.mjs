@@ -46,7 +46,7 @@ const init = async () => {
       link: `${config.api.baseClient}/grants/funding/${grant.slug}/`,
       description: renderToHtml(grant.summary),
       content: renderToHtml(grant.body),
-      date: new Date(grant.published_at),
+      date: new Date(grant.start),
     });
   });
 
