@@ -1,19 +1,17 @@
+/* eslint-disable no-unused-vars */
 const fs = require("fs").promises;
 const path = require("path");
 
-exports.handler = async () => {
-  try {
-    const content = await fs.readFile(path.join(__dirname, "search.json"), {
-      encoding: "utf-8",
-    });
-    return {
-      statusCode: 200,
-      body: content,
-    };
-  } catch (e) {
-    return {
-      statusCode: 500,
-      body: e,
-    };
-  }
-};
+export async function handler(event, context) {
+  //   const content = await fs.readFile(path.join(__dirname, "data.json"), {
+  //     encoding: "utf-8",
+  //   });
+  const content = await fs.readFile(path.resolve("./public/searchIndex.json"), {
+    encoding: "utf-8",
+  });
+
+  return {
+    statusCode: 200,
+    body: content,
+  };
+}

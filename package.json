@@ -22,7 +22,9 @@
     "generate:images": "node ./generators/generateImagesHub",
     "generate:feeds": "node ./generators/generateRSSNews.mjs && node ./generators/generateRSSFunding.mjs && node ./generators/generateRSSMeetings.mjs",
     "generate:schema": "get-graphql-schema https://agency.icjia-api.cloud/graphql -j > schema.json",
-    "postbuild": "node ./generators/generateBuildInfo"
+    "postbuild": "node ./generators/generateBuildInfo",
+    "build:lambda": "netlify-lambda build ./src/lambda",
+    "start:lambda": "netlify-lambda serve ./src/lambda"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
