@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 const fs = require("fs").promises;
 const path = require("path");
-const content = require("./data.json");
+const content = require("./searchIndex.json");
 export async function handler(event, context) {
   // const content = await fs.readFile("data.json", {
   //   encoding: "utf-8",
