@@ -82,7 +82,10 @@ export default {
     let data = await response.json();
     const fuse = new Fuse(data.message, this.$myApp.config.search.site);
     this.$myApp.fuse = fuse;
-    console.warn("Getting search data from lambda. Length: ", data.length);
+    console.warn(
+      "Getting search data from lambda. Length: ",
+      data.message.length
+    );
     this.fuse = this.$myApp.fuse;
   },
   mounted() {
