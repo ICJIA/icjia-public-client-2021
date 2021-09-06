@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import "regenerator-runtime/runtime";
 import Vue from "vue";
 import App from "./App.vue";
@@ -7,15 +8,16 @@ import vuetify from "./plugins/vuetify";
 import { createProvider } from "./vue-apollo";
 import "@/assets/app.css";
 import "@/assets/github-markdown.css";
-
 import "@/components/_globals";
 import "@/components/Hub/_hub";
 import "@/filters";
 import "@/assets/hub.css";
+import config from "@/config/config.json";
 // import "material-design-icons-iconfont/dist/material-design-icons.css";
 // import Masonry from "masonry-layout";
 import nprogress from "nprogress";
 // import axios from "axios";
+import Fuse from "fuse.js";
 
 import "@fortawesome/fontawesome-free/css/all.css";
 
@@ -35,8 +37,9 @@ myApp.install = function () {
 //
 // (async function () {
 //   let configs = await require("./services/Configs");
-//   console.log(configs);
-
+//   //console.log(configs.data.message);
+//   const fuse = new Fuse(configs.data.message, config.search.site);
+//   myApp.fuse = fuse;
 // })();
 
 Vue.use(myApp);

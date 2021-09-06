@@ -60,6 +60,8 @@
 
 <script>
 // import { EventBus } from "@/event-bus";
+import Fuse from "fuse.js";
+
 export default {
   watch: {
     // eslint-disable-next-line no-unused-vars
@@ -158,12 +160,22 @@ export default {
     },
   },
 
-  mounted() {
+  async mounted() {
     console.dir(this.$myApp);
     this.checkForTopContextMenu();
     this.getBottomContextMenu();
     this.checkForDisclaimer();
+    if (this.$myApp.fuse && this.$myApp.fuse.length) return;
+    let response = await fetch("/.netlify/functions/search");
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    let data = await response.json();
+    const fuse = new Fuse(data.message, this.$myApp.config.search.site);
+    this.$myApp.fuse = fuse;
+    console.warn("getting fuse data from netlify");
   },
+  async created() {},
 };
 </script>
 
