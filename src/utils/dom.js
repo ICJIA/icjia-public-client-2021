@@ -10,7 +10,7 @@ const attachInternalLinks = function (vm) {
         //vm.$router.push(this.dataset.eventLink);
         let url = e.target.href;
         url = url.replace(/^.*\/\/[^/]+/, "");
-        vm.$router.push(url);
+        vm.$router.push(url).catch(() => {});
       });
     }
     console.log("attachInternalLinks: ", els);
