@@ -1,5 +1,5 @@
 <template>
-  <div style="background: #fff" id="article-view">
+  <div style="background: #fff">
     <div v-if="loading" style="background: #f3f3f3; margin-top: 8px">
       <Loader
         loaderType="skeleton"
@@ -13,6 +13,7 @@
       :downloader="downloader"
       @hook:mounted="childMounted"
       :key="article.title"
+      id="article-view"
     />
   </div>
 </template>
