@@ -82,7 +82,7 @@ export default {
     let data = await response.json();
     const fuse = new Fuse(data.message, this.$myApp.config.search.site);
     this.$myApp.fuse = fuse;
-    console.warn("getting fuse data from netlify: ", data);
+    console.warn("Getting search data from lambda. Length: ", data.length);
     this.fuse = this.$myApp.fuse;
   },
   mounted() {

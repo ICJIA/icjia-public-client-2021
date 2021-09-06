@@ -3,6 +3,11 @@
   Command = "npm run build"
   functions = "lambda"
   Publish = "dist"
+
+[[redirects]]
+    from = "/api/*"
+    to = "/.netlify/functions/:splat"
+    status = 200
   
 [[headers]]
   for = "/*"
@@ -11,3 +16,4 @@
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "no-referrer"
     X-Content-Type-Options = "nosniff"
+    Access-Control-Allow-Origin = "*"
