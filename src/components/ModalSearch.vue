@@ -47,7 +47,7 @@ import { getProperCategory } from "@/utils/content";
 import DOMPurify from "dompurify";
 import Fuse from "fuse.js";
 import _ from "lodash";
-
+import NProgress from "nprogress";
 function arrayToList(array) {
   return array.join(", ").replace(/, ((?:.(?!, ))+)$/, " and $1");
 }
@@ -68,7 +68,8 @@ export default {
     };
   },
   async created() {
-    console.log(process.env.NODE_ENV);
+    //console.log(process.env.NODE_ENV);
+    NProgress.start();
     let searchURL;
     if (process.env.NODE_ENV === "development") {
       searchURL = "/.netlify/functions/search";
@@ -87,6 +88,7 @@ export default {
       data.message.length
     );
     this.fuse = this.$myApp.fuse;
+    NProgress.done();
   },
   mounted() {
     EventBus.$on("closeSearch", () => {

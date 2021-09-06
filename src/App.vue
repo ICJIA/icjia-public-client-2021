@@ -68,6 +68,7 @@ export default {
       this.checkForTopContextMenu();
       this.checkForDisclaimer();
       this.getBottomContextMenu();
+      this.fixA11y();
     },
   },
   name: "App",
@@ -101,7 +102,7 @@ export default {
       });
     },
     fixA11y() {
-      console.log("Fix a11y here.");
+      console.log("a11y fixes here.");
     },
     scrollFix: function () {},
     checkForDisclaimer() {
