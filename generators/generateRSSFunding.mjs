@@ -47,7 +47,6 @@ const init = async () => {
       description: renderToHtml(grant.summary),
       content: renderToHtml(grant.body),
       date: new Date(grant.published_at),
-      image: null,
     });
   });
 

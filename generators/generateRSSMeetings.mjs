@@ -55,12 +55,11 @@ const init = async () => {
     };
     feed.addItem({
       title: `[${meeting.category.toUpperCase()}] ${meeting.title}`,
-      id: `${config.api.baseClient}/news/${meeting.slug}/`,
-      link: `${config.api.baseClient}/news/${meeting.slug}/`,
+      id: `${config.api.baseClient}/news/meetings/${meeting.slug}/`,
+      link: `${config.api.baseClient}/news/meetings/${meeting.slug}/`,
       description: renderToHtml(meeting.summary),
       content: generateFullContent(meeting),
       date: new Date(meeting.end),
-      image: null,
     });
   });
 
