@@ -113,6 +113,7 @@
           <v-btn
             text
             large
+            :aria-label="menu.main"
             class="hidden-sm-and-down navItem"
             :to="isLinkExternal(menu.link) ? null : menu.link"
             :href="isLinkExternal(menu.link) ? menu.link : null"
@@ -131,6 +132,7 @@
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             icon
+            aria-label="Click for search."
             v-bind="attrs"
             v-on="on"
             @click="openSearchModal()"

@@ -8,6 +8,7 @@
       :open-on-hover="false"
       absolute
       fixed
+      aria-label="Click this button to share or translate this page."
     >
       <template v-slot:activator>
         <v-tooltip left>
@@ -18,6 +19,7 @@
               dark
               fab
               v-on="on"
+              aria-label="Click this button to share or translate this page."
             >
               <v-icon v-if="socialSharing"> mdi-close </v-icon>
               <v-icon v-else>fa fa-users</v-icon>
@@ -29,7 +31,14 @@
       </template>
       <v-tooltip left>
         <template v-slot:activator="{ on }">
-          <v-btn fab dark small color="#3b5998" v-on="on">
+          <v-btn
+            fab
+            dark
+            small
+            color="#3b5998"
+            v-on="on"
+            aria-label="Click this button to share this page on Facebook."
+          >
             <v-icon>fab fa-facebook</v-icon>
           </v-btn>
         </template>
@@ -37,7 +46,14 @@
       </v-tooltip>
       <v-tooltip left>
         <template v-slot:activator="{ on }">
-          <v-btn fab dark small color="#1DA1F2" v-on="on">
+          <v-btn
+            fab
+            dark
+            small
+            color="#1DA1F2"
+            v-on="on"
+            aria-label="Click this button to share this page on Twitter."
+          >
             <v-icon>fab fa-twitter</v-icon>
           </v-btn>
         </template>
@@ -51,6 +67,7 @@
             small
             color="#4285F4"
             v-on="on"
+            aria-label="Click this button to translate this page on Google."
             @click="openTranslationModal()"
           >
             <v-icon>fas fa-globe</v-icon>

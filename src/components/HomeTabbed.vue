@@ -27,27 +27,8 @@
           >
             <div class="text-right"></div>
             <div>
-              <div class="d-flex">
-                <!-- <span style="font-weight: 700; font-size: 14px; color: #000">
-                  {{ getCategory(grant.category) }} </span
-                >&nbsp;|&nbsp;<span
-                  v-if="!isItExpired(grant.end)"
-                  style="font-size: 14px"
-                  class="hidden-sm-and-down"
-                >
-                  {{ grant.start | dateFormatAlt }} to
-                  {{ grant.end | dateFormatAlt }}
-                </span>
-                <v-chip
-                  small
-                  v-if="isItExpired(grant.end)"
-                  class="mr-1"
-                  color="grey lighten-2"
-                  style="font-weight: 700"
-                  >Expired</v-chip
-                > -->
-
-                <span style="font-weight: 700; font-size: 16px; color: #000">
+              <div>
+                <span style="font-weight: 700; font-size: 0.9em; color: #000">
                   {{ getCategory(grant.category) }}
                 </span>
                 <span v-if="isItExpired(grant.end)">
@@ -63,13 +44,13 @@
                 </span>
                 <span
                   v-if="!isItExpired(grant.end)"
-                  style="font-size: 14px; font-weight: 400"
+                  style="font-size: 0.9em; font-weight: 400"
                   >&nbsp;|&nbsp; {{ grant.start | dateFormatAlt }} to
                   {{ grant.end | dateFormatAlt }}
                 </span>
               </div>
 
-              <h2 style="font-size: 18px" class="mt-2">
+              <h2 style="font-size: 1.1em" class="mt-2">
                 <v-chip
                   v-if="isItNew(grant)"
                   label
@@ -84,7 +65,7 @@
                 {{ grant.title }}
               </h2>
 
-              <p style="font-size: 14px" class="mt-2">{{ grant.summary }}</p>
+              <p style="font-size: 0.9em" class="mt-2">{{ grant.summary }}</p>
             </div>
           </v-card>
         </v-tab-item>
@@ -122,9 +103,9 @@
                   >&nbsp;|&nbsp; Accepting applications through
                   {{ job.end | format }}
                 </span>
-                <h2 class="mt-2" style="font-size: 18px">{{ job.title }}</h2>
+                <h2 class="mt-2" style="font-size: 1.1em">{{ job.title }}</h2>
 
-                <p style="font-size: 14px" class="mt-2">{{ job.summary }}</p>
+                <p style="font-size: 0.9em" class="mt-2">{{ job.summary }}</p>
               </v-card>
             </div>
           </div>
@@ -152,11 +133,11 @@
                 :class="{ 'rule-top': index > 0 }"
                 @click="routeTo(meeting.fullPath)"
               >
-                <span style="font-weight: 700; font-size: 16px; color: #000">
+                <span style="font-weight: 700; font-size: 0.9em; color: #000">
                   MEETING
                 </span>
 
-                <span style="font-size: 14px; font-weight: 400"
+                <span style="font-size: 0.9em; font-weight: 400"
                   >&nbsp;|&nbsp;
                   {{ meeting.start | format }}
                 </span>
@@ -170,11 +151,11 @@
                     >Upcoming</v-chip
                   >
                 </span>
-                <h2 class="mt-2" style="font-size: 18px">
+                <h2 class="mt-2" style="font-size: 1.1em">
                   {{ meeting.title }}
                 </h2>
 
-                <p style="font-size: 14px" class="mt-2">
+                <p style="font-size: 0.9em" class="mt-2">
                   {{ meeting.summary }}
                 </p>
               </v-card>

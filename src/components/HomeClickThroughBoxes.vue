@@ -25,6 +25,7 @@
               top
               left
               v-if="isItNew(box.datePosted)"
+              aria-label="New!"
             >
               <span style="color: #fff !important"> NEW!</span>
             </v-btn>

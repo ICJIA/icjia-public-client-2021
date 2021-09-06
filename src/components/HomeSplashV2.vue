@@ -27,7 +27,7 @@
                   class="text-center"
                 >
                   <div
-                    class="px-10 pt-7 pb-7"
+                    class="px-10 pt-4 pb-7"
                     style="
                       width: 50%;
                       background: rgba(100, 100, 100, 0.9);
@@ -43,7 +43,7 @@
                         {{ slide.teaser }}
                       </div>
                       <div class="mt-7">
-                        <v-btn color="#0a3456" class="mr-2" to="/grants/"
+                        <v-btn color="#115389" class="mr-2" to="/grants/"
                           >Apply for funding</v-btn
                         >
 
