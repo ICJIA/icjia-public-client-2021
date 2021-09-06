@@ -1,7 +1,7 @@
   
 [build]
   Command = "npm run build"
-  Functions = "netlify"
+  functions = "lambda"
   Publish = "dist"
   
 [[headers]]
