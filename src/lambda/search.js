@@ -3,7 +3,7 @@ const fs = require("fs").promises;
 const path = require("path");
 
 export async function handler(event, context) {
-  const content = await fs.readFile("data.json", {
+  const content = await fs.readFile("./public/data.json", {
     encoding: "utf-8",
   });
 
