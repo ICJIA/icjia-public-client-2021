@@ -5,10 +5,11 @@
         <v-col cols="12">
           <v-container fluid v-if="allGrants">
             <v-row>
-              <v-col cols="12" class="page-heading"
+              <v-col cols="12" class="page-heading" v-if="content"
                 ><h1 id="current-funding-opportunities">
-                  ICJIA Funding Opportunities
+                  {{ content.title }}
                 </h1>
+                <div v-html="render(content.body)"></div>
               </v-col>
 
               <v-col
@@ -64,13 +65,10 @@ const addOneDayToDate = function (date) {
   return newDate;
 };
 // eslint-disable-next-line no-unused-vars
-import { attachInternalLinks } from "@/utils/dom";
+import { attachInternalLinks, attachSearchEvents } from "@/utils/dom";
 import { EventBus } from "@/event-bus";
-import { GET_SINGLE_UNIT_QUERY } from "@/graphql/units";
-import {
-  GET_ALL_PROGRAMS_QUERY,
-  GET_ALL_FUNDING_QUERY,
-} from "@/graphql/grants";
+import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
+import { GET_ALL_FUNDING_QUERY } from "@/graphql/grants";
 import { renderToHtml } from "@/services/Markdown";
 import { getUnifiedTags } from "@/utils/content";
 import _ from "lodash";
@@ -100,6 +98,15 @@ export default {
     };
   },
   watch: {
+    content(newVal) {
+      if (newVal) {
+        console.log("content changed");
+        attachInternalLinks(this);
+        attachSearchEvents(this);
+      } else {
+        console.log("content not changed.");
+      }
+    },
     toggle_category(newVal) {
       if (newVal === 0) {
         this.category = "all";
@@ -173,74 +180,43 @@ export default {
     },
   },
   apollo: {
-    units: {
+    pages: {
       prefetch: true,
-
-      query: GET_SINGLE_UNIT_QUERY,
+      fetchPolicy: "no-cache",
+      query: GET_SINGLE_PAGE_QUERY,
       variables() {
         return {
-          slug: "federal-and-state-grants-unit",
+          slug: "funding",
         };
       },
       error(error) {
         this.error = JSON.stringify(error.message);
+        this.loading = false;
         NProgress.done();
       },
       result(ApolloQueryResult) {
         if (
           ApolloQueryResult.data &&
-          ApolloQueryResult.data.units.length > 0 === false
+          ApolloQueryResult.data.pages.length > 0 === false
         ) {
           // eslint-disable-next-line no-unused-vars
           this.$router.push("/404").catch((err) => {
             console.log(err);
+            this.loading = false;
+            NProgress.done();
           });
         } else {
           //console.log(this.id);
-          this.unit = ApolloQueryResult.data.units[0];
+          let content = ApolloQueryResult.data.pages;
+          content = getUnifiedTags(content);
+          this.content = content[0];
+          this.loading = false;
+          EventBus.$emit("context-label", this.content.title);
           NProgress.done();
         }
       },
     },
-    programs: {
-      prefetch: true,
 
-      query: GET_ALL_PROGRAMS_QUERY,
-      variables() {
-        return {};
-      },
-      error(error) {
-        this.error = JSON.stringify(error.message);
-        NProgress.done();
-      },
-      result(ApolloQueryResult) {
-        if (
-          ApolloQueryResult.data &&
-          ApolloQueryResult.data.programs.length > 0 === false
-        ) {
-          // eslint-disable-next-line no-unused-vars
-          this.$router.push("/404").catch((err) => {
-            console.log(err);
-          });
-        } else {
-          //console.log(this.id);
-
-          let allPrograms = _.orderBy(ApolloQueryResult.data.programs, [
-            "title",
-          ]);
-          allPrograms = allPrograms.map((e) => ({
-            ...e,
-            fullPath: `/grants/programs/${e.slug}/`,
-            contentType: "program",
-          }));
-
-          this.allPrograms = allPrograms;
-
-          this.filterPrograms();
-          NProgress.done();
-        }
-      },
-    },
     grants: {
       prefetch: true,
 
@@ -274,9 +250,11 @@ export default {
             contentType: "grant",
           }));
           allGrants = getUnifiedTags(allGrants);
-          console.log("all grants: ", allGrants);
+          // console.log("all grants: ", allGrants);
           this.allGrants = allGrants;
           this.filterGrants("current");
+          // attachInternalLinks(this);
+          // attachSearchEvents(this);
           NProgress.done();
         }
       },

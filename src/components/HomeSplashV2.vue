@@ -29,7 +29,7 @@
                   <div
                     class="px-10 pt-4 pb-7"
                     style="
-                      width: 50%;
+                      width: 65%;
                       background: rgba(100, 100, 100, 0.9);
                       display: table;
                       margin: 0 auto;
