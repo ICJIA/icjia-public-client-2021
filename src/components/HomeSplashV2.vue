@@ -52,7 +52,7 @@
                           outlined
                           to="/about/"
                           class="splash-button hidden-sm-and-down"
-                          >Find out more</v-btn
+                          >About ICJIA</v-btn
                         >
                       </div>
                     </div>

@@ -15,11 +15,11 @@
               <v-col
                 cols="12"
                 class="page-heading mb-6"
-                style="margin-top: -25px"
+                style="margin-top: 0px"
               >
                 <v-btn-toggle v-model="toggle_nofoStatus" mandatory>
                   <v-btn small elevation="1" class="button-weight">
-                    Current
+                    Current Funding
                   </v-btn>
 
                   <v-btn small elevation="1" class="button-weight">
