@@ -33,26 +33,22 @@ let feed = new Feed({
 
 const init = async () => {
   const meetings = await axios.get(`${config.api.base}/meetings`);
+  const generateFullContent = (item) => {
+    const body = renderToHtml(item.body);
+    // iterate through attachments
+    let attachments = "";
+    if (item.attachments && item.attachments.length) {
+      attachments = "<div><h2>Attachments</h2><ul>";
+      item.attachments.forEach((attachment) => {
+        let attachmentUrl = `<li><a href="${config.api.base}${attachment.url}">${attachment.name}</a></li>`;
+        attachments += attachmentUrl;
+      });
+      attachments += "</ul></div>";
+    }
+    return body + attachments;
+  };
 
   meetings.data.forEach((meeting) => {
-    //console.log(meeting.splash.url);
-    // let publicationDate =
-    //   meeting.dateOverride && meeting.dateOverride.length
-    //     ? meeting.dateOverride
-    //     : meeting.published_at;
-    let generateFullContent = (meeting) => {
-      const body = renderToHtml(meeting.body);
-      // iterate through attachments
-      if (meeting.attachments) {
-        let attachments = "<div><h2>Attachments</h2><ul>";
-        meeting.attachments.forEach((attachment) => {
-          let attachmentUrl = `<li><a href="${config.api.base}${attachment.url}">${attachment.name}</a></li>`;
-          attachments += attachmentUrl;
-        });
-        attachments += "</ul></div>";
-        return body + attachments;
-      }
-    };
     feed.addItem({
       title: `[${meeting.category.toUpperCase()}] ${meeting.title}`,
       id: `${config.api.baseClient}/news/meetings/${meeting.slug}/`,

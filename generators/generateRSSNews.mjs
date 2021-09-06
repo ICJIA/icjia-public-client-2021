@@ -33,19 +33,33 @@ let feed = new Feed({
 
 const init = async () => {
   const posts = await axios.get(`${config.api.base}/posts`);
-
+  const generateFullContent = (item) => {
+    const body = renderToHtml(item.body);
+    // iterate through attachments
+    let attachments = "";
+    if (item.attachments && item.attachments.length) {
+      attachments = "<div><h2>Attachments</h2><ul>";
+      item.attachments.forEach((attachment) => {
+        let attachmentUrl = `<li><a href="${config.api.base}${attachment.url}">${attachment.name}</a></li>`;
+        attachments += attachmentUrl;
+      });
+      attachments += "</ul></div>";
+    }
+    return body + attachments;
+  };
   posts.data.forEach((post) => {
     //console.log(post.splash.url);
     let publicationDate =
       post.dateOverride && post.dateOverride.length
         ? post.dateOverride
         : post.published_at;
+
     feed.addItem({
       title: post.title,
       id: `${config.api.baseClient}/news/${post.slug}/`,
       link: `${config.api.baseClient}/news/${post.slug}/`,
       description: renderToHtml(post.summary),
-      content: renderToHtml(post.body),
+      content: generateFullContent(post),
       date: new Date(publicationDate),
       image:
         post.splash && post.splash.url

@@ -33,19 +33,27 @@ let feed = new Feed({
 
 const init = async () => {
   const grants = await axios.get(`${config.api.base}/grants`);
-
+  const generateFullContent = (item) => {
+    const body = renderToHtml(item.body);
+    let attachments = "";
+    // iterate through attachments
+    if (item.attachments && item.attachments.length > 0) {
+      attachments = "<div><h2>Attachments</h2><ul>";
+      item.attachments.forEach((attachment) => {
+        let attachmentUrl = `<li><a href="${config.api.base}${attachment.url}">${attachment.name}</a></li>`;
+        attachments += attachmentUrl;
+      });
+      attachments += "</ul></div>";
+    }
+    return body + attachments;
+  };
   grants.data.forEach((grant) => {
-    //console.log(post.splash.url);
-    // let publicationDate =
-    //   post.dateOverride && post.dateOverride.length
-    //     ? post.dateOverride
-    //     : post.published_at;
     feed.addItem({
       title: grant.title,
       id: `${config.api.baseClient}/grants/funding/${grant.slug}/`,
       link: `${config.api.baseClient}/grants/funding/${grant.slug}/`,
       description: renderToHtml(grant.summary),
-      content: renderToHtml(grant.body),
+      content: generateFullContent(grant),
       date: new Date(grant.start),
     });
   });
