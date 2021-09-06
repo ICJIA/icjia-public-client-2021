@@ -55,7 +55,7 @@ const init = async () => {
         : post.published_at;
 
     feed.addItem({
-      title: post.title,
+      title: `<h2>${post.title}</h2>`,
       id: `${config.api.baseClient}/news/${post.slug}/`,
       link: `${config.api.baseClient}/news/${post.slug}/`,
       description: renderToHtml(post.summary),

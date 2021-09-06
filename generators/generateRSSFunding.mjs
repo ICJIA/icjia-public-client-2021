@@ -49,7 +49,7 @@ const init = async () => {
   };
   grants.data.forEach((grant) => {
     feed.addItem({
-      title: grant.title,
+      title: `<h2>${grant.title}</h2>`,
       id: `${config.api.baseClient}/grants/funding/${grant.slug}/`,
       link: `${config.api.baseClient}/grants/funding/${grant.slug}/`,
       description: renderToHtml(grant.summary),

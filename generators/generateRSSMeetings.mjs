@@ -50,7 +50,7 @@ const init = async () => {
 
   meetings.data.forEach((meeting) => {
     feed.addItem({
-      title: `[${meeting.category.toUpperCase()}] ${meeting.title}`,
+      title: `<h2>[${meeting.category.toUpperCase()}] ${meeting.title}</h2>`,
       id: `${config.api.baseClient}/news/meetings/${meeting.slug}/`,
       link: `${config.api.baseClient}/news/meetings/${meeting.slug}/`,
       description: renderToHtml(meeting.summary),
