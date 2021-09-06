@@ -31,14 +31,7 @@ const GET_HOME = gql`
           }
         }
       }
-      homeCarouselButton {
-        id
-        label
-        menuItem {
-          label
-          url
-        }
-      }
+
       clickThroughBoxes {
         title
         url

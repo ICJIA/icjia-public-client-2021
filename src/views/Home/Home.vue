@@ -2,12 +2,11 @@
   <div>
     <div v-if="error" class="error text-center mt-4">{{ error }}</div>
     <Banner :item="banner"></Banner>
-    <HomeSplash
+    <HomeSplashV2
       :slider="slider"
-      :buttons="buttons"
       v-if="!loading"
       style="margin-top: -16px"
-    ></HomeSplash>
+    ></HomeSplashV2>
 
     <v-card height="550" class="px-3 py-3" v-if="loading">
       <Loader
@@ -196,7 +195,7 @@ export default {
         //Home page UI
         this.banner = ApolloQueryResult.data.home.homeBanner;
         this.slider = ApolloQueryResult.data.home.homeCarousel;
-        this.buttons = ApolloQueryResult.data.home.homeCarouselButton;
+        // this.buttons = ApolloQueryResult.data.home.homeCarouselButton;
         this.boxes = ApolloQueryResult.data.home.clickThroughBoxes;
 
         //Data adjustments

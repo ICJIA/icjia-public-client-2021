@@ -4,9 +4,9 @@
       title="Latest Research"
       :menuItems="researchMenuItems"
       mobileTitle="Research"
-      style="margin-top: -5px"
+      style="margin-top: 0px"
     ></WidgetBar>
-    <v-card elevation="0" style="margin-top: -8px; margin-bottom: 18px">
+    <v-card elevation="0" style="margin-top: 0px; margin-bottom: 18px">
       <div
         style="height: 15px"
         v-if="$vuetify.breakpoint.sm || $vuetify.breakpoint.xs"

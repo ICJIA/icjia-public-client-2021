@@ -8081,22 +8081,6 @@
             "deprecationReason": null
           },
           {
-            "name": "homeCarouselButton",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "ComponentSliderButtonSliderButton",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "clickThroughBoxes",
             "description": null,
             "args": [],
@@ -8155,20 +8139,6 @@
               "kind": "INPUT_OBJECT",
               "name": "ComponentCarouselCarouselInput",
               "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "homeCarouselButton",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "INPUT_OBJECT",
-                "name": "ComponentSliderButtonSliderButtonInput",
-                "ofType": null
-              }
             },
             "defaultValue": null
           },
@@ -8244,20 +8214,6 @@
               "kind": "INPUT_OBJECT",
               "name": "editComponentCarouselCarouselInput",
               "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "homeCarouselButton",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "INPUT_OBJECT",
-                "name": "editComponentSliderButtonSliderButtonInput",
-                "ofType": null
-              }
             },
             "defaultValue": null
           },
