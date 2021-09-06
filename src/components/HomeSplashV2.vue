@@ -43,13 +43,22 @@
                         {{ slide.teaser }}
                       </div>
                       <div class="mt-7">
-                        <v-btn color="#115389" class="mr-2" to="/grants/"
+                        <v-btn small color="#0d4474" class="mr-2" to="/grants/"
                           >Apply for funding</v-btn
+                        >
+                        <v-btn
+                          dark
+                          small
+                          color="#0d4474"
+                          to="/researchhub/"
+                          class="splash-button hidden-sm-and-down mr-2"
+                          >Latest Research</v-btn
                         >
 
                         <v-btn
                           dark
-                          outlined
+                          small
+                          color="#0d4474"
                           to="/about/"
                           class="splash-button hidden-sm-and-down"
                           >About ICJIA</v-btn
