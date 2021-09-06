@@ -15,7 +15,7 @@
   },
   "scripts": {
     "serve": "npm run scripts && vue-cli-service serve",
-    "build": "npm run generate:images && npm run scripts && vue-cli-service build",
+    "build": "npm run generate:images && npm run scripts && vue-cli-service build && npm run build:lambda",
     "lint": "vue-cli-service lint",
     "scripts": "npm run generate:schema && npm run generate:search && npm run generate:feeds",
     "generate:search": "node ./generators/generateIndexHub && node ./generators/generateIndexUnits && node ./generators/generateIndexGrants && node ./generators/generateIndexPages && node ./generators/generateIndexMeetings && node ./generators/generateIndexEvents && node ./generators/generateIndexPosts && node ./generators/generateIndexJobs && node ./generators/generateIndexBiographies &&  node ./generators/generateIndexPublications && node ./generators/searchIndexAndSitemap",
