@@ -19,7 +19,7 @@
                       class="mb-10"
                     >
                       <v-btn small elevation="1" class="button-weight">
-                        Current
+                        Current Funding
                       </v-btn>
 
                       <v-btn small elevation="1" class="button-weight">
