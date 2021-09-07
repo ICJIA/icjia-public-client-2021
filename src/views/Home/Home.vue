@@ -2,11 +2,7 @@
   <div>
     <div v-if="error" class="error text-center mt-4">{{ error }}</div>
     <Banner :item="banner"></Banner>
-    <HomeSplashV2
-      :slider="slider"
-      v-if="!loading"
-      style="margin-top: -16px"
-    ></HomeSplashV2>
+    <HomeSplashV2 :slider="slider" v-if="!loading"></HomeSplashV2>
 
     <v-card height="600" class="px-3 py-3" v-if="loading">
       <Loader
