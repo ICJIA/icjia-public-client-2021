@@ -8,7 +8,7 @@
       style="margin-top: -16px"
     ></HomeSplashV2>
 
-    <v-card height="550" class="px-3 py-3" v-if="loading">
+    <v-card height="600" class="px-3 py-3" v-if="loading">
       <Loader
         loaderType="skeleton"
         :repeat="3"

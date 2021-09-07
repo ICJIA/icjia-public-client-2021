@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-carousel
-      height="550"
+      height="600"
       hide-delimiter-background
       show-arrows-on-hover
       hide-delimiters
@@ -18,7 +18,7 @@
                   getImagePath(slide.image.url, 0, 0, 1, slide.grayscale)
                 "
                 alt="ICJIA home page splash image"
-                height="550"
+                height="600"
               >
                 <v-overlay
                   absolute
