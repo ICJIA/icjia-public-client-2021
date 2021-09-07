@@ -31,7 +31,7 @@
     >
     <v-card-text
       v-if="item.authors"
-      style="font-weight: 700; color: #888; font-size: 12px; margin-top: -40px"
+      style="font-weight: 700; color: #222; font-size: 12px; margin-top: -40px"
       >{{ displayAuthors(item.authors) }}</v-card-text
     >
 

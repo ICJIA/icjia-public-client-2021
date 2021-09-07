@@ -99,6 +99,16 @@
             {{ item.title }}
           </div></v-card-text
         >
+        <v-card-text
+          v-if="item.authors"
+          style="
+            font-weight: 700;
+            color: #222;
+            font-size: 12px;
+            margin-top: -25px;
+          "
+          >{{ displayAuthors(item.authors) }}</v-card-text
+        >
 
         <v-card-text v-if="item.abstract" style="margin-top: -15px">{{
           item.abstract | truncateBySentence(2, "")
@@ -113,6 +123,7 @@
 
 <script>
 import { getImageURL, getGrayscaleImageURL } from "@/services/Image";
+const arrford = require("arrford");
 import moment from "moment";
 export default {
   props: {
@@ -126,6 +137,12 @@ export default {
     },
   },
   methods: {
+    displayAuthors(arr) {
+      let authors = arr.map((a) => {
+        return a.title;
+      });
+      return arrford(authors);
+    },
     isItNew(item) {
       let now = moment(new Date()); //todays date
       let end = moment(item.date); // another date
