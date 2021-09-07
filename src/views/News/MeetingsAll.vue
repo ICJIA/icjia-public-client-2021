@@ -13,9 +13,11 @@
                     value="category"
                     elevation="1"
                     small
-                    aria-label="List view"
+                    aria-label="By category"
                   >
-                    <span class="button-weight">By category</span>
+                    <span class="button-weight" aria-label="By category"
+                      >By category</span
+                    >
 
                     <span
                       aria-hidden="true"
@@ -25,7 +27,7 @@
                   </v-btn>
 
                   <v-btn value="all" small elevation="1">
-                    <span class="button-weight" aria-label="Grid view"
+                    <span class="button-weight" aria-label="By date"
                       >By date</span
                     >
 

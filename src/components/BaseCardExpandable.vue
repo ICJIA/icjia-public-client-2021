@@ -53,7 +53,7 @@
             style="
               font-size: 12px;
               font-weight: 700;
-              background: red;
+              background: #aa2525;
               color: #fff;
             "
             v-if="new Date(addOneDayToDate(item.end)) < new Date()"
