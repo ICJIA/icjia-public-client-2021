@@ -26,7 +26,8 @@ package-lock.json
 
 public/images/*
 public/api/*
-
+src/lambda/searchIndex.json
+lambda/searchIndex.json
 
 # RSS Feeds
 public/news-rss2.xml
