@@ -25,7 +25,8 @@
     "generate:schema": "get-graphql-schema https://agency.icjia-api.cloud/graphql -j > schema.json",
     "postbuild": "node ./generators/generateBuildInfo",
     "build:lambda": "netlify-lambda build ./src/lambda",
-    "start:lambda": "netlify-lambda serve ./src/lambda"
+    "start:lambda": "netlify-lambda serve ./src/lambda",
+    "release": "release-it"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
@@ -96,6 +97,7 @@
     "graphql-tag": "^2.12.5",
     "node-sass": "6.0.0",
     "prettier": "^2.3.2",
+    "release-it": "^14.11.5",
     "sass": "~1.32.13",
     "sass-loader": "10.1.1",
     "vue-cli-plugin-apollo": "^0.22.2",
