@@ -1,24 +1,12 @@
 <template>
   <v-app>
-    <nav>
-      <router-link
-        to="#content"
-        aria-label="Skip to content"
-        class="skiplink"
-        @click.native="scrollFix('#content')"
-        title="Skip Navigation"
-        style="font-size: 12px"
-        id="skip-to-content"
-      >
-        Skip to content
-      </router-link>
-    </nav>
+    <SkipLink></SkipLink>
     <SocialSharing></SocialSharing>
-    <div
+    <!-- <div
       role="navigation"
       style="z-index: 10000"
       aria-labelledby="skip-to-content"
-    ></div>
+    ></div> -->
     <AppNav @hook:mounted="fixA11y()"></AppNav>
 
     <v-main style="background: #fcfcfc">
@@ -28,13 +16,14 @@
         id="context-bar"
         :key="`top-context-${$route.fullPath}`"
       ></AppNavContext>
-      <router-view
-        id="content"
-        :key="`routerView-${$route.fullPath}`"
-        class="page mb-12"
-        style="margin-bottom: 20px"
-        @hook:mounted="displayFooter()"
-      ></router-view>
+      <div id="content">
+        <router-view
+          :key="`routerView-${$route.fullPath}`"
+          class="page mb-12"
+          style="margin-bottom: 20px"
+          @hook:mounted="displayFooter()"
+        ></router-view>
+      </div>
       <Disclaimer
         v-if="disclaimer"
         :disclaimer="disclaimer"
@@ -102,9 +91,9 @@ export default {
       });
     },
     fixA11y() {
-      console.log("a11y fixes here.");
+      console.log("a11y fixes.");
     },
-    scrollFix: function () {},
+
     checkForDisclaimer() {
       if (this.$route.fullPath === "/") {
         this.disclaimer = null;

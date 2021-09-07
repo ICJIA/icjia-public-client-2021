@@ -145,7 +145,7 @@ a:hover {
 }
 
 .skiplink {
-  position: absolute;
+  position: fixed;
   top: 5px;
   border: 0 none;
   clip: rect(0, 0, 0, 0);
