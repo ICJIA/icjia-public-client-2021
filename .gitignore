@@ -28,6 +28,7 @@ public/images/*
 public/api/*
 src/lambda/searchIndex.json
 lambda/searchIndex.json
+lambda/search.js
 
 # RSS Feeds
 public/news-rss2.xml
