@@ -200,7 +200,7 @@ export default {
 
 <style>
 .red {
-  background: red;
+  background: #ad2e2e;
 }
 
 .green {

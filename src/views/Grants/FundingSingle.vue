@@ -4,7 +4,7 @@
       <template slot="isExpired" v-if="!loading && isExpired"
         ><div
           style="
-            background: red;
+            background: #ad2e2e;
             color: #fff;
             padding: 15px 10px;
             font-weight: 900;

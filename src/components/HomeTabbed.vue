@@ -37,7 +37,7 @@
                     x-small
                     class="mr-1"
                     dark
-                    color="grey darken-1"
+                    color="#AD2E2E"
                     style="font-weight: 700"
                     >Expired</v-chip
                   >
@@ -92,7 +92,7 @@
                     x-small
                     class="mr-1"
                     dark
-                    color="grey darken-1"
+                    color="#AD2E2E"
                     style="font-weight: 700"
                     >Expired</v-chip
                   >
