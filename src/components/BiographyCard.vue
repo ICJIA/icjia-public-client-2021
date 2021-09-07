@@ -41,6 +41,7 @@
               :to="`/about/biographies/${item.slug}`"
               text
               x-small
+              aria-label="View Biography"
               ><v-icon>link</v-icon></v-btn
             >
           </span>
@@ -85,6 +86,12 @@
 import { renderToHtml } from "@/services/Markdown";
 import { EventBus } from "@/event-bus";
 export default {
+  mounted() {
+    const els = document.getElementsByClassName("author-name");
+    for (let i = 0, len = els.length; i < len; ++i) {
+      els[i].removeAttribute("aria-expanded");
+    }
+  },
   methods: {
     search(name) {
       let opts = {
