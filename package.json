@@ -81,6 +81,7 @@
     "xml": "^1.0.1"
   },
   "devDependencies": {
+    "@release-it/bumper": "^3.0.1",
     "@vue/cli-plugin-babel": "~4.5.13",
     "@vue/cli-plugin-eslint": "~4.5.13",
     "@vue/cli-plugin-router": "~4.5.13",
