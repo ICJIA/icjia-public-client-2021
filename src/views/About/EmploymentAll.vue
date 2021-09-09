@@ -139,7 +139,6 @@ export default {
   async mounted() {
     NProgress.start();
     //console.log("fetch here");
-    EventBus.$emit("context-label", "Employment at ICJIA");
   },
   methods: {
     render(content) {
@@ -195,9 +194,10 @@ export default {
           this.page = ApolloQueryResult.data.pages[0];
           this.loading = false;
 
-          NProgress.done();
           attachInternalLinks(this);
           attachSearchEvents(this);
+          EventBus.$emit("context-label", this.page.title);
+          NProgress.done();
         }
       },
     },

@@ -20,12 +20,30 @@
                     "link": "/about/icjia-staff/"
                 },
                 {
+                    "title": "Values",
+                    "link": "/about/icjia-values/"
+                },
+                {
+                    "divider": true
+                },
+                {
+                    "section": "News & Information"
+                },
+                {
+                    "title": "Events",
+                    "link": "/events/"
+                },
+                {
                     "title": "Meetings",
                     "link": "/news/meetings/"
                 },
                 {
                     "title": "Employment",
                     "link": "/about/employment/"
+                },
+                {
+                    "title": "News",
+                    "link": "/news/"
                 },
                 {
                     "divider": true

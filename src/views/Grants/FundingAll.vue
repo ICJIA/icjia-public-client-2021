@@ -144,7 +144,6 @@ export default {
   async mounted() {
     NProgress.start();
     //console.log("fetch here");
-    EventBus.$emit("context-label", "ICJIA Funding Opportunities");
   },
   methods: {
     render(content) {

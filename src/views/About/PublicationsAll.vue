@@ -189,8 +189,10 @@ export default {
   },
   mounted() {
     NProgress.start();
-    EventBus.$emit("context-label", "Publications");
+
     this.fetchPublications();
+
+    EventBus.$emit("context-label", "Publications");
     NProgress.done();
   },
   methods: {
@@ -239,6 +241,7 @@ export default {
         ["desc"]
       );
       this.$myApp.publications = this.publications;
+
       NProgress.done();
     },
     isItNew(item) {

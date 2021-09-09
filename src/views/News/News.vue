@@ -76,9 +76,7 @@ export default {
       //this.resize();
     },
   },
-  mounted() {
-    EventBus.$emit("context-label", "All News & Information");
-  },
+  mounted() {},
   apollo: {
     posts: {
       prefetch: true,
@@ -100,6 +98,7 @@ export default {
         posts = getUnifiedTags(posts);
         posts = getPublicationDate(posts);
         this.news = _.orderBy(posts, ["publicationDate"], ["desc"]);
+        EventBus.$emit("context-label", "News & Information");
         NProgress.done();
       },
     },

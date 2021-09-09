@@ -57,9 +57,7 @@ export default {
       //this.resize();
     },
   },
-  mounted() {
-    EventBus.$emit("context-label", "Press Releases");
-  },
+  mounted() {},
   apollo: {
     posts: {
       prefetch: true,
@@ -81,6 +79,7 @@ export default {
         posts = getUnifiedTags(posts);
         posts = getPublicationDate(posts);
         this.news = _.orderBy(posts, ["publicationDate"], ["desc"]);
+        EventBus.$emit("context-label", "Press Releases");
         NProgress.done();
       },
     },
