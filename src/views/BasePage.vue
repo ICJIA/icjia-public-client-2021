@@ -122,10 +122,11 @@ export default {
           content = getUnifiedTags(content);
           this.content = content[0];
           this.loading = false;
-          EventBus.$emit("context-label", this.content.title);
+
           NProgress.done();
           attachInternalLinks(this);
           attachSearchEvents(this);
+          EventBus.$emit("context-label", this.content.title);
         }
       },
     },

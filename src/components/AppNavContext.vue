@@ -105,6 +105,11 @@
 import { EventBus } from "@/event-bus";
 export default {
   props: {
+    data() {
+      return {
+        contextTitle: null,
+      };
+    },
     contextMenu: {
       type: Array,
       default: () => [],
@@ -115,12 +120,13 @@ export default {
     contextTab(newValue, oldValue) {},
   },
 
-  mounted() {
+  created() {
+    this.selectTab();
     //console.log(this.contextMenu[0].items);
     EventBus.$on("context-label", (title) => {
       this.contextTitle = title;
+      //console.log("Event: ", title);
     });
-    this.selectTab();
   },
   methods: {
     openTranslationModal() {
