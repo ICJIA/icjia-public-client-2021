@@ -42,6 +42,7 @@
         dark
         @click="openTranslationModal()"
         v-if="contextMenu[0].showTranslation"
+        aria-label="Translate this page on Google"
       >
         <v-icon
           x-small
@@ -53,8 +54,11 @@
           >fas fa-globe</v-icon
         >
         <span class="hidden-sm-and-down">Translate this page</span> </v-btn
-      ><v-btn text x-small dark><v-icon small>fab fa-twitter </v-icon></v-btn
-      ><v-btn text x-small dark><v-icon small>fab fa-facebook </v-icon></v-btn>
+      ><v-btn text x-small dark aria-label="Share this page on Twitter"
+        ><v-icon small>fab fa-twitter </v-icon></v-btn
+      ><v-btn text x-small dark aria-label="Share this page on Facebook"
+        ><v-icon small>fab fa-facebook </v-icon></v-btn
+      >
     </v-app-bar>
 
     <v-app-bar height="35" scroll-threshold="0" color="#eee">

@@ -37,10 +37,24 @@
                   @click="setToday"
                   >Today</v-btn
                 >
-                <v-btn fab text small color="grey darken-2" @click="prev">
+                <v-btn
+                  fab
+                  text
+                  small
+                  color="grey darken-2"
+                  @click="prev"
+                  aria-label="Previous"
+                >
                   <v-icon small>mdi-chevron-left</v-icon>
                 </v-btn>
-                <v-btn fab text small color="grey darken-2" @click="next">
+                <v-btn
+                  fab
+                  text
+                  small
+                  color="grey darken-2"
+                  @click="next"
+                  aria-label="Next"
+                >
                   <v-icon small>mdi-chevron-right</v-icon>
                 </v-btn>
                 <v-toolbar-title v-if="$refs.calendar">{{
@@ -531,3 +545,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.theme--light.v-calendar-weekly .v-calendar-weekly__head-weekday.v-past {
+  color: #000;
+}
+</style>
