@@ -73,7 +73,7 @@
 
       <v-divider></v-divider>
 
-      <v-card-actions class="mt-1">
+      <!-- <v-card-actions class="mt-1">
         <v-spacer></v-spacer>
         <v-btn small text @click="show = !show">
           Disclaimer
@@ -82,25 +82,14 @@
           }}</v-icon>
         </v-btn>
 
-        <!-- <v-btn color="grey" dark @click="translate = false" small>
-          Close
-        </v-btn> -->
-      </v-card-actions>
+       
+      </v-card-actions> -->
       <v-expand-transition>
         <div v-show="show">
           <!-- <v-divider></v-divider> -->
 
           <v-card-text style="font-size: 14px">
-            The Illinois Criminal Justice Information Authority ("ICJIA") offers
-            translations of the content through Google Translate. Because Google
-            Translate is an external website, ICJIA does not control the quality
-            or accuracy of translated content. All ICJIA content is filtered
-            through Google Translate which may result in unexpected and
-            unpredictable degradation of portions of text, images and the
-            general appearance on translated pages. Google Translate may
-            maintain unique privacy and use policies. These policies are not
-            controlled by ICJIA and are not associated with ICJIA's privacy and
-            use policies.
+            {{ showDisclaimer("translation")[0]["body"] }}
           </v-card-text>
         </div>
       </v-expand-transition>
@@ -112,6 +101,13 @@
 import { EventBus } from "@/event-bus";
 export default {
   methods: {
+    showDisclaimer(id) {
+      return this.$myApp.disclaimers.filter((disclaimer) => {
+        if (id === disclaimer.id) {
+          return disclaimer;
+        }
+      });
+    },
     googleTranslate(lang) {
       console.log(lang);
 
@@ -137,7 +133,7 @@ export default {
     return {
       translate: false,
       page: null,
-      show: false,
+      show: true,
     };
   },
 };

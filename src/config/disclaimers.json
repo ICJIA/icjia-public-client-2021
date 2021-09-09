@@ -16,5 +16,11 @@
         "label": "PUBLIC MEETING NOTICE",
         "pathPrefix": "/irb/irb-meetings/",
         "body": "All public meetings will be accessible to persons with disabilities in compliance with Executive Order #5 and pertinent State and Federal laws upon anticipated attendance. Persons with disabilities planning to attend and needing special accommodations should contact ICJIA by telephone or letter: (312) 793-8550, Illinois Criminal Justice Information Authority, 300 W. Adams St., Suite 200, Chicago, Illinois, 60606-5150. TDD services are available at (312) 793-4170."
+    },
+    {
+        "id": "translation",
+        "label": "Disclaimer",
+        "pathPrefix": null,
+        "body": "The Illinois Criminal Justice Information Authority ('ICJIA') offers translations of the content through Google Translate. Because Google Translate is an external website, ICJIA does not control the quality or accuracy of translated content. All ICJIA content is filtered through Google Translate which may result in unexpected and unpredictable degradation of portions of text, images and the general appearance on translated pages. Google Translate may maintain unique privacy and use policies. These policies are not controlled by ICJIA and are not associated with ICJIA's privacy and use policies."
     }
 ]
