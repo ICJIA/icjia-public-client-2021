@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <SkipLink></SkipLink>
-    <SocialSharing></SocialSharing>
+    <!-- <SocialSharing></SocialSharing> -->
     <!-- <div
       role="navigation"
       style="z-index: 10000"

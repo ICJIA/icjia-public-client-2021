@@ -16,7 +16,7 @@
         'text-center': $vuetify.breakpoint.sm || $vuetify.breakpoint.xs,
       }"
     >
-      <v-spacer class="hidden-md-and-up"></v-spacer>
+      <!-- <v-spacer class="hidden-md-and-up"></v-spacer> -->
       <span>
         <span style="font-weight: 700" class="hover" @click="$router.push('/')"
           >ICJIA &nbsp;&raquo;&nbsp;</span
@@ -38,14 +38,23 @@
       <v-spacer></v-spacer>
       <v-btn
         text
-        small
+        x-small
         dark
-        class="hidden-sm-and-down"
         @click="openTranslationModal()"
         v-if="contextMenu[0].showTranslation"
       >
-        <v-icon small left>fas fa-globe</v-icon> Translate this page
-      </v-btn>
+        <v-icon
+          x-small
+          :left="
+            $vuetify.breakpoint.md ||
+            $vuetify.breakpoint.lg ||
+            $vuetify.breakpoint.xl
+          "
+          >fas fa-globe</v-icon
+        >
+        <span class="hidden-sm-and-down">Translate this page</span> </v-btn
+      ><v-btn text x-small dark><v-icon small>fab fa-twitter </v-icon></v-btn
+      ><v-btn text x-small dark><v-icon small>fab fa-facebook </v-icon></v-btn>
     </v-app-bar>
 
     <v-app-bar height="35" scroll-threshold="0" color="#eee">
