@@ -15,7 +15,7 @@
               :key="index"
               class="flex-container"
               cols="12"
-              md="6"
+              md="12"
             >
               <NewsCard
                 :item="item"
