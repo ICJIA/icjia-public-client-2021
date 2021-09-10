@@ -87,6 +87,7 @@ import { renderToHtml } from "@/services/Markdown";
 
 import { GET_ALL_MEETINGS_QUERY } from "@/graphql/meetings";
 import { getUnifiedTags } from "@/utils/content";
+
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import _ from "lodash";
 export default {

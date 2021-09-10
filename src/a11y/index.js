@@ -36,4 +36,20 @@ const fixNuxtContentHeadings = function (querySelectors = "H2, H3") {
   }
 };
 
-export { fixButtonText, fixBlankTableHeadings, fixNuxtContentHeadings };
+const fixExpandButtons = function (
+  className = "v-data-table__expand-icon",
+  label = "Expand"
+) {
+  const els = document.getElementsByClassName(className);
+  //console.log(els);
+  for (let i = 0, len = els.length; i < len; ++i) {
+    els[i].setAttribute("aria-label", label);
+  }
+};
+
+export {
+  fixButtonText,
+  fixBlankTableHeadings,
+  fixNuxtContentHeadings,
+  fixExpandButtons,
+};

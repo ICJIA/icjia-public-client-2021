@@ -27,14 +27,17 @@
               :single-expand="singleExpand"
               :expanded.sync="expanded"
               @click:row="clicked"
+              :loading="tableLoading"
               dense
+              :page.sync="page"
               class="text-center"
               :sort-by.sync="sortBy"
               :sort-desc.sync="sortDesc"
               :footer-props="{
-                'items-per-page-options': [100, 150, 200, 250],
+                'items-per-page-options': [50, 100, 150, 200, 250],
               }"
-              :items-per-page="200"
+              :items-per-page="100"
+              id="pubTable"
             >
               <template v-slot:item.publicationDate="{ item }">
                 <div
@@ -139,12 +142,13 @@
 
 <script>
 import NProgress from "nprogress";
-
+import { fixExpandButtons } from "@/a11y";
 import { getPublicationType } from "@/lib/utils";
 import { EventBus } from "@/event-bus";
 import _ from "lodash";
 import moment from "moment";
 import axios from "axios";
+
 export default {
   name: "Publications",
   metaInfo() {
@@ -156,11 +160,13 @@ export default {
     return {
       sortBy: "publicationDate",
       sortDesc: true,
+      page: 1,
       expanded: [],
       search: "",
       singleExpand: true,
       publications: null,
       getPublicationType,
+      tableLoading: true,
 
       headers: [
         { text: "Date", value: "publicationDate" },
@@ -187,19 +193,37 @@ export default {
       ],
     };
   },
+  watch: {
+    page(newValue) {
+      console.log("paginate: ", newValue);
+
+      setTimeout(fixExpandButtons, 2000);
+      console.log("a11y expand button: hacky fix (paginate)");
+      this.$vuetify.goTo("#pubTable", { offset: 350 });
+    },
+    tableLoading(newValue) {
+      console.log("table loading: ", newValue);
+
+      //TODO: This works for siteImprove a11y -- but need to adjust this hacky fix
+      setTimeout(fixExpandButtons, 2000);
+      console.log("a11y expand button: hacky fix (original load)");
+    },
+  },
   mounted() {
     NProgress.start();
 
     this.fetchPublications();
-
     EventBus.$emit("context-label", "Publications");
+    // fixExpandButtons();
     NProgress.done();
+    this.tableLoading = false;
   },
   methods: {
     async fetchPublications() {
       if (this.$myApp.publications && this.$myApp.publications.length) {
         this.publications = this.$myApp.publications;
         console.warn("Publications cached...");
+        this.tableLoading = false;
         return;
       } else {
         console.warn("Fetching publications...");

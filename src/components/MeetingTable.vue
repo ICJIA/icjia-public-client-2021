@@ -106,6 +106,7 @@
 import NProgress from "nprogress";
 // eslint-disable-next-line no-unused-vars
 import { EventBus } from "@/event-bus";
+import { fixExpandButtons } from "@/a11y";
 import slug from "slug";
 import { renderToHtml } from "@/services/Markdown";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
@@ -136,6 +137,7 @@ export default {
   mounted() {
     attachInternalLinks(this);
     attachSearchEvents(this);
+    fixExpandButtons();
   },
   methods: {
     generateSlug(heading) {
