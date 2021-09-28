@@ -133,8 +133,8 @@
         </template>
       </BasePropDisplay>
 
-      <BasePropDisplay v-if="showUpdated" name="Updated">
-        {{ item.date | format }}
+      <BasePropDisplay v-if="showUpdated" :name="updatedText">
+        {{ item.date | dateFormatAlt }}
       </BasePropDisplay>
       <BasePropDisplay
         v-if="item.categories && item.categories.length"
@@ -220,6 +220,10 @@ export default {
     cardHeight: {
       type: Number,
       default: null,
+    },
+    updatedText: {
+      type: String,
+      default: "Updated",
     },
     // splashHeight: {
     //   type: Number,

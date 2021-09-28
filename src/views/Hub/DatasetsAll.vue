@@ -51,6 +51,7 @@
         >
           <HubCard
             :item="item"
+            updatedText="Final date reflected in dataset"
             :orientation="orientation"
             :textOnly="true"
             :showUpdated="true"
