@@ -166,6 +166,7 @@
                 :textOnly="true"
                 orientation="grid"
                 :showUpdated="true"
+                updatedText="Final date reflected in dataset"
               ></HubCard>
             </v-col>
           </v-row>
