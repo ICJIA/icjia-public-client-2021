@@ -34,6 +34,12 @@
           background="grey lighten-4"
           indentation="mt-8 px-5 py-5"
         ></RelatedList>
+        <ExternalLinkList
+          :items="item.external"
+          v-if="item.external && item.external.length"
+          class="mt-4 pl-3"
+          :key="item.title"
+        ></ExternalLinkList>
       </div>
     </v-card>
   </div>

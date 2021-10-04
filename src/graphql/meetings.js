@@ -40,6 +40,10 @@ const GET_ALL_MEETINGS_QUERY = gql`
 
         hash
       }
+      external {
+        title
+        url
+      }
     }
   }
 `;
@@ -78,6 +82,10 @@ const GET_SINGLE_MEETING_QUERY = gql`
         created_at
         hash
       }
+      external {
+        title
+        url
+      }
       tags {
         title
         slug
@@ -110,6 +118,10 @@ const GET_MEETINGS_BY_CATEGORY_QUERY = gql`
         created_at
         hash
         size
+      }
+      external {
+        title
+        url
       }
       tags {
         title

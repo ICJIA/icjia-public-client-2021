@@ -19,7 +19,7 @@
               >
                 <v-btn-toggle v-model="toggle_nofoStatus" mandatory>
                   <v-btn small elevation="1" class="button-weight">
-                    Current Funding
+                    Current
                   </v-btn>
 
                   <v-btn small elevation="1" class="button-weight">
@@ -29,6 +29,9 @@
               </v-col>
 
               <v-col cols="12">
+                <h3 v-if="filteredAndSortedGrants.length === 0">
+                  No {{ currentSelection }} funding opportunities to display.
+                </h3>
                 <div
                   v-for="grant in filteredAndSortedGrants"
                   :key="grant.id"
@@ -96,6 +99,15 @@ export default {
       toggle_nofoStatus: 0,
       status: "current",
     };
+  },
+  computed: {
+    currentSelection() {
+      if (this.toggle_nofoStatus === 0) {
+        return "current";
+      } else {
+        return "expired";
+      }
+    },
   },
   watch: {
     content(newVal) {
