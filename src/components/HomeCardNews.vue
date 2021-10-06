@@ -83,7 +83,7 @@
                   margin-top: -25px;
                   font-size: 18px;
                   font-weight: 700;
-                  line-height: 24px;
+                  line-height: 28px;
                 "
               >
                 <h2 style="font-size: 18px" class="mt-1">

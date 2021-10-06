@@ -11,13 +11,6 @@
         loaderDisplayType="card"
       ></Loader>
     </v-card>
-
-    <HomeResearch></HomeResearch>
-    <HomeClickThroughBoxes
-      :boxes="boxes.slice(0, 3)"
-      v-if="!loading && boxes && boxes.length > 0"
-      style="margin-top: -30px"
-    ></HomeClickThroughBoxes>
     <div style="background: #fff; z-index: 1; margin-top: -20px">
       <WidgetBar
         title="News & Information"
@@ -55,14 +48,21 @@
       </v-container>
     </div>
 
-    <HomeEvents
+    <HomeClickThroughBoxes
+      :boxes="boxes.slice(0, 3)"
+      v-if="!loading && boxes && boxes.length > 0"
+      style="margin-top: 0px"
+    ></HomeClickThroughBoxes>
+    <HomeResearch style="margin-top: -20px"></HomeResearch>
+
+    <!-- <HomeEvents
       :meetings="meetingEvents"
       :funding="fundingEvents"
       :training="trainingEvents"
       :community="communityEvents"
       :loading="loading"
       style="margin-top: -10px"
-    ></HomeEvents>
+    ></HomeEvents> -->
   </div>
 </template>
 

@@ -70,6 +70,7 @@ export default {
       let end = moment(datePosted); // another date
       let duration = moment.duration(now.diff(end));
       let days = duration.asDays();
+      console.log("click through boxes duration: ", days);
       if (days <= this.$myApp.config.daysToShowNew) {
         return true;
       } else {

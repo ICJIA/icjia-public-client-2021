@@ -42,8 +42,43 @@
                       <div class="nofo-tagline mt-4" style="font-size: 14px">
                         {{ slide.teaser }}
                       </div>
-                      <div class="mt-7">
-                        <v-btn small color="#0d4474" class="mr-2" to="/grants/"
+                      <div class="mt-7 hidden-md-and-up">
+                        <v-container>
+                          <v-row>
+                            <v-col>
+                              <v-btn small color="#0d4474" to="/grants/"
+                                >Apply for funding</v-btn
+                              >
+                            </v-col>
+                            <v-col>
+                              <v-btn
+                                dark
+                                small
+                                color="#0d4474"
+                                to="/researchhub/"
+                                class="splash-button"
+                                >Latest Research</v-btn
+                              >
+                            </v-col>
+                            <v-col>
+                              <v-btn
+                                dark
+                                small
+                                color="#0d4474"
+                                to="/about/"
+                                class="splash-button"
+                                >About ICJIA</v-btn
+                              >
+                            </v-col>
+                          </v-row>
+                        </v-container>
+                      </div>
+                      <div class="hidden-sm-and-down mt-7">
+                        <v-btn
+                          small
+                          color="#0d4474"
+                          to="/grants/"
+                          class="splash-button mr-2"
                           >Apply for funding</v-btn
                         >
                         <v-btn
@@ -51,16 +86,15 @@
                           small
                           color="#0d4474"
                           to="/researchhub/"
-                          class="splash-button hidden-sm-and-down mr-2"
+                          class="splash-button mr-2"
                           >Latest Research</v-btn
                         >
-
                         <v-btn
                           dark
                           small
                           color="#0d4474"
                           to="/about/"
-                          class="splash-button hidden-sm-and-down"
+                          class="splash-button"
                           >About ICJIA</v-btn
                         >
                       </div>

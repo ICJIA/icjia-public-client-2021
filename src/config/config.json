@@ -20,8 +20,8 @@
     "home": {
         "eventLimit": 3,
         "postLimit": 4,
-        "fundingLimit": 4,
-        "meetingLimit": 4,
+        "fundingLimit": 5,
+        "meetingLimit": 5,
         "employmentLimit": 4
     },
     "image": {
