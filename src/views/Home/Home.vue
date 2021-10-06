@@ -3,6 +3,16 @@
     <div v-if="error" class="error text-center mt-4">{{ error }}</div>
     <Banner :item="banner"></Banner>
     <HomeSplashV2 :slider="slider" v-if="!loading"></HomeSplashV2>
+    <!-- <WidgetBar
+      title="Featured"
+      mobileTitle="Featured"
+      style="margin-top: 0; padding-bottom: 10px"
+    ></WidgetBar> -->
+    <HomeFeatureRibbon
+      :items="featured"
+      v-if="!loading && featured && featured.length > 0"
+      style="margin-top: 0px"
+    ></HomeFeatureRibbon>
 
     <v-card height="600" class="px-3 py-3" v-if="loading">
       <Loader
@@ -86,6 +96,7 @@ export default {
       loading: true,
       hubLoading: true,
       news: null,
+      featured: null,
       banner: null,
       meetings: null,
       grants: null,
@@ -143,7 +154,7 @@ export default {
         return {
           now: new Date(),
           eventLimit: this.$myApp.config.home.eventLimit,
-          postLimit: this.$myApp.config.home.postLimit + 4,
+          postLimit: this.$myApp.config.home.postLimit + 6,
           fundingLimit: this.$myApp.config.home.fundingLimit,
           meetingLimit: this.$myApp.config.home.meetingLimit,
           employmentLimit: this.$myApp.config.home.employmentLimit,
@@ -163,11 +174,24 @@ export default {
           contentType: "News",
         }));
         posts = getPublicationDate(posts);
+
+        let featured = ApolloQueryResult.data.featured.map((e) => ({
+          ...e,
+          fullPath: `/news/${e.slug}/`,
+          contentType: "News",
+        }));
+
+        featured = getPublicationDate(featured);
+        this.featured = _.orderBy(featured, ["publicationDate"], ["desc"]);
+        console.table("news: ", this.news);
+        console.table("featured: ", this.featured);
+        posts = posts.filter(
+          (ar) => !featured.find((rm) => rm.slug === ar.slug)
+        );
         this.news = _.orderBy(posts, ["publicationDate"], ["desc"]).slice(
           0,
           this.$myApp.config.home.postLimit
         );
-
         let meetings = ApolloQueryResult.data.meetings.map((e) => ({
           ...e,
           fullPath: `/news/meetings/${e.slug}/`,

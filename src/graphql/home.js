@@ -97,6 +97,26 @@ const GET_HOME = gql`
       end
     }
 
+    featured: posts(
+      sort: "published_at:desc"
+      limit: 3
+      where: { isFeatured: true }
+    ) {
+      id
+      title
+      slug
+      summary
+      created_at
+      updated_at
+      published_at
+      dateOverride
+      isFeatured
+      splash {
+        url
+        formats
+      }
+    }
+
     posts(sort: "published_at:desc", limit: $postLimit) {
       id
       title

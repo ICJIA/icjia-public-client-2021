@@ -1,50 +1,134 @@
 <template>
   <div>
-    <v-container fill-height fluid class="px-0" style="margin-top: -10px">
+    <v-container fill-height fluid class="px-0" style="margin-top: -12px">
       <v-row no-gutters>
         <v-col
           cols="12"
-          :md="getBoxSize"
-          v-for="(box, index) in boxes"
-          :key="`box-${index}`"
+          :md="getRibbonSize"
+          v-for="(item, index) in items"
+          :key="`item-${index}`"
         >
-          <v-card
-            dark
-            :height="getHeight()"
-            class="elevation-0 px-8 pt-11 box text-center hover"
-            style="margin-bottom: 3px"
-            color="#0E4471"
-            :class="{ mr1: index > -1 && index < boxes.length - 1 }"
-            @click="routeToURL(box)"
-          >
-            <v-btn
-              color="blue darken-3"
-              fab
-              dark
-              absolute
-              top
-              left
-              v-if="isItNew(box.datePosted)"
-              aria-label="New!"
-            >
-              <span style="color: #fff !important"> NEW!</span>
-            </v-btn>
-            <v-icon style="font-size: 70px" dark v-if="box.icon">{{
-              box.icon
-            }}</v-icon>
-            <v-icon style="font-size: 70px" dark v-else>people</v-icon>
-            <h2 class="text-center box-head mt-3">{{ box.title }}</h2>
+          <v-hover v-if="item && item.splash">
+            <template v-slot:default="{ hover }">
+              <v-img
+                :src="`https://agency.icjia-api.cloud${item.splash.formats.small.url}`"
+                :lazy-src="`https://agency.icjia-api.cloud${item.splash.formats.thumbnail.url}`"
+                aspect-ratio="1.7"
+                height="450"
+                class="hover"
+                :class="{ 'right-rule': index < items.length - 1 }"
+                @click="
+                  $router.push(item.fullPath).catch((err) => {
+                    $vuetify.goTo(0);
+                  })
+                "
+              >
+                <v-container fluid>
+                  <v-row align="end">
+                    <v-col class="text-left" style="margin: 0; padding: 0">
+                      <div
+                        style="
+                          color: #fff;
+                          position: absolute;
+                          bottom: 0px;
 
-            <v-card-text
-              class="px-2 mt-1 font-weight-light box-text text-center"
-            >
-              <span v-html="box.teaser" style="font-size: 16px"></span>
-            </v-card-text>
-          </v-card>
+                          width: 100% !important;
+                          height: 250px;
+                        "
+                        class="px-4 pt-4 pb-12"
+                        :class="{ 'feature-background': !hover }"
+                      >
+                        <v-container fill-height fluid>
+                          <v-row align="center" justify="center">
+                            <v-col
+                              ><v-chip
+                                class="mb-4"
+                                small
+                                color="white"
+                                style="color: #000; font-weight: 900"
+                              >
+                                Feature
+                              </v-chip>
+                              <h2>
+                                {{ item.title }}
+                              </h2></v-col
+                            >
+                          </v-row>
+                        </v-container>
+                      </div></v-col
+                    >
+                  </v-row>
+                </v-container>
+                <v-fade-transition>
+                  <v-overlay v-if="hover" absolute color="blue darken-4">
+                    <v-btn color="#0D4474" :to="item.fullPath">Read more</v-btn>
+                  </v-overlay>
+                </v-fade-transition>
+              </v-img>
+            </template>
+          </v-hover>
+
+          <v-hover v-else>
+            <template v-slot:default="{ hover }">
+              <v-img
+                src="https://agency.icjia-api.cloud/uploads/medium_government_generic_07d231af16.jpg"
+                lazy-src="https://agency.icjia-api.cloud/uploads/thumbnail_government_generic_07d231af16.jpg"
+                aspect-ratio="1.7"
+                height="450"
+                :class="{ 'right-rule': index < items.length - 1 }"
+                @click="
+                  $router.push(item.fullPath).catch((err) => {
+                    $vuetify.goTo(0);
+                  })
+                "
+              >
+                <v-container fluid>
+                  <v-row align="end">
+                    <v-col class="text-left" style="margin: 0; padding: 0">
+                      <div
+                        style="
+                          color: #fff;
+                          position: absolute;
+                          bottom: 0px;
+
+                          width: 100% !important;
+                          height: 250px;
+                        "
+                        class="px-4 pt-4 pb-12"
+                        :class="{ 'feature-background': !hover }"
+                      >
+                        <v-container fill-height fluid>
+                          <v-row align="center" justify="center">
+                            <v-col
+                              ><v-chip
+                                class="mb-4"
+                                small
+                                color="white"
+                                style="color: #000; font-weight: 900"
+                              >
+                                Feature
+                              </v-chip>
+                              <h2>
+                                {{ item.title }}
+                              </h2></v-col
+                            >
+                          </v-row>
+                        </v-container>
+                      </div></v-col
+                    >
+                  </v-row>
+                </v-container>
+                <v-fade-transition>
+                  <v-overlay v-if="hover" absolute color="blue darken-4">
+                    <v-btn color="#0D4474" :to="item.fullPath">Read more</v-btn>
+                  </v-overlay>
+                </v-fade-transition>
+              </v-img>
+            </template>
+          </v-hover>
         </v-col>
       </v-row>
     </v-container>
-    <!-- Boxes: {{ boxes }} -->
   </div>
 </template>
 
@@ -52,16 +136,16 @@
 import moment from "moment";
 export default {
   computed: {
-    getBoxSize() {
-      return 12 / this.boxes.length;
+    getRibbonSize() {
+      return 12 / this.items.length;
     },
   },
   methods: {
     getHeight() {
       if (this.$vuetify.breakpoint.smAndDown) {
-        return 500;
+        return 550;
       } else {
-        return 400;
+        return 450;
       }
     },
     isItNew(datePosted) {
@@ -76,8 +160,8 @@ export default {
         return false;
       }
     },
-    routeToURL(box) {
-      if (!box.url) return null;
+    routeToURL(item) {
+      if (!item.url) return null;
       const checkDomain = function (url) {
         if (url.indexOf("//") === 0) {
           url = location.protocol + url;
@@ -94,10 +178,10 @@ export default {
           checkDomain(location.href) !== checkDomain(url)
         );
       };
-      if (isExternal(box.url)) {
-        window.open(box.url, "noopener,resizable,scrollbars").focus();
+      if (isExternal(item.url)) {
+        window.open(item.url, "noopener,resizable,scrollbars").focus();
       } else {
-        this.$router.push(box.url);
+        this.$router.push(item.url);
       }
     },
     getFeatureBoxColor(index) {
@@ -110,8 +194,9 @@ export default {
       // colors: ["#0E4471", "#0E4471", "#0E4471", "#0E4471"],
     };
   },
+  mounted() {},
   props: {
-    boxes: {
+    items: {
       type: Array,
       default: () => {},
     },
@@ -159,5 +244,13 @@ a {
 
 .ml1 {
   margin-left: 2px;
+}
+
+.right-rule {
+  border-right: 1px solid #ccc !important;
+}
+
+.feature-background {
+  background: rgba(100, 100, 100, 0.5);
 }
 </style>

@@ -59,7 +59,12 @@
         </div>
       </v-list>
     </v-menu>
-    <v-btn large text v-else style="font-weight: 900" :to="menuItems[0].url"
+    <v-btn
+      large
+      text
+      style="font-weight: 900"
+      :to="menuItems[0].url"
+      v-if="menuItems && menuItems.length === 1"
       >{{ menuItems[0].label }}&nbsp;&raquo;</v-btn
     ></v-app-bar
   >
