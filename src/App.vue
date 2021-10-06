@@ -8,6 +8,7 @@
       aria-labelledby="skip-to-content"
     ></div> -->
     <AppNav @hook:mounted="fixA11y()"></AppNav>
+    <AppSidebar></AppSidebar>
 
     <v-main style="background: #fcfcfc">
       <AppNavContext

@@ -152,9 +152,44 @@
             ]
         },
         {
-            "main": "Adult Redeploy",
-            "link": "https://icjia.illinois.gov/adultredeploy/",
-            "icon": "open_in_new"
+            "main": "Partner Sites",
+            "nudgeLeft": "78px",
+            "children": [
+                {
+                    "section": "Websites"
+                },
+                {
+                    "title": "Adult Redeploy",
+                    "link": "https://icjia.illinois.gov/adultredeploy/",
+                    "icon": "open_in_new"
+                },
+                {
+                    "title": "Illinois Family Violence Coordinating Councils",
+                    "link": "https://icjia.illinois.gov/ifvcc/",
+                    "icon": "open_in_new"
+                },
+                {
+                    "title": "Restore, Reinvest, Renew (R3)",
+                    "link": "https://r3.illinois.gov/",
+                    "icon": "open_in_new"
+                },
+                {
+                    "title": "Sentencing Policy and Advisory Council",
+                    "link": "https://spac.illinois.gov/",
+                    "icon": "open_in_new"
+                },
+                {
+                    "divider": true
+                },
+                {
+                    "section": "Plans and Initiatives"
+                },
+                {
+                    "title": "Statewide Violence Prevention Plan: 2020-2024",
+                    "link": "https://vpp.icjia.cloud/",
+                    "icon": "open_in_new"
+                }
+            ]
         }
     ]
 }
