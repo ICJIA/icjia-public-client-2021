@@ -7,6 +7,7 @@
           :md="getRibbonSize"
           v-for="(item, index) in items"
           :key="`item-${index}`"
+          style="margin-top: 1px"
         >
           <v-hover v-if="item && item.splash">
             <template v-slot:default="{ hover }">
@@ -25,12 +26,12 @@
               >
                 <v-container fluid>
                   <v-row align="end">
-                    <v-col class="text-left" style="margin: 0; padding: 0">
+                    <v-col style="margin: 0; padding: 0" class="text-left">
                       <div
                         style="
                           color: #fff;
                           position: absolute;
-                          bottom: 0px;
+                          bottom: 20px;
 
                           width: 100% !important;
                           height: 250px;
@@ -90,7 +91,7 @@
                         style="
                           color: #fff;
                           position: absolute;
-                          bottom: 0px;
+                          bottom: 20px;
 
                           width: 100% !important;
                           height: 250px;
