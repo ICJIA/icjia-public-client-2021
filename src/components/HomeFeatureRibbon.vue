@@ -76,6 +76,7 @@
                 aspect-ratio="1.7"
                 height="450"
                 :class="{ 'right-rule': index < items.length - 1 }"
+                class="hover"
                 @click="
                   $router.push(item.fullPath).catch((err) => {
                     $vuetify.goTo(0);
