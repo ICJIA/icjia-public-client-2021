@@ -21,6 +21,10 @@
                 "path": "/grants/funding/"
             },
             {
+                "label": "Grant Programs",
+                "path": "/grants/programs/"
+            },
+            {
                 "label": "Technical Assistance",
                 "path": "/grants/technical-assistance/"
             }

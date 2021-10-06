@@ -81,6 +81,18 @@ const GET_SINGLE_FUNDING_QUERY = gql`
         ext
         url
       }
+      programs {
+        title
+        slug
+      }
+      posts {
+        title
+        slug
+      }
+      biographies {
+        title: fullName
+        slug
+      }
       tags {
         title
         slug
@@ -109,6 +121,11 @@ const GET_SINGLE_PROGRAM_QUERY = gql`
         ext
         url
       }
+      posts {
+        title
+        slug
+      }
+
       tags {
         title
         slug

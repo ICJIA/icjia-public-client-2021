@@ -8,10 +8,50 @@
         class="mt-2"
         style="border-top: 0px solid #d8d8d8"
       >
+        <v-tab>Meetings </v-tab>
         <v-tab>Funding</v-tab>
 
         <v-tab>Employment </v-tab>
-        <v-tab>Meetings </v-tab>
+
+        <v-tab-item :style="`background: #fff !important;`">
+          <div style="height: 15px; background: #fff !important"></div>
+          <v-sheet style="min-height: 200px !important">
+            <div v-for="(meeting, index) in meetings" :key="`meeting-${index}`">
+              <v-card
+                elevation="0"
+                class="px-8 py-8 hover card"
+                :class="{ 'rule-top': index > 0 }"
+                @click="routeTo(meeting.fullPath)"
+              >
+                <span style="font-weight: 700; font-size: 0.9em; color: #000">
+                  MEETING
+                </span>
+
+                <span style="font-size: 0.9em; font-weight: 400"
+                  >&nbsp;|&nbsp;
+                  {{ meeting.start | format }}
+                </span>
+                <span v-if="!isItExpired(meeting.end)">
+                  &nbsp;|&nbsp;
+                  <v-chip
+                    x-small
+                    class="mr-1"
+                    color="green darken-2"
+                    style="font-weight: 700"
+                    >Upcoming</v-chip
+                  >
+                </span>
+                <h2 class="mt-2" style="font-size: 1.1em">
+                  {{ meeting.title }}
+                </h2>
+
+                <p style="font-size: 0.9em" class="mt-2">
+                  {{ meeting.summary }}
+                </p>
+              </v-card>
+            </div>
+          </v-sheet>
+        </v-tab-item>
 
         <v-tab-item :style="`background: #fff !important; `">
           <div style="height: 15px; background: #fff !important"></div>
@@ -122,45 +162,6 @@
               </v-container></v-card
             >
           </div>
-        </v-tab-item>
-        <v-tab-item :style="`background: #fff !important;`">
-          <div style="height: 15px; background: #fff !important"></div>
-          <v-sheet style="min-height: 200px !important">
-            <div v-for="(meeting, index) in meetings" :key="`meeting-${index}`">
-              <v-card
-                elevation="0"
-                class="px-8 py-8 hover card"
-                :class="{ 'rule-top': index > 0 }"
-                @click="routeTo(meeting.fullPath)"
-              >
-                <span style="font-weight: 700; font-size: 0.9em; color: #000">
-                  MEETING
-                </span>
-
-                <span style="font-size: 0.9em; font-weight: 400"
-                  >&nbsp;|&nbsp;
-                  {{ meeting.start | format }}
-                </span>
-                <span v-if="!isItExpired(meeting.end)">
-                  &nbsp;|&nbsp;
-                  <v-chip
-                    x-small
-                    class="mr-1"
-                    color="green darken-2"
-                    style="font-weight: 700"
-                    >Upcoming</v-chip
-                  >
-                </span>
-                <h2 class="mt-2" style="font-size: 1.1em">
-                  {{ meeting.title }}
-                </h2>
-
-                <p style="font-size: 0.9em" class="mt-2">
-                  {{ meeting.summary }}
-                </p>
-              </v-card>
-            </div>
-          </v-sheet>
         </v-tab-item>
       </v-tabs>
     </div>

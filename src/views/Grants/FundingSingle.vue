@@ -32,7 +32,7 @@
                   <AttachmentList
                     :items="funding.attachments"
                     v-if="funding.attachments && funding.attachments.length"
-                    class="mt-8 pl-3"
+                    class="mt-8 pl-0"
                     :key="funding.slug"
                   ></AttachmentList>
                   <RelatedList
@@ -135,8 +135,8 @@ export default {
           //console.log(this.id);
           let funding = ApolloQueryResult.data.grants;
           funding = getUnifiedTags(funding);
-          this.isRelated = isRelatedContent(funding);
-
+          this.isRelated = isRelatedContent(funding[0]);
+          console.log("related: ", this.isRelated);
           attachInternalLinks(this);
           attachSearchEvents(this);
           this.funding = funding[0];

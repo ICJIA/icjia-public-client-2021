@@ -40,6 +40,12 @@
                       :showReadMore="true"
                     ></BaseCardExpandable>
                   </div>
+                  <div
+                    v-if="filteredAndSortedGrants.length === 0"
+                    class="text-center py-10"
+                  >
+                    <strong>No current funding opportunities to display</strong>
+                  </div>
                 </v-col>
                 <v-col
                   cols="12"
