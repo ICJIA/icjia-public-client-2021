@@ -3,11 +3,7 @@
     <div v-if="error" class="error text-center mt-4">{{ error }}</div>
     <Banner :item="banner"></Banner>
     <HomeSplashV2 :slider="slider" v-if="!loading"></HomeSplashV2>
-    <!-- <WidgetBar
-      title="Featured"
-      mobileTitle="Featured"
-      style="margin-top: 0; padding-bottom: 10px"
-    ></WidgetBar> -->
+
     <HomeFeatureRibbon
       :items="featured"
       v-if="!loading && featured && featured.length > 0"
