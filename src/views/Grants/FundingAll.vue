@@ -35,7 +35,7 @@
                 <div
                   v-for="grant in filteredAndSortedGrants"
                   :key="grant.id"
-                  class="mb-6"
+                  class="mb-10"
                 >
                   <BaseCardExpandable
                     :item="grant"

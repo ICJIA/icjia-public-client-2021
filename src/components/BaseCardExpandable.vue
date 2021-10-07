@@ -2,7 +2,7 @@
   <div>
     <v-card
       :elevation="elevation"
-      class="pt-8 px-3 pb-3 card"
+      class="pt-8 px-3 pb-6 card"
       @click="routeTo(item.fullPath)"
       color="#fff"
       style="border: 1px solid #ddd"
@@ -37,25 +37,18 @@
 
         <div v-else>
           <v-chip
+            outlined
             small
-            style="
-              font-size: 12px;
-              font-weight: 700;
-
-              background: green;
-              color: #fff;
-            "
+            color="green darken-4"
+            style="font-size: 12px; font-weight: 700"
             v-if="new Date(addOneDayToDate(item.end)) >= new Date()"
             >&nbsp;Deadline: {{ item.end | dateFormatAlt }}&nbsp;</v-chip
           >
           <v-chip
             small
-            style="
-              font-size: 12px;
-              font-weight: 700;
-              background: #aa2525;
-              color: #fff;
-            "
+            outlined
+            style="font-size: 12px; font-weight: 700"
+            color="red darken-4"
             v-if="new Date(addOneDayToDate(item.end)) < new Date()"
           >
             &nbsp;Expired: {{ item.end | dateFormatAlt }} &nbsp;
@@ -118,9 +111,8 @@
           :key="item.slug"
         ></AttachmentList>
       </div>
-      <v-card-actions v-if="showReadMore" class="mt-2">
-        <v-spacer></v-spacer>
-        <v-btn outlined small v-html="readMoreText"></v-btn>
+      <v-card-actions v-if="showReadMore" class="mt-3">
+        <v-btn dark color="blue darken-4" small v-html="readMoreText"></v-btn>
       </v-card-actions>
     </v-card>
   </div>
