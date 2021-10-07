@@ -7,13 +7,7 @@
       </v-card-title>
 
       <div class="">
-        <div style="font-size: 12px" class="mb-9 d-flex">
-          <v-spacer></v-spacer>
-          <span style="font-weight: 900" v-if="query && query.length">
-            Displaying {{ queryResults.length }} result{{ resultNumber }}</span
-          >
-        </div>
-        <v-form class="pl-2" style="margin-top: -15px">
+        <v-form class="pl-2 mt-4" style="margin-top: -15px">
           <v-text-field
             ref="textfield"
             clearable
@@ -24,6 +18,20 @@
             @input="instantSearch"
             style="font-weight: 900"
           />
+
+          <div style="font-size: 12px" class="mb-9 d-flex">
+            <span style="font-weight: 900" v-if="query && query.length">
+              Displaying {{ queryResults.length }} result{{
+                resultNumber
+              }}</span
+            >
+            <!-- <v-spacer></v-spacer>
+          <v-switch
+            v-model="sortSwitch"
+            :label="`Sort by published date`"
+            @click="sortResults()"
+          ></v-switch> -->
+          </div>
 
           <div v-if="query && query.length" class="mb-12">
             <div
@@ -54,6 +62,7 @@ function arrayToList(array) {
 export default {
   data() {
     return {
+      sortSwitch: false,
       searchFilter: null,
       searchModal: false,
       opts: null,
@@ -112,6 +121,20 @@ export default {
     });
   },
   methods: {
+    sortResults() {
+      console.log("sorting");
+      this.queryResults = this.fuse.search(this.query.trim());
+      if (this.sortSwitch) {
+        this.instantSearch();
+        this.queryResults = _.orderBy(
+          this.queryResults,
+          ["item.publicationDate"],
+          ["desc"]
+        );
+      } else {
+        this.instantSearch();
+      }
+    },
     focusInput() {
       this.$refs.textfield.focus();
     },
