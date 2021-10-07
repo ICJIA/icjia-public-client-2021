@@ -30,6 +30,14 @@
                     "section": "News & Information"
                 },
                 {
+                    "title": "News",
+                    "link": "/news/"
+                },
+                {
+                    "title": "Press",
+                    "link": "/news/press/"
+                },
+                {
                     "title": "Events",
                     "link": "/events/"
                 },
@@ -40,10 +48,6 @@
                 {
                     "title": "Employment",
                     "link": "/about/employment/"
-                },
-                {
-                    "title": "News",
-                    "link": "/news/"
                 },
                 {
                     "divider": true
