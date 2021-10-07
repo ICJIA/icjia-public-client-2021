@@ -13,9 +13,23 @@
             <v-col md="12" cols="12">
               <v-img
                 v-if="slide.image && slide.image.formats"
-                :src="getImagePath(slide.image.url, 0, 0, 70, slide.grayscale)"
+                :src="
+                  getImagePath(
+                    slide.image.formats.large.url,
+                    0,
+                    0,
+                    85,
+                    slide.grayscale
+                  )
+                "
                 :lazy-src="
-                  getImagePath(slide.image.url, 0, 0, 1, slide.grayscale)
+                  getImagePath(
+                    slide.image.formats.thumbnail.url,
+                    0,
+                    0,
+                    100,
+                    slide.grayscale
+                  )
                 "
                 alt="ICJIA home page splash image"
                 height="600"
@@ -126,7 +140,9 @@
 <script>
 import { getImageURL, getGrayscaleImageURL } from "@/services/Image";
 export default {
-  mounted() {},
+  mounted() {
+    console.log(this.slider);
+  },
 
   methods: {
     getButtonSize() {
