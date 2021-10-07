@@ -50,7 +50,7 @@
         :src="`https://agency.icjia-api.cloud${item.splash.formats.small.url}`"
         :lazy-src="`https://agency.icjia-api.cloud${item.splash.formats.thumbnail.url}`"
         width="100%"
-        height="175"
+        :height="imageHeight"
         class=""
         :ref="'img_' + item.id"
         @error="errorHandler(item.id)"
@@ -168,10 +168,10 @@ export default {
       type: Number,
       default: null,
     },
-    // splashHeight: {
-    //   type: Number,
-    //   default: 150,
-    // },
+    imageHeight: {
+      type: Number,
+      default: 200,
+    },
   },
   mounted() {
     this.$emit("init");

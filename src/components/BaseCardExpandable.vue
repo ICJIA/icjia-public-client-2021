@@ -2,7 +2,7 @@
   <div>
     <v-card
       :elevation="elevation"
-      class="pt-8 px-3 card"
+      class="pt-8 px-3 pb-3 card"
       @click="routeTo(item.fullPath)"
       color="#fff"
       style="border: 1px solid #ddd"
@@ -118,8 +118,10 @@
           :key="item.slug"
         ></AttachmentList>
       </div>
-
-      <div class="pb-6"></div>
+      <v-card-actions v-if="showReadMore" class="mt-2">
+        <v-spacer></v-spacer>
+        <v-btn outlined small v-html="readMoreText"></v-btn>
+      </v-card-actions>
     </v-card>
   </div>
 </template>
@@ -185,6 +187,10 @@ export default {
     showReadMore: {
       type: Boolean,
       default: false,
+    },
+    readMoreText: {
+      type: String,
+      default: "Read More&nbsp;&raquo;",
     },
     showStatus: {
       type: Boolean,

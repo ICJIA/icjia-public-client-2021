@@ -1,13 +1,6 @@
 <template>
   <div>
-    <v-app-bar
-      fixed
-      app
-      elevate-on-scroll
-      color="white"
-      height="90"
-      style="z-index: 50"
-    >
+    <v-app-bar fixed app color="white" height="90" style="z-index: 50">
       <div
         class="hover hamburger text-center hidden-md-and-up"
         style="margin-left: -10px"

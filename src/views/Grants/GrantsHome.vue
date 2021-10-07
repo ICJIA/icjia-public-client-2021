@@ -38,6 +38,7 @@
                       :openSearch="false"
                       :showLink="false"
                       :showReadMore="true"
+                      readMoreText="Read full NOFO&nbsp;&raquo;"
                     ></BaseCardExpandable>
                   </div>
                   <div

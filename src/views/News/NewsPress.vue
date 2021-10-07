@@ -22,6 +22,7 @@
                 class="flex-item"
                 :textOnly="false"
                 :showUpdated="false"
+                :imageHeight="275"
               ></NewsCard>
             </v-col>
           </v-row>
