@@ -62,12 +62,10 @@
                   <v-overlay
                     v-if="hover"
                     absolute
-                    color="blue darken-3"
+                    color="blue darken-4"
                     opacity=".7"
                   >
-                    <v-btn color="#0D4474" :to="item.fullPath"
-                      >Read more&nbsp;&raquo;</v-btn
-                    >
+                    <v-btn :to="item.fullPath">Read more&nbsp;&raquo;</v-btn>
                   </v-overlay>
                 </v-fade-transition>
               </v-img>
@@ -89,14 +87,12 @@
                   })
                 "
               >
-                <v-container fluid v-show="!hover">
-                  <v-row align="end">
+                <v-container fill-height fluid>
+                  <v-row align="center" justify="center">
                     <v-col class="text-left" style="margin: 0; padding: 0">
                       <div
                         style="
                           color: #fff;
-                          position: absolute;
-                          bottom: 20px;
 
                           width: 100% !important;
                           height: 250px;
@@ -126,8 +122,13 @@
                   </v-row>
                 </v-container>
                 <v-fade-transition>
-                  <v-overlay v-if="hover" absolute color="blue darken-4">
-                    <v-btn color="#0D4474" :to="item.fullPath">Read more</v-btn>
+                  <v-overlay
+                    v-if="hover"
+                    absolute
+                    color="blue darken-4"
+                    opacity=".7"
+                  >
+                    <v-btn :to="item.fullPath">Read more&nbsp;&raquo;</v-btn>
                   </v-overlay>
                 </v-fade-transition>
               </v-img>
