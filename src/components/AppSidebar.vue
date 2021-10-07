@@ -4,9 +4,8 @@
       v-model="drawer"
       app
       temporary
-      absolute
       disable-resize-watcher
-      color="white"
+      color="grey lighten-4"
       style="z-index: 500"
     >
       <v-list class="mt-5">
