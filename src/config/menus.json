@@ -34,10 +34,6 @@
                     "link": "/news/"
                 },
                 {
-                    "title": "Press",
-                    "link": "/news/press/"
-                },
-                {
                     "title": "Events",
                     "link": "/events/"
                 },
@@ -48,6 +44,10 @@
                 {
                     "title": "Employment",
                     "link": "/about/employment/"
+                },
+                {
+                    "title": "Press",
+                    "link": "/news/press/"
                 },
                 {
                     "divider": true

@@ -108,6 +108,7 @@
                 >Github</a
               >
               |
+
               <router-link
                 to="/about/privacy/"
                 style="color: #fff; background: none"
@@ -116,6 +117,10 @@
               |
               <router-link to="/rss" style="color: #fff; background: none"
                 >RSS Feeds</router-link
+              >
+              |
+              <router-link to="/status/" style="color: #fff; background: none"
+                >Status</router-link
               >
               |
               <a
