@@ -29,7 +29,7 @@
         >
       </v-toolbar>
 
-      <div style="font-size: 14px" class="mt-2 pl-3">
+      <div style="font-size: 14px" class="mt-2 pl-3 px-4">
         <!-- ------------------------------------------------
            Funding 
         -----------------------------------------------  -->
