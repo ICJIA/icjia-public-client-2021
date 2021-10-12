@@ -18,6 +18,7 @@ import { sandboxes } from "@/router/sandbox";
 import { fourOhFour } from "@/router/404";
 import { about } from "@/router/about";
 import { admin } from "@/router/admin";
+import { status } from "@/router/status";
 import { informationSystems } from "@/router/informationSystems";
 
 // import { preview } from "@/router/preview";
@@ -42,6 +43,7 @@ const routes = [
   ...grants,
   ...sandboxes,
   ...admin,
+  ...status,
   ...informationSystems,
   ...fourOhFour,
 ];
