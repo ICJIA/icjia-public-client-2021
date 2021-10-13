@@ -141,7 +141,7 @@
 import { getImageURL, getGrayscaleImageURL } from "@/services/Image";
 export default {
   mounted() {
-    console.log(this.slider);
+    //console.log(this.slider);
   },
 
   methods: {

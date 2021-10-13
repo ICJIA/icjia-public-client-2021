@@ -177,7 +177,7 @@ export default {
           contentType: "News",
         }));
 
-        console.log("featured length: ", featured.length);
+        //console.log("featured length: ", featured.length);
         if (featured.length > 1) {
           featured = getPublicationDate(featured);
           this.featured = _.orderBy(

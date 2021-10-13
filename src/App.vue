@@ -92,7 +92,7 @@ export default {
       });
     },
     fixA11y() {
-      console.log("a11y fixes.");
+      //console.log("a11y fixes.");
     },
 
     checkForDisclaimer() {
@@ -151,7 +151,7 @@ export default {
   },
 
   async mounted() {
-    console.dir(this.$myApp);
+    console.log("$myApp: ", this.$myApp);
     this.checkForTopContextMenu();
     this.getBottomContextMenu();
     this.checkForDisclaimer();

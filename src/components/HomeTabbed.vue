@@ -225,7 +225,7 @@ export default {
       let expired = new Date(expiration);
       expired.setHours(24, 0, 0, 0);
       //expired.setHours(24, 0, 0, 0);
-      console.log(expired);
+      //console.log(expired);
       if (now >= expired) {
         return true;
       } else {
