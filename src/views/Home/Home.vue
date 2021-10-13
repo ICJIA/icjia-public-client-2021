@@ -177,17 +177,24 @@ export default {
           contentType: "News",
         }));
 
-        featured = getPublicationDate(featured);
-        this.featured = _.orderBy(
-          featured,
-          ["publicationDate"],
-          ["desc"]
-        ).slice(0, 3);
-        console.table("news: ", this.news);
-        console.table("featured: ", this.featured);
-        posts = posts.filter(
-          (ar) => !featured.find((rm) => rm.slug === ar.slug)
-        );
+        console.log("featured length: ", featured.length);
+        if (featured.length > 1) {
+          featured = getPublicationDate(featured);
+          this.featured = _.orderBy(
+            featured,
+            ["publicationDate"],
+            ["desc"]
+          ).slice(0, 3);
+          posts = posts.filter(
+            (ar) => !featured.find((rm) => rm.slug === ar.slug)
+          );
+        } else {
+          this.featured = null;
+        }
+
+        // console.table("news: ", this.news);
+        // console.table("featured: ", this.featured);
+
         this.news = _.orderBy(posts, ["publicationDate"], ["desc"]).slice(
           0,
           this.$myApp.config.home.postLimit
