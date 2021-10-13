@@ -6,7 +6,7 @@
 
     <HomeFeatureRibbon
       :items="featured"
-      v-if="!loading && featured && featured.length > 0"
+      v-if="!loading && featured && featured.length > 1"
       style="margin-top: 0px"
     ></HomeFeatureRibbon>
 
@@ -178,7 +178,11 @@ export default {
         }));
 
         featured = getPublicationDate(featured);
-        this.featured = _.orderBy(featured, ["publicationDate"], ["desc"]);
+        this.featured = _.orderBy(
+          featured,
+          ["publicationDate"],
+          ["desc"]
+        ).slice(0, 3);
         console.table("news: ", this.news);
         console.table("featured: ", this.featured);
         posts = posts.filter(
