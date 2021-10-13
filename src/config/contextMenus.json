@@ -2,7 +2,7 @@
     {
         "name": "Grants",
         "label": "Federal and State Grants Unit",
-        "shortLabel": "ICJIA Grants",
+        "shortLabel": "FSGU",
         "pathPrefix": "/grants/",
         "defaultPath": "/grants/fsgu-home/",
         "showTranslation": true,
@@ -33,7 +33,7 @@
     {
         "name": "researchhub",
         "label": "Research and Analysis Unit",
-        "shortLabel": "Research at ICJIA",
+        "shortLabel": "Research",
         "pathPrefix": "/researchhub/",
         "defaultPath": "/researchhub/",
         "showTranslation": true,
@@ -72,7 +72,7 @@
     {
         "name": "irb",
         "label": "ICJIA Institutional Review Board",
-        "shortLabel": "ICJIA IRB",
+        "shortLabel": "IRB",
         "pathPrefix": "/irb/",
         "defaultPath": "/irb/",
         "showTranslation": true,
@@ -150,7 +150,7 @@
     {
         "name": "meetings",
         "label": "ICJIA Meetings",
-        "shortLabel": "ICJIA Meetings",
+        "shortLabel": "Meetings",
         "pathPrefix": "/meetings/",
         "defaultPath": "/meetings/",
         "showTranslation": true,
@@ -189,7 +189,7 @@
     {
         "name": "events",
         "label": "ICJIA Events",
-        "shortLabel": "ICJIA Events",
+        "shortLabel": "Events",
         "pathPrefix": "/events/",
         "defaultPath": "/events/",
         "showTranslation": true,
@@ -228,7 +228,7 @@
     {
         "name": "About",
         "label": "ICJIA Overview",
-        "shortLabel": "ICJIA Overview",
+        "shortLabel": "Overview",
         "pathPrefix": "/about/",
         "defaultPath": "/about/",
         "showTranslation": true,
@@ -283,7 +283,7 @@
     {
         "name": "ISU",
         "label": "Information Systems Unit ",
-        "shortLabel": "Information Systems",
+        "shortLabel": "ISU",
         "pathPrefix": "/information-systems/",
         "defaultPath": "/information-systems/",
         "showTranslation": true,

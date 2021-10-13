@@ -18,52 +18,49 @@
     </div>
 
     <div>
-      <v-simple-table dense>
+      <v-simple-table dense style="width: 100% !important">
         <template v-slot:default>
-          <thead>
-            <tr>
-              <th class="text-left">Filename</th>
-              <th class="text-left">Type</th>
-              <th class="text-left">Size</th>
-              <th class="text-left">Last updated</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(attachment, index) in attachments"
-              :key="index"
-              class="hover"
-              @click.stop.prevent="routeTo(attachment.url)"
-            >
-              <td>
-                <span class="attachment">
-                  {{ attachment.name }}
-                </span>
-              </td>
-              <td>
-                <span
-                  style="
-                    font-weight: 900;
-                    text-transform: uppercase;
-                    color: #555;
-                    font-size: 12px;
-                  "
-                  v-if="attachment && attachment.ext"
-                  >{{ attachment.ext.replace(/\./g, "") }}</span
-                >
-              </td>
-              <td style="width: 100px">
-                <span style="font-size: 12px">{{
-                  formatBytes(attachment.size)
-                }}</span>
-              </td>
-              <td>
-                <span style="font-size: 12px">{{
-                  attachment.updated_at | dateFormatAlt
-                }}</span>
-              </td>
-            </tr>
-          </tbody>
+          <tr>
+            <th class="text-left">Filename</th>
+            <th class="text-left">Type</th>
+            <th class="text-left">Size</th>
+            <th class="text-left">Last updated</th>
+          </tr>
+
+          <tr
+            v-for="(attachment, index) in attachments"
+            :key="index"
+            class="hover"
+            @click.stop.prevent="routeTo(attachment.url)"
+          >
+            <td>
+              <span class="attachment">
+                {{ attachment.name }}
+              </span>
+            </td>
+            <td>
+              <span
+                style="
+                  font-weight: 900;
+                  text-transform: uppercase;
+                  color: #555;
+                  font-size: 12px;
+                "
+                v-if="attachment && attachment.ext"
+                >{{ attachment.ext.replace(/\./g, "") }}</span
+              >
+            </td>
+            <td style="width: 100px">
+              <span style="font-size: 12px">{{
+                formatBytes(attachment.size)
+              }}</span>
+            </td>
+            <td>
+              <span style="font-size: 12px">{{
+                attachment.updated_at | dateFormatAlt
+              }}</span>
+            </td>
+          </tr>
         </template>
       </v-simple-table>
     </div>

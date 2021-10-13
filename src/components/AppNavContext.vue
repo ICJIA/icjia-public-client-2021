@@ -23,10 +23,17 @@
         >
         <span
           style="font-weight: 700"
-          class="hover"
+          class="hover hidden-sm-and-down"
           @click="routeToPage(contextMenu[0].defaultPath)"
         >
           {{ contextMenu[0].label }}</span
+        >
+        <span
+          style="font-weight: 700"
+          class="hover hidden-md-and-up"
+          @click="routeToPage(contextMenu[0].defaultPath)"
+        >
+          {{ contextMenu[0].shortLabel }}</span
         >
         <span
           style="font-weight: 300"
