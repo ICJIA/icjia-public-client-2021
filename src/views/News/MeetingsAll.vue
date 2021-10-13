@@ -9,6 +9,13 @@
                 <h1>ICJIA Meetings</h1>
 
                 <v-btn-toggle v-model="viewToggle" mandatory>
+                  <v-btn value="all" small elevation="1">
+                    <span class="button-weight" aria-label="By date"
+                      >By date</span
+                    >
+
+                    <span class="mdi mdi-calendar" aria-hidden="true"> </span>
+                  </v-btn>
                   <v-btn
                     value="category"
                     elevation="1"
@@ -24,14 +31,6 @@
                       class="mdi mdi-format-list-bulleted"
                     >
                     </span>
-                  </v-btn>
-
-                  <v-btn value="all" small elevation="1">
-                    <span class="button-weight" aria-label="By date"
-                      >By date</span
-                    >
-
-                    <span class="mdi mdi-calendar" aria-hidden="true"> </span>
                   </v-btn>
                 </v-btn-toggle>
               </div>
@@ -93,7 +92,7 @@ import _ from "lodash";
 export default {
   data() {
     return {
-      viewToggle: "category",
+      viewToggle: "all",
       loading: true,
       error: null,
       content: null,
