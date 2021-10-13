@@ -14,7 +14,7 @@
       "
     >
       <span v-if="label && label.length"> {{ label }}</span
-      ><span v-else class="">Attachments</span>
+      ><span v-else class="" style="">Attachments</span>
     </div>
 
     <div>
