@@ -149,7 +149,7 @@
 
                 <h2 class="mt-2" style="font-size: 1.1em">
                   <v-chip
-                    v-if="isItNew(job, 7)"
+                    v-if="isItNew(job)"
                     label
                     small
                     color="#0D4474"
@@ -209,12 +209,14 @@ export default {
     },
   },
   methods: {
-    isItNew(item, daysToShowNew = this.$myApp.config.daysToShowNew) {
+    isItNew(item, daysToShowNew = 7) {
       const now = moment(new Date());
       const end = moment(item.published_at); // another date
       const duration = moment.duration(now.diff(end));
+
       const days = duration.asDays();
       if (days <= daysToShowNew) {
+        console.log(item.title, days);
         return true;
       } else {
         return false;
