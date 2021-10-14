@@ -40,5 +40,8 @@ public/funding-json1.json
 public/meetings-rss2.xml
 public/meetings-atom.xml
 public/meetings-json1.json
+public/employment-rss2.xml
+public/employment-atom.xml
+public/employment-json1.json
 public/searchIndex.json
 public/sitemap.xml
