@@ -75,21 +75,31 @@ export default {
         NProgress.done();
       },
       result(ApolloQueryResult) {
-        //console.log(this.id);
-        let jobs = ApolloQueryResult.data.jobs;
-        jobs = jobs.map((u) => ({
-          ...u,
-          fullPath: `/about/employment/${u.slug}/`,
-          contentType: "employment",
-          show: false,
-        }));
-        let job = getUnifiedTags(jobs);
-        this.job = job[0];
-        this.loading = false;
-        NProgress.done();
+        if (
+          ApolloQueryResult.data &&
+          ApolloQueryResult.data.jobs.length > 0 === false
+        ) {
+          // eslint-disable-next-line no-unused-vars
+          this.$router.push("/404").catch((err) => {
+            console.log(err);
+          });
+        } else {
+          //console.log(this.id);
+          let jobs = ApolloQueryResult.data.jobs;
+          jobs = jobs.map((u) => ({
+            ...u,
+            fullPath: `/about/employment/${u.slug}/`,
+            contentType: "employment",
+            show: false,
+          }));
+          let job = getUnifiedTags(jobs);
+          this.job = job[0];
+          this.loading = false;
+          NProgress.done();
 
-        attachInternalLinks(this);
-        attachSearchEvents(this);
+          attachInternalLinks(this);
+          attachSearchEvents(this);
+        }
       },
     },
   },
