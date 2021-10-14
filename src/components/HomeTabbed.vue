@@ -146,7 +146,20 @@
                   >&nbsp;|&nbsp; Accepting applications through
                   {{ job.end | format }}
                 </span>
-                <h2 class="mt-2" style="font-size: 1.1em">{{ job.title }}</h2>
+
+                <h2 class="mt-2" style="font-size: 1.1em">
+                  <v-chip
+                    v-if="isItNew(job, 7)"
+                    label
+                    small
+                    color="#0D4474"
+                    class="mr-2"
+                  >
+                    <span style="color: #fff !important; font-weight: 400">
+                      NEW!
+                    </span> </v-chip
+                  >{{ job.title }}
+                </h2>
 
                 <p style="font-size: 0.9em" class="mt-2">{{ job.summary }}</p>
               </v-card>
@@ -196,12 +209,12 @@ export default {
     },
   },
   methods: {
-    isItNew(item) {
+    isItNew(item, daysToShowNew = this.$myApp.config.daysToShowNew) {
       const now = moment(new Date());
       const end = moment(item.published_at); // another date
       const duration = moment.duration(now.diff(end));
       const days = duration.asDays();
-      if (days <= this.$myApp.config.daysToShowNew) {
+      if (days <= daysToShowNew) {
         return true;
       } else {
         return false;
