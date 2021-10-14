@@ -3,7 +3,6 @@
     <v-card
       :elevation="elevation"
       class="pt-8 px-3 pb-6 card"
-      @click="routeTo(item.fullPath)"
       color="#fff"
       style="border: 1px solid #ddd"
     >
@@ -112,7 +111,13 @@
         ></AttachmentList>
       </div>
       <v-card-actions v-if="showReadMore" class="mt-3">
-        <v-btn dark color="blue darken-4" small v-html="readMoreText"></v-btn>
+        <v-btn
+          dark
+          color="blue darken-4"
+          @click.stop.prevent="$router.push(item.fullPath)"
+          small
+          v-html="readMoreText"
+        ></v-btn>
       </v-card-actions>
     </v-card>
   </div>

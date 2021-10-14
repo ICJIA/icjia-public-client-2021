@@ -1,91 +1,89 @@
 <template>
-  <v-sheet v-if="attachments">
-    <div v-if="useSecondLevelHeading">
+  <v-sheet v-if="attachments" class="py-2">
+    <!-- <div v-if="useSecondLevelHeading">
       <h2 v-if="label && label.length" id="attachments">{{ label }}</h2>
       <h2 v-else class="" id="attachments">Attachments</h2>
-    </div>
+    </div> -->
     <div
-      v-else
       style="
         font-weight: 700;
         border-bottom: 1px solid #ccc;
         padding-bottom: 8px;
         text-transform: uppercase;
       "
+      class="px-4"
     >
       <span v-if="label && label.length"> {{ label }}</span
       ><span v-else class="" style="">Attachments</span>
     </div>
 
-    <div>
-      <v-simple-table dense style="width: 100% !important">
-        <template v-slot:default>
-          <tr>
-            <th class="text-left">Filename</th>
-            <th class="text-left">Type</th>
-            <th class="text-left">Size</th>
-            <th class="text-left">Last updated</th>
-          </tr>
-
-          <tr
-            v-for="(attachment, index) in attachments"
-            :key="index"
-            class="hover"
-            @click.stop.prevent="routeTo(attachment.url)"
+    <div class="">
+      <v-data-table
+        dense
+        :headers="headers"
+        :items="attachments"
+        hide-default-footer
+        :items-per-page="-1"
+        :sort-by.sync="sortBy"
+        :sort-desc.sync="sortDesc"
+        class="elevation-0"
+      >
+        <template v-slot:item.updated_at="{ item }">
+          <div
+            style="width: 90px; font-size: 14px; font-weight: 400; color: #555"
           >
-            <td>
-              <span class="attachment">
-                {{ attachment.name }}
-              </span>
-            </td>
-            <td>
-              <span
-                style="
-                  font-weight: 900;
-                  text-transform: uppercase;
-                  color: #555;
-                  font-size: 12px;
-                "
-                v-if="attachment && attachment.ext"
-                >{{ attachment.ext.replace(/\./g, "") }}</span
-              >
-            </td>
-            <td style="width: 100px">
-              <span style="font-size: 12px">{{
-                formatBytes(attachment.size)
-              }}</span>
-            </td>
-            <td>
-              <span style="font-size: 12px">{{
-                attachment.updated_at | dateFormatAlt
-              }}</span>
-            </td>
-          </tr>
+            {{ item.updated_at | dateFormatAlt }}
+          </div>
         </template>
-      </v-simple-table>
+        <template v-slot:item.size="{ item }">
+          <span style="font-size: 12px">{{ humanFileSize(item.size) }}</span>
+        </template>
+        <template v-slot:item.name="{ item }">
+          <span
+            style="font-size: 14px; font-weight: 400; color: #555"
+            @click.stop.prevent="routeTo(item.url)"
+          >
+            <span class="attachment">
+              {{ item.name }}
+            </span>
+          </span>
+        </template>
+      </v-data-table>
     </div>
   </v-sheet>
 </template>
 
 <script>
-function formatBytes(bytes, decimals = 0) {
-  if (bytes === 0) return "0 Bytes";
-
-  const k = 1024;
-  const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+function humanFileSize(size) {
+  var i = Math.floor(Math.log(size) / Math.log(1024));
+  return (
+    (size / Math.pow(1024, i)).toFixed(2) * 1 +
+    " " +
+    ["B", "kB", "MB", "GB", "TB"][i]
+  );
 }
+
 import _ from "lodash";
 import moment from "moment";
 export default {
   data() {
     return {
       attachments: null,
-      formatBytes,
+      sortBy: "name",
+      sortDesc: false,
+
+      humanFileSize,
+      headers: [
+        {
+          text: "Filename",
+          align: "start",
+          sortable: true,
+          value: "name",
+        },
+
+        { text: "Size", value: "size" },
+        { text: "Last Updated", value: "updated_at" },
+      ],
     };
   },
   methods: {
