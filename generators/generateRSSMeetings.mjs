@@ -49,14 +49,15 @@ const init = async () => {
   };
 
   meetings.data.forEach((meeting) => {
+    //console.log(new Date(meeting.start));
     feed.addItem({
       title: `<h2>[${meeting.category.toUpperCase()}] ${meeting.title}</h2>`,
+      date: new Date(meeting.start),
       id: `${config.api.baseClient}/news/meetings/${meeting.slug}/`,
       link: `${config.api.baseClient}/news/meetings/${meeting.slug}/`,
       description: renderToHtml(meeting.summary),
       content: generateFullContent(meeting),
       image: `https://agency.icjia-api.cloud/uploads/state_seal_color_e3ae3b7180.png`,
-      date: new Date(meeting.end),
     });
   });
 
