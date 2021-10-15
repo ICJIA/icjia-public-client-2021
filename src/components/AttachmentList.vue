@@ -29,11 +29,24 @@
         class="elevation-0"
       >
         <template v-slot:item.updated_at="{ item }">
-          <div
+          <span
             style="width: 90px; font-size: 14px; font-weight: 400; color: #555"
           >
-            {{ item.updated_at | dateFormatAlt }}
-          </div>
+            {{ item.updated_at | dateFormatAlt }}&nbsp;&nbsp;
+
+            <v-chip
+              v-if="isItUpdated(item)"
+              label
+              x-small
+              color="#0D4474"
+              class="mr-2"
+              style="margin-top: 0px"
+            >
+              <span style="color: #fff !important; font-weight: 400">
+                Updated!
+              </span>
+            </v-chip>
+          </span>
         </template>
         <template v-slot:item.size="{ item }">
           <span style="font-size: 12px">{{ niceBytes(item.size) }}</span>
@@ -54,15 +67,6 @@
 </template>
 
 <script>
-// function humanFileSize(size) {
-//   var i = Math.floor(Math.log(size) / Math.log(1024));
-//   return (
-//     (size / Math.pow(1024, i)).toFixed(2) * 1 +
-//     " " +
-//     ["B", "kB", "MB", "GB", "TB"][i]
-//   );
-// }
-
 const units = ["B", "MB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
 function niceBytes(x) {
@@ -77,6 +81,7 @@ function niceBytes(x) {
 }
 
 import _ from "lodash";
+// eslint-disable-next-line no-unused-vars
 import moment from "moment";
 export default {
   data() {
@@ -104,20 +109,12 @@ export default {
       console.log(url);
       window.open(`https://agency.icjia-api.cloud${url}`, "_blank");
     },
-    isItNew(item) {
-      let targetDate;
-      if (item.publicationDate) {
-        targetDate = item.publicationDate;
-      } else {
-        targetDate = item.created_at;
-      }
-
-      const now = moment(new Date());
-      const end = moment(targetDate); // another date
-      const duration = moment.duration(now.diff(end));
+    isItUpdated(item) {
+      const created = moment(item.created_at);
+      const updated = moment(item.updated_at); // another date
+      const duration = moment.duration(updated.diff(created));
       const days = duration.asDays();
-
-      if (days <= 7) {
+      if (days > 1) {
         return true;
       } else {
         return false;

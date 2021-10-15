@@ -50,6 +50,7 @@ const GET_SINGLE_PAGE_QUERY = gql`
       published_at
       attachments {
         updated_at
+        created_at
         size
         name
         ext

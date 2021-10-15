@@ -47,6 +47,14 @@ const GET_ALL_PRESS_QUERY = gql`
       created_at
       updated_at
       published_at
+      attachments {
+        updated_at
+        created_at
+        size
+        name
+        ext
+        url
+      }
       tags {
         title
         slug
@@ -79,6 +87,7 @@ const GET_SINGLE_POST_QUERY = gql`
       attachmentLabel
       attachments {
         updated_at
+        created_at
         size
         name
         ext

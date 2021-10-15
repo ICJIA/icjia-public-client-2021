@@ -28,6 +28,8 @@ const GET_ALL_JOBS_QUERY = gql`
       attachments {
         url
         name
+        updated_at
+        created_at
       }
     }
   }
@@ -60,6 +62,7 @@ const GET_SINGLE_JOB_QUERY = gql`
       }
       attachments {
         updated_at
+        created_at
         size
         name
         ext

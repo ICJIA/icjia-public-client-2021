@@ -19,6 +19,7 @@ const GET_ALL_PROGRAMS_QUERY = gql`
       }
       attachments {
         updated_at
+        created_at
         size
         name
         ext
@@ -43,6 +44,7 @@ const GET_ALL_FUNDING_QUERY = gql`
       published_at
       attachments {
         updated_at
+        created_at
         size
         name
         ext
@@ -76,6 +78,7 @@ const GET_SINGLE_FUNDING_QUERY = gql`
       }
       attachments {
         updated_at
+        created_at
         size
         name
         ext
@@ -116,6 +119,7 @@ const GET_SINGLE_PROGRAM_QUERY = gql`
       published_at
       attachments {
         updated_at
+        created_at
         size
         name
         ext
