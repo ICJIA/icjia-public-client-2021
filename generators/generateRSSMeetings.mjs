@@ -55,6 +55,7 @@ const init = async () => {
       link: `${config.api.baseClient}/news/meetings/${meeting.slug}/`,
       description: renderToHtml(meeting.summary),
       content: generateFullContent(meeting),
+      image: `https://agency.icjia-api.cloud/uploads/state_seal_color_e3ae3b7180.png`,
       date: new Date(meeting.end),
     });
   });

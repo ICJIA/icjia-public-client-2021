@@ -55,6 +55,7 @@ const init = async () => {
       description: renderToHtml(grant.summary),
       content: generateFullContent(grant),
       date: new Date(grant.start),
+      image: `https://agency.icjia-api.cloud/uploads/state_seal_color_e3ae3b7180.png`,
     });
   });
 
