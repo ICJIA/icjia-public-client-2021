@@ -20,6 +20,7 @@ import { about } from "@/router/about";
 import { admin } from "@/router/admin";
 import { status } from "@/router/status";
 import { informationSystems } from "@/router/informationSystems";
+import { external } from "@/router/external";
 
 // import { preview } from "@/router/preview";
 Vue.use(VueRouter);
@@ -34,6 +35,7 @@ const home = [
 
 const routes = [
   ...home,
+  ...external,
   ...redirects,
   ...about,
   ...hub,

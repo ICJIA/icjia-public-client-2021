@@ -14,7 +14,7 @@ let feed = new Feed({
   id: config.api.baseClient + "/",
   link: config.api.baseClient + "/",
   language: "en", // optional, used only in RSS 2.0, possible values: http://www.w3.org/TR/REC-html40/struct/dirlang.html#langcodes
-  image: `${config.api.baseClient}/icjia-logo.png`,
+  image: `https://agency.icjia-api.cloud/uploads/state_seal_color_e3ae3b7180.png`,
   favicon: `${config.api.baseClient}/favicon.ico`,
   copyright:
     "All rights reserved 2021, Illinois Criminal Justice Information Authority",

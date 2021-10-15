@@ -65,6 +65,14 @@ const redirects = [
       return "/grants/funding/";
     },
   },
+  //   {
+  //     path: "/gata/:path*",
+  //     redirect: (to) => {
+  //       console.log("to: ", to);
+  //       window.location.href = `https://icjia.illinois.gov${to.path}`;
+  //       //   return '/redirecting' // not important since redirecting
+  //     },
+  //   },
 ];
 
 export { redirects };
