@@ -36,7 +36,7 @@
           </div>
         </template>
         <template v-slot:item.size="{ item }">
-          <span style="font-size: 12px">{{ humanFileSize(item.size) }}</span>
+          <span style="font-size: 12px">{{ niceBytes(item.size) }}</span>
         </template>
         <template v-slot:item.name="{ item }">
           <span
@@ -54,13 +54,26 @@
 </template>
 
 <script>
-function humanFileSize(size) {
-  var i = Math.floor(Math.log(size) / Math.log(1024));
-  return (
-    (size / Math.pow(1024, i)).toFixed(2) * 1 +
-    " " +
-    ["B", "kB", "MB", "GB", "TB"][i]
-  );
+// function humanFileSize(size) {
+//   var i = Math.floor(Math.log(size) / Math.log(1024));
+//   return (
+//     (size / Math.pow(1024, i)).toFixed(2) * 1 +
+//     " " +
+//     ["B", "kB", "MB", "GB", "TB"][i]
+//   );
+// }
+
+const units = ["B", "MB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+function niceBytes(x) {
+  let l = 0,
+    n = parseInt(x, 10) || 0;
+
+  while (n >= 1024 && ++l) {
+    n = n / 1024;
+  }
+
+  return n.toFixed(n < 10 && l > 0 ? 1 : 0) + " " + units[l];
 }
 
 import _ from "lodash";
@@ -72,7 +85,7 @@ export default {
       sortBy: "name",
       sortDesc: false,
 
-      humanFileSize,
+      niceBytes,
       headers: [
         {
           text: "Filename",
