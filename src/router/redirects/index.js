@@ -51,13 +51,14 @@ const redirects = [
       return "/about/foia/";
     },
   },
-  {
-    path: "/gata/funding/2021-cbvip-sfy22/",
-    // eslint-disable-next-line no-unused-vars
-    redirect: (route) => {
-      return "/grants/funding/community-based-violence-intervention-and-prevention/";
-    },
-  },
+
+  // {
+  //   path: "/gata/funding/2021-cbvip-sfy22/",
+  //   // eslint-disable-next-line no-unused-vars
+  //   redirect: (route) => {
+  //     return "/grants/funding/community-based-violence-intervention-and-prevention/";
+  //   },
+  // },
   {
     path: "/gata/funding/",
     // eslint-disable-next-line no-unused-vars
