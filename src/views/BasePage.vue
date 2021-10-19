@@ -27,6 +27,7 @@
                   v-if="content.attachments && content.attachments.length"
                   class="mt-6 pl-0"
                   :key="content.attachments.title"
+                  :baseItemPublished="content.published_at"
                   :label="
                     content.attachmentLabel && content.attachmentLabel.length
                       ? content.attachmentLabel

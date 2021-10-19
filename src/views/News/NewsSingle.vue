@@ -29,6 +29,7 @@
               <div class="mt-12">
                 <AttachmentList
                   :items="news.attachments"
+                  :baseItemPublished="news.published_at"
                   v-if="news.attachments && news.attachments.length"
                   class="mt-8"
                   :key="news.slug"

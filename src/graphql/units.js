@@ -9,6 +9,8 @@ const GET_ALL_UNITS_QUERY = gql`
       shortName
       url
       summary
+      created_at
+      updated_at
       body
     }
   }
@@ -20,6 +22,8 @@ const GET_SINGLE_UNIT_QUERY = gql`
       id
       title
       shortName
+      created_at
+      updated_at
       url
       summary
       slug

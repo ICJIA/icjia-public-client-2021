@@ -82,6 +82,7 @@ const GET_HOME = gql`
       start
       category
       end
+      published_at
     }
 
     trainingEvents: events(
@@ -95,6 +96,7 @@ const GET_HOME = gql`
       start
       category
       end
+      published_at
     }
 
     featured: posts(

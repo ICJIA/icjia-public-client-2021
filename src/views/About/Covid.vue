@@ -13,6 +13,7 @@
               <h1 v-html="render(content.title)"></h1>
               <AttachmentList
                 :items="content.attachments"
+                :baseItemPublished="content.published_at"
                 v-if="content.attachments && content.attachments.length"
                 class="mt-6 pl-0"
                 :key="content.attachments.title"

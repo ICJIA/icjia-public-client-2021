@@ -35,12 +35,11 @@
             {{ item.updated_at | dateFormatAlt }}&nbsp;&nbsp;
 
             <v-chip
-              v-if="isItUpdated(item)"
+              v-if="isItUpdated(item) && baseItemPublished"
               label
               x-small
               color="#0D4474"
               class="mr-2"
-              style="margin-top: 0px"
             >
               <span style="color: #fff !important; font-weight: 400">
                 Updated!
@@ -100,6 +99,7 @@ export default {
         },
 
         { text: "Size", value: "size" },
+
         { text: "Last Updated", value: "updated_at" },
       ],
     };
@@ -110,11 +110,11 @@ export default {
       window.open(`https://agency.icjia-api.cloud${url}`, "_blank");
     },
     isItUpdated(item) {
-      const created = moment(item.created_at);
+      const created = moment(this.baseItemPublished);
       const updated = moment(item.updated_at); // another date
       const duration = moment.duration(updated.diff(created));
       const days = duration.asDays();
-      if (days > 1) {
+      if (days > 1 && days < 30) {
         return true;
       } else {
         return false;
@@ -126,6 +126,10 @@ export default {
   },
   props: {
     label: {
+      type: String,
+      default: null,
+    },
+    baseItemPublished: {
       type: String,
       default: null,
     },
@@ -144,6 +148,10 @@ export default {
     showAsTable: {
       type: Boolean,
       default: true,
+    },
+    hideUpdated: {
+      type: Boolean,
+      default: false,
     },
   },
 };

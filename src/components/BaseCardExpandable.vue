@@ -108,6 +108,7 @@
           v-if="item.attachments && item.attachments.length"
           class="mt-1 pl-0"
           :key="item.slug"
+          :baseItemPublished="item.published_at"
         ></AttachmentList>
       </div>
       <v-card-actions v-if="showReadMore" class="mt-3">
