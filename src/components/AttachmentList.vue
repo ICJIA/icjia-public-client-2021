@@ -38,7 +38,7 @@
               v-if="isItUpdated(item) && baseItemPublished"
               label
               x-small
-              color="#0D4474"
+              color="green darken-4"
               class="mr-2"
             >
               <span style="color: #fff !important; font-weight: 400">

@@ -1,7 +1,8 @@
 <template>
   <div class="">
     <v-card class="px-5 py-5 markdown-body reduce-90" :color="color">
-      <h2>{{ item.title }}</h2>
+      <h2 @click="routeTo(item)" class="meeting-title">{{ item.title }}</h2>
+
       <div>
         <span v-html="displayDate(item.start, item.end)"></span>
         <span style="font-weight: 400"
@@ -65,6 +66,11 @@ export default {
     };
   },
   methods: {
+    routeTo(item) {
+      this.$router.push(`/news/meetings/${item.slug}`).catch((err) => {
+        this.$vuetify.goTo(0);
+      });
+    },
     render(content) {
       return renderToHtml(content);
     },
@@ -107,5 +113,9 @@ export default {
 .meeting-date {
   font-size: 14px;
   font-weight: 400;
+}
+.meeting-title:hover {
+  cursor: pointer;
+  text-decoration: underline;
 }
 </style>

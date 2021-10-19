@@ -36,7 +36,6 @@
 
         <div v-else>
           <v-chip
-            outlined
             small
             color="green darken-4"
             style="font-size: 12px; font-weight: 700"
@@ -45,7 +44,6 @@
           >
           <v-chip
             small
-            outlined
             style="font-size: 12px; font-weight: 700"
             color="red darken-4"
             v-if="new Date(addOneDayToDate(item.end)) < new Date()"
