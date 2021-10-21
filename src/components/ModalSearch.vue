@@ -79,30 +79,29 @@ export default {
   async created() {
     //console.log(process.env.NODE_ENV);
     NProgress.start();
-    let searchURL;
-    if (process.env.NODE_ENV === "development") {
-      searchURL = "/.netlify/functions/search";
-    } else {
-      searchURL = `https://icjia-public.netlify.app/.netlify/functions/search`;
-    }
-    let response = await fetch(searchURL, {
-      mode: "no-cors", // no-cors, *cors, same-origin
-      credentials: "omit", // include, *same-origin, omit
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    let data = await response.json();
-    const fuse = new Fuse(data.message, this.$myApp.config.search.site);
-    this.$myApp.fuse = fuse;
-    console.warn(
-      "Getting search data from lambda. Length: ",
-      data.message.length
+    // const myInit = {
+    //   mode: "no-cors",
+    // };
+    // let searchURL;
+    // if (process.env.NODE_ENV === "development") {
+    //   searchURL = "/.netlify/functions/search";
+    // } else {
+    //   searchURL = `https://icjia-public.netlify.app/.netlify/functions/search`;
+    // }
+    // let response = await fetch(searchURL, myInit);
+    // if (!response.ok) {
+    //   throw new Error(`HTTP error! status: ${response.status}`);
+    // }
+    // let data = await response.json();
+    const fuse = new Fuse(
+      this.$myApp.searchIndex,
+      this.$myApp.config.search.site
     );
+    this.$myApp.fuse = fuse;
+    // console.warn(
+    //   "Getting search data from lambda. Length: ",
+    //   data.message.length
+    // );
     this.fuse = this.$myApp.fuse;
     NProgress.done();
   },
