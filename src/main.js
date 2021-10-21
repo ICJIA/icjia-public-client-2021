@@ -17,7 +17,8 @@ import config from "@/config/config.json";
 // import Masonry from "masonry-layout";
 import nprogress from "nprogress";
 // import axios from "axios";
-import Fuse from "fuse.js";
+// import Fuse from "fuse.js";
+import VueGtag from "vue-gtag";
 
 import "@fortawesome/fontawesome-free/css/all.css";
 
@@ -57,6 +58,14 @@ AOS.init();
 
 // import LoadScript from "vue-plugin-load-script";
 // Vue.use(LoadScript);
+
+Vue.use(
+  VueGtag,
+  {
+    config: { id: "G-LJP4M9Y8B0" },
+  },
+  router
+);
 
 new Vue({
   router,
