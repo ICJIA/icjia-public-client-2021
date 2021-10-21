@@ -1,3 +1,2 @@
 User-agent: *
 Disallow: /
-Sitemap: http://agency.icjia.cloud/sitemap.xml

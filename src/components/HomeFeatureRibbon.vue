@@ -193,7 +193,6 @@ export default {
       }
     },
     getFeatureBoxColor(index) {
-      //TODO: Figure this out dynamically
       return this.colors[index];
     },
   },

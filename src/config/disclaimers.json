@@ -3,7 +3,7 @@
         "id": "researchhub",
         "label": "NOTICE OF FEDERAL FUNDING AND FEDERAL DISCLAIMER",
         "pathPrefix": "/researchhub/",
-        "body": "[ICJIA's Research Hub](https://agency.icjia.cloud/researchhub) is funded through a grant from the Bureau of Justice Statistics, Office of Justice Programs, U.S. Department of Justice. Neither the U.S. Department of Justice nor any of its components operate, control, are responsible for, or necessarily endorse, [ICJIA's Research Hub](https://agency.icjia.cloud/researchhub) (including, without limitation, its content, technical infrastructure, and policies, and any services or tools provided)."
+        "body": "ICJIA's Research Hub is funded through a grant from the Bureau of Justice Statistics, Office of Justice Programs, U.S. Department of Justice. Neither the U.S. Department of Justice nor any of its components operate, control, are responsible for, or necessarily endorse, ICJIA's Research Hub (including, without limitation, its content, technical infrastructure, and policies, and any services or tools provided)."
     },
     {
         "id": "meetings",

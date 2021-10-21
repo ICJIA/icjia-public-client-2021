@@ -490,7 +490,7 @@ export default {
       //TODO: Fix replacement when site is live
       url = url.replace(
         "https://icjia.illinois.gov/researchhub/",
-        "https://agency.icjia.cloud/researchhub/"
+        `${this.$myApp.config.baseClient}/researchhub/`
       );
       window.open(url, "noopener,resizable,scrollbars").focus();
     },
@@ -499,7 +499,7 @@ export default {
       window.open(url, "noopener,resizable,scrollbars").focus();
     },
     getPermaLink(slug) {
-      return `https://agency.icjia.cloud/about/publications/${slug}`;
+      return `${this.$myApp.config.baseClient}/about/publications/${slug}`;
     },
     rowClick(value) {
       //console.log(value);
