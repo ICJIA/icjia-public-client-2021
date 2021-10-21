@@ -5,7 +5,7 @@
     "api": {
         "base": "https://agency.icjia-api.cloud",
         "baseGraphQL": "https://agency.icjia-api.cloud/graphql",
-        "baseClient": "https://agency.icjia.cloud",
+        "baseClient": "https://icjia.illinois.gov",
         "forgetPassword": "/auth/forgot-password",
         "resetPassword": "/auth/reset-password",
         "resetPasswordCallback": "/reset",
