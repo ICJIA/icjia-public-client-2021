@@ -1,7 +1,6 @@
 {
     "publicPath": "",
     "namespace": "icjia-",
-    "defaultAvatar": "https://cdn.vuetifyjs.com/images/john.jpg",
     "netlifyURL": "https://agency.icjia.cloud",
     "api": {
         "base": "https://agency.icjia-api.cloud",

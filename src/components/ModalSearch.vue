@@ -83,7 +83,7 @@ export default {
     if (process.env.NODE_ENV === "development") {
       searchURL = "/.netlify/functions/search";
     } else {
-      searchURL = `${this.myApp.netlifyURL}/.netlify/functions/search`;
+      searchURL = `${this.myApp.config.netlifyURL}/.netlify/functions/search`;
     }
     let response = await fetch(searchURL);
     if (!response.ok) {
