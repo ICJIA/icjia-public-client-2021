@@ -134,7 +134,7 @@ export default {
     async downloader(type) {
       const { hash, ext } = this.article[`${type}file`];
       window.open(
-        `https://icjia.illinois.gov/researchhub/files/${hash}${ext}`,
+        `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`,
         "_blank"
       );
       // console.log(hash, ext);

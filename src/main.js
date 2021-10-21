@@ -63,6 +63,12 @@ Vue.use(
   VueGtag,
   {
     config: { id: "G-LJP4M9Y8B0" },
+    pageTrackerTemplate(to) {
+      return {
+        page_title: to.name,
+        page_path: to.path,
+      };
+    },
   },
   router
 );

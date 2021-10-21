@@ -99,7 +99,7 @@ export default {
     async downloader() {
       const { hash, ext } = this.item.datafile;
       window.open(
-        `https://icjia.illinois.gov/researchhub/files/${hash}${ext}`,
+        `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`,
         "_blank"
       );
     },

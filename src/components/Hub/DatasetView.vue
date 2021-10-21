@@ -110,7 +110,11 @@
           </ul>
         </template>
       </BaseInfoBlock>
-      <v-col class="text-center mt-5">
+      <v-col class="text-center">
+        <v-btn @click="downloadHelper">Download here</v-btn>
+      </v-col>
+
+      <!-- <v-col class="text-center mt-5">
         <v-dialog v-model="dialog" class="text-center" persistent width="500">
           <template #activator="{ on }">
             <v-btn :small="smAndDown" text v-on="on" elevation="2">
@@ -130,7 +134,7 @@
             </v-row>
           </v-sheet>
         </v-dialog>
-      </v-col>
+      </v-col> -->
     </v-card>
   </v-container>
 </template>
@@ -227,7 +231,7 @@ export default {
       //console.log("download here", this.dataset.datafile);
       const { hash, ext } = this.dataset.datafile;
       window.open(
-        `https://icjia.illinois.gov/researchhub/files/${hash}${ext}`,
+        `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`,
         "_blank"
       );
       this.dialog = false;
