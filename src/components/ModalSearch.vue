@@ -79,12 +79,11 @@ export default {
   async created() {
     //console.log(process.env.NODE_ENV);
     NProgress.start();
-    console.log(this.$myApp.config);
     let searchURL;
     if (process.env.NODE_ENV === "development") {
       searchURL = "/.netlify/functions/search";
     } else {
-      searchURL = `https://agency.icjia.cloud/.netlify/functions/search`;
+      searchURL = `${this.$myApp.config.netlifyURL}/.netlify/functions/search`;
     }
     let response = await fetch(searchURL);
     if (!response.ok) {
