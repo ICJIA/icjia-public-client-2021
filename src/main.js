@@ -64,8 +64,9 @@ Vue.use(
   {
     config: { id: "G-LJP4M9Y8B0" },
     pageTrackerTemplate(to) {
+      //console.log(to);
       return {
-        page_title: to.name,
+        page_title: to.path,
         page_path: to.path,
       };
     },
