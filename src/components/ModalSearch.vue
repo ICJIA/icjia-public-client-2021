@@ -85,7 +85,14 @@ export default {
     } else {
       searchURL = `https://icjia-public.netlify.app/.netlify/functions/search`;
     }
-    let response = await fetch(searchURL);
+    let response = await fetch(searchURL, {
+      mode: "no-cors", // no-cors, *cors, same-origin
+      credentials: "omit", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
