@@ -83,9 +83,9 @@
                 <v-list-item
                   class="appNav"
                   exact
-                  :to="isLinkExternal(child.link) ? null : child.link"
-                  :href="isLinkExternal(child.link) ? child.link : null"
-                  :target="isLinkExternal(child.link) ? '_blank' : null"
+                  :to="isLinkExternal(child.external) ? null : child.link"
+                  :href="isLinkExternal(child.external) ? child.link : null"
+                  :target="isLinkExternal(child.external) ? '_blank' : null"
                   v-if="child.link"
                 >
                   <v-list-item-content class="hover">
@@ -107,9 +107,9 @@
             large
             :aria-label="menu.main"
             class="hidden-sm-and-down navItem"
-            :to="isLinkExternal(menu.link) ? null : menu.link"
-            :href="isLinkExternal(menu.link) ? menu.link : null"
-            :target="isLinkExternal(menu.link) ? '_blank' : null"
+            :to="isLinkExternal(child.external) ? null : menu.link"
+            :href="isLinkExternal(child.external) ? menu.link : null"
+            :target="isLinkExternal(child.external) ? '_blank' : null"
             style="font-weight: 900 !important; font-size: 16px"
             v-if="menu.link"
             >{{ menu.main }}
@@ -152,23 +152,12 @@ export default {
     openTranslationModal() {
       EventBus.$emit("translate", this.$route.fullPath);
     },
-    isLinkExternal(originalURL) {
-      const checkDomain = function (url) {
-        if (url.indexOf("//") === 0) {
-          url = location.protocol + url;
-        }
-        return url
-          .toLowerCase()
-          .replace(/([a-z])?:\/\//, "$1")
-          .split("/")[0];
-      };
-      const isExternal = function (url) {
-        return (
-          (url.indexOf(":") > -1 || url.indexOf("//") > -1) &&
-          checkDomain(location.href) !== checkDomain(url)
-        );
-      };
-      return isExternal(originalURL);
+    isLinkExternal(type = "internal") {
+      if (type === "internal") {
+        return false;
+      } else {
+        return true;
+      }
     },
   },
   data() {

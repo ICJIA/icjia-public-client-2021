@@ -58,7 +58,8 @@
                 {
                     "title": "FY2020 Annual Report",
                     "link": "https://archive.icjia-api.cloud/files/icjia/articles/FY20%20ICJIA%20Annual%20Report.pdf",
-                    "icon": "download"
+                    "icon": "download",
+                    "external": true
                 }
             ]
         },
@@ -151,7 +152,8 @@
                 {
                     "title": "Restore, Reinvest, Renew (R3)",
                     "link": "https://r3.illinois.gov",
-                    "icon": "open_in_new"
+                    "icon": "open_in_new",
+                    "external": true
                 }
             ]
         },
@@ -164,23 +166,27 @@
                 },
                 {
                     "title": "Adult Redeploy",
-                    "link": "/adultredeploy/",
-                    "icon": "open_in_new"
+                    "link": "https://icjia.illinois.gov/adultredeploy/",
+                    "icon": "open_in_new",
+                    "external": true
                 },
                 {
                     "title": "Illinois Family Violence Coordinating Councils",
-                    "link": "/ifvcc/",
-                    "icon": "open_in_new"
+                    "link": "https://ifvcc.icjia.cloud",
+                    "icon": "open_in_new",
+                    "external": true
                 },
                 {
                     "title": "Restore, Reinvest, Renew (R3)",
                     "link": "https://r3.illinois.gov/",
-                    "icon": "open_in_new"
+                    "icon": "open_in_new",
+                    "external": true
                 },
                 {
                     "title": "Sentencing Policy and Advisory Council",
                     "link": "https://spac.illinois.gov/",
-                    "icon": "open_in_new"
+                    "icon": "open_in_new",
+                    "external": true
                 },
                 {
                     "divider": true
@@ -191,7 +197,8 @@
                 {
                     "title": "Statewide Violence Prevention Plan: 2020-2024",
                     "link": "https://vpp.icjia.cloud/",
-                    "icon": "open_in_new"
+                    "icon": "open_in_new",
+                    "external": true
                 }
             ]
         }
