@@ -60,6 +60,13 @@ const redirects = [
   //   },
   // },
   {
+    path: "/gata/",
+    // eslint-disable-next-line no-unused-vars
+    redirect: (route) => {
+      return "/grants/funding/";
+    },
+  },
+  {
     path: "/gata/funding/",
     // eslint-disable-next-line no-unused-vars
     redirect: (route) => {
