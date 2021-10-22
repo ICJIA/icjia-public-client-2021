@@ -41,7 +41,7 @@ View the [security policy here](https://github.com/ICJIA/icjia-public-2021/blob/
 
 ### Changelog
 
-- [View changelog here](https://github.com/ICJIA/icjia-public-client-2021/blob/main/CHANGELOG.md).
+[View changelog here](https://github.com/ICJIA/icjia-public-client-2021/blob/main/CHANGELOG.md).
 
 ### Production URL
 
