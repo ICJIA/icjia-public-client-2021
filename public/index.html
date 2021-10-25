@@ -67,5 +67,19 @@
       integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI="
       crossorigin="anonymous"
     ></script>
+    <script>
+      if (isIE(window.navigator.userAgent)) {
+        document.getElementById("app").innerHTML =
+          "<h2>The ICJIA website does not support Internet Explorer</h2><h3>Please upgrade to a modern, secure browser such as Edge, Chrome, or Firefox.</h3>";
+      }
+
+      function isIE(ua) {
+        const isIE10orLess = ua.indexOf("MSIE") > -1;
+        const isIE11 = ua.indexOf("Trident/") > -1;
+        // console.log(ua);
+        // console.log(isIE10orLess, isIE11);
+        return isIE10orLess || isIE11;
+      }
+    </script>
   </body>
 </html>

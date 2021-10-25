@@ -1,8 +1,8 @@
 module.exports = {
   publicPath: "/",
-  configureWebpack: (config) => {
-    config.entry.app = "./src/entry.js";
-  },
+  // configureWebpack: (config) => {
+  //   config.entry.app = "./src/entry.js";
+  // },
 
   devServer: {
     proxy: {
@@ -17,6 +17,9 @@ module.exports = {
   pluginOptions: {
     moment: {
       locales: ["en"],
+    },
+    apollo: {
+      enableEngine: true,
     },
   },
   transpileDependencies: ["vuetify", "nanoid"],

@@ -55,7 +55,7 @@ const grants = [
 
   {
     path: "/gata/funding/:slug",
-    name: "FundingSingle",
+    name: "FundingSingleAlt",
     component: () =>
       import(
         /* webpackChunkName: "funding" */ "@/views/Grants/FundingSingle.vue"
@@ -64,7 +64,7 @@ const grants = [
 
   {
     path: "/gata/:slug",
-    name: "FSGUPage",
+    name: "FSGUPageAlt",
     component: () =>
       import(/* webpackChunkName: "funding" */ "@/views/BasePage.vue"),
   },
