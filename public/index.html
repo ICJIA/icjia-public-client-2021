@@ -70,7 +70,7 @@
     <script>
       if (isIE(window.navigator.userAgent)) {
         document.getElementById("app").innerHTML =
-          "<h2>The ICJIA website does not support Internet Explorer</h2><h3>Please upgrade to a modern, secure browser such as Edge, Chrome, or Firefox.</h3>";
+          "<div style='text-align: center'><h2>The ICJIA website does not support Internet Explorer</h2><h3>Please upgrade to a modern, secure browser such as Edge, Chrome, or Firefox.</h3><h4>If you're unable to upgrade your browser and want to view current ICJIA content, including the latest news, funding opportunities, and meeting information, please consider using our <a href='/ie11/''>RSS feeds</a>.<br/> <br/><a href='/ie11/''>Click for more information about RSS and direct links to our feeds</a>.</h4></div>";
       }
 
       function isIE(ua) {
