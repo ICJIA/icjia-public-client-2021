@@ -50,7 +50,10 @@
                     "
                   >
                     <div class="text-center px-5" style="min-width: 350px">
-                      <h1 class="nofo-title mt-3" style="color: #fff">
+                      <h1
+                        class="nofo-title mt-3"
+                        style="color: #fff; font-size: 24px; font-weight: bold"
+                      >
                         {{ slide.title }}
                       </h1>
                       <div class="nofo-tagline mt-4" style="font-size: 14px">
