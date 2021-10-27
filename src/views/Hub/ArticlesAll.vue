@@ -184,7 +184,7 @@ export default {
         hubArticles = hubArticles.map((e) => ({
           ...e,
           fullPath: `/researchhub/articles/${e.slug}/`,
-          imagePath: `https://icjia.illinois.gov/researchhub/images/${e.id}-splash.jpeg`,
+          imagePath: `https://icjia.illinois.gov/images/${e.id}-splash.jpeg`,
           contentType: "article",
         }));
         this.hubArticles.push(...hubArticles);

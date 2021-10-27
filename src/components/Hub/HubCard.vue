@@ -176,9 +176,9 @@ export default {
     },
     splashHeight() {
       if (this.orientation === "grid") {
-        return 150;
+        return 250;
       } else {
-        return 225;
+        return 250;
       }
     },
   },
@@ -293,7 +293,7 @@ export default {
         imgHeight,
         imageQuality
       );
-      // console.log(thumborImgPath);
+      console.log(thumborImgPath);
       return thumborImgPath;
     },
     formatDate(d) {
