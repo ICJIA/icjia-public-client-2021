@@ -48,7 +48,7 @@
                               >
                                 Feature
                               </v-chip>
-                              <h2>
+                              <h2 style="font-size: 22px; font-weight: bold">
                                 {{ item.title }}
                               </h2></v-col
                             >
@@ -111,7 +111,7 @@
                               >
                                 Feature
                               </v-chip>
-                              <h2>
+                              <h2 style="font-size: 22px; font-weight: bold">
                                 {{ item.title }}
                               </h2></v-col
                             >
