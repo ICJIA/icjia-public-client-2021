@@ -499,7 +499,7 @@ export default {
       window.open(url, "_blank", "noopener,resizable,scrollbars").focus();
     },
     getPermaLink(slug) {
-      return `${this.$myApp.config.baseClient}/about/publications/${slug}`;
+      return `https://icjia.illinois.gov/about/publications/${slug}`;
     },
     rowClick(value) {
       //console.log(value);
