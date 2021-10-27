@@ -4,9 +4,9 @@
       class="fill-height"
       align="center"
       justify="center"
-      style="margin-top: -50px"
+      style="margin-top: 0"
     >
-      <v-card class="pt-1 pb-5 pl-3 pr-3" width="350px">
+      <v-card class="pt-1 pb-5 pl-3 pr-3 mt-12" width="350px">
         <div class="text-center py-5">
           <h2>LOGIN</h2>
         </div>
