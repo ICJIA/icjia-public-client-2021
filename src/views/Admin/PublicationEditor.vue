@@ -488,15 +488,15 @@ export default {
     checkArticleURL() {
       let url = this.$refs.articleURL.value;
       //TODO: Fix replacement when site is live
-      url = url.replace(
-        "https://icjia.illinois.gov/researchhub/",
-        `${this.$myApp.config.baseClient}/researchhub/`
-      );
-      window.open(url, "noopener,resizable,scrollbars").focus();
+      // url = url.replace(
+      //   "https://icjia.illinois.gov/researchhub/",
+      //   `${this.$myApp.config.baseClient}/researchhub/`
+      // );
+      window.open(url, "_blank", "noopener,resizable,scrollbars").focus();
     },
     checkFileURL() {
       let url = this.$refs.fileURL.value;
-      window.open(url, "noopener,resizable,scrollbars").focus();
+      window.open(url, "_blank", "noopener,resizable,scrollbars").focus();
     },
     getPermaLink(slug) {
       return `${this.$myApp.config.baseClient}/about/publications/${slug}`;
