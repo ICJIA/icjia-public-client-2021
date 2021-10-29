@@ -21,7 +21,7 @@ exports.handler = (event, context, callback) => {
   if (!period) {
     period = "day";
   }
-  console.log(period);
+
   axios
     .get(
       `https://analytics.metaincognita.com/api/v1/stats/breakdown?site_id=icjia.illinois.gov&period=${period}&property=event:page&limit=${limit}`,
