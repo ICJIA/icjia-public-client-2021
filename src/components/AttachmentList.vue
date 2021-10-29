@@ -34,7 +34,7 @@
           >
             {{ item.updated_at | dateFormatAlt }}&nbsp;&nbsp;
 
-            <v-chip
+            <!-- <v-chip
               v-if="isItUpdated(item) && baseItemPublished"
               label
               x-small
@@ -44,7 +44,7 @@
               <span style="color: #fff !important; font-weight: 400">
                 Updated!
               </span>
-            </v-chip>
+            </v-chip> -->
           </span>
         </template>
         <template v-slot:item.size="{ item }">
@@ -86,8 +86,8 @@ export default {
   data() {
     return {
       attachments: null,
-      sortBy: "name",
-      sortDesc: false,
+      sortBy: "updated_at",
+      sortDesc: true,
 
       niceBytes,
       headers: [
