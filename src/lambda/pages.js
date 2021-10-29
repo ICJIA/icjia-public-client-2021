@@ -14,7 +14,7 @@ const headers = {
   "Access-Control-Allow-Methods": "GET",
 };
 
-const limit = 15;
+const limit = 100;
 
 exports.handler = (event, context, callback) => {
   let period = event.queryStringParameters.period;
