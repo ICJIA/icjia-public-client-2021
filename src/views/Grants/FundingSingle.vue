@@ -32,9 +32,11 @@
                   <AttachmentList
                     :items="funding.attachments"
                     v-if="funding.attachments && funding.attachments.length"
-                    class="mt-8 pl-0"
+                    label="Attachments"
+                    class="mt-0 pl-0"
                     :key="funding.slug"
                     :baseItemPublished="funding.published_at"
+                    :useSecondLevelHeading="true"
                   ></AttachmentList>
                   <RelatedList
                     :content="funding"

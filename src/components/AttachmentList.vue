@@ -1,10 +1,11 @@
 <template>
   <v-sheet v-if="attachments" class="py-2">
-    <!-- <div v-if="useSecondLevelHeading">
+    <div v-if="useSecondLevelHeading">
       <h2 v-if="label && label.length" id="attachments">{{ label }}</h2>
       <h2 v-else class="" id="attachments">Attachments</h2>
-    </div> -->
+    </div>
     <div
+      v-if="!useSecondLevelHeading"
       style="
         font-weight: 700;
         border-bottom: 1px solid #ccc;
