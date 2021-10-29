@@ -31,7 +31,7 @@
       >
         <template v-slot:item.updated_at="{ item }">
           <span
-            style="width: 90px; font-size: 14px; font-weight: 400; color: #555"
+            style="width: 90px; font-size: 14px; font-weight: 700; color: #555"
           >
             {{ item.updated_at | dateFormatAlt }}&nbsp;&nbsp;
 
@@ -98,10 +98,9 @@ export default {
           sortable: true,
           value: "name",
         },
+        { text: "Last Updated", value: "updated_at" },
 
         { text: "Size", value: "size" },
-
-        { text: "Last Updated", value: "updated_at" },
       ],
     };
   },
