@@ -107,6 +107,7 @@ export default {
   methods: {
     routeTo(url) {
       console.log(url);
+      window.plausible("file_download", { props: { url: url } });
       window.open(`https://agency.icjia-api.cloud${url}`, "_blank");
     },
     isItUpdated(item) {
