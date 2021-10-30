@@ -24,7 +24,7 @@ exports.handler = (event, context, callback) => {
 
   axios
     .get(
-      `https://analytics.icjia-api.cloud/api/v1/stats/breakdown?site_id=icjia.illinois.gov&period=${period}&property=event:page&limit=${limit}`,
+      `${process.env.PLAUSIBLE_API_BASE}/api/v1/stats/breakdown?site_id=icjia.illinois.gov&period=${period}&property=event:page&limit=${limit}`,
       {
         headers: {
           "cache-control": "no-cache",
