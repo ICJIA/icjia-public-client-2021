@@ -77,6 +77,9 @@
 <script>
 export default {
   created() {},
+  mounted() {
+    window.plausible("404", { props: { path: document.location.pathname } });
+  },
 };
 </script>
 
