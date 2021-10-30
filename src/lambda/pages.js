@@ -17,6 +17,7 @@ const headers = {
 const limit = 100;
 
 exports.handler = (event, context, callback) => {
+  // console.log(process.env);
   let period = event.queryStringParameters.period;
   if (!period) {
     period = "day";
