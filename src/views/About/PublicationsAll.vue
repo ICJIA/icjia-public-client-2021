@@ -102,7 +102,11 @@
               <template v-slot:item.fileURL="{ item }">
                 <div class="my-2" v-if="item.fileURL && item.fileURL.length">
                   <span v-if="item.pubType !== 'application'"
-                    ><v-btn :href="item.fileURL" target="_blank" x-small
+                    ><v-btn
+                      :href="item.fileURL"
+                      target="_blank"
+                      x-small
+                      @click="registerDownload(item.fileURL)"
                       >Download PDF<v-icon right>download</v-icon></v-btn
                     ></span
                   >
@@ -219,6 +223,13 @@ export default {
     this.tableLoading = false;
   },
   methods: {
+    registerDownload(url) {
+      var domain = url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "");
+      domain = domain.split("/")[0];
+      let analyticsURL = url.replace(domain, "").replace("https://", "");
+      //console.log(analyticsURL);
+      window.plausible("file_download", { props: { url: analyticsURL } });
+    },
     async fetchPublications() {
       if (this.$myApp.publications && this.$myApp.publications.length) {
         this.publications = this.$myApp.publications;

@@ -45,7 +45,12 @@
             </template>
             <span>{{ item.fileURL }}</span>
           </v-tooltip> -->
-          <a :href="item.fileURL" target="_blank">{{ item.title }} </a>
+          <a
+            :href="item.fileURL"
+            @click="registerDownload(item.fileURL)"
+            target="_blank"
+            >{{ item.title }}
+          </a>
           &nbsp;<v-chip x-small style="font-weight: 900">{{
             getFileType(item.fileURL)
           }}</v-chip>
@@ -78,6 +83,15 @@
 <script>
 export default {
   methods: {
+    // eslint-disable-next-line no-unused-vars
+    registerDownload(url) {
+      var domain = url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "");
+      domain = domain.split("/")[0];
+      let analyticsURL = url.replace(domain, "").replace("https://", "");
+      //console.log(analyticsURL);
+      window.plausible("file_download", { props: { url: analyticsURL } });
+    },
+
     getFileType(url) {
       return url.split(/[#?]/)[0].split(".").pop().trim().toUpperCase();
     },
