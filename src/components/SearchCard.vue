@@ -186,13 +186,20 @@ export default {
     },
     route(path) {
       EventBus.$emit("closeSearch");
-
+      //console.log("search conversion: ", path, "query: ", this.query);
+      window.plausible("search_conversion", {
+        props: { query: this.query, path: path },
+      });
       this.$router.push(path).catch((err) => {
         this.$vuetify.goTo(0);
       });
     },
   },
   props: {
+    query: {
+      type: String,
+      default: "",
+    },
     item: {
       type: Object,
       default: () => {},

@@ -39,7 +39,7 @@
               :key="index"
               class="my-4"
             >
-              <SearchCard :item="result.item"></SearchCard>
+              <SearchCard :item="result.item" :query="query"></SearchCard>
             </div>
           </div>
         </v-form>
