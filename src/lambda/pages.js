@@ -46,6 +46,10 @@ exports.handler = (event, context, callback) => {
       });
     })
     .catch((err) => {
-      callback(err);
+      callback(null, {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify(err.message),
+      });
     });
 };
