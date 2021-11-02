@@ -19,6 +19,10 @@ export default {
   methods: {
     chipClick(e) {
       //console.log("chip click: ", e.target.innerHTML);
+      console.log("tag click: ", e.target.innerText.trim().toLowerCase());
+      window.plausible("tag_click", {
+        props: { tag: e.target.innerText.trim().toLowerCase() },
+      });
       let opts = {
         query: e.target.innerText.trim(),
         type: "hub",
