@@ -98,8 +98,7 @@ export default {
     },
     async downloader() {
       const { hash, ext } = this.item.datafile;
-      let analyticsURL = `/uploads/${hash}${ext}`;
-      window.plausible("file_download", { props: { url: analyticsURL } });
+
       window.open(
         `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`,
         "_blank"
