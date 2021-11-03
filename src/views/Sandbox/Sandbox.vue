@@ -1,5 +1,5 @@
 <template>
-  <div class="markdown-body mt-4">
+  <div class="markdown-body">
     <BaseContent :error="error" :loading="loading">
       <template slot="content" v-if="!loading">
         <Splash
