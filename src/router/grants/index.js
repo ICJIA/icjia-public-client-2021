@@ -68,6 +68,13 @@ const grants = [
     component: () =>
       import(/* webpackChunkName: "funding" */ "@/views/BasePage.vue"),
   },
+
+  //   {
+  //     path: "/a/:slug",
+  //     redirect: route => {
+  //         return "/b/" + route.params.slug;
+  //     }
+  // }
 ];
 
 export { grants };
