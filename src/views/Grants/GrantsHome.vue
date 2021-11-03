@@ -41,11 +41,25 @@
                       readMoreText="Read full NOFO&nbsp;&raquo;"
                     ></BaseCardExpandable>
                   </div>
-                  <div
-                    v-if="filteredAndSortedGrants.length === 0"
-                    class="text-center py-10"
-                  >
-                    <strong>No current funding opportunities to display</strong>
+                  <div>
+                    <h3
+                      class="text-center"
+                      v-if="filteredAndSortedGrants.length === 0"
+                    >
+                      No current funding opportunities.
+                    </h3>
+                    <p
+                      v-if="filteredAndSortedGrants.length === 0"
+                      class="text-center"
+                    >
+                      Please check back soon or subscribe to the
+                      <a
+                        target="_blank"
+                        href="https://visitor.r20.constantcontact.com/manage/optin?v=001MqUcqqvjwLCJXlLMSWbTe3zHHmEQgFeBuHvBcJWTbwgrxFbDSGx4HSUPpI6DJWMUPgbljtLxffqIcGFTgCnr-auak88ybvRxpoJlTMGPtZs%3D"
+                        >CJ Dispatch</a
+                      >
+                      for the latest ICJIA news and information.
+                    </p>
                   </div>
                 </v-col>
                 <v-col
