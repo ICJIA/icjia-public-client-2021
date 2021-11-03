@@ -98,6 +98,7 @@ export default {
     },
     async downloader() {
       const { hash, ext } = this.item.datafile;
+
       window.open(
         `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`,
         "_blank"

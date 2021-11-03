@@ -175,6 +175,7 @@ export default {
   },
   methods: {
     launch(url) {
+      window.plausible("app_launch", { props: { url: url } });
       window.open(url);
     },
   },
