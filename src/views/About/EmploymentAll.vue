@@ -43,12 +43,13 @@
                     </div>
                   </div>
                   <div v-else class="text-center">
-                    <strong v-if="toggle_jobStatus === 0"
-                      >There are no current employment opportunities.</strong
-                    >
-                    <strong v-else
-                      >There are no expired employment opportunities.</strong
-                    ><br /><br />
+                    <h3 v-if="toggle_jobStatus === 0">
+                      There are no current employment opportunities.
+                    </h3>
+                    <h3 v-else>
+                      There are no expired employment opportunities.
+                    </h3>
+
                     <p>
                       Please check back soon or subscribe to the
                       <a

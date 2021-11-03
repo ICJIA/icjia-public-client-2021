@@ -30,9 +30,26 @@
               </v-col>
 
               <v-col cols="12">
-                <h3 v-if="filteredAndSortedGrants.length === 0">
-                  No {{ currentSelection }} funding opportunities to display.
-                </h3>
+                <div>
+                  <h3
+                    class="text-center"
+                    v-if="filteredAndSortedGrants.length === 0"
+                  >
+                    No {{ currentSelection }} funding opportunities.
+                  </h3>
+                  <p
+                    v-if="filteredAndSortedGrants.length === 0"
+                    class="text-center"
+                  >
+                    Please check back soon or subscribe to the
+                    <a
+                      target="_blank"
+                      href="https://visitor.r20.constantcontact.com/manage/optin?v=001MqUcqqvjwLCJXlLMSWbTe3zHHmEQgFeBuHvBcJWTbwgrxFbDSGx4HSUPpI6DJWMUPgbljtLxffqIcGFTgCnr-auak88ybvRxpoJlTMGPtZs%3D"
+                      >CJ Dispatch</a
+                    >
+                    for the latest ICJIA news and information.
+                  </p>
+                </div>
                 <div
                   v-for="grant in filteredAndSortedGrants"
                   :key="grant.id"
