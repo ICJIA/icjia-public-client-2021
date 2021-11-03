@@ -293,7 +293,7 @@ export default {
         imgHeight,
         imageQuality
       );
-      console.log(thumborImgPath);
+      //console.log(thumborImgPath);
       return thumborImgPath;
     },
     formatDate(d) {
