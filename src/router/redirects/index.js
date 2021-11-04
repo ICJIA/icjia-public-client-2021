@@ -45,6 +45,14 @@ const redirects = [
     },
   },
   {
+    path: "/covid19/",
+    name: "NewsCovidAlt",
+    // eslint-disable-next-line no-unused-vars
+    redirect: (route) => {
+      return "/about/covid-19/";
+    },
+  },
+  {
     path: "/foia/",
     // eslint-disable-next-line no-unused-vars
     redirect: (route) => {

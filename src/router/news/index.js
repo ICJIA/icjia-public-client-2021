@@ -17,6 +17,7 @@ const news = [
     component: () =>
       import(/* webpackChunkName: "news" */ "@/views/About/Covid.vue"),
   },
+
   {
     path: "/news/publications/",
     name: "NewsPublications",
