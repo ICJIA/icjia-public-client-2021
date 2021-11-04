@@ -52,29 +52,41 @@ const grants = [
         /* webpackChunkName: "funding" */ "@/views/Grants/FundingSingle.vue"
       ),
   },
-
   {
-    path: "/gata/funding/:slug",
-    name: "FundingSingleAlt",
-    component: () =>
-      import(
-        /* webpackChunkName: "funding" */ "@/views/Grants/FundingSingle.vue"
-      ),
+    path: "/gata/",
+    // eslint-disable-next-line no-unused-vars
+    redirect: (route) => {
+      return "/grants/funding/";
+    },
+  },
+  {
+    path: "/ta/",
+    // eslint-disable-next-line no-unused-vars
+    redirect: (route) => {
+      return "/grants/technical-assistance/";
+    },
+  },
+  {
+    path: "/gata/funding/",
+    // eslint-disable-next-line no-unused-vars
+    redirect: (route) => {
+      return "/grants/funding/";
+    },
   },
 
   {
     path: "/gata/:slug",
-    name: "FSGUPageAlt",
-    component: () =>
-      import(/* webpackChunkName: "funding" */ "@/views/BasePage.vue"),
+    redirect: (route) => {
+      return "/grants/" + route.params.slug;
+    },
   },
 
-  //   {
-  //     path: "/a/:slug",
-  //     redirect: route => {
-  //         return "/b/" + route.params.slug;
-  //     }
-  // }
+  {
+    path: "/gata/funding/:slug",
+    redirect: (route) => {
+      return "/grants/funding/" + route.params.slug;
+    },
+  },
 ];
 
 export { grants };

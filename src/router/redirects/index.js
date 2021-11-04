@@ -59,27 +59,7 @@ const redirects = [
   //     return "/grants/funding/community-based-violence-intervention-and-prevention/";
   //   },
   // },
-  {
-    path: "/gata/",
-    // eslint-disable-next-line no-unused-vars
-    redirect: (route) => {
-      return "/grants/funding/";
-    },
-  },
-  {
-    path: "/ta/",
-    // eslint-disable-next-line no-unused-vars
-    redirect: (route) => {
-      return "/grants/technical-assistance/";
-    },
-  },
-  {
-    path: "/gata/funding/",
-    // eslint-disable-next-line no-unused-vars
-    redirect: (route) => {
-      return "/grants/funding/";
-    },
-  },
+
   //   {
   //     path: "/gata/:path*",
   //     redirect: (to) => {
