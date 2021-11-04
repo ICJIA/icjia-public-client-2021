@@ -129,6 +129,13 @@
                 target="_blank"
                 >Subscribe to CJ Dispatch</a
               >
+              |
+              <a
+                href="javascript:void(0);"
+                style="color: #fff; background: none"
+                @click="openTranslationModal"
+                >Translate Site</a
+              >
             </div>
 
             <div
@@ -150,6 +157,11 @@
 <script>
 import { EventBus } from "@/event-bus";
 export default {
+  methods: {
+    openTranslationModal() {
+      EventBus.$emit("translate", this.$route.fullPath);
+    },
+  },
   mounted() {
     EventBus.$on("show-footer", () => {
       console.log("show-footer event");
