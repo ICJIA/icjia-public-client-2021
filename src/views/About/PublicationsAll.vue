@@ -34,9 +34,9 @@
               :sort-by.sync="sortBy"
               :sort-desc.sync="sortDesc"
               :footer-props="{
-                'items-per-page-options': [50, 100, 150, 200, 250],
+                'items-per-page-options': [100, 150, 200, 250, 500],
               }"
-              :items-per-page="100"
+              :items-per-page="150"
               id="pubTable"
             >
               <template v-slot:item.publicationDate="{ item }">
@@ -140,6 +140,7 @@
           ><v-col><Loader loaderType="skeleton"></Loader></v-col
         ></v-row>
       </v-container>
+      <div style="height: 200px"></div>
     </div>
   </div>
 </template>
