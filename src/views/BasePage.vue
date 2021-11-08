@@ -5,6 +5,7 @@
         <Splash
           v-if="content && content.splash"
           :splash="content.splash"
+          :key="content.id"
         ></Splash>
 
         <v-container style="margin-top: -15px">

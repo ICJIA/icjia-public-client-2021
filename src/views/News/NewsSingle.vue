@@ -6,6 +6,7 @@
           <Splash
             v-if="news && news.splash && !news.hideSplash"
             :splash="news.splash"
+            :key="news.title"
           ></Splash>
           <v-row>
             <v-col cols="12" :md="news.showTOC ? 8 : 12">

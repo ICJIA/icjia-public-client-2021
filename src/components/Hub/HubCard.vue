@@ -36,7 +36,7 @@
     >
 
     <div v-if="!textOnly">
-      <v-img
+      <!-- <v-img
         v-if="item.image"
         :src="item.image"
         width="100%"
@@ -101,8 +101,18 @@
             ></v-progress-circular>
           </v-row>
         </template>
-      </v-img>
+      </v-img> -->
     </div>
+
+    <img
+      v-if="item.imagePath && !item.image && !textOnly && imageOK"
+      :src="getImagePath(item.imagePath, 0, 0, 40)"
+      :ref="'img_' + item.id"
+      :height="splashHeight"
+      class="mb-5"
+      style="width: 100%; object-fit: cover"
+    />
+
     <v-card-text
       v-if="item.description"
       style="margin-top: -15px; color: #111"
@@ -166,6 +176,7 @@ import { format, parseISO } from "date-fns";
 import { getImageURL } from "@/services/Image";
 import moment from "moment";
 export default {
+  sync: false,
   computed: {
     truncation() {
       if (this.orientation === "grid") {

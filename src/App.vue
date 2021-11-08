@@ -25,12 +25,12 @@
           @hook:mounted="displayFooter()"
         ></router-view>
       </div>
-      <!-- <Disclaimer
+      <Disclaimer
         v-if="disclaimer"
         :disclaimer="disclaimer"
         id="disclaimer"
         :key="`disclaimer-${$route.fullPath}`"
-      ></Disclaimer> -->
+      ></Disclaimer>
     </v-main>
     <ModalTranslate></ModalTranslate>
     <ModalSearch></ModalSearch>

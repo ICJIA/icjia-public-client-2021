@@ -14,6 +14,7 @@
       @hook:mounted="childMounted"
       :key="article.title"
       id="article-view"
+      style="margin-top: -25px"
     />
   </div>
 </template>

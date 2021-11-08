@@ -25,6 +25,7 @@
                 class="flex-item"
                 :textOnly="false"
                 :showUpdated="false"
+                :key="item.id"
               ></NewsCard>
             </v-col>
           </v-row>

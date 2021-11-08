@@ -207,6 +207,7 @@ import {
 } from "@/services/ResearchHub";
 
 export default {
+  sync: false,
   data() {
     return {
       apps: null,
