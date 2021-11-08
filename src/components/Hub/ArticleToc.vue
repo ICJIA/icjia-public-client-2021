@@ -29,27 +29,29 @@
 <script>
 export default {
   mounted() {
-    const disclaimer = document.querySelector("#disclaimer");
-    const toc = document.querySelector(".article-toc");
-    const observer = new window.IntersectionObserver(
-      ([entry]) => {
-        //console.log(entry.boundingClientRect.top);
-        if (entry.isIntersecting) {
-          console.log("Disclaimer Enter");
-          toc.classList.remove("article-toc-sticky");
-          return;
+    this.$nextTick(() => {
+      const disclaimer = document.querySelector("#disclaimer");
+      const toc = document.querySelector(".article-toc");
+      const observer = new window.IntersectionObserver(
+        ([entry]) => {
+          //console.log(entry.boundingClientRect.top);
+          if (entry.isIntersecting) {
+            console.log("Disclaimer Enter");
+            toc.classList.remove("article-toc-sticky");
+            return;
+          }
+          // TODO:fix to replace TOC if user is scrolled down far enough
+          console.log("Disclaimer Leave");
+        },
+        {
+          root: null,
+          threshold: 0,
         }
-        // TODO:fix to replace TOC if user is scrolled down far enough
-        console.log("Disclaimer Leave");
-      },
-      {
-        root: null,
-        threshold: 0,
+      );
+      if (observer) {
+        observer.observe(disclaimer);
       }
-    );
-    if (observer) {
-      observer.observe(disclaimer);
-    }
+    });
   },
   methods: {
     scrollTo(id) {
