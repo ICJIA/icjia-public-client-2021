@@ -16,6 +16,7 @@ const query = `query {
     category
     searchMeta
     published_at
+    hideFromSearch
     tags {
       title
       slug
@@ -59,6 +60,10 @@ axios
         page.category = "information-systems";
       }
     });
+    pages = pages.filter((page) => {
+      return !page.hideFromSearch;
+    });
+    //console.log(pages);
     pages = getUnifiedTags(pages);
     pages = pages.map((p) => {
       let imagePath;
