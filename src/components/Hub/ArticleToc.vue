@@ -47,7 +47,9 @@ export default {
         threshold: 0,
       }
     );
-    observer.observe(disclaimer);
+    if (observer) {
+      observer.observe(disclaimer);
+    }
   },
   methods: {
     scrollTo(id) {
