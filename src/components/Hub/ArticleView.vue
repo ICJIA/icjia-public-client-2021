@@ -1,19 +1,19 @@
 <template>
   <!-- eslint-disable vue/no-v-html -->
   <div>
-    <!-- <v-img :height="splashHeight" :src="article.splash">
+    <v-img :height="splashHeight" :src="article.splash">
       <template #placeholder>
         <v-row class="fill-height" align="center" justify="center">
           <v-progress-circular indeterminate />
         </v-row>
       </template>
-    </v-img> -->
+    </v-img>
 
     -
-    <img
+    <!-- <img
       :src="article.splash"
       style="width: 100%; object-fit: cover; height: 400px"
-    />
+    /> -->
 
     <v-row no-gutters>
       <v-col md="4" lg="3" class="hidden-sm-and-down">

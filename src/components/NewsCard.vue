@@ -46,14 +46,30 @@
       >{{ displayAuthors(item.authors) }}</v-card-text
     >
     <div v-if="item.splash">
-      <img
+      <v-img
         :src="`https://agency.icjia-api.cloud${item.splash.formats.small.url}`"
+        :lazy-src="`https://agency.icjia-api.cloud${item.splash.formats.thumbnail.url}`"
         width="100%"
         :height="imageHeight"
-      />
+        class=""
+        :ref="'img_' + item.id"
+        @error="errorHandler(item.id)"
+        style="border: 1px solid #fafafa"
+        alt="ICJIA News image"
+        @load="resize"
+        ><template #placeholder>
+          <v-row class="fill-height ma-0" align="center" justify="center">
+            <v-progress-circular
+              indeterminate
+              color="blue darken-3"
+              aria-label="progress"
+            ></v-progress-circular>
+          </v-row>
+        </template>
+      </v-img>
     </div>
 
-    <img
+    <v-img
       aria-label="News post image"
       src="/icjia-half-splash-thumb.jpg"
       width="100%"
@@ -62,7 +78,17 @@
       style="border: 0px solid #fafafa"
       alt="ICJIA Intranet image"
       v-else
-    />
+    >
+      <template v-slot:placeholder>
+        <v-row class="fill-height ma-0" align="center" justify="center">
+          <v-progress-circular
+            indeterminate
+            aria-label="Progress bar: Loading"
+            color="blue darken-3"
+          ></v-progress-circular>
+        </v-row>
+      </template>
+    </v-img>
 
     <v-card-text v-if="item.summary" style="color: #111"
       >{{ item.summary }}

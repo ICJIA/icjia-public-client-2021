@@ -12,13 +12,18 @@
 
             <v-row class="py-10" style="margin-top: -55px">
               <v-col cols="12" md="4"
-                ><img
+                ><v-img
                   :src="app.image"
                   :min-height="350"
                   style="border: 1px solid #eee"
                   class="mt-3"
-                />
-              </v-col>
+                >
+                  <template #placeholder>
+                    <v-row class="fill-height" align="center" justify="center">
+                      <v-progress-circular indeterminate />
+                    </v-row>
+                  </template> </v-img
+              ></v-col>
               <v-col
                 class="px-6 pb-6"
                 :class="app.external ? 'pt-0' : 'pt-6'"
