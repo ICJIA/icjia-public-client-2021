@@ -79,23 +79,23 @@ export default {
   async created() {
     //console.log(process.env.NODE_ENV);
     NProgress.start();
-    let searchURL;
-    if (process.env.NODE_ENV === "development") {
-      searchURL = "/.netlify/functions/search";
-    } else {
-      searchURL = "https://icjia.illinois.gov/api/search";
-    }
-    let response = await fetch(searchURL);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    let data = await response.json();
-    const fuse = new Fuse(data.message, this.$myApp.config.search.site);
-    this.$myApp.fuse = fuse;
-    console.warn(
-      "Getting search data from lambda. Length: ",
-      data.message.length
-    );
+    // let searchURL;
+    // if (process.env.NODE_ENV === "development") {
+    //   searchURL = "/.netlify/functions/search";
+    // } else {
+    //   searchURL = "https://icjia.illinois.gov/api/search";
+    // }
+    // let response = await fetch(searchURL);
+    // if (!response.ok) {
+    //   throw new Error(`HTTP error! status: ${response.status}`);
+    // }
+    // let data = await response.json();
+    // const fuse = new Fuse(data.message, this.$myApp.config.search.site);
+    // this.$myApp.fuse = fuse;
+    // console.warn(
+    //   "Getting search data from lambda. Length: ",
+    //   data.message.length
+    // );
     this.fuse = this.$myApp.fuse;
     NProgress.done();
   },
