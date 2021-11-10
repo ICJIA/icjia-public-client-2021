@@ -16,7 +16,7 @@
   "scripts": {
     "serve": "kill-port 8080 && npm run scripts && vue-cli-service serve",
     "lambda": "npm run build:lambda && npm run start:lambda",
-    "build": "npm run generate:images && npm run scripts && vue-cli-service build --modern && npm run build:lambda",
+    "build": "npm run generate:images && npm run scripts && vue-cli-service build && npm run build:lambda",
     "lint": "vue-cli-service lint",
     "scripts": "npm run generate:schema && npm run generate:search && npm run generate:feeds",
     "generate:search": "node ./generators/generateIndexHub && node ./generators/generateIndexUnits && node ./generators/generateIndexGrants && node ./generators/generateIndexPages && node ./generators/generateIndexMeetings && node ./generators/generateIndexEvents && node ./generators/generateIndexPosts && node ./generators/generateIndexJobs && node ./generators/generateIndexBiographies &&  node ./generators/generateIndexPublications && node ./generators/searchIndexAndSitemap",
