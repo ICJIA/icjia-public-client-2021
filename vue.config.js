@@ -22,5 +22,5 @@ module.exports = {
       enableEngine: true,
     },
   },
-  transpileDependencies: ["vuetify", "nanoid"],
+  transpileDependencies: ["vuetify", "nanoid", "fuse.js"],
 };
