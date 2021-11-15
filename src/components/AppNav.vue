@@ -17,7 +17,7 @@
         alt="ICJIA Logo"
         class="shrink mr-4 hover"
         contain
-        src="/icjia-logo.png"
+        :src="require('@/assets/icjia-logo.png')"
         transition="scale-transition"
         width="90"
         style
