@@ -1,11 +1,13 @@
 const zlib = require("zlib");
-
+const CompressionPlugin = require("compression-webpack-plugin");
 module.exports = {
   publicPath: "/",
   // configureWebpack: (config) => {
   //   config.entry.app = "./src/entry.js";
   // },
-
+  chainWebpack(config) {
+    config.plugin("CompressionPlugin").use(CompressionPlugin);
+  },
   devServer: {
     proxy: {
       "/.netlify/functions": {
@@ -17,6 +19,10 @@ module.exports = {
     },
   },
   pluginOptions: {
+    lodash: {
+      // 是否开启ProvidePlugin, 默认false
+      provide: false,
+    },
     compression: {
       brotli: {
         filename: "[file].br[query]",
