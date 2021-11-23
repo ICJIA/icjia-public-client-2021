@@ -20,7 +20,6 @@ module.exports = {
   },
   pluginOptions: {
     lodash: {
-      // 是否开启ProvidePlugin, 默认false
       provide: false,
     },
     compression: {
