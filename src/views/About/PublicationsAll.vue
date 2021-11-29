@@ -184,7 +184,7 @@ export default {
         { text: "Type", value: "pubType" },
 
         {
-          text: "Article11",
+          text: "Article",
           value: "articleURL",
           align: "center",
           sortable: false,
