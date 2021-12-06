@@ -73,6 +73,7 @@ const grants = [
       return "/grants/technical-assistance/";
     },
   },
+
   {
     path: "/gata/funding/",
     // eslint-disable-next-line no-unused-vars
