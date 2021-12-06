@@ -10,7 +10,7 @@
       <v-col cols="12" style="margin-top: -45px">
         <h2 class="mb-4 font-weight-light">About this dataset</h2>
         <BasePropDisplay name="Final date reflected in dataset">
-          <template>{{ dataset.date }}</template>
+          <template>{{ dataset.date | format }}</template>
         </BasePropDisplay>
 
         <BasePropDisplay name="Sources">

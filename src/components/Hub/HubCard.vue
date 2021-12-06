@@ -6,6 +6,7 @@
     :min-height="orientation === 'grid' ? 400 : null"
     :height="cardHeight"
     @click.prevent="$router.push(item.fullPath)"
+    style="width: 100%"
   >
     <v-card-text
       ><span v-if="!showUpdated" class="font-lato">{{
@@ -134,7 +135,7 @@
       </BasePropDisplay>
 
       <BasePropDisplay v-if="showUpdated" :name="updatedText">
-        {{ item.date | dateFormatAlt }}
+        {{ item.date | format }}
       </BasePropDisplay>
       <BasePropDisplay
         v-if="item.categories && item.categories.length"

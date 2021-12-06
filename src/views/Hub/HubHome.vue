@@ -16,13 +16,13 @@
           </v-col>
           <v-col cols="12" md="6" class="text-right" style="margin-top: 5px"
             ><v-btn outlined small to="/researchhub/articles/"
-              >See more&nbsp;&raquo;</v-btn
+              >All articles&nbsp;&raquo;</v-btn
             ></v-col
           >
         </v-row>
       </v-container>
       <div v-if="!hubLoading">
-        <v-carousel height="550">
+        <v-carousel height="650">
           <v-carousel-item v-for="(article, i) in articles" :key="i">
             <v-card height="100%">
               <v-row no-gutters>
@@ -31,7 +31,7 @@
                     v-if="article && article.splash"
                     :src="article.splash"
                     alt="ICJIA Research Hub page splash image"
-                    height="550"
+                    height="650"
                     class="hover"
                     @click="
                       $router.push(`/researchhub/articles/${article.slug}`)
@@ -118,7 +118,7 @@
             </v-col>
             <v-col cols="12" md="6" class="text-right" style="margin-top: 5px"
               ><v-btn outlined small to="/researchhub/apps/"
-                >See more&nbsp;&raquo;</v-btn
+                >All web apps&nbsp;&raquo;</v-btn
               ></v-col
             >
           </v-row>
@@ -148,7 +148,7 @@
             </v-col>
             <v-col cols="12" md="6" class="text-right" style="margin-top: 5px"
               ><v-btn outlined small to="/researchhub/datasets/"
-                >See more&nbsp;&raquo;</v-btn
+                >All datasets&nbsp;&raquo;</v-btn
               ></v-col
             >
           </v-row>
@@ -232,7 +232,7 @@ export default {
       fullPath: `/researchhub/apps/${e.slug}/`,
       contentType: "app",
     }));
-    this.articles = await getHubArticles(10);
+    this.articles = await getHubArticles(3);
     this.articles = this.articles.map((e) => ({
       ...e,
       fullPath: `/researchhub/articles/${e.slug}/`,
