@@ -139,7 +139,7 @@ const GET_HOME = gql`
       }
     }
 
-    meetings(sort: "published_at:desc", limit: $meetingLimit) {
+    meetings(sort: "end:desc", limit: $meetingLimit) {
       id
       title
       summary
