@@ -74,6 +74,20 @@
                     class="mb-6"
                   ></div
                 ></v-col>
+                <v-col cols="12" style="margin-top: -25px">
+                  <div
+                    class="text-center"
+                    style="font-size: 14px; font-weight: 700"
+                  >
+                    For funding opportunities prior to 2019, please visit
+                    ICJIA's legacy GATA site:
+                    <a
+                      href="https://legacy-grants.icjia.cloud/grants"
+                      target="_blank"
+                      >https://legacy-grants.icjia.cloud/grants</a
+                    >
+                  </div>
+                </v-col>
               </v-row>
             </v-container>
             <v-container>
