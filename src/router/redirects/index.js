@@ -60,7 +60,7 @@ const redirects = [
     },
   },
   {
-    path: "/news/reviewvolunteers/",
+    path: "/news/volunteers/",
     // eslint-disable-next-line no-unused-vars
     redirect: (route) => {
       return "/news/join-our-volunteer-reviewer-pool/";
