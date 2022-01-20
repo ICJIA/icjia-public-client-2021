@@ -59,6 +59,13 @@ const redirects = [
       return "/about/foia/";
     },
   },
+  {
+    path: "/news/reviewvolunteers/",
+    // eslint-disable-next-line no-unused-vars
+    redirect: (route) => {
+      return "/news/join-our-volunteer-reviewer-pool/";
+    },
+  },
 
   // {
   //   path: "/gata/funding/2021-cbvip-sfy22/",
