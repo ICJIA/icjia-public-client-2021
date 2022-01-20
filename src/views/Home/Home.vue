@@ -150,7 +150,7 @@ export default {
         return {
           now: new Date(),
           eventLimit: this.$myApp.config.home.eventLimit,
-          postLimit: this.$myApp.config.home.postLimit + 6,
+          postLimit: 15,
           fundingLimit: this.$myApp.config.home.fundingLimit,
           meetingLimit: this.$myApp.config.home.meetingLimit,
           employmentLimit: this.$myApp.config.home.employmentLimit,
@@ -227,36 +227,36 @@ export default {
 
         //Data adjustments
 
-        this.trainingEvents = ApolloQueryResult.data.trainingEvents.map(
-          (e) => ({
-            ...e,
-            title: e.name,
-            fullPath: `/events/${e.slug}/`,
-            contentType: "Event",
-            color: "green darken-4",
-          })
-        );
-        this.communityEvents = ApolloQueryResult.data.communityEvents.map(
-          (e) => ({
-            ...e,
-            title: e.name,
-            fullPath: `/events/${e.slug}/`,
-            contentType: "Event",
-            color: "green darken-4",
-          })
-        );
-        this.meetingEvents = ApolloQueryResult.data.meetingEvents.map((e) => ({
-          ...e,
-          fullPath: `/news/meetings/${e.slug}/`,
-          contentType: "Meeting",
-          color: "blue darken-2",
-        }));
-        this.fundingEvents = ApolloQueryResult.data.fundingEvents.map((e) => ({
-          ...e,
-          fullPath: `/grants/funding/${e.slug}/`,
-          contentType: "Funding",
-          color: "indigo darken-4",
-        }));
+        // this.trainingEvents = ApolloQueryResult.data.trainingEvents.map(
+        //   (e) => ({
+        //     ...e,
+        //     title: e.name,
+        //     fullPath: `/events/${e.slug}/`,
+        //     contentType: "Event",
+        //     color: "green darken-4",
+        //   })
+        // );
+        // this.communityEvents = ApolloQueryResult.data.communityEvents.map(
+        //   (e) => ({
+        //     ...e,
+        //     title: e.name,
+        //     fullPath: `/events/${e.slug}/`,
+        //     contentType: "Event",
+        //     color: "green darken-4",
+        //   })
+        // );
+        // this.meetingEvents = ApolloQueryResult.data.meetingEvents.map((e) => ({
+        //   ...e,
+        //   fullPath: `/news/meetings/${e.slug}/`,
+        //   contentType: "Meeting",
+        //   color: "blue darken-2",
+        // }));
+        // this.fundingEvents = ApolloQueryResult.data.fundingEvents.map((e) => ({
+        //   ...e,
+        //   fullPath: `/grants/funding/${e.slug}/`,
+        //   contentType: "Funding",
+        //   color: "indigo darken-4",
+        // }));
         this.loading = false;
         nprogress.done();
         attachInternalLinks(this);

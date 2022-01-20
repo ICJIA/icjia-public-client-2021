@@ -2,8 +2,8 @@ import gql from "graphql-tag";
 /* eslint-disable graphql/template-strings */
 const GET_HOME = gql`
   query Home(
-    $now: String!
-    $eventLimit: Int!
+    # $now: String!
+    # $eventLimit: Int!
     $postLimit: Int!
     $meetingLimit: Int!
     $fundingLimit: Int!
@@ -41,63 +41,63 @@ const GET_HOME = gql`
       }
     }
 
-    fundingEvents: grants(
-      limit: $eventLimit
-      where: { end_gte: $now }
-      sort: "start:asc"
-    ) {
-      id
-      published_at
-      title
-      start
-      end
-      summary
-      slug
-      category
-    }
+    # fundingEvents: grants(
+    #   limit: $eventLimit
+    #   where: { end_gte: $now }
+    #   sort: "start:asc"
+    # ) {
+    #   id
+    #   published_at
+    #   title
+    #   start
+    #   end
+    #   summary
+    #   slug
+    #   category
+    # }
 
-    meetingEvents: meetings(
-      limit: $eventLimit
-      where: { end_gte: $now }
-      sort: "start:asc"
-    ) {
-      id
-      published_at
-      title
-      start
-      end
-      summary
-      slug
-      category
-    }
+    # meetingEvents: meetings(
+    #   limit: $eventLimit
+    #   where: { end_gte: $now }
+    #   sort: "start:asc"
+    # ) {
+    #   id
+    #   published_at
+    #   title
+    #   start
+    #   end
+    #   summary
+    #   slug
+    #   category
+    # }
 
-    communityEvents: events(
-      limit: $eventLimit
-      where: { category: "community", end_gte: $now }
-      sort: "start:asc"
-    ) {
-      name
-      slug
-      summary
-      start
-      category
-      end
-      published_at
-    }
+    # communityEvents: events(
+    #   limit: $eventLimit
+    #   where: { category: "community", end_gte: $now }
+    #   sort: "start:asc"
+    # ) {
+    #   name
+    #   slug
+    #   summary
+    #   start
+    #   category
+    #   end
+    #   published_at
+    # }
 
-    trainingEvents: events(
-      limit: $eventLimit
-      where: { category: "training", end_gte: $now }
-      sort: "start:asc"
-    ) {
-      name
-      slug
-      summary
-      start
-      category
-      end
-      published_at
-    }
+    # trainingEvents: events(
+    #   limit: $eventLimit
+    #   where: { category: "training", end_gte: $now }
+    #   sort: "start:asc"
+    # ) {
+    #   name
+    #   slug
+    #   summary
+    #   start
+    #   category
+    #   end
+    #   published_at
+    # }
 
     featured: posts(
       sort: "published_at:desc"
