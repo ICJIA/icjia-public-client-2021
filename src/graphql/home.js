@@ -151,7 +151,7 @@ const GET_HOME = gql`
       published_at
     }
 
-    jobs(sort: "end:desc", limit: $employmentLimit) {
+    jobs(sort: "published_at:desc", limit: $employmentLimit) {
       title
       slug
       start

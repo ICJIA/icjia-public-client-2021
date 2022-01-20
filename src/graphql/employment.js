@@ -3,7 +3,7 @@ import gql from "graphql-tag";
 
 const GET_ALL_JOBS_QUERY = gql`
   query allJobs {
-    jobs(sort: "published_at:desc") {
+    jobs(sort: "end:desc") {
       id
       updated_at
       title
