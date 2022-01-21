@@ -4,7 +4,7 @@
   "private": true,
   "description": "ICJIA Public Website (2021)",
   "author": {
-    "name": "Illinois Criminal Justice Information Authority / Christopher Schweda (Web Developer)",
+    "name": "Illinois Criminal Justice Information Authority",
     "email": "cja.info@illinois.gov"
   },
   "scripts": {
