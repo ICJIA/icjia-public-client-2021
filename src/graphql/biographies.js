@@ -20,7 +20,7 @@ const GET_SINGLE_BIOGRAPHY_QUERY = gql`
       slug
       updated_at
       published_at
-      email
+
       affiliation
       sortField
       sortModifier
@@ -49,7 +49,7 @@ const GET_ALL_BIOGRAPHIES_QUERY = gql`
       slug
       updated_at
       published_at
-      email
+
       affiliation
       sortField
       sortModifier
@@ -82,7 +82,7 @@ const GET_BIOGRAPHIES_BY_UNIT_QUERY = gql`
       slug
       updated_at
       published_at
-      email
+
       affiliation
       sortField
       sortModifier

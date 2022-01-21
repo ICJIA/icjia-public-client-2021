@@ -29,7 +29,7 @@ const query = `query {
     slug
     updated_at
     published_at
-    email
+    
     affiliation
     sortField
     sortModifier
