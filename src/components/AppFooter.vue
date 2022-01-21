@@ -101,13 +101,6 @@
               >
 
               |
-              <a
-                href="https://github.com/ICJIA/icjia-public-2021"
-                style="color: #fff; background: none"
-                target="_blank"
-                >Github</a
-              >
-              |
 
               <router-link
                 to="/about/privacy/"
