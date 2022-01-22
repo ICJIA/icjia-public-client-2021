@@ -112,10 +112,6 @@
                 >RSS Feeds</router-link
               >
               |
-              <router-link to="/status/" style="color: #fff; background: none"
-                >Status</router-link
-              >
-              |
               <a
                 href="https://visitor.r20.constantcontact.com/manage/optin?v=001MqUcqqvjwLCJXlLMSWbTe3zHHmEQgFeBuHvBcJWTbwgrxFbDSGx4HSUPpI6DJWMUPgbljtLxffqIcGFTgCnr-auak88ybvRxpoJlTMGPtZs%3D"
                 style="color: #fff; background: none"

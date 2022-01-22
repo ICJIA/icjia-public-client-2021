@@ -19,8 +19,6 @@ description:    ${pkg.description}
 homepage:       ${pkg.homepage}
 version:        ${pkg.version}
 author:         ${pkg.author.name} (${pkg.author.email})
-repository:     ${pkg.repository.url}
-license:        ${pkg.license}
 *************************************************************************************************************************
 
 -->`;
