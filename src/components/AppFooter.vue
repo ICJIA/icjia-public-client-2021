@@ -88,13 +88,7 @@
               >
                 Covid-19 Response</router-link
               >
-              |
-              <a
-                href="https://archive.icjia.cloud"
-                style="color: #fff; background: none"
-                target="_blank"
-                >Document Archive</a
-              >
+
               |
               <router-link to="/foia/" style="color: #fff; background: none">
                 FOIA</router-link
