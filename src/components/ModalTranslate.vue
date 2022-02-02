@@ -8,7 +8,7 @@
     <v-card class="">
       <v-card-title class="text-h5 grey lighten-2">
         <v-spacer class="hidden-md-and-up"></v-spacer>
-        Translation Options<v-spacer></v-spacer
+        Website Translation Options<v-spacer></v-spacer
         ><v-btn small @click="translate = false" class="hidden-sm-and-down"
           >Close</v-btn
         >

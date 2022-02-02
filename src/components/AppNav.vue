@@ -15,7 +15,7 @@
       ></v-spacer>
       <v-img
         alt="ICJIA Logo"
-        class="shrink mr-4 hover"
+        class="shrink mr-3 hover"
         contain
         :src="require('@/assets/icjia-logo.png')"
         transition="scale-transition"
@@ -47,7 +47,7 @@
         :key="index"
         style="display: inline-block"
       >
-        <span v-if="menu.children" class="d-flex">
+        <span v-if="menu.children.length && menu.children" class="d-flex">
           <v-menu
             bottom
             offset-y
@@ -107,11 +107,7 @@
             large
             :aria-label="menu.main"
             class="hidden-sm-and-down navItem"
-            :to="isLinkExternal(child.external) ? null : menu.link"
-            :href="isLinkExternal(child.external) ? menu.link : null"
-            :target="isLinkExternal(child.external) ? '_blank' : null"
             style="font-weight: 900 !important; font-size: 16px"
-            v-if="menu.link"
             >{{ menu.main }}
             <v-icon v-if="menu.icon" right small color="black">{{
               menu.icon
@@ -121,6 +117,58 @@
       </span>
 
       <v-tooltip left>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            text
+            v-bind="attrs"
+            v-on="on"
+            small
+            class="navItem"
+            style="font-weight: 900 !important; font-size: 16px"
+            @click="openTranslationModal()"
+            ><span class="hidden-sm-and-down">Translate</span>
+            <v-icon
+              :right="
+                $vuetify.breakpoint.md ||
+                $vuetify.breakpoint.lg ||
+                $vuetify.breakpoint.xl
+              "
+              small
+              color="black"
+              >fas fa-globe</v-icon
+            >
+          </v-btn>
+        </template>
+        <span>Translate on Google</span>
+      </v-tooltip>
+
+      <v-tooltip left>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            text
+            small
+            v-bind="attrs"
+            v-on="on"
+            class="navItem"
+            style="font-weight: 900 !important; font-size: 16px"
+            @click="openSearchModal()"
+            ><span class="hidden-sm-and-down">Search</span>
+            <v-icon
+              :right="
+                $vuetify.breakpoint.md ||
+                $vuetify.breakpoint.lg ||
+                $vuetify.breakpoint.xl
+              "
+              small
+              color="black"
+              >fas fa-search</v-icon
+            >
+          </v-btn>
+        </template>
+        <span>Search</span>
+      </v-tooltip>
+
+      <!-- <v-tooltip left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             icon
@@ -134,7 +182,7 @@
           </v-btn>
         </template>
         <span>Search</span>
-      </v-tooltip>
+      </v-tooltip> -->
     </v-app-bar>
   </div>
 </template>
@@ -251,6 +299,10 @@ export default {
 
 .v-icon.facebook {
   color: #3b5998 !important;
+}
+
+.v-toolbar__title {
+  font-size: 1.15rem;
 }
 
 /* .v-icon.translation {
