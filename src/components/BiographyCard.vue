@@ -55,8 +55,7 @@
             >
 
             <span style="font-weight: 700; color: #444" v-if="item.title"
-              >{{ item.title
-              }}
+              >{{ item.title }}
               <!-- <span v-if="item && item.affiliation === 'board'"> | </span> -->
             </span>
             <!-- <span
