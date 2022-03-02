@@ -66,14 +66,26 @@
             <div class="row">
               <div class="col-md-6 col-lg-4 col-12">
                 <div
-                  class="v-card v-sheet v-sheet--outlined theme--light rounded-0 red"
+                  class="
+                    v-card v-sheet v-sheet--outlined
+                    theme--light
+                    rounded-0
+                    red
+                  "
                 >
                   <div class="v-card__text">
                     <span class="text-h6">red</span>
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 red base"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    red
+                    base
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -88,7 +100,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 red lighten-5"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    red
+                    lighten-5
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -102,7 +121,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 red lighten-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    red
+                    lighten-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -116,7 +142,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 red lighten-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    red
+                    lighten-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -130,7 +163,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 red lighten-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    red
+                    lighten-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -144,7 +184,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 red lighten-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    red
+                    lighten-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -158,7 +205,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 red darken-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    red
+                    darken-1
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -172,7 +226,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 red darken-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    red
+                    darken-2
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -186,7 +247,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 red darken-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    red
+                    darken-3
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -200,7 +268,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 red darken-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    red
+                    darken-4
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -214,7 +289,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 red accent-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    red
+                    accent-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -228,7 +310,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 red accent-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    red
+                    accent-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -242,7 +331,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 red accent-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    red
+                    accent-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -256,7 +352,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 red accent-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    red
+                    accent-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -272,14 +375,26 @@
               </div>
               <div class="col-md-6 col-lg-4 col-12">
                 <div
-                  class="v-card v-sheet v-sheet--outlined theme--light rounded-0 pink"
+                  class="
+                    v-card v-sheet v-sheet--outlined
+                    theme--light
+                    rounded-0
+                    pink
+                  "
                 >
                   <div class="v-card__text">
                     <span class="text-h6">pink</span>
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 pink base"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    pink
+                    base
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -294,7 +409,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 pink lighten-5"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    pink
+                    lighten-5
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -308,7 +430,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 pink lighten-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    pink
+                    lighten-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -322,7 +451,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 pink lighten-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    pink
+                    lighten-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -336,7 +472,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 pink lighten-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    pink
+                    lighten-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -350,7 +493,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 pink lighten-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    pink
+                    lighten-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -364,7 +514,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 pink darken-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    pink
+                    darken-1
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -378,7 +535,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 pink darken-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    pink
+                    darken-2
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -392,7 +556,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 pink darken-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    pink
+                    darken-3
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -406,7 +577,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 pink darken-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    pink
+                    darken-4
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -420,7 +598,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 pink accent-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    pink
+                    accent-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -434,7 +619,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 pink accent-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    pink
+                    accent-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -448,7 +640,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 pink accent-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    pink
+                    accent-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -462,7 +661,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 pink accent-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    pink
+                    accent-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -478,14 +684,26 @@
               </div>
               <div class="col-md-6 col-lg-4 col-12">
                 <div
-                  class="v-card v-sheet v-sheet--outlined theme--light rounded-0 purple"
+                  class="
+                    v-card v-sheet v-sheet--outlined
+                    theme--light
+                    rounded-0
+                    purple
+                  "
                 >
                   <div class="v-card__text">
                     <span class="text-h6">purple</span>
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 purple base"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    purple
+                    base
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -500,7 +718,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 purple lighten-5"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    purple
+                    lighten-5
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -514,7 +739,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 purple lighten-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    purple
+                    lighten-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -528,7 +760,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 purple lighten-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    purple
+                    lighten-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -542,7 +781,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 purple lighten-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    purple
+                    lighten-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -556,7 +802,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 purple lighten-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    purple
+                    lighten-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -570,7 +823,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 purple darken-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    purple
+                    darken-1
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -584,7 +844,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 purple darken-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    purple
+                    darken-2
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -598,7 +865,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 purple darken-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    purple
+                    darken-3
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -612,7 +886,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 purple darken-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    purple
+                    darken-4
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -626,7 +907,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 purple accent-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    purple
+                    accent-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -640,7 +928,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 purple accent-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    purple
+                    accent-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -654,7 +949,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 purple accent-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    purple
+                    accent-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -668,7 +970,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 purple accent-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    purple
+                    accent-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -684,14 +993,26 @@
               </div>
               <div class="col-md-6 col-lg-4 col-12">
                 <div
-                  class="v-card v-sheet v-sheet--outlined theme--light rounded-0 deep-purple"
+                  class="
+                    v-card v-sheet v-sheet--outlined
+                    theme--light
+                    rounded-0
+                    deep-purple
+                  "
                 >
                   <div class="v-card__text">
                     <span class="text-h6">deep-purple</span>
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-purple base"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-purple
+                    base
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -706,7 +1027,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-purple lighten-5"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-purple
+                    lighten-5
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -720,7 +1048,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-purple lighten-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-purple
+                    lighten-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -734,7 +1069,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-purple lighten-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-purple
+                    lighten-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -748,7 +1090,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-purple lighten-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-purple
+                    lighten-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -762,7 +1111,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-purple lighten-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-purple
+                    lighten-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -776,7 +1132,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-purple darken-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-purple
+                    darken-1
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -790,7 +1153,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-purple darken-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-purple
+                    darken-2
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -804,7 +1174,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-purple darken-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-purple
+                    darken-3
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -818,7 +1195,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-purple darken-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-purple
+                    darken-4
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -832,7 +1216,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-purple accent-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-purple
+                    accent-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -846,7 +1237,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-purple accent-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-purple
+                    accent-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -860,7 +1258,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-purple accent-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-purple
+                    accent-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -874,7 +1279,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-purple accent-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-purple
+                    accent-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -890,14 +1302,26 @@
               </div>
               <div class="col-md-6 col-lg-4 col-12">
                 <div
-                  class="v-card v-sheet v-sheet--outlined theme--light rounded-0 indigo"
+                  class="
+                    v-card v-sheet v-sheet--outlined
+                    theme--light
+                    rounded-0
+                    indigo
+                  "
                 >
                   <div class="v-card__text">
                     <span class="text-h6">indigo</span>
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 indigo base"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    indigo
+                    base
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -912,7 +1336,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 indigo lighten-5"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    indigo
+                    lighten-5
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -926,7 +1357,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 indigo lighten-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    indigo
+                    lighten-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -940,7 +1378,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 indigo lighten-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    indigo
+                    lighten-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -954,7 +1399,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 indigo lighten-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    indigo
+                    lighten-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -968,7 +1420,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 indigo lighten-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    indigo
+                    lighten-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -982,7 +1441,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 indigo darken-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    indigo
+                    darken-1
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -996,7 +1462,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 indigo darken-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    indigo
+                    darken-2
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1010,7 +1483,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 indigo darken-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    indigo
+                    darken-3
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1024,7 +1504,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 indigo darken-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    indigo
+                    darken-4
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1038,7 +1525,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 indigo accent-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    indigo
+                    accent-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1052,7 +1546,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 indigo accent-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    indigo
+                    accent-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1066,7 +1567,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 indigo accent-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    indigo
+                    accent-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1080,7 +1588,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 indigo accent-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    indigo
+                    accent-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1096,14 +1611,26 @@
               </div>
               <div class="col-md-6 col-lg-4 col-12">
                 <div
-                  class="v-card v-sheet v-sheet--outlined theme--light rounded-0 blue"
+                  class="
+                    v-card v-sheet v-sheet--outlined
+                    theme--light
+                    rounded-0
+                    blue
+                  "
                 >
                   <div class="v-card__text">
                     <span class="text-h6">blue</span>
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue base"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue
+                    base
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1118,7 +1645,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue lighten-5"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue
+                    lighten-5
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1132,7 +1666,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue lighten-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue
+                    lighten-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1146,7 +1687,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue lighten-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue
+                    lighten-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1160,7 +1708,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue lighten-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue
+                    lighten-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1174,7 +1729,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue lighten-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue
+                    lighten-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1188,7 +1750,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue darken-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue
+                    darken-1
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1202,7 +1771,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue darken-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue
+                    darken-2
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1216,7 +1792,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue darken-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue
+                    darken-3
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1230,7 +1813,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue darken-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue
+                    darken-4
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1244,7 +1834,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue accent-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue
+                    accent-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1258,7 +1855,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue accent-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue
+                    accent-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1272,7 +1876,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue accent-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue
+                    accent-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1286,7 +1897,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue accent-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue
+                    accent-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1302,14 +1920,26 @@
               </div>
               <div class="col-md-6 col-lg-4 col-12">
                 <div
-                  class="v-card v-sheet v-sheet--outlined theme--light rounded-0 light-blue"
+                  class="
+                    v-card v-sheet v-sheet--outlined
+                    theme--light
+                    rounded-0
+                    light-blue
+                  "
                 >
                   <div class="v-card__text">
                     <span class="text-h6">light-blue</span>
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-blue base"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-blue
+                    base
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1324,7 +1954,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-blue lighten-5"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-blue
+                    lighten-5
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1338,7 +1975,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-blue lighten-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-blue
+                    lighten-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1352,7 +1996,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-blue lighten-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-blue
+                    lighten-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1366,7 +2017,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-blue lighten-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-blue
+                    lighten-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1380,7 +2038,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-blue lighten-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-blue
+                    lighten-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1394,7 +2059,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-blue darken-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-blue
+                    darken-1
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1408,7 +2080,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-blue darken-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-blue
+                    darken-2
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1422,7 +2101,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-blue darken-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-blue
+                    darken-3
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1436,7 +2122,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-blue darken-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-blue
+                    darken-4
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1450,7 +2143,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-blue accent-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-blue
+                    accent-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1464,7 +2164,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-blue accent-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-blue
+                    accent-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1478,7 +2185,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-blue accent-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-blue
+                    accent-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1492,7 +2206,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-blue accent-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-blue
+                    accent-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1508,14 +2229,26 @@
               </div>
               <div class="col-md-6 col-lg-4 col-12">
                 <div
-                  class="v-card v-sheet v-sheet--outlined theme--light rounded-0 cyan"
+                  class="
+                    v-card v-sheet v-sheet--outlined
+                    theme--light
+                    rounded-0
+                    cyan
+                  "
                 >
                   <div class="v-card__text">
                     <span class="text-h6">cyan</span>
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 cyan base"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    cyan
+                    base
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1530,7 +2263,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 cyan lighten-5"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    cyan
+                    lighten-5
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1544,7 +2284,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 cyan lighten-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    cyan
+                    lighten-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1558,7 +2305,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 cyan lighten-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    cyan
+                    lighten-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1572,7 +2326,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 cyan lighten-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    cyan
+                    lighten-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1586,7 +2347,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 cyan lighten-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    cyan
+                    lighten-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1600,7 +2368,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 cyan darken-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    cyan
+                    darken-1
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1614,7 +2389,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 cyan darken-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    cyan
+                    darken-2
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1628,7 +2410,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 cyan darken-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    cyan
+                    darken-3
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1642,7 +2431,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 cyan darken-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    cyan
+                    darken-4
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1656,7 +2452,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 cyan accent-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    cyan
+                    accent-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1670,7 +2473,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 cyan accent-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    cyan
+                    accent-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1684,7 +2494,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 cyan accent-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    cyan
+                    accent-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1698,7 +2515,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 cyan accent-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    cyan
+                    accent-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1714,14 +2538,26 @@
               </div>
               <div class="col-md-6 col-lg-4 col-12">
                 <div
-                  class="v-card v-sheet v-sheet--outlined theme--light rounded-0 teal"
+                  class="
+                    v-card v-sheet v-sheet--outlined
+                    theme--light
+                    rounded-0
+                    teal
+                  "
                 >
                   <div class="v-card__text">
                     <span class="text-h6">teal</span>
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 teal base"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    teal
+                    base
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1736,7 +2572,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 teal lighten-5"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    teal
+                    lighten-5
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1750,7 +2593,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 teal lighten-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    teal
+                    lighten-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1764,7 +2614,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 teal lighten-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    teal
+                    lighten-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1778,7 +2635,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 teal lighten-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    teal
+                    lighten-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1792,7 +2656,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 teal lighten-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    teal
+                    lighten-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1806,7 +2677,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 teal darken-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    teal
+                    darken-1
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1820,7 +2698,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 teal darken-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    teal
+                    darken-2
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1834,7 +2719,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 teal darken-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    teal
+                    darken-3
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1848,7 +2740,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 teal darken-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    teal
+                    darken-4
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1862,7 +2761,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 teal accent-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    teal
+                    accent-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1876,7 +2782,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 teal accent-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    teal
+                    accent-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1890,7 +2803,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 teal accent-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    teal
+                    accent-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1904,7 +2824,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 teal accent-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    teal
+                    accent-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1920,14 +2847,26 @@
               </div>
               <div class="col-md-6 col-lg-4 col-12">
                 <div
-                  class="v-card v-sheet v-sheet--outlined theme--light rounded-0 green"
+                  class="
+                    v-card v-sheet v-sheet--outlined
+                    theme--light
+                    rounded-0
+                    green
+                  "
                 >
                   <div class="v-card__text">
                     <span class="text-h6">green</span>
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 green base"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    green
+                    base
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -1942,7 +2881,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 green lighten-5"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    green
+                    lighten-5
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1956,7 +2902,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 green lighten-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    green
+                    lighten-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1970,7 +2923,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 green lighten-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    green
+                    lighten-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1984,7 +2944,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 green lighten-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    green
+                    lighten-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -1998,7 +2965,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 green lighten-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    green
+                    lighten-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2012,7 +2986,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 green darken-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    green
+                    darken-1
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2026,7 +3007,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 green darken-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    green
+                    darken-2
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2040,7 +3028,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 green darken-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    green
+                    darken-3
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2054,7 +3049,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 green darken-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    green
+                    darken-4
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2068,7 +3070,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 green accent-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    green
+                    accent-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2082,7 +3091,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 green accent-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    green
+                    accent-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2096,7 +3112,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 green accent-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    green
+                    accent-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2110,7 +3133,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 green accent-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    green
+                    accent-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2126,14 +3156,26 @@
               </div>
               <div class="col-md-6 col-lg-4 col-12">
                 <div
-                  class="v-card v-sheet v-sheet--outlined theme--light rounded-0 light-green"
+                  class="
+                    v-card v-sheet v-sheet--outlined
+                    theme--light
+                    rounded-0
+                    light-green
+                  "
                 >
                   <div class="v-card__text">
                     <span class="text-h6">light-green</span>
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-green base"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-green
+                    base
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2148,7 +3190,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-green lighten-5"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-green
+                    lighten-5
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2162,7 +3211,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-green lighten-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-green
+                    lighten-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2176,7 +3232,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-green lighten-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-green
+                    lighten-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2190,7 +3253,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-green lighten-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-green
+                    lighten-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2204,7 +3274,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-green lighten-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-green
+                    lighten-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2218,7 +3295,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-green darken-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-green
+                    darken-1
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2232,7 +3316,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-green darken-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-green
+                    darken-2
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2246,7 +3337,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-green darken-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-green
+                    darken-3
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2260,7 +3358,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-green darken-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-green
+                    darken-4
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2274,7 +3379,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-green accent-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-green
+                    accent-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2288,7 +3400,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-green accent-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-green
+                    accent-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2302,7 +3421,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-green accent-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-green
+                    accent-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2316,7 +3442,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 light-green accent-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    light-green
+                    accent-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2332,14 +3465,26 @@
               </div>
               <div class="col-md-6 col-lg-4 col-12">
                 <div
-                  class="v-card v-sheet v-sheet--outlined theme--light rounded-0 lime"
+                  class="
+                    v-card v-sheet v-sheet--outlined
+                    theme--light
+                    rounded-0
+                    lime
+                  "
                 >
                   <div class="v-card__text">
                     <span class="text-h6">lime</span>
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 lime base"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    lime
+                    base
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2354,7 +3499,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 lime lighten-5"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    lime
+                    lighten-5
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2368,7 +3520,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 lime lighten-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    lime
+                    lighten-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2382,7 +3541,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 lime lighten-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    lime
+                    lighten-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2396,7 +3562,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 lime lighten-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    lime
+                    lighten-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2410,7 +3583,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 lime lighten-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    lime
+                    lighten-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2424,7 +3604,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 lime darken-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    lime
+                    darken-1
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2438,7 +3625,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 lime darken-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    lime
+                    darken-2
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2452,7 +3646,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 lime darken-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    lime
+                    darken-3
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2466,7 +3667,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 lime darken-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    lime
+                    darken-4
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2480,7 +3688,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 lime accent-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    lime
+                    accent-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2494,7 +3709,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 lime accent-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    lime
+                    accent-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2508,7 +3730,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 lime accent-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    lime
+                    accent-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2522,7 +3751,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 lime accent-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    lime
+                    accent-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2538,14 +3774,26 @@
               </div>
               <div class="col-md-6 col-lg-4 col-12">
                 <div
-                  class="v-card v-sheet v-sheet--outlined theme--light rounded-0 yellow"
+                  class="
+                    v-card v-sheet v-sheet--outlined
+                    theme--light
+                    rounded-0
+                    yellow
+                  "
                 >
                   <div class="v-card__text">
                     <span class="text-h6">yellow</span>
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 yellow base"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    yellow
+                    base
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2560,7 +3808,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 yellow lighten-5"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    yellow
+                    lighten-5
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2574,7 +3829,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 yellow lighten-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    yellow
+                    lighten-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2588,7 +3850,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 yellow lighten-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    yellow
+                    lighten-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2602,7 +3871,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 yellow lighten-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    yellow
+                    lighten-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2616,7 +3892,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 yellow lighten-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    yellow
+                    lighten-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2630,7 +3913,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 yellow darken-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    yellow
+                    darken-1
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2644,7 +3934,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 yellow darken-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    yellow
+                    darken-2
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2658,7 +3955,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 yellow darken-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    yellow
+                    darken-3
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2672,7 +3976,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 yellow darken-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    yellow
+                    darken-4
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2686,7 +3997,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 yellow accent-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    yellow
+                    accent-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2700,7 +4018,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 yellow accent-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    yellow
+                    accent-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2714,7 +4039,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 yellow accent-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    yellow
+                    accent-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2728,7 +4060,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 yellow accent-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    yellow
+                    accent-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2744,14 +4083,26 @@
               </div>
               <div class="col-md-6 col-lg-4 col-12">
                 <div
-                  class="v-card v-sheet v-sheet--outlined theme--light rounded-0 amber"
+                  class="
+                    v-card v-sheet v-sheet--outlined
+                    theme--light
+                    rounded-0
+                    amber
+                  "
                 >
                   <div class="v-card__text">
                     <span class="text-h6">amber</span>
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 amber base"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    amber
+                    base
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2766,7 +4117,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 amber lighten-5"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    amber
+                    lighten-5
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2780,7 +4138,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 amber lighten-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    amber
+                    lighten-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2794,7 +4159,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 amber lighten-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    amber
+                    lighten-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2808,7 +4180,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 amber lighten-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    amber
+                    lighten-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2822,7 +4201,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 amber lighten-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    amber
+                    lighten-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2836,7 +4222,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 amber darken-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    amber
+                    darken-1
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2850,7 +4243,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 amber darken-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    amber
+                    darken-2
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2864,7 +4264,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 amber darken-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    amber
+                    darken-3
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2878,7 +4285,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 amber darken-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    amber
+                    darken-4
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2892,7 +4306,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 amber accent-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    amber
+                    accent-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2906,7 +4327,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 amber accent-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    amber
+                    accent-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2920,7 +4348,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 amber accent-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    amber
+                    accent-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2934,7 +4369,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 amber accent-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    amber
+                    accent-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2950,14 +4392,26 @@
               </div>
               <div class="col-md-6 col-lg-4 col-12">
                 <div
-                  class="v-card v-sheet v-sheet--outlined theme--light rounded-0 orange"
+                  class="
+                    v-card v-sheet v-sheet--outlined
+                    theme--light
+                    rounded-0
+                    orange
+                  "
                 >
                   <div class="v-card__text">
                     <span class="text-h6">orange</span>
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 orange base"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    orange
+                    base
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -2972,7 +4426,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 orange lighten-5"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    orange
+                    lighten-5
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -2986,7 +4447,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 orange lighten-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    orange
+                    lighten-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3000,7 +4468,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 orange lighten-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    orange
+                    lighten-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3014,7 +4489,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 orange lighten-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    orange
+                    lighten-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3028,7 +4510,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 orange lighten-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    orange
+                    lighten-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3042,7 +4531,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 orange darken-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    orange
+                    darken-1
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3056,7 +4552,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 orange darken-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    orange
+                    darken-2
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3070,7 +4573,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 orange darken-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    orange
+                    darken-3
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3084,7 +4594,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 orange darken-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    orange
+                    darken-4
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3098,7 +4615,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 orange accent-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    orange
+                    accent-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3112,7 +4636,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 orange accent-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    orange
+                    accent-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3126,7 +4657,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 orange accent-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    orange
+                    accent-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3140,7 +4678,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 orange accent-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    orange
+                    accent-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3156,14 +4701,26 @@
               </div>
               <div class="col-md-6 col-lg-4 col-12">
                 <div
-                  class="v-card v-sheet v-sheet--outlined theme--light rounded-0 deep-orange"
+                  class="
+                    v-card v-sheet v-sheet--outlined
+                    theme--light
+                    rounded-0
+                    deep-orange
+                  "
                 >
                   <div class="v-card__text">
                     <span class="text-h6">deep-orange</span>
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-orange base"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-orange
+                    base
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3178,7 +4735,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-orange lighten-5"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-orange
+                    lighten-5
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3192,7 +4756,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-orange lighten-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-orange
+                    lighten-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3206,7 +4777,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-orange lighten-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-orange
+                    lighten-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3220,7 +4798,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-orange lighten-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-orange
+                    lighten-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3234,7 +4819,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-orange lighten-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-orange
+                    lighten-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3248,7 +4840,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-orange darken-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-orange
+                    darken-1
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3262,7 +4861,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-orange darken-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-orange
+                    darken-2
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3276,7 +4882,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-orange darken-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-orange
+                    darken-3
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3290,7 +4903,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-orange darken-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-orange
+                    darken-4
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3304,7 +4924,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-orange accent-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-orange
+                    accent-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3318,7 +4945,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-orange accent-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-orange
+                    accent-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3332,7 +4966,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-orange accent-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-orange
+                    accent-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3346,7 +4987,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 deep-orange accent-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    deep-orange
+                    accent-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3362,14 +5010,26 @@
               </div>
               <div class="col-md-6 col-lg-4 col-12">
                 <div
-                  class="v-card v-sheet v-sheet--outlined theme--light rounded-0 brown"
+                  class="
+                    v-card v-sheet v-sheet--outlined
+                    theme--light
+                    rounded-0
+                    brown
+                  "
                 >
                   <div class="v-card__text">
                     <span class="text-h6">brown</span>
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 brown base"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    brown
+                    base
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3384,7 +5044,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 brown lighten-5"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    brown
+                    lighten-5
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3398,7 +5065,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 brown lighten-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    brown
+                    lighten-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3412,7 +5086,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 brown lighten-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    brown
+                    lighten-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3426,7 +5107,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 brown lighten-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    brown
+                    lighten-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3440,7 +5128,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 brown lighten-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    brown
+                    lighten-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3454,7 +5149,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 brown darken-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    brown
+                    darken-1
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3468,7 +5170,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 brown darken-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    brown
+                    darken-2
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3482,7 +5191,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 brown darken-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    brown
+                    darken-3
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3496,7 +5212,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 brown darken-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    brown
+                    darken-4
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3512,14 +5235,26 @@
               </div>
               <div class="col-md-6 col-lg-4 col-12">
                 <div
-                  class="v-card v-sheet v-sheet--outlined theme--light rounded-0 blue-grey"
+                  class="
+                    v-card v-sheet v-sheet--outlined
+                    theme--light
+                    rounded-0
+                    blue-grey
+                  "
                 >
                   <div class="v-card__text">
                     <span class="text-h6">blue-grey</span>
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue-grey base"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue-grey
+                    base
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3534,7 +5269,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue-grey lighten-5"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue-grey
+                    lighten-5
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3548,7 +5290,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue-grey lighten-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue-grey
+                    lighten-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3562,7 +5311,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue-grey lighten-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue-grey
+                    lighten-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3576,7 +5332,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue-grey lighten-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue-grey
+                    lighten-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3590,7 +5353,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue-grey lighten-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue-grey
+                    lighten-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3604,7 +5374,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue-grey darken-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue-grey
+                    darken-1
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3618,7 +5395,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue-grey darken-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue-grey
+                    darken-2
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3632,7 +5416,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue-grey darken-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue-grey
+                    darken-3
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3646,7 +5437,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 blue-grey darken-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    blue-grey
+                    darken-4
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3662,14 +5460,26 @@
               </div>
               <div class="col-md-6 col-lg-4 col-12">
                 <div
-                  class="v-card v-sheet v-sheet--outlined theme--light rounded-0 grey"
+                  class="
+                    v-card v-sheet v-sheet--outlined
+                    theme--light
+                    rounded-0
+                    grey
+                  "
                 >
                   <div class="v-card__text">
                     <span class="text-h6">grey</span>
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 grey base"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    grey
+                    base
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3684,7 +5494,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 grey lighten-5"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    grey
+                    lighten-5
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3698,7 +5515,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 grey lighten-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    grey
+                    lighten-4
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3712,7 +5536,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 grey lighten-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    grey
+                    lighten-3
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3726,7 +5557,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 grey lighten-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    grey
+                    lighten-2
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3740,7 +5578,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 grey lighten-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    grey
+                    lighten-1
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3754,7 +5599,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 grey darken-1"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    grey
+                    darken-1
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3768,7 +5620,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 grey darken-2"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    grey
+                    darken-2
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3782,7 +5641,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 grey darken-3"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    grey
+                    darken-3
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3796,7 +5662,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 grey darken-4"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    grey
+                    darken-4
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3812,14 +5685,26 @@
               </div>
               <div class="col-md-6 col-lg-4 col-12">
                 <div
-                  class="v-card v-sheet v-sheet--outlined theme--light rounded-0 shades"
+                  class="
+                    v-card v-sheet v-sheet--outlined
+                    theme--light
+                    rounded-0
+                    shades
+                  "
                 >
                   <div class="v-card__text">
                     <span class="text-h6">shades</span>
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 shades black"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    shades
+                    black
+                  "
                 >
                   <div class="v-card__text white--text">
                     <div class="row">
@@ -3833,7 +5718,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 shades white"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    shades
+                    white
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
@@ -3847,7 +5739,14 @@
                   </div>
                 </div>
                 <div
-                  class="v-card v-card--flat v-sheet theme--light rounded-0 shades transparent"
+                  class="
+                    v-card v-card--flat
+                    v-sheet
+                    theme--light
+                    rounded-0
+                    shades
+                    transparent
+                  "
                 >
                   <div class="v-card__text black--text">
                     <div class="row">
