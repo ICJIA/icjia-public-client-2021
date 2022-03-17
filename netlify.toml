@@ -10,13 +10,13 @@
     status = 200
 
 [[redirects]]
-  from = '/*'
-  to = '/index.html'
+  from = '/adultredeploy/*'
+  to = 'https://adultredeploy-dev.netlify.app/:splat'
   status = 200
 
 [[redirects]]
-  from = '/adultredeploy/*'
-  to = 'https://adultredeploy-dev.netlify.app/:splat'
+  from = '/*'
+  to = '/index.html'
   status = 200
   
 [[headers]]
