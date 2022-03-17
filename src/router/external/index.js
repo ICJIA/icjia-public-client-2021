@@ -1,11 +1,11 @@
 const external = [
-  {
-    path: "/adultredeploy/",
-    redirect: () => {
-      window.location.href = "https://icjia.illinois.gov/adultredeploy/";
-      //   return '/redirecting' // not important since redirecting
-    },
-  },
+  // {
+  //   path: "/adultredeploy/",
+  //   redirect: () => {
+  //     window.location.href = "https://icjia.illinois.gov/adultredeploy/";
+  //     //   return '/redirecting' // not important since redirecting
+  //   },
+  // },
   {
     path: "/spac/",
     redirect: () => {
