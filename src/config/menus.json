@@ -177,6 +177,12 @@
                     "external": true
                 },
                 {
+                    "title": "Illinois Heals",
+                    "link": "http://ilheals.com",
+                    "icon": "open_in_new",
+                    "external": true
+                },
+                {
                     "title": "Restore, Reinvest, Renew (R3)",
                     "link": "https://r3.illinois.gov/",
                     "icon": "open_in_new",
