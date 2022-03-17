@@ -2,5 +2,11 @@
 /researchhub/studio/* https://researchhub-studio-next.netlify.app/:splat     200!
 /arrestexplorer/docs/* https://icjia-arrest-explorer-docs.netlify.app/:splat     200!
 /arrestexplorer/*  https://festive-meitner-0c6e7d.netlify.app/:splat     200!
+/mhcontinuum/*  https://mhcontinuum.netlify.app/:splat     200!
+/sudcontinuum/*  https://sudcontinuum.netlify.app/:splat     200!
 /cjreform2015/*   https://cjreform2015.icjia.cloud/
+/r3/*   https://r3.illinois.gov/
+/ilheals/*    https://ilheals.com/
+/calendar/*    https://calendar.icjia.cloud/
+/researchhub/docs/*   https://researchhub-docs.netlify.app/
 /*   /index.html   200
