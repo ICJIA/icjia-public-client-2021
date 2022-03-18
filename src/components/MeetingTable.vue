@@ -13,9 +13,9 @@
       :sort-desc.sync="sortDesc"
       @click:row="clicked"
       :footer-props="{
-        'items-per-page-options': [25, 50, 100, 150],
+        'items-per-page-options': [50, 100, 250, -1],
       }"
-      :items-per-page="25"
+      :items-per-page="100"
       style="border: 1px solid #eee; background: #fff"
     >
       <template v-slot:item.start="{ item }">

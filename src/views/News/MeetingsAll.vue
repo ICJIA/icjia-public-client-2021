@@ -76,7 +76,10 @@
         <v-container
           ><v-row
             ><v-col>
-              <div class="mt-0 text-left" style="font-size: 12px">
+              <div
+                class="mt-0 text-left"
+                style="font-size: 12px; margin-bottom: 75px"
+              >
                 Meeting materials prior to December, 2020 are available in the
                 <a href="https://archive.icjia.cloud">ICJIA Document Archive</a
                 >.
