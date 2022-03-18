@@ -88,7 +88,7 @@
                   >&nbsp;|&nbsp;
                   {{ meeting.start | format }}
                 </span>
-                <span v-if="!isItExpired(meeting.end)">
+                <!-- <span v-if="!isItExpired(meeting.end)">
                   &nbsp;|&nbsp;
                   <v-chip
                     x-small
@@ -97,7 +97,8 @@
                     style="font-weight: 700"
                     >Upcoming</v-chip
                   >
-                </span>
+                </span> -->
+
                 <h2 class="mt-2" style="font-size: 1.1em">
                   {{ meeting.title }}
                 </h2>
