@@ -270,3 +270,12 @@
 #dataset-view .variables-table > table tr:nth-child(2n) {
   background-color: #f6f8fa;
 }
+
+#article-view .article-body p,
+#article-view .article-body ul,
+#article-view .article-body ol {
+  font-size: 20px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
