@@ -109,7 +109,7 @@
 <script>
 import {
   getHubApplications,
-  getHubArticles,
+  getHubArticlesForBanner,
   getHubDatasets,
 } from "@/services/ResearchHub";
 export default {
@@ -144,7 +144,7 @@ export default {
       fullPath: `/researchhub/apps/${e.slug}/`,
       contentType: "app",
     }));
-    this.hubArticles = await getHubArticles(3);
+    this.hubArticles = await getHubArticlesForBanner(3);
     this.hubArticles = this.hubArticles.map((e) => ({
       ...e,
       fullPath: `/researchhub/articles/${e.slug}/`,

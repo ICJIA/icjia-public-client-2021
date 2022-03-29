@@ -202,7 +202,7 @@ import NProgress from "nprogress";
 import moment from "moment";
 import {
   getHubApplications,
-  getHubArticles,
+  getHubArticlesForBanner,
   getHubDatasets,
 } from "@/services/ResearchHub";
 
@@ -232,7 +232,7 @@ export default {
       fullPath: `/researchhub/apps/${e.slug}/`,
       contentType: "app",
     }));
-    this.articles = await getHubArticles(3);
+    this.articles = await getHubArticlesForBanner(3);
     this.articles = this.articles.map((e) => ({
       ...e,
       fullPath: `/researchhub/articles/${e.slug}/`,

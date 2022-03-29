@@ -35,6 +35,27 @@ const getHubArticlesQuery = (limit) => {
         status
        slug
         thumbnail
+        hideFromBanner
+       splash
+       createdAt
+        abstract
+        authors 
+        slug
+        date
+        createdAt
+      }
+    }`;
+};
+
+const getHubArticlesForBannerQuery = (limit) => {
+  return `{
+      articles (sort: "date:desc", limit: ${limit}, where: {status: "published", hideFromBanner_ne: true}) {
+        id
+        title
+        status
+       slug
+        thumbnail
+        hideFromBanner
        splash
        createdAt
         abstract
@@ -131,6 +152,19 @@ const getHubArticles = async (limit) => {
   }
 };
 
+const getHubArticlesForBanner = async (limit) => {
+  try {
+    let articles = await queryEndpoint(getHubArticlesForBannerQuery(limit));
+    //console.log(articles.data.data.articles);
+    return articles.data.data.articles;
+  } catch (e) {
+    console.log("researchHub articles error: ", e.toString());
+    EventBus.$emit("error", e.toString());
+    NProgress.done();
+    return null;
+  }
+};
+
 const getAllHubArticles = async () => {
   try {
     let articles = await queryEndpoint(getAllHubArticlesQuery());
@@ -185,6 +219,7 @@ const getHubDatasets = async (limit) => {
 
 export {
   getHubArticles,
+  getHubArticlesForBanner,
   getHubApplications,
   getHubDatasets,
   getAllHubArticles,
