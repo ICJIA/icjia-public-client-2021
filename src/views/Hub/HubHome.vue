@@ -22,7 +22,7 @@
         </v-row>
       </v-container>
       <div v-if="!hubLoading">
-        <v-carousel height="650">
+        <v-carousel height="650" :cycle="true">
           <v-carousel-item v-for="(article, i) in articles" :key="i">
             <v-card height="100%">
               <v-row no-gutters>
