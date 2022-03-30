@@ -133,6 +133,14 @@
             }
         ]
     },
+    "hub": {
+        "homeArticles": 3,
+        "homeApps": 3,
+        "homeDatasets": 3,
+        "splashArticles": 5,
+        "splashApps": 3,
+        "splashDatasets": 3
+    },
     "search": {
         "site": {
             "isCaseSensitive": false,

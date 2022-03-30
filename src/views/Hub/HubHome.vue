@@ -226,19 +226,21 @@ export default {
     //console.log("fetch here");
     EventBus.$emit("context-label", "Home");
 
-    this.apps = await getHubApplications(3);
+    this.apps = await getHubApplications(this.$myApp.config.hub.splashApps);
     this.apps = this.apps.map((e) => ({
       ...e,
       fullPath: `/researchhub/apps/${e.slug}/`,
       contentType: "app",
     }));
-    this.articles = await getHubArticlesForBanner(3);
+    this.articles = await getHubArticlesForBanner(
+      this.$myApp.config.hub.splashArticles
+    );
     this.articles = this.articles.map((e) => ({
       ...e,
       fullPath: `/researchhub/articles/${e.slug}/`,
       contentType: "article",
     }));
-    this.datasets = await getHubDatasets(3);
+    this.datasets = await getHubDatasets(this.$myApp.config.hub.splashDatasets);
     this.datasets = this.datasets.map((e) => ({
       ...e,
       fullPath: `/researchhub/datasets/${e.slug}/`,
