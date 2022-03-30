@@ -266,7 +266,7 @@ export default {
 
       if (xs) return 240;
       else if (sm) return 360;
-      else return 480;
+      else return 650;
     },
   },
   async created() {
