@@ -125,6 +125,7 @@
             small
             class="navItem"
             style="font-weight: 900 !important; font-size: 16px"
+            aria-label="Translate this page"
             @click="openTranslationModal()"
             ><span class="hidden-sm-and-down">Translate</span>
             <v-icon
@@ -150,6 +151,7 @@
             v-bind="attrs"
             v-on="on"
             class="navItem"
+            aria-label="Search ICJIA"
             style="font-weight: 900 !important; font-size: 16px"
             @click="openSearchModal()"
             ><span class="hidden-sm-and-down">Search</span>
