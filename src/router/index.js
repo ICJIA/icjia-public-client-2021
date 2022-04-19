@@ -21,6 +21,7 @@ import { admin } from "@/router/admin";
 import { status } from "@/router/status";
 import { informationSystems } from "@/router/informationSystems";
 import { external } from "@/router/external";
+import { search } from "@/router/search";
 
 // import { preview } from "@/router/preview";
 Vue.use(VueRouter);
@@ -47,6 +48,7 @@ const routes = [
   ...admin,
   ...status,
   ...informationSystems,
+  ...search,
   ...fourOhFour,
 ];
 
