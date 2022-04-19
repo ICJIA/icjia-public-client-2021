@@ -4,6 +4,7 @@
       style="background: #fff; border: 1px solid #eee"
       class="px-3 py-3 mb-3 card"
       @click="route(item.fullPath)"
+      elevation="2"
     >
       <div style="font-size: 14px">
         <!-- ------------------------------------------------
@@ -199,6 +200,10 @@ export default {
     query: {
       type: String,
       default: "",
+    },
+    elevation: {
+      type: Number,
+      default: 0,
     },
     item: {
       type: Object,
