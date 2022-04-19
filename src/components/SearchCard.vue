@@ -160,12 +160,21 @@ export default {
       }
     },
     click(e) {
-      //console.log("chip click: ", e.target.innerHTML);
-      let opts = {
-        query: e.target.innerText,
-        type: "general",
-      };
-      EventBus.$emit("search", opts);
+      if (this.isStatic) {
+        this.$router
+          .push("/search/" + e.target.innerText.toLowerCase().trim() + "/")
+          .catch((err) => {
+            this.$vuetify.goTo(0);
+          });
+        console.log("static page click: ", this.isStatic);
+      } else {
+        //console.log("chip click: ", e.target.innerHTML);
+        let opts = {
+          query: e.target.innerText.trim().toLowerCase(),
+          type: "general",
+        };
+        EventBus.$emit("search", opts);
+      }
     },
     // download(result) {
     //   let download = `${path}`;
@@ -208,6 +217,10 @@ export default {
     item: {
       type: Object,
       default: () => {},
+    },
+    isStatic: {
+      type: Boolean,
+      default: false,
     },
   },
 };

@@ -40,6 +40,7 @@
                   :item="result.item"
                   :query="query"
                   :elevation="1"
+                  :isStatic="true"
                 ></SearchCard>
               </div>
             </div>
