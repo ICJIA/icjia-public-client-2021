@@ -15,50 +15,52 @@
               @input="instantSearch"
               style="font-weight: 900"
             />
-            <v-container
-              fill-height
-              fluid
-              style="background: #0d4474; border: 1px solid #ccc"
-              class="hidden-sm-and-down"
-              v-if="query && query.length"
-            >
-              <v-row align="center" justify="center">
-                <v-col cols="2">
-                  <div style="font-weight: 900; color: #fff">
-                    Filter results by:
-                  </div>
-                </v-col>
-
-                <v-col cols="3" style="margin-top: 25px !important">
-                  <v-select
-                    v-model="contentSelected"
-                    :items="contentItems"
-                    label="Select"
-                    persistent-hint
-                    return-object
-                    dense
-                    solo
-                  ></v-select>
-                </v-col>
-              </v-row>
-              <v-row style="margin-top: -20px; color: #fff"
-                ><v-col align="center" justify="center">
-                  <span
-                    style="font-weight: 900; font-size: 12px"
-                    v-if="query && query.length"
-                  >
-                    Displaying {{ filteredResults.length }} result<span
-                      v-if="
-                        filteredResults.length > 1 ||
-                        filteredResults.length === 0
-                      "
-                      >s</span
-                    >
-                    out of {{ queryResults.length }}</span
-                  ></v-col
-                ></v-row
+            <v-card elevation="10">
+              <v-container
+                fill-height
+                fluid
+                style="background: #0d4474"
+                class="hidden-sm-and-down"
+                v-if="query && query.length"
               >
-            </v-container>
+                <v-row align="center" justify="center">
+                  <v-col cols="2">
+                    <div style="font-weight: 700; color: #fff">
+                      Filter results by:
+                    </div>
+                  </v-col>
+
+                  <v-col cols="3" style="margin-top: 25px !important">
+                    <v-select
+                      v-model="contentSelected"
+                      :items="contentItems"
+                      label="Select"
+                      persistent-hint
+                      return-object
+                      dense
+                      solo
+                    ></v-select>
+                  </v-col>
+                </v-row>
+                <v-row style="margin-top: -20px; color: #fff"
+                  ><v-col align="center" justify="center">
+                    <span
+                      style="font-weight: 900; font-size: 12px"
+                      v-if="query && query.length"
+                    >
+                      Displaying {{ filteredResults.length }} result<span
+                        v-if="
+                          filteredResults.length > 1 ||
+                          filteredResults.length === 0
+                        "
+                        >s</span
+                      >
+                      out of {{ queryResults.length }}</span
+                    ></v-col
+                  ></v-row
+                >
+              </v-container>
+            </v-card>
 
             <!-- <div style="font-size: 12px" class="mb-9 d-flex">
               <v-select
@@ -81,6 +83,8 @@
               ></v-switch> -->
             <!-- </div> -->
 
+            <!-- Query vars: {{ $route.query.filter }} -->
+
             <div v-if="query && query.length" class="mt-12 mb-12">
               <div
                 v-for="(result, index) in filteredResults"
@@ -90,7 +94,7 @@
                 <SearchCard
                   :item="result.item"
                   :query="query"
-                  :elevation="1"
+                  :elevation="5"
                   :isStatic="true"
                 ></SearchCard>
               </div>
@@ -311,7 +315,7 @@ export default {
       let contentTypes = this.queryResults.map((item) => {
         return item.item.contentType;
       });
-      const uniques = [...new Set(contentTypes.map((item) => item))];
+      const uniques = [...new Set(contentTypes.map((item) => item))].sort();
       uniques.unshift("No filter");
       this.contentItems = uniques;
       this.filterResults(null);
