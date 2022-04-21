@@ -15,24 +15,64 @@
               @input="instantSearch"
               style="font-weight: 900"
             />
+            <v-container
+              fill-height
+              fluid
+              style="background: #eee; border: 1px solid #ccc"
+            >
+              <v-row align="center" justify="center">
+                <v-col cols="2">
+                  <div style="font-weight: 900">Filter results by:</div>
+                </v-col>
 
-            <div style="font-size: 12px" class="mb-9 d-flex">
+                <v-col cols="3" style="margin-top: 25px !important">
+                  <v-select
+                    v-model="contentSelected"
+                    :items="contentItems"
+                    label="Select"
+                    persistent-hint
+                    return-object
+                    dense
+                    solo
+                  ></v-select>
+                </v-col>
+              </v-row>
+              <v-row
+                ><v-col align="center" justify="center">
+                  <span style="font-weight: 900" v-if="query && query.length">
+                    Displaying {{ filteredResults.length }}
+
+                    result{{ resultNumber }} out of
+                    {{ queryResults.length }}</span
+                  ></v-col
+                ></v-row
+              >
+            </v-container>
+
+            <!-- <div style="font-size: 12px" class="mb-9 d-flex">
+              <v-select
+                :items="contentItems"
+                v-model="contentSelected"
+                label="Select filter"
+                dense
+                solo
+              ></v-select>
+              <v-spacer></v-spacer>
               <span style="font-weight: 900" v-if="query && query.length">
                 Displaying {{ queryResults.length }} result{{
                   resultNumber
                 }}</span
-              >
-              <!-- <v-spacer></v-spacer>
-          <v-switch
-            v-model="sortSwitch"
-            :label="`Sort by published date`"
-            @click="sortResults()"
-          ></v-switch> -->
-            </div>
+              > -->
+            <!-- <v-switch
+                v-model="sortSwitch"
+                :label="`Sort by published date`"
+                @click="sortResults()"
+              ></v-switch> -->
+            <!-- </div> -->
 
-            <div v-if="query && query.length" class="mb-12">
+            <div v-if="query && query.length" class="mt-12 mb-12">
               <div
-                v-for="(result, index) in queryResults"
+                v-for="(result, index) in filteredResults"
                 :key="index"
                 class="my-4"
               >
@@ -71,7 +111,33 @@ export default {
       searchModal: false,
       opts: null,
       query: null,
+      filter: null,
+
+      contentItems: [
+        "No filter",
+        "Articles",
+        "Pages",
+        "Biographies",
+        "Programs",
+        "Funding Announcements",
+        "Meetings",
+        "News",
+        "Job Listings",
+      ],
+      contentValues: [
+        null,
+        "article",
+        "page",
+        "biography",
+        "program",
+        "funding",
+        "meeting",
+        "news",
+        "employment",
+      ],
+      contentSelected: "No filter",
       queryResults: [],
+      filteredResults: [],
       content: "",
       searchInput: this.$refs.textfield,
       fuse: null,
@@ -108,6 +174,7 @@ export default {
       let q = decodeURIComponent(this.$route.params.query);
       this.query = q;
       this.instantSearch();
+      this.filterResults(null);
     }
 
     // EventBus.$on("closeSearch", () => {
@@ -130,7 +197,30 @@ export default {
     //   });
     // });
   },
+  watch: {
+    contentSelected(newValue, oldValue) {
+      let arrayPosition = null;
+      let filter = null;
+      if (newValue !== oldValue) {
+        arrayPosition = this.contentItems.indexOf(newValue);
+      } else {
+        arrayPosition = 0;
+      }
+      this.filterResults(this.contentValues[arrayPosition]);
+    },
+  },
   methods: {
+    filterResults(selectedFilter) {
+      this.filter = selectedFilter;
+      if (!this.filter) {
+        this.filteredResults = this.queryResults;
+      } else {
+        this.filteredResults = _.filter(this.queryResults, [
+          "item.contentType",
+          this.filter,
+        ]);
+      }
+    },
     sortResults() {
       console.log("sorting");
       this.queryResults = this.fuse.search(this.query.trim());
@@ -203,6 +293,8 @@ export default {
       if (!this.query.length) return;
       if (this.query.length < 2) return;
       this.queryResults = this.fuse.search(this.query.trim());
+      this.filterResults(null);
+      this.contentSelected = "No filter";
     },
     displayHeadings(headings) {
       if (typeof headings === "string") {
