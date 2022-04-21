@@ -20,6 +20,7 @@
               fluid
               style="background: #0d4474; border: 1px solid #ccc"
               class="hidden-sm-and-down"
+              v-if="query && query.length"
             >
               <v-row align="center" justify="center">
                 <v-col cols="2">
