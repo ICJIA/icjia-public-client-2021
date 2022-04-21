@@ -19,6 +19,7 @@
               fill-height
               fluid
               style="background: #eee; border: 1px solid #ccc"
+              class="hidden-sm-and-down"
             >
               <v-row align="center" justify="center">
                 <v-col cols="2">
@@ -37,13 +38,20 @@
                   ></v-select>
                 </v-col>
               </v-row>
-              <v-row
+              <v-row style="margin-top: -20px"
                 ><v-col align="center" justify="center">
-                  <span style="font-weight: 900" v-if="query && query.length">
-                    Displaying {{ filteredResults.length }}
-
-                    result{{ resultNumber }} out of
-                    {{ queryResults.length }}</span
+                  <span
+                    style="font-weight: 900; font-size: 12px"
+                    v-if="query && query.length"
+                  >
+                    Displaying {{ filteredResults.length }} result<span
+                      v-if="
+                        filteredResults.length > 1 ||
+                        filteredResults.length === 0
+                      "
+                      >s</span
+                    >
+                    out of {{ queryResults.length }}</span
                   ></v-col
                 ></v-row
               >
