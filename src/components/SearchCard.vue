@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      style="background: #fff; border: 1px solid #eee"
+      style="background: #fff; border: 1px solid #ccc; border-radius: 4px"
       class="px-3 py-3 mb-3 card"
       @click="route(item.fullPath)"
       elevation="2"
