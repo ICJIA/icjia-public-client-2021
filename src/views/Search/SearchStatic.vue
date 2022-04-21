@@ -18,12 +18,14 @@
             <v-container
               fill-height
               fluid
-              style="background: #eee; border: 1px solid #ccc"
+              style="background: #0d4474; border: 1px solid #ccc"
               class="hidden-sm-and-down"
             >
               <v-row align="center" justify="center">
                 <v-col cols="2">
-                  <div style="font-weight: 900">Filter results by:</div>
+                  <div style="font-weight: 900; color: #fff">
+                    Filter results by:
+                  </div>
                 </v-col>
 
                 <v-col cols="3" style="margin-top: 25px !important">
@@ -38,7 +40,7 @@
                   ></v-select>
                 </v-col>
               </v-row>
-              <v-row style="margin-top: -20px"
+              <v-row style="margin-top: -20px; color: #fff"
                 ><v-col align="center" justify="center">
                   <span
                     style="font-weight: 900; font-size: 12px"
@@ -215,6 +217,10 @@ export default {
         arrayPosition = 0;
       }
       this.filterResults(this.contentValues[arrayPosition]);
+    },
+    query(newValue, oldValue) {
+      this.filterResults(null);
+      this.contentSelected = "No filter";
     },
   },
   methods: {
