@@ -218,9 +218,9 @@ export default {
     },
   },
   methods: {
-    filterResults(selectedFilter) {
-      this.filter = selectedFilter;
-      if (!this.filter) {
+    filterResults() {
+      this.filter = this.contentSelected;
+      if (this.filter === "No filter") {
         this.filteredResults = this.queryResults;
       } else {
         this.filteredResults = _.filter(this.queryResults, [
@@ -301,8 +301,15 @@ export default {
       if (!this.query.length) return;
       if (this.query.length < 2) return;
       this.queryResults = this.fuse.search(this.query.trim());
+      let contentTypes = this.queryResults.map((item) => {
+        return item.item.contentType;
+      });
+      const uniques = [...new Set(contentTypes.map((item) => item))];
+      uniques.unshift("No filter");
+      this.contentItems = uniques;
       this.filterResults(null);
       this.contentSelected = "No filter";
+      //iterate through all queryresults
     },
     displayHeadings(headings) {
       if (typeof headings === "string") {
