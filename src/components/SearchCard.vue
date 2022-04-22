@@ -161,6 +161,10 @@ export default {
     },
     click(e) {
       if (this.isStatic) {
+        console.log("tag click: ", e.target.innerText.trim().toLowerCase());
+        window.plausible("tag_click", {
+          props: { tag: e.target.innerText.trim().toLowerCase() },
+        });
         this.$router
           .push("/search/" + e.target.innerText.toLowerCase().trim() + "/")
           .catch((err) => {
@@ -168,6 +172,10 @@ export default {
           });
         console.log("static page click: ", this.isStatic);
       } else {
+        console.log("tag click: ", e.target.innerText.trim().toLowerCase());
+        window.plausible("tag_click", {
+          props: { tag: e.target.innerText.trim().toLowerCase() },
+        });
         //console.log("chip click: ", e.target.innerHTML);
         let opts = {
           query: e.target.innerText.trim().toLowerCase(),
