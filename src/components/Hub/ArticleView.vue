@@ -92,7 +92,9 @@
               <template v-if="i > 0">{{
                 article.authors.length > i + 1 ? ", " : " and "
               }}</template>
-              <a @click="openSearch(author.title)">{{ author.title }}</a>
+              <a href="javascript:void(0);" @click="openSearch(author.title)">{{
+                author.title
+              }}</a>
             </span>
 
             <span v-if="article.date">
@@ -277,11 +279,12 @@ export default {
   },
   methods: {
     openSearch(item) {
-      let opts = {
-        query: item,
-        type: "hub",
-      };
-      EventBus.$emit("search", opts);
+      // let opts = {
+      //   query: item,
+      //   type: "hub",
+      // };
+      // EventBus.$emit("search", opts);
+      this.$router.push("/search/" + item);
     },
     categoryClick(e) {
       //console.log("chip click: ", e.target.innerHTML);
