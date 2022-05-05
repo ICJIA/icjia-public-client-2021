@@ -92,9 +92,12 @@
               <template v-if="i > 0">{{
                 article.authors.length > i + 1 ? ", " : " and "
               }}</template>
-              <a href="javascript:void(0);" @click="openSearch(author.title)">{{
+              <!-- <a href="javascript:void(0);" @click="openSearch(author.title)">{{
                 author.title
-              }}</a>
+              }}</a> -->
+              <router-link :to="'/search/' + author.title">{{
+                author.title
+              }}</router-link>
             </span>
 
             <span v-if="article.date">
