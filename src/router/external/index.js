@@ -27,6 +27,13 @@ const external = [
       //   return '/redirecting' // not important since redirecting
     },
   },
+  {
+    path: "/intranet/",
+    redirect: () => {
+      window.location.href = "https://intranet.icjia.cloud/";
+      //   return '/redirecting' // not important since redirecting
+    },
+  },
 ];
 
 export { external };
