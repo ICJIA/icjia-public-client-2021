@@ -1,6 +1,6 @@
 /adultredeploy/*   https://adultredeploy.netlify.app/:splat         200!
 /researchhub/studio/* https://researchhub-studio-next.netlify.app/:splat     200!
-/arrestexplorer/docs/* https://icjia-arrest-explorer-docs.netlify.app/:splat     200!
+/arrestexplorer/docs/* https://arrest-docs.netlify.app/:splat     200!
 /arrestexplorer/*  https://festive-meitner-0c6e7d.netlify.app/:splat     200!
 /mhcontinuum/*  https://mhcontinuum.netlify.app/:splat     200!
 /sudcontinuum/*  https://sudcontinuum.netlify.app/:splat     200!
