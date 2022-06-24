@@ -67,6 +67,7 @@
     "slug": "^5.1.0",
     "thumbor-url-builder": "^0.1.1",
     "vue": "^2.6.14",
+    "vuelidate": "^0.7.7",
     "vue-apollo": "^3.0.8",
     "vue-gtag": "^1.16.1",
     "vue-meta": "^2.4.0",

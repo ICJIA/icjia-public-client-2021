@@ -22,6 +22,7 @@ import { status } from "@/router/status";
 import { informationSystems } from "@/router/informationSystems";
 import { external } from "@/router/external";
 import { search } from "@/router/search";
+import { forms } from "@/router/forms";
 
 // import { preview } from "@/router/preview";
 Vue.use(VueRouter);
@@ -36,6 +37,7 @@ const home = [
 
 const routes = [
   ...home,
+  ...forms,
   ...external,
   ...redirects,
   ...about,
