@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 //import { EventBus } from "@/event-bus";
-// import NProgress from "nprogress";
+import NProgress from "nprogress";
 let axios = require("axios");
 
 const api = axios.create({

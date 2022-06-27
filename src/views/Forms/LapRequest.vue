@@ -1,6 +1,5 @@
 <template>
   <div class="markdown-body page-form">
-   
     <v-container :fluid="$vuetify.breakpoint.xs || $vuetify.breakpoint.sm">
       <v-row>
         <v-col>
@@ -20,7 +19,7 @@
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col cols="12" md="6">
+                  <v-col cols="12" md="12">
                     <v-text-field
                       v-model="name"
                       class="heavy"
@@ -32,6 +31,11 @@
                       @click="clearAxiosError"
                     ></v-text-field>
                   </v-col>
+                </v-row>
+              </v-container>
+
+              <v-container>
+                <v-row>
                   <v-col cols="12" md="6">
                     <v-text-field
                       v-model="email"
@@ -44,15 +48,47 @@
                       @click="clearAxiosError"
                     ></v-text-field>
                   </v-col>
-                </v-row>
 
+                  <v-col cols="12" md="6">
+                    <v-text-field
+                      v-model="phone"
+                      class="heavy"
+                      :error-messages="phoneErrors"
+                      label="Phone number"
+                      required
+                      @input="$v.phone.$touch()"
+                      @blur="$v.phone.$touch()"
+                      @click="clearAxiosError"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+
+              <v-container>
+                <v-row>
+                  <v-col cols="12" md="12">
+                    <v-text-field
+                      v-model="language"
+                      class="heavy"
+                      :error-messages="languageErrors"
+                      label="Requested Language"
+                      required
+                      @input="$v.language.$touch()"
+                      @blur="$v.language.$touch()"
+                      @click="clearAxiosError"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+
+              <v-container>
                 <v-row>
                   <v-col cols="12">
                     <v-textarea
                       v-model="comment"
                       auto-grow
                       filled
-                      label="Please provide as much detail as possible"
+                      label="Please provide as much detail as possible about your langauge access request."
                       rows="10"
                       class="mt-3"
                       @click="clearAxiosError"
@@ -119,8 +155,8 @@ import { validationMixin } from "vuelidate";
 import { required, email } from "vuelidate/lib/validators";
 import DOMPurify from "dompurify";
 // import { generateHours } from "@/services/Utils";
-// import { dbInsert } from "@/services/Forms";
-// import NProgress from "nprogress";
+import { dbInsert } from "@/services/Forms";
+import NProgress from "nprogress";
 
 //const config = require("@/config.json");
 // eslint-disable-next-line no-unused-vars
@@ -145,15 +181,18 @@ export default {
   validations: {
     name: { required },
     email: { required, email },
+    phone: { required },
+    language: { required },
     comment: { required },
   },
   data() {
     return {
       name: "",
       email: "",
-
+      phone: "",
       editor: "markdown",
       comment: "",
+      language: "",
       form: null,
       showSubmit: true,
       showAxiosError: false,
@@ -194,6 +233,19 @@ export default {
       !this.$v.comment.required && errors.push("Comment is required");
       return errors;
     },
+    languageErrors() {
+      const errors = [];
+      if (!this.$v.language.$dirty) return errors;
+      !this.$v.language.required && errors.push("Lanaguage is required");
+      return errors;
+    },
+
+    phoneErrors() {
+      const errors = [];
+      if (!this.$v.phone.$dirty) return errors;
+      !this.$v.phone.required && errors.push("Phone number is required");
+      return errors;
+    },
 
     // eslint-disable-next-line no-unused-vars
     isSuccess(v) {
@@ -228,27 +280,29 @@ export default {
         );
         this.comment = cleanComment;
         this.form = {
-          type: "Language Access Request",
+          type: "Language Access Plan Request",
           name: this.name,
           email: this.email,
+          phone: this.phone,
+          language: this.language,
           comment: this.comment,
         };
 
         let options = {
           method: "POST",
           data: this.form,
-          url: "https://mail.icjia.cloud/internet/lapRequest",
+          url: "https://mail.icjia.cloud/internet/lap",
         };
 
-        // let dbResponse = await dbInsert(this.$store.state.auth.jwt, this.form);
-        // console.log("dbinsert: ", dbResponse);
+        let dbResponse = await dbInsert(this.form);
+        console.log("dbinsert: ", dbResponse);
 
-        // try {
-        //   let res = await axios(options);
-        //   this.success(res);
-        // } catch (err) {
-        //   this.failed(err);
-        // }
+        try {
+          let res = await axios(options);
+          this.success(res);
+        } catch (err) {
+          this.failed(err);
+        }
       }
     },
     failed(res) {
@@ -273,9 +327,9 @@ export default {
       this.$v.$reset();
       this.showSubmit = true;
       this.name = "";
-      this.email = this.$store.state.auth.userMeta.email || null;
+      this.email = null;
       this.comment = "";
-      this.unit = "";
+      this.language = "";
       this.showAxiosError = false;
       this.axiosError = "";
       this.showLoader = false;
