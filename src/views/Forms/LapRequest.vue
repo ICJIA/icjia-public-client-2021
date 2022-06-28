@@ -300,6 +300,7 @@ export default {
         try {
           let res = await axios(options);
           this.success(res);
+          console.log("Email sent: ", res);
         } catch (err) {
           this.failed(err);
         }
