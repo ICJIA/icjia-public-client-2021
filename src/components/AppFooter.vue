@@ -102,6 +102,13 @@
               >
 
               |
+              <router-link
+                to="/forms/lap-request/"
+                style="color: #fff; background: none"
+              >
+                Language Access Request</router-link
+              >
+              |
 
               <router-link
                 to="/about/privacy/"
