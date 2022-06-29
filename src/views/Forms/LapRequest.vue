@@ -15,7 +15,22 @@
               <v-container>
                 <v-row>
                   <v-col cols="12">
-                    <h2>Information:</h2>
+                    <!-- <h2>Information:</h2> -->
+                    <p>
+                      ICJIA would like to ensure that it provides Limited
+                      English Proficiency (LEP) individuals with meaningful and
+                      universal access to ICJIA services, programs, and
+                      activities by all persons, including those who
+                      self-identify as an LEP individual or have a preference
+                      for information and materials in a language other than
+                      English. To support its goals of being inclusive and
+                      accessible to all, ICJIA provides free language assistance
+                      services to individuals whose primary language is not
+                      English. Language assistance services include providing
+                      qualified interpreters and translating documents to ease
+                      access to important information about ICJIA programs,
+                      benefits, and activities.
+                    </p>
                   </v-col>
                 </v-row>
                 <v-row>
