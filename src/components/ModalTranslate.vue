@@ -86,10 +86,33 @@
       </v-card-actions> -->
       <v-expand-transition>
         <div v-show="show">
-          <!-- <v-divider></v-divider> -->
-
           <v-card-text style="font-size: 14px">
-            {{ showDisclaimer("translation")[0]["body"] }}
+            The Illinois Criminal Justice Information Authority ('ICJIA') offers
+            translations of the content through Google Translate. Because Google
+            Translate is an external website, ICJIA does not control the quality
+            or accuracy of translated content. All ICJIA content is filtered
+            through Google Translate which may result in unexpected and
+            unpredictable degradation of portions of text, images and the
+            general appearance on translated pages. Google Translate may
+            maintain unique privacy and use policies. These policies are not
+            controlled by ICJIA and are not associated with ICJIA's privacy and
+            use policies.
+            <br />
+            <br />
+            ICJIA would like to ensure that it provides Limited English
+            Proficiency (LEP) individuals with meaningful and universal access
+            to ICJIA services, programs, and activities by all persons,
+            including those who self-identify as an LEP individual or have a
+            preference for information and materials in a language other than
+            English. To support its goals of being inclusive and accessible to
+            all, ICJIA provides free language assistance services to individuals
+            whose primary language is not English. Language assistance services
+            include providing qualified interpreters and translating documents
+            to ease access to important information about ICJIA programs,
+            benefits, and activities. <br />
+            <br />If you need additional language access assistance, please fill
+            out
+            <a @click.stop.prevent="closeModal()">this online form.</a>
           </v-card-text>
         </div>
       </v-expand-transition>
@@ -101,11 +124,17 @@
 import { EventBus } from "@/event-bus";
 export default {
   methods: {
-    showDisclaimer(id) {
-      return this.$myApp.disclaimers.filter((disclaimer) => {
-        if (id === disclaimer.id) {
-          return disclaimer;
-        }
+    // showDisclaimer(id) {
+    //   return this.$myApp.disclaimers.filter((disclaimer) => {
+    //     if (id === disclaimer.id) {
+    //       return disclaimer;
+    //     }
+    //   });
+    // },
+    closeModal() {
+      this.translate = false;
+      this.$router.push("/forms/lap-request/").catch(() => {
+        this.$vuetify.goTo(0);
       });
     },
     googleTranslate(lang) {

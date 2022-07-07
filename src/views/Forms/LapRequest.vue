@@ -295,6 +295,7 @@ export default {
         );
         this.comment = cleanComment;
         this.form = {
+          site: "ICJIA Public (https://icjia.illinois.gov)",
           type: "Language Access Plan Request",
           name: this.name,
           email: this.email,
