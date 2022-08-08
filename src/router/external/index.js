@@ -7,6 +7,13 @@ const external = [
     },
   },
   {
+    path: "/ifvcc/",
+    redirect: () => {
+      window.location.href = "https://icjia.illinois.gov/ifvcc/";
+      //   return '/redirecting' // not important since redirecting
+    },
+  },
+  {
     path: "/spac/",
     redirect: () => {
       window.location.href = "https://spac.illinois.gov/";
