@@ -23,6 +23,7 @@ import { informationSystems } from "@/router/informationSystems";
 import { external } from "@/router/external";
 import { search } from "@/router/search";
 import { forms } from "@/router/forms";
+import { singles } from "@/router/singles";
 
 // import { preview } from "@/router/preview";
 Vue.use(VueRouter);
@@ -37,6 +38,7 @@ const home = [
 
 const routes = [
   ...home,
+  ...singles,
   ...forms,
   ...external,
   ...redirects,
