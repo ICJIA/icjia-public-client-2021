@@ -58,10 +58,10 @@
           </v-row>
         </template>
       </v-img>
+
       <v-img
         v-if="item.imagePath && !item.image && !textOnly && imageOK"
-        :src="getImagePath(item.imagePath, 0, 0, 40)"
-        :lazy-src="getImagePath(item.imagePath, 0, 0, 1)"
+        :src="item.imagePath"
         width="100%"
         :height="splashHeight"
         class="mb-5"
