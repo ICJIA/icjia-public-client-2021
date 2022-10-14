@@ -113,6 +113,12 @@
             <br />If you need additional language access assistance, please fill
             out
             <a @click.stop.prevent="closeModal()">this online form.</a>
+            <br />
+            <br />
+            For more information on ICJIA's language access plan, please see our
+            <a @click.stop.prevent="closeModalLAP()"
+              >language services announcement</a
+            >.
           </v-card-text>
         </div>
       </v-expand-transition>
@@ -134,6 +140,12 @@ export default {
     closeModal() {
       this.translate = false;
       this.$router.push("/forms/lap-request/").catch(() => {
+        this.$vuetify.goTo(0);
+      });
+    },
+    closeModalLAP() {
+      this.translate = false;
+      this.$router.push("/news/language-services-announcement/").catch(() => {
         this.$vuetify.goTo(0);
       });
     },
