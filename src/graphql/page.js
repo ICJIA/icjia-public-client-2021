@@ -11,6 +11,7 @@ const GET_ALL_PAGES_QUERY = gql`
       slug
       summary
       category
+      hideTitle
       body
       published_at
       tags {
@@ -40,6 +41,7 @@ const GET_SINGLE_PAGE_QUERY = gql`
     pages(where: { slug: $slug }) {
       id
       title
+      hideTitle
       created_at
       updated_at
       slug

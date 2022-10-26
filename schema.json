@@ -12655,6 +12655,18 @@
             "deprecationReason": null
           },
           {
+            "name": "hideTitle",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "published_at",
             "description": null,
             "args": [],
@@ -13079,6 +13091,22 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "PageConnectionHideFromSearch",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "hideTitle",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PageConnectionHideTitle",
                 "ofType": null
               }
             },
@@ -13564,6 +13592,41 @@
       },
       {
         "kind": "OBJECT",
+        "name": "PageConnectionHideTitle",
+        "description": null,
+        "fields": [
+          {
+            "name": "key",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "connection",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "PageConnection",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "PageConnectionPublished_at",
         "description": null,
         "fields": [
@@ -13754,6 +13817,16 @@
             "defaultValue": null
           },
           {
+            "name": "hideTitle",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "published_at",
             "description": null,
             "type": {
@@ -13928,6 +14001,16 @@
           },
           {
             "name": "hideFromSearch",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "hideTitle",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -29435,6 +29518,11 @@
           {
             "kind": "OBJECT",
             "name": "PageConnectionHideFromSearch",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "PageConnectionHideTitle",
             "ofType": null
           },
           {

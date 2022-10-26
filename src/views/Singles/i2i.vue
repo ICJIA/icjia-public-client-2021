@@ -10,8 +10,8 @@
         <v-container style="margin-top: -15px">
           <v-row v-if="content">
             <v-col cols="12" :md="content && content.showTOC ? 8 : 12">
-              <h1 v-html="render(content.title)"></h1>
-              <div v-html="render(content.body)"></div>
+              <h1 v-html="render(content.title)" v-if="!content.hideTitle"></h1>
+              <div v-html="render(content.body)" class="mt-5"></div>
               <div>
                 <BasePropDisplay v-if="content.tags" name="">
                   <BasePropChip
