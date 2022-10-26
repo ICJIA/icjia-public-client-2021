@@ -155,7 +155,7 @@ export default {
 .toc {
   position: -webkit-sticky !important;
   position: sticky !important;
-  top: 205px !important;
+  top: 185px !important;
   font-size: 20px;
 }
 
