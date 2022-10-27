@@ -1,17 +1,29 @@
 <template>
   <div class="markdown-body">
     <BaseContent :error="error" :loading="loading">
-      <template slot="content" v-if="!loading">
+      <div slot="content" v-if="!loading">
         <Splash
           v-if="content && content.splash"
           :splash="content.splash"
         ></Splash>
 
-        <v-container style="margin-top: -15px">
-          <v-row v-if="content">
+        <HomeBoxesAlt
+          style="margin-top: -18px"
+          :secondRow="false"
+          :boxes="3"
+          :showTeaser="true"
+          splashHeight="600"
+          class="mb-5"
+        ></HomeBoxesAlt>
+
+        <v-container fluid style="margin: 0 !important; padding: 0 !important">
+          <v-row v-if="content" no-gutters>
             <v-col cols="12" :md="content && content.showTOC ? 8 : 12">
               <h1 v-html="render(content.title)" v-if="!content.hideTitle"></h1>
-              <div v-html="render(content.body)" class="mt-5"></div>
+              <div
+                v-html="render(content.body)"
+                style="font-size: 18px !important"
+              ></div>
               <div>
                 <BasePropDisplay v-if="content.tags" name="">
                   <BasePropChip
@@ -55,7 +67,7 @@
             </v-col>
           </v-row>
         </v-container>
-      </template>
+      </div>
     </BaseContent>
   </div>
 </template>
