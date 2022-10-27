@@ -58,10 +58,10 @@
                       font-size: 24px;
                     "
                   >
-                    Evidence-Informed Approach
+                    Our Approach
                   </h2>
                   <p style="color: #fff; font-size: 14px" v-if="showTeaser">
-                    Find out more about i2i's evidence-informed approach.
+                    Find out more about our evidence-informed approach.
                   </p></v-col
                 >
               </v-row>
