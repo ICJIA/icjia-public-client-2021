@@ -4,7 +4,7 @@
       <v-row no-gutters>
         <v-col cols="12" md="4">
           <v-card
-            :color="getColor(n)"
+            color="#3B5984"
             style="height: 250px"
             class="py-5 px-2 text-center info-card hover"
             :class="{ boxGutter: gutter }"
@@ -21,8 +21,8 @@
             <v-container fill-height fluid>
               <v-row align="center" justify="center">
                 <v-col
-                  ><v-icon style="font-size: 70px" dark>{{
-                    icons[n - 1]
+                  ><v-icon style="font-size: 70px; color: #fff" dark>{{
+                    icons[0]
                   }}</v-icon>
                   <h2
                     style="
@@ -44,7 +44,7 @@
         </v-col>
         <v-col cols="12" md="4">
           <v-card
-            :color="getColor(n)"
+            color="#10366B"
             style="height: 250px"
             class="py-5 px-2 text-center info-card hover"
             :class="{ boxGutter: gutter }"
@@ -61,8 +61,8 @@
             <v-container fill-height fluid>
               <v-row align="center" justify="center">
                 <v-col
-                  ><v-icon style="font-size: 70px" dark>{{
-                    icons[n - 1]
+                  ><v-icon style="font-size: 70px; color: #fff" dark>{{
+                    icons[1]
                   }}</v-icon>
                   <h2
                     style="
@@ -84,7 +84,7 @@
         </v-col>
         <v-col cols="12" md="4">
           <v-card
-            :color="getColor(n)"
+            color="#3B5984"
             style="height: 250px"
             class="py-5 px-2 text-center info-card hover"
             :class="{ boxGutter: gutter }"
@@ -101,8 +101,8 @@
             <v-container fill-height fluid>
               <v-row align="center" justify="center">
                 <v-col
-                  ><v-icon style="font-size: 70px" dark>{{
-                    icons[n - 1]
+                  ><v-icon style="font-size: 70px; color: #fff" dark>{{
+                    icons[2]
                   }}</v-icon>
                   <h2
                     style="
@@ -137,12 +137,8 @@ export default {
     };
   },
   methods: {
-    getColor(index) {
-      if (index % 2 == 0) {
-        return this.colors[0];
-      } else {
-        return this.colors[1];
-      }
+    getColor() {
+      return this.colors[1];
     },
   },
   computed: {

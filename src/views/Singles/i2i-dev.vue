@@ -5,6 +5,7 @@
         <Splash
           v-if="content && content.splash"
           :splash="content.splash"
+          splashHeight="600"
         ></Splash>
 
         <HomeBoxesAlt
@@ -12,8 +13,7 @@
           :secondRow="false"
           :boxes="3"
           :showTeaser="true"
-          splashHeight="600"
-          class="mb-5"
+          class="mb-5 card"
         ></HomeBoxesAlt>
 
         <v-container fluid style="margin: 0 !important; padding: 0 !important">
@@ -22,7 +22,7 @@
               <h1 v-html="render(content.title)" v-if="!content.hideTitle"></h1>
               <div
                 v-html="render(content.body)"
-                style="font-size: 18px !important"
+                style="font-size: 20px !important; color: #000 !important"
               ></div>
               <div>
                 <BasePropDisplay v-if="content.tags" name="">
@@ -146,3 +146,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.info-card {
+  border-radius: 0 !important;
+}
+</style>
