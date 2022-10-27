@@ -12,6 +12,12 @@ const singles = [
     component: () =>
       import(/* webpackChunkName: "i2i" */ "@/views/Singles/i2i.vue"),
   },
+  {
+    path: "/i2i-dev/",
+    name: "i2iDev",
+    component: () =>
+      import(/* webpackChunkName: "i2i" */ "@/views/Singles/i2i-dev.vue"),
+  },
 ];
 
 export { singles };
