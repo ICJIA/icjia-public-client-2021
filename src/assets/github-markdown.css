@@ -595,6 +595,11 @@
   padding-bottom: 0.3em;
 }
 
+.markdown-body h2.no-rule {
+  border-bottom: 0 !important;
+  padding-bottom: 0.3em !important;
+}
+
 .markdown-body h2 {
   font-size: 1.6em;
   font-weight: 700;

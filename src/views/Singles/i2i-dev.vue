@@ -2,11 +2,11 @@
   <div class="markdown-body">
     <BaseContent :error="error" :loading="loading">
       <div slot="content" v-if="!loading">
-        <Splash
+        <SplashText
           v-if="content && content.splash"
           :splash="content.splash"
-          splashHeight="600"
-        ></Splash>
+          :splashHeight="600"
+        ></SplashText>
 
         <HomeBoxesAlt
           style="margin-top: -18px"
@@ -15,7 +15,12 @@
           :showTeaser="true"
           class="mb-5 card"
         ></HomeBoxesAlt>
-
+        <!-- <v-container fluid>
+          <v-row no-gutters>
+            <v-col cols="12" md="6">col 1</v-col>
+            <v-col cols="12" md="6">col 2</v-col>
+          </v-row>
+        </v-container> -->
         <v-container fluid style="margin: 0 !important; padding: 0 !important">
           <v-row v-if="content" no-gutters>
             <v-col cols="12" :md="content && content.showTOC ? 8 : 12">
@@ -100,6 +105,9 @@ export default {
   methods: {
     render(content) {
       return renderToHtml(content);
+    },
+    test() {
+      console.log("click");
     },
   },
   mounted() {},

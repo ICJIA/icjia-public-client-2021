@@ -8,16 +8,8 @@
             style="height: 250px"
             class="py-5 px-2 text-center info-card hover"
             :class="{ boxGutter: gutter }"
+            @click="test('about')"
           >
-            <router-link
-              to="/"
-              aria-label="Read more about this item."
-              class="skiplink dark"
-              title="Read more about this item."
-              style="font-size: 12px; margin-top: 5px; margin-left: 5px"
-            >
-              Read more about this item
-            </router-link>
             <v-container fill-height fluid>
               <v-row align="center" justify="center">
                 <v-col
@@ -32,72 +24,26 @@
                       font-size: 24px;
                     "
                   >
-                    Click through title here
+                    About i2i
                   </h2>
                   <p style="color: #fff; font-size: 14px" v-if="showTeaser">
-                    Lorem markdownum ramis ratus iussit Echidnaea
+                    i2i supports “grassroots” organizations and community
+                    groups.
                   </p></v-col
                 >
               </v-row>
             </v-container>
           </v-card>
         </v-col>
+
         <v-col cols="12" md="4">
           <v-card
             color="#10366B"
             style="height: 250px"
             class="py-5 px-2 text-center info-card hover"
             :class="{ boxGutter: gutter }"
+            @click="test('evidence')"
           >
-            <router-link
-              to="/"
-              aria-label="Read more about this item."
-              class="skiplink dark"
-              title="Read more about this item."
-              style="font-size: 12px; margin-top: 5px; margin-left: 5px"
-            >
-              Read more about this item
-            </router-link>
-            <v-container fill-height fluid>
-              <v-row align="center" justify="center">
-                <v-col
-                  ><v-icon style="font-size: 70px; color: #fff" dark>{{
-                    icons[1]
-                  }}</v-icon>
-                  <h2
-                    style="
-                      color: #fff;
-
-                      margin-bottom: 10px;
-                      font-size: 24px;
-                    "
-                  >
-                    Click through title here
-                  </h2>
-                  <p style="color: #fff; font-size: 14px" v-if="showTeaser">
-                    Lorem markdownum ramis ratus iussit Echidnaea
-                  </p></v-col
-                >
-              </v-row>
-            </v-container>
-          </v-card>
-        </v-col>
-        <v-col cols="12" md="4">
-          <v-card
-            color="#3B5984"
-            style="height: 250px"
-            class="py-5 px-2 text-center info-card hover"
-            :class="{ boxGutter: gutter }"
-          >
-            <router-link
-              to="/"
-              aria-label="Read more about this item."
-              class="skiplink dark"
-              title="Read more about this item."
-              style="font-size: 12px; margin-top: 5px; margin-left: 5px"
-            >
-              Read more about this item
-            </router-link>
             <v-container fill-height fluid>
               <v-row align="center" justify="center">
                 <v-col
@@ -112,10 +58,42 @@
                       font-size: 24px;
                     "
                   >
-                    Click through title here
+                    Evidence-Informed Approach
                   </h2>
                   <p style="color: #fff; font-size: 14px" v-if="showTeaser">
-                    Lorem markdownum ramis ratus iussit Echidnaea
+                    Find out more about i2i's evidence-informed approach.
+                  </p></v-col
+                >
+              </v-row>
+            </v-container>
+          </v-card>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-card
+            color="#3B5984"
+            style="height: 250px"
+            class="py-5 px-2 text-center info-card hover"
+            :class="{ boxGutter: gutter }"
+            @click="test('capacity')"
+          >
+            <v-container fill-height fluid>
+              <v-row align="center" justify="center">
+                <v-col
+                  ><v-icon style="font-size: 70px; color: #fff" dark>{{
+                    icons[1]
+                  }}</v-icon>
+                  <h2
+                    style="
+                      color: #fff;
+
+                      margin-bottom: 10px;
+                      font-size: 24px;
+                    "
+                  >
+                    Cohorts
+                  </h2>
+                  <p style="color: #fff; font-size: 14px" v-if="showTeaser">
+                    Find out who's in the cohorts
                   </p></v-col
                 >
               </v-row>
@@ -139,6 +117,11 @@ export default {
   methods: {
     getColor() {
       return this.colors[1];
+    },
+    test(id) {
+      //console.log("click: ", id);
+      const test = document.getElementById(id);
+      this.$vuetify.goTo(test, { offset: 15 });
     },
   },
   computed: {
