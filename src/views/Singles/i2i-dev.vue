@@ -15,6 +15,7 @@
           :showTeaser="true"
           class="mb-5 card"
         ></HomeBoxesAlt>
+
         <!-- <v-container fluid>
           <v-row no-gutters>
             <v-col cols="12" md="6">col 1</v-col>
@@ -27,7 +28,7 @@
               <h1 v-html="render(content.title)" v-if="!content.hideTitle"></h1>
               <div
                 v-html="render(content.body)"
-                style="font-size: 20px !important; color: #000 !important"
+                style="font-size: 18px !important; color: #000 !important"
               ></div>
               <div>
                 <BasePropDisplay v-if="content.tags" name="">

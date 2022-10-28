@@ -22,9 +22,11 @@
       <v-row align="center">
         <div class="banner">
           <v-col cols="12" class="text-center">
-            <h1 class="" style="color: #fff">Institute 2 Innovate</h1>
+            <h1 class="" style="color: #fff; font-size: 40px !important">
+              Institute 2 Innovate
+            </h1>
 
-            <div class="" style="color: #fff">
+            <div style="color: #fff; font-size: 20px">
               i2i supports “grassroots” organizations and community groups
               committed to changing the circumstance of violence in their
               communities.
@@ -93,7 +95,7 @@ export default {
 
 .banner {
   width: 100%;
-  background: rgba(79, 80, 79, 0.7);
+  background: rgba(79, 80, 79, 0.8);
   padding: 30px;
   margin-top: 250px;
 }

@@ -5,7 +5,7 @@
         <v-col cols="12" md="4">
           <v-card
             color="#3B5984"
-            style="height: 250px"
+            style="height: 300px"
             class="py-5 px-2 text-center info-card hover"
             :class="{ boxGutter: gutter }"
             @click="test('about')"
@@ -24,9 +24,13 @@
                       font-size: 24px;
                     "
                   >
-                    About i2i
+                    About Us
                   </h2>
-                  <p style="color: #fff; font-size: 14px" v-if="showTeaser">
+                  <p
+                    style="color: #fff; font-size: 14px"
+                    v-if="showTeaser"
+                    class="mt-5"
+                  >
                     i2i supports “grassroots” organizations and community
                     groups.
                   </p></v-col
@@ -39,7 +43,7 @@
         <v-col cols="12" md="4">
           <v-card
             color="#10366B"
-            style="height: 250px"
+            style="height: 300px"
             class="py-5 px-2 text-center info-card hover"
             :class="{ boxGutter: gutter }"
             @click="test('evidence')"
@@ -71,10 +75,10 @@
         <v-col cols="12" md="4">
           <v-card
             color="#3B5984"
-            style="height: 250px"
+            style="height: 300px"
             class="py-5 px-2 text-center info-card hover"
             :class="{ boxGutter: gutter }"
-            @click="test('capacity')"
+            @click="test('cohorts')"
           >
             <v-container fill-height fluid>
               <v-row align="center" justify="center">
@@ -90,7 +94,7 @@
                       font-size: 24px;
                     "
                   >
-                    Cohorts
+                    Current Cohorts
                   </h2>
                   <p style="color: #fff; font-size: 14px" v-if="showTeaser">
                     Find out who's in the cohorts
@@ -121,7 +125,7 @@ export default {
     test(id) {
       //console.log("click: ", id);
       const test = document.getElementById(id);
-      this.$vuetify.goTo(test, { offset: 15 });
+      this.$vuetify.goTo(test, { offset: 10 });
     },
   },
   computed: {
