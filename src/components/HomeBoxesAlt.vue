@@ -13,9 +13,9 @@
             <v-container fill-height fluid>
               <v-row align="center" justify="center">
                 <v-col
-                  ><v-icon style="font-size: 70px; color: #fff" dark>{{
-                    icons[0]
-                  }}</v-icon>
+                  ><v-icon style="font-size: 100px; color: #fff" dark
+                    >home</v-icon
+                  >
                   <h2
                     style="
                       color: #fff;
@@ -51,9 +51,9 @@
             <v-container fill-height fluid>
               <v-row align="center" justify="center">
                 <v-col
-                  ><v-icon style="font-size: 70px; color: #fff" dark>{{
-                    icons[2]
-                  }}</v-icon>
+                  ><v-icon style="font-size: 100px; color: #fff" dark
+                    >design_services</v-icon
+                  >
                   <h2
                     style="
                       color: #fff;
@@ -83,9 +83,9 @@
             <v-container fill-height fluid>
               <v-row align="center" justify="center">
                 <v-col
-                  ><v-icon style="font-size: 70px; color: #fff" dark>{{
-                    icons[1]
-                  }}</v-icon>
+                  ><v-icon style="font-size: 100px; color: #fff" dark
+                    >groups</v-icon
+                  >
                   <h2
                     style="
                       color: #fff;
@@ -97,7 +97,7 @@
                     Current Cohorts
                   </h2>
                   <p style="color: #fff; font-size: 14px" v-if="showTeaser">
-                    Find out who's in the cohorts
+                    Find out who's who
                   </p></v-col
                 >
               </v-row>
