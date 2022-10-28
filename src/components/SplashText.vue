@@ -22,11 +22,31 @@
       <v-row align="center">
         <div class="banner">
           <v-col cols="12" class="text-center">
-            <h1 class="" style="color: #fff; font-size: 40px !important">
+            <center>
+              <v-img
+                src="@/assets/i2iSmall-transparent.png"
+                width="125"
+                alt="i2i logo"
+              />
+            </center>
+            <h1
+              style="color: #fff; font-size: 40px !important; margin-top: 0px"
+              class="hidden-sm-and-down"
+            >
               Institute 2 Innovate
             </h1>
 
-            <div style="color: #fff; font-size: 20px">
+            <h1
+              style="color: #fff; font-size: 25px !important; border-bottom: 0"
+              class="hidden-md-and-up"
+            >
+              Institute 2 Innovate
+            </h1>
+
+            <div
+              style="color: #fff; font-size: 18px"
+              class="hidden-sm-and-down"
+            >
               i2i supports “grassroots” organizations and community groups
               committed to changing the circumstance of violence in their
               communities.
@@ -97,7 +117,7 @@ export default {
   width: 100%;
   background: rgba(79, 80, 79, 0.8);
   padding: 30px;
-  margin-top: 250px;
+  margin-top: 150px;
 }
 @media only screen and (max-width: 600px) {
   .banner {
