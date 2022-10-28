@@ -24,9 +24,12 @@
           <v-col cols="12" class="text-center">
             <center>
               <v-img
+                transition="scale-transition"
                 src="@/assets/i2iSmall-transparent.png"
+                lazy-src="@/assets/i2iSmall-transparent.png"
                 width="125"
                 alt="i2i logo"
+                @click="$vuetify.goTo(0)"
               />
             </center>
             <h1
