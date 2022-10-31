@@ -19,7 +19,7 @@
                   <h2
                     style="
                       color: #fff;
-
+                      font-weight: 900;
                       margin-bottom: 10px;
                       font-size: 24px;
                     "
@@ -27,7 +27,7 @@
                     About Us
                   </h2>
                   <p
-                    style="color: #fff; font-size: 14px"
+                    style="color: #fff; font-size: 20px"
                     v-if="showTeaser"
                     class="mt-5"
                   >
@@ -57,14 +57,14 @@
                   <h2
                     style="
                       color: #fff;
-
+                      font-weight: 900;
                       margin-bottom: 10px;
                       font-size: 24px;
                     "
                   >
                     Our Approach
                   </h2>
-                  <p style="color: #fff; font-size: 14px" v-if="showTeaser">
+                  <p style="color: #fff; font-size: 20px" v-if="showTeaser">
                     Find out more about our evidence-informed approach.
                   </p></v-col
                 >
@@ -89,14 +89,17 @@
                   <h2
                     style="
                       color: #fff;
-
+                      font-weight: 900;
                       margin-bottom: 10px;
                       font-size: 24px;
                     "
                   >
                     Current Cohorts
                   </h2>
-                  <p style="color: #fff; font-size: 14px" v-if="showTeaser">
+                  <p
+                    style="color: #fff; font-size: 20px !important"
+                    v-if="showTeaser"
+                  >
                     Find out who's who
                   </p></v-col
                 >

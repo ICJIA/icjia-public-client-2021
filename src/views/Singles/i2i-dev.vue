@@ -9,7 +9,7 @@
         ></SplashText>
 
         <HomeBoxesAlt
-          style="margin-top: -18px"
+          style="margin-top: -20px"
           :secondRow="false"
           :boxes="3"
           :showTeaser="true"
