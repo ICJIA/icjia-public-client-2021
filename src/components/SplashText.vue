@@ -50,9 +50,8 @@
               style="color: #fff; font-size: 18px"
               class="hidden-sm-and-down"
             >
-              i2i supports grassroots organizations and community groups
-              committed to changing the circumstance of violence in their
-              communities.
+              Supporting grassroots organizations and community groups committed
+              to changing the circumstance of violence in our communities.
             </div>
             <v-btn
               class="mt-6"
