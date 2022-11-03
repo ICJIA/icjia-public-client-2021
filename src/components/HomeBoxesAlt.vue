@@ -94,7 +94,7 @@
                       font-size: 24px;
                     "
                   >
-                    Current Cohorts
+                    Current Tiers
                   </h2>
                   <p
                     style="color: #fff; font-size: 20px !important"
