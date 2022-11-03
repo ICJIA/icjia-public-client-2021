@@ -33,36 +33,38 @@
               />
             </center>
             <h1
-              style="color: #fff; font-size: 40px !important; margin-top: 0px"
+              style="color: #333; font-size: 40px !important; margin-top: 0px"
               class="hidden-sm-and-down"
             >
               Institute 2 Innovate
             </h1>
 
             <h1
-              style="color: #fff; font-size: 25px !important; border-bottom: 0"
+              style="color: #333; font-size: 25px !important; border-bottom: 0"
               class="hidden-md-and-up"
             >
               Institute 2 Innovate
             </h1>
 
             <div
-              style="color: #fff; font-size: 18px"
+              style="color: #333; font-size: 18px"
               class="hidden-sm-and-down"
             >
               Supporting grassroots organizations and community groups committed
               to changing the circumstance of violence in our communities.
             </div>
             <v-btn
+              dark
               class="mt-6"
-              color="white"
+              color="blue darken-4"
               @click="$vuetify.goTo('#about', { offset: 20 })"
               >Learn More</v-btn
             >&nbsp;&nbsp;
             <v-btn
               class="mt-6"
               outlined
-              color="white"
+              dark
+              color="black"
               @click="$vuetify.goTo('#contact', { offset: 20 })"
               >Contact</v-btn
             >
@@ -112,19 +114,19 @@ export default {
   font-size: 12px;
   margin-top: -15px;
   margin-bottom: 25px;
-  color: #777;
+  color: #333;
 }
 
 .banner {
   width: 100%;
-  background: rgba(79, 80, 79, 0.8);
+  background: rgba(79, 80, 79, 0);
   padding: 30px;
   margin-top: 150px;
 }
 @media only screen and (max-width: 600px) {
   .banner {
     height: 100%;
-    background: rgba(79, 80, 79, 0.5);
+    background: rgba(79, 80, 79, 0);
   }
 }
 </style>
