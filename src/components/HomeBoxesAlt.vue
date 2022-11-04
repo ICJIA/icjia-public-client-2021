@@ -31,8 +31,8 @@
                     v-if="showTeaser"
                     class="mt-5"
                   >
-                    i2i supports “grassroots” organizations and community
-                    groups.
+                    i2i supports new and emerging localized “grassroots”
+                    community organizations.
                   </p></v-col
                 >
               </v-row>
@@ -94,7 +94,7 @@
                       font-size: 24px;
                     "
                   >
-                    Current Tiers
+                    Cohorts
                   </h2>
                   <p
                     style="color: #fff; font-size: 20px !important"

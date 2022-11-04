@@ -40,14 +40,18 @@
             </h1>
 
             <h1
-              style="color: #333; font-size: 25px !important; border-bottom: 0"
+              style="
+                color: #333;
+                font-size: 25px !important;
+                border-bottom: 0 !important;
+              "
               class="hidden-md-and-up"
             >
               Institute 2 Innovate
             </h1>
 
             <div
-              style="color: #333; font-size: 18px"
+              style="color: #333; font-size: 18px; font-weight: 700"
               class="hidden-sm-and-down"
             >
               Supporting grassroots organizations and community groups committed
