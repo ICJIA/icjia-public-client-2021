@@ -51,7 +51,7 @@
             </h1>
 
             <div
-              style="color: #fff; font-size: 18px; font-weight: 700"
+              style="color: #fff; font-size: 16px; font-weight: 700"
               class=""
             >
               <!-- Supporting grassroots organizations and community groups committed
