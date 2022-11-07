@@ -33,7 +33,7 @@
               />
             </center>
             <h1
-              style="color: #333; font-size: 40px !important; margin-top: 0px"
+              style="color: #fff; font-size: 40px !important; margin-top: 0px"
               class="hidden-sm-and-down"
             >
               Institute 2 Innovate
@@ -41,7 +41,7 @@
 
             <h1
               style="
-                color: #333;
+                color: #fff;
                 font-size: 25px !important;
                 border-bottom: 0 !important;
               "
@@ -51,11 +51,13 @@
             </h1>
 
             <div
-              style="color: #333; font-size: 18px; font-weight: 700"
-              class="hidden-sm-and-down"
+              style="color: #fff; font-size: 18px; font-weight: 700"
+              class=""
             >
-              Supporting grassroots organizations and community groups committed
-              to changing the circumstance of violence in our communities.
+              <!-- Supporting grassroots organizations and community groups committed
+              to changing the circumstance of violence in our communities. -->
+
+              Investing in Public Safety by Investing in Youth
             </div>
             <v-btn
               dark
@@ -67,8 +69,7 @@
             <v-btn
               class="mt-6"
               outlined
-              dark
-              color="black"
+              color="white"
               @click="$vuetify.goTo('#contact', { offset: 20 })"
               >Contact</v-btn
             >
@@ -123,14 +124,14 @@ export default {
 
 .banner {
   width: 100%;
-  background: rgba(79, 80, 79, 0);
+  background: rgba(79, 80, 79, 0.5);
   padding: 30px;
   margin-top: 150px;
 }
 @media only screen and (max-width: 600px) {
   .banner {
     height: 100%;
-    background: rgba(79, 80, 79, 0);
+    background: rgba(79, 80, 79, 0.5);
   }
 }
 </style>
