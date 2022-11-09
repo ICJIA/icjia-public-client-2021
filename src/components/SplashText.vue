@@ -57,7 +57,7 @@
               <!-- Supporting grassroots organizations and community groups committed
               to changing the circumstance of violence in our communities. -->
 
-              Investing in Public Safety by Investing in Youth
+              Investing in Public Safety by Investing in You
             </div>
             <v-btn
               dark
