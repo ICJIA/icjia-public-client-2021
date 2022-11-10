@@ -1,17 +1,35 @@
 <template>
   <div class="markdown-body">
     <BaseContent :error="error" :loading="loading">
-      <template slot="content" v-if="!loading">
-        <Splash
+      <div slot="content" v-if="!loading">
+        <SplashText
           v-if="content && content.splash"
           :splash="content.splash"
-        ></Splash>
+          :splashHeight="600"
+        ></SplashText>
 
-        <v-container style="margin-top: -15px">
-          <v-row v-if="content">
+        <HomeBoxesAlt
+          style="margin-top: -20px"
+          :secondRow="false"
+          :boxes="3"
+          :showTeaser="true"
+          class="mb-5 card"
+        ></HomeBoxesAlt>
+
+        <!-- <v-container fluid>
+          <v-row no-gutters>
+            <v-col cols="12" md="6">col 1</v-col>
+            <v-col cols="12" md="6">col 2</v-col>
+          </v-row>
+        </v-container> -->
+        <v-container fluid style="margin: 0 !important; padding: 0 !important">
+          <v-row v-if="content" no-gutters>
             <v-col cols="12" :md="content && content.showTOC ? 8 : 12">
               <h1 v-html="render(content.title)" v-if="!content.hideTitle"></h1>
-              <div v-html="render(content.body)" class="mt-5"></div>
+              <div
+                v-html="render(content.body)"
+                style="font-size: 18px !important; color: #000 !important"
+              ></div>
               <div>
                 <BasePropDisplay v-if="content.tags" name="">
                   <BasePropChip
@@ -55,7 +73,7 @@
             </v-col>
           </v-row>
         </v-container>
-      </template>
+      </div>
     </BaseContent>
   </div>
 </template>
@@ -88,6 +106,9 @@ export default {
   methods: {
     render(content) {
       return renderToHtml(content);
+    },
+    test() {
+      console.log("click");
     },
   },
   mounted() {},
@@ -134,3 +155,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.info-card {
+  border-radius: 0 !important;
+}
+</style>

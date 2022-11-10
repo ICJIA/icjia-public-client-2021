@@ -2,19 +2,19 @@
   <div class="markdown-body">
     <BaseContent :error="error" :loading="loading">
       <div slot="content" v-if="!loading">
-        <SplashText
+        <!-- <SplashText
           v-if="content && content.splash"
           :splash="content.splash"
           :splashHeight="600"
-        ></SplashText>
+        ></SplashText> -->
 
-        <HomeBoxesAlt
+        <!-- <HomeBoxesAlt
           style="margin-top: -20px"
           :secondRow="false"
           :boxes="3"
           :showTeaser="true"
           class="mb-5 card"
-        ></HomeBoxesAlt>
+        ></HomeBoxesAlt> -->
 
         <!-- <v-container fluid>
           <v-row no-gutters>
@@ -22,7 +22,7 @@
             <v-col cols="12" md="6">col 2</v-col>
           </v-row>
         </v-container> -->
-        <v-container fluid style="margin: 0 !important; padding: 0 !important">
+        <v-container>
           <v-row v-if="content" no-gutters>
             <v-col cols="12" :md="content && content.showTOC ? 8 : 12">
               <h1 v-html="render(content.title)" v-if="!content.hideTitle"></h1>
