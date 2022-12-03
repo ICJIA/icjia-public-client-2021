@@ -42,6 +42,11 @@ const informationSystems = [
   },
 
   {
+    path: "/information-systems",
+    redirect: { name: "IDSOverview" },
+  },
+
+  {
     path: "/information-systems/*",
     redirect: { name: "IDSOverview" },
   },
