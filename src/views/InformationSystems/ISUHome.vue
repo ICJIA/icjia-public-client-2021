@@ -71,7 +71,7 @@ export default {
       query: GET_SINGLE_PAGE_QUERY,
       variables() {
         return {
-          slug: "information-systems-home",
+          slug: "innovation-and-digital-services-home",
         };
       },
       error(error) {

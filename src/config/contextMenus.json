@@ -281,25 +281,25 @@
         ]
     },
     {
-        "name": "ISU",
-        "label": "Information Systems Unit ",
-        "shortLabel": "ISU",
-        "pathPrefix": "/information-systems/",
-        "defaultPath": "/information-systems/",
+        "name": "IDS",
+        "label": "Innovation and Digital Services ",
+        "shortLabel": "IDS",
+        "pathPrefix": "/innovation-and-digital-services/",
+        "defaultPath": "/innovation-and-digital-services/",
         "showTranslation": true,
         "location": "top",
         "items": [
             {
-                "label": "Information Systems Home",
-                "path": "/information-systems/"
+                "label": "IDS Home",
+                "path": "/innovation-and-digital-services/"
             },
             {
                 "label": "Infonet",
-                "path": "/information-systems/infonet/"
+                "path": "/innovation-and-digital-services/infonet/"
             },
             {
                 "label": "Drone Reporting",
-                "path": "/information-systems/drone/"
+                "path": "/innovation-and-digital-services/drone/"
             }
         ]
     },

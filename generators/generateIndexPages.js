@@ -59,6 +59,9 @@ axios
       if (page.category === "informationSystems") {
         page.category = "information-systems";
       }
+      if (page.category === "innovationAndDigitalServices") {
+        page.category = "information-and-digital-services";
+      }
     });
     pages = pages.filter((page) => {
       return !page.hideFromSearch;
