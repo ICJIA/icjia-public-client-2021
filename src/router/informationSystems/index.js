@@ -1,42 +1,10 @@
 const informationSystems = [
-  // {
-  //   path: "/innovation-and-digital-services/",
-  //   name: "ISUOverview",
-  //   component: () =>
-  //     import(
-  //       /* webpackChunkName: "isu" */ "@/views/InformationSystems/ISUHome.vue"
-  //     ),
-  // },
-  // {
-  //   path: "/innovation-and-digital-services/infonet/",
-  //   name: "Infonet",
-  //   component: () =>
-  //     import(
-  //       /* webpackChunkName: "isu" */ "@/views/InformationSystems/Infonet.vue"
-  //     ),
-  // },
-
-  // {
-  //   path: "/innovation-and-digital-services/isu-staff/",
-  //   name: "ISUStaff",
-  //   component: () =>
-  //     import(
-  //       /* webpackChunkName: "isu" */ "@/views/InformationSystems/ISUStaff.vue"
-  //     ),
-  // },
-
-  // {
-  //   path: "/innovation-and-digital-services/:slug",
-  //   name: "ISUBasepage",
-  //   component: () =>
-  //     import(/* webpackChunkName: "isu" */ "@/views/BasePage.vue"),
-  // },
   {
     path: "/innovation-and-digital-services/",
-    name: "ISUOverview",
+    name: "IDSOverview",
     component: () =>
       import(
-        /* webpackChunkName: "isu" */ "@/views/InformationSystems/ISUHome.vue"
+        /* webpackChunkName: "ids" */ "@/views/InformationSystems/ISUHome.vue"
       ),
   },
   {
@@ -44,24 +12,28 @@ const informationSystems = [
     name: "Infonet",
     component: () =>
       import(
-        /* webpackChunkName: "isu" */ "@/views/InformationSystems/Infonet.vue"
+        /* webpackChunkName: "ids" */ "@/views/InformationSystems/Infonet.vue"
       ),
   },
 
   {
     path: "/innovation-and-digital-services/isu-staff/",
-    name: "ISUStaff",
+    name: "IDSStaff",
     component: () =>
       import(
-        /* webpackChunkName: "isu" */ "@/views/InformationSystems/ISUStaff.vue"
+        /* webpackChunkName: "ids" */ "@/views/InformationSystems/ISUStaff.vue"
       ),
   },
 
   {
     path: "/innovation-and-digital-services/:slug",
-    name: "ISUBasepage",
+    name: "IDSBasepage",
     component: () =>
-      import(/* webpackChunkName: "isu" */ "@/views/BasePage.vue"),
+      import(/* webpackChunkName: "ids" */ "@/views/BasePage.vue"),
+  },
+  {
+    path: "/information-systems/*",
+    redirect: { name: "IDSOverview" },
   },
 ];
 

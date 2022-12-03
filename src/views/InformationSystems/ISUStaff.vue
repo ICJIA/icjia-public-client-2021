@@ -61,7 +61,7 @@ export default {
     search(name) {
       let opts = {
         query: name,
-        type: "information-systems",
+        type: "innovation-and-digital-services",
       };
       EventBus.$emit("search", opts);
     },
@@ -73,7 +73,7 @@ export default {
       query: GET_SINGLE_UNIT_QUERY,
       variables() {
         return {
-          slug: "information-systems-unit",
+          slug: "innovation-and-digital-services",
         };
       },
       error(error) {
