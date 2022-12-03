@@ -24,6 +24,10 @@ const informationSystems = [
         /* webpackChunkName: "ids" */ "@/views/InformationSystems/ISUStaff.vue"
       ),
   },
+  {
+    path: "/information-and-digital-services/innovation-and-digital-services-home/",
+    redirect: { name: "IDSOverview" },
+  },
 
   {
     path: "/innovation-and-digital-services/:slug",
@@ -31,6 +35,7 @@ const informationSystems = [
     component: () =>
       import(/* webpackChunkName: "ids" */ "@/views/BasePage.vue"),
   },
+
   {
     path: "/information-systems/*",
     redirect: { name: "IDSOverview" },
