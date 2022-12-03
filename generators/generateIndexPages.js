@@ -60,7 +60,7 @@ axios
         page.category = "information-systems";
       }
       if (page.category === "innovationAndDigitalServices") {
-        page.category = "information-and-digital-services";
+        page.category = "innovation-and-digital-services";
       }
     });
     pages = pages.filter((page) => {

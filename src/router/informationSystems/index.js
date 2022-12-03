@@ -30,6 +30,11 @@ const informationSystems = [
   },
 
   {
+    path: "/innovation-and-digital-services/innovation-and-digital-services-home/",
+    redirect: { name: "IDSOverview" },
+  },
+
+  {
     path: "/innovation-and-digital-services/:slug",
     name: "IDSBasepage",
     component: () =>

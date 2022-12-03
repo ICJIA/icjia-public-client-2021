@@ -70,7 +70,7 @@
               dark
               to="/innovation-and-digital-services/"
               class="mr-2"
-              >Information and Digital Services&nbsp;&raquo;</v-btn
+              >Innovation and Digital Services&nbsp;&raquo;</v-btn
             >
             <!-- <v-btn x-small to="/web-support/" class="ml-2"
               >Contact web support</v-btn

@@ -15,7 +15,7 @@ const redirects = [
     redirect: { name: "hubHome" },
   },
   {
-    path: "/information-and-digital-services/information-and-digital-services-home/",
+    path: "/innovation-and-digital-services/",
     redirect: { name: "IDSOverview" },
   },
   {
@@ -27,7 +27,7 @@ const redirects = [
     path: "/drone/",
     // eslint-disable-next-line no-unused-vars
     redirect: (route) => {
-      return "/information-and-digital-services/drone/";
+      return "/innovation-and-digital-services/drone/";
     },
   },
   {
