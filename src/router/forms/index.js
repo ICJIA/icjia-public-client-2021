@@ -1,9 +1,11 @@
 const forms = [
   {
     path: "/forms/lap-request/",
-    name: "Sandbox",
+    name: "LAPRequest",
     component: () =>
-      import(/* webpackChunkName: "sandbox" */ "@/views/Forms/LapRequest.vue"),
+      import(
+        /* webpackChunkName: "laprequest" */ "@/views/Forms/LapRequest.vue"
+      ),
   },
 ];
 
