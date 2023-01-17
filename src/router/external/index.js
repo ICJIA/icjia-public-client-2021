@@ -35,6 +35,13 @@ const external = [
       //   return '/redirecting' // not important since redirecting
     },
   },
+  {
+    path: "/i2i/",
+    redirect: () => {
+      window.location.href = "https://i2i.illinois.gov/";
+      //   return '/redirecting' // not important since redirecting
+    },
+  },
 ];
 
 export { external };
