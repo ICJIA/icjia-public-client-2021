@@ -51,7 +51,7 @@
               </div>
 
               <h2 style="font-size: 1.1em" class="mt-2">
-                <v-chip
+                <!-- <v-chip
                   v-if="isItNew(grant)"
                   label
                   small
@@ -61,7 +61,7 @@
                   <span style="color: #fff !important; font-weight: 400">
                     NEW!
                   </span>
-                </v-chip>
+                </v-chip> -->
                 {{ grant.title }}
               </h2>
 

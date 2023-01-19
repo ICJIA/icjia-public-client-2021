@@ -14,8 +14,8 @@
         "timeout": 15000,
         "register": "/auth/local/register"
     },
-    "daysToShowNew": 10,
-    "daysToShowNewResearch": 14,
+    "daysToShowNew": 5,
+    "daysToShowNewResearch": 10,
     "archiveDate": "January 1, 2021",
     "home": {
         "eventLimit": 3,
