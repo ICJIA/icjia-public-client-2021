@@ -5,7 +5,7 @@
       elevation="0"
       color="#fff"
       min-height="150"
-      max-height="255"
+      max-height="225"
       :class="{ 'rule-top': index && index > 0 }"
       style="overflow-y: none"
       @click="routeTo(item.fullPath)"
