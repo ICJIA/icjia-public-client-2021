@@ -5,8 +5,9 @@
       elevation="0"
       color="#fff"
       min-height="150"
+      max-height="255"
       :class="{ 'rule-top': index && index > 0 }"
-      style="overflow-y: auto !important"
+      style="overflow-y: none"
       @click="routeTo(item.fullPath)"
     >
       <v-container fluid>
@@ -17,7 +18,7 @@
               :src="`${getImage(item.splash.formats)}`"
               :height="getHeight()"
               class=""
-              style="border: 0px solid #fafafa"
+              style="border: 0px solid #fafafa; max-height: 250px"
               alt="ICJIA Intranet image"
               v-if="item.splash"
             >
@@ -153,7 +154,7 @@ export default {
       if (this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs) {
         imageURL = formats.small.url;
       } else {
-        imageURL = formats.thumbnail.url;
+        imageURL = formats.small.url;
       }
       //console.log(`${base}${imageURL}`);
       return `${base}${imageURL}`;
