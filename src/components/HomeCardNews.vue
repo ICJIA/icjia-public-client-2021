@@ -18,7 +18,7 @@
               :src="`${getImage(item.splash.formats)}`"
               :height="getHeight()"
               class=""
-              style="border: 0px solid #fafafa; max-height: 250px"
+              style="border: 0px solid #fafafa; max-height: 200px !important"
               alt="ICJIA Intranet image"
               v-if="item.splash"
             >
