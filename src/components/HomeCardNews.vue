@@ -160,7 +160,7 @@ export default {
     },
     getHeight() {
       if (this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs) {
-        return "225px";
+        return "235px";
       } else {
         return "100px;";
       }

@@ -54,10 +54,10 @@
       </v-container>
     </div>
 
+    <div class="my-5"></div>
     <HomeClickThroughBoxes
       :boxes="boxes.slice(0, 3)"
       v-if="!loading && boxes && boxes.length > 0"
-      style="margin-top: 0px"
     ></HomeClickThroughBoxes>
     <HomeResearch style="margin-top: -20px"></HomeResearch>
 
