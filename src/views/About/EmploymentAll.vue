@@ -8,7 +8,7 @@
               <v-row v-if="page">
                 <v-col cols="12" :md="page && page.showTOC ? 8 : 12">
                   <h1 v-html="render(page.title)"></h1>
-                  <div v-html="render(page.body)"></div>
+
                   <h2 id="current-icjia-opportunities">
                     Employment Opportunities
                   </h2>
@@ -41,6 +41,7 @@
                         :showReadMore="true"
                       ></JobCard>
                     </div>
+                    <div v-html="render(page.body)"></div>
                   </div>
                   <div v-else class="text-center">
                     <h3 v-if="toggle_jobStatus === 0">
