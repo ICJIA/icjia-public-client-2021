@@ -119,6 +119,7 @@
                 >
                   {{ meeting.summary }}
                 </p>
+                <p style="font-size: 0.9em" class="mt-2" v-else>CANCELLED</p>
               </v-card>
             </div>
           </v-sheet>

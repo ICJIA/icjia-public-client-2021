@@ -32,7 +32,8 @@
         v-html="render(item.body)"
         class="px-3 mt-5"
       ></div>
-
+      <!-- TODO: Add option for cancellation message here. -->
+      <div v-else class="px-3 mt-5">CANCELLED</div>
       <div class="mb-5">
         <BasePropDisplay v-if="item.tags" name="">
           <BasePropChip
