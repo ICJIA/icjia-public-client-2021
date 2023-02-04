@@ -49,7 +49,21 @@
                 to {{ item.end | format }}</span
               ></span
             >
+            <span v-if="item.isCancelled"
+              >&nbsp;|&nbsp;
+
+              <span
+                style="
+                  color: #000 !important;
+                  font-weight: 900;
+                  padding-top: 0px;
+                "
+              >
+                CANCELLED
+              </span>
+            </span>
           </div>
+          <div style="height: 10px"></div>
           <div
             style="font-size: 16px; font-weight: bold; display: inline"
             class="mt-2 mb-2"

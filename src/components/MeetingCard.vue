@@ -5,7 +5,7 @@
       class="text-center"
       style="background: red; color: #fff; padding-left: -30px"
     >
-      THIS MEETING HAS BEEN CANCELLED
+      THIS MEETING IS CANCELLED
     </div>
     <v-card class="px-5 py-5 markdown-body reduce-90" :color="color">
       <h2
@@ -33,7 +33,7 @@
         class="px-3 mt-5"
       ></div>
       <!-- TODO: Add option for cancellation message here. -->
-      <div v-else class="px-3 mt-5">CANCELLED</div>
+      <div v-else class="px-3 mt-5">This meeting is cancelled.</div>
       <div class="mb-5">
         <BasePropDisplay v-if="item.tags" name="">
           <BasePropChip

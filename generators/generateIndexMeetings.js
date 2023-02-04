@@ -13,6 +13,7 @@ meetings {
     slug
     start
     end
+    isCancelled
     summary
     category
     published_at
