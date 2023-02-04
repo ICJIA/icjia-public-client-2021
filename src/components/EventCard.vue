@@ -45,6 +45,13 @@
            Meetings 
         -----------------------------------------------  -->
         <div v-else-if="item.contentType === 'meeting'">
+          <div
+            v-if="item.isCancelled"
+            class="text-center mb-3"
+            style="background: red; color: #fff; padding-left: -30px"
+          >
+            THIS MEETING IS CANCELLED
+          </div>
           <div>
             <span style="font-weight: 700"
               >{{

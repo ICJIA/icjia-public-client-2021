@@ -33,6 +33,7 @@ const GET_EVENTS = gql`
       name: title
       summary
       slug
+      isCancelled
       start
       end
       category
