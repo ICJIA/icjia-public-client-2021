@@ -11,7 +11,7 @@ const GET_ALL_MEETINGS_QUERY = gql`
       created_at
       updated_at
       published_at
-
+      isCancelled
       start
       end
       category
@@ -55,7 +55,7 @@ const GET_SINGLE_MEETING_QUERY = gql`
       title
       slug
       summary
-
+      isCancelled
       body
       start
       end
@@ -102,6 +102,7 @@ const GET_MEETINGS_BY_CATEGORY_QUERY = gql`
       slug
       summary
       body
+      isCancelled
       start
       end
       category

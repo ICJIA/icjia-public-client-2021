@@ -143,6 +143,7 @@ const GET_HOME = gql`
       id
       title
       summary
+      isCancelled
       slug
       start
       end

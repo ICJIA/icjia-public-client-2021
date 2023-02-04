@@ -1,15 +1,37 @@
 <template>
   <div class="">
+    <div
+      v-if="item.isCancelled"
+      class="text-center"
+      style="background: red; color: #fff; padding-left: -30px"
+    >
+      THIS MEETING HAS BEEN CANCELLED
+    </div>
     <v-card class="px-5 py-5 markdown-body reduce-90" :color="color">
-      <h2 @click="routeTo(item)" class="meeting-title">{{ item.title }}</h2>
+      <h2
+        @click="routeTo(item)"
+        class="meeting-title"
+        v-if="item.isCancelled"
+        style="text-decoration: line-through"
+      >
+        {{ item.title }}
+      </h2>
+      <h2 @click="routeTo(item)" class="meeting-title" v-else>
+        {{ item.title }}
+      </h2>
 
-      <div>
+      <div v-if="!item.isCancelled">
         <span v-html="displayDate(item.start, item.end)"></span>
         <span style="font-weight: 400"
           >&nbsp;|&nbsp;{{ displayCategory(item.category) }}</span
         >
       </div>
-      <div v-html="render(item.body)" class="px-3 mt-5"></div>
+
+      <div
+        v-if="!item.isCancelled"
+        v-html="render(item.body)"
+        class="px-3 mt-5"
+      ></div>
 
       <div class="mb-5">
         <BasePropDisplay v-if="item.tags" name="">

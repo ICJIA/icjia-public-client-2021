@@ -25,6 +25,26 @@
           {{ item.start | dateFormatAlt }}
         </div>
       </template>
+
+      <template v-slot:item.title="{ item }">
+        <div v-if="item.isCancelled" style="text-decoration: line-through">
+          {{ item.title }}
+        </div>
+        <div v-else>
+          {{ item.title }}
+        </div>
+      </template>
+
+      <template v-slot:item.isCancelled="{ item }">
+        <div v-if="item.isCancelled" style="color: #f00; font-weight: 900">
+          <v-chip label small color="red" class="mr-2" style="margin-top: 0px">
+            <span style="color: #fff !important; font-weight: 400">
+              CANCELLED
+            </span>
+          </v-chip>
+        </div>
+      </template>
+
       <template v-slot:item.category="{ item }">
         <div style="font-size: 14px; font-weight: 700; color: #555">
           {{ getCleanCategory(item.category) }}
@@ -130,6 +150,7 @@ export default {
         },
 
         { text: "Title", value: "title" },
+        { text: "Status", align: "center", value: "isCancelled" },
         { text: "Attachments", align: "center", value: "attachments" },
       ],
     };

@@ -85,25 +85,38 @@
                 </span>
 
                 <span style="font-size: 0.9em; font-weight: 400"
-                  >&nbsp;|&nbsp;
-                  {{ meeting.start | format }}
+                  >&nbsp;|&nbsp; {{ meeting.start | format }}
                 </span>
-                <!-- <span v-if="!isItExpired(meeting.end)">
+                <span v-if="meeting.isCancelled">
                   &nbsp;|&nbsp;
                   <v-chip
                     x-small
                     class="mr-1"
-                    color="green darken-2"
+                    color="red darken-2"
                     style="font-weight: 700"
-                    >Upcoming</v-chip
+                    >CANCELLED</v-chip
                   >
-                </span> -->
+                </span>
 
-                <h2 class="mt-2" style="font-size: 1.1em">
+                <h2
+                  class="mt-2"
+                  style="font-size: 1.1em"
+                  v-if="!meeting.isCancelled"
+                >
                   {{ meeting.title }}
                 </h2>
-
-                <p style="font-size: 0.9em" class="mt-2">
+                <h2
+                  class="mt-2"
+                  style="font-size: 1.1em; text-decoration: line-through"
+                  v-else
+                >
+                  {{ meeting.title }}
+                </h2>
+                <p
+                  style="font-size: 0.9em"
+                  class="mt-2"
+                  v-if="!meeting.isCancelled"
+                >
                   {{ meeting.summary }}
                 </p>
               </v-card>
