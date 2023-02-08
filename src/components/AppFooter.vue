@@ -33,37 +33,84 @@
               />
             </div>
             <div class="pb-6">
-              <v-btn
-                small
-                text
-                aria-label="Link to ICJIA on Twitter"
-                href="https://twitter.com/icjia_illinois?lang=en"
-                target="_blank"
-                ><v-icon>fab fa-twitter </v-icon></v-btn
-              >
-              <v-btn
-                small
-                text
-                target="_blank"
-                aria-label="Link to ICJIA on Facebook"
-                href="https://www.facebook.com/ICJIA/"
-                ><v-icon>fab fa-facebook </v-icon></v-btn
-              >
-              <v-btn
-                small
-                text
-                target="_blank"
-                aria-label="Link to ICJIA on YouTube"
-                href="https://www.youtube.com/c/illinoiscriminaljusticeinformationauthority"
-                ><v-icon> fab fa-youtube </v-icon></v-btn
-              >
-              <v-btn
-                small
-                text
-                to="/rss/"
-                aria-label="Link to ICJIA's RSS Feeds"
-                ><v-icon>fa fa-rss</v-icon></v-btn
-              >
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    small
+                    v-bind="attrs"
+                    v-on="on"
+                    text
+                    aria-label="Link to ICJIA on Twitter"
+                    href="https://twitter.com/icjia_illinois?lang=en"
+                    target="_blank"
+                    ><v-icon>fab fa-twitter </v-icon>
+                  </v-btn>
+                </template>
+                <span>ICJIA on Twitter</span>
+              </v-tooltip>
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    small
+                    v-bind="attrs"
+                    v-on="on"
+                    text
+                    target="_blank"
+                    aria-label="Link to ICJIA on Facebook"
+                    href="https://www.facebook.com/ICJIA/"
+                    ><v-icon>fab fa-facebook </v-icon></v-btn
+                  >
+                </template>
+                <span>ICJIA on Facebook</span>
+              </v-tooltip>
+
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    small
+                    v-bind="attrs"
+                    v-on="on"
+                    text
+                    target="_blank"
+                    aria-label="Link to ICJIA on YouTube"
+                    href="https://www.youtube.com/c/illinoiscriminaljusticeinformationauthority"
+                    ><v-icon> fab fa-youtube </v-icon></v-btn
+                  >
+                </template>
+                <span>ICJIA on YouTube</span>
+              </v-tooltip>
+
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    small
+                    v-bind="attrs"
+                    v-on="on"
+                    text
+                    target="_blank"
+                    href="https://www.instagram.com/icjia_illinois/"
+                    aria-label="ICJIA on Instagram"
+                    ><v-icon>fa fa-instagram</v-icon></v-btn
+                  >
+                </template>
+                <span>ICJIA on Instagram</span>
+              </v-tooltip>
+
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    small
+                    v-bind="attrs"
+                    v-on="on"
+                    text
+                    target="_blank"
+                    href="https://www.linkedin.com/company/icjia/"
+                    aria-label="ICJIA on LinkedIn "
+                    ><v-icon>fa fa-linkedin</v-icon></v-btn
+                  >
+                </template>
+                <span>ICJIA on LinkedIn</span>
+              </v-tooltip>
             </div>
             <div style="font-size: 12px; font-weight: 400">
               <router-link to="/about/" style="color: #fff; background: none"
