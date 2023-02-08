@@ -19,18 +19,25 @@
             style="color: white"
           >
             <div>
-              <img
-                src="/icjia-logo.png"
-                alt="Footer logo"
-                width="100"
-                style="border: 0px solid #ddd; display: inline"
-                class="hover"
-                @click="
-                  $router.push('/').catch((err) => {
-                    $vuetify.goTo(0);
-                  })
-                "
-              />
+              <v-tooltip right>
+                <template v-slot:activator="{ on, attrs }">
+                  <img
+                    src="/icjia-logo.png"
+                    alt="Footer logo"
+                    v-bind="attrs"
+                    v-on="on"
+                    width="100"
+                    style="border: 0px solid #ddd; display: inline"
+                    class="hover"
+                    @click="
+                      $router.push('/').catch((err) => {
+                        $vuetify.goTo(0);
+                      })
+                    "
+                  />
+                </template>
+                <span>Illinois Criminal Justice Information Authority</span>
+              </v-tooltip>
             </div>
             <div class="pb-6">
               <v-tooltip top>
