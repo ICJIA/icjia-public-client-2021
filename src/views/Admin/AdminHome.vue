@@ -7,11 +7,11 @@
           <div>
             <h2>Internal Admin</h2>
             <ul>
-              <li>
+              <!-- <li>
                 <router-link to="/admin/colors/">
                   Google Material Design Colors</router-link
                 >
-              </li>
+              </li> -->
               <li>
                 <router-link to="/admin/publications/">
                   ICJIA Publication List Checker</router-link
@@ -82,6 +82,11 @@
               <li>
                 <a href="https://vuejs.org/" target="_blank"
                   >Vuetify (UI Framework)</a
+                >
+              </li>
+              <li>
+                <a href="https://nuxt.com/" target="_blank"
+                  >Nuxt 3 (Web Framework)</a
                 >
               </li>
             </ul>
