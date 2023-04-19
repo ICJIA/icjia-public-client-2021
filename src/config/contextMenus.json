@@ -138,10 +138,6 @@
                 "path": "/news/publications/"
             },
             {
-                "label": "Covid-19 Response",
-                "path": "/news/covid-19/"
-            },
-            {
                 "label": "Press",
                 "path": "/press/"
             }
@@ -175,10 +171,6 @@
             {
                 "label": "Events",
                 "path": "/events/"
-            },
-            {
-                "label": "Covid-19 Response",
-                "path": "/news/covid-19/"
             },
             {
                 "label": "Press",
@@ -216,10 +208,6 @@
                 "path": "/news/events/"
             },
             {
-                "label": "Covid-19 Response",
-                "path": "/news/covid-19/"
-            },
-            {
                 "label": "Press",
                 "path": "/press/"
             }
@@ -253,10 +241,6 @@
             {
                 "label": "Committees",
                 "path": "/about/icjia-committees/"
-            },
-            {
-                "label": "Covid-19 Response",
-                "path": "/about/covid-19/"
             },
             {
                 "label": "Publications",

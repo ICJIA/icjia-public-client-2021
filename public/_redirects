@@ -10,5 +10,6 @@
 /ilheals/*    https://ilheals.com/
 /calendar/*    https://calendar.icjia.cloud/
 /researchhub/docs/*   https://researchhub-docs.netlify.app/
-/dvfr/*  https://dvfr.icjia.dev/:splat     200!
+/dvfr/*  https://dvfr.icjia.illinois
+/ariallsites2023/ https://ariallsites2023.icjia.cloud
 /*   /index.html   200

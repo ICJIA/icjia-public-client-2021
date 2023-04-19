@@ -136,13 +136,13 @@
               > -->
 
               |
-              <router-link
+              <!-- <router-link
                 to="/about/covid-19/"
                 style="color: #fff; background: none"
               >
                 Covid-19 Response</router-link
               >
-              |
+              | -->
               <a
                 href="https://archive.icjia.cloud"
                 style="color: #fff; background: none"
