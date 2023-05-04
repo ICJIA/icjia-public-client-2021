@@ -60,8 +60,8 @@
                     "section": "Annual Report"
                 },
                 {
-                    "title": "FY2021 Annual Report",
-                    "link": "https://agency.icjia-api.cloud/uploads/FY_21_ICJIA_Annual_Report_e999274dcb.pdf",
+                    "title": "FY2022 Annual Report",
+                    "link": "https://agency.icjia-api.cloud/uploads/FY_22_ICJIA_Annual_Report_7c7ba4f4f0.pdf",
                     "icon": "download",
                     "external": true
                 }
@@ -175,6 +175,12 @@
                     "external": true
                 },
                 {
+                    "title": "Illinois Domestic Violence Fatality Review",
+                    "link": "http://dvfr.illinois.gov",
+                    "icon": "open_in_new",
+                    "external": true
+                },
+                {
                     "title": "Illinois Family Violence Coordinating Councils",
                     "link": "http://icjia.illinois.gov/ifvcc/",
                     "icon": "open_in_new",
@@ -183,6 +189,12 @@
                 {
                     "title": "Illinois Heals",
                     "link": "http://ilheals.com",
+                    "icon": "open_in_new",
+                    "external": true
+                },
+                {
+                    "title": "Institute to Innovate (i2i)",
+                    "link": "http://i2i.illinois.gov",
                     "icon": "open_in_new",
                     "external": true
                 },
