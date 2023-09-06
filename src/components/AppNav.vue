@@ -116,7 +116,7 @@
         </span>
       </span>
 
-      <v-tooltip left>
+      <!-- <v-tooltip left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             text
@@ -141,7 +141,7 @@
           </v-btn>
         </template>
         <span>Translate on Google</span>
-      </v-tooltip>
+      </v-tooltip> -->
 
       <v-tooltip left>
         <template v-slot:activator="{ on, attrs }">
@@ -154,7 +154,8 @@
             aria-label="Search ICJIA"
             style="font-weight: 900 !important; font-size: 16px"
             @click="openSearchModal()"
-            ><span class="hidden-sm-and-down">Search</span>
+          >
+            <!-- <span class="hidden-sm-and-down">Search</span> -->
             <v-icon
               :right="
                 $vuetify.breakpoint.md ||
@@ -167,7 +168,7 @@
             >
           </v-btn>
         </template>
-        <span>Search</span>
+        <span>Search ICJIA</span>
       </v-tooltip>
 
       <!-- <v-tooltip left>

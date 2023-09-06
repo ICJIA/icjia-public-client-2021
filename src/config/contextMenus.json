@@ -9,24 +9,24 @@
         "location": "top",
         "items": [
             {
-                "label": "FSGU Home",
-                "path": "/grants/fsgu-home/"
-            },
-            {
-                "label": "Resources",
-                "path": "/grants/resources/"
-            },
-            {
                 "label": "Funding Opportunities",
                 "path": "/grants/funding/"
             },
             {
-                "label": "Grant Programs",
+                "label": "Funded Programs",
                 "path": "/grants/programs/"
             },
             {
-                "label": "Technical Assistance",
-                "path": "/grants/technical-assistance/"
+                "label": "Training",
+                "path": "/grants/training/"
+            },
+            {
+                "label": "Required Forms",
+                "path": "/grants/required-forms/"
+            },
+            {
+                "label": "Rules, Regulations, Policies",
+                "path": "/grants/policies/"
             }
         ]
     },
@@ -356,8 +356,8 @@
                 "path": "/researchhub/"
             },
             {
-                "label": "Technical Assistance",
-                "path": "/grants/technical-assistance/"
+                "label": "Training",
+                "path": "/grants/training/"
             }
         ]
     }
