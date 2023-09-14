@@ -23,7 +23,7 @@
                   v-if="policies"
                   :items="filterByCategory(category.category)"
                   :heading="category.label"
-                  :text="category.text || null"
+                  :text="null"
                   class="elevation-1"
                 ></PolicyTable>
               </div>
