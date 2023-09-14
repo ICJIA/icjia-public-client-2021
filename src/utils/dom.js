@@ -31,7 +31,7 @@ const attachSearchEvents = function (vm) {
         EventBus.$emit("search", opts);
       });
     }
-    //console.log("attachInternalLinks: ", els);
+    console.log("attachInternalLinks: ", els);
   });
 };
 

@@ -11,9 +11,29 @@
             </v-col>
           </v-row>
         </v-container>
+        <v-container style="margin-top: -25px">
+          <v-row>
+            <v-col cols="12" md="12">
+              <div
+                v-for="(category, index) in categoryMap"
+                :key="index"
+                class="mb-10"
+              >
+                <PolicyTable
+                  v-if="policies"
+                  :items="filterByCategory(category.category)"
+                  :heading="category.label"
+                  :text="category.text || null"
+                  class="elevation-1"
+                ></PolicyTable>
+              </div>
+            </v-col>
+          </v-row>
+        </v-container>
 
         {{ policies }}<br />
-        {{ categoryMap }}
+
+        <!-- {{ categoryMap }} -->
       </template>
     </BaseContent>
   </div>
@@ -89,10 +109,12 @@ export default {
           let policies = ApolloQueryResult.data.policies;
           console.log("policies fetch here");
           policies = getUnifiedTags(policies);
-          // this.policies = _.orderBy(policies, ["start"], ["desc"]);
+          //this.policies = _.orderBy(policies, ["start"], ["desc"]);
+          this.policies = policies;
           NProgress.done();
-          attachInternalLinks(this);
-          attachSearchEvents(this);
+          // attachInternalLinks(this);
+          // attachSearchEvents(this);
+          this.loading = false;
         }
       },
     },
