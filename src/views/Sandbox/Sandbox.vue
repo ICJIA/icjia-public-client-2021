@@ -28,6 +28,15 @@
                 ></PolicyTable>
               </div>
             </v-col>
+            <!-- <v-col
+              cols="12"
+              v-if="policies"
+              md="4"
+              class="px-3 hidden-sm-and-down"
+              style="margin-top: -150px"
+            >
+              <Toc :key="viewToggle" tocHeading="Navigation"></Toc>
+            </v-col> -->
           </v-row>
         </v-container>
 

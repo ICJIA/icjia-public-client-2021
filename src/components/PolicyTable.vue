@@ -92,12 +92,13 @@ export default {
   data() {
     return {
       search: "",
-      sortBy: "updated_at",
-      sortDesc: true,
+      sortBy: "title",
+      sortDesc: false,
       expanded: [],
       singleExpand: false,
       policyHeaders: [
-        { text: "Last updated", value: "updated_at" },
+        { text: "Title", value: "title", align: "start" },
+        // { text: "Last updated", value: "updated_at" },
         {
           text: "Category",
           align: "start",
@@ -105,8 +106,6 @@ export default {
 
           value: "category",
         },
-
-        { text: "Title", value: "title", align: "start" },
       ],
     };
   },
