@@ -115,49 +115,34 @@
             ]
         },
         {
-            "main": "Funding",
-            "nudgeLeft": "78px",
+            "main": "Grantee Resources",
+            "nudgeLeft": "5px",
             "children": [
-                {
-                    "section": "Funding at ICJIA"
-                },
-                {
-                    "title": "Overview",
-                    "link": "/grants/"
-                },
                 {
                     "title": "Funding Opportunities",
                     "link": "/grants/funding/"
                 },
                 {
-                    "title": "Grant Programs",
+                    "title": "Funded Programs",
                     "link": "/grants/programs/"
                 },
                 {
                     "divider": true
                 },
                 {
-                    "section": "Training and Assistance"
+                    "section": "Resources"
                 },
                 {
-                    "title": "Grantee Resources",
-                    "link": "/grants/resources/"
+                    "title": "Training",
+                    "link": "/grants/training/"
                 },
                 {
-                    "title": "Technical Assistance",
-                    "link": "/grants/technical-assistance/"
+                    "title": "Required Forms",
+                    "link": "/grants/required-forms/"
                 },
                 {
-                    "divider": true
-                },
-                {
-                    "section": "External Resources"
-                },
-                {
-                    "title": "Restore, Reinvest, Renew (R3)",
-                    "link": "https://r3.illinois.gov",
-                    "icon": "open_in_new",
-                    "external": true
+                    "title": "Rules, Regulations, Policies",
+                    "link": "/grants/policies/"
                 }
             ]
         },

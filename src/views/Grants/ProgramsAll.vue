@@ -7,7 +7,7 @@
             <v-row>
               <v-col cols="12">
                 <div class="page-heading">
-                  <h1 id="icjia-grant-programs">ICJIA Grant Programs</h1>
+                  <h1 id="icjia-grant-programs">Funded Programs</h1>
                 </div>
                 <p class="mb-8">
                   ICJIA administers a variety of federal grant programs. Most
@@ -89,7 +89,7 @@ export default {
   name: "FSGUPrograms",
   metaInfo() {
     return {
-      title: "Grant Programs",
+      title: "Funded Programs",
     };
   },
   data() {
@@ -137,7 +137,7 @@ export default {
   async mounted() {
     NProgress.start();
     //console.log("fetch here");
-    EventBus.$emit("context-label", "Grant Programs");
+    EventBus.$emit("context-label", "Funded Programs");
   },
   methods: {
     render(content) {

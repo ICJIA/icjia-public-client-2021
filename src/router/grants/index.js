@@ -1,12 +1,13 @@
 const grants = [
   {
-    path: "/grants/",
-    name: "FSGUHome",
-    component: () =>
-      import(/* webpackChunkName: "funding" */ "@/views/Grants/GrantsHome.vue"),
+    path: "/grants",
+    // eslint-disable-next-line no-unused-vars
+    redirect: (route) => {
+      return "/grants/funding";
+    },
   },
   {
-    path: "/grants/programs/",
+    path: "/grants/programs",
     name: "ProgramsAll",
     component: () =>
       import(
@@ -23,7 +24,7 @@ const grants = [
   },
 
   {
-    path: "/grants/funding/",
+    path: "/grants/funding",
     name: "FundingAll",
     component: () =>
       import(/* webpackChunkName: "funding" */ "@/views/Grants/FundingAll.vue"),
@@ -63,14 +64,14 @@ const grants = [
     path: "/ta/",
     // eslint-disable-next-line no-unused-vars
     redirect: (route) => {
-      return "/grants/technical-assistance/";
+      return "/grants/training/";
     },
   },
   {
     path: "/gata/technical-assistance/",
     // eslint-disable-next-line no-unused-vars
     redirect: (route) => {
-      return "/grants/technical-assistance/";
+      return "/grants/training/";
     },
   },
 
