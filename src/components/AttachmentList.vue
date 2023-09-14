@@ -7,12 +7,12 @@
     <div
       v-if="!useSecondLevelHeading"
       style="
-        font-weight: 700;
+        font-weight: 900;
         border-bottom: 1px solid #ccc;
         padding-bottom: 8px;
         text-transform: uppercase;
       "
-      class="px-4"
+      class="px-0"
     >
       <span v-if="label && label.length"> {{ label }}</span
       ><span v-else class="" style="">Attachments</span>

@@ -6,13 +6,14 @@ const GET_ALL_POLICIES_QUERY = gql`
       id
       created_at
       updated_at
+      published_at
       title
       slug
       summary
       searchMeta
       body
       category
-      attachment {
+      attachments {
         id
         created_at
         updated_at
@@ -36,13 +37,14 @@ const GET_SINGLE_POLICY_QUERY = gql`
       id
       created_at
       updated_at
+      published_at
       title
       slug
       summary
       searchMeta
       body
       category
-      attachment {
+      attachments {
         id
         created_at
         updated_at

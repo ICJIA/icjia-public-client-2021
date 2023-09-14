@@ -18,11 +18,11 @@
       :items-per-page="100"
       style="border: 1px solid #eee; background: #fff"
     >
-      <template v-slot:item.start="{ item }">
+      <template v-slot:item.updated_at="{ item }">
         <div
           style="width: 110px; font-size: 14px; font-weight: 700; color: #555"
         >
-          {{ item.start | dateFormatAlt }}
+          {{ item.updated_at | dateFormatAlt }}
         </div>
       </template>
 
@@ -44,11 +44,11 @@
       <!-- eslint-disable-next-line vue/no-unused-vars -->
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length">
-          <MeetingCard
+          <PolicyCard
             :item="item"
             class="mx-2 my-4"
             :key="item.id"
-          ></MeetingCard>
+          ></PolicyCard>
         </td>
       </template>
 
@@ -85,6 +85,7 @@ import { EventBus } from "@/event-bus";
 import { fixExpandButtons } from "@/a11y";
 import slug from "slug";
 import { renderToHtml } from "@/services/Markdown";
+// eslint-disable-next-line no-unused-vars
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import _ from "lodash";
 export default {
@@ -105,12 +106,12 @@ export default {
           value: "category",
         },
 
-        { text: "Title", value: "title" },
+        { text: "Title", value: "title", align: "start" },
       ],
     };
   },
   mounted() {
-    attachInternalLinks(this);
+    // attachInternalLinks(this);
     attachSearchEvents(this);
     fixExpandButtons();
   },
