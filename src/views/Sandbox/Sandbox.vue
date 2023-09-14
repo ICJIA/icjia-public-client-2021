@@ -13,7 +13,7 @@
         </v-container>
         <v-container style="margin-top: -25px">
           <v-row>
-            <v-col cols="12" md="12">
+            <v-col cols="12" md="8">
               <div
                 v-for="(category, index) in categoryMap"
                 :key="index"
@@ -28,19 +28,22 @@
                 ></PolicyTable>
               </div>
             </v-col>
-            <!-- <v-col
+            <v-col
               cols="12"
               v-if="policies"
               md="4"
               class="px-3 hidden-sm-and-down"
               style="margin-top: -150px"
             >
-              <Toc :key="viewToggle" tocHeading="Navigation"></Toc>
-            </v-col> -->
+              <TocPolicies
+                :key="viewToggle"
+                tocHeading="Navigation"
+              ></TocPolicies>
+            </v-col>
           </v-row>
         </v-container>
 
-        {{ policies }}<br />
+        <!-- {{ policies }}<br /> -->
 
         <!-- {{ categoryMap }} -->
       </template>
