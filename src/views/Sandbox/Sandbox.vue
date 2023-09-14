@@ -5,7 +5,7 @@
         <v-container v-if="viewToggle == 'all'" style="margin-top: -25px">
           <v-row>
             <v-col cols="12">
-              <div class="markdown-body mb-10 page-heading">
+              <div class="markdown-body mb-12 page-heading">
                 <h1>Rules, Regulations, and Policies</h1>
               </div>
             </v-col>
@@ -32,7 +32,7 @@
               cols="12"
               v-if="policies"
               md="4"
-              class="px-3 hidden-sm-and-down"
+              class="px-12 hidden-sm-and-down"
               style="margin-top: -150px"
             >
               <TocPolicies

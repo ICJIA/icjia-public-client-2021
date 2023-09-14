@@ -26,7 +26,7 @@
           v-for="(item, index) in toc"
           :key="index"
           @click="scrollTo(item.id)"
-          class="tocListItem"
+          class="tocListItem pl-5"
         >
           <span :id="`scrollTo-${item.id}`" class="tocItem">{{
             item.text
@@ -175,6 +175,7 @@ ul.toc-list li {
 ul.toc-list li:hover {
   color: #aaa;
   background: #eee;
+  /* display: inline-block; */
 }
 
 .tocListItem {
