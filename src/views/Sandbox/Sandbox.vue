@@ -2,7 +2,7 @@
   <div class="mt-10 mb-12">
     <BaseContent :error="error" :loading="$apollo.loading">
       <template slot="content">
-        <v-container v-if="viewToggle == 'all'" style="margin-top: -25px">
+        <v-container style="margin-top: -25px">
           <v-row>
             <v-col cols="12">
               <div class="markdown-body mb-12 page-heading">
@@ -17,7 +17,7 @@
               <div
                 v-for="(category, index) in categoryMap"
                 :key="index"
-                class="mb-10"
+                class="mb-10 px-5"
               >
                 <PolicyTable
                   v-if="policies"
@@ -33,7 +33,6 @@
               v-if="policies"
               md="4"
               class="px-12 hidden-sm-and-down"
-              style="margin-top: -150px"
             >
               <TocPolicies
                 :key="viewToggle"
