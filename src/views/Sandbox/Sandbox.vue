@@ -1,105 +1,71 @@
 <template>
-  <div class="markdown-body">
-    <BaseContent :error="error" :loading="loading">
-      <template slot="content" v-if="!loading">
-        <Splash
-          v-if="content && content.splash"
-          :splash="content.splash"
-        ></Splash>
-
-        <v-container style="margin-top: -15px">
-          <v-row v-if="content">
-            <v-col cols="12" :md="content && content.showTOC ? 8 : 12">
-              <h1 v-html="render(content.title)"></h1>
-              <div v-html="render(content.body)"></div>
-              <div>
-                <BasePropDisplay v-if="content.tags" name="">
-                  <BasePropChip
-                    v-for="tag in content.tags"
-                    :key="tag"
-                    class="mt-0"
-                  >
-                    <template>{{ tag }}</template>
-                  </BasePropChip>
-                </BasePropDisplay>
-                <AttachmentList
-                  :items="content.attachments"
-                  v-if="content.attachments && content.attachments.length"
-                  class="mt-6 pl-0"
-                  :key="content.attachments.title"
-                  :baseItemPublished="content.published_at"
-                  :label="
-                    content.attachmentLabel && content.attachmentLabel.length
-                      ? content.attachmentLabel
-                      : ''
-                  "
-                ></AttachmentList>
-              </div>
-            </v-col>
-            <v-col
-              cols="12"
-              v-if="content && content.showTOC"
-              md="4"
-              class="px-3 hidden-sm-and-down"
-              ><Toc :key="content.title"></Toc
-            ></v-col>
-          </v-row>
-        </v-container>
-        <v-container>
+  <div class="mt-10 mb-12">
+    <BaseContent :error="error" :loading="$apollo.loading">
+      <template slot="content">
+        <v-container v-if="viewToggle == 'all'" style="margin-top: -25px">
           <v-row>
             <v-col cols="12">
-              <ClickthroughBoxes
-                :boxes="content.clickthrough"
-                v-if="content && content.clickthrough"
-              ></ClickthroughBoxes>
+              <div class="markdown-body mb-10 page-heading">
+                <h1>Rules, Regulations, and Policies</h1>
+              </div>
             </v-col>
           </v-row>
         </v-container>
+
+        {{ policies }}<br />
+        {{ categoryMap }}
       </template>
     </BaseContent>
   </div>
 </template>
 
 <script>
+/* eslint-disable no-unused-vars */
 import NProgress from "nprogress";
+import { EventBus } from "@/event-bus";
 import { renderToHtml } from "@/services/Markdown";
-import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
+
+import { GET_ALL_POLICIES_QUERY } from "@/graphql/policies";
 import { getUnifiedTags } from "@/utils/content";
+
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
-import { EventBus } from "@/event-bus.js";
+import _ from "lodash";
 export default {
-  name: "BasePage",
-  metaInfo() {
-    return {
-      title: this.content && this.content.title ? this.content.title : null,
-    };
-  },
   data() {
     return {
+      viewToggle: "all",
       loading: true,
       error: null,
       content: null,
+      policies: null,
+      categoryMap: this.$myApp.config.maps.policies,
     };
   },
+
   created() {
     NProgress.start();
   },
-
+  mounted() {
+    EventBus.$emit("context-label", "Policies");
+  },
   methods: {
-    render(content) {
-      return renderToHtml(content);
+    filterByCategory(category) {
+      let filteredContent = this.policies.filter((policy) => {
+        if (policy.category === category) {
+          return policy;
+        }
+      });
+
+      return filteredContent;
     },
   },
-  mounted() {},
   apollo: {
-    pages: {
+    policies: {
       prefetch: true,
-      fetchPolicy: "no-cache",
-      query: GET_SINGLE_PAGE_QUERY,
+
+      query: GET_ALL_POLICIES_QUERY,
       variables() {
-        return {
-          slug: "dicra-dev",
-        };
+        return {};
       },
       error(error) {
         this.error = JSON.stringify(error.message);
@@ -107,9 +73,10 @@ export default {
         NProgress.done();
       },
       result(ApolloQueryResult) {
+        //console.log(ApolloQueryResult);
         if (
           ApolloQueryResult.data &&
-          ApolloQueryResult.data.pages.length > 0 === false
+          ApolloQueryResult.data.policies.length > 0 === false
         ) {
           // eslint-disable-next-line no-unused-vars
           this.$router.push("/404").catch((err) => {
@@ -119,15 +86,13 @@ export default {
           });
         } else {
           //console.log(this.id);
-          let content = ApolloQueryResult.data.pages;
-          content = getUnifiedTags(content);
-          this.content = content[0];
-          this.loading = false;
-
+          let policies = ApolloQueryResult.data.policies;
+          console.log("policies fetch here");
+          policies = getUnifiedTags(policies);
+          // this.policies = _.orderBy(policies, ["start"], ["desc"]);
           NProgress.done();
           attachInternalLinks(this);
           attachSearchEvents(this);
-          EventBus.$emit("context-label", this.content.title);
         }
       },
     },

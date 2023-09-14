@@ -67,6 +67,23 @@
     },
     "hoursToShowUpdated": 1,
     "maps": {
+        "policies": [
+            {
+                "category": "rule",
+                "label": "Rules",
+                "text": "ICJIA Rules."
+            },
+            {
+                "category": "regulation",
+                "label": "Regulations",
+                "text": "ICJIA Regulations."
+            },
+            {
+                "category": "policy",
+                "label": "Policies",
+                "text": "ICJIA Policies."
+            }
+        ],
         "meetings": [
             {
                 "category": "board",

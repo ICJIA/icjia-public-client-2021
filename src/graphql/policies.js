@@ -2,38 +2,60 @@ import gql from "graphql-tag";
 
 const GET_ALL_POLICIES_QUERY = gql`
   query allPolicies {
-    publications(sort: "published_at:desc") {
+    policies(sort: "published_at:desc") {
       id
-      published_at
-      publicationDate
+      created_at
+      updated_at
       title
       slug
       summary
-      fileURL
-      articleURL
-      datasetURL
-      applicationURL
-      pubType
-      tags
+      searchMeta
+      body
+      category
+      attachment {
+        id
+        created_at
+        updated_at
+        size
+        name
+        ext
+        url
+      }
+      tags {
+        id
+        title
+        slug
+      }
     }
   }
 `;
 
 const GET_SINGLE_POLICY_QUERY = gql`
   query singlePolicy($slug: String!) {
-    publications(where: { slug: $slug }) {
+    policies(where: { slug: $slug }) {
       id
-      published_at
-      publicationDate
+      created_at
+      updated_at
       title
       slug
       summary
-      fileURL
-      articleURL
-      datasetURL
-      applicationURL
-      pubType
-      tags
+      searchMeta
+      body
+      category
+      attachment {
+        id
+        created_at
+        updated_at
+        size
+        name
+        ext
+        url
+      }
+      tags {
+        id
+        title
+        slug
+      }
     }
   }
 `;
