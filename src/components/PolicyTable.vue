@@ -128,7 +128,7 @@ export default {
       ],
       policyHeadersSimple: [
         { text: "Title", value: "title", align: "start" },
-        // { text: "Last updated", value: "updated_at" },
+        { text: "Published", value: "published_at" },
         // {
         //   text: "Category",
         //   align: "start",
