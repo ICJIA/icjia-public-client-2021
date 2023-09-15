@@ -26,10 +26,18 @@
         </div>
       </template>
 
+      <template v-slot:item.updated_at="{ item }">
+        <div
+          style="width: 110px; font-size: 14px; font-weight: 700; color: #555"
+        >
+          {{ item.updated_at | dateFormatAlt }}
+        </div>
+      </template>
+
       <template v-slot:item.title="{ item }">
         <div style="font-size: 14px; font-weight: 700; color: #333">
           <span class="">
-            <v-chip
+            <!-- <v-chip
               label
               v-if="isItNew(item)"
               x-small
@@ -46,7 +54,7 @@
               >
                 NEW!
               </span>
-            </v-chip>
+            </v-chip> -->
 
             <strong>{{ item.title }}</strong>
           </span>
@@ -116,7 +124,7 @@ export default {
       expanded: [],
       singleExpand: false,
       policyHeadersFull: [
-        { text: "Published", value: "published_at" },
+        { text: "Last Updated", value: "updated_at" },
         {
           text: "Category",
           align: "start",
@@ -128,7 +136,7 @@ export default {
       ],
       policyHeadersSimple: [
         { text: "Title", value: "title", align: "start" },
-        { text: "Published", value: "published_at" },
+        { text: "Last Updated", value: "updated_at" },
         // {
         //   text: "Category",
         //   align: "start",
@@ -144,7 +152,7 @@ export default {
     attachSearchEvents(this);
     fixExpandButtons();
     if (this.showByDate) {
-      this.sortBy = "published_at";
+      this.sortBy = "updated_at";
       this.sortDesc = true;
     } else {
       this.sortBy = "title";
