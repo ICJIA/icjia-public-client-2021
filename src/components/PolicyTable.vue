@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-data-table
-      :headers="policyHeaders"
+      :headers="showCategory ? policyHeadersFull : policyHeadersSimple"
       :items="items"
       :single-expand="true"
       :expanded.sync="expanded"
@@ -18,25 +18,22 @@
       :items-per-page="100"
       style="border: 1px solid #eee; background: #fff"
     >
-      <template v-slot:item.updated_at="{ item }">
+      <!-- <template v-slot:item.updated_at="{ item }">
         <div
           style="width: 110px; font-size: 14px; font-weight: 700; color: #555"
         >
           {{ item.updated_at | dateFormatAlt }}
         </div>
-      </template>
+      </template> -->
 
       <template v-slot:item.title="{ item }">
-        <div v-if="item.isCancelled" style="text-decoration: line-through">
-          {{ item.title }}
-        </div>
-        <div v-else>
+        <div style="font-size: 14px; font-weight: 700; color: #333">
           {{ item.title }}
         </div>
       </template>
 
       <template v-slot:item.category="{ item }">
-        <div style="font-size: 14px; font-weight: 700; color: #555">
+        <div style="font-size: 14px; font-weight: 400; color: #555">
           {{ getCleanCategory(item.category) }}
         </div>
       </template>
@@ -96,7 +93,7 @@ export default {
       sortDesc: false,
       expanded: [],
       singleExpand: false,
-      policyHeaders: [
+      policyHeadersFull: [
         { text: "Title", value: "title", align: "start" },
         // { text: "Last updated", value: "updated_at" },
         {
@@ -106,6 +103,17 @@ export default {
 
           value: "category",
         },
+      ],
+      policyHeadersSimple: [
+        { text: "Title", value: "title", align: "start" },
+        // { text: "Last updated", value: "updated_at" },
+        // {
+        //   text: "Category",
+        //   align: "start",
+        //   sortable: true,
+
+        //   value: "category",
+        // },
       ],
     };
   },
@@ -160,6 +168,10 @@ export default {
     showDisclaimer: {
       type: Boolean,
       default: true,
+    },
+    showCategory: {
+      type: Boolean,
+      default: false,
     },
   },
 };
