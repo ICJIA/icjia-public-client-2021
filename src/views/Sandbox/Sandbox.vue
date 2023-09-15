@@ -67,6 +67,7 @@
               <TocPolicies
                 :key="viewToggle"
                 tocHeading="Navigation"
+                :scrollOffset="35"
               ></TocPolicies>
             </v-col>
           </v-row>

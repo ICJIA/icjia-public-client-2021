@@ -47,7 +47,7 @@ export default {
   props: {
     scrollOffset: {
       type: Number,
-      default: 34,
+      default: 100,
     },
     selector: {
       type: String,
