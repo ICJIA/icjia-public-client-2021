@@ -40,7 +40,7 @@
               </v-tooltip>
             </div>
             <div class="pb-6">
-              <v-tooltip top>
+              <!-- <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     small
@@ -54,7 +54,7 @@
                   </v-btn>
                 </template>
                 <span>ICJIA on Twitter</span>
-              </v-tooltip>
+              </v-tooltip> -->
               <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
