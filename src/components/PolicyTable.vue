@@ -54,7 +54,7 @@
       </template>
 
       <template v-slot:item.category="{ item }">
-        <div style="font-size: 14px; font-weight: 400; color: #555">
+        <div style="font-size: 14px; font-weight: 700; color: #888">
           {{ getCleanCategory(item.category) }}
         </div>
       </template>
@@ -117,8 +117,6 @@ export default {
       singleExpand: false,
       policyHeadersFull: [
         { text: "Published", value: "published_at" },
-        { text: "Title", value: "title", align: "start" },
-
         {
           text: "Category",
           align: "start",
@@ -126,6 +124,7 @@ export default {
 
           value: "category",
         },
+        { text: "Title", value: "title", align: "start" },
       ],
       policyHeadersSimple: [
         { text: "Title", value: "title", align: "start" },
@@ -144,6 +143,12 @@ export default {
     // attachInternalLinks(this);
     attachSearchEvents(this);
     fixExpandButtons();
+    if (this.showByDate) {
+      this.sortBy = "published_at";
+      this.sortDesc = true;
+    } else {
+      this.sortBy = "title";
+    }
   },
   methods: {
     isItNew(item) {

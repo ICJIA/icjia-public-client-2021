@@ -9,7 +9,8 @@
                 <h1>Rules, Regulations, and Policies</h1>
               </div>
             </v-col>
-            <!-- <v-col>
+
+            <v-col>
               <div class="mb-10 pl-5">
                 <v-btn-toggle v-model="viewToggle" mandatory>
                   <v-btn
@@ -28,7 +29,7 @@
                     >
                     </span>
                   </v-btn>
-                  <v-btn value="all" small elevation="1">
+                  <v-btn value="date" small elevation="1">
                     <span class="button-weight" aria-label="By date"
                       >By date</span
                     >
@@ -36,10 +37,11 @@
                     <span class="mdi mdi-calendar" aria-hidden="true"> </span>
                   </v-btn>
                 </v-btn-toggle></div
-            ></v-col> -->
+            ></v-col>
           </v-row>
         </v-container>
-        <v-container style="margin-top: 0px">
+
+        <v-container style="margin-top: 0px" v-if="viewToggle === 'category'">
           <v-row>
             <v-col cols="12" md="8">
               <div
@@ -66,6 +68,17 @@
                 :key="viewToggle"
                 tocHeading="Navigation"
               ></TocPolicies>
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-container v-if="viewToggle == 'date'" style="margin-top: -25px">
+          <v-row>
+            <v-col cols="12" md="12">
+              <PolicyTable
+                :items="policies"
+                v-if="policies"
+                :showByDate="true"
+              ></PolicyTable>
             </v-col>
           </v-row>
         </v-container>
