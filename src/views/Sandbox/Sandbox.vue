@@ -5,13 +5,41 @@
         <v-container style="margin-top: -25px">
           <v-row>
             <v-col cols="12">
-              <div class="markdown-body mb-12 page-heading">
+              <div class="markdown-body mb-2 page-heading">
                 <h1>Rules, Regulations, and Policies</h1>
               </div>
             </v-col>
+            <!-- <v-col>
+              <div class="mb-10 pl-5">
+                <v-btn-toggle v-model="viewToggle" mandatory>
+                  <v-btn
+                    value="category"
+                    elevation="1"
+                    small
+                    aria-label="By category"
+                  >
+                    <span class="button-weight" aria-label="By category"
+                      >By category</span
+                    >
+
+                    <span
+                      aria-hidden="true"
+                      class="mdi mdi-format-list-bulleted"
+                    >
+                    </span>
+                  </v-btn>
+                  <v-btn value="all" small elevation="1">
+                    <span class="button-weight" aria-label="By date"
+                      >By date</span
+                    >
+
+                    <span class="mdi mdi-calendar" aria-hidden="true"> </span>
+                  </v-btn>
+                </v-btn-toggle></div
+            ></v-col> -->
           </v-row>
         </v-container>
-        <v-container style="margin-top: -25px">
+        <v-container style="margin-top: 0px">
           <v-row>
             <v-col cols="12" md="8">
               <div
@@ -64,7 +92,7 @@ import _ from "lodash";
 export default {
   data() {
     return {
-      viewToggle: "all",
+      viewToggle: "category",
       loading: true,
       error: null,
       content: null,
@@ -120,8 +148,8 @@ export default {
           let policies = ApolloQueryResult.data.policies;
           console.log("policies fetch here");
           policies = getUnifiedTags(policies);
-          //this.policies = _.orderBy(policies, ["start"], ["desc"]);
-          this.policies = policies;
+          this.policies = _.orderBy(policies, ["title"], ["asc"]);
+          // this.policies = policies;
           NProgress.done();
           // attachInternalLinks(this);
           // attachSearchEvents(this);

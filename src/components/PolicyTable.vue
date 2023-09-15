@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-data-table
-      :headers="showCategory ? policyHeadersFull : policyHeadersSimple"
+      :headers="showByDate ? policyHeadersFull : policyHeadersSimple"
       :items="items"
       :single-expand="true"
       :expanded.sync="expanded"
@@ -18,17 +18,38 @@
       :items-per-page="100"
       style="border: 1px solid #eee; background: #fff"
     >
-      <!-- <template v-slot:item.updated_at="{ item }">
+      <template v-slot:item.published_at="{ item }">
         <div
           style="width: 110px; font-size: 14px; font-weight: 700; color: #555"
         >
-          {{ item.updated_at | dateFormatAlt }}
+          {{ item.published_at | dateFormatAlt }}
         </div>
-      </template> -->
+      </template>
 
       <template v-slot:item.title="{ item }">
         <div style="font-size: 14px; font-weight: 700; color: #333">
-          {{ item.title }}
+          <span class="">
+            <v-chip
+              label
+              v-if="isItNew(item)"
+              x-small
+              color="#0D4474"
+              class="mr-2"
+              style="margin-top: 0px"
+            >
+              <span
+                style="
+                  color: #fff !important;
+                  font-weight: 400;
+                  padding-top: 2px;
+                "
+              >
+                NEW!
+              </span>
+            </v-chip>
+
+            <strong>{{ item.title }}</strong>
+          </span>
         </div>
       </template>
 
@@ -85,6 +106,7 @@ import { renderToHtml } from "@/services/Markdown";
 // eslint-disable-next-line no-unused-vars
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import _ from "lodash";
+import moment from "moment";
 export default {
   data() {
     return {
@@ -94,8 +116,9 @@ export default {
       expanded: [],
       singleExpand: false,
       policyHeadersFull: [
+        { text: "Published", value: "published_at" },
         { text: "Title", value: "title", align: "start" },
-        // { text: "Last updated", value: "updated_at" },
+
         {
           text: "Category",
           align: "start",
@@ -123,6 +146,28 @@ export default {
     fixExpandButtons();
   },
   methods: {
+    isItNew(item) {
+      let targetDate;
+
+      targetDate = item.published_at;
+
+      const now = moment(new Date());
+      const end = moment(targetDate); // another date
+      const duration = moment.duration(now.diff(end));
+      const days = duration.asDays();
+
+      // if (days <= this.$myApp.config.daysToShowNew) {
+      //   return true;
+      // } else {
+      //   return false;
+      // }
+
+      if (days <= 1) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     generateSlug(heading) {
       return slug(heading);
     },
@@ -169,7 +214,7 @@ export default {
       type: Boolean,
       default: true,
     },
-    showCategory: {
+    showByDate: {
       type: Boolean,
       default: false,
     },

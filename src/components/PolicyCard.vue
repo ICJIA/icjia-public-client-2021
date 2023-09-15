@@ -1,7 +1,11 @@
 <template>
   <div class="">
     <v-card class="px-5 py-5 markdown-body reduce-90" :color="color">
-      <h2 @click="routeTo(item)" class="meeting-title">
+      <h2
+        @click="routeTo(item)"
+        class="policy-title"
+        style="border: none; font-size: 26px"
+      >
         {{ item.title }}
       </h2>
 
@@ -19,7 +23,7 @@
           :key="item.slug"
           :baseItemPublished="item.published_at"
         ></AttachmentList>
-        <div class="pl-3">
+        <div class="pl-3 mt-6">
           <BasePropDisplay v-if="item.tags" name="">
             <BasePropChip
               v-for="(tag, index) in item.tags"
@@ -55,7 +59,7 @@ export default {
   },
   methods: {
     routeTo(item) {
-      this.$router.push(`/news/meetings/${item.slug}`).catch((err) => {
+      this.$router.push(`/grants/policies/${item.slug}`).catch((err) => {
         this.$vuetify.goTo(0);
       });
     },
@@ -66,7 +70,7 @@ export default {
       return `${moment(published).format("MMM Do YYYY")}`;
     },
     displayCategory(category) {
-      let categoryMap = this.$myApp.config.maps.meetings;
+      let categoryMap = this.$myApp.config.maps.policies;
       let obj = categoryMap.find((o) => o.category === category);
       if (_.isEmpty(obj)) {
         return "Special";
@@ -82,7 +86,7 @@ export default {
       if (days > 1) {
         return `${start.format("MMM Do")} - ${end.format("MMM Do")}`;
       } else {
-        return `<span class='meeting-date'><span>${start.format(
+        return `<span class='policy-date'><span>${start.format(
           "dddd MMM DD, yyyy"
         )}</span>, ${start.format("hh:mm A")} - ${end.format(
           "hh:mm A"
@@ -101,10 +105,12 @@ export default {
 </script>
 
 <style>
+.policy-date,
 .meeting-date {
   font-size: 14px;
   font-weight: 400;
 }
+.policy-title:hover,
 .meeting-title:hover {
   cursor: pointer;
   text-decoration: underline;
