@@ -20,7 +20,7 @@
                     aria-label="By category"
                   >
                     <span class="button-weight" aria-label="By category"
-                      >By category</span
+                      >By Category</span
                     >
 
                     <span
@@ -31,7 +31,7 @@
                   </v-btn>
                   <v-btn value="date" small elevation="1">
                     <span class="button-weight" aria-label="By date"
-                      >By date</span
+                      >By Date</span
                     >
 
                     <span class="mdi mdi-calendar" aria-hidden="true"> </span>
