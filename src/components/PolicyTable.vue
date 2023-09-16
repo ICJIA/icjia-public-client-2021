@@ -162,7 +162,7 @@ export default {
     isItNew(item) {
       let targetDate;
 
-      targetDate = item.published_at;
+      targetDate = item.updated_at;
 
       const now = moment(new Date());
       const end = moment(targetDate); // another date
