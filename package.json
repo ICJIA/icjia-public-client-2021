@@ -15,7 +15,7 @@
     "generate:feeds": "node ./generators/generateRSSNews.mjs && node ./generators/generateRSSFunding.mjs && node ./generators/generateRSSMeetings.mjs && node ./generators/generateRSSEmployment.mjs",
     "generate:images": "node ./generators/generateImagesHub",
     "generate:schema": "get-graphql-schema https://agency.icjia-api.cloud/graphql -j > schema.json",
-    "generate:search": "node ./generators/generateIndexHub && node ./generators/generateIndexUnits && node ./generators/generateIndexGrants && node ./generators/generateIndexPages && node ./generators/generateIndexMeetings && node ./generators/generateIndexEvents && node ./generators/generateIndexPosts && node ./generators/generateIndexJobs && node ./generators/generateIndexBiographies &&  node ./generators/generateIndexPublications && node ./generators/searchIndexAndSitemap",
+    "generate:search": "node ./generators/generateIndexHub && node ./generators/generateIndexUnits && node ./generators/generateIndexPolicies && node ./generators/generateIndexGrants && node ./generators/generateIndexPages && node ./generators/generateIndexMeetings && node ./generators/generateIndexEvents && node ./generators/generateIndexPosts && node ./generators/generateIndexJobs && node ./generators/generateIndexBiographies &&  node ./generators/generateIndexPublications && node ./generators/searchIndexAndSitemap",
     "lambda": "npm run build:lambda && npm run start:lambda",
     "postbuild": "node ./generators/generateBuildInfo",
     "release": "release-it",

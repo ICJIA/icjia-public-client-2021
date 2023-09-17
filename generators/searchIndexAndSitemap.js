@@ -18,6 +18,7 @@ const jobs = require("../public/api/jobs.json");
 const meetings = require("../public/api/meetings.json");
 const posts = require("../public/api/posts.json");
 const events = require("../public/api/events.json");
+const policies = require("../public/api/policies.json");
 
 let siteIndex = [
   ...biographies,
@@ -30,6 +31,7 @@ let siteIndex = [
   ...meetings,
   ...posts,
   ...events,
+  // ...policies,
 ];
 
 const manualIndex = ["/news/press/"];
