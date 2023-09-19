@@ -159,6 +159,12 @@ export default {
     }
   },
   methods: {
+    daysBetween({ publishedAt, updatedAt }) {
+      const start = moment(publishedAt);
+      const end = moment(updatedAt);
+      const duration = end.diff(start, "days");
+      return `Days between: ${duration}`;
+    },
     isItNew(item) {
       let targetDate;
 

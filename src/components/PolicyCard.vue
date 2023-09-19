@@ -35,6 +35,16 @@
           </BasePropDisplay>
         </div>
       </div>
+      <!-- <div class="mt-10 text-right" style="font-size: 10px; font-weight: 700">
+        {{
+          daysBetween({
+            publishedAt: item.published_at,
+            updatedAt: item.updated_at,
+          }) >= 1
+            ? `Last Updated: ${formatDate(item.updated_at)}`
+            : `Published: ${formatDate(item.published_at)}`
+        }}
+      </div> -->
     </v-card>
   </div>
 </template>
@@ -47,6 +57,8 @@ import moment from "moment";
 import _ from "lodash";
 import { isRelatedContent } from "@/utils/content";
 export default {
+  // write function to create human readable date in javascript
+
   mounted() {
     attachInternalLinks(this);
     attachSearchEvents(this);
@@ -58,6 +70,15 @@ export default {
     };
   },
   methods: {
+    formatDate(date) {
+      return moment(date).format("MMM D, YYYY");
+    },
+    daysBetween({ publishedAt, updatedAt }) {
+      const start = moment(publishedAt);
+      const end = moment(updatedAt);
+      const duration = end.diff(start, "days");
+      return `${duration}`;
+    },
     routeTo(item) {
       this.$router.push(`/grants/policies/${item.slug}`).catch((err) => {
         this.$vuetify.goTo(0);
