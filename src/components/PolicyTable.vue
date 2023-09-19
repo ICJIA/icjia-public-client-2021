@@ -9,7 +9,7 @@
       show-expand
       class="elevation-0 hover"
       :search="search"
-      :sort-by.sync="sortBy"
+      :sort-by.sync="sortByDate"
       :sort-desc.sync="sortDesc"
       @click:row="clicked"
       :footer-props="{
@@ -20,18 +20,29 @@
     >
       <template v-slot:item.published_at="{ item }">
         <div
-          style="width: 110px; font-size: 14px; font-weight: 700; color: #555"
+          style="width: 110px; font-size: 14px; font-weight: 400; color: #555"
         >
+          <!-- {{ item.published_at | dateFormatAlt }} -->
           {{ item.published_at | dateFormatAlt }}
         </div>
       </template>
 
+      <!--eslint-disable-next-line vue/no-unused-vars -->
       <template v-slot:item.updated_at="{ item }">
-        <div
+        <!-- <div
+          class="text-left"
           style="width: 110px; font-size: 14px; font-weight: 700; color: #555"
         >
           {{ item.updated_at | dateFormatAlt }}
-        </div>
+        </div> -->
+        {{
+          daysBetween({
+            publishedAt: item.published_at,
+            updatedAt: item.updated_at,
+          }) >= 1
+            ? `${formatDate(item.updated_at)}`
+            : `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;---`
+        }}
       </template>
 
       <template v-slot:item.title="{ item }">
@@ -120,10 +131,13 @@ export default {
     return {
       search: "",
       sortBy: "title",
-      sortDesc: false,
+      sortByDate: "published_at",
+      sortDesc: true,
+      sortDescByDate: true,
       expanded: [],
       singleExpand: false,
       policyHeadersFull: [
+        { text: "Published", value: "published_at" },
         { text: "Last Updated", value: "updated_at" },
         {
           text: "Category",
@@ -136,6 +150,7 @@ export default {
       ],
       policyHeadersSimple: [
         { text: "Title", value: "title", align: "start" },
+        { text: "Published", value: "published_at" },
         { text: "Last Updated", value: "updated_at" },
         // {
         //   text: "Category",
@@ -159,11 +174,14 @@ export default {
     }
   },
   methods: {
+    formatDate(date) {
+      return moment(date).format("MMM D, YYYY");
+    },
     daysBetween({ publishedAt, updatedAt }) {
       const start = moment(publishedAt);
       const end = moment(updatedAt);
       const duration = end.diff(start, "days");
-      return `Days between: ${duration}`;
+      return `${duration}`;
     },
     isItNew(item) {
       let targetDate;
