@@ -115,8 +115,8 @@
             ]
         },
         {
-            "main": "Grantee Resources",
-            "nudgeLeft": "5px",
+            "main": "Grant Resources",
+            "nudgeLeft": "2px",
             "children": [
                 {
                     "title": "Funding Opportunities",
