@@ -149,7 +149,7 @@ export default {
         { text: "Title", value: "title", align: "start" },
       ],
       policyHeadersSimple: [
-        { text: "Title", value: "title", align: "start" },
+        { text: "Title", value: "title", align: "start", width: "50%" },
         { text: "Published", value: "published_at" },
         { text: "Last Updated", value: "updated_at" },
         // {
