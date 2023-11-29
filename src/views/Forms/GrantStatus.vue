@@ -15,7 +15,6 @@
               <v-container>
                 <v-row>
                   <v-col cols="12">
-                    <!-- <h2>Information:</h2> -->
                     <p>
                       Lorem markdownum famulus placere adulter, parabant deos,
                       exsaturanda natas, flumina primum tua nati Elateius.
@@ -28,34 +27,11 @@
                     </p>
                   </v-col>
                 </v-row>
-                <!-- <v-row>
-                  <v-col cols="12" md="12">
-                    <v-text-field
-                      v-model="name"
-                      class="heavy"
-                      :error-messages="nameErrors"
-                      label="Name"
-                      required
-                      @input="$v.name.$touch()"
-                      @blur="$v.name.$touch()"
-                      @click="clearAxiosError"
-                    ></v-text-field>
-                  </v-col>
-                </v-row> -->
               </v-container>
 
               <v-container>
                 <v-row>
                   <v-col cols="12" md="12">
-                    <!-- <v-select
-                      :items="subject"
-                      label="Subject"
-                      dense
-                      v-if="subject"
-                      v-model="subject"
-                      class="heavy"
-                      aria-label="Subject"
-                    ></v-select> -->
                     <v-select
                       :items="subjects"
                       label="Select Type of Request"
@@ -67,7 +43,18 @@
                       @input="$v.subject.$touch()"
                       @change="$v.subject.$touch()"
                       @blur="$v.subject.$touch()"
-                    ></v-select> </v-col></v-row
+                    ></v-select>
+                  </v-col> </v-row
+              ></v-container>
+
+              <v-container
+                ><v-row>
+                  <v-col cols="12" md="12">
+                    <v-text-field
+                      v-model="number"
+                      class="heavy"
+                      label="Grant Number (if applicable)"
+                    ></v-text-field> </v-col></v-row
               ></v-container>
 
               <v-container>
@@ -129,23 +116,6 @@
                   </v-col>
                 </v-row>
               </v-container>
-
-              <!-- <v-container>
-                <v-row>
-                  <v-col cols="12" md="12">
-                    <v-text-field
-                      v-model="language"
-                      class="heavy"
-                      :error-messages="languageErrors"
-                      label="Requested Language"
-                      required
-                      @input="$v.language.$touch()"
-                      @blur="$v.language.$touch()"
-                      @click="clearAxiosError"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container> -->
 
               <v-container>
                 <v-row>
@@ -258,6 +228,7 @@ export default {
         "General program/grant questions",
         "Request for Technical Assistance",
       ],
+      number: "",
       firstName: "",
       lastName: "",
       email: "",
@@ -333,9 +304,7 @@ export default {
   },
   methods: {
     getFieldData(v) {
-      //console.log("value: ", v);
       this[v.refName] = v.value;
-      //console.log(this[v.refName]);
     },
     clearAxiosError() {
       return (this.showAxiosError = false);
@@ -352,17 +321,12 @@ export default {
       if (this.isSuccess) {
         window.NProgress.start();
         this.showLoader = true;
-        // sanitize comment, then strip html
-        // const cleanComment = DOMPurify.sanitize(this.comment).replace(
-        //   /(<([^>]+)>)/gi,
-        //   ""
-        // );
-        // this.comment = cleanComment;
 
         this.form = {
           site: "ICJIA Public (https://icjia.illinois.gov)",
           type: "Request Grant Status Information",
           subject: this.subject,
+          number: DOMPurify.sanitize(this.number).replace(/(<([^>]+)>)/gi, ""),
           firstName: DOMPurify.sanitize(this.firstName).replace(
             /(<([^>]+)>)/gi,
             ""
@@ -382,22 +346,22 @@ export default {
         let dbResponse = await dbInsert(this.form);
         console.log("dbinsert: ", dbResponse);
 
-        // let options = {
-        //   method: "POST",
-        //   data: this.form,
-        //   url: "https://mail.icjia.cloud/internet/grant-status",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        // };
+        let options = {
+          method: "POST",
+          data: this.form,
+          url: "https://mail.icjia.cloud/internet/grant-status",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
 
-        // try {
-        //   let res = await axios(options);
-        //   this.success(res);
-        //   console.log("Email sent: ", res);
-        // } catch (err) {
-        //   this.failed(err);
-        // }
+        try {
+          let res = await axios(options);
+          this.success(res);
+          console.log("Email sent: ", res);
+        } catch (err) {
+          this.failed(err);
+        }
       }
     },
     failed(res) {
@@ -421,14 +385,13 @@ export default {
     clear() {
       this.$v.$reset();
       this.showSubmit = true;
-      // this.name = "";
       this.subject = null;
+      this.number = null;
       this.firstName = null;
       this.lastName = null;
       this.phone = null;
       this.email = null;
       this.comment = "";
-      // this.language = "";
       this.showAxiosError = false;
       this.axiosError = "";
       this.showLoader = false;
