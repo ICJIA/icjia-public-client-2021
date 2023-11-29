@@ -12,7 +12,7 @@ const forms = [
     name: "GrantStatusRequest",
     component: () =>
       import(
-        /* webpackChunkName: "laprequest" */ "@/views/Forms/GrantStatus.vue"
+        /* webpackChunkName: "statusrequest" */ "@/views/Forms/GrantStatus.vue"
       ),
   },
 ];

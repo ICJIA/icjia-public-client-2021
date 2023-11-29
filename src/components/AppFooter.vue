@@ -170,8 +170,10 @@
                 >Privacy</router-link
               >
               |
-              <router-link to="/rss" style="color: #fff; background: none"
-                >RSS Feeds</router-link
+              <router-link
+                to="/forms/grant-status/"
+                style="color: #fff; background: none"
+                >Request Grant Status</router-link
               >
               |
               <a

@@ -17,6 +17,10 @@
                 "path": "/grants/programs/"
             },
             {
+                "label": "Request Grant Status",
+                "path": "/forms/grant-status/"
+            },
+            {
                 "label": "Training",
                 "path": "/grants/training/"
             },
@@ -338,6 +342,10 @@
             {
                 "label": "Funding",
                 "path": "/grants/funding/"
+            },
+            {
+                "label": "Grant Status",
+                "path": "/forms/grant-status/"
             },
             {
                 "label": "Meetings",

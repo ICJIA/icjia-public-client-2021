@@ -72,12 +72,12 @@
                                 dark
                                 small
                                 color="#0d4474"
-                                to="/researchhub/"
+                                to="/forms/grant-status/"
                                 class="splash-button"
-                                >Latest Research</v-btn
+                                >Check Grant Status</v-btn
                               >
                             </v-col>
-                            <v-col>
+                            <!-- <v-col>
                               <v-btn
                                 dark
                                 small
@@ -86,7 +86,7 @@
                                 class="splash-button"
                                 >About ICJIA</v-btn
                               >
-                            </v-col>
+                            </v-col> -->
                           </v-row>
                         </v-container>
                       </div>
@@ -102,17 +102,9 @@
                           dark
                           small
                           color="#0d4474"
-                          to="/researchhub/"
-                          class="splash-button mr-2"
-                          >Latest Research</v-btn
-                        >
-                        <v-btn
-                          dark
-                          small
-                          color="#0d4474"
-                          to="/about/"
+                          to="/forms/grant-status/"
                           class="splash-button"
-                          >About ICJIA</v-btn
+                          >Request Grant Status</v-btn
                         >
                       </div>
                     </div>
