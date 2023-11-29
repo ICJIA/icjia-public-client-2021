@@ -12,7 +12,7 @@
               </v-row>
             </v-container>
             <form style="margin-top: 0px">
-              <v-container>
+              <!-- <v-container>
                 <v-row>
                   <v-col cols="12">
                     <p>
@@ -27,7 +27,7 @@
                     </p>
                   </v-col>
                 </v-row>
-              </v-container>
+              </v-container> -->
 
               <v-container>
                 <v-row>
@@ -53,8 +53,13 @@
                     <v-text-field
                       v-model="number"
                       class="heavy"
-                      label="Grant Number (if applicable)"
-                      aria-label="Grant Number (if applicable)"
+                      :error-messages="numberErrors"
+                      label="Grant Number"
+                      aria-label="Grant Number"
+                      required
+                      @input="$v.number.$touch()"
+                      @blur="$v.number.$touch()"
+                      @click="clearAxiosError"
                     ></v-text-field> </v-col></v-row
               ></v-container>
 
@@ -217,7 +222,7 @@ export default {
     firstName: { required },
     lastName: { required },
     subject: { required },
-
+    number: { required },
     email: { required, email },
     phone: { required },
 
@@ -266,6 +271,12 @@ export default {
       const errors = [];
       if (!this.$v.subject.$dirty) return errors;
       !this.$v.subject.required && errors.push("Type of request is required");
+      return errors;
+    },
+    numberErrors() {
+      const errors = [];
+      if (!this.$v.number.$dirty) return errors;
+      !this.$v.number.required && errors.push("Grant number is required.");
       return errors;
     },
     firstNameErrors() {
