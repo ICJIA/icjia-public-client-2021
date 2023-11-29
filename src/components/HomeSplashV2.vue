@@ -73,8 +73,20 @@
                                 small
                                 color="#0d4474"
                                 to="/forms/grant-status/"
-                                class="splash-button"
-                                >Check Grant Status</v-btn
+                                class="splash-button py-0 ml-11"
+                                >Grant Status Request
+                              </v-btn>
+                              <v-chip
+                                class="ma-2"
+                                style="
+                                  color: #fff;
+                                  background: purple;
+                                  margin-top: -19px !important;
+                                  margin-left: -14px !important;
+                                  padding-top: 3px;
+                                "
+                                x-small
+                                >NEW!</v-chip
                               >
                             </v-col>
                             <!-- <v-col>
@@ -103,8 +115,20 @@
                           small
                           color="#0d4474"
                           to="/forms/grant-status/"
-                          class="splash-button"
-                          >Grant Status Request</v-btn
+                          class="splash-button py-0 ml-11"
+                          >Grant Status Request
+                        </v-btn>
+                        <v-chip
+                          class="ma-2"
+                          style="
+                            color: #fff;
+                            background: purple;
+                            margin-top: -19px !important;
+                            margin-left: -14px !important;
+                            padding-top: 3px;
+                          "
+                          x-small
+                          >NEW!</v-chip
                         >
                       </div>
                     </div>
