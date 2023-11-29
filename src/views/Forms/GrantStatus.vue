@@ -54,6 +54,7 @@
                       v-model="number"
                       class="heavy"
                       label="Grant Number (if applicable)"
+                      aria-label="Grant Number (if applicable)"
                     ></v-text-field> </v-col></v-row
               ></v-container>
 
@@ -65,6 +66,7 @@
                       class="heavy"
                       :error-messages="firstNameErrors"
                       label="First Name"
+                      aria-label="First Name"
                       required
                       @input="$v.firstName.$touch()"
                       @blur="$v.firstName.$touch()"
@@ -78,6 +80,7 @@
                       class="heavy"
                       :error-messages="lastNameErrors"
                       label="Last Name"
+                      aria-label="Last Name"
                       required
                       @input="$v.lastName.$touch()"
                       @blur="$v.lastName.$touch()"
@@ -95,6 +98,7 @@
                       class="heavy"
                       :error-messages="emailErrors"
                       label="E-mail"
+                      aria-label="Email"
                       required
                       @input="$v.email.$touch()"
                       @blur="$v.email.$touch()"
@@ -108,6 +112,7 @@
                       class="heavy"
                       :error-messages="phoneErrors"
                       label="Phone number"
+                      aria-label="Phone"
                       required
                       @input="$v.phone.$touch()"
                       @blur="$v.phone.$touch()"
@@ -323,7 +328,7 @@ export default {
         this.showLoader = true;
 
         this.form = {
-          site: "ICJIA Public (https://icjia.illinois.gov)",
+          site: "ICJIA Public (https://icjia.illinois.gov/forms/grant-status)",
           type: "Request Grant Status Information",
           subject: this.subject,
           number: DOMPurify.sanitize(this.number).replace(/(<([^>]+)>)/gi, ""),
