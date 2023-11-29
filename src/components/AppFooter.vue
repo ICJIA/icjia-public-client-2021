@@ -173,7 +173,7 @@
               <router-link
                 to="/forms/grant-status/"
                 style="color: #fff; background: none"
-                >Request Grant Status</router-link
+                >Grant Status Request</router-link
               >
               |
               <a

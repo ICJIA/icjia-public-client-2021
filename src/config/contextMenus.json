@@ -17,7 +17,7 @@
                 "path": "/grants/programs/"
             },
             {
-                "label": "Request Grant Status",
+                "label": "Grant Status Request",
                 "path": "/forms/grant-status/"
             },
             {
@@ -344,7 +344,7 @@
                 "path": "/grants/funding/"
             },
             {
-                "label": "Grant Status",
+                "label": "Grant Status Request",
                 "path": "/forms/grant-status/"
             },
             {

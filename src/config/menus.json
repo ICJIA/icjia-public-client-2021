@@ -119,7 +119,7 @@
             "nudgeLeft": "2px",
             "children": [
                 {
-                    "title": "Request Grant Status",
+                    "title": "Grant Status Request",
                     "link": "/forms/grant-status/"
                 },
                 {

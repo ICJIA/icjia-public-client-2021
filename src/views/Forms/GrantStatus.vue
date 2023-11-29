@@ -7,7 +7,7 @@
             <v-container>
               <v-row>
                 <v-col cols="12" class="text-center">
-                  <h1 class="mb-6">Request Grant Status</h1>
+                  <h1 class="mb-6">Grant Status Request</h1>
                 </v-col>
               </v-row>
             </v-container>
@@ -340,7 +340,7 @@ export default {
 
         this.form = {
           site: "ICJIA Public (https://icjia.illinois.gov/forms/grant-status)",
-          type: "Request Grant Status Information",
+          type: "Grant Status Request",
           subject: this.subject,
           number: DOMPurify.sanitize(this.number).replace(/(<([^>]+)>)/gi, ""),
           firstName: DOMPurify.sanitize(this.firstName).replace(

@@ -104,7 +104,7 @@
                           color="#0d4474"
                           to="/forms/grant-status/"
                           class="splash-button"
-                          >Request Grant Status</v-btn
+                          >Grant Status Request</v-btn
                         >
                       </div>
                     </div>
