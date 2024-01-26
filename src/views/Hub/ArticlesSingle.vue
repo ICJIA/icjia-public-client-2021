@@ -136,8 +136,9 @@ export default {
       const { hash, ext, name } = this.article[`${type}file`];
       console.log("name: ", type, name);
       // let analyticsURL = `/uploads/${hash}${ext}`;
-      window.plausible("hub_article_download", {
-        props: { url: name },
+      //console.log("title: ", this.article.title);
+      window.plausible("hub_article_file", {
+        props: { file: name, title: this.article.title },
       });
       window.open(
         `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`,
