@@ -135,10 +135,10 @@ export default {
     async downloader(type) {
       const { hash, ext, name } = this.article[`${type}file`];
       console.log("name: ", type, name);
-      // let analyticsURL = `/uploads/${hash}${ext}`;
+      let analyticsURL = `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`;
       //console.log("title: ", this.article.title);
-      window.plausible("hub_article_file", {
-        props: { file: name, title: this.article.title },
+      window.plausible("hub_article", {
+        props: { title: this.article.title, file: name, url: analyticsURL },
       });
       window.open(
         `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`,
