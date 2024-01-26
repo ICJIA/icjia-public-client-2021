@@ -133,10 +133,11 @@ export default {
       return html;
     },
     async downloader(type) {
-      const { hash, ext } = this.article[`${type}file`];
-      let analyticsURL = `/uploads/${hash}${ext}`;
+      const { hash, ext, name } = this.article[`${type}file`];
+      console.log("name: ", type, name);
+      // let analyticsURL = `/uploads/${hash}${ext}`;
       window.plausible("hub_article_download", {
-        props: { url: analyticsURL },
+        props: { url: name },
       });
       window.open(
         `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`,
