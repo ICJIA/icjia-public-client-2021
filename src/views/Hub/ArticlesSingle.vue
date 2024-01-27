@@ -95,7 +95,7 @@ export default {
       citation
       funding
   }
- 
+
 }`;
       try {
         let article = await api.post("/graphql", {
@@ -133,13 +133,25 @@ export default {
       return html;
     },
     async downloader(type) {
-      const { hash, ext, name } = this.article[`${type}file`];
-      console.log("name: ", type, name);
-      let analyticsURL = `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`;
-      //console.log("title: ", this.article.title);
-      window.plausible("hub_article", {
-        props: { title: this.article.title, file: name, url: analyticsURL },
+      const { hash, ext, name: articleFilename } = this.article[`${type}file`];
+      let articleFileURL = `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`;
+      let articleURL = `https://icjia.illinois.gov/researchhub/articles/${this.article.slug}`;
+      let articleTitle = this.article.title;
+
+      window.plausible("research_article", {
+        props: {
+          articleTitle,
+          articleURL,
+          articleFilename,
+          articleFileURL: encodeURI(articleFileURL),
+        },
       });
+      console.log("Stats:");
+      console.log("filename: ", articleFilename);
+      console.log("fileURL", encodeURI(articleFileURL));
+      console.log("url: ", articleURL);
+      console.log("title: ", articleTitle);
+      console.log("---");
       window.open(
         `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`,
         "_blank"
