@@ -225,11 +225,12 @@ export default {
   },
   methods: {
     registerDownload(url) {
-      var domain = url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "");
-      domain = domain.split("/")[0];
-      let analyticsURL = url.replace(domain, "").replace("https://", "");
+      // eslint-disable-next-line no-unused-vars
+      let domain = url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "");
+      // domain = domain.split("/")[0];
+      // let analyticsURL = url.replace(domain, "").replace("https://", "");
       //console.log(analyticsURL);
-      window.plausible("file_download", { props: { url: analyticsURL } });
+      // window.plausible("file_download", { props: { url: analyticsURL } });
     },
     async fetchPublications() {
       if (this.$myApp.publications && this.$myApp.publications.length) {

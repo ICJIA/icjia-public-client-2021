@@ -85,11 +85,11 @@ export default {
   methods: {
     // eslint-disable-next-line no-unused-vars
     registerDownload(url) {
-      var domain = url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "");
-      domain = domain.split("/")[0];
-      let analyticsURL = url.replace(domain, "").replace("https://", "");
+      // let domain = url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "");
+      // domain = domain.split("/")[0];
+      // let analyticsURL = url.replace(domain, "").replace("https://", "");
       //console.log(analyticsURL);
-      window.plausible("file_download", { props: { url: analyticsURL } });
+      // window.plausible("file_download", { props: { url: analyticsURL } });
     },
 
     getFileType(url) {
