@@ -227,9 +227,9 @@ export default {
     registerDownload(url) {
       // eslint-disable-next-line no-unused-vars
       let domain = url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "");
-      // domain = domain.split("/")[0];
-      // let analyticsURL = url.replace(domain, "").replace("https://", "");
-      //console.log(analyticsURL);
+      domain = domain.split("/")[0];
+      let analyticsURL = url.replace(domain, "").replace("https://", "");
+      console.log(analyticsURL);
       // window.plausible("file_download", { props: { url: analyticsURL } });
     },
     async fetchPublications() {

@@ -230,7 +230,8 @@ export default {
     downloadHelper() {
       //console.log("download here", this.dataset.datafile);
       const { hash, ext } = this.dataset.datafile;
-      // let analyticsURL = `/uploads/${hash}${ext}`;
+      // eslint-disable-next-line no-unused-vars
+      let analyticsURL = `/uploads/${hash}${ext}`;
       // window.plausible("file_download", { props: { url: analyticsURL } });
       window.open(
         `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`,
