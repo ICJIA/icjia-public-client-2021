@@ -230,7 +230,7 @@ export default {
     downloadHelper() {
       const { hash, ext } = this.dataset.datafile;
       let datasetSourceURL = encodeURI(
-        `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`
+        `https://icjia.illinois.gov${this.$route.path}`
       );
 
       let datasetFileURL = encodeURI(
