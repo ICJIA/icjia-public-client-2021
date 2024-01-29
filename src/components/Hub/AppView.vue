@@ -131,7 +131,7 @@
             </v-row>
             <v-row>
               <v-col class="text-center mb-12" style="margin-top: -25px"
-                ><v-btn elevation="2" @click="launch(item.url)" x-large
+                ><v-btn elevation="2" @click="launch(item)" x-large
                   >Launch the App<v-icon right>open_in_new</v-icon></v-btn
                 >
               </v-col>
@@ -174,9 +174,20 @@ export default {
     },
   },
   methods: {
-    launch(url) {
-      window.plausible("app_launch", { props: { url: url } });
-      window.open(url);
+    launch(item) {
+      // window.plausible("app_launch", { props: { url: item.url } });
+      // console.log("-----");
+      // console.log("url: ", item.url);
+      // console.log("title: ", item.title);
+      // console.log("-----");
+      window.plausible("research_dashboard", {
+        props: {
+          dashboardTitle: item.title,
+          dashboardURL: item.url,
+        },
+      });
+
+      window.open(item.url);
     },
   },
   computed: {

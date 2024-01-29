@@ -146,12 +146,12 @@ export default {
           articleFileURL: encodeURI(articleFileURL),
         },
       });
-      console.log("Stats:");
-      console.log("filename: ", articleFilename);
-      console.log("fileURL", encodeURI(articleFileURL));
-      console.log("url: ", articleURL);
-      console.log("title: ", articleTitle);
-      console.log("---");
+      // console.log("Stats:");
+      // console.log("filename: ", articleFilename);
+      // console.log("fileURL", encodeURI(articleFileURL));
+      // console.log("url: ", articleURL);
+      // console.log("title: ", articleTitle);
+      // console.log("---");
       window.open(
         `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`,
         "_blank"
