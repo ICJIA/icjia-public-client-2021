@@ -175,11 +175,11 @@ export default {
   },
   methods: {
     launch(item) {
-      console.log("-----");
-      console.log("url: ", item.url);
-      console.log("title: ", item.title);
-      console.log("page: ", `https://icjia.illinois.gov${this.$route.path}`);
-      console.log("-----");
+      // console.log("-----");
+      // console.log("url: ", item.url);
+      // console.log("title: ", item.title);
+      // console.log("page: ", `https://icjia.illinois.gov${this.$route.path}`);
+      // console.log("-----");
       window.plausible("research_dashboard", {
         props: {
           dashboardTitle: item.title,

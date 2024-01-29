@@ -228,11 +228,33 @@ export default {
       EventBus.$emit("search", opts);
     },
     downloadHelper() {
-      //console.log("download here", this.dataset.datafile);
       const { hash, ext } = this.dataset.datafile;
-      // eslint-disable-next-line no-unused-vars
-      let analyticsURL = `/uploads/${hash}${ext}`;
-      // window.plausible("file_download", { props: { url: analyticsURL } });
+      let datasetSourceURL = encodeURI(
+        `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`
+      );
+
+      let datasetFileURL = encodeURI(
+        `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`
+      );
+
+      let datasetTitle = this.dataset.title;
+
+      let datasetFileName = this.dataset.datafile.name;
+      // let analyticsURL = `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`;
+      // console.log(
+      //   datasetTitle,
+      //   datasetSourceURL,
+      //   datasetFileName,
+      //   datasetFileURL
+      // );
+      window.plausible("research_dataset", {
+        props: {
+          datasetTitle,
+          datasetSourceURL,
+          datasetFileName,
+          datasetFileURL,
+        },
+      });
       window.open(
         `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`,
         "_blank"
