@@ -36,7 +36,7 @@
                   </thead> -->
                   <tbody>
                     <tr v-for="item in rules" :key="item.title">
-                      <td>
+                      <td style="font-size: 12px">
                         <a :href="item.citationURL" target="_blank">{{
                           item.title
                         }}</a>
