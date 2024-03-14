@@ -53,14 +53,14 @@ const grants = [
         /* webpackChunkName: "funding" */ "@/views/Grants/FundingSingle.vue"
       ),
   },
-  {
-    path: "/grants/policies/:slug",
-    name: "PoliciesSingle",
-    component: () =>
-      import(
-        /* webpackChunkName: "funding" */ "@/views/Grants/PoliciesSingle.vue"
-      ),
-  },
+  // {
+  //   path: "/grants/policies/:slug",
+  //   name: "PoliciesSingle",
+  //   component: () =>
+  //     import(
+  //       /* webpackChunkName: "funding" */ "@/views/Grants/PoliciesSingle.vue"
+  //     ),
+  // },
   {
     path: "/gata/",
     // eslint-disable-next-line no-unused-vars

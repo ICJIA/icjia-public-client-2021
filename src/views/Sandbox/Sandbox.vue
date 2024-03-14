@@ -2,7 +2,7 @@
   <div class="mt-10 mb-12">
     <BaseContent :error="error" :loading="$apollo.loading">
       <template slot="content">
-        <v-container style="margin-top: -25px">
+        <!-- <v-container style="margin-top: -25px">
           <v-row>
             <v-col cols="12">
               <div class="markdown-body mb-12 page-heading">
@@ -10,41 +10,45 @@
               </div>
             </v-col>
           </v-row>
-        </v-container>
-        <v-container style="margin-top: -25px">
-          <v-row>
-            <v-col cols="12" md="8">
-              <div
-                v-for="(category, index) in categoryMap"
-                :key="index"
-                class="mb-10 px-5"
+        </v-container> -->
+        <v-container
+          ><v-row
+            ><v-col>
+              <v-sheet
+                style="
+                  background: #0d4474;
+                  width: 100%;
+                  display: block;
+                  color: #fff;
+                  font-weight: 900;
+                  font-size: 26px;
+                "
+                class="px-2 py-2"
+                >Rules</v-sheet
               >
-                <PolicyTable
-                  v-if="policies"
-                  :items="filterByCategory(category.category)"
-                  :heading="category.label"
-                  :text="null"
-                  class="elevation-1"
-                ></PolicyTable>
-              </div>
-            </v-col>
-            <v-col
-              cols="12"
-              v-if="policies"
-              md="4"
-              class="px-12 hidden-sm-and-down"
-            >
-              <TocPolicies
-                :key="viewToggle"
-                tocHeading="Navigation"
-              ></TocPolicies>
-            </v-col>
-          </v-row>
-        </v-container>
-
-        <!-- {{ policies }}<br /> -->
-
-        <!-- {{ categoryMap }} -->
+              <v-simple-table class="markdown-body">
+                <template v-slot:default>
+                  <!-- <thead>
+                    <tr>
+                      <th class="text-left">Rule</th>
+                      <th class="text-left">Citation</th>
+                    </tr>
+                  </thead> -->
+                  <tbody>
+                    <tr v-for="item in rules" :key="item.title">
+                      <td>
+                        <a :href="item.citationURL" target="_blank">{{
+                          item.title
+                        }}</a>
+                      </td>
+                      <td>{{ item.citation }}</td>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-simple-table>
+            </v-col></v-row
+          ></v-container
+        >
       </template>
     </BaseContent>
   </div>
@@ -56,7 +60,7 @@ import NProgress from "nprogress";
 import { EventBus } from "@/event-bus";
 import { renderToHtml } from "@/services/Markdown";
 
-import { GET_ALL_POLICIES_QUERY } from "@/graphql/policies";
+import { GET_ALL_RULES_QUERY } from "@/graphql/rules";
 import { getUnifiedTags } from "@/utils/content";
 
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
@@ -68,8 +72,7 @@ export default {
       loading: true,
       error: null,
       content: null,
-      policies: null,
-      categoryMap: this.$myApp.config.maps.policies,
+      rules: null,
     };
   },
 
@@ -77,24 +80,14 @@ export default {
     NProgress.start();
   },
   mounted() {
-    EventBus.$emit("context-label", "Policies");
+    EventBus.$emit("context-label", "Rules");
   },
-  methods: {
-    filterByCategory(category) {
-      let filteredContent = this.policies.filter((policy) => {
-        if (policy.category === category) {
-          return policy;
-        }
-      });
-
-      return filteredContent;
-    },
-  },
+  methods: {},
   apollo: {
-    policies: {
+    rules: {
       prefetch: true,
 
-      query: GET_ALL_POLICIES_QUERY,
+      query: GET_ALL_RULES_QUERY,
       variables() {
         return {};
       },
@@ -107,7 +100,7 @@ export default {
         //console.log(ApolloQueryResult);
         if (
           ApolloQueryResult.data &&
-          ApolloQueryResult.data.policies.length > 0 === false
+          ApolloQueryResult.data.rules.length > 0 === false
         ) {
           // eslint-disable-next-line no-unused-vars
           this.$router.push("/404").catch((err) => {
@@ -117,11 +110,11 @@ export default {
           });
         } else {
           //console.log(this.id);
-          let policies = ApolloQueryResult.data.policies;
-          console.log("policies fetch here");
-          policies = getUnifiedTags(policies);
-          //this.policies = _.orderBy(policies, ["start"], ["desc"]);
-          this.policies = policies;
+          let rules = ApolloQueryResult.data.rules;
+          console.log("rules fetch here");
+          rules = getUnifiedTags(rules);
+          this.rules = _.orderBy(rules, ["title"], ["asc"]);
+          // this.rules = rules;
           NProgress.done();
           // attachInternalLinks(this);
           // attachSearchEvents(this);
