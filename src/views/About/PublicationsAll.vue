@@ -225,20 +225,20 @@ export default {
   },
   methods: {
     registerArticleView(item) {
-      console.log("publicationList_article_view: ", item.articleURL);
+      //console.log("publicationList_article_view: ", item.articleURL);
       window.plausible("publicationList_article_view", {
         props: {
-          url: encodeURI(item.articleURL),
+          url: item.articleURL,
         },
       });
       this.$router.push({ path: item.localArticlePath });
     },
 
     registerDownload(item) {
-      console.log("publicationList_file_download: ", item.fileURL);
+      //console.log("publicationList_file_download: ", item.fileURL);
       window.plausible("publicationList_file_download", {
         props: {
-          url: encodeURI(item.fileURL),
+          url: item.fileURL,
         },
       });
     },
