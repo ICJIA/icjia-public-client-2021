@@ -93,7 +93,7 @@
                       outlined
                       x-small
                       color="blue darken-4"
-                      :to="item.localArticlePath"
+                      @click.stop.prevent="registerArticleView(item)"
                       >Web Article</v-btn
                     ></span
                   >
@@ -106,7 +106,7 @@
                       :href="item.fileURL"
                       target="_blank"
                       x-small
-                      @click="registerDownload(item.fileURL)"
+                      @click="registerDownload(item)"
                       >Download PDF<v-icon right>download</v-icon></v-btn
                     ></span
                   >
@@ -224,13 +224,27 @@ export default {
     this.tableLoading = false;
   },
   methods: {
-    registerDownload(url) {
+    registerArticleView(item) {
+      console.log(
+        "publicationList_article_view: ",
+        "https://icjia.illinois.gov" + item.localArticlePath
+      );
+      window.plausible("publicationList_article_view", {
+        props: {
+          url: encodeURI("https://icjia.illinois.gov" + item.localArticlePath),
+        },
+      });
+      this.$router.push(item.localArticlePath);
+    },
+
+    registerDownload(item) {
       // eslint-disable-next-line no-unused-vars
-      let domain = url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "");
-      domain = domain.split("/")[0];
-      let analyticsURL = url.replace(domain, "").replace("https://", "");
-      console.log(analyticsURL);
-      // window.plausible("file_download", { props: { url: analyticsURL } });
+      console.log("publicationList_file_download: ", item.fileURL);
+      window.plausible("publicationList_file_download", {
+        props: {
+          url: encodeURI(item.fileURL),
+        },
+      });
     },
     async fetchPublications() {
       if (this.$myApp.publications && this.$myApp.publications.length) {
