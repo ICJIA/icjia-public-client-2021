@@ -30,9 +30,11 @@
       <ul style="font-size: 14px" class="mt-5 ml-2">
         <li v-if="item.localArticlePath" class="mt-2">
           <span style="font-weight: 700">Article&nbsp;</span><br />
-          <router-link :to="item.localArticlePath">{{
-            item.articleURL
-          }}</router-link>
+          <router-link
+            :to="item.localArticlePath"
+            @click="registerArticleView(item)"
+            >{{ item.articleURL }}</router-link
+          >
         </li>
 
         <li v-if="item.fileURL" class="mt-2">
@@ -47,7 +49,7 @@
           </v-tooltip> -->
           <a
             :href="item.fileURL"
-            @click="registerDownload(item.fileURL)"
+            @click="registerDownload(item)"
             target="_blank"
             >{{ item.title }}
           </a>
@@ -84,13 +86,23 @@
 export default {
   methods: {
     // eslint-disable-next-line no-unused-vars
-    registerDownload(url) {
-      var domain = url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "");
-      domain = domain.split("/")[0];
-      // eslint-disable-next-line no-unused-vars
-      let analyticsURL = url.replace(domain, "").replace("https://", "");
-      //console.log(analyticsURL);
-      // window.plausible("file_download", { props: { url: analyticsURL } });
+    registerArticleView(item) {
+      //console.log("publicationList_article_view: ", item.articleURL);
+      window.plausible("publicationList_article_view", {
+        props: {
+          url: item.articleURL,
+        },
+      });
+      // this.$router.push({ path: item.localArticlePath });
+    },
+
+    registerDownload(item) {
+      //console.log("publicationList_file_download: ", item.fileURL);
+      window.plausible("publicationList_file_download", {
+        props: {
+          url: item.fileURL,
+        },
+      });
     },
 
     getFileType(url) {
