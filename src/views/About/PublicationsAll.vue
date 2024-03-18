@@ -93,7 +93,7 @@
                       outlined
                       x-small
                       color="blue darken-4"
-                      @click.stop.prevent="registerArticleView(item)"
+                      @click="registerArticleView(item)"
                       >Web Article</v-btn
                     ></span
                   >
@@ -225,20 +225,16 @@ export default {
   },
   methods: {
     registerArticleView(item) {
-      console.log(
-        "publicationList_article_view: ",
-        "https://icjia.illinois.gov" + item.localArticlePath
-      );
+      console.log("publicationList_article_view: ", item.articleURL);
       window.plausible("publicationList_article_view", {
         props: {
-          url: encodeURI("https://icjia.illinois.gov" + item.localArticlePath),
+          url: encodeURI(item.articleURL),
         },
       });
-      this.$router.push(item.localArticlePath);
+      this.$router.push({ path: item.localArticlePath });
     },
 
     registerDownload(item) {
-      // eslint-disable-next-line no-unused-vars
       console.log("publicationList_file_download: ", item.fileURL);
       window.plausible("publicationList_file_download", {
         props: {
