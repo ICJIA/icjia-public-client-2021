@@ -12,12 +12,19 @@
             <v-col cols="12" :md="content && content.showTOC ? 12 : 12">
               <h1 v-html="render(content.title)"></h1>
               <div v-html="render(content.body)"></div>
-              <h2 id="more-about-infonet">More About InfoNet</h2>
+              <div class="text-center mt-10" style="font-weight: 900">
+                Visit the new InfoNet website for more information:
+                <a href="https://infonet.icjia.illinois.gov"
+                  >https://infonet.icjia.illinois.gov</a
+                >
+              </div>
+
+              <!-- <h2 id="more-about-infonet">More About InfoNet</h2>
               <StaticSearch
                 query="infonet"
                 :threshold="0.2"
                 class="mt-3"
-              ></StaticSearch>
+              ></StaticSearch> -->
             </v-col>
             <!-- <v-col
               cols="12"
