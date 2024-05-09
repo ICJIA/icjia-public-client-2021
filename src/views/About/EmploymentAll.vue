@@ -9,9 +9,11 @@
                 <v-col cols="12" :md="page && page.showTOC ? 8 : 12">
                   <h1 v-html="render(page.title)"></h1>
                   <p>
-                    Visit the [State of Illinois web-based electronic hiring
-                    system](https://illinois.jobs2web.com/) for job
-                    opportunities in Illinois government. This system
+                    Visit the
+                    <a href="https://illinois.jobs2web.com/" target="_blank"
+                      >State of Illinois web-based electronic hiring system</a
+                    >
+                    for job opportunities in Illinois government. This system
                     significantly expands access to state employment while
                     increasing transparency, accessibility, accountability, and
                     consistency in the state hiring process. The State provides
