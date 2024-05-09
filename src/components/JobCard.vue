@@ -84,14 +84,7 @@
           ></span
         >
       </div>
-      <span
-        class="mb-8"
-        style="
-           color: #666;
-font-size: 14px
-            font-weight: 400;
-          "
-      >
+      <span class="mb-8" style="color: #666; font-size: 14px; font-weight: 400">
         Posted {{ item.start | format }}</span
       >
 

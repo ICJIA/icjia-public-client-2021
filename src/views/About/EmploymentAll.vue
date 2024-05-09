@@ -8,8 +8,25 @@
               <v-row v-if="page">
                 <v-col cols="12" :md="page && page.showTOC ? 8 : 12">
                   <h1 v-html="render(page.title)"></h1>
+                  <p>
+                    Visit the [State of Illinois web-based electronic hiring
+                    system](https://illinois.jobs2web.com/) for job
+                    opportunities in Illinois government. This system
+                    significantly expands access to state employment while
+                    increasing transparency, accessibility, accountability, and
+                    consistency in the state hiring process. The State provides
+                    job opportunities in a wide range of occupations and titles.
+                    The website will guide you through the state employment
+                    process for the departments under the jurisdiction of the
+                    Governor.
+                  </p>
 
-                  <h2 id="current-icjia-opportunities">
+                  <!-- <div
+                    v-html="render(page.body)"
+                    style="margin-top: -5px"
+                  ></div> -->
+
+                  <h2 id="current-icjia-opportunities" style="mt-10">
                     Employment Opportunities
                   </h2>
                   <div class="text-left">
@@ -41,25 +58,26 @@
                         :showReadMore="true"
                       ></JobCard>
                     </div>
-                    <div v-html="render(page.body)"></div>
                   </div>
-                  <div v-else class="text-center">
-                    <h3 v-if="toggle_jobStatus === 0">
-                      There are no current employment opportunities.
-                    </h3>
-                    <h3 v-else>
-                      There are no expired employment opportunities.
-                    </h3>
+                  <div v-else class="text-center mt-10">
+                    <v-card class="px-10 py-12" color="grey lighten-4">
+                      <h3 v-if="toggle_jobStatus === 0">
+                        There are no current employment opportunities.
+                      </h3>
+                      <h3 v-else>
+                        There are no expired employment opportunities.
+                      </h3>
 
-                    <p>
-                      Please check back soon or subscribe to the
-                      <a
-                        target="_blank"
-                        href="https://visitor.r20.constantcontact.com/manage/optin?v=001MqUcqqvjwLCJXlLMSWbTe3zHHmEQgFeBuHvBcJWTbwgrxFbDSGx4HSUPpI6DJWMUPgbljtLxffqIcGFTgCnr-auak88ybvRxpoJlTMGPtZs%3D"
-                        >CJ Dispatch</a
-                      >
-                      for the latest ICJIA news and information.
-                    </p>
+                      <p>
+                        Please check back soon or subscribe to the
+                        <a
+                          target="_blank"
+                          href="https://visitor.r20.constantcontact.com/manage/optin?v=001MqUcqqvjwLCJXlLMSWbTe3zHHmEQgFeBuHvBcJWTbwgrxFbDSGx4HSUPpI6DJWMUPgbljtLxffqIcGFTgCnr-auak88ybvRxpoJlTMGPtZs%3D"
+                          >CJ Dispatch</a
+                        >
+                        for the latest ICJIA news and information.
+                      </p>
+                    </v-card>
                   </div>
                 </v-col>
                 <v-col
@@ -71,13 +89,52 @@
                 </v-col>
               </v-row>
             </v-container>
-            <v-container>
+            <v-container v-if="status === 'current'">
               <v-row>
                 <v-col cols="12">
-                  <ClickthroughBoxes
+                  <!-- <ClickthroughBoxes
                     :boxes="page.clickthrough"
                     v-if="page && page.clickthrough"
-                  ></ClickthroughBoxes>
+                  ></ClickthroughBoxes> -->
+
+                  <div class="mt-12">&nbsp;</div>
+                  <h2 id="internship-opportunities">
+                    Internship Opportunities
+                  </h2>
+                  <p>
+                    The following Authority internships are available to
+                    qualified applicants:
+                  </p>
+                  <ul>
+                    <li>
+                      <p>Research internships</p>
+                    </li>
+                    <li>
+                      <p>Graphic design internships (academic credit)</p>
+                    </li>
+                  </ul>
+                  <p>
+                    <a
+                      href="https://agency.icjia-api.cloud/uploads/ICJIA_Research_Internship_Flyer_Updated_June_2022_bc5d48166b.pdf"
+                      target="_blank"
+                      >Download the latest internship flyer >></a
+                    >
+                  </p>
+                  <p>For more information on research internships, contact:</p>
+                  <div class="pl-5">
+                    <p><strong>Jessica Reichert</strong></p>
+                    <p>
+                      Research &amp; Evaluation Center Manager, Research &amp;
+                      Analysis Unit
+                    </p>
+                    <p>Phone: 312-793-8550</p>
+                    <p>
+                      E-mail:
+                      <a href="mailto:Jessica.Reichert@Illinois.gov"
+                        >Jessica.Reichert@Illinois.gov</a
+                      >
+                    </p>
+                  </div>
                 </v-col>
               </v-row>
             </v-container>
