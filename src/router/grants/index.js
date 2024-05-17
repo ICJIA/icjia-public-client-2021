@@ -15,6 +15,22 @@ const grants = [
       ),
   },
   {
+    path: "/grants/policies",
+    name: "PoliciesAll",
+    component: () =>
+      import(
+        /* webpackChunkName: "funding" */ "@/views/Grants/PoliciesAll.vue"
+      ),
+  },
+  {
+    path: "/grants/required-forms",
+    name: "RequiredFormsAll",
+    component: () =>
+      import(
+        /* webpackChunkName: "funding" */ "@/views/Grants/RequiredFormsAll.vue"
+      ),
+  },
+  {
     path: "/grants/fsgu-staff",
     name: "FSGUStaff",
     component: () =>
@@ -53,14 +69,7 @@ const grants = [
         /* webpackChunkName: "funding" */ "@/views/Grants/FundingSingle.vue"
       ),
   },
-  // {
-  //   path: "/grants/policies/:slug",
-  //   name: "PoliciesSingle",
-  //   component: () =>
-  //     import(
-  //       /* webpackChunkName: "funding" */ "@/views/Grants/PoliciesSingle.vue"
-  //     ),
-  // },
+
   {
     path: "/gata/",
     // eslint-disable-next-line no-unused-vars

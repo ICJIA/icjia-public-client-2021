@@ -18,7 +18,7 @@ const jobs = require("../public/api/jobs.json");
 const meetings = require("../public/api/meetings.json");
 const posts = require("../public/api/posts.json");
 const events = require("../public/api/events.json");
-const policies = require("../public/api/policies.json");
+// const policies = require("../public/api/policies.json");
 
 let siteIndex = [
   ...biographies,
@@ -74,17 +74,17 @@ sitemap.end();
 
 console.log("Created: ./public/sitemap.xml");
 
-// temp api directory path
-const dir = "./public/api/";
+// // temp api directory path
+// const dir = "./public/api/";
 
-//delete directory recursively
+// //delete directory recursively
 
-fs.rm(dir, { recursive: true }, (err) => {
-  if (err) {
-    throw err;
-  }
+// fs.rm(dir, { recursive: true }, (err) => {
+//   if (err) {
+//     throw err;
+//   }
 
-  console.log(`Deleted: ${dir}`);
-});
+//   console.log(`Deleted: ${dir}`);
+// });
 
 console.log("Total pages: ", sitemapCounter);
