@@ -19,13 +19,13 @@
                 :key="index"
                 class="mb-10 px-5"
               >
-                <PolicyTable
+                <RequiredFormTable
                   v-if="policies"
                   :items="filterByCategory(category.category)"
                   heading=""
                   :text="null"
                   class="elevation-1"
-                ></PolicyTable>
+                ></RequiredFormTable>
               </div>
             </v-col>
             <!-- <v-col
