@@ -9,64 +9,36 @@
       show-expand
       class="elevation-0 hover"
       :search="search"
-      :sort-by.sync="sortByDate"
+      :sort-by.sync="sortBy"
       :sort-desc.sync="sortDesc"
       @click:row="clicked"
       :footer-props="{
-        'items-per-page-options': [50, 100, 250, -1],
+        'items-per-page-options': [10, 25, 50, 100, -1],
       }"
-      :items-per-page="100"
+      :items-per-page="10"
       style="border: 1px solid #eee; background: #fff"
     >
       <template v-slot:item.published_at="{ item }">
         <div
           style="width: 110px; font-size: 14px; font-weight: 400; color: #555"
+          class=""
         >
-          <!-- {{ item.published_at | dateFormatAlt }} -->
-          {{ item.published_at | dateFormatAlt }}
+          <span class="">
+            {{ item.published_at | dateFormatAlt }}
+          </span>
         </div>
       </template>
 
       <!--eslint-disable-next-line vue/no-unused-vars -->
       <template v-slot:item.updated_at="{ item }">
-        <!-- <div
-          class="text-left"
-          style="width: 110px; font-size: 14px; font-weight: 700; color: #555"
-        >
-          {{ item.updated_at | dateFormatAlt }}
-        </div> -->
-        {{
-          daysBetween({
-            publishedAt: item.published_at,
-            updatedAt: item.updated_at,
-          }) >= 1
-            ? `${formatDate(item.updated_at)}`
-            : `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;---`
-        }}
+        <div class="text-center" style="margin-left: -5px">
+          {{ formatDate(item.updated_at) }}
+        </div>
       </template>
 
       <template v-slot:item.title="{ item }">
         <div style="font-size: 14px; font-weight: 700; color: #333">
           <span class="">
-            <!-- <v-chip
-              label
-              v-if="isItNew(item)"
-              x-small
-              color="#0D4474"
-              class="mr-2"
-              style="margin-top: 0px"
-            >
-              <span
-                style="
-                  color: #fff !important;
-                  font-weight: 400;
-                  padding-top: 2px;
-                "
-              >
-                NEW!
-              </span>
-            </v-chip> -->
-
             <strong>{{ item.title }}</strong>
           </span>
         </div>
@@ -75,6 +47,23 @@
       <template v-slot:item.category="{ item }">
         <div style="font-size: 14px; font-weight: 700; color: #888">
           {{ getCleanCategory(item.category) }}
+        </div>
+      </template>
+
+      <!--eslint-disable-next-line vue/no-unused-vars -->
+      <template v-slot:item.attachments[0].url="{ item }">
+        <div
+          @click.stop.prevent="downloadFile(item.attachments[0])"
+          style="
+            font-size: 14px;
+            font-weight: 700;
+            color: #888;
+            margin-left: -20px;
+          "
+          class="text-center"
+        >
+          <!-- {{ item.attachments[0].url }} -->
+          <v-icon color="blue">mdi mdi-download-circle-outline</v-icon>
         </div>
       </template>
 
@@ -150,8 +139,10 @@ export default {
       ],
       policyHeadersSimple: [
         { text: "Title", value: "title", align: "start", width: "50%" },
-        { text: "Published", value: "published_at" },
-        { text: "Last Updated", value: "updated_at" },
+        { text: "Download", value: "attachments[0].url", align: "center" },
+        // { text: "Published", value: "published_at" },
+        { text: "Last Updated", value: "updated_at", align: "center" },
+
         // {
         //   text: "Category",
         //   align: "start",
@@ -204,6 +195,10 @@ export default {
       } else {
         return false;
       }
+    },
+    downloadFile(item) {
+      let url = "https://agency.icjia-api.cloud" + item.url;
+      window.open(url);
     },
     generateSlug(heading) {
       return slug(heading);

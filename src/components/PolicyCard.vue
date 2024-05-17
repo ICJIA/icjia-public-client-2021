@@ -22,6 +22,7 @@
           class="mt-8 pl-3"
           :key="item.slug"
           :baseItemPublished="item.published_at"
+          label="Download"
         ></AttachmentList>
         <div class="pl-3 mt-6">
           <BasePropDisplay v-if="item.tags" name="">
