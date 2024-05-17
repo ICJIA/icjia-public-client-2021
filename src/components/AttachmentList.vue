@@ -108,7 +108,9 @@ export default {
     routeTo(url) {
       console.log(url);
       // window.plausible("file_download", { props: { url: url } });
-      window.plausible("Outbound Link: Click", { props: { url: url } });
+      window.plausible("Outbound Link: Click", {
+        props: { url: "https://agency.icjia-api.cloud" + url },
+      });
       window.open(`https://agency.icjia-api.cloud${url}`, "_blank");
     },
     isItUpdated(item) {
