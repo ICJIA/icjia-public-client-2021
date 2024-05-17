@@ -206,7 +206,7 @@ export default {
     downloadFile(item) {
       let url = "https://agency.icjia-api.cloud" + item.url;
       window.plausible("Outbound Link: Click", { props: { url: url } });
-      window.open(url);
+      window.open(url, "_blank");
     },
     generateSlug(heading) {
       return slug(heading);
