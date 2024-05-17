@@ -66,7 +66,7 @@
             <template v-slot:activator="{ on, attrs }">
               <!-- {{ item.attachments[0].url }} -->
               <v-btn x-small
-                >Download&nbsp;<v-icon
+                >Download Form&nbsp;<v-icon
                   right
                   color="blue"
                   v-bind="attrs"
@@ -152,7 +152,7 @@ export default {
       ],
       policyHeadersSimple: [
         { text: "Title", value: "title", align: "start", width: "30%" },
-        { text: "", value: "attachments[0].url", align: "center" },
+        { text: "Download", value: "attachments[0].url", align: "center" },
         // { text: "Published", value: "published_at" },
         { text: "Last Updated", value: "updated_at", align: "center" },
 
