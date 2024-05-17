@@ -205,6 +205,7 @@ import DOMPurify from "dompurify";
 // import { generateHours } from "@/services/Utils";
 import { dbInsert } from "@/services/Forms";
 import NProgress from "nprogress";
+import { EventBus } from "@/event-bus";
 
 //const config = require("@/config.json");
 // eslint-disable-next-line no-unused-vars
@@ -216,7 +217,9 @@ export default {
   head() {
     return {};
   },
-  mounted() {},
+  mounted() {
+    // EventBus.$emit("context-label", "Grant Status Request");
+  },
 
   validations: {
     firstName: { required },

@@ -65,8 +65,14 @@
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
               <!-- {{ item.attachments[0].url }} -->
-              <v-icon color="blue" v-bind="attrs" v-on="on"
-                >mdi mdi-download-circle-outline</v-icon
+              <v-btn x-small
+                >Download&nbsp;<v-icon
+                  right
+                  color="blue"
+                  v-bind="attrs"
+                  v-on="on"
+                  >mdi mdi-download-circle-outline</v-icon
+                ></v-btn
               >
             </template>
             <span>Click to download form</span>
@@ -146,7 +152,7 @@ export default {
       ],
       policyHeadersSimple: [
         { text: "Title", value: "title", align: "start", width: "30%" },
-        { text: "Download", value: "attachments[0].url", align: "center" },
+        { text: "", value: "attachments[0].url", align: "center" },
         // { text: "Published", value: "published_at" },
         { text: "Last Updated", value: "updated_at", align: "center" },
 
