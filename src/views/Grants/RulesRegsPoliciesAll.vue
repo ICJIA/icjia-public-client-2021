@@ -102,7 +102,22 @@
                 "
                 class="px-2 py-2"
                 >Regulations</v-sheet
-              ></v-col
+              ><v-simple-table class="markdown-body">
+                <template v-slot:default>
+                  <tbody>
+                    <tr v-for="item in regulations" :key="item.title">
+                      <td style="font-size: 14px">
+                        <a :href="item.url" target="_blank">
+                          {{ item.title }}</a
+                        >
+                      </td>
+                      <td style="font-size: 14px" class="text-left">
+                        <a :href="item.url" target="_blank"> {{ item.url }}</a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-simple-table></v-col
             ></v-row
           ></v-container
         >
@@ -119,6 +134,7 @@ import { renderToHtml } from "@/services/Markdown";
 
 import { GET_ALL_RULES_QUERY } from "@/graphql/rules";
 import { GET_ALL_POLICIES_QUERY } from "@/graphql/policies";
+import { GET_ALL_REGULATIONS_QUERY } from "@/graphql/regulations";
 import { getUnifiedTags } from "@/utils/content";
 
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
@@ -132,6 +148,7 @@ export default {
       content: null,
       rules: null,
       policies: null,
+      regulations: null,
     };
   },
 
@@ -219,6 +236,45 @@ export default {
           console.log("rulpolicieses fetch here");
           policies = getUnifiedTags(policies);
           this.policies = _.orderBy(policies, ["title"], ["asc"]);
+          // this.rules = rules;
+          NProgress.done();
+          // attachInternalLinks(this);
+          // attachSearchEvents(this);
+          this.loading = false;
+        }
+      },
+    },
+
+    regulations: {
+      prefetch: true,
+
+      query: GET_ALL_REGULATIONS_QUERY,
+      variables() {
+        return {};
+      },
+      error(error) {
+        this.error = JSON.stringify(error.message);
+        this.loading = false;
+        NProgress.done();
+      },
+      result(ApolloQueryResult) {
+        //console.log(ApolloQueryResult);
+        if (
+          ApolloQueryResult.data &&
+          ApolloQueryResult.data.regulations.length > 0 === false
+        ) {
+          // eslint-disable-next-line no-unused-vars
+          this.$router.push("/404").catch((err) => {
+            console.log(err);
+            this.loading = false;
+            NProgress.done();
+          });
+        } else {
+          //console.log(this.id);
+          let regulations = ApolloQueryResult.data.regulations;
+          console.log("regulations fetch here");
+          regulations = getUnifiedTags(regulations);
+          this.regulations = _.orderBy(regulations, ["title"], ["asc"]);
           // this.rules = rules;
           NProgress.done();
           // attachInternalLinks(this);
