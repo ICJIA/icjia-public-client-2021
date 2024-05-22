@@ -43,6 +43,51 @@
             </v-col></v-row
           ></v-container
         >
+
+        <v-container
+          ><v-row
+            ><v-col>
+              <v-sheet
+                style="
+                  background: #0d4474;
+                  width: 100%;
+                  display: block;
+                  color: #fff;
+                  font-weight: 900;
+                  font-size: 26px;
+                "
+                class="px-2 py-2"
+                >Policies</v-sheet
+              ><v-simple-table class="markdown-body">
+                <template v-slot:default>
+                  <tbody>
+                    <tr v-for="item in policies" :key="item.title">
+                      <td style="font-size: 14px">
+                        <a
+                          :href="
+                            `https://agency.icjia-api.cloud` +
+                            item.attachments[0].url
+                          "
+                          target="_blank"
+                        >
+                          {{ item.title }} {{
+                        }}</a>
+                      </td>
+                      <td style="font-size: 14px" class="text-center">
+                        <v-btn x-small @click="downloadFile(item)"
+                          >Download&nbsp;<v-icon right color="blue"
+                            >mdi mdi-download-circle-outline</v-icon
+                          ></v-btn
+                        >
+                      </td>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-simple-table></v-col
+            ></v-row
+          >
+        </v-container>
+
         <v-container
           ><v-row
             ><v-col>
@@ -61,24 +106,6 @@
             ></v-row
           ></v-container
         >
-        <v-container
-          ><v-row
-            ><v-col>
-              <v-sheet
-                style="
-                  background: #0d4474;
-                  width: 100%;
-                  display: block;
-                  color: #fff;
-                  font-weight: 900;
-                  font-size: 26px;
-                "
-                class="px-2 py-2"
-                >Policies</v-sheet
-              ></v-col
-            ></v-row
-          ></v-container
-        >
       </template>
     </BaseContent>
   </div>
@@ -91,6 +118,7 @@ import { EventBus } from "@/event-bus";
 import { renderToHtml } from "@/services/Markdown";
 
 import { GET_ALL_RULES_QUERY } from "@/graphql/rules";
+import { GET_ALL_POLICIES_QUERY } from "@/graphql/policies";
 import { getUnifiedTags } from "@/utils/content";
 
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
@@ -103,6 +131,7 @@ export default {
       error: null,
       content: null,
       rules: null,
+      policies: null,
     };
   },
 
@@ -112,7 +141,15 @@ export default {
   mounted() {
     EventBus.$emit("context-label", "Rules");
   },
-  methods: {},
+  methods: {
+    downloadFile(item) {
+      console.log("click to download", item.attachments[0].url);
+      window.open(
+        "https://agency.icjia-api.cloud" + item.attachments[0].url,
+        "_blank"
+      );
+    },
+  },
   apollo: {
     rules: {
       prefetch: true,
@@ -144,6 +181,44 @@ export default {
           console.log("rules fetch here");
           rules = getUnifiedTags(rules);
           this.rules = _.orderBy(rules, ["title"], ["asc"]);
+          // this.rules = rules;
+          NProgress.done();
+          // attachInternalLinks(this);
+          // attachSearchEvents(this);
+          this.loading = false;
+        }
+      },
+    },
+    policies: {
+      prefetch: true,
+
+      query: GET_ALL_POLICIES_QUERY,
+      variables() {
+        return {};
+      },
+      error(error) {
+        this.error = JSON.stringify(error.message);
+        this.loading = false;
+        NProgress.done();
+      },
+      result(ApolloQueryResult) {
+        //console.log(ApolloQueryResult);
+        if (
+          ApolloQueryResult.data &&
+          ApolloQueryResult.data.policies.length > 0 === false
+        ) {
+          // eslint-disable-next-line no-unused-vars
+          this.$router.push("/404").catch((err) => {
+            console.log(err);
+            this.loading = false;
+            NProgress.done();
+          });
+        } else {
+          //console.log(this.id);
+          let policies = ApolloQueryResult.data.policies;
+          console.log("rulpolicieses fetch here");
+          policies = getUnifiedTags(policies);
+          this.policies = _.orderBy(policies, ["title"], ["asc"]);
           // this.rules = rules;
           NProgress.done();
           // attachInternalLinks(this);
