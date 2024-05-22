@@ -14,37 +14,16 @@
         <v-container style="margin-top: -25px">
           <v-row>
             <v-col cols="12" md="12">
-              <div
-                v-for="(category, index) in categoryMap"
-                :key="index"
-                class="mb-10 px-5"
-              >
-                <RequiredFormTable
-                  v-if="policies"
-                  :items="filterByCategory(category.category)"
-                  heading=""
-                  :text="null"
-                  class="elevation-1"
-                ></RequiredFormTable>
-              </div>
+              <RequiredFormTable
+                v-if="requiredForms"
+                :items="requiredForms"
+                heading=""
+                :text="null"
+                class="elevation-1"
+              ></RequiredFormTable>
             </v-col>
-            <!-- <v-col
-              cols="12"
-              v-if="policies"
-              md="4"
-              class="px-12 hidden-sm-and-down"
-            >
-              <TocPolicies
-                :key="viewToggle"
-                tocHeading="Navigation"
-              ></TocPolicies>
-            </v-col> -->
           </v-row>
         </v-container>
-
-        <!-- {{ policies }}<br /> -->
-
-        <!-- {{ categoryMap }} -->
       </template>
     </BaseContent>
   </div>
@@ -56,7 +35,7 @@ import NProgress from "nprogress";
 import { EventBus } from "@/event-bus";
 import { renderToHtml } from "@/services/Markdown";
 
-import { GET_ALL_POLICIES_QUERY } from "@/graphql/policies";
+import { GET_ALL_REQUIRED_FORMS_QUERY } from "@/graphql/requiredForms";
 import { getUnifiedTags } from "@/utils/content";
 
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
@@ -68,8 +47,7 @@ export default {
       loading: true,
       error: null,
       content: null,
-      policies: null,
-      categoryMap: this.$myApp.config.maps.policies,
+      requiredForms: null,
     };
   },
 
@@ -79,22 +57,12 @@ export default {
   mounted() {
     EventBus.$emit("context-label", "Policies");
   },
-  methods: {
-    filterByCategory(category) {
-      let filteredContent = this.policies.filter((policy) => {
-        if (policy.category === category) {
-          return policy;
-        }
-      });
-
-      return filteredContent;
-    },
-  },
+  methods: {},
   apollo: {
-    policies: {
+    requiredForms: {
       prefetch: true,
 
-      query: GET_ALL_POLICIES_QUERY,
+      query: GET_ALL_REQUIRED_FORMS_QUERY,
       variables() {
         return {};
       },
@@ -107,7 +75,7 @@ export default {
         //console.log(ApolloQueryResult);
         if (
           ApolloQueryResult.data &&
-          ApolloQueryResult.data.policies.length > 0 === false
+          ApolloQueryResult.data.requiredForms.length > 0 === false
         ) {
           // eslint-disable-next-line no-unused-vars
           this.$router.push("/404").catch((err) => {
@@ -117,11 +85,11 @@ export default {
           });
         } else {
           //console.log(this.id);
-          let policies = ApolloQueryResult.data.policies;
-          console.log("policies fetch here");
-          policies = getUnifiedTags(policies);
-          //this.policies = _.orderBy(policies, ["start"], ["desc"]);
-          this.policies = policies;
+          let requiredForms = ApolloQueryResult.data.requiredForms;
+          console.log("requiredForms fetch here");
+          requiredForms = getUnifiedTags(requiredForms);
+
+          this.requiredForms = requiredForms;
           NProgress.done();
           // attachInternalLinks(this);
           // attachSearchEvents(this);

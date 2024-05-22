@@ -16,12 +16,26 @@ const grants = [
   },
   {
     path: "/grants/policies",
-    name: "PoliciesAll",
+    name: "PoliciesAll2",
+    redirect: () => {
+      return "/grants/rules-regs-policies";
+    },
+  },
+  {
+    path: "/gata/:slug",
+    redirect: (route) => {
+      return "/grants/" + route.params.slug;
+    },
+  },
+  {
+    path: "/grants/rules-regs-policies",
+    name: "RulesRegsPoliciesAll",
     component: () =>
       import(
-        /* webpackChunkName: "funding" */ "@/views/Grants/PoliciesAll.vue"
+        /* webpackChunkName: "funding" */ "@/views/Grants/RulesRegsPoliciesAll.vue"
       ),
   },
+
   {
     path: "/grants/required-forms",
     name: "RequiredFormsAll",
@@ -113,6 +127,12 @@ const grants = [
       return "/grants/funding/" + route.params.slug;
     },
   },
+  // {
+  //   path: "/grants/policies",
+  //   redirect: () => {
+  //     return "/grants/rules-regs-policies";
+  //   },
+  // },
 ];
 
 export { grants };

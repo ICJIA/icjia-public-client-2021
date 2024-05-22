@@ -44,12 +44,6 @@
         </div>
       </template>
 
-      <template v-slot:item.category="{ item }">
-        <div style="font-size: 14px; font-weight: 700; color: #888">
-          {{ getCleanCategory(item.category) }}
-        </div>
-      </template>
-
       <!--eslint-disable-next-line vue/no-unused-vars -->
       <template v-slot:item.attachments[0].url="{ item }">
         <div
@@ -126,7 +120,7 @@ import slug from "slug";
 import { renderToHtml } from "@/services/Markdown";
 // eslint-disable-next-line no-unused-vars
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
-import _ from "lodash";
+// import _ from "lodash";
 import moment from "moment";
 export default {
   data() {
@@ -141,13 +135,7 @@ export default {
       policyHeadersFull: [
         { text: "Published", value: "published_at" },
         { text: "Last Updated", value: "updated_at" },
-        {
-          text: "Category",
-          align: "start",
-          sortable: true,
 
-          value: "category",
-        },
         { text: "Title", value: "title", align: "start" },
       ],
       policyHeadersSimple: [
@@ -155,14 +143,6 @@ export default {
         { text: "Download", value: "attachments[0].url", align: "center" },
         // { text: "Published", value: "published_at" },
         { text: "Last Updated", value: "updated_at", align: "center" },
-
-        // {
-        //   text: "Category",
-        //   align: "start",
-        //   sortable: true,
-
-        //   value: "category",
-        // },
       ],
     };
   },
@@ -220,15 +200,7 @@ export default {
     render(content) {
       return renderToHtml(content);
     },
-    getCleanCategory(category) {
-      let categoryMap = this.$myApp.config.maps.policies;
-      let obj = categoryMap.find((o) => o.category === category);
-      if (_.isEmpty(obj)) {
-        return "Undefined";
-      } else {
-        return obj.label;
-      }
-    },
+
     clicked(value) {
       //console.log(value);
       if (value === this.expanded[0]) {

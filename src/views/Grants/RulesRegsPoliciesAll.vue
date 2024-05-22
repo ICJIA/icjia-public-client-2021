@@ -43,6 +43,42 @@
             </v-col></v-row
           ></v-container
         >
+        <v-container
+          ><v-row
+            ><v-col>
+              <v-sheet
+                style="
+                  background: #0d4474;
+                  width: 100%;
+                  display: block;
+                  color: #fff;
+                  font-weight: 900;
+                  font-size: 26px;
+                "
+                class="px-2 py-2"
+                >Regulations</v-sheet
+              ></v-col
+            ></v-row
+          ></v-container
+        >
+        <v-container
+          ><v-row
+            ><v-col>
+              <v-sheet
+                style="
+                  background: #0d4474;
+                  width: 100%;
+                  display: block;
+                  color: #fff;
+                  font-weight: 900;
+                  font-size: 26px;
+                "
+                class="px-2 py-2"
+                >Policies</v-sheet
+              ></v-col
+            ></v-row
+          ></v-container
+        >
       </template>
     </BaseContent>
   </div>
