@@ -57,6 +57,40 @@
                   font-size: 26px;
                 "
                 class="px-2 py-2"
+                >Regulations</v-sheet
+              ><v-simple-table class="markdown-body">
+                <template v-slot:default>
+                  <tbody>
+                    <tr v-for="item in regulations" :key="item.title">
+                      <td style="font-size: 14px">
+                        <a :href="item.url" target="_blank">
+                          {{ item.title }}</a
+                        >
+                      </td>
+                      <td style="font-size: 14px" class="text-left">
+                        <a :href="item.url" target="_blank"> {{ item.url }}</a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-simple-table></v-col
+            ></v-row
+          ></v-container
+        >
+
+        <v-container
+          ><v-row
+            ><v-col>
+              <v-sheet
+                style="
+                  background: #0d4474;
+                  width: 100%;
+                  display: block;
+                  color: #fff;
+                  font-weight: 900;
+                  font-size: 26px;
+                "
+                class="px-2 py-2"
                 >Policies</v-sheet
               ><v-simple-table class="markdown-body">
                 <template v-slot:default>
@@ -87,40 +121,6 @@
             ></v-row
           >
         </v-container>
-
-        <v-container
-          ><v-row
-            ><v-col>
-              <v-sheet
-                style="
-                  background: #0d4474;
-                  width: 100%;
-                  display: block;
-                  color: #fff;
-                  font-weight: 900;
-                  font-size: 26px;
-                "
-                class="px-2 py-2"
-                >Regulations</v-sheet
-              ><v-simple-table class="markdown-body">
-                <template v-slot:default>
-                  <tbody>
-                    <tr v-for="item in regulations" :key="item.title">
-                      <td style="font-size: 14px">
-                        <a :href="item.url" target="_blank">
-                          {{ item.title }}</a
-                        >
-                      </td>
-                      <td style="font-size: 14px" class="text-left">
-                        <a :href="item.url" target="_blank"> {{ item.url }}</a>
-                      </td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table></v-col
-            ></v-row
-          ></v-container
-        >
       </template>
     </BaseContent>
   </div>
