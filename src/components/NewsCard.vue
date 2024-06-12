@@ -50,6 +50,7 @@
         :src="`https://agency.icjia-api.cloud${item.splash.formats.small.url}`"
         :lazy-src="`https://agency.icjia-api.cloud${item.splash.formats.thumbnail.url}`"
         width="100%"
+        cover
         :height="imageHeight"
         class=""
         :ref="'img_' + item.id"
@@ -74,6 +75,7 @@
       src="/icjia-half-splash-thumb.jpg"
       width="100%"
       height="175"
+      cover
       class=""
       style="border: 0px solid #fafafa"
       alt="ICJIA Intranet image"
@@ -170,7 +172,7 @@ export default {
     },
     imageHeight: {
       type: Number,
-      default: 200,
+      default: 400,
     },
   },
   mounted() {
