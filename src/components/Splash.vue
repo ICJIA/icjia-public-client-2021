@@ -3,10 +3,10 @@
     <v-img
       :src="getImagePath(splash.url, 0, 0, 80)"
       :lazy-src="getImagePath(splash.formats.thumbnail.url)"
-      width="100%"
+      max-width="50%"
       :height="splashHeight"
       class="mb-5"
-      style="border: 1px solid #aaa"
+      style="border: 1px solid #aaa; margin: 0 auto"
       aria-label="ICJIA Internet news item image"
       :alt="getAltText()"
       ><template v-slot:placeholder>
@@ -49,7 +49,7 @@ export default {
     },
     splashHeight: {
       type: Number,
-      default: 450,
+      default: 650,
     },
   },
 };
