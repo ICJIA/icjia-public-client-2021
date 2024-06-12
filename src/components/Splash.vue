@@ -3,12 +3,13 @@
     <v-img
       :src="getImagePath(splash.url, 0, 0, 80)"
       :lazy-src="getImagePath(splash.formats.thumbnail.url)"
-      max-width="50%"
+      max-width="1000"
       :height="splashHeight"
       class="mb-5"
-      style="border: 1px solid #aaa; margin: 0 auto"
+      style="border: 0px solid #aaa; margin: 0 auto"
       aria-label="ICJIA Internet news item image"
       :alt="getAltText()"
+      aspect-ratio="2"
       ><template v-slot:placeholder>
         <v-row class="fill-height ma-0" align="center" justify="center">
           <v-progress-circular
