@@ -22,7 +22,7 @@
         "postLimit": 4,
         "fundingLimit": 4,
         "meetingLimit": 5,
-        "employmentLimit": 4
+        "employmentLimit": 2
     },
     "image": {
         "server": "https://image.icjia.cloud",
