@@ -50,8 +50,7 @@
         :src="`https://agency.icjia-api.cloud${item.splash.formats.small.url}`"
         :lazy-src="`https://agency.icjia-api.cloud${item.splash.formats.thumbnail.url}`"
         width="100%"
-        cover
-        :height="imageHeight"
+        contain
         class=""
         :ref="'img_' + item.id"
         @error="errorHandler(item.id)"

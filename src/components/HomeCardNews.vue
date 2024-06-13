@@ -15,10 +15,11 @@
             <v-img
               aria-label="News post image"
               :src="`${getImage(item.splash.formats)}`"
-              :height="getHeight()"
+              width="100%"
               class=""
               style="border: 0px solid #fafafa; max-height: 200px !important"
               alt="ICJIA Intranet image"
+              contain
               v-if="item.splash"
             >
               <template v-slot:placeholder>
@@ -34,7 +35,7 @@
             <v-img
               aria-label="News post image"
               src="/icjia-half-splash-thumb.jpg"
-              :height="getHeight()"
+              width="100%"
               class=""
               style="border: 0px solid #fafafa"
               alt="ICJIA Intranet image"
@@ -160,9 +161,9 @@ export default {
     },
     getHeight() {
       if (this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs) {
-        return "235px";
+        return "200px";
       } else {
-        return "100px;";
+        return "180px;";
       }
     },
     search(name) {

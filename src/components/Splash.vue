@@ -3,8 +3,7 @@
     <v-img
       :src="getImagePath(splash.url, 0, 0, 80)"
       :lazy-src="getImagePath(splash.formats.thumbnail.url)"
-      max-width="1000"
-      :height="splashHeight"
+      contain
       class="mb-5"
       style="border: 0px solid #aaa; margin: 0 auto"
       aria-label="ICJIA Internet news item image"
