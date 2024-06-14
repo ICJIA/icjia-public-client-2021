@@ -19,10 +19,10 @@
     "archiveDate": "January 1, 2021",
     "home": {
         "eventLimit": 3,
-        "postLimit": 4,
-        "fundingLimit": 4,
+        "postLimit": 5,
+        "fundingLimit": 5,
         "meetingLimit": 5,
-        "employmentLimit": 2
+        "employmentLimit": 3
     },
     "image": {
         "server": "https://image.icjia.cloud",

@@ -71,10 +71,9 @@
 
     <v-img
       aria-label="News post image"
-      src="/icjia-half-splash-thumb.jpg"
+      src="/icjia-half-splash-thumb-v2.jpg"
       width="100%"
-      height="175"
-      cover
+      contain
       class=""
       style="border: 0px solid #fafafa"
       alt="ICJIA Intranet image"

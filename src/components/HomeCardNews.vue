@@ -34,7 +34,7 @@
             </v-img>
             <v-img
               aria-label="News post image"
-              src="/icjia-half-splash-thumb.jpg"
+              src="/icjia-half-splash-thumb-v2.jpg"
               width="100%"
               class=""
               style="border: 0px solid #fafafa"
