@@ -4,11 +4,11 @@
     <!-- <Banner :item="banner" style="margin-top: 3px"></Banner> -->
     <HomeSplashV2 :slider="slider" v-if="!loading"></HomeSplashV2>
 
-    <HomeFeatureRibbon
+    <!-- <HomeFeatureRibbon
       :items="featured"
       v-if="!loading && featured && featured.length > 1"
       style="margin-top: 0px"
-    ></HomeFeatureRibbon>
+    ></HomeFeatureRibbon> -->
 
     <v-card height="600" class="px-3 py-3" v-if="loading">
       <Loader
@@ -171,6 +171,7 @@ export default {
         }));
         posts = getPublicationDate(posts);
 
+        // eslint-disable-next-line no-unused-vars
         let featured = ApolloQueryResult.data.featured.map((e) => ({
           ...e,
           fullPath: `/news/${e.slug}/`,
@@ -178,23 +179,24 @@ export default {
         }));
 
         //console.log("featured length: ", featured.length);
-        if (featured.length > 1) {
-          featured = getPublicationDate(featured);
-          this.featured = _.orderBy(
-            featured,
-            ["publicationDate"],
-            ["desc"]
-          ).slice(0, 3);
-          posts = posts.filter(
-            (ar) => !featured.find((rm) => rm.slug === ar.slug)
-          );
-        } else {
-          this.featured = null;
-        }
+        // if (featured.length > 1) {
+        //   featured = getPublicationDate(featured);
+        //   this.featured = _.orderBy(
+        //     featured,
+        //     ["publicationDate"],
+        //     ["desc"]
+        //   ).slice(0, 3);
+        //   posts = posts.filter(
+        //     (ar) => !featured.find((rm) => rm.slug === ar.slug)
+        //   );
+        // } else {
+        //   this.featured = null;
+
+        // }
 
         // console.table("news: ", this.news);
         // console.table("featured: ", this.featured);
-
+        this.featured = null;
         this.news = _.orderBy(posts, ["publicationDate"], ["desc"]).slice(
           0,
           this.$myApp.config.home.postLimit
