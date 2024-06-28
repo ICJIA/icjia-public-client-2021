@@ -41,6 +41,21 @@
         <v-container v-if="viewToggle == 'all'" style="margin-top: -25px">
           <v-row>
             <v-col cols="12">
+              <v-container
+                ><v-row
+                  ><v-col cols="12" class="text-center mb-8">
+                    <v-card class="px-5 py-5" style="background: #eee">
+                      <!-- For updated ICJIA meeting schedules, please
+                      <a href="/about/meeting-schedules">click here</a
+                      >&nbsp;&raquo;  -->
+                      For updated ICJIA meeting schedules, please
+                      <router-link to="/about/meeting-schedules"
+                        >click here</router-link
+                      >&nbsp;&raquo;
+                    </v-card></v-col
+                  ></v-row
+                ></v-container
+              >
               <MeetingTable :items="meetings" v-if="meetings"></MeetingTable>
             </v-col>
           </v-row>
@@ -48,6 +63,21 @@
         <v-container v-if="viewToggle == 'category'" style="margin-top: -25px">
           <v-row>
             <v-col cols="12" md="8">
+              <v-container
+                ><v-row
+                  ><v-col cols="12" class="text-center mb-8">
+                    <v-card class="px-5 py-5" style="background: #eee">
+                      <!-- For updated ICJIA meeting schedules, please
+                      <a href="/about/meeting-schedules">click here</a
+                      >&nbsp;&raquo;  -->
+                      For updated ICJIA meeting schedules, please
+                      <router-link to="/about/meeting-schedules"
+                        >click here</router-link
+                      >&nbsp;&raquo;
+                    </v-card>
+                  </v-col></v-row
+                ></v-container
+              >
               <div
                 v-for="(category, index) in categoryMap"
                 :key="index"
@@ -73,9 +103,10 @@
             </v-col>
           </v-row>
         </v-container>
+
         <v-container
           ><v-row
-            ><v-col>
+            ><v-col class="text-center">
               <div
                 class="mt-0 text-left"
                 style="font-size: 12px; margin-bottom: 75px"
