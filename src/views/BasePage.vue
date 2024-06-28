@@ -23,10 +23,12 @@
                     <template>{{ tag }}</template>
                   </BasePropChip>
                 </BasePropDisplay>
+                {{ hideUpdated }}
                 <AttachmentList
                   :items="content.attachments"
                   v-if="content.attachments && content.attachments.length"
                   class="mt-6 pl-0"
+                  :hideUpdated="hideUpdated"
                   :key="content.attachments.title"
                   :baseItemPublished="content.published_at"
                   :label="
@@ -80,10 +82,17 @@ export default {
       loading: true,
       error: null,
       content: null,
+      hideUpdated: false,
     };
   },
   created() {
     NProgress.start();
+    console.log(this.$route.params.slug);
+    if (this.$route.params.slug === "meeting-schedules") {
+      this.hideUpdated = true;
+    } else {
+      this.hideUpdated = false;
+    }
   },
 
   methods: {

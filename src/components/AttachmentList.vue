@@ -181,7 +181,7 @@ export default {
     },
     hideUpdated: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
 };
