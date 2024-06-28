@@ -57,7 +57,7 @@
                         small
                         >NEW!</v-chip
                       >
-                      For updated ICJIA meeting schedules, please
+                      For ICJIA meeting schedules, please
                       <router-link to="/about/meeting-schedules"
                         >click here</router-link
                       >&nbsp;&raquo;
