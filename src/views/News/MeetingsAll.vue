@@ -45,9 +45,18 @@
                 ><v-row
                   ><v-col cols="12" class="text-center mb-8">
                     <v-card class="px-5 py-5" style="background: #eee">
-                      <!-- For updated ICJIA meeting schedules, please
-                      <a href="/about/meeting-schedules">click here</a
-                      >&nbsp;&raquo;  -->
+                      <v-chip
+                        class="ma-2"
+                        style="
+                          color: #fff;
+                          background: purple;
+                          margin-top: 5px !important;
+                          margin-left: 0px !important;
+                          padding: 10px 10px;
+                        "
+                        small
+                        >NEW!</v-chip
+                      >
                       For updated ICJIA meeting schedules, please
                       <router-link to="/about/meeting-schedules"
                         >click here</router-link
@@ -67,9 +76,18 @@
                 ><v-row
                   ><v-col cols="12" class="text-center mb-8">
                     <v-card class="px-5 py-5" style="background: #eee">
-                      <!-- For updated ICJIA meeting schedules, please
-                      <a href="/about/meeting-schedules">click here</a
-                      >&nbsp;&raquo;  -->
+                      <v-chip
+                        class="ma-2"
+                        style="
+                          color: #fff;
+                          background: purple;
+                          margin-top: 5px !important;
+                          margin-left: 0px !important;
+                          padding: 10px 10px;
+                        "
+                        small
+                        >NEW!</v-chip
+                      >
                       For updated ICJIA meeting schedules, please
                       <router-link to="/about/meeting-schedules"
                         >click here</router-link
