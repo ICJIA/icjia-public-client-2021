@@ -23,7 +23,7 @@
                     <template>{{ tag }}</template>
                   </BasePropChip>
                 </BasePropDisplay>
-                {{ hideUpdated }}
+
                 <AttachmentList
                   :items="content.attachments"
                   v-if="content.attachments && content.attachments.length"
