@@ -33,6 +33,7 @@
                   :baseItemPublished="news.published_at"
                   v-if="news.attachments && news.attachments.length"
                   class="mt-8"
+                  :hideUpdated="true"
                   :key="news.slug"
                   :label="
                     news.attachmentLabel && news.attachmentLabel.length
