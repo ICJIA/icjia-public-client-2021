@@ -20,6 +20,7 @@
 
     <div class="">
       <v-data-table
+        v-if="!hideUpdated"
         dense
         :headers="headers"
         :items="attachments"
@@ -34,20 +35,33 @@
             style="width: 90px; font-size: 14px; font-weight: 700; color: #555"
           >
             {{ item.updated_at | dateFormatAlt }}&nbsp;&nbsp;
-
-            <!-- <v-chip
-              v-if="isItUpdated(item) && baseItemPublished"
-              label
-              x-small
-              color="green darken-4"
-              class="mr-2"
-            >
-              <span style="color: #fff !important; font-weight: 400">
-                Updated!
-              </span>
-            </v-chip> -->
           </span>
         </template>
+        <template v-slot:item.size="{ item }">
+          <span style="font-size: 12px">{{ niceBytes(item.size) }}</span>
+        </template>
+        <template v-slot:item.name="{ item }">
+          <span
+            style="font-size: 14px; font-weight: 400; color: #555"
+            @click.stop.prevent="routeTo(item.url)"
+          >
+            <span class="attachment">
+              {{ item.name }}
+            </span>
+          </span>
+        </template>
+      </v-data-table>
+      <v-data-table
+        v-if="hideUpdated"
+        dense
+        :headers="slimHeaders"
+        :items="attachments"
+        hide-default-footer
+        :items-per-page="-1"
+        :sort-by.sync="slimSortBy"
+        :sort-desc.sync="slimSortDesc"
+        class="elevation-0"
+      >
         <template v-slot:item.size="{ item }">
           <span style="font-size: 12px">{{ niceBytes(item.size) }}</span>
         </template>
@@ -89,6 +103,8 @@ export default {
       attachments: null,
       sortBy: "updated_at",
       sortDesc: true,
+      slimSortBy: "name",
+      slimSortDesc: false,
 
       niceBytes,
       headers: [
@@ -99,6 +115,16 @@ export default {
           value: "name",
         },
         { text: "Last Updated", value: "updated_at" },
+
+        { text: "Size", value: "size" },
+      ],
+      slimHeaders: [
+        {
+          text: "Filename",
+          align: "start",
+          sortable: true,
+          value: "name",
+        },
 
         { text: "Size", value: "size" },
       ],
@@ -155,7 +181,7 @@ export default {
     },
     hideUpdated: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
 };
