@@ -9,15 +9,16 @@
       :sort-by.sync="sortBy"
       :sort-desc.sync="sortDesc"
       :footer-props="{
-        'items-per-page-options': [10, 25, 50, 100, -1],
+        'items-per-page-options': [100, 200, 300 - 1],
       }"
-      :items-per-page="10"
+      :items-per-page="100"
       style="border: 1px solid #eee; background: #fff"
     >
       <template v-slot:item.published_at="{ item }">
         <div
           style="width: 110px; font-size: 14px; font-weight: 400; color: #555"
           class=""
+          @click.stop.prevent="downloadFile(item.attachments[0])"
         >
           <span class="">
             {{ item.published_at | dateFormatAlt }}
@@ -27,13 +28,27 @@
 
       <!--eslint-disable-next-line vue/no-unused-vars -->
       <template v-slot:item.updated_at="{ item }">
-        <div class="text-center" style="margin-left: -5px">
+        <div
+          class="text-center"
+          style="margin-left: -5px"
+          @click.stop.prevent="downloadFile(item.attachments[0])"
+        >
           {{ formatDate(item.updated_at) }}
         </div>
       </template>
 
       <template v-slot:item.title="{ item }">
-        <div style="font-size: 14px; font-weight: 700; color: #333">
+        <div
+          @click.stop.prevent="downloadFile(item.attachments[0])"
+          style="
+            font-size: 14px;
+            font-weight: 700;
+            color: #333;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            text-transform: uppercase;
+          "
+        >
           <span class="">
             <strong>{{ item.title }}</strong>
           </span>
@@ -136,9 +151,9 @@ export default {
       ],
       policyHeadersSimple: [
         { text: "Title", value: "title", align: "start", width: "30%" },
+        { text: "Last Updated", value: "updated_at", align: "center" },
         { text: "Download", value: "attachments[0].url", align: "center" },
         // { text: "Published", value: "published_at" },
-        { text: "Last Updated", value: "updated_at", align: "center" },
       ],
     };
   },
