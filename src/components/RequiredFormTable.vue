@@ -3,15 +3,11 @@
     <v-data-table
       :headers="showByDate ? policyHeadersFull : policyHeadersSimple"
       :items="items"
-      :single-expand="true"
-      :expanded.sync="expanded"
       item-key="title"
-      show-expand
       class="elevation-0 hover"
       :search="search"
       :sort-by.sync="sortBy"
       :sort-desc.sync="sortDesc"
-      @click:row="clicked"
       :footer-props="{
         'items-per-page-options': [10, 25, 50, 100, -1],
       }"
@@ -128,7 +124,7 @@ export default {
       search: "",
       sortBy: "title",
       sortByDate: "published_at",
-      sortDesc: true,
+      sortDesc: false,
       sortDescByDate: true,
       expanded: [],
       singleExpand: false,
