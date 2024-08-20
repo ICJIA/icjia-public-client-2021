@@ -206,7 +206,13 @@
                     "section": "Plans and Initiatives"
                 },
                 {
-                    "title": "Byrne State Crisis Intervention Program (SCIP) Plan: 2023",
+                    "title": "Illinois Edward Byrne Memorial Justice Research Grant Strategic Plan 2024-2029",
+                    "link": "https://researchhub.icjia-api.cloud/uploads/JAG%202024-29%20FINAL%20DRAFT%208-2024-240808T19411840.pdf",
+                    "icon": "open_in_new",
+                    "external": true
+                },
+                {
+                    "title": "Illinois Edward Byrne State Crisis Intervention Program (SCIP) Plan: 2023",
                     "link": "https://agency.icjia-api.cloud/uploads/SCIP_Plan_dcfbbe3669.pdf",
                     "icon": "open_in_new",
                     "external": true
