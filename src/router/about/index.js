@@ -1,6 +1,12 @@
 import NProgress from "nprogress";
 const about = [
   {
+    path: "/about/meeting-schedules",
+    name: "ICJIAAboutMeetingSchedules",
+    component: () =>
+      import(/* webpackChunkName: "hub" */ "@/views/News/MeetingSchedule.vue"),
+  },
+  {
     path: "/about/",
     name: "ICJIAAbout",
     component: () =>

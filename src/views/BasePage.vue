@@ -88,11 +88,11 @@ export default {
   created() {
     NProgress.start();
     console.log(this.$route.params.slug);
-    if (this.$route.params.slug === "meeting-schedules") {
-      this.hideUpdated = true;
-    } else {
-      this.hideUpdated = false;
-    }
+    // if (this.$route.params.slug === "meeting-schedules") {
+    //   this.hideUpdated = true;
+    // } else {
+    //   this.hideUpdated = false;
+    // }
   },
 
   methods: {
