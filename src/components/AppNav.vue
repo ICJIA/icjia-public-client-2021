@@ -68,6 +68,7 @@
                 {{ menu.main }}<v-icon right small>arrow_drop_down</v-icon>
               </v-btn>
             </template>
+
             <v-list nav dense elevation="2">
               <span
                 v-for="(child, index) in menu.children"
@@ -116,33 +117,6 @@
         </span>
       </span>
 
-      <!-- <v-tooltip left>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            text
-            v-bind="attrs"
-            v-on="on"
-            small
-            class="navItem"
-            style="font-weight: 900 !important; font-size: 16px"
-            aria-label="Translate this page"
-            @click="openTranslationModal()"
-            ><span class="hidden-sm-and-down">Translate</span>
-            <v-icon
-              :right="
-                $vuetify.breakpoint.md ||
-                $vuetify.breakpoint.lg ||
-                $vuetify.breakpoint.xl
-              "
-              small
-              color="black"
-              >fas fa-globe</v-icon
-            >
-          </v-btn>
-        </template>
-        <span>Translate on Google</span>
-      </v-tooltip> -->
-
       <v-tooltip left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -171,7 +145,7 @@
         <span>Search ICJIA</span>
       </v-tooltip>
 
-      <!-- <v-tooltip left>
+      <v-tooltip left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             icon
@@ -185,7 +159,7 @@
           </v-btn>
         </template>
         <span>Search</span>
-      </v-tooltip> -->
+      </v-tooltip>
     </v-app-bar>
   </div>
 </template>

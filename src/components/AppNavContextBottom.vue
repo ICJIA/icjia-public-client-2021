@@ -26,6 +26,12 @@
           {{ item.label }}
           <v-icon v-if="item.icon" right small>{{ item.icon }}</v-icon>
         </v-tab>
+        <v-tab
+          style="background: #11568e !important; color: #fff !important"
+          @click.stop.prevent="routeToPage('/search')"
+        >
+          Search</v-tab
+        >
       </v-tabs>
     </v-app-bar>
   </div>
