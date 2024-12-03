@@ -130,6 +130,12 @@
                 style="color: #fff; background: none"
                 >Contact</router-link
               >
+
+              |
+              <router-link to="/search/" style="color: #fff; background: none">
+                Search</router-link
+              >
+
               <!-- |
               <router-link to="/sitemap" style="color: #fff; background: none"
                 >Sitemap</router-link
