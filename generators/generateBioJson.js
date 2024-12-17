@@ -20,11 +20,6 @@ const query = `query {
     unit {
       title
     }
-  
-    
-    
-    
-    
   }
 }`;
 
