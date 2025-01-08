@@ -144,22 +144,6 @@
         </template>
         <span>Search ICJIA</span>
       </v-tooltip>
-
-      <v-tooltip left>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            icon
-            aria-label="Click for search."
-            v-bind="attrs"
-            v-on="on"
-            @click="openSearchModal()"
-            class="mr-3"
-          >
-            <span class="v-icon mdi mdi-magnify"></span>
-          </v-btn>
-        </template>
-        <span>Search</span>
-      </v-tooltip>
     </v-app-bar>
   </div>
 </template>
