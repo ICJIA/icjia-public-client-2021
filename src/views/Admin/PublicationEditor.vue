@@ -235,7 +235,7 @@
                     "
                   >
                     <v-btn x-small @click="checkFileURL"
-                      >Check File <v-icon right>download</v-icon></v-btn
+                      >Check File <v-icon right>mdi-download</v-icon></v-btn
                     >
                   </div>
                 </div>

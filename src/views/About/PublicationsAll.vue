@@ -107,12 +107,14 @@
                       target="_blank"
                       x-small
                       @click="registerDownload(item)"
-                      >Download PDF<v-icon right>download</v-icon></v-btn
+                      >Download PDF<v-icon right>mdi-download</v-icon></v-btn
                     ></span
                   >
                   <span v-else
                     ><v-btn x-small
-                      >Open Application<v-icon right>open_in_new</v-icon></v-btn
+                      >Open Application<v-icon right
+                        >mdi-open-in-new</v-icon
+                      ></v-btn
                     ></span
                   >
                 </div>

@@ -35,7 +35,7 @@
             @click="downloadHelper('main')"
           >
             <template>{{ article.mainfiletype }}</template>
-            <v-icon>download</v-icon>
+            <v-icon>mdi-download</v-icon>
           </v-btn>
 
           <v-btn
@@ -44,7 +44,7 @@
             @click="downloadHelper('extra')"
           >
             <template>{{ "appendix" }}</template>
-            <v-icon>download</v-icon>
+            <v-icon>mdi-download</v-icon>
           </v-btn>
         </div>
       </v-col>

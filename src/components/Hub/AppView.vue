@@ -132,7 +132,7 @@
             <v-row>
               <v-col class="text-center mb-12" style="margin-top: -25px"
                 ><v-btn elevation="2" @click="launch(item)" x-large
-                  >Launch the App<v-icon right>open_in_new</v-icon></v-btn
+                  >Launch the App<v-icon right>mdi-open-in-new</v-icon></v-btn
                 >
               </v-col>
             </v-row>

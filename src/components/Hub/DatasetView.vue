@@ -119,7 +119,7 @@
           <template #activator="{ on }">
             <v-btn :small="smAndDown" text v-on="on" elevation="2">
               <template>{{ "Download" }}</template>
-              <v-icon>download</v-icon>
+              <v-icon>mdi-download</v-icon>
             </v-btn>
           </template>
 
