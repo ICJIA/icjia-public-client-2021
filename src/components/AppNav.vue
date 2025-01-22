@@ -65,7 +65,8 @@
                 v-on="on"
                 style="font-weight: 900 !important; font-size: 16px"
               >
-                {{ menu.main }}<v-icon right small>arrow_drop_down</v-icon>
+                {{ menu.main }}<v-icon>mdi-menu-down</v-icon>
+                <!-- <v-icon right small>arrow_drop_down</v-icon> -->
               </v-btn>
             </template>
 
