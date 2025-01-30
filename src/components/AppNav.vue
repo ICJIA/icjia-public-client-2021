@@ -137,9 +137,9 @@
                 $vuetify.breakpoint.lg ||
                 $vuetify.breakpoint.xl
               "
-              small
+              large
               color="black"
-              >fas fa-search</v-icon
+              >mdi-magnify</v-icon
             >
           </v-btn>
         </template>
