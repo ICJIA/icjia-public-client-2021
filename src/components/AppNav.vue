@@ -131,16 +131,7 @@
             @click="openSearchModal()"
           >
             <!-- <span class="hidden-sm-and-down">Search</span> -->
-            <v-icon
-              :right="
-                $vuetify.breakpoint.md ||
-                $vuetify.breakpoint.lg ||
-                $vuetify.breakpoint.xl
-              "
-              large
-              color="black"
-              >mdi-magnify</v-icon
-            >
+            <v-icon color="black" style="font-size: 30px">mdi-magnify</v-icon>
           </v-btn>
         </template>
         <span>Search ICJIA</span>
