@@ -1,127 +1,83 @@
 <template>
   <div class="mt-10 mb-12">
-    <BaseContent :error="error" :loading="$apollo.loading">
-      <template slot="content">
-        <!-- <v-container style="margin-top: -25px">
-          <v-row>
-            <v-col cols="12">
-              <div class="markdown-body mb-12 page-heading">
-                <h1>Rules, Regulations, and Policies</h1>
-              </div>
-            </v-col>
-          </v-row>
-        </v-container> -->
-        <v-container
-          ><v-row
-            ><v-col>
-              <v-sheet
-                style="
-                  background: #0d4474;
-                  width: 100%;
-                  display: block;
-                  color: #fff;
-                  font-weight: 900;
-                  font-size: 26px;
-                "
-                class="px-2 py-2"
-                >Rules</v-sheet
+    <v-container
+      ><v-row
+        ><v-col>
+          <div>
+            <h1 class="mb-8 pb-5">
+              Illinois Criminal Justice Information Authority (ICJIA) grant
+              programs
+            </h1>
+            <div class="mb-12">
+              <p>
+                This mapping application displays information about Illinois
+                Criminal Justice Information Authority (ICJIA) grant programs.
+                The data presented in the map include grants that are currently
+                active. These data will be updated quarterly to capture newly
+                awarded grants and remove grants that are closed.
+              </p>
+              <p>
+                For additional information on the funding sources, please see
+                <a
+                  href="https://icjia.illinois.gov/grants/programs/"
+                  target="_blank"
+                  >https://icjia.illinois.gov/grants/programs/</a
+                >. Users can employ this tool to examine locations where grants
+                from various funding sources are awarded and what grants are
+                active in their communities. Each data point contains
+                information about the total amount of funding awarded to an
+                organization under the grant program. The map is searchable by
+                location or by organization name. Full details on the
+                application’s functionality and data are available in the
+                downloadable user guide.
+              </p>
+            </div>
+            <div class="text-center">
+              <iframe
+                style="margin: 0; padding: 0; border: 2px solid #666"
+                width="1024"
+                class="mb-8"
+                height="700"
+                frameborder="0"
+                scrolling="no"
+                marginheight="0"
+                marginwidth="0"
+                title="All Open Grants"
+                src="https://illinois.maps.arcgis.com/apps/webappviewer/index.html?id=6e414edadd234db59cd14087519a10ac"
+              ></iframe>
+            </div>
+            <div
+              style="
+                font-size: 12px;
+                font-weight: bold;
+                margin-top: -30px !important;
+              "
+              class="text-center"
+            >
+              Note: Data last updated 01-01-25
+            </div>
+            <div class="mt-8 text-center">
+              <a
+                href="https://agency.icjia-api.cloud/uploads/Online_Map_User_Guide_32a70206b8.pdf"
+                target="_blank"
+                >Download Online Map User's Guide (PDF)&nbsp;&raquo;</a
               >
-              <v-simple-table class="markdown-body">
-                <template v-slot:default>
-                  <!-- <thead>
-                    <tr>
-                      <th class="text-left">Rule</th>
-                      <th class="text-left">Citation</th>
-                    </tr>
-                  </thead> -->
-                  <tbody>
-                    <tr v-for="item in rules" :key="item.title">
-                      <td style="font-size: 13px">
-                        <a :href="item.citationURL" target="_blank">{{
-                          item.title
-                        }}</a>
-                      </td>
-                      <td>{{ item.citation }}</td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table>
-            </v-col></v-row
-          ></v-container
-        >
-      </template>
-    </BaseContent>
+            </div>
+          </div>
+        </v-col></v-row
+      ></v-container
+    >
   </div>
 </template>
 
 <script>
-/* eslint-disable no-unused-vars */
-import NProgress from "nprogress";
-import { EventBus } from "@/event-bus";
-import { renderToHtml } from "@/services/Markdown";
-
-import { GET_ALL_RULES_QUERY } from "@/graphql/rules";
-import { getUnifiedTags } from "@/utils/content";
-
-import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
-import _ from "lodash";
 export default {
   data() {
-    return {
-      viewToggle: "all",
-      loading: true,
-      error: null,
-      content: null,
-      rules: null,
-    };
-  },
-
-  created() {
-    NProgress.start();
-  },
-  mounted() {
-    EventBus.$emit("context-label", "Rules");
+    return {};
   },
   methods: {},
-  apollo: {
-    rules: {
-      prefetch: true,
-
-      query: GET_ALL_RULES_QUERY,
-      variables() {
-        return {};
-      },
-      error(error) {
-        this.error = JSON.stringify(error.message);
-        this.loading = false;
-        NProgress.done();
-      },
-      result(ApolloQueryResult) {
-        //console.log(ApolloQueryResult);
-        if (
-          ApolloQueryResult.data &&
-          ApolloQueryResult.data.rules.length > 0 === false
-        ) {
-          // eslint-disable-next-line no-unused-vars
-          this.$router.push("/404").catch((err) => {
-            console.log(err);
-            this.loading = false;
-            NProgress.done();
-          });
-        } else {
-          //console.log(this.id);
-          let rules = ApolloQueryResult.data.rules;
-          console.log("rules fetch here");
-          rules = getUnifiedTags(rules);
-          this.rules = _.orderBy(rules, ["title"], ["asc"]);
-          // this.rules = rules;
-          NProgress.done();
-          // attachInternalLinks(this);
-          // attachSearchEvents(this);
-          this.loading = false;
-        }
-      },
-    },
+  mounted() {
+    console.log("Sandbox mounted.");
   },
 };
 </script>
