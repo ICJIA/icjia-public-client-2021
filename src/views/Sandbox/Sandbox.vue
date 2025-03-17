@@ -5,8 +5,8 @@
         ><v-col>
           <div>
             <h1 class="mb-8 pb-5">
-              Illinois Criminal Justice Information Authority (ICJIA) grant
-              programs
+              Illinois Criminal Justice Information Authority (ICJIA) Grant
+              Programs
             </h1>
             <div class="mb-12">
               <p>
@@ -14,15 +14,16 @@
                 Criminal Justice Information Authority (ICJIA) grant programs.
                 The data presented in the map include grants that are currently
                 active. These data will be updated quarterly to capture newly
-                awarded grants and remove grants that are closed.
-              </p>
-              <p>
-                For additional information on the funding sources, please see
+                awarded grants and remove grants that are closed. For additional
+                information on the funding sources, please see
                 <a
                   href="https://icjia.illinois.gov/grants/programs/"
                   target="_blank"
                   >https://icjia.illinois.gov/grants/programs/</a
-                >. Users can employ this tool to examine locations where grants
+                >.
+              </p>
+              <p>
+                Users can employ this tool to examine locations where grants
                 from various funding sources are awarded and what grants are
                 active in their communities. Each data point contains
                 information about the total amount of funding awarded to an
