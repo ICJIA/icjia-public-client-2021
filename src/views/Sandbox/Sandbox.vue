@@ -30,7 +30,12 @@
                 organization under the grant program. The map is searchable by
                 location or by organization name. Full details on the
                 application’s functionality and data are available in the
-                downloadable user guide.
+
+                <a
+                  href="https://agency.icjia-api.cloud/uploads/Online_Map_User_Guide_32a70206b8.pdf"
+                  target="_blank"
+                  >downloadable user guide</a
+                >.
               </p>
             </div>
             <div class="text-center">
