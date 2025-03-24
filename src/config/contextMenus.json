@@ -17,6 +17,10 @@
                 "path": "/grants/programs/"
             },
             {
+                "label": "Funded Programs Map",
+                "path": "/grants/funded-programs-map/"
+            },
+            {
                 "label": "Grant Status Request",
                 "path": "/forms/grant-status/"
             },
