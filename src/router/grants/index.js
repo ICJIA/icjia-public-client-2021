@@ -7,6 +7,15 @@ const grants = [
     },
   },
   {
+    path: "/grants/test",
+    name: "ProgramsAllTest",
+    component: () =>
+      import(
+        /* webpackChunkName: "funding" */ "@/views/Grants/ProgramsAll.vue"
+      ),
+  },
+
+  {
     path: "/grants/programs",
     name: "ProgramsAll",
     component: () =>

@@ -38,7 +38,7 @@
                 >.
               </p>
             </div>
-            <div class="text-center mb-10">
+            <div class="text-center">
               <iframe
                 style="margin: 0; padding: 0; border: 2px solid #666"
                 width="1024"
