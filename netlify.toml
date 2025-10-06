@@ -1,7 +1,10 @@
 [build]
-  Command = "npm run build"
-  functions = "lambda"
-  Publish = "dist"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "16"
+  NPM_FLAGS = "--legacy-peer-deps"
 
   
 [[headers]]

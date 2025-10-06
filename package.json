@@ -7,21 +7,21 @@
     "name": "Illinois Criminal Justice Information Authority",
     "email": "cja.info@illinois.gov"
   },
+  "engines": {
+    "node": "16.x",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
     "serve": "kill-port 8080 && npm run scripts && vue-cli-service serve",
-    "build": "npm run generate:images && npm run scripts && vue-cli-service build && npm run build:lambda",
+    "build": "npm run generate:images && npm run scripts && vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "build:lambda": "netlify-lambda build ./src/lambda",
     "generate:feeds": "node ./generators/generateRSSNews.mjs && node ./generators/generateRSSFunding.mjs && node ./generators/generateRSSMeetings.mjs && node ./generators/generateRSSEmployment.mjs",
     "generate:images": "node ./generators/generateImagesHub",
     "generate:schema": "get-graphql-schema https://agency.icjia-api.cloud/graphql -j > schema.json",
     "generate:search": "node ./generators/generateIndexHub && node ./generators/generateIndexUnits && node ./generators/generateIndexGrants && node ./generators/generateIndexPages && node ./generators/generateIndexMeetings && node ./generators/generateIndexEvents && node ./generators/generateIndexPosts && node ./generators/generateIndexJobs && node ./generators/generateIndexBiographies &&  node ./generators/generateIndexPublications && node ./generators/searchIndexAndSitemap",
-    "lambda": "npm run build:lambda && npm run start:lambda",
     "postbuild": "node ./generators/generateBuildInfo",
     "release": "release-it",
-    "scripts": "npm run generate:schema && npm run generate:search && npm run generate:feeds",
-    "serve:local": "concurrently \"npm:serve\" \"npm:start:lambda\" ",
-    "start:lambda": "npx kill-port 9000 && netlify-lambda serve ./src/lambda"
+    "scripts": "npm run generate:schema && npm run generate:search && npm run generate:feeds"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
@@ -60,7 +60,6 @@
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
     "nanoid": "^3.1.25",
-    "netlify-lambda": "^2.0.14",
     "nprogress": "^0.2.0",
     "regenerator-runtime": "^0.13.9",
     "sitemap": "^7.0.0",
@@ -92,6 +91,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^7.18.0",
     "graphql-tag": "^2.12.5",
+    "netlify-cli": "^23.9.1",
     "node-sass": "6.0.0",
     "prettier": "^2.4.0",
     "release-it": "^14.11.5",

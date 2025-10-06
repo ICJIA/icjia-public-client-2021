@@ -26,9 +26,10 @@ pnpm-debug.log*
 
 public/images/*
 public/api/*
-src/lambda/searchIndex.json
-lambda/searchIndex.json
-lambda/search.js
+
+# Local development helper scripts
+dev.sh
+build.sh
 
 # RSS Feeds
 public/news-rss2.xml

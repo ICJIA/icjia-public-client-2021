@@ -8,16 +8,7 @@ module.exports = {
   chainWebpack(config) {
     config.plugin("CompressionPlugin").use(CompressionPlugin);
   },
-  devServer: {
-    proxy: {
-      "/.netlify/functions": {
-        target: "http://localhost:9000",
-        pathRewrite: {
-          "^/\\.netlify/functions": "",
-        },
-      },
-    },
-  },
+
   pluginOptions: {
     lodash: {
       provide: false,

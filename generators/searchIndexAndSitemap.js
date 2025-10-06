@@ -44,11 +44,6 @@ jsonfile.writeFile(`./public/searchIndex.json`, siteIndex, function (err) {
   console.log(`Created: ./public/searchIndex.json`);
 });
 
-jsonfile.writeFile(`./src/lambda/searchIndex.json`, siteIndex, function (err) {
-  if (err) console.error(err);
-  console.log(`Created: ./src/lambda/searchIndex.json`);
-});
-
 // Create Sitemap.xml here
 
 const sitemap = new SitemapStream({ hostname: `${config.api.baseClient}` });
