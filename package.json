@@ -91,7 +91,6 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^7.18.0",
     "graphql-tag": "^2.12.5",
-    "netlify-cli": "^23.9.1",
     "node-sass": "6.0.0",
     "prettier": "^2.4.0",
     "release-it": "^14.11.5",
