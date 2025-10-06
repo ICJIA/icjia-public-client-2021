@@ -133,7 +133,7 @@ export default {
   methods: {
     routeTo(url) {
       console.log(url);
-      // window.plausible("file_download", { props: { url: url } });
+      window.plausible("file_download", { props: { url: url } });
       window.plausible("Outbound Link: Click", {
         props: { url: "https://agency.icjia-api.cloud" + url },
       });
