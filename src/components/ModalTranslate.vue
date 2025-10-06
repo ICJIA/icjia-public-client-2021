@@ -151,7 +151,7 @@ export default {
     },
     googleTranslate(lang) {
       console.log(lang);
-      window.plausible("translation_conversion", { props: { lang: lang } });
+      // window.plausible("translation_conversion", { props: { lang: lang } });
       const route = `${this.$myApp.config.api.baseClient}${this.$route.fullPath}`;
       const url =
         `https://translate.google.com/translate?hl=en&sl=en&u=${route}&tl=` +

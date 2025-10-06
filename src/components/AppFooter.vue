@@ -188,13 +188,13 @@
                 target="_blank"
                 >Subscribe to CJ Dispatch</a
               >
-              <!-- |
+              |
               <a
                 href="javascript:void(0);"
                 style="color: #fff; background: none"
                 @click="openTranslationModal"
                 >Translate Site</a
-              > -->
+              >
             </div>
 
             <div

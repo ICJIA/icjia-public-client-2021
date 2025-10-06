@@ -403,7 +403,7 @@ Edit `.env` file with required values:
 VUE_APP_THUMBOR_KEY=your_thumbor_key_here
 PLAUSIBLE_API_KEY=your_plausible_key_here
 PLAUSIBLE_API_DOMAIN=icjia.illinois.gov
-PLAUSIBLE_API_BASE=https://analytics.icjia-api.cloud
+PLAUSIBLE_API_BASE=hhttps://plausible.icjia.cloud/
 ```
 
 #### 4. Generate Required Files
@@ -590,8 +590,7 @@ VUE_APP_THUMBOR_KEY=secret_key_for_image_service
 # Analytics
 PLAUSIBLE_API_KEY=analytics_api_key
 PLAUSIBLE_API_DOMAIN=icjia.illinois.gov
-PLAUSIBLE_API_BASE=https://analytics.icjia-api.cloud
-
+PLAUSIBLE_API_BASE=hhttps://plausible.icjia.cloud/
 # Apollo GraphQL (optional for development)
 VUE_APP_APOLLO_ENGINE_SERVICE=service_name
 VUE_APP_APOLLO_ENGINE_KEY=engine_api_key
