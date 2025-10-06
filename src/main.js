@@ -59,20 +59,20 @@ AOS.init();
 // import LoadScript from "vue-plugin-load-script";
 // Vue.use(LoadScript);
 
-Vue.use(
-  VueGtag,
-  {
-    config: { id: "G-LJP4M9Y8B0" },
-    pageTrackerTemplate(to) {
-      //console.log(to);
-      return {
-        page_title: to.path,
-        page_path: to.path,
-      };
-    },
-  },
-  router
-);
+// Vue.use(
+//   VueGtag,
+//   {
+//     config: { id: "G-LJP4M9Y8B0" },
+//     pageTrackerTemplate(to) {
+//       //console.log(to);
+//       return {
+//         page_title: to.path,
+//         page_path: to.path,
+//       };
+//     },
+//   },
+//   router
+// );
 
 new Vue({
   router,
