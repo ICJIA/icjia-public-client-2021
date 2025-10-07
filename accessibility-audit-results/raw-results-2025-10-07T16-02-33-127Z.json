@@ -1,0 +1,484 @@
+{
+  "summary": {
+    "totalPages": 12,
+    "totalViolations": 12,
+    "violationsBySeverity": {
+      "critical": 10,
+      "serious": 2,
+      "moderate": 0,
+      "minor": 0
+    },
+    "violationsByWCAG": {
+      "wcag2a": 2,
+      "wcag412": 1,
+      "wcag2aa": 10,
+      "wcag144": 10,
+      "wcag311": 1
+    },
+    "commonIssues": {
+      "nested-interactive": {
+        "description": "Ensure interactive controls are not nested as they are not always announced by screen readers or can cause focus problems for assistive technologies",
+        "help": "Interactive controls must not be nested",
+        "impact": "serious",
+        "count": 1,
+        "affectedPages": [
+          "Home"
+        ]
+      },
+      "meta-viewport": {
+        "description": "Ensure <meta name=\"viewport\"> does not disable text scaling and zooming",
+        "help": "Zooming and scaling must not be disabled",
+        "impact": "critical",
+        "count": 10,
+        "affectedPages": [
+          "About",
+          "About - Overview",
+          "Contact",
+          "News Listing",
+          "Funding Opportunities",
+          "Meetings",
+          "Employment",
+          "Search",
+          "Datasets",
+          "Staff Biographies"
+        ]
+      },
+      "html-has-lang": {
+        "description": "Ensure every HTML document has a lang attribute",
+        "help": "<html> element must have a lang attribute",
+        "impact": "serious",
+        "count": 1,
+        "affectedPages": [
+          "Research Hub"
+        ]
+      }
+    },
+    "timestamp": "2025-10-07T16:02:33.857Z",
+    "baseUrl": "http://localhost:8080"
+  },
+  "results": [
+    {
+      "page": "Home",
+      "url": "/",
+      "timestamp": "2025-10-07T16:02:38.034Z",
+      "violations": [
+        {
+          "id": "nested-interactive",
+          "impact": "serious",
+          "description": "Ensure interactive controls are not nested as they are not always announced by screen readers or can cause focus problems for assistive technologies",
+          "help": "Interactive controls must not be nested",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/nested-interactive?application=axe-puppeteer",
+          "tags": [
+            "cat.keyboard",
+            "wcag2a",
+            "wcag412",
+            "TTv5",
+            "TT6.a",
+            "EN-301-549",
+            "EN-9.4.1.2"
+          ],
+          "nodes": [
+            {
+              "html": "<div aria-label=\"ICJIA home page splash image\" role=\"img\" class=\"v-image v-responsive theme--light\" style=\"height: 600px;\">",
+              "target": [
+                "div[aria-label=\"ICJIA home page splash image\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has focusable descendants",
+              "impact": "serious"
+            }
+          ]
+        }
+      ],
+      "passes": 26,
+      "incomplete": 1,
+      "inapplicable": 35
+    },
+    {
+      "page": "About",
+      "url": "/about/",
+      "timestamp": "2025-10-07T16:02:41.055Z",
+      "violations": [
+        {
+          "id": "meta-viewport",
+          "impact": "critical",
+          "description": "Ensure <meta name=\"viewport\"> does not disable text scaling and zooming",
+          "help": "Zooming and scaling must not be disabled",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/meta-viewport?application=axe-puppeteer",
+          "tags": [
+            "cat.sensory-and-visual-cues",
+            "wcag2aa",
+            "wcag144",
+            "EN-301-549",
+            "EN-9.1.4.4",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "html": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0,\n                                 maximum-scale=1.0, user-scalable=no\">",
+              "target": [
+                "meta[name=\"viewport\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  user-scalable=no on <meta> tag disables zooming on mobile devices",
+              "impact": "critical"
+            }
+          ]
+        }
+      ],
+      "passes": 8,
+      "incomplete": 0,
+      "inapplicable": 52
+    },
+    {
+      "page": "About - Overview",
+      "url": "/about/overview",
+      "timestamp": "2025-10-07T16:02:44.355Z",
+      "violations": [
+        {
+          "id": "meta-viewport",
+          "impact": "critical",
+          "description": "Ensure <meta name=\"viewport\"> does not disable text scaling and zooming",
+          "help": "Zooming and scaling must not be disabled",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/meta-viewport?application=axe-puppeteer",
+          "tags": [
+            "cat.sensory-and-visual-cues",
+            "wcag2aa",
+            "wcag144",
+            "EN-301-549",
+            "EN-9.1.4.4",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "html": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0,\n                                 maximum-scale=1.0, user-scalable=no\">",
+              "target": [
+                "meta[name=\"viewport\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  user-scalable=no on <meta> tag disables zooming on mobile devices",
+              "impact": "critical"
+            }
+          ]
+        }
+      ],
+      "passes": 8,
+      "incomplete": 0,
+      "inapplicable": 52
+    },
+    {
+      "page": "Contact",
+      "url": "/about/contact",
+      "timestamp": "2025-10-07T16:02:47.662Z",
+      "violations": [
+        {
+          "id": "meta-viewport",
+          "impact": "critical",
+          "description": "Ensure <meta name=\"viewport\"> does not disable text scaling and zooming",
+          "help": "Zooming and scaling must not be disabled",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/meta-viewport?application=axe-puppeteer",
+          "tags": [
+            "cat.sensory-and-visual-cues",
+            "wcag2aa",
+            "wcag144",
+            "EN-301-549",
+            "EN-9.1.4.4",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "html": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0,\n                                 maximum-scale=1.0, user-scalable=no\">",
+              "target": [
+                "meta[name=\"viewport\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  user-scalable=no on <meta> tag disables zooming on mobile devices",
+              "impact": "critical"
+            }
+          ]
+        }
+      ],
+      "passes": 8,
+      "incomplete": 0,
+      "inapplicable": 52
+    },
+    {
+      "page": "News Listing",
+      "url": "/news/",
+      "timestamp": "2025-10-07T16:02:50.969Z",
+      "violations": [
+        {
+          "id": "meta-viewport",
+          "impact": "critical",
+          "description": "Ensure <meta name=\"viewport\"> does not disable text scaling and zooming",
+          "help": "Zooming and scaling must not be disabled",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/meta-viewport?application=axe-puppeteer",
+          "tags": [
+            "cat.sensory-and-visual-cues",
+            "wcag2aa",
+            "wcag144",
+            "EN-301-549",
+            "EN-9.1.4.4",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "html": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0,\n                                 maximum-scale=1.0, user-scalable=no\">",
+              "target": [
+                "meta[name=\"viewport\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  user-scalable=no on <meta> tag disables zooming on mobile devices",
+              "impact": "critical"
+            }
+          ]
+        }
+      ],
+      "passes": 8,
+      "incomplete": 0,
+      "inapplicable": 52
+    },
+    {
+      "page": "Funding Opportunities",
+      "url": "/funding/",
+      "timestamp": "2025-10-07T16:02:54.276Z",
+      "violations": [
+        {
+          "id": "meta-viewport",
+          "impact": "critical",
+          "description": "Ensure <meta name=\"viewport\"> does not disable text scaling and zooming",
+          "help": "Zooming and scaling must not be disabled",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/meta-viewport?application=axe-puppeteer",
+          "tags": [
+            "cat.sensory-and-visual-cues",
+            "wcag2aa",
+            "wcag144",
+            "EN-301-549",
+            "EN-9.1.4.4",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "html": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0,\n                                 maximum-scale=1.0, user-scalable=no\">",
+              "target": [
+                "meta[name=\"viewport\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  user-scalable=no on <meta> tag disables zooming on mobile devices",
+              "impact": "critical"
+            }
+          ]
+        }
+      ],
+      "passes": 8,
+      "incomplete": 0,
+      "inapplicable": 52
+    },
+    {
+      "page": "Meetings",
+      "url": "/meetings/",
+      "timestamp": "2025-10-07T16:02:57.594Z",
+      "violations": [
+        {
+          "id": "meta-viewport",
+          "impact": "critical",
+          "description": "Ensure <meta name=\"viewport\"> does not disable text scaling and zooming",
+          "help": "Zooming and scaling must not be disabled",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/meta-viewport?application=axe-puppeteer",
+          "tags": [
+            "cat.sensory-and-visual-cues",
+            "wcag2aa",
+            "wcag144",
+            "EN-301-549",
+            "EN-9.1.4.4",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "html": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0,\n                                 maximum-scale=1.0, user-scalable=no\">",
+              "target": [
+                "meta[name=\"viewport\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  user-scalable=no on <meta> tag disables zooming on mobile devices",
+              "impact": "critical"
+            }
+          ]
+        }
+      ],
+      "passes": 8,
+      "incomplete": 0,
+      "inapplicable": 52
+    },
+    {
+      "page": "Employment",
+      "url": "/employment/",
+      "timestamp": "2025-10-07T16:03:00.926Z",
+      "violations": [
+        {
+          "id": "meta-viewport",
+          "impact": "critical",
+          "description": "Ensure <meta name=\"viewport\"> does not disable text scaling and zooming",
+          "help": "Zooming and scaling must not be disabled",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/meta-viewport?application=axe-puppeteer",
+          "tags": [
+            "cat.sensory-and-visual-cues",
+            "wcag2aa",
+            "wcag144",
+            "EN-301-549",
+            "EN-9.1.4.4",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "html": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0,\n                                 maximum-scale=1.0, user-scalable=no\">",
+              "target": [
+                "meta[name=\"viewport\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  user-scalable=no on <meta> tag disables zooming on mobile devices",
+              "impact": "critical"
+            }
+          ]
+        }
+      ],
+      "passes": 8,
+      "incomplete": 0,
+      "inapplicable": 52
+    },
+    {
+      "page": "Research Hub",
+      "url": "/researchhub/",
+      "timestamp": "2025-10-07T16:03:04.182Z",
+      "violations": [
+        {
+          "id": "html-has-lang",
+          "impact": "serious",
+          "description": "Ensure every HTML document has a lang attribute",
+          "help": "<html> element must have a lang attribute",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/html-has-lang?application=axe-puppeteer",
+          "tags": [
+            "cat.language",
+            "wcag2a",
+            "wcag311",
+            "TTv5",
+            "TT11.a",
+            "EN-301-549",
+            "EN-9.3.1.1",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "html": "<html>",
+              "target": [
+                "html"
+              ],
+              "failureSummary": "Fix any of the following:\n  The <html> element does not have a lang attribute",
+              "impact": "serious"
+            }
+          ]
+        }
+      ],
+      "passes": 9,
+      "incomplete": 0,
+      "inapplicable": 51
+    },
+    {
+      "page": "Search",
+      "url": "/search/",
+      "timestamp": "2025-10-07T16:03:07.505Z",
+      "violations": [
+        {
+          "id": "meta-viewport",
+          "impact": "critical",
+          "description": "Ensure <meta name=\"viewport\"> does not disable text scaling and zooming",
+          "help": "Zooming and scaling must not be disabled",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/meta-viewport?application=axe-puppeteer",
+          "tags": [
+            "cat.sensory-and-visual-cues",
+            "wcag2aa",
+            "wcag144",
+            "EN-301-549",
+            "EN-9.1.4.4",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "html": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0,\n                                 maximum-scale=1.0, user-scalable=no\">",
+              "target": [
+                "meta[name=\"viewport\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  user-scalable=no on <meta> tag disables zooming on mobile devices",
+              "impact": "critical"
+            }
+          ]
+        }
+      ],
+      "passes": 8,
+      "incomplete": 0,
+      "inapplicable": 52
+    },
+    {
+      "page": "Datasets",
+      "url": "/datasets/",
+      "timestamp": "2025-10-07T16:03:10.805Z",
+      "violations": [
+        {
+          "id": "meta-viewport",
+          "impact": "critical",
+          "description": "Ensure <meta name=\"viewport\"> does not disable text scaling and zooming",
+          "help": "Zooming and scaling must not be disabled",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/meta-viewport?application=axe-puppeteer",
+          "tags": [
+            "cat.sensory-and-visual-cues",
+            "wcag2aa",
+            "wcag144",
+            "EN-301-549",
+            "EN-9.1.4.4",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "html": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0,\n                                 maximum-scale=1.0, user-scalable=no\">",
+              "target": [
+                "meta[name=\"viewport\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  user-scalable=no on <meta> tag disables zooming on mobile devices",
+              "impact": "critical"
+            }
+          ]
+        }
+      ],
+      "passes": 8,
+      "incomplete": 0,
+      "inapplicable": 52
+    },
+    {
+      "page": "Staff Biographies",
+      "url": "/about/biographies",
+      "timestamp": "2025-10-07T16:03:14.104Z",
+      "violations": [
+        {
+          "id": "meta-viewport",
+          "impact": "critical",
+          "description": "Ensure <meta name=\"viewport\"> does not disable text scaling and zooming",
+          "help": "Zooming and scaling must not be disabled",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/meta-viewport?application=axe-puppeteer",
+          "tags": [
+            "cat.sensory-and-visual-cues",
+            "wcag2aa",
+            "wcag144",
+            "EN-301-549",
+            "EN-9.1.4.4",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "html": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0,\n                                 maximum-scale=1.0, user-scalable=no\">",
+              "target": [
+                "meta[name=\"viewport\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  user-scalable=no on <meta> tag disables zooming on mobile devices",
+              "impact": "critical"
+            }
+          ]
+        }
+      ],
+      "passes": 8,
+      "incomplete": 0,
+      "inapplicable": 52
+    }
+  ]
+}

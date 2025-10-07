@@ -1,0 +1,90 @@
+{
+  "summary": {
+    "totalPages": 12,
+    "totalViolations": 0,
+    "violationsBySeverity": {
+      "critical": 0,
+      "serious": 0,
+      "moderate": 0,
+      "minor": 0
+    },
+    "violationsByWCAG": {},
+    "commonIssues": {},
+    "timestamp": "2025-10-07T16:01:58.504Z",
+    "baseUrl": "http://localhost:8080"
+  },
+  "results": [
+    {
+      "page": "Home",
+      "url": "/",
+      "error": "page.waitForTimeout is not a function",
+      "violations": []
+    },
+    {
+      "page": "About",
+      "url": "/about/",
+      "error": "page.waitForTimeout is not a function",
+      "violations": []
+    },
+    {
+      "page": "About - Overview",
+      "url": "/about/overview",
+      "error": "page.waitForTimeout is not a function",
+      "violations": []
+    },
+    {
+      "page": "Contact",
+      "url": "/about/contact",
+      "error": "page.waitForTimeout is not a function",
+      "violations": []
+    },
+    {
+      "page": "News Listing",
+      "url": "/news/",
+      "error": "page.waitForTimeout is not a function",
+      "violations": []
+    },
+    {
+      "page": "Funding Opportunities",
+      "url": "/funding/",
+      "error": "page.waitForTimeout is not a function",
+      "violations": []
+    },
+    {
+      "page": "Meetings",
+      "url": "/meetings/",
+      "error": "page.waitForTimeout is not a function",
+      "violations": []
+    },
+    {
+      "page": "Employment",
+      "url": "/employment/",
+      "error": "page.waitForTimeout is not a function",
+      "violations": []
+    },
+    {
+      "page": "Research Hub",
+      "url": "/researchhub/",
+      "error": "page.waitForTimeout is not a function",
+      "violations": []
+    },
+    {
+      "page": "Search",
+      "url": "/search/",
+      "error": "page.waitForTimeout is not a function",
+      "violations": []
+    },
+    {
+      "page": "Datasets",
+      "url": "/datasets/",
+      "error": "page.waitForTimeout is not a function",
+      "violations": []
+    },
+    {
+      "page": "Staff Biographies",
+      "url": "/about/biographies",
+      "error": "page.waitForTimeout is not a function",
+      "violations": []
+    }
+  ]
+}
