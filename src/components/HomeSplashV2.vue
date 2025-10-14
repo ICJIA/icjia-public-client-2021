@@ -33,6 +33,7 @@
                 "
                 alt="ICJIA home page splash image"
                 height="600"
+                role="presentation"
               >
                 <v-overlay
                   absolute

@@ -356,4 +356,70 @@ export default {
 .rule-top {
   border-top: 1px solid #ddd !important;
 }
+
+/* Fix for WCAG 1.4.4 Resize Text - Allow text to reflow when zoomed to 200% */
+/* Target all Vuetify tab-related elements that might clip content */
+
+/* Main tab containers */
+* >>> .v-tabs-items {
+  overflow: visible !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+* >>> .v-window__container {
+  overflow: visible !important;
+  height: auto !important;
+}
+
+* >>> .v-window-item {
+  overflow: visible !important;
+  height: auto !important;
+}
+
+/* Tab navigation */
+* >>> .v-tabs {
+  overflow: visible !important;
+}
+
+* >>> .v-slide-group__wrapper {
+  overflow: visible !important;
+}
+
+* >>> .v-slide-group__content {
+  overflow: visible !important;
+}
+
+/* Content containers */
+* >>> .v-card {
+  overflow: visible !important;
+  height: auto !important;
+}
+
+* >>> .v-sheet {
+  overflow: visible !important;
+  height: auto !important;
+}
+
+/* Ensure all child elements can expand */
+* >>> .v-card__text,
+* >>> .v-card__title,
+* >>> .v-card__subtitle {
+  overflow: visible !important;
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+/* Allow text content to wrap properly */
+* >>> h1,
+* >>> h2,
+* >>> h3,
+* >>> p,
+* >>> span {
+  overflow: visible !important;
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
 </style>

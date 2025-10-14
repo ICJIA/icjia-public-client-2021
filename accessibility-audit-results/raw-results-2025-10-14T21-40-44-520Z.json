@@ -1,0 +1,305 @@
+{
+  "summary": {
+    "totalPages": 12,
+    "totalViolations": 2,
+    "violationsBySeverity": {
+      "critical": 0,
+      "serious": 16,
+      "moderate": 0,
+      "minor": 0
+    },
+    "violationsByWCAG": {
+      "wcag2aa": 2,
+      "wcag143": 2
+    },
+    "commonIssues": {
+      "color-contrast": {
+        "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "impact": "serious",
+        "count": 16,
+        "affectedPages": [
+          "About",
+          "Contact"
+        ]
+      }
+    },
+    "timestamp": "2025-10-14T21:40:46.758Z",
+    "baseUrl": "http://localhost:8080"
+  },
+  "results": [
+    {
+      "page": "Home",
+      "url": "/",
+      "timestamp": "2025-10-14T21:40:51.173Z",
+      "violations": [],
+      "passes": 26,
+      "incomplete": 2,
+      "inapplicable": 35
+    },
+    {
+      "page": "About",
+      "url": "/about/",
+      "timestamp": "2025-10-14T21:40:54.530Z",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/color-contrast?application=axe-puppeteer",
+          "tags": [
+            "cat.color",
+            "wcag2aa",
+            "wcag143",
+            "TTv5",
+            "TT13.c",
+            "EN-301-549",
+            "EN-9.1.4.3",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "html": "<a href=\"https://www.ilga.gov/legislation/ilcs/ilcs3.asp?ActID=397&amp;ChapterID=5\" target=\"_blank\">Illinois Criminal Justice Information Act [20 ILCS 3930 <em>et. seq</em>.]</a>",
+              "target": [
+                "p:nth-child(2) > a[target=\"_blank\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.48 (foreground color: #1976d2, background color: #fcfcfc, font size: 12.0pt (16px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            },
+            {
+              "html": "<em>et. seq</em>",
+              "target": [
+                "em"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.48 (foreground color: #1976d2, background color: #fcfcfc, font size: 12.0pt (16px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            },
+            {
+              "html": "<a href=\"https://agency.icjia-api.cloud/uploads/SFY_23_Annual_Report_Final_7bd1581d53.pdf\" target=\"_blank\">latest annual report here</a>",
+              "target": [
+                "p:nth-child(4) > a[target=\"_blank\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.48 (foreground color: #1976d2, background color: #fcfcfc, font size: 12.0pt (16px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            },
+            {
+              "html": "<a href=\"/grants/\" data-event-link=\"\" target=\"_blank\">grants administration</a>",
+              "target": [
+                "a[href$=\"grants/\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.48 (foreground color: #1976d2, background color: #fcfcfc, font size: 12.0pt (16px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            },
+            {
+              "html": "<a href=\"/researchhub/\" data-event-link=\"\" target=\"_blank\">research and analysis</a>",
+              "target": [
+                "a[href$=\"researchhub/\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.48 (foreground color: #1976d2, background color: #fcfcfc, font size: 12.0pt (16px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            },
+            {
+              "html": "<a href=\"/information-systems/\" data-event-link=\"\" target=\"_blank\">information systems and technology</a>",
+              "target": [
+                "a[href$=\"information-systems/\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.48 (foreground color: #1976d2, background color: #fcfcfc, font size: 12.0pt (16px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            }
+          ]
+        }
+      ],
+      "passes": 28,
+      "incomplete": 1,
+      "inapplicable": 33
+    },
+    {
+      "page": "About - Overview",
+      "url": "/about/overview",
+      "timestamp": "2025-10-14T21:40:57.843Z",
+      "violations": [],
+      "passes": 25,
+      "incomplete": 1,
+      "inapplicable": 36
+    },
+    {
+      "page": "Contact",
+      "url": "/about/contact",
+      "timestamp": "2025-10-14T21:41:01.111Z",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/color-contrast?application=axe-puppeteer",
+          "tags": [
+            "cat.color",
+            "wcag2aa",
+            "wcag143",
+            "TTv5",
+            "TT13.c",
+            "EN-301-549",
+            "EN-9.1.4.3",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "html": "<a href=\"mailto:cja.irc@illinois.gov\" target=\"_blank\">cja.irc@illinois.gov</a>",
+              "target": [
+                "a[href=\"mailto:cja.irc@illinois.gov\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.48 (foreground color: #1976d2, background color: #fcfcfc, font size: 12.0pt (16px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            },
+            {
+              "html": "<a href=\"mailto:cja.info@illinois.gov\" target=\"_blank\">cja.info@illinois.gov</a>",
+              "target": [
+                "a[href=\"mailto:cja.info@illinois.gov\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.48 (foreground color: #1976d2, background color: #fcfcfc, font size: 12.0pt (16px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            },
+            {
+              "html": "<a href=\"https://icjia.illinois.gov\" target=\"_blank\">https://icjia.illinois.gov</a>",
+              "target": [
+                "a[href$=\"icjia.illinois.gov\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.48 (foreground color: #1976d2, background color: #fcfcfc, font size: 12.0pt (16px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            },
+            {
+              "html": "<a href=\"/forms/lap-request/\" data-event-link=\"\" target=\"_blank\">click here</a>",
+              "target": [
+                "a[href$=\"lap-request/\"][data-event-link=\"\"][target=\"_blank\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.48 (foreground color: #1976d2, background color: #fcfcfc, font size: 12.0pt (16px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            },
+            {
+              "html": "<a href=\"/about/employment\" data-event-link=\"\" target=\"_blank\">Authority’s employment page</a>",
+              "target": [
+                "a[href$=\"employment\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.48 (foreground color: #1976d2, background color: #fcfcfc, font size: 12.0pt (16px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            },
+            {
+              "html": "<a href=\"/about/foia/\" data-event-link=\"\" target=\"_blank\">Authority’s FOIA page</a>",
+              "target": [
+                "a[href$=\"foia/\"][data-event-link=\"\"][target=\"_blank\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.48 (foreground color: #1976d2, background color: #fcfcfc, font size: 12.0pt (16px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            },
+            {
+              "html": "<a href=\"https://visitor.r20.constantcontact.com/manage/optin?v=001MqUcqqvjwLCJXlLMSWbTe3zHHmEQgFeBuHvBcJWTbwgrxFbDSGx4HSUPpI6DJWMUPgbljtLxffqIcGFTgCnr-auak88ybvRxpoJlTMGPtZs%3D\" target=\"_blank\">Subscribe to the CJ Dispatch</a>",
+              "target": [
+                "p:nth-child(20) > a[target=\"_blank\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.48 (foreground color: #1976d2, background color: #fcfcfc, font size: 12.0pt (16px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            },
+            {
+              "html": "<a href=\"https://www.facebook.com/ICJIA/\" target=\"_blank\">https://www.facebook.com/ICJIA/</a>",
+              "target": [
+                "li:nth-child(1) > ul > li > a[target=\"_blank\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.48 (foreground color: #1976d2, background color: #fcfcfc, font size: 12.0pt (16px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            },
+            {
+              "html": "<a href=\"https://www.instagram.com/icjia_illinois/\" target=\"_blank\">https://www.instagram.com/icjia_illinois/</a>",
+              "target": [
+                "li:nth-child(2) > ul > li > a[target=\"_blank\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.48 (foreground color: #1976d2, background color: #fcfcfc, font size: 12.0pt (16px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            },
+            {
+              "html": "<a href=\"https://www.linkedin.com/company/icjia/\" target=\"_blank\">https://www.linkedin.com/company/icjia/</a>",
+              "target": [
+                "li:nth-child(3) > ul > li > a[target=\"_blank\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.48 (foreground color: #1976d2, background color: #fcfcfc, font size: 12.0pt (16px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            }
+          ]
+        }
+      ],
+      "passes": 28,
+      "incomplete": 1,
+      "inapplicable": 33
+    },
+    {
+      "page": "News Listing",
+      "url": "/news/",
+      "timestamp": "2025-10-14T21:41:05.309Z",
+      "violations": [],
+      "passes": 26,
+      "incomplete": 1,
+      "inapplicable": 35
+    },
+    {
+      "page": "Funding Opportunities",
+      "url": "/funding/",
+      "timestamp": "2025-10-14T21:41:08.507Z",
+      "violations": [],
+      "passes": 25,
+      "incomplete": 1,
+      "inapplicable": 36
+    },
+    {
+      "page": "Meetings",
+      "url": "/meetings/",
+      "timestamp": "2025-10-14T21:41:11.736Z",
+      "violations": [],
+      "passes": 25,
+      "incomplete": 1,
+      "inapplicable": 36
+    },
+    {
+      "page": "Employment",
+      "url": "/employment/",
+      "timestamp": "2025-10-14T21:41:14.902Z",
+      "violations": [],
+      "passes": 25,
+      "incomplete": 1,
+      "inapplicable": 36
+    },
+    {
+      "page": "Research Hub",
+      "url": "/researchhub/",
+      "error": "Navigation timeout of 30000 ms exceeded",
+      "violations": []
+    },
+    {
+      "page": "Search",
+      "url": "/search/",
+      "timestamp": "2025-10-14T21:41:48.193Z",
+      "violations": [],
+      "passes": 28,
+      "incomplete": 1,
+      "inapplicable": 33
+    },
+    {
+      "page": "Datasets",
+      "url": "/datasets/",
+      "timestamp": "2025-10-14T21:41:51.470Z",
+      "violations": [],
+      "passes": 25,
+      "incomplete": 1,
+      "inapplicable": 36
+    },
+    {
+      "page": "Staff Biographies",
+      "url": "/about/biographies",
+      "timestamp": "2025-10-14T21:41:54.715Z",
+      "violations": [],
+      "passes": 25,
+      "incomplete": 1,
+      "inapplicable": 36
+    }
+  ]
+}

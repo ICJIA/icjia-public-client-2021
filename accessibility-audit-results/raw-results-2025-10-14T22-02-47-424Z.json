@@ -1,0 +1,207 @@
+{
+  "summary": {
+    "totalPages": 12,
+    "totalViolations": 1,
+    "violationsBySeverity": {
+      "critical": 0,
+      "serious": 6,
+      "moderate": 0,
+      "minor": 0
+    },
+    "violationsByWCAG": {
+      "wcag2aa": 1,
+      "wcag143": 1
+    },
+    "commonIssues": {
+      "color-contrast": {
+        "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "impact": "serious",
+        "count": 6,
+        "affectedPages": [
+          "Research Hub"
+        ]
+      }
+    },
+    "timestamp": "2025-10-14T22:02:48.353Z",
+    "baseUrl": "http://localhost:8080"
+  },
+  "results": [
+    {
+      "page": "Home",
+      "url": "/",
+      "timestamp": "2025-10-14T22:02:52.724Z",
+      "violations": [],
+      "passes": 26,
+      "incomplete": 2,
+      "inapplicable": 35
+    },
+    {
+      "page": "About",
+      "url": "/about/",
+      "timestamp": "2025-10-14T22:02:56.090Z",
+      "violations": [],
+      "passes": 28,
+      "incomplete": 1,
+      "inapplicable": 33
+    },
+    {
+      "page": "About - Overview",
+      "url": "/about/overview",
+      "timestamp": "2025-10-14T22:02:59.336Z",
+      "violations": [],
+      "passes": 25,
+      "incomplete": 1,
+      "inapplicable": 36
+    },
+    {
+      "page": "Contact",
+      "url": "/about/contact",
+      "timestamp": "2025-10-14T22:03:02.611Z",
+      "violations": [],
+      "passes": 28,
+      "incomplete": 1,
+      "inapplicable": 33
+    },
+    {
+      "page": "News Listing",
+      "url": "/news/",
+      "timestamp": "2025-10-14T22:03:06.838Z",
+      "violations": [],
+      "passes": 26,
+      "incomplete": 1,
+      "inapplicable": 35
+    },
+    {
+      "page": "Funding Opportunities",
+      "url": "/funding/",
+      "timestamp": "2025-10-14T22:03:10.037Z",
+      "violations": [],
+      "passes": 25,
+      "incomplete": 1,
+      "inapplicable": 36
+    },
+    {
+      "page": "Meetings",
+      "url": "/meetings/",
+      "timestamp": "2025-10-14T22:03:13.204Z",
+      "violations": [],
+      "passes": 25,
+      "incomplete": 1,
+      "inapplicable": 36
+    },
+    {
+      "page": "Employment",
+      "url": "/employment/",
+      "timestamp": "2025-10-14T22:03:16.387Z",
+      "violations": [],
+      "passes": 25,
+      "incomplete": 1,
+      "inapplicable": 36
+    },
+    {
+      "page": "Research Hub",
+      "url": "/researchhub/",
+      "timestamp": "2025-10-14T22:03:20.267Z",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/color-contrast?application=axe-puppeteer",
+          "tags": [
+            "cat.color",
+            "wcag2aa",
+            "wcag143",
+            "TTv5",
+            "TT13.c",
+            "EN-301-549",
+            "EN-9.1.4.3",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "html": "<h3 data-v-9e20ea20=\"\" style=\"font-size: 18px;\"> October 02, 2025 </h3>",
+              "target": [
+                ".hidden-sm-and-down.text-center[data-v-9e20ea20=\"\"] > h3"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.84 (foreground color: #ffffff, background color: #999999, font size: 13.5pt (18px), font weight: normal). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            },
+            {
+              "html": "<h1 data-v-9e20ea20=\"\" style=\"color: rgb(255, 255, 255); font-weight: 900; font-size: 36px; margin-top: -5px;\"> Illinois K-12 Public School Personnel Readiness for Supporting Student Mental Health </h1>",
+              "target": [
+                ".px-12 > h1"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.84 (foreground color: #ffffff, background color: #999999, font size: 27.0pt (36px), font weight: bold). Expected contrast ratio of 3:1",
+              "impact": "serious"
+            },
+            {
+              "html": "<span data-v-9e20ea20=\"\"><!----> Jessica Reichert </span>",
+              "target": [
+                "span[data-v-9e20ea20=\"\"]:nth-child(1)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.84 (foreground color: #ffffff, background color: #999999, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            },
+            {
+              "html": "<span data-v-9e20ea20=\"\">,  Ryan Maranville </span>",
+              "target": [
+                "span[data-v-9e20ea20=\"\"]:nth-child(2)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.84 (foreground color: #ffffff, background color: #999999, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            },
+            {
+              "html": "<span data-v-9e20ea20=\"\">,  Jing Wang </span>",
+              "target": [
+                "span[data-v-9e20ea20=\"\"]:nth-child(3)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.84 (foreground color: #ffffff, background color: #999999, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            },
+            {
+              "html": "<span data-v-9e20ea20=\"\"> and  Ebonie Epinger </span>",
+              "target": [
+                "span[data-v-9e20ea20=\"\"]:nth-child(4)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.84 (foreground color: #ffffff, background color: #999999, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+              "impact": "serious"
+            }
+          ]
+        }
+      ],
+      "passes": 26,
+      "incomplete": 1,
+      "inapplicable": 35
+    },
+    {
+      "page": "Search",
+      "url": "/search/",
+      "timestamp": "2025-10-14T22:03:23.444Z",
+      "violations": [],
+      "passes": 28,
+      "incomplete": 1,
+      "inapplicable": 33
+    },
+    {
+      "page": "Datasets",
+      "url": "/datasets/",
+      "timestamp": "2025-10-14T22:03:26.636Z",
+      "violations": [],
+      "passes": 25,
+      "incomplete": 1,
+      "inapplicable": 36
+    },
+    {
+      "page": "Staff Biographies",
+      "url": "/about/biographies",
+      "timestamp": "2025-10-14T22:03:29.844Z",
+      "violations": [],
+      "passes": 25,
+      "incomplete": 1,
+      "inapplicable": 36
+    }
+  ]
+}
