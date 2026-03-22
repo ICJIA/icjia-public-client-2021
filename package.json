@@ -22,6 +22,7 @@
     "postbuild": "node ./generators/generateBuildInfo",
     "test": "npx playwright test",
     "audit": "node a11y-audit-by-type.js",
+    "check-links": "node check-broken-links.js",
     "release": "release-it",
     "scripts": "npm run generate:schema && npm run generate:search && npm run generate:feeds"
   },
