@@ -6,12 +6,12 @@
     <v-row>
       <v-flex class="text-center">
         <div style="margin-top: 0px">
-          <div style="font-weight: 900; font-size: 120px; color: #0d4474">
+          <div style="font-weight: 900; font-size: 120px; color: #0d4474" aria-hidden="true">
             Oops
           </div>
-          <div style="font-weight: 700; font-size: 48px" class="mt-0">
+          <h1 style="font-weight: 700; font-size: 48px; margin: 0;" class="mt-0">
             404 | Page not found
-          </div>
+          </h1>
           <div class="mt-12">
             <v-btn text color="grey darken-4" dark to="/" class="mr-2"
               >ICJIA Home&nbsp;&raquo;</v-btn

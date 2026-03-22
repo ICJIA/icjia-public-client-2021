@@ -7,8 +7,8 @@
         v-if="item && item.publicationDate"
         >{{ item.publicationDate | dateFormatAlt }}</span
       >
-      <div
-        style="font-weight: 900; text-transform: uppercase; font-size: 26px"
+      <h2
+        style="font-weight: 900; text-transform: uppercase; font-size: 26px; margin: 0;"
         class="mb-3 mt-2 px-3"
         v-if="item && item.title"
       >
@@ -21,7 +21,7 @@
           "
           >{{ item.title }}</span
         >
-      </div>
+      </h2>
       <div v-if="item.summary && item.summary.length" class="px-3">
         {{ item.summary }}
       </div>

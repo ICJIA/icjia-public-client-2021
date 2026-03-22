@@ -11,15 +11,15 @@
     }"
     style=""
   >
-    <div
-      style="margin-left: -3px; font-weight: bold"
+    <h3
+      style="margin-left: -3px; font-weight: bold; font-size: inherit; margin-top: 0;"
       ref="anchor"
       class="mb-4 hover"
       @click="$vuetify.goTo(0)"
       v-if="tocHeading.length"
     >
       {{ tocHeading | upperCase }}
-    </div>
+    </h3>
     <div class="divider">
       <ul class="toc-list">
         <li
