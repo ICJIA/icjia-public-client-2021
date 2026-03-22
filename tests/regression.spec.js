@@ -25,13 +25,17 @@ test.describe("Home Page", () => {
   test("has ICJIA logo in nav", async ({ page }) => {
     await page.goto("/");
     // Vuetify v-img renders as div[role="img"] with aria-label
-    const logo = page.locator('[aria-label="ICJIA Logo"], a[aria-label="ICJIA Home"]').first();
+    const logo = page
+      .locator('[aria-label="ICJIA Logo"], a[aria-label="ICJIA Home"]')
+      .first();
     await expect(logo).toBeVisible();
   });
 
   test("has agency title text", async ({ page }) => {
     await page.goto("/");
-    const title = page.locator("text=ILLINOIS CRIMINAL JUSTICE INFORMATION AUTHORITY");
+    const title = page.locator(
+      "text=ILLINOIS CRIMINAL JUSTICE INFORMATION AUTHORITY"
+    );
     await expect(title.first()).toBeVisible();
   });
 
@@ -70,7 +74,9 @@ test.describe("Navigation", () => {
     await page.goto("/about/");
     await page.waitForLoadState("networkidle");
     // On main: v-img div with @click; on a11y branch: router-link wrapping v-img
-    const logo = page.locator('[aria-label="ICJIA Logo"], a[aria-label="ICJIA Home"]').first();
+    const logo = page
+      .locator('[aria-label="ICJIA Logo"], a[aria-label="ICJIA Home"]')
+      .first();
     await logo.click();
     await page.waitForURL("**/", { timeout: 10000 });
     expect(page.url()).toMatch(/\/$/);

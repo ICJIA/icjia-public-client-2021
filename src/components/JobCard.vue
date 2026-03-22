@@ -77,12 +77,15 @@
             font-size: 22px;
           "
         >
-          {{ item.title }}</h2
-        >
+          {{ item.title }}
+        </h2>
 
         <span v-if="showLink">
           |
-          <v-icon class="link" aria-label="Go to job posting" @click.stop.prevent="$router.push(item.fullPath)"
+          <v-icon
+            class="link"
+            aria-label="Go to job posting"
+            @click.stop.prevent="$router.push(item.fullPath)"
             >link</v-icon
           ></span
         >

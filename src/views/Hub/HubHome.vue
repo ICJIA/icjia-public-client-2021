@@ -22,7 +22,11 @@
         </v-row>
       </v-container>
       <div v-if="!hubLoading">
-        <v-carousel height="650" :cycle="true" aria-label="Latest research articles slideshow">
+        <v-carousel
+          height="650"
+          :cycle="true"
+          aria-label="Latest research articles slideshow"
+        >
           <v-carousel-item
             v-for="(article, i) in articles"
             :key="i"
@@ -69,7 +73,13 @@
                             </span>
                           </v-chip>
                           <div class="text-center hidden-sm-and-down" style="">
-                            <h2 style="font-size: 18px; font-weight: 300; color: #fff; ">
+                            <h2
+                              style="
+                                font-size: 18px;
+                                font-weight: 300;
+                                color: #fff;
+                              "
+                            >
                               {{ article.date | format }}
                             </h2>
                           </div>

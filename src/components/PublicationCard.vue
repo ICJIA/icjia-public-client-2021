@@ -8,7 +8,12 @@
         >{{ item.publicationDate | dateFormatAlt }}</span
       >
       <h2
-        style="font-weight: 900; text-transform: uppercase; font-size: 26px; margin: 0;"
+        style="
+          font-weight: 900;
+          text-transform: uppercase;
+          font-size: 26px;
+          margin: 0;
+        "
         class="mb-3 mt-2 px-3"
         v-if="item && item.title"
       >

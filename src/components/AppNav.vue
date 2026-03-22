@@ -3,7 +3,12 @@
     <v-app-bar fixed app color="white" height="90" style="z-index: 50">
       <button
         class="hover hamburger text-center hidden-md-and-up"
-        style="margin-left: -10px; background: none; border: none; cursor: pointer;"
+        style="
+          margin-left: -10px;
+          background: none;
+          border: none;
+          cursor: pointer;
+        "
         @click="toggleSidebar()"
         aria-label="Open navigation menu"
         :aria-expanded="sidebarOpen ? 'true' : 'false'"
@@ -15,7 +20,7 @@
       <v-spacer
         v-if="$vuetify.breakpoint.sm || $vuetify.breakpoint.xs"
       ></v-spacer>
-      <router-link to="/" aria-label="ICJIA Home" style="text-decoration: none;">
+      <router-link to="/" aria-label="ICJIA Home" style="text-decoration: none">
         <v-img
           alt="ICJIA Logo"
           class="shrink mr-3"
@@ -26,11 +31,18 @@
         />
       </router-link>
 
-      <v-toolbar-title
-        class="hidden-sm-and-down"
-        ><router-link to="/" style="text-decoration: none !important; color: #333 !important; background: none !important;"><span style="font-weight: 900 !important" class="agency"
-          >ILLINOIS CRIMINAL JUSTICE INFORMATION AUTHORITY</span
-        ></router-link></v-toolbar-title
+      <v-toolbar-title class="hidden-sm-and-down"
+        ><router-link
+          to="/"
+          style="
+            text-decoration: none !important;
+            color: #333 !important;
+            background: none !important;
+          "
+          ><span style="font-weight: 900 !important" class="agency"
+            >ILLINOIS CRIMINAL JUSTICE INFORMATION AUTHORITY</span
+          ></router-link
+        ></v-toolbar-title
       >
 
       <v-spacer></v-spacer>

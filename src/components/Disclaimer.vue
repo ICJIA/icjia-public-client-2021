@@ -15,7 +15,7 @@
     <v-container>
       <v-row>
         <v-col class="markdown-body font-lato">
-          <h2 style="font-size: 20px; font-weight: 900; color: #fff; margin: 0;">
+          <h2 style="font-size: 20px; font-weight: 900; color: #fff; margin: 0">
             {{ disclaimer[0].label }}
           </h2>
           <div

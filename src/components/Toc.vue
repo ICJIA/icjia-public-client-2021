@@ -12,7 +12,12 @@
     style=""
   >
     <h3
-      style="margin-left: -3px; font-weight: bold; font-size: inherit; margin-top: 0;"
+      style="
+        margin-left: -3px;
+        font-weight: bold;
+        font-size: inherit;
+        margin-top: 0;
+      "
       ref="anchor"
       class="mb-4 hover"
       @click="$vuetify.goTo(0)"

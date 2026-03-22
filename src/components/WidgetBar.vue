@@ -6,7 +6,12 @@
     class="mb-0"
   >
     <h2
-      style="font-size: 26px; font-weight: 900; text-transform: uppercase; margin: 0;"
+      style="
+        font-size: 26px;
+        font-weight: 900;
+        text-transform: uppercase;
+        margin: 0;
+      "
       v-if="
         $vuetify.breakpoint.md ||
         $vuetify.breakpoint.lg ||
@@ -16,7 +21,12 @@
       {{ title }}
     </h2>
     <h2
-      style="font-size: 26px; font-weight: 900; text-transform: uppercase; margin: 0;"
+      style="
+        font-size: 26px;
+        font-weight: 900;
+        text-transform: uppercase;
+        margin: 0;
+      "
       v-else-if="
         $vuetify.breakpoint.sm || ($vuetify.breakpoint.xs && mobileTitle)
       "
@@ -24,7 +34,12 @@
       {{ mobileTitle }}
     </h2>
     <h2
-      style="font-size: 26px; font-weight: 900; text-transform: uppercase; margin: 0;"
+      style="
+        font-size: 26px;
+        font-weight: 900;
+        text-transform: uppercase;
+        margin: 0;
+      "
       v-else
     >
       {{ title }}

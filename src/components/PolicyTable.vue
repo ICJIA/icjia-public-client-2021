@@ -63,7 +63,9 @@
           class="text-center"
         >
           <!-- {{ item.attachments[0].url }} -->
-          <v-icon color="blue" aria-label="Download policy document">mdi mdi-download-circle-outline</v-icon>
+          <v-icon color="blue" aria-label="Download policy document"
+            >mdi mdi-download-circle-outline</v-icon
+          >
         </div>
       </template>
 

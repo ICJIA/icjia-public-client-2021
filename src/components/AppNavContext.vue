@@ -9,67 +9,73 @@
         class=""
         height="35"
         style="background: #0a3a60; color: #fff; font-size: 15px"
-      :class="{
-        'text-left':
-          $vuetify.breakpoint.md ||
-          $vuetify.breakpoint.lg ||
-          $vuetify.breakpoint.xl,
-        'text-center': $vuetify.breakpoint.sm || $vuetify.breakpoint.xs,
-      }"
-    >
-      <!-- <v-spacer class="hidden-md-and-up"></v-spacer> -->
-      <span>
-        <span style="font-weight: 700" class="hover" role="link" tabindex="0" @click="$router.push('/')" @keydown.enter="$router.push('/')"
-          >ICJIA &nbsp;&raquo;&nbsp;</span
-        >
-        <span
-          style="font-weight: 700"
-          class="hover hidden-sm-and-down"
-          role="link"
-          tabindex="0"
-          @click="routeToPage(contextMenu[0].defaultPath)"
-          @keydown.enter="routeToPage(contextMenu[0].defaultPath)"
-        >
-          {{ contextMenu[0].label }}</span
-        >
-        <span
-          style="font-weight: 700"
-          class="hover hidden-md-and-up"
-          role="link"
-          tabindex="0"
-          @click="routeToPage(contextMenu[0].defaultPath)"
-          @keydown.enter="routeToPage(contextMenu[0].defaultPath)"
-        >
-          {{ contextMenu[0].shortLabel }}</span
-        >
-        <span
-          style="font-weight: 300"
-          class="hidden-sm-and-down"
-          v-if="contextTitle"
-          >&nbsp;&raquo;&nbsp;{{ contextTitle | truncate(8) }}
-        </span>
-      </span>
-      <v-spacer></v-spacer>
-      <v-btn
-        text
-        x-small
-        dark
-        @click="openTranslationModal()"
-        v-if="contextMenu[0].showTranslation"
-        aria-label="Translate this site on Google"
-      >
-        <v-icon
-          x-small
-          :left="
+        :class="{
+          'text-left':
             $vuetify.breakpoint.md ||
             $vuetify.breakpoint.lg ||
-            $vuetify.breakpoint.xl
-          "
-          >fas fa-globe</v-icon
+            $vuetify.breakpoint.xl,
+          'text-center': $vuetify.breakpoint.sm || $vuetify.breakpoint.xs,
+        }"
+      >
+        <!-- <v-spacer class="hidden-md-and-up"></v-spacer> -->
+        <span>
+          <span
+            style="font-weight: 700"
+            class="hover"
+            role="link"
+            tabindex="0"
+            @click="$router.push('/')"
+            @keydown.enter="$router.push('/')"
+            >ICJIA &nbsp;&raquo;&nbsp;</span
+          >
+          <span
+            style="font-weight: 700"
+            class="hover hidden-sm-and-down"
+            role="link"
+            tabindex="0"
+            @click="routeToPage(contextMenu[0].defaultPath)"
+            @keydown.enter="routeToPage(contextMenu[0].defaultPath)"
+          >
+            {{ contextMenu[0].label }}</span
+          >
+          <span
+            style="font-weight: 700"
+            class="hover hidden-md-and-up"
+            role="link"
+            tabindex="0"
+            @click="routeToPage(contextMenu[0].defaultPath)"
+            @keydown.enter="routeToPage(contextMenu[0].defaultPath)"
+          >
+            {{ contextMenu[0].shortLabel }}</span
+          >
+          <span
+            style="font-weight: 300"
+            class="hidden-sm-and-down"
+            v-if="contextTitle"
+            >&nbsp;&raquo;&nbsp;{{ contextTitle | truncate(8) }}
+          </span>
+        </span>
+        <v-spacer></v-spacer>
+        <v-btn
+          text
+          x-small
+          dark
+          @click="openTranslationModal()"
+          v-if="contextMenu[0].showTranslation"
+          aria-label="Translate this site on Google"
         >
-        <span class="hidden-sm-and-down">Translate this site</span>
-      </v-btn>
-      <!--       
+          <v-icon
+            x-small
+            :left="
+              $vuetify.breakpoint.md ||
+              $vuetify.breakpoint.lg ||
+              $vuetify.breakpoint.xl
+            "
+            >fas fa-globe</v-icon
+          >
+          <span class="hidden-sm-and-down">Translate this site</span>
+        </v-btn>
+        <!--       
       <v-btn text x-small dark aria-label="Share this page on Twitter"
         ><v-icon small>fab fa-twitter </v-icon></v-btn
       ><v-btn text x-small dark aria-label="Share this page on Facebook"
@@ -80,45 +86,50 @@
 
     <nav aria-label="Section navigation">
       <v-app-bar height="35" scroll-threshold="0" color="#eee">
-      <v-tabs
-        show-arrows
-        centered
-        v-model="contextTab"
-        center-active
-        height="35"
-        optional
-        class="context px-3"
-      >
-        <v-tabs-slider color="black"></v-tabs-slider>
-
-        <v-tab
-          style="background: #eee !important"
-          v-for="(item, index) in contextMenu[0].items"
-          :key="index"
-          @click="
-            item.path && item.path.length
-              ? routeToPage(item.path)
-              : fireEvent(item.event)
-          "
+        <v-tabs
+          show-arrows
+          centered
+          v-model="contextTab"
+          center-active
+          height="35"
+          optional
+          class="context px-3"
         >
-          {{ item.label }}
-          <v-icon v-if="item.icon" right small>{{ item.icon }}</v-icon>
-        </v-tab>
-        <v-menu v-if="more.length" bottom left>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn text class="align-self-center mr-4" v-bind="attrs" v-on="on">
-              more
-              <v-icon right> mdi-menu-down </v-icon>
-            </v-btn>
-          </template>
+          <v-tabs-slider color="black"></v-tabs-slider>
 
-          <v-list class="grey lighten-3">
-            <v-list-item v-for="item in more" :key="item">
-              {{ item }}
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </v-tabs>
+          <v-tab
+            style="background: #eee !important"
+            v-for="(item, index) in contextMenu[0].items"
+            :key="index"
+            @click="
+              item.path && item.path.length
+                ? routeToPage(item.path)
+                : fireEvent(item.event)
+            "
+          >
+            {{ item.label }}
+            <v-icon v-if="item.icon" right small>{{ item.icon }}</v-icon>
+          </v-tab>
+          <v-menu v-if="more.length" bottom left>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                text
+                class="align-self-center mr-4"
+                v-bind="attrs"
+                v-on="on"
+              >
+                more
+                <v-icon right> mdi-menu-down </v-icon>
+              </v-btn>
+            </template>
+
+            <v-list class="grey lighten-3">
+              <v-list-item v-for="item in more" :key="item">
+                {{ item }}
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-tabs>
       </v-app-bar>
     </nav>
   </div>

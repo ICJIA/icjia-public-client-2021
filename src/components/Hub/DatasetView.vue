@@ -114,7 +114,9 @@
         </template>
       </BaseInfoBlock>
       <v-col class="text-center">
-        <v-btn @click="downloadHelper" aria-label="Download dataset">Download here</v-btn>
+        <v-btn @click="downloadHelper" aria-label="Download dataset"
+          >Download here</v-btn
+        >
       </v-col>
 
       <!-- <v-col class="text-center mt-5">

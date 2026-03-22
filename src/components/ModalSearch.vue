@@ -1,5 +1,10 @@
 <template>
-  <v-dialog v-model="searchModal" ref="searchTop" style="z-index: 999999" aria-label="Search ICJIA">
+  <v-dialog
+    v-model="searchModal"
+    ref="searchTop"
+    style="z-index: 999999"
+    aria-label="Search ICJIA"
+  >
     <v-card color="#eee" min-height="600" class="px-3 py-1">
       <v-card-title class="text-h5 grey lighten-2">
         Search ICJIA<v-spacer></v-spacer

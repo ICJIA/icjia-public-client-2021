@@ -70,8 +70,8 @@
             font-size: 22px;
           "
         >
-          {{ item.title }}</h2
-        >
+          {{ item.title }}
+        </h2>
         <span v-if="showLink">
           |
           <v-icon class="link" @click.stop.prevent="$router.push(item.fullPath)"

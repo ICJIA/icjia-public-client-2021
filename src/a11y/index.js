@@ -53,7 +53,10 @@ const fixCarouselArrows = function () {
     const buttons = carousel.querySelectorAll(".v-btn--icon");
     buttons.forEach((btn, index) => {
       if (!btn.getAttribute("aria-label")) {
-        btn.setAttribute("aria-label", index === 0 ? "Previous slide" : "Next slide");
+        btn.setAttribute(
+          "aria-label",
+          index === 0 ? "Previous slide" : "Next slide"
+        );
       }
     });
   });
@@ -120,7 +123,9 @@ const fixChipContrast = function () {
 
 // Fix heading order in CMS-rendered article/post bodies.
 // Finds heading skips (e.g. h2 → h4) and demotes to the correct level.
-const fixHeadingOrder = function (containerSelector = ".article-body, .markdown-body") {
+const fixHeadingOrder = function (
+  containerSelector = ".article-body, .markdown-body"
+) {
   const containers = document.querySelectorAll(containerSelector);
   containers.forEach((container) => {
     const headings = container.querySelectorAll("h1, h2, h3, h4, h5, h6");
@@ -181,7 +186,10 @@ const fixLinksInTextBlocks = function () {
   );
   links.forEach((link) => {
     const style = window.getComputedStyle(link);
-    if (style.textDecorationLine === "none" || style.textDecoration === "none") {
+    if (
+      style.textDecorationLine === "none" ||
+      style.textDecoration === "none"
+    ) {
       link.style.textDecoration = "underline";
     }
   });

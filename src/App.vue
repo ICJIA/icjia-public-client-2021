@@ -45,12 +45,9 @@
       @hook:mounted="fixA11y()"
       v-if="showFooter"
     ></AppFooter>
-    <div
-      aria-live="polite"
-      role="status"
-      class="sr-only"
-      id="route-announcer"
-    >{{ routeAnnouncement }}</div>
+    <div aria-live="polite" role="status" class="sr-only" id="route-announcer">
+      {{ routeAnnouncement }}
+    </div>
   </v-app>
 </template>
 

@@ -48,9 +48,14 @@
               v-for="(author, index) in item.authors"
               :key="index"
             >
-              <span @click.stop.prevent="search(author.title)" @keydown.enter.stop.prevent="search(author.title)" role="button" tabindex="0" class="author">{{
-                author.title
-              }}</span>
+              <span
+                @click.stop.prevent="search(author.title)"
+                @keydown.enter.stop.prevent="search(author.title)"
+                role="button"
+                tabindex="0"
+                class="author"
+                >{{ author.title }}</span
+              >
               <span v-if="index < item.authors.length - 2">, </span>
               <span v-if="index === item.authors.length - 2"> and </span>
             </span>
@@ -161,7 +166,11 @@
             | {{ item.start | dateFormatFull }} to
             {{ item.end | dateFormatFull }}
             &nbsp;
-            <v-chip dark x-small v-if="isItExpired(item.end)" color="grey darken-2"
+            <v-chip
+              dark
+              x-small
+              v-if="isItExpired(item.end)"
+              color="grey darken-2"
               >Expired</v-chip
             >
           </div>

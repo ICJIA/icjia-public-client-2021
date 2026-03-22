@@ -21,7 +21,11 @@
             <div>
               <v-tooltip right>
                 <template v-slot:activator="{ on, attrs }">
-                  <router-link to="/" aria-label="ICJIA Home" style="text-decoration: none;">
+                  <router-link
+                    to="/"
+                    aria-label="ICJIA Home"
+                    style="text-decoration: none"
+                  >
                     <img
                       src="/icjia-logo.png"
                       alt="ICJIA Home"
