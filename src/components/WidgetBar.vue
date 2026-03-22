@@ -5,8 +5,8 @@
     style="border-top: 1px solid #ccc !important"
     class="mb-0"
   >
-    <div
-      style="font-size: 26px; font-weight: 900; text-transform: uppercase"
+    <h2
+      style="font-size: 26px; font-weight: 900; text-transform: uppercase; margin: 0;"
       v-if="
         $vuetify.breakpoint.md ||
         $vuetify.breakpoint.lg ||
@@ -14,21 +14,21 @@
       "
     >
       {{ title }}
-    </div>
-    <div
-      style="font-size: 26px; font-weight: 900; text-transform: uppercase"
+    </h2>
+    <h2
+      style="font-size: 26px; font-weight: 900; text-transform: uppercase; margin: 0;"
       v-else-if="
         $vuetify.breakpoint.sm || ($vuetify.breakpoint.xs && mobileTitle)
       "
     >
       {{ mobileTitle }}
-    </div>
-    <div
-      style="font-size: 26px; font-weight: 900; text-transform: uppercase"
+    </h2>
+    <h2
+      style="font-size: 26px; font-weight: 900; text-transform: uppercase; margin: 0;"
       v-else
     >
       {{ title }}
-    </div>
+    </h2>
     <v-spacer></v-spacer>
     <v-menu v-if="menuItems && menuItems.length > 1">
       <template v-slot:activator="{ on, attrs }">

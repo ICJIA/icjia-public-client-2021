@@ -10,9 +10,9 @@
         </v-row>
         <v-row style="border-bottom: 1px solid #ccc">
           <v-col cols="12" md="6"
-            ><div style="font-size: 28px; font-weight: 900">
+            ><h2 style="font-size: 28px; font-weight: 900; margin: 0">
               Latest Articles
-            </div>
+            </h2>
           </v-col>
           <v-col cols="12" md="6" class="text-right" style="margin-top: 5px"
             ><v-btn outlined small to="/researchhub/articles/"
@@ -123,9 +123,9 @@
         <v-container class="markdown-body" style="margin-bottom: 25px">
           <v-row style="border-bottom: 1px solid #ccc" class="mb-10">
             <v-col cols="12" md="6"
-              ><div style="font-size: 28px; font-weight: 900">
+              ><h2 style="font-size: 28px; font-weight: 900; margin: 0">
                 Latest Web Applications
-              </div>
+              </h2>
             </v-col>
             <v-col cols="12" md="6" class="text-right" style="margin-top: 5px"
               ><v-btn outlined small to="/researchhub/apps/"
@@ -153,9 +153,9 @@
           </v-row>
           <v-row style="border-bottom: 1px solid #ccc" class="mb-10">
             <v-col cols="12" md="6"
-              ><div style="font-size: 28px; font-weight: 900">
+              ><h2 style="font-size: 28px; font-weight: 900; margin: 0">
                 Latest Datasets
-              </div>
+              </h2>
             </v-col>
             <v-col cols="12" md="6" class="text-right" style="margin-top: 5px"
               ><v-btn outlined small to="/researchhub/datasets/"
