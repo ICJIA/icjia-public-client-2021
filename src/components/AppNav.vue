@@ -28,7 +28,7 @@
 
       <v-toolbar-title
         class="hidden-sm-and-down"
-        ><router-link to="/" style="text-decoration: none; color: inherit;"><span style="font-weight: 900 !important" class="agency"
+        ><router-link to="/" style="text-decoration: none !important; color: #333 !important; background: none !important;"><span style="font-weight: 900 !important" class="agency"
           >ILLINOIS CRIMINAL JUSTICE INFORMATION AUTHORITY</span
         ></router-link></v-toolbar-title
       >
