@@ -56,7 +56,18 @@
 
 <script>
 // import { EventBus } from "@/event-bus";
-import { fixBlankTableHeadings, fixExpandButtons, fixCarouselArrows, fixTableRowKeyboard, fixFigureTabindex, fixChipContrast } from "@/a11y";
+import {
+  fixBlankTableHeadings,
+  fixExpandButtons,
+  fixCarouselArrows,
+  fixTableRowKeyboard,
+  fixFigureTabindex,
+  fixChipContrast,
+  fixHeadingOrder,
+  fixEmptyTableHeaders,
+  fixFootnoteTargetSize,
+  fixLinksInTextBlocks,
+} from "@/a11y";
 
 export default {
   watch: {
@@ -113,6 +124,16 @@ export default {
         fixTableRowKeyboard();
         fixFigureTabindex();
         fixChipContrast();
+        fixEmptyTableHeaders();
+        fixLinksInTextBlocks();
+        // Delayed fixes for CMS content that loads asynchronously
+        setTimeout(() => {
+          fixFigureTabindex();
+          fixHeadingOrder();
+          fixFootnoteTargetSize();
+          fixEmptyTableHeaders();
+          fixChipContrast();
+        }, 2000);
       });
     },
 

@@ -104,6 +104,75 @@ const fixChipContrast = function () {
   });
 };
 
+// Fix heading order in CMS-rendered article/post bodies.
+// Finds heading skips (e.g. h2 → h4) and demotes to the correct level.
+const fixHeadingOrder = function (containerSelector = ".article-body, .markdown-body") {
+  const containers = document.querySelectorAll(containerSelector);
+  containers.forEach((container) => {
+    const headings = container.querySelectorAll("h1, h2, h3, h4, h5, h6");
+    if (!headings.length) return;
+    let lastLevel = 0;
+    // Find the first heading level on the page to establish baseline
+    const pageH1 = document.querySelector("h1");
+    if (pageH1) lastLevel = 1;
+    headings.forEach((heading) => {
+      const currentLevel = parseInt(heading.tagName[1], 10);
+      const expectedMax = lastLevel + 1;
+      if (currentLevel > expectedMax && lastLevel > 0) {
+        // Replace with correct heading level
+        const newTag = document.createElement("h" + expectedMax);
+        newTag.innerHTML = heading.innerHTML;
+        // Copy attributes
+        for (const attr of heading.attributes) {
+          newTag.setAttribute(attr.name, attr.value);
+        }
+        heading.parentNode.replaceChild(newTag, heading);
+        lastLevel = expectedMax;
+      } else {
+        lastLevel = currentLevel;
+      }
+    });
+  });
+};
+
+// Fix empty table headers from CMS content
+const fixEmptyTableHeaders = function () {
+  const headers = document.querySelectorAll("th");
+  headers.forEach((th) => {
+    const text = th.textContent.trim();
+    if (!text || text === "") {
+      th.innerHTML = "<span class='sr-only'>Column header</span>";
+    }
+  });
+};
+
+// Fix footnote links that are too small for touch targets (< 24px)
+const fixFootnoteTargetSize = function () {
+  const footnoteLinks = document.querySelectorAll(
+    ".footnote-ref a, .footnote-backref, a[href^='#fn'], a[href^='#fnref']"
+  );
+  footnoteLinks.forEach((link) => {
+    link.style.display = "inline-block";
+    link.style.minWidth = "24px";
+    link.style.minHeight = "24px";
+    link.style.lineHeight = "24px";
+    link.style.textAlign = "center";
+  });
+};
+
+// Fix links in text blocks that rely only on color (add underline)
+const fixLinksInTextBlocks = function () {
+  const links = document.querySelectorAll(
+    ".v-card__text a, .markdown-body p a, .article-body a"
+  );
+  links.forEach((link) => {
+    const style = window.getComputedStyle(link);
+    if (style.textDecorationLine === "none" || style.textDecoration === "none") {
+      link.style.textDecoration = "underline";
+    }
+  });
+};
+
 export {
   fixButtonText,
   fixBlankTableHeadings,
@@ -113,4 +182,8 @@ export {
   fixTableRowKeyboard,
   fixFigureTabindex,
   fixChipContrast,
+  fixHeadingOrder,
+  fixEmptyTableHeaders,
+  fixFootnoteTargetSize,
+  fixLinksInTextBlocks,
 };
