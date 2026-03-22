@@ -204,6 +204,15 @@ const fixNavHeaderRoles = function () {
   });
 };
 
+// Fix Vuetify overlay container outside landmarks — mark as presentation
+// so it doesn't trigger the "region" best-practice rule.
+const fixOverlayContainer = function () {
+  const overlay = document.querySelector("body > .v-overlay-container");
+  if (overlay) {
+    overlay.setAttribute("role", "presentation");
+  }
+};
+
 export {
   fixButtonText,
   fixBlankTableHeadings,
@@ -218,4 +227,5 @@ export {
   fixFootnoteTargetSize,
   fixLinksInTextBlocks,
   fixNavHeaderRoles,
+  fixOverlayContainer,
 };
