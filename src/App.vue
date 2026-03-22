@@ -56,7 +56,7 @@
 
 <script>
 // import { EventBus } from "@/event-bus";
-import { fixBlankTableHeadings, fixExpandButtons, fixCarouselArrows } from "@/a11y";
+import { fixBlankTableHeadings, fixExpandButtons, fixCarouselArrows, fixTableRowKeyboard } from "@/a11y";
 
 export default {
   watch: {
@@ -110,6 +110,7 @@ export default {
         fixBlankTableHeadings();
         fixExpandButtons();
         fixCarouselArrows();
+        fixTableRowKeyboard();
       });
     },
 

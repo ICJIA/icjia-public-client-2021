@@ -38,11 +38,17 @@
                     alt="ICJIA Research Hub page splash image"
                     height="650"
                     class="hover"
+                    tabindex="0"
+                    role="link"
+                    :aria-label="'Read article: ' + article.title"
                     @click="
                       $router.push(`/researchhub/articles/${article.slug}`)
                     "
+                    @keydown.enter="
+                      $router.push(`/researchhub/articles/${article.slug}`)
+                    "
                   >
-                    <v-overlay absolute>
+                    <v-overlay absolute :opacity="0.7">
                       <div class="text-center px-5">
                         <div
                           class="text-center px-12"
@@ -63,9 +69,9 @@
                             </span>
                           </v-chip>
                           <div class="text-center hidden-sm-and-down" style="">
-                            <h3 style="font-size: 18px; font-weight: 300: ">
+                            <h2 style="font-size: 18px; font-weight: 300; color: #fff; ">
                               {{ article.date | format }}
-                            </h3>
+                            </h2>
                           </div>
                           <h1
                             class=""

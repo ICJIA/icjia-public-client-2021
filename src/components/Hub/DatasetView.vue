@@ -34,6 +34,9 @@
         <BasePropDisplay v-if="dataset.categories" name="Categories">
           <span
             @click.prevent.stop="categoryClick($event)"
+            @keydown.enter.prevent.stop="categoryClick($event)"
+            role="button"
+            tabindex="0"
             class="category"
             style="font-size: 14px"
             >{{ dataset.categories }}</span

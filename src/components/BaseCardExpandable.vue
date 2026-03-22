@@ -57,6 +57,11 @@
           @click.stop.prevent="
             openSearch === true ? search(item.title) : routeTo(item.fullPath)
           "
+          @keydown.enter.stop.prevent="
+            openSearch === true ? search(item.title) : routeTo(item.fullPath)
+          "
+          role="button"
+          tabindex="0"
           class="hover program-title"
           style="
             line-height: 1.3em;

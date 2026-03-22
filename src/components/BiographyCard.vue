@@ -26,7 +26,10 @@
             <template v-slot:activator="{ on, attrs }">
               <span
                 class="text-h5 author-name hover ml-3"
+                role="button"
+                tabindex="0"
                 @click.stop.prevent="search(item.fullName)"
+                @keydown.enter.stop.prevent="search(item.fullName)"
                 v-bind="attrs"
                 v-on="on"
                 >{{ item.fullName }}<span v-if="item.suffix">,&nbsp;</span

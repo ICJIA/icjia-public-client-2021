@@ -48,7 +48,7 @@
               v-for="(author, index) in item.authors"
               :key="index"
             >
-              <span @click.stop.prevent="search(author.title)" class="author">{{
+              <span @click.stop.prevent="search(author.title)" @keydown.enter.stop.prevent="search(author.title)" role="button" tabindex="0" class="author">{{
                 author.title
               }}</span>
               <span v-if="index < item.authors.length - 2">, </span>
@@ -78,6 +78,9 @@
                 v-if="item.unit && item.unit.title"
                 style="font-weight: 700"
                 @click.stop.prevent="search(item.unit.title)"
+                @keydown.enter.stop.prevent="search(item.unit.title)"
+                role="button"
+                tabindex="0"
               >
                 {{ item.unit.title }}&nbsp;|&nbsp;
               </span>

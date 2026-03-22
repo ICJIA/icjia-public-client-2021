@@ -18,20 +18,26 @@
     >
       <!-- <v-spacer class="hidden-md-and-up"></v-spacer> -->
       <span>
-        <span style="font-weight: 700" class="hover" @click="$router.push('/')"
+        <span style="font-weight: 700" class="hover" role="link" tabindex="0" @click="$router.push('/')" @keydown.enter="$router.push('/')"
           >ICJIA &nbsp;&raquo;&nbsp;</span
         >
         <span
           style="font-weight: 700"
           class="hover hidden-sm-and-down"
+          role="link"
+          tabindex="0"
           @click="routeToPage(contextMenu[0].defaultPath)"
+          @keydown.enter="routeToPage(contextMenu[0].defaultPath)"
         >
           {{ contextMenu[0].label }}</span
         >
         <span
           style="font-weight: 700"
           class="hover hidden-md-and-up"
+          role="link"
+          tabindex="0"
           @click="routeToPage(contextMenu[0].defaultPath)"
+          @keydown.enter="routeToPage(contextMenu[0].defaultPath)"
         >
           {{ contextMenu[0].shortLabel }}</span
         >
