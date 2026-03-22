@@ -149,7 +149,7 @@
 
 <script>
 import NProgress from "nprogress";
-import { fixExpandButtons } from "@/a11y";
+import { fixExpandButtons, fixNestedInteractive } from "@/a11y";
 import { getPublicationType } from "@/lib/utils";
 import { EventBus } from "@/event-bus";
 import _ from "lodash";
@@ -205,6 +205,7 @@ export default {
       console.log("paginate: ", newValue);
 
       setTimeout(fixExpandButtons, 2000);
+      setTimeout(fixNestedInteractive, 2000);
       console.log("a11y expand button: hacky fix (paginate)");
       this.$vuetify.goTo("#pubTable", { offset: 350 });
     },
@@ -213,6 +214,7 @@ export default {
 
       //TODO: This works for siteImprove a11y -- but need to adjust this hacky fix
       setTimeout(fixExpandButtons, 2000);
+      setTimeout(fixNestedInteractive, 2000);
       console.log("a11y expand button: hacky fix (original load)");
     },
   },

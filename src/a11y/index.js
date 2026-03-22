@@ -224,6 +224,21 @@ const fixOverlayContainer = function () {
   }
 };
 
+// Fix nested-interactive: Vuetify v-select in data-table footer renders
+// div[role="button"] wrapping a focusable <input>, which nests interactive controls.
+// Remove the role and clean up ARIA attributes that depend on it.
+const fixNestedInteractive = function () {
+  const selects = document.querySelectorAll(
+    'div[role="button"][aria-haspopup="listbox"]'
+  );
+  selects.forEach((el) => {
+    el.removeAttribute("role");
+    el.removeAttribute("aria-expanded");
+    el.removeAttribute("aria-haspopup");
+    el.removeAttribute("aria-owns");
+  });
+};
+
 export {
   fixButtonText,
   fixBlankTableHeadings,
@@ -239,4 +254,5 @@ export {
   fixLinksInTextBlocks,
   fixNavHeaderRoles,
   fixOverlayContainer,
+  fixNestedInteractive,
 };

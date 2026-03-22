@@ -4,19 +4,22 @@
       <h2 v-if="label && label.length" id="attachments">{{ label }}</h2>
       <h2 v-else class="" id="attachments">Attachments</h2>
     </div>
-    <div
+    <h3
       v-if="!useSecondLevelHeading"
       style="
         font-weight: 900;
         border-bottom: 1px solid #ccc;
         padding-bottom: 8px;
         text-transform: uppercase;
+        font-size: inherit;
+        margin: 0;
       "
       class="px-0"
+      id="attachments"
     >
-      <span v-if="label && label.length"> {{ label }}</span
-      ><span v-else class="" style="">Attachments</span>
-    </div>
+      <span v-if="label && label.length">{{ label }}</span>
+      <span v-else>Attachments</span>
+    </h3>
 
     <div class="">
       <v-data-table

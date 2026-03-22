@@ -21,11 +21,11 @@
             }}</span>
             | {{ item.publicationDate | format }}
           </div>
-          <div
-            style="font-size: 16px; font-weight: bold"
+          <h3
+            style="font-size: 16px; font-weight: bold; margin: 0"
             class="mt-2"
             v-html="item.title"
-          ></div>
+          ></h3>
         </div>
         <!-- ------------------------------------------------
            Hub Articles 
@@ -37,11 +37,11 @@
             </span>
             | {{ item.date | format }}
           </div>
-          <div
-            style="font-size: 16px; font-weight: bold"
+          <h3
+            style="font-size: 16px; font-weight: bold; margin: 0"
             class="mt-2"
             v-html="item.title"
-          ></div>
+          ></h3>
           <div v-if="item.authors" class="mt-1">
             <span
               style="font-size: 12px"
@@ -72,11 +72,11 @@
           </div> -->
 
           <div v-if="item.fullName" class="mt-1">
-            <span
-              style="font-size: 16px; font-weight: bold"
+            <h3
+              style="font-size: 16px; font-weight: bold; margin: 0"
               class=""
               v-html="item.fullName"
-            ></span>
+            ></h3>
 
             <div v-if="item.position">
               <span
@@ -107,11 +107,11 @@
             </span>
             | {{ item.publicationDate | format }}
           </div>
-          <div
-            style="font-size: 16px; font-weight: bold"
+          <h3
+            style="font-size: 16px; font-weight: bold; margin: 0"
             class="mt-2"
             v-html="item.title"
-          ></div>
+          ></h3>
         </div>
         <!-- ------------------------------------------------
            Events 
@@ -125,11 +125,11 @@
             | {{ item.start | dateFormatFull }}
             {{ getEndText(item.start, item.end, item.timed) }}
           </div>
-          <div
-            style="font-size: 16px; font-weight: bold"
+          <h3
+            style="font-size: 16px; font-weight: bold; margin: 0"
             class="mt-2"
             v-html="item.title"
-          ></div>
+          ></h3>
         </div>
 
         <!-- ------------------------------------------------
@@ -149,11 +149,11 @@
             | {{ item.start | dateFormatFull }}
             {{ getEndText(item.start, item.end, true) }}
           </div>
-          <div
-            style="font-size: 16px; font-weight: bold"
+          <h3
+            style="font-size: 16px; font-weight: bold; margin: 0"
             class="mt-2"
             v-html="item.title"
-          ></div>
+          ></h3>
         </div>
         <!-- ------------------------------------------------
            Funding 
@@ -174,11 +174,11 @@
               >Expired</v-chip
             >
           </div>
-          <div
-            style="font-size: 16px; font-weight: bold"
+          <h3
+            style="font-size: 16px; font-weight: bold; margin: 0"
             class="mt-2"
             v-html="item.title"
-          ></div>
+          ></h3>
         </div>
         <!-- ------------------------------------------------
            Page 
@@ -190,12 +190,12 @@
             </span>
             <v-spacer></v-spacer>
           </div>
-          <div
-            style="font-size: 16px; font-weight: bold"
+          <h3
+            style="font-size: 16px; font-weight: bold; margin: 0"
             class="mt-2"
             v-html="item.title"
             v-if="item.title"
-          ></div>
+          ></h3>
         </div>
         <!-- ------------------------------------------------
            Default 
@@ -206,12 +206,12 @@
               {{ item.contentType.toUpperCase() }}
             </span>
           </div>
-          <div
-            style="font-size: 16px; font-weight: bold"
+          <h3
+            style="font-size: 16px; font-weight: bold; margin: 0"
             class="mt-2"
             v-html="item.title"
             v-if="item.title"
-          ></div>
+          ></h3>
         </div>
       </div>
       <v-card-text

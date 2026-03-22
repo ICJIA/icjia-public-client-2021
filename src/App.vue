@@ -66,6 +66,7 @@ import {
   fixLinksInTextBlocks,
   fixNavHeaderRoles,
   fixOverlayContainer,
+  fixNestedInteractive,
 } from "@/a11y";
 
 export default {
@@ -127,6 +128,7 @@ export default {
         fixLinksInTextBlocks();
         fixNavHeaderRoles();
         fixOverlayContainer();
+        fixNestedInteractive();
         // Delayed fixes for CMS content that loads asynchronously
         setTimeout(() => {
           fixFigureTabindex();
@@ -136,6 +138,7 @@ export default {
           fixChipContrast();
           fixOverlayContainer();
           fixNavHeaderRoles();
+          fixNestedInteractive();
         }, 2000);
       });
     },

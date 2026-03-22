@@ -14,7 +14,7 @@
         <v-container
           ><v-row
             ><v-col>
-              <v-sheet
+              <h2
                 style="
                   background: #0d4474;
                   width: 100%;
@@ -22,10 +22,12 @@
                   color: #fff;
                   font-weight: 900;
                   font-size: 26px;
+                  margin: 0;
                 "
                 class="px-2 py-2"
-                >Rules</v-sheet
               >
+                Rules
+              </h2>
               <v-simple-table class="markdown-body">
                 <template v-slot:default>
                   <tbody>
@@ -47,7 +49,7 @@
         <v-container
           ><v-row
             ><v-col>
-              <v-sheet
+              <h2
                 style="
                   background: #0d4474;
                   width: 100%;
@@ -55,10 +57,13 @@
                   color: #fff;
                   font-weight: 900;
                   font-size: 26px;
+                  margin: 0;
                 "
                 class="px-2 py-2"
-                >Regulations</v-sheet
-              ><v-simple-table class="markdown-body">
+              >
+                Regulations
+              </h2>
+              <v-simple-table class="markdown-body">
                 <template v-slot:default>
                   <tbody>
                     <tr v-for="item in regulations" :key="item.title">
@@ -81,7 +86,7 @@
         <v-container
           ><v-row
             ><v-col>
-              <v-sheet
+              <h2
                 style="
                   background: #0d4474;
                   width: 100%;
@@ -89,10 +94,13 @@
                   color: #fff;
                   font-weight: 900;
                   font-size: 26px;
+                  margin: 0;
                 "
                 class="px-2 py-2"
-                >Policies</v-sheet
-              ><v-simple-table class="markdown-body">
+              >
+                Policies
+              </h2>
+              <v-simple-table class="markdown-body">
                 <template v-slot:default>
                   <tbody>
                     <tr v-for="item in policies" :key="item.title">
