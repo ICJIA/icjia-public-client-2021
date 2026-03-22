@@ -4,12 +4,11 @@
     style="border-bottom: 1px solid #fff; z-index: 10 !important"
     v-resize="resize"
   >
-    <v-app-bar
-      class=""
-      height="35"
-      role="navigation"
-      aria-label="Breadcrumb navigation"
-      style="background: #0a3a60; color: #fff; font-size: 15px"
+    <nav aria-label="Breadcrumb navigation">
+      <v-app-bar
+        class=""
+        height="35"
+        style="background: #0a3a60; color: #fff; font-size: 15px"
       :class="{
         'text-left':
           $vuetify.breakpoint.md ||
@@ -76,9 +75,11 @@
       ><v-btn text x-small dark aria-label="Share this page on Facebook"
         ><v-icon small>fab fa-facebook </v-icon></v-btn
       > -->
-    </v-app-bar>
+      </v-app-bar>
+    </nav>
 
-    <v-app-bar height="35" scroll-threshold="0" color="#eee" role="navigation" aria-label="Section navigation">
+    <nav aria-label="Section navigation">
+      <v-app-bar height="35" scroll-threshold="0" color="#eee">
       <v-tabs
         show-arrows
         centered
@@ -118,7 +119,8 @@
           </v-list>
         </v-menu>
       </v-tabs>
-    </v-app-bar>
+      </v-app-bar>
+    </nav>
   </div>
 </template>
 

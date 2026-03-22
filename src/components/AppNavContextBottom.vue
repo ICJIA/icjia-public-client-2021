@@ -1,39 +1,41 @@
 <template>
   <div style="border-top: 1px solid #ddd">
-    <v-app-bar height="35" scroll-threshold="0" color="#11568e" role="navigation" aria-label="Additional navigation">
-      <v-tabs
-        show-arrows
-        centered
-        v-model="contextTab"
-        center-active
-        height="35"
-        optional
-        dark
-        class="context px-3"
-      >
-        <v-tabs-slider color="white"></v-tabs-slider>
+    <nav aria-label="Additional navigation">
+      <v-app-bar height="35" scroll-threshold="0" color="#11568e">
+        <v-tabs
+          show-arrows
+          centered
+          v-model="contextTab"
+          center-active
+          height="35"
+          optional
+          dark
+          class="context px-3"
+        >
+          <v-tabs-slider color="white"></v-tabs-slider>
 
-        <v-tab
-          style="background: #11568e !important; color: #fff !important"
-          v-for="(item, index) in contextMenu[0].items"
-          :key="index"
-          @click="
-            item.path && item.path.length
-              ? routeToPage(item.path)
-              : fireEvent(item.event)
-          "
-        >
-          {{ item.label }}
-          <v-icon v-if="item.icon" right small>{{ item.icon }}</v-icon>
-        </v-tab>
-        <v-tab
-          style="background: #11568e !important; color: #fff !important"
-          @click.stop.prevent="routeToPage('/search')"
-        >
-          Search</v-tab
-        >
-      </v-tabs>
-    </v-app-bar>
+          <v-tab
+            style="background: #11568e !important; color: #fff !important"
+            v-for="(item, index) in contextMenu[0].items"
+            :key="index"
+            @click="
+              item.path && item.path.length
+                ? routeToPage(item.path)
+                : fireEvent(item.event)
+            "
+          >
+            {{ item.label }}
+            <v-icon v-if="item.icon" right small>{{ item.icon }}</v-icon>
+          </v-tab>
+          <v-tab
+            style="background: #11568e !important; color: #fff !important"
+            @click.stop.prevent="routeToPage('/search')"
+          >
+            Search</v-tab
+          >
+        </v-tabs>
+      </v-app-bar>
+    </nav>
   </div>
 </template>
 
