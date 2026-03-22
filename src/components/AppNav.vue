@@ -1,43 +1,36 @@
 <template>
   <div>
     <v-app-bar fixed app color="white" height="90" style="z-index: 50">
-      <div
+      <button
         class="hover hamburger text-center hidden-md-and-up"
-        style="margin-left: -10px"
+        style="margin-left: -10px; background: none; border: none; cursor: pointer;"
         @click="toggleSidebar()"
+        aria-label="Open navigation menu"
+        :aria-expanded="sidebarOpen ? 'true' : 'false'"
       >
         <span class="v-icon mdi mdi-menu"></span>
         <div style="font-size: 10px; font-weight: 900">MENU</div>
-      </div>
+      </button>
 
       <v-spacer
         v-if="$vuetify.breakpoint.sm || $vuetify.breakpoint.xs"
       ></v-spacer>
-      <v-img
-        alt="ICJIA Logo"
-        class="shrink mr-3 hover"
-        contain
-        :src="require('@/assets/icjia-logo.png')"
-        transition="scale-transition"
-        width="90"
-        style
-        @click="
-          $router.push('/').catch((err) => {
-            $vuetify.goTo(0);
-          })
-        "
-      />
+      <router-link to="/" aria-label="ICJIA Home" style="text-decoration: none;">
+        <v-img
+          alt="ICJIA Logo"
+          class="shrink mr-3"
+          contain
+          :src="require('@/assets/icjia-logo.png')"
+          transition="scale-transition"
+          width="90"
+        />
+      </router-link>
 
       <v-toolbar-title
-        class="hover hidden-sm-and-down"
-        @click="
-          $router.push('/').catch((err) => {
-            $vuetify.goTo(0);
-          })
-        "
-        ><span style="font-weight: 900 !important" class="agency"
+        class="hidden-sm-and-down"
+        ><router-link to="/" style="text-decoration: none; color: inherit;"><span style="font-weight: 900 !important" class="agency"
           >ILLINOIS CRIMINAL JUSTICE INFORMATION AUTHORITY</span
-        ></v-toolbar-title
+        ></router-link></v-toolbar-title
       >
 
       <v-spacer></v-spacer>
@@ -163,6 +156,7 @@ export default {
   },
   data() {
     return {
+      sidebarOpen: false,
       drawer: false,
       title: "Default Page Title",
       items: [
@@ -203,6 +197,9 @@ export default {
     };
   },
   mounted() {
+    EventBus.$on("sidebarToggled", (state) => {
+      this.sidebarOpen = state;
+    });
     EventBus.$on("searchMounted", () => {
       console.log("search mounted");
     });

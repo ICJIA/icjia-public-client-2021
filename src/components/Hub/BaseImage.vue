@@ -1,6 +1,7 @@
 <template>
   <v-img
     :src="src"
+    :alt="alt"
     :aspect-ratio="horizontal ? undefined : 2"
     :max-width="horizontal ? 200 : undefined"
   >
@@ -22,6 +23,10 @@ export default {
     src: {
       type: String,
       default: null,
+    },
+    alt: {
+      type: String,
+      default: "",
     },
   },
 };

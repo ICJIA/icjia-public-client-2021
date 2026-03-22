@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card
-      @click="$router.push(`/about/biographies/${item.slug}`)"
+      :to="`/about/biographies/${item.slug}`"
       elevation="1"
       class="mb-2 py-8 px-2"
       style="border: 1px solid #ddd"
@@ -18,6 +18,7 @@
           <v-img
             :src="`https://agency.icjia-api.cloud${item.headshot.formats.thumbnail.url}`"
             :lazy-src="`https://agency.icjia-api.cloud${item.headshot.formats.thumbnail.url}`"
+            :alt="item.fullName + ' headshot'"
           ></v-img>
         </v-avatar>
         <span>

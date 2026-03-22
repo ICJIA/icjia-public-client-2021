@@ -118,6 +118,7 @@ export default {
     EventBus.$on("toggleSidebar", () => {
       console.log("sidebar toggled");
       this.drawer = !this.drawer;
+      EventBus.$emit("sidebarToggled", this.drawer);
     });
   },
 };

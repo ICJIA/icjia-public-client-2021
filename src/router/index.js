@@ -67,6 +67,8 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   NProgress.start();
+  const main = document.querySelector(".v-main");
+  if (main) main.setAttribute("aria-busy", "true");
   document.body.setAttribute("tabindex", "-1");
   document.body.focus();
   document.body.removeAttribute("tabindex");
@@ -85,6 +87,8 @@ router.beforeEach((to, from, next) => {
 router.afterEach((routeTo, routeFrom) => {
   EventBus.$emit("show-footer");
   NProgress.done();
+  const main = document.querySelector(".v-main");
+  if (main) main.removeAttribute("aria-busy");
 });
 
 export default router;

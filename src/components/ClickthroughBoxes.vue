@@ -14,6 +14,10 @@
             :key="index"
             :color="getBoxColor(index)"
             @click="routeToURL(box.url)"
+            tabindex="0"
+            role="link"
+            :aria-label="box.title"
+            @keydown.enter="routeToURL(box.url)"
             :class="{
               'flex-item-3': boxesPerRow === 3,
               'flex-item-2': boxesPerRow === 2,

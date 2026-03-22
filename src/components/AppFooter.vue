@@ -21,20 +21,16 @@
             <div>
               <v-tooltip right>
                 <template v-slot:activator="{ on, attrs }">
-                  <img
-                    src="/icjia-logo.png"
-                    alt="Footer logo"
-                    v-bind="attrs"
-                    v-on="on"
-                    width="100"
-                    style="border: 0px solid #ddd; display: inline"
-                    class="hover"
-                    @click="
-                      $router.push('/').catch((err) => {
-                        $vuetify.goTo(0);
-                      })
-                    "
-                  />
+                  <router-link to="/" aria-label="ICJIA Home" style="text-decoration: none;">
+                    <img
+                      src="/icjia-logo.png"
+                      alt="ICJIA Home"
+                      v-bind="attrs"
+                      v-on="on"
+                      width="100"
+                      style="border: 0px solid #ddd; display: inline"
+                    />
+                  </router-link>
                 </template>
                 <span>Illinois Criminal Justice Information Authority</span>
               </v-tooltip>

@@ -22,8 +22,13 @@
         </v-row>
       </v-container>
       <div v-if="!hubLoading">
-        <v-carousel height="650" :cycle="true">
-          <v-carousel-item v-for="(article, i) in articles" :key="i">
+        <v-carousel height="650" :cycle="true" aria-label="Latest research articles slideshow">
+          <v-carousel-item
+            v-for="(article, i) in articles"
+            :key="i"
+            aria-roledescription="slide"
+            :aria-label="'Slide ' + (i + 1) + ': ' + article.title"
+          >
             <v-card height="100%">
               <v-row no-gutters>
                 <v-col md="12" cols="12">

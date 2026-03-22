@@ -4,7 +4,7 @@
     class="pa-2 card py-8 px-3 mx-1"
     outlined
     min-width="300px"
-    @click.prevent="$router.push(item.fullPath)"
+    :to="item.fullPath"
   >
     <v-card-text>
       <span>
@@ -22,7 +22,12 @@
       <span
         style="font-weight: 700"
         class="category"
+        role="button"
+        tabindex="0"
         @click.stop.prevent="
+          search(getProperCategory($myApp.config.maps.news, item.category))
+        "
+        @keydown.enter.stop.prevent="
           search(getProperCategory($myApp.config.maps.news, item.category))
         "
         >{{
@@ -42,7 +47,7 @@
     >
     <v-card-text
       v-if="item.authors"
-      style="font-weight: 700; color: #888; font-size: 12px; margin-top: -25px"
+      style="font-weight: 700; color: #595959; font-size: 12px; margin-top: -25px"
       >{{ displayAuthors(item.authors) }}</v-card-text
     >
     <div v-if="item.splash">

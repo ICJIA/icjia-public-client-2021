@@ -33,6 +33,7 @@
             v-if="article.mainfile"
             class="article-download"
             @click="downloadHelper('main')"
+            :aria-label="'Download ' + (article.mainfiletype || 'article')"
           >
             <template>{{ article.mainfiletype }}</template>
             <v-icon>mdi-download</v-icon>
@@ -42,6 +43,7 @@
             v-if="article.extrafile"
             class="article-download"
             @click="downloadHelper('extra')"
+            aria-label="Download appendix"
           >
             <template>{{ "appendix" }}</template>
             <v-icon>mdi-download</v-icon>

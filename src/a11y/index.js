@@ -47,9 +47,39 @@ const fixExpandButtons = function (
   }
 };
 
+const fixCarouselArrows = function () {
+  const carousels = document.querySelectorAll(".v-carousel");
+  carousels.forEach((carousel) => {
+    const buttons = carousel.querySelectorAll(".v-btn--icon");
+    buttons.forEach((btn, index) => {
+      if (!btn.getAttribute("aria-label")) {
+        btn.setAttribute("aria-label", index === 0 ? "Previous slide" : "Next slide");
+      }
+    });
+  });
+};
+
+const fixTableRowKeyboard = function () {
+  const rows = document.querySelectorAll(".v-data-table tbody tr");
+  rows.forEach((row) => {
+    if (row.querySelector("td") && !row.getAttribute("tabindex")) {
+      row.setAttribute("tabindex", "0");
+      row.setAttribute("role", "button");
+      row.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          row.click();
+        }
+      });
+    }
+  });
+};
+
 export {
   fixButtonText,
   fixBlankTableHeadings,
   fixNuxtContentHeadings,
   fixExpandButtons,
+  fixCarouselArrows,
+  fixTableRowKeyboard,
 };

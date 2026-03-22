@@ -45,7 +45,7 @@
       </template>
 
       <template v-slot:item.category="{ item }">
-        <div style="font-size: 14px; font-weight: 700; color: #888">
+        <div style="font-size: 14px; font-weight: 700; color: #595959">
           {{ getCleanCategory(item.category) }}
         </div>
       </template>
@@ -57,13 +57,13 @@
           style="
             font-size: 14px;
             font-weight: 700;
-            color: #888;
+            color: #595959;
             margin-left: -20px;
           "
           class="text-center"
         >
           <!-- {{ item.attachments[0].url }} -->
-          <v-icon color="blue">mdi mdi-download-circle-outline</v-icon>
+          <v-icon color="blue" aria-label="Download policy document">mdi mdi-download-circle-outline</v-icon>
         </div>
       </template>
 
@@ -94,6 +94,7 @@
             v-model="search"
             append-icon="mdi-magnify"
             label="Search"
+            aria-label="Search policies"
             single-line
             hide-details
           ></v-text-field>

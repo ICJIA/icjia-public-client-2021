@@ -62,7 +62,7 @@
           style="
             font-size: 14px;
             font-weight: 700;
-            color: #888;
+            color: #595959;
             margin-left: -20px;
           "
           class="text-center"
@@ -112,6 +112,7 @@
             v-model="search"
             append-icon="mdi-magnify"
             label="Search"
+            aria-label="Search required forms"
             single-line
             hide-details
           ></v-text-field>

@@ -5,7 +5,7 @@
     outlined
     :min-height="orientation === 'grid' ? 400 : null"
     :height="cardHeight"
-    @click.prevent="$router.push(item.fullPath)"
+    :to="item.fullPath"
     style="width: 100%"
   >
     <v-card-text
@@ -32,7 +32,7 @@
     >
     <v-card-text
       v-if="item.authors"
-      style="font-weight: 700; color: #222; font-size: 12px; margin-top: -40px"
+      style="font-weight: 700; color: #333; font-size: 12px; margin-top: -40px"
       >{{ displayAuthors(item.authors) }}</v-card-text
     >
 
@@ -146,7 +146,10 @@
           :key="index"
           class="mr-1 category"
           style=""
+          role="button"
+          tabindex="0"
           @click.prevent.stop="categoryClick($event)"
+          @keydown.enter.prevent.stop="categoryClick($event)"
           >{{ category.toUpperCase() }}</span
         >
       </BasePropDisplay>

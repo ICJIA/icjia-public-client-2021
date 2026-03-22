@@ -4,6 +4,9 @@
       :elevation="elevation"
       class="pt-8 px-3"
       @click="isClickable ? routeTo(item.fullPath) : null"
+      :tabindex="isClickable ? 0 : undefined"
+      :role="isClickable ? 'link' : undefined"
+      @keydown.enter="isClickable ? routeTo(item.fullPath) : null"
       color="#fff"
       style="border: 1px solid #ddd"
       :class="{ card: isClickable }"
@@ -79,7 +82,7 @@
 
         <span v-if="showLink">
           |
-          <v-icon class="link" @click.stop.prevent="$router.push(item.fullPath)"
+          <v-icon class="link" aria-label="Go to job posting" @click.stop.prevent="$router.push(item.fullPath)"
             >link</v-icon
           ></span
         >

@@ -6,8 +6,14 @@
       show-arrows-on-hover
       hide-delimiters
       style="border-bottom: 1px solid #d8d8d8; margin-top: -15px"
+      aria-label="Featured content slideshow"
     >
-      <v-carousel-item v-for="(slide, index) in slider.slide" :key="index">
+      <v-carousel-item
+        v-for="(slide, index) in slider.slide"
+        :key="index"
+        aria-roledescription="slide"
+        :aria-label="'Slide ' + (index + 1) + ': ' + slide.title"
+      >
         <v-card color="grey lighten-4" height="100%">
           <v-row class="fill-height" align="center" justify="center" no-gutters>
             <v-col md="12" cols="12">
@@ -144,6 +150,7 @@
                     <v-progress-circular
                       indeterminate
                       color="grey lighten-5"
+                      aria-label="Loading image"
                     ></v-progress-circular>
                   </v-row>
                 </template>

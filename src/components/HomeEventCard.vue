@@ -5,7 +5,7 @@
       style="overflow-y: auto; background: #fff"
       elevation="1"
       height="100%"
-      @click="$router.push(event.fullPath)"
+      :to="event.fullPath"
     >
       <v-container fluid>
         <v-row no-gutters>

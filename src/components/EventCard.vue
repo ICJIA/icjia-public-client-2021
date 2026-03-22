@@ -6,6 +6,9 @@
       class="mb-5"
       elevation="1"
       @click="isClickable ? $router.push(item.fullPath) : null"
+      :tabindex="isClickable ? 0 : undefined"
+      :role="isClickable ? 'link' : undefined"
+      @keydown.enter="isClickable ? $router.push(item.fullPath) : null"
     >
       <v-toolbar :color="item.color" dark elevation="0">
         <v-toolbar-title

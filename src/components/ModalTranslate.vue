@@ -4,6 +4,7 @@
     ref="translateTop"
     style="z-index: 999999"
     width="60%"
+    aria-label="Translation options"
   >
     <v-card class="">
       <v-card-title class="text-h5 grey lighten-2">

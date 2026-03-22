@@ -103,6 +103,7 @@
             v-model="search"
             append-icon="mdi-magnify"
             label="Search"
+            aria-label="Search meetings"
             single-line
             hide-details
           ></v-text-field>

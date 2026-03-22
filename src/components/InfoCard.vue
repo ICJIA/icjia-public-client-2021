@@ -2,7 +2,7 @@
   <div>
     <v-card
       outlined
-      @click="$router.push(item.fullPath)"
+      :to="item.fullPath"
       elevation="1"
       color="#fff"
       class="px-3 py-3 card"

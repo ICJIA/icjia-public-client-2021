@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="searchModal" ref="searchTop" style="z-index: 999999">
+  <v-dialog v-model="searchModal" ref="searchTop" style="z-index: 999999" aria-label="Search ICJIA">
     <v-card color="#eee" min-height="600" class="px-3 py-1">
       <v-card-title class="text-h5 grey lighten-2">
         Search ICJIA<v-spacer></v-spacer
@@ -19,7 +19,7 @@
             style="font-weight: 900"
           />
 
-          <div style="font-size: 12px" class="mb-9 d-flex">
+          <div style="font-size: 12px" class="mb-9 d-flex" aria-live="polite">
             <span style="font-weight: 900" v-if="query && query.length">
               Displaying {{ queryResults.length }} result{{
                 resultNumber

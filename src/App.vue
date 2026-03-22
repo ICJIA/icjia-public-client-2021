@@ -45,11 +45,18 @@
       @hook:mounted="fixA11y()"
       v-if="showFooter"
     ></AppFooter>
+    <div
+      aria-live="polite"
+      role="status"
+      class="sr-only"
+      id="route-announcer"
+    >{{ routeAnnouncement }}</div>
   </v-app>
 </template>
 
 <script>
 // import { EventBus } from "@/event-bus";
+import { fixBlankTableHeadings, fixExpandButtons, fixCarouselArrows } from "@/a11y";
 
 export default {
   watch: {
@@ -59,6 +66,7 @@ export default {
       this.checkForDisclaimer();
       this.getBottomContextMenu();
       this.fixA11y();
+      this.announceRoute();
     },
   },
   name: "App",
@@ -74,6 +82,7 @@ export default {
       disclaimer: null,
       showFooter: null,
       bottomContextMenu: null,
+      routeAnnouncement: "",
     };
   },
 
@@ -86,13 +95,22 @@ export default {
       });
       this.bottomContextMenu = bottomContextMenu;
     },
+    announceRoute() {
+      setTimeout(() => {
+        this.routeAnnouncement = document.title;
+      }, 300);
+    },
     displayFooter() {
       this.$nextTick(() => {
         this.showFooter = true;
       });
     },
     fixA11y() {
-      //console.log("a11y fixes.");
+      this.$nextTick(() => {
+        fixBlankTableHeadings();
+        fixExpandButtons();
+        fixCarouselArrows();
+      });
     },
 
     checkForDisclaimer() {
