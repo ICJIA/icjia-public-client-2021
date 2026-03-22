@@ -86,7 +86,7 @@ test.describe("Navigation", () => {
 
   test("search button is present and clickable", async ({ page }) => {
     await page.goto("/");
-    const searchBtn = page.locator('[aria-label="Search ICJIA"]');
+    const searchBtn = page.locator('button[aria-label="Search ICJIA"]');
     await expect(searchBtn).toBeVisible();
     await searchBtn.click();
     // Search modal should appear
@@ -194,7 +194,7 @@ test.describe("Research Hub", () => {
 test.describe("Search Modal", () => {
   test("opens and accepts input", async ({ page }) => {
     await page.goto("/");
-    const searchBtn = page.locator('[aria-label="Search ICJIA"]');
+    const searchBtn = page.locator('button[aria-label="Search ICJIA"]');
     await searchBtn.click();
     const dialog = page.locator(".v-dialog--active");
     await expect(dialog).toBeVisible();
@@ -211,7 +211,7 @@ test.describe("Search Modal", () => {
 
   test("close button works", async ({ page }) => {
     await page.goto("/");
-    const searchBtn = page.locator('[aria-label="Search ICJIA"]');
+    const searchBtn = page.locator('button[aria-label="Search ICJIA"]');
     await searchBtn.click();
     const dialog = page.locator(".v-dialog--active");
     await expect(dialog).toBeVisible();
