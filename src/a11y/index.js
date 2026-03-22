@@ -88,18 +88,32 @@ const fixFigureTabindex = function () {
 
 // Fix grey v-chip contrast — Vuetify "grey" chips with white text fail AA
 const fixChipContrast = function () {
-  const chips = document.querySelectorAll(
-    ".v-chip.grey, .v-chip.grey--text"
-  );
+  const chips = document.querySelectorAll(".v-chip");
   chips.forEach((chip) => {
     const content = chip.querySelector(".v-chip__content");
-    if (content) {
-      const style = window.getComputedStyle(content);
-      const bg = window.getComputedStyle(chip).backgroundColor;
-      // If background is light grey and text is white, darken text
-      if (bg && content.style) {
-        content.style.color = "#333";
-      }
+    if (!content) return;
+    const bg = window.getComputedStyle(chip).backgroundColor;
+    const fg = window.getComputedStyle(content).color;
+    // Parse rgb values
+    const parseBg = bg.match(/\d+/g);
+    const parseFg = fg.match(/\d+/g);
+    if (!parseBg || !parseFg) return;
+    // Calculate relative luminance
+    const lum = (r, g, b) => {
+      const [rs, gs, bs] = [r, g, b].map((c) => {
+        c = c / 255;
+        return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+      });
+      return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+    };
+    const bgLum = lum(+parseBg[0], +parseBg[1], +parseBg[2]);
+    const fgLum = lum(+parseFg[0], +parseFg[1], +parseFg[2]);
+    const ratio =
+      (Math.max(bgLum, fgLum) + 0.05) / (Math.min(bgLum, fgLum) + 0.05);
+    // If contrast ratio fails AA (< 4.5:1), fix it
+    if (ratio < 4.5) {
+      // Dark background → ensure white text; light background → ensure dark text
+      content.style.color = bgLum < 0.5 ? "#fff" : "#111";
     }
   });
 };
