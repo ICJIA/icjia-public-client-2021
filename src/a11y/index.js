@@ -75,6 +75,35 @@ const fixTableRowKeyboard = function () {
   });
 };
 
+// Fix positive tabindex on figures from markdown-it-implicit-figures
+const fixFigureTabindex = function () {
+  const figures = document.querySelectorAll("figure[tabindex]");
+  figures.forEach((fig) => {
+    const val = parseInt(fig.getAttribute("tabindex"), 10);
+    if (val > 0) {
+      fig.setAttribute("tabindex", "0");
+    }
+  });
+};
+
+// Fix grey v-chip contrast — Vuetify "grey" chips with white text fail AA
+const fixChipContrast = function () {
+  const chips = document.querySelectorAll(
+    ".v-chip.grey, .v-chip.grey--text"
+  );
+  chips.forEach((chip) => {
+    const content = chip.querySelector(".v-chip__content");
+    if (content) {
+      const style = window.getComputedStyle(content);
+      const bg = window.getComputedStyle(chip).backgroundColor;
+      // If background is light grey and text is white, darken text
+      if (bg && content.style) {
+        content.style.color = "#333";
+      }
+    }
+  });
+};
+
 export {
   fixButtonText,
   fixBlankTableHeadings,
@@ -82,4 +111,6 @@ export {
   fixExpandButtons,
   fixCarouselArrows,
   fixTableRowKeyboard,
+  fixFigureTabindex,
+  fixChipContrast,
 };

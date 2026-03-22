@@ -161,7 +161,7 @@
             | {{ item.start | dateFormatFull }} to
             {{ item.end | dateFormatFull }}
             &nbsp;
-            <v-chip dark x-small v-if="isItExpired(item.end)" color="grey"
+            <v-chip dark x-small v-if="isItExpired(item.end)" color="grey darken-2"
               >Expired</v-chip
             >
           </div>
