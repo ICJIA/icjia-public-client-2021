@@ -206,10 +206,21 @@ const fixNavHeaderRoles = function () {
 
 // Fix Vuetify overlay container outside landmarks — mark as presentation
 // so it doesn't trigger the "region" best-practice rule.
+// Uses MutationObserver to catch overlays created after initial render.
 const fixOverlayContainer = function () {
-  const overlay = document.querySelector("body > .v-overlay-container");
-  if (overlay) {
-    overlay.setAttribute("role", "presentation");
+  const fix = () => {
+    const overlays = document.querySelectorAll(
+      "body > .v-overlay-container:not([role])"
+    );
+    overlays.forEach((overlay) => {
+      overlay.setAttribute("role", "presentation");
+    });
+  };
+  fix();
+  // Watch for Vuetify adding overlay containers to body
+  if (!window._overlayObserver) {
+    window._overlayObserver = new MutationObserver(fix);
+    window._overlayObserver.observe(document.body, { childList: true });
   }
 };
 

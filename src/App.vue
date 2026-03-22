@@ -200,6 +200,7 @@ export default {
     this.checkForTopContextMenu();
     this.getBottomContextMenu();
     this.checkForDisclaimer();
+    this.fixA11y();
   },
   async created() {},
 };
