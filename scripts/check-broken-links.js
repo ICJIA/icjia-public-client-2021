@@ -23,7 +23,8 @@ const http = require("http");
 const https = require("https");
 
 const BASE_URL = "http://localhost:8080";
-const API_DIR = path.join(__dirname, "public", "api");
+const PROJECT_ROOT = path.join(__dirname, "..");
+const API_DIR = path.join(PROJECT_ROOT, "public", "api");
 const DEFAULT_SAMPLE = 5;
 const CONCURRENT_CHECKS = 10;
 const LINK_TIMEOUT = 10000;
@@ -367,7 +368,7 @@ async function main() {
 
   // Generate CSV
   const ts = new Date().toISOString().replace(/[:.]/g, "-").substring(0, 19);
-  const csvFile = path.join(__dirname, `broken-links-report-${ts}.csv`);
+  const csvFile = path.join(PROJECT_ROOT, "reports", `broken-links-report-${ts}.csv`);
 
   const csvHeader =
     "Broken URL,Status Code,Error,Link Text,Content Type,Source Page(s),Redirect To\n";

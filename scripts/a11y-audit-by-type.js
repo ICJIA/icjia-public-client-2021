@@ -17,8 +17,9 @@ const fs = require("fs-extra");
 const path = require("path");
 
 const BASE_URL = "http://localhost:8080";
-const API_DIR = path.join(__dirname, "public", "api");
-const OUTPUT_DIR = path.join(__dirname, "accessibility-audit-results");
+const PROJECT_ROOT = path.join(__dirname, "..");
+const API_DIR = path.join(PROJECT_ROOT, "public", "api");
+const OUTPUT_DIR = path.join(PROJECT_ROOT, "reports", "accessibility-audit-results");
 
 // WCAG 2.1 AA target + best practices + Section 508 (no AAA)
 const AXE_OPTIONS = {

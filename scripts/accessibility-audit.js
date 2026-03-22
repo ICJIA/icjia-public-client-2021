@@ -16,7 +16,7 @@ const path = require("path");
 
 // Configuration
 const BASE_URL = "http://localhost:8080";
-const OUTPUT_DIR = "./accessibility-audit-results";
+const OUTPUT_DIR = path.join(__dirname, "..", "reports", "accessibility-audit-results");
 const TIMESTAMP = new Date().toISOString().replace(/[:.]/g, "-");
 
 // Pages to test - comprehensive list of key pages

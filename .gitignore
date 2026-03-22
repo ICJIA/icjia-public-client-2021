@@ -47,3 +47,13 @@ public/employment-json1.json
 public/searchIndex.json
 public/sitemap.xml
 .codegpt
+
+# Generated reports (timestamped)
+reports/accessibility-audit-results/
+reports/broken-links-report-*.csv
+
+# Test artifacts
+test-results/
+
+# Large generated files
+repomix-output.xml
