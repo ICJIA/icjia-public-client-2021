@@ -65,19 +65,19 @@
         </div>
       </div>
       <div style="margin-top: -30px">
-        <span
+        <h2
           @click.stop.prevent="
             openSearch === true ? search(item.title) : routeTo(item.fullPath)
           "
           class="hover program-title"
           style="
             line-height: 1.3em;
-
+            margin: 0;
             font-weight: 900;
             font-size: 22px;
           "
         >
-          {{ item.title }}</span
+          {{ item.title }}</h2
         >
 
         <span v-if="showLink">
