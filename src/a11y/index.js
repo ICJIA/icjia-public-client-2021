@@ -187,6 +187,15 @@ const fixLinksInTextBlocks = function () {
   });
 };
 
+// Fix Vuetify v-app-bar <header> inside <nav> — set role="presentation"
+// so the implicit banner role doesn't conflict with the nav landmark.
+const fixNavHeaderRoles = function () {
+  const headers = document.querySelectorAll("nav[aria-label] > header");
+  headers.forEach((header) => {
+    header.setAttribute("role", "presentation");
+  });
+};
+
 export {
   fixButtonText,
   fixBlankTableHeadings,
@@ -200,4 +209,5 @@ export {
   fixEmptyTableHeaders,
   fixFootnoteTargetSize,
   fixLinksInTextBlocks,
+  fixNavHeaderRoles,
 };

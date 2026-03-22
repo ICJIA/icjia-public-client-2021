@@ -67,6 +67,7 @@ import {
   fixEmptyTableHeaders,
   fixFootnoteTargetSize,
   fixLinksInTextBlocks,
+  fixNavHeaderRoles,
 } from "@/a11y";
 
 export default {
@@ -126,6 +127,7 @@ export default {
         fixChipContrast();
         fixEmptyTableHeaders();
         fixLinksInTextBlocks();
+        fixNavHeaderRoles();
         // Delayed fixes for CMS content that loads asynchronously
         setTimeout(() => {
           fixFigureTabindex();
