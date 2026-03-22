@@ -5,6 +5,7 @@
         <v-container style="margin-top: -15px">
           <v-row v-if="job">
             <v-col cols="12">
+              <h1 class="sr-only">{{ job.title }}</h1>
               <JobCard
                 :item="job"
                 :summaryOnly="false"

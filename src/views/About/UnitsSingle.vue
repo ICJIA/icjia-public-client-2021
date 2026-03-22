@@ -4,6 +4,7 @@
       ><v-row
         ><v-col>
           <div v-if="unit" style="border: 1px solid #ccc">
+            <h1 class="sr-only">{{ unit.title }}</h1>
             <UnitCard
               :item="unit"
               :shortName="unit.shortName"

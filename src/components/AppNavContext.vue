@@ -7,6 +7,8 @@
     <v-app-bar
       class=""
       height="35"
+      role="navigation"
+      aria-label="Breadcrumb navigation"
       style="background: #0a3a60; color: #fff; font-size: 15px"
       :class="{
         'text-left':
@@ -76,7 +78,7 @@
       > -->
     </v-app-bar>
 
-    <v-app-bar height="35" scroll-threshold="0" color="#eee">
+    <v-app-bar height="35" scroll-threshold="0" color="#eee" role="navigation" aria-label="Section navigation">
       <v-tabs
         show-arrows
         centered

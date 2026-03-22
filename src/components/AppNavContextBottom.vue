@@ -1,6 +1,6 @@
 <template>
   <div style="border-top: 1px solid #ddd">
-    <v-app-bar height="35" scroll-threshold="0" color="#11568e">
+    <v-app-bar height="35" scroll-threshold="0" color="#11568e" role="navigation" aria-label="Additional navigation">
       <v-tabs
         show-arrows
         centered

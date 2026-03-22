@@ -3,6 +3,7 @@
     <v-container v-if="program" class="mt-8">
       <v-row>
         <v-col>
+          <h1 class="sr-only">{{ program.title }}</h1>
           <BaseCardExpandable
             :item="program"
             :showLink="false"

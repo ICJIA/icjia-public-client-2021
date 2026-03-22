@@ -3,6 +3,7 @@
     <v-container>
       <v-row>
         <v-col>
+          <h1 v-if="publication" class="sr-only">{{ publication.title }}</h1>
           <PublicationCard
             :item="publication"
             class="mt-8"
