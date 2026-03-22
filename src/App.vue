@@ -134,6 +134,8 @@ export default {
           fixFootnoteTargetSize();
           fixEmptyTableHeaders();
           fixChipContrast();
+          fixOverlayContainer();
+          fixNavHeaderRoles();
         }, 2000);
       });
     },
