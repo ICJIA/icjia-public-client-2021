@@ -51,7 +51,7 @@
           <div
             v-if="item.isCancelled"
             class="text-center mb-3"
-            style="background: red; color: #fff; padding-left: -30px"
+            style="background: #b71c1c; color: #fff; padding-left: -30px"
           >
             THIS MEETING IS CANCELLED
           </div>
