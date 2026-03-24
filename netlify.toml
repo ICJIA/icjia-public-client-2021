@@ -10,8 +10,10 @@
 [[headers]]
   for = "/*"
   [headers.values]
-   ## X-Frame-Options = "SAMEORIGIN"
-   ## X-XSS-Protection = "1; mode=block"
-  ##  Referrer-Policy = "no-referrer"
-  ##  X-Content-Type-Options = "nosniff"
-    Access-Control-Allow-Origin = "*"
+    X-Frame-Options = "SAMEORIGIN"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Content-Type-Options = "nosniff"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    Access-Control-Allow-Origin = "https://icjia.illinois.gov"

@@ -100,17 +100,39 @@ npm run check-links -- --full
 
 Reports are saved to `reports/`.
 
+## Security Posture
+
+**Last audit:** March 24, 2026 — Red Team / Blue Team assessment across 2,345 routes and all application components.
+
+**Overall rating: MODERATE** — critical header and CORS gaps remediated; XSS and GraphQL injection risks documented for follow-up.
+
+| Category | Status | Details |
+|---|---|---|
+| **Security headers** | **Hardened** | X-Frame-Options, HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy enabled |
+| **CORS** | **Restricted** | Locked to `https://icjia.illinois.gov` (was wildcard `*`) |
+| **XSS prevention** | **Partial** | DOMPurify on form inputs; 85 `v-html` bindings need sanitization coverage |
+| **GraphQL injection** | **Open** | 3 views interpolate route params into query strings — needs parameterized queries |
+| **Auth tokens** | **localStorage** | JWT in localStorage (XSS-accessible); HttpOnly cookies require backend migration |
+| **HTTPS** | **Full** | All endpoints and CDN resources use TLS |
+| **Static analysis** | **Active** | CodeQL runs on every push/PR; Dependabot monitoring enabled |
+| **Console stripping** | **Active** | Production builds remove `console.log` via Babel plugin |
+
+**Critical open items:** SEC-03 (GraphQL injection), SEC-04 (v-html XSS). See [CHANGELOG.md](CHANGELOG.md) for full findings and remediation plan.
+
+View the [security policy](SECURITY.md).
+
 ## Accessibility
 
-This site targets **WCAG 2.1 Level AA** compliance, as required for Illinois government websites under Title II of the ADA.
+**Compliance target:** WCAG 2.1 Level AA (Illinois Title II ADA requirement)
 
 ### Current Status (March 2026)
 
 | Metric | Score |
 |---|---|
 | Core pages (12-page axe-core audit) | **12/12 zero violations** |
-| Full site sweep (103 pages, 10 content types) | **100/103 clean (97%)** |
-| Regression tests | **37/37 passing** |
+| Full site sweep (143 pages, 10 content types) | **140/143 clean (98%)** |
+| Regression tests (Playwright) | **37/37 passing** |
+| Automated score (WCAG 2.1 AA) | **A / 99%+** |
 
 ### Accessibility Features
 
@@ -121,7 +143,7 @@ This site targets **WCAG 2.1 Level AA** compliance, as required for Illinois gov
 - **Skip navigation** — skip-to-content link for keyboard users
 - **Color contrast** — WCAG AA compliant (4.5:1 ratio minimum)
 - **External links** — screen reader announcement of "(opens in new tab)"
-- **Post-render CMS fixes** — JavaScript corrects accessibility issues from Strapi 3 markdown rendering (heading order, figure tabindex, chip contrast, empty table headers)
+- **Post-render CMS fixes** — JavaScript corrects accessibility issues from Strapi 3 markdown rendering (heading order, figure tabindex, chip contrast, empty table headers, footnote target size, link underlines)
 
 ### Known Remaining Issues
 
@@ -130,7 +152,7 @@ These originate from CMS-authored content and are mitigated by post-render JavaS
 - Heading level skips in some article bodies (CMS authors skip heading levels)
 - Occasional async data race condition on listing pages (`page-has-heading-one`)
 
-See [CHANGELOG.md](CHANGELOG.md) for full remediation details.
+See [CHANGELOG.md](CHANGELOG.md) for full audit details and remediation history.
 
 ## Project Structure
 

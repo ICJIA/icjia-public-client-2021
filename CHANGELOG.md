@@ -4,6 +4,120 @@ All notable changes to the ICJIA Public Website are documented in this file.
 
 ---
 
+## [1.3.0] - 2026-03-24
+
+### Security Audit — Red Team / Blue Team Assessment
+
+A comprehensive adversarial security audit was conducted across the full application surface: 10 content types, 2,345 routes (via `public/api/*.json`), all Vue components, deployment configuration, authentication flow, third-party dependencies, and API communication.
+
+**Overall security posture: MODERATE** — several critical gaps identified and partially mitigated.
+
+#### Route coverage audited
+
+| Content Type | Routes | Source |
+|---|---|---|
+| Pages | 29 | `public/api/pages.json` |
+| Posts (News) | 180 | `public/api/posts.json` |
+| Grants/Funding | 172 | `public/api/grants.json` |
+| Research Hub (articles, datasets, apps) | 247 | `public/api/hub.json` |
+| Publications | 1,096 | `public/api/publications.json` |
+| Meetings | 275 | `public/api/meetings.json` |
+| Biographies | 114 | `public/api/biographies.json` |
+| Employment | 216 | `public/api/jobs.json` |
+| Events | 6 | `public/api/events.json` |
+| Units | 10 | `public/api/units.json` |
+| **Total** | **2,345** | |
+
+#### Critical findings (RED TEAM)
+
+| ID | Severity | Vulnerability | Attack Vector | Files Affected |
+|---|---|---|---|---|
+| SEC-01 | **CRITICAL** | Missing security headers | All pages served without X-Frame-Options, CSP, X-Content-Type-Options, HSTS | `netlify.toml` |
+| SEC-02 | **CRITICAL** | CORS wildcard (`Access-Control-Allow-Origin: *`) | Any domain can make credentialed cross-origin requests | `netlify.toml` |
+| SEC-03 | **CRITICAL** | GraphQL query injection via URL params | Route slugs interpolated directly into query strings — attacker can escape the `where` clause to access unpublished/draft content | `ArticlesSingle.vue:67`, `DatasetsSingle.vue:45`, `AppsSingle.vue:53` |
+| SEC-04 | **HIGH** | XSS via `v-html` (85 instances across 38 files) | CMS content rendered with `v-html` after markdown-it processes it with `html: true` — any `<script>` in CMS content executes in user browsers | 38 components (see full list below) |
+| SEC-05 | **HIGH** | `document.write()` in print window | Article print function writes unsanitized HTML into new window via `document.write()` | `ArticleView.vue:348` |
+| SEC-06 | **HIGH** | JWT stored in localStorage | XSS exploitation exfiltrates auth tokens; no HttpOnly/Secure cookie protection | `auth.js:13-14,70-71` |
+| SEC-07 | **MEDIUM** | No CSRF protection on forms | Form submissions to `agency.icjia-api.cloud` and `mail.icjia.cloud` lack CSRF tokens | `LapRequest.vue`, `GrantStatus.vue` |
+| SEC-08 | **MEDIUM** | No login rate limiting | Brute-force attacks on `/auth/local` endpoint not throttled (client-side) | `Login.vue` |
+| SEC-09 | **MEDIUM** | External links missing `rel="noopener noreferrer"` | `target="_blank"` links without `noopener` allow `window.opener` manipulation | markdown-it link config, 38 v-html components |
+| SEC-10 | **MEDIUM** | Source maps in production | Default Vue CLI config ships source maps, exposing full source code | `vue.config.js` |
+| SEC-11 | **LOW** | Hardcoded API endpoints in components | API URLs embedded in component source rather than centralized config | `LapRequest.vue:310`, `Forms.js:35` |
+| SEC-12 | **LOW** | EOL runtime (Node 16, Vue 2) | Node 16 EOL Sep 2023; Vue 2 EOL Dec 2023 — no further security patches | `netlify.toml`, `package.json` |
+| SEC-13 | **LOW** | Font Awesome kit ID exposed in HTML | Public kit ID `170885123f` visible in page source | `public/index.html` |
+
+#### v-html exposure detail (SEC-04)
+
+85 total `v-html` bindings across 38 files. Top-risk components by exposure count:
+
+| File | Count | Content Source |
+|---|---|---|
+| `SearchCardAlt.vue` | 12 | Search result titles/abstracts |
+| `EventCard.vue` | 8 | CMS event descriptions |
+| `ArticleView.vue` | 4 | Full article body, abstract, citation |
+| `SearchCard.vue` | 3 | Search result rendering |
+| `BaseCardExpandable.vue` | 3 | Program/grant descriptions |
+| `Search.vue` | 3 | Search page results |
+| All other components | 52 | Various CMS-sourced content |
+
+**Root cause:** `markdown-it` configured with `html: true` (`src/services/Markdown.js:41`). DOMPurify is imported in only 3 of 38 affected files (`Search.vue`, `GrantStatus.vue`, `LapRequest.vue`).
+
+#### Mitigations applied (BLUE TEAM — this release)
+
+| ID | Mitigation | Status |
+|---|---|---|
+| SEC-01 | **Enabled all security headers** in `netlify.toml`: X-Frame-Options, X-XSS-Protection, Referrer-Policy, X-Content-Type-Options, Permissions-Policy, HSTS | **DONE** |
+| SEC-02 | **Restricted CORS** from wildcard `*` to `https://icjia.illinois.gov` | **DONE** |
+
+#### Mitigations requiring follow-up
+
+| ID | Recommended Fix | Effort | Priority |
+|---|---|---|---|
+| SEC-03 | Use parameterized GraphQL variables instead of string interpolation | 1-2 hours | **P0 — Critical** |
+| SEC-04 | Apply `DOMPurify.sanitize()` to all `v-html` bindings, or set `html: false` in markdown-it | 4-8 hours | **P0 — Critical** |
+| SEC-05 | Replace `document.write()` with `DOMParser` + `document.adoptNode` in print function | 1 hour | **P1 — High** |
+| SEC-06 | Migrate JWT to HttpOnly cookies (requires backend change on Strapi 3) | Backend change | **P1 — High** |
+| SEC-07 | Add CSRF tokens to form submissions (requires backend support) | Backend change | **P2 — Medium** |
+| SEC-08 | Implement login rate limiting (backend) | Backend change | **P2 — Medium** |
+| SEC-09 | Add `rel="noopener noreferrer"` to markdown-it link attributes config | 15 minutes | **P2 — Medium** |
+| SEC-10 | Set `productionSourceMap: false` in `vue.config.js` | 1 minute | **P2 — Medium** |
+| SEC-11 | Move hardcoded URLs to `config.json` | 30 minutes | **P3 — Low** |
+| SEC-12 | Plan Node 18+ and Vue 3 migration (Nuxt 4 / Strapi 5 rewrite) | Large project | **P3 — Low** |
+| SEC-13 | Self-host Font Awesome subset or use npm package | 1 hour | **P3 — Low** |
+
+#### Existing security controls (validated)
+
+| Control | Status | Notes |
+|---|---|---|
+| HTTPS everywhere | **PASS** | All API endpoints, CDN resources, and production site use TLS |
+| DOMPurify on form inputs | **PASS** | `GrantStatus.vue` and `LapRequest.vue` sanitize + strip HTML before submission |
+| Console stripping in production | **PASS** | `babel-plugin-transform-remove-console` removes `console.log` in builds |
+| CodeQL static analysis | **PASS** | GitHub Actions runs CodeQL on every push and PR to main |
+| Subresource integrity | **PARTIAL** | jQuery and KaTeX use SRI hashes; nprogress and Font Awesome do not |
+| .env excluded from git | **PASS** | `.gitignore` blocks `.env` and `.env*.local` |
+| Auth token cleanup on logout | **PASS** | `localStorage.removeItem()` and `delete axios.defaults.headers.common["Authorization"]` |
+| Plausible analytics (privacy) | **PASS** | Self-hosted, no Google Analytics, no third-party tracking |
+| Client-side route guards | **PASS** | `router.beforeEach` checks auth state for `/admin/*` routes |
+
+---
+
+### Accessibility Summary — Current Posture (March 2026)
+
+**Compliance target:** WCAG 2.1 Level AA (Illinois Title II ADA requirement)
+
+| Metric | Score |
+|---|---|
+| Core pages (12-page axe-core audit) | **12/12 zero violations** |
+| Full site sweep (143 pages, 10 content types) | **140/143 clean (98%)** |
+| Regression tests (Playwright) | **37/37 passing** |
+| Automated score (WCAG 2.1 AA) | **A / 99%+** |
+
+**Key a11y features active:** Skip navigation, route announcements, keyboard access on all interactive elements, semantic HTML headings, ARIA labels on all icon buttons/carousels/modals, color contrast AA compliance, external link announcements, post-render CMS content fixes (heading order, figure tabindex, chip contrast, empty table headers, footnote target size, link underlines).
+
+**Remaining a11y issues (3):** All originate from CMS-authored markdown content and are mitigated by post-render JavaScript. Will be fully resolved in the Nuxt 4 / Strapi 5 rewrite.
+
+---
+
 ## [1.2.0] - 2026-03-22
 
 ### WCAG 2.1 Level AA Accessibility Remediation
