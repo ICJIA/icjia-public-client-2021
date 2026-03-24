@@ -104,20 +104,21 @@ Reports are saved to `reports/`.
 
 **Last audit:** March 24, 2026 — Red Team / Blue Team assessment across 2,345 routes and all application components.
 
-**Overall rating: MODERATE** — critical header and CORS gaps remediated; XSS and GraphQL injection risks documented for follow-up.
+**Overall rating: MODERATE-HIGH** — all critical (P0) and high (P1) client-side vulnerabilities mitigated; remaining items require backend changes.
 
 | Category | Status | Details |
 |---|---|---|
 | **Security headers** | **Hardened** | X-Frame-Options, HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy enabled |
 | **CORS** | **Restricted** | Locked to `https://icjia.illinois.gov` (was wildcard `*`) |
-| **XSS prevention** | **Partial** | DOMPurify on form inputs; 85 `v-html` bindings need sanitization coverage |
-| **GraphQL injection** | **Open** | 3 views interpolate route params into query strings — needs parameterized queries |
-| **Auth tokens** | **localStorage** | JWT in localStorage (XSS-accessible); HttpOnly cookies require backend migration |
+| **XSS prevention** | **Hardened** | DOMPurify sanitization at `renderToHtml()` chokepoint covers all 85 `v-html` bindings; `document.write()` replaced with DOM API |
+| **GraphQL injection** | **Mitigated** | Route params sanitized to `[a-zA-Z0-9_-]` before query interpolation |
+| **External links** | **Hardened** | `rel="noopener noreferrer"` on all markdown-rendered links |
+| **Auth tokens** | **localStorage** | JWT in localStorage; HttpOnly cookies require Strapi 3 backend migration |
 | **HTTPS** | **Full** | All endpoints and CDN resources use TLS |
 | **Static analysis** | **Active** | CodeQL runs on every push/PR; Dependabot monitoring enabled |
 | **Console stripping** | **Active** | Production builds remove `console.log` via Babel plugin |
 
-**Critical open items:** SEC-03 (GraphQL injection), SEC-04 (v-html XSS). See [CHANGELOG.md](CHANGELOG.md) for full findings and remediation plan.
+**Remaining items (backend-dependent):** SEC-06 (JWT HttpOnly cookies), SEC-07 (CSRF tokens), SEC-08 (login rate limiting). See [CHANGELOG.md](CHANGELOG.md) for full findings and remediation plan.
 
 View the [security policy](SECURITY.md).
 
