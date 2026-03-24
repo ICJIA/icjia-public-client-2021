@@ -63,8 +63,9 @@ export default {
       console.log("child mounted");
     },
     async fetchContent() {
+      const slug = this.$route.params.slug.replace(/[^a-zA-Z0-9_-]/g, "");
       const query = `query {
-      articles (where: { status: "published", slug: "${this.$route.params.slug}" }) {
+      articles (where: { status: "published", slug: "${slug}" }) {
       id
       mainfiletype
       mainfile {

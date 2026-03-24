@@ -191,6 +191,7 @@
 </template>
 
 <script>
+import DOMPurify from "dompurify";
 import { format } from "@/utils/itemFormatter";
 import { createMarkdownUtils, initMarkdownIt } from "@/utils/markdownIt";
 import { initTexmath } from "@/utils/texmath";
@@ -341,13 +342,40 @@ export default {
     },
     printWindow({ head, body }) {
       const win = window.open("", "");
-      const toWrite =
-        `<head>${head}</head>` +
-        `<body><div id="app" class="v-application"><div id="article-view">${body}</div></div></body>`;
-      `<script>window.print();<` + `/script>`;
-      win.document.write(toWrite);
-      win.document.close();
+      const doc = win.document;
+      doc.open();
+      const headEl = doc.createElement("head");
+      headEl.innerHTML = DOMPurify.sanitize(head, {
+        ALLOWED_TAGS: ["link", "style"],
+        ALLOWED_ATTR: ["rel", "href", "type", "media"],
+      });
+      const bodyEl = doc.createElement("body");
+      const appDiv = doc.createElement("div");
+      appDiv.id = "app";
+      appDiv.className = "v-application";
+      const articleDiv = doc.createElement("div");
+      articleDiv.id = "article-view";
+      articleDiv.innerHTML = DOMPurify.sanitize(body, {
+        ADD_TAGS: ["figure", "figcaption", "iframe"],
+        ADD_ATTR: [
+          "target",
+          "id",
+          "class",
+          "tabindex",
+          "aria-label",
+          "aria-hidden",
+          "role",
+          "colspan",
+          "rowspan",
+        ],
+      });
+      appDiv.appendChild(articleDiv);
+      bodyEl.appendChild(appDiv);
+      doc.documentElement.appendChild(headEl);
+      doc.documentElement.appendChild(bodyEl);
+      doc.close();
       win.focus();
+      win.print();
     },
   },
   beforeDestroy() {

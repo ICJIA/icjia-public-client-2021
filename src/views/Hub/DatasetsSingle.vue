@@ -41,8 +41,9 @@ export default {
   },
   methods: {
     async fetchContent() {
+      const slug = this.$route.params.slug.replace(/[^a-zA-Z0-9_-]/g, "");
       const query = `query {
-      datasets (where: { status: "published", slug: "${this.$route.params.slug}" }) {
+      datasets (where: { status: "published", slug: "${slug}" }) {
         id
         title
         date

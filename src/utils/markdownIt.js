@@ -1,4 +1,25 @@
+import DOMPurify from "dompurify";
+
 export { createMarkdownUtils, initMarkdownIt };
+
+const PURIFY_OPTS = {
+  ADD_TAGS: ["figure", "figcaption", "iframe"],
+  ADD_ATTR: [
+    "target",
+    "id",
+    "class",
+    "tabindex",
+    "aria-label",
+    "aria-hidden",
+    "role",
+    "data-type",
+    "colspan",
+    "rowspan",
+    "allow",
+    "allowfullscreen",
+    "frameborder",
+  ],
+};
 
 const createMarkdownUtils = (md) => ({
   addImages(images, markdown) {
@@ -13,7 +34,10 @@ const createMarkdownUtils = (md) => ({
   },
 
   renderMarkdown(markdown) {
-    return md.render(markdown).replace(/#fn/g, window.location.href + "#fn");
+    const raw = md
+      .render(markdown)
+      .replace(/#fn/g, window.location.href + "#fn");
+    return DOMPurify.sanitize(raw, PURIFY_OPTS);
   },
 });
 
@@ -43,6 +67,7 @@ const mdAnchorOpts = {
 const mdLinkAttrOpts = {
   attrs: {
     target: "_blank",
+    rel: "noopener noreferrer",
   },
 };
 

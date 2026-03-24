@@ -49,8 +49,9 @@ export default {
       );
     },
     async fetchContent() {
+      const slug = this.$route.params.slug.replace(/[^a-zA-Z0-9_-]/g, "");
       const query = `query {
-      apps (where: { status: "published", slug: "${this.$route.params.slug}" }) {
+      apps (where: { status: "published", slug: "${slug}" }) {
         id
         title
         slug

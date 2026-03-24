@@ -1,3 +1,4 @@
+import DOMPurify from "dompurify";
 // const config = require("@/config/config.json");
 // import { EventBus } from "@/event-bus.js";
 // const namedHeaders = require("markdown-it-named-headers");
@@ -16,6 +17,7 @@ const mdAnchorOpts = {
 const mdLinkAttrOpts = {
   attrs: {
     target: "_blank",
+    rel: "noopener noreferrer",
   },
 };
 
@@ -54,7 +56,25 @@ let md = require("markdown-it")({
   .use(require("markdown-it-attrs"), mdAttrs);
 
 const renderToHtml = function (markdown) {
-  return md.render(markdown);
+  const raw = md.render(markdown);
+  return DOMPurify.sanitize(raw, {
+    ADD_TAGS: ["figure", "figcaption", "iframe"],
+    ADD_ATTR: [
+      "target",
+      "id",
+      "class",
+      "tabindex",
+      "aria-label",
+      "aria-hidden",
+      "role",
+      "data-type",
+      "colspan",
+      "rowspan",
+      "allow",
+      "allowfullscreen",
+      "frameborder",
+    ],
+  });
 };
 
 const parseHeadings = function (markdown) {
