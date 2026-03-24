@@ -72,15 +72,15 @@ A comprehensive adversarial security audit was conducted across the full applica
 | SEC-04 | **DOMPurify at renderToHtml() chokepoint** — `DOMPurify.sanitize()` added to `Markdown.js` and `markdownIt.js`, covering all 85 `v-html` bindings across 38 components in a single fix | **DONE** |
 | SEC-05 | **Replaced `document.write()`** with DOM API + DOMPurify sanitization in `ArticleView.vue` print function | **DONE** |
 | SEC-09 | **Added `rel="noopener noreferrer"`** to markdown-it link attributes in both `Markdown.js` and `markdownIt.js` | **DONE** |
+| SEC-10 | **Disabled production source maps** — set `productionSourceMap: false` in `vue.config.js` | **DONE** |
 
-#### Mitigations requiring follow-up
+#### Mitigations requiring follow-up (backend-dependent)
 
 | ID | Recommended Fix | Effort | Priority |
 |---|---|---|---|
 | SEC-06 | Migrate JWT to HttpOnly cookies (requires backend change on Strapi 3) | Backend change | **P1 — High** |
 | SEC-07 | Add CSRF tokens to form submissions (requires backend support) | Backend change | **P2 — Medium** |
 | SEC-08 | Implement login rate limiting (backend) | Backend change | **P2 — Medium** |
-| SEC-10 | Set `productionSourceMap: false` in `vue.config.js` | 1 minute | **P2 — Medium** |
 | SEC-11 | Move hardcoded URLs to `config.json` | 30 minutes | **P3 — Low** |
 | SEC-12 | Plan Node 18+ and Vue 3 migration (Nuxt 4 / Strapi 5 rewrite) | Large project | **P3 — Low** |
 | SEC-13 | Self-host Font Awesome subset or use npm package | 1 hour | **P3 — Low** |

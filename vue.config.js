@@ -2,6 +2,7 @@ const zlib = require("zlib");
 const CompressionPlugin = require("compression-webpack-plugin");
 module.exports = {
   publicPath: "/",
+  productionSourceMap: false,
   // configureWebpack: (config) => {
   //   config.entry.app = "./src/entry.js";
   // },
