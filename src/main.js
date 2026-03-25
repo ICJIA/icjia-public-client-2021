@@ -23,6 +23,26 @@ import VueGtag from "vue-gtag";
 // import "@fortawesome/fontawesome-free/css/all.css";
 
 Vue.config.productionTip = false;
+
+// Guard NProgress against null DOM element errors when called before
+// the progress bar container exists (e.g. in Vue created() hooks).
+const _npStart = nprogress.start.bind(nprogress);
+const _npDone = nprogress.done.bind(nprogress);
+nprogress.start = function () {
+  try {
+    return _npStart();
+  } catch (e) {
+    // Silently ignore — bar element not yet in DOM
+  }
+};
+nprogress.done = function (force) {
+  try {
+    return _npDone(force);
+  } catch (e) {
+    // Silently ignore
+  }
+};
+
 nprogress.start();
 // Set up app wide read-only configs and install as plugin
 import { myApp } from "./services/AppInit";
