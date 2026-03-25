@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";

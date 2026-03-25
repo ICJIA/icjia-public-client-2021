@@ -74,7 +74,7 @@
 
 <script>
 import { GET_HOME } from "@/graphql/home";
-import nprogress from "nprogress";
+import NProgress from "@/services/Progress";
 // eslint-disable-next-line no-unused-vars
 import { getUnifiedTags, getPublicationDate } from "@/utils/content";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
@@ -130,7 +130,7 @@ export default {
     };
   },
   mounted() {
-    nprogress.start();
+    NProgress.start();
   },
   methods: {
     // eslint-disable-next-line no-unused-vars
@@ -159,7 +159,7 @@ export default {
 
       error(error) {
         this.error = JSON.stringify(error.message);
-        nprogress.done();
+        NProgress.done();
       },
       result(ApolloQueryResult) {
         // News and Info
@@ -260,7 +260,7 @@ export default {
         //   color: "indigo darken-4",
         // }));
         this.loading = false;
-        nprogress.done();
+        NProgress.done();
         attachInternalLinks(this);
 
         attachSearchEvents(this);

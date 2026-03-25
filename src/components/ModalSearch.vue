@@ -60,7 +60,7 @@ import { getProperCategory } from "@/utils/content";
 import DOMPurify from "dompurify";
 import Fuse from "fuse.js";
 import _ from "lodash";
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 function arrayToList(array) {
   return array.join(", ").replace(/, ((?:.(?!, ))+)$/, " and $1");
 }

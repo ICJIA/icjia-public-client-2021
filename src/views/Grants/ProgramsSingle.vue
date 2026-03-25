@@ -36,7 +36,7 @@ import { GET_SINGLE_PROGRAM_QUERY } from "@/graphql/grants";
 import { renderToHtml } from "@/services/Markdown";
 // import _ from "lodash";
 import { getUnifiedTags } from "@/utils/content";
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 
 export default {
   name: "ProgramSingle",

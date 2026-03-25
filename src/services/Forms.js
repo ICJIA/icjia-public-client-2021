@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 //import { EventBus } from "@/event-bus";
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 let axios = require("axios");
 
 const api = axios.create({
@@ -8,12 +8,12 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  window.NProgress.start();
+  NProgress.start();
   return config;
 });
 
 api.interceptors.response.use((response) => {
-  window.NProgress.done();
+  NProgress.done();
   return response;
 });
 

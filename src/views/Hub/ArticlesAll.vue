@@ -97,7 +97,7 @@ import {
 } from "@/graphql/hub";
 import moment from "moment";
 import _ from "lodash";
-import nprogress from "nprogress";
+import NProgress from "@/services/Progress";
 import { EventBus } from "@/event-bus";
 export default {
   name: "Articles",
@@ -119,9 +119,9 @@ export default {
 
   methods: {
     progress() {
-      nprogress.start();
+      NProgress.start();
       if (!this.$apollo.loading) {
-        nprogress.done();
+        NProgress.done();
       }
     },
     toggle(e) {
@@ -129,7 +129,7 @@ export default {
       this.initialView = true;
       // console.log('view: ', this.view)
       this.resize();
-      nprogress.done();
+      NProgress.done();
     },
     loadMore() {
       this.start = this.start + this.articleLimit;
@@ -137,7 +137,7 @@ export default {
     },
   },
   mounted() {
-    nprogress.start();
+    NProgress.start();
     EventBus.$emit("context-label", "Articles");
   },
   apollo: {
@@ -155,7 +155,7 @@ export default {
         this.error = JSON.stringify(error.message);
       },
       result(ApolloQueryResult) {
-        nprogress.done();
+        NProgress.done();
         this.articleCount =
           ApolloQueryResult.data.articlesConnection.aggregate.count;
       },
@@ -190,7 +190,7 @@ export default {
         this.hubArticles.push(...hubArticles);
         this.initialLoad = false;
         this.loading = false;
-        nprogress.done();
+        NProgress.done();
       },
     },
   },

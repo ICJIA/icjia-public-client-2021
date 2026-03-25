@@ -2,7 +2,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "@/views/Home/Home.vue";
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 import appConfig from "@/config/config.json";
 import store from "@/store";
 import { EventBus } from "@/event-bus";

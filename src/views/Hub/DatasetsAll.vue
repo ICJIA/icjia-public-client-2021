@@ -78,7 +78,7 @@
 import { GET_ALL_DATASETS_QUERY } from "@/graphql/hub";
 import moment from "moment";
 import _ from "lodash";
-import nprogress from "nprogress";
+import NProgress from "@/services/Progress";
 import { EventBus } from "@/event-bus";
 export default {
   name: "Datasets",
@@ -94,9 +94,9 @@ export default {
 
   methods: {
     progress() {
-      nprogress.start();
+      NProgress.start();
       if (!this.$apollo.loading) {
-        nprogress.done();
+        NProgress.done();
       }
     },
     toggle(e) {
@@ -104,11 +104,11 @@ export default {
       this.initialView = true;
       // console.log('view: ', this.view)
       this.resize();
-      nprogress.done();
+      NProgress.done();
     },
   },
   mounted() {
-    nprogress.start();
+    NProgress.start();
     EventBus.$emit("context-label", "Datasets");
   },
   apollo: {
@@ -139,7 +139,7 @@ export default {
         }));
         this.content = content;
         this.initialLoad = false;
-        nprogress.done();
+        NProgress.done();
       },
     },
   },

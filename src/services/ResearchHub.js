@@ -1,5 +1,5 @@
 import { EventBus } from "@/event-bus";
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 
 const axios = require("axios");
 const api = axios.create({

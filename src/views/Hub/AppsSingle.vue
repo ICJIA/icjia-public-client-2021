@@ -6,7 +6,7 @@
 
 <script>
 /* eslint-disable no-unused-vars */
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 import { renderToHtml, parseHeadings } from "@/services/Markdown";
 import { getImageURL } from "@/services/Image";
 import { EventBus } from "@/event-bus";

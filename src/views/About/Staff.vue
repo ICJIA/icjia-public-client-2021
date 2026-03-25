@@ -77,7 +77,7 @@
 
 <script>
 /* eslint-disable no-unused-vars */
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 import { EventBus } from "@/event-bus";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_ALL_BIOGRAPHIES_QUERY } from "@/graphql/biographies";

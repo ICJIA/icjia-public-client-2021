@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_PUBLICATION_QUERY } from "@/graphql/publications";
 export default {

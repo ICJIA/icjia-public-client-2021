@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_EVENT_QUERY } from "@/graphql/events";
 import { EventBus } from "@/event-bus";

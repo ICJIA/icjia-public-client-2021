@@ -108,7 +108,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 // eslint-disable-next-line no-unused-vars
 import { EventBus } from "@/event-bus";
 import { fixExpandButtons } from "@/a11y";

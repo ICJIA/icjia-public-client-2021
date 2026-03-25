@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_POST_QUERY } from "@/graphql/news";
 import { getProperCategory } from "@/utils/content";

@@ -24,7 +24,7 @@ export default {};
 
 <script>
 /* eslint-disable no-unused-vars */
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 
 import { renderToHtml } from "@/services/Markdown";
 

@@ -15,7 +15,7 @@ import "@/assets/hub.css";
 import config from "@/config/config.json";
 // import "material-design-icons-iconfont/dist/material-design-icons.css";
 // import Masonry from "masonry-layout";
-import nprogress from "nprogress";
+import NProgress from "@/services/Progress";
 // import axios from "axios";
 // import Fuse from "fuse.js";
 import VueGtag from "vue-gtag";
@@ -23,23 +23,7 @@ import VueGtag from "vue-gtag";
 // import "@fortawesome/fontawesome-free/css/all.css";
 
 Vue.config.productionTip = false;
-
-// Suppress NProgress null-element errors globally. NProgress's trickle
-// timer uses setTimeout internally so try/catch wrappers can't catch the
-// deferred applyCss calls. Use Vue.config.errorHandler + unhandledrejection
-// to catch errors Vue lifecycle hooks surface.
-Vue.config.errorHandler = function (err, vm, info) {
-  if (
-    err.message &&
-    err.message.includes("Cannot read properties of null (reading 'style')")
-  ) {
-    return; // Suppress NProgress bar-not-in-DOM errors
-  }
-  console.error("[Vue error]", err, info);
-};
-nprogress.configure({ parent: "body" });
-
-nprogress.start();
+NProgress.start();
 // Set up app wide read-only configs and install as plugin
 import { myApp } from "./services/AppInit";
 myApp.install = function () {
@@ -98,4 +82,4 @@ new Vue({
   render: (h) => h(App),
 }).$mount("#app");
 
-nprogress.done();
+NProgress.done();

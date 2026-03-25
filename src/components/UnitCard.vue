@@ -39,7 +39,7 @@
 <script>
 import { GET_BIOGRAPHIES_BY_UNIT_QUERY } from "@/graphql/biographies";
 
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 // import { EventBus } from "@/event-bus";
 import { renderToHtml } from "@/services/Markdown";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";

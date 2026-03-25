@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_MEETINGS_BY_CATEGORY_QUERY } from "@/graphql/meetings";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";

@@ -44,21 +44,13 @@
 </template>
 
 <script>
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 export default {
   mounted() {
-    try {
-      NProgress.start();
-    } catch (e) {
-      // NProgress bar element may not exist yet
-    }
+    NProgress.start();
   },
   beforeDestroy() {
-    try {
-      NProgress.done();
-    } catch (e) {
-      // NProgress bar element may have been removed
-    }
+    NProgress.done();
   },
   data() {
     return {};

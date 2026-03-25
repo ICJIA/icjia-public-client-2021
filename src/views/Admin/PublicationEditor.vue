@@ -298,7 +298,7 @@
 </template>
 
 <script>
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 // eslint-disable-next-line no-unused-vars
 import { renderToHtml } from "@/services/Markdown";
 const axios = require("axios");

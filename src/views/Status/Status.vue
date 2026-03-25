@@ -60,7 +60,7 @@
 
 import _ from "lodash";
 import axios from "axios";
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 // import { addButtonText, fixBlankTableHeadings } from "@/a11y";
 export default {
   data() {

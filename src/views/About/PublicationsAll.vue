@@ -148,7 +148,7 @@
 </template>
 
 <script>
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 import { fixExpandButtons, fixNestedInteractive } from "@/a11y";
 import { getPublicationType } from "@/lib/utils";
 import { EventBus } from "@/event-bus";

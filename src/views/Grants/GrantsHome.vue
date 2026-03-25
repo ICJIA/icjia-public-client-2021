@@ -126,7 +126,7 @@ import {
 import { getUnifiedTags } from "@/utils/content";
 import { renderToHtml } from "@/services/Markdown";
 import _ from "lodash";
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 
 export default {
   name: "FSGUHome",

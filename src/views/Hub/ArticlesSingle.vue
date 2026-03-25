@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 import { renderToHtml } from "@/services/Markdown";
 //import { EventBus } from "@/event-bus";
 const axios = require("axios");

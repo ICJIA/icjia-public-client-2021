@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 import { GET_ALL_PRESS_QUERY } from "@/graphql/news";
 import { EventBus } from "@/event-bus";
 import { getUnifiedTags, getPublicationDate } from "@/utils/content";

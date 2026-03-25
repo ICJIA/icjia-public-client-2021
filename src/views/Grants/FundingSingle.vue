@@ -74,7 +74,7 @@ const addOneDayToDate = function (date) {
   newDate.setDate(newDate.getDate() + 1);
   return newDate;
 };
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_FUNDING_QUERY } from "@/graphql/grants";
 import { EventBus } from "@/event-bus";

@@ -46,25 +46,6 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css"
     />
-    <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
-    <script>
-      // Suppress NProgress null-element errors. NProgress's trickle timer
-      // uses setTimeout internally, so try/catch on set/start/done can't
-      // catch the deferred applyCss calls when the bar element is missing.
-      window.addEventListener('error', function (e) {
-        if (e.message && e.message.indexOf("Cannot read properties of null (reading 'style')") !== -1 &&
-            e.filename && e.filename.indexOf('nprogress') !== -1) {
-          e.preventDefault();
-          return true;
-        }
-      });
-    </script>
-
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/nprogress@0.2.0/nprogress.css"
-    />
-
     <script
       src="https://kit.fontawesome.com/170885123f.js"
       crossorigin="anonymous"

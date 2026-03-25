@@ -204,7 +204,7 @@ import { required, email } from "vuelidate/lib/validators";
 import DOMPurify from "dompurify";
 // import { generateHours } from "@/services/Utils";
 import { dbInsert } from "@/services/Forms";
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 import { EventBus } from "@/event-bus";
 
 //const config = require("@/config.json");
@@ -338,7 +338,7 @@ export default {
       this.$v.$touch();
       this.showAxiosError = false;
       if (this.isSuccess) {
-        window.NProgress.start();
+        NProgress.start();
         this.showLoader = true;
 
         this.form = {
@@ -388,7 +388,7 @@ export default {
       this.showAxiosError = true;
       this.axiosError = res;
       this.showLoader = false;
-      window.NProgress.done();
+      NProgress.done();
       this.reload();
     },
     success(res) {
@@ -398,7 +398,7 @@ export default {
       this.showError = "";
       this.successMessage = res.data.msg;
       this.showLoader = false;
-      window.NProgress.done();
+      NProgress.done();
       this.reload();
     },
     clear() {
@@ -415,7 +415,7 @@ export default {
       this.axiosError = "";
       this.showLoader = false;
       this.form = null;
-      window.NProgress.done();
+      NProgress.done();
       this.reload();
     },
   },

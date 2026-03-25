@@ -83,7 +83,7 @@ import { GET_ALL_PROGRAMS_QUERY } from "@/graphql/grants";
 import { renderToHtml } from "@/services/Markdown";
 import { getUnifiedTags } from "@/utils/content";
 import _ from "lodash";
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 
 export default {
   name: "FSGUPrograms",

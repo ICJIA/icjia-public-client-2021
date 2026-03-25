@@ -32,7 +32,7 @@ import { GET_SINGLE_JOB_QUERY } from "@/graphql/employment";
 import { getUnifiedTags } from "@/utils/content";
 import { renderToHtml } from "@/services/Markdown";
 // import _ from "lodash";
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 
 export default {
   name: "EmploymentSingle",

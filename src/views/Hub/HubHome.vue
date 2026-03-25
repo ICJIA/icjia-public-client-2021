@@ -219,7 +219,7 @@ import { attachInternalLinks, attachSearchEvents } from "@/utils/dom";
 import { EventBus } from "@/event-bus";
 import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
 import { renderToHtml } from "@/services/Markdown";
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 import moment from "moment";
 import {
   getHubApplications,

@@ -36,7 +36,7 @@ import { attachInternalLinks } from "@/utils/dom";
 import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
 import { renderToHtml } from "@/services/Markdown";
 import { EventBus } from "@/event-bus";
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 
 export default {
   data() {

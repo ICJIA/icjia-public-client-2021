@@ -19,7 +19,7 @@
 </template>
 
 <script>
-// import nprogress from "nprogress";
+// import NProgress from "@/services/Progress";
 export default {
   data() {
     return {

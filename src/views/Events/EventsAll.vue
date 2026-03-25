@@ -152,7 +152,7 @@ import { nanoid } from "nanoid";
 import { GET_EVENTS } from "@/graphql/events";
 // import { fixButtonText } from "@/a11y";
 import _ from "lodash";
-import NProgress from "nprogress";
+import NProgress from "@/services/Progress";
 const moment = require("moment");
 const tz = require("moment-timezone");
 import { EventBus } from "@/event-bus";
