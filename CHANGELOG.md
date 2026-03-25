@@ -4,6 +4,15 @@ All notable changes to the ICJIA Public Website are documented in this file.
 
 ---
 
+## [1.3.7] - 2026-03-25
+
+### Accessibility — Empty Container Elements (sia-r68)
+
+- **fix: Hide empty TOC list when no headings exist** — Added `v-if="toc.length"` to `Toc.vue` and `TocPolicies.vue` so the `<ul class="toc-list">` doesn't render empty on pages without headings.
+- **fix: Hide empty publication links list** — Added `v-if` guard to `PublicationCard.vue` so `<ul>` doesn't render when publication has no article path or file URL.
+
+---
+
 ## [1.3.6] - 2026-03-25
 
 ### Accessibility — Table Cell Context Fix (sia-r77)

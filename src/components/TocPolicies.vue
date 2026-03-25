@@ -25,7 +25,7 @@
     >
       {{ tocHeading | upperCase }}
     </h3>
-    <div class="divider">
+    <div class="divider" v-if="toc.length">
       <ul class="toc-list">
         <li
           v-for="(item, index) in toc"
