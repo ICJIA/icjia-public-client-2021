@@ -48,13 +48,16 @@
     />
     <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
     <script>
-      // Patch NProgress.set to guard against null bar element errors
-      if (window.NProgress) {
-        var _origSet = window.NProgress.set;
-        window.NProgress.set = function (n) {
-          try { return _origSet.call(window.NProgress, n); } catch (e) {}
-        };
-      }
+      // Suppress NProgress null-element errors. NProgress's trickle timer
+      // uses setTimeout internally, so try/catch on set/start/done can't
+      // catch the deferred applyCss calls when the bar element is missing.
+      window.addEventListener('error', function (e) {
+        if (e.message && e.message.indexOf("Cannot read properties of null (reading 'style')") !== -1 &&
+            e.filename && e.filename.indexOf('nprogress') !== -1) {
+          e.preventDefault();
+          return true;
+        }
+      });
     </script>
 
     <link

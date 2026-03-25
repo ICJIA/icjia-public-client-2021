@@ -24,19 +24,11 @@ import VueGtag from "vue-gtag";
 
 Vue.config.productionTip = false;
 
-// Guard NProgress against null DOM element errors. Vuetify/Vue router call
-// NProgress.start() before the bar element exists, and NProgress's internal
-// trickle timer fires setTimeout callbacks that throw asynchronously.
-// Patch NProgress.set (the core method called by start/done/inc/trickle)
-// to bail out safely when the bar element is missing.
-const _npSet = nprogress.set.bind(nprogress);
-nprogress.set = function (n) {
-  try {
-    return _npSet(n);
-  } catch (e) {
-    // Bar element not yet in DOM — silently ignore
-  }
-};
+// NProgress's trickle timer uses setTimeout internally, so wrapping
+// start/done/set with try/catch can't catch the deferred applyCss errors.
+// The global error handler in index.html suppresses these at the window level.
+// Additionally, ensure NProgress renders into body (the default).
+nprogress.configure({ parent: "body" });
 
 nprogress.start();
 // Set up app wide read-only configs and install as plugin
