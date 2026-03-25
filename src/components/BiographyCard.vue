@@ -141,4 +141,31 @@ export default {
   text-decoration: none;
   cursor: pointer;
 }
+/* Vuetify :to prop turns v-card into an <a> tag, causing text color
+   to inherit from link styles (white/transparent on certain states).
+   Force black text on biography cards in all states. */
+a.v-card .v-card__text,
+a.v-card:link .v-card__text,
+a.v-card:visited .v-card__text,
+a.v-card:hover .v-card__text,
+a.v-card:active .v-card__text,
+a.v-card:focus .v-card__text {
+  color: #000 !important;
+}
+a.v-card .v-card__subtitle,
+a.v-card:link .v-card__subtitle,
+a.v-card:visited .v-card__subtitle,
+a.v-card:hover .v-card__subtitle,
+a.v-card:active .v-card__subtitle,
+a.v-card:focus .v-card__subtitle {
+  color: #444 !important;
+}
+a.v-card .author-name,
+a.v-card:link .author-name,
+a.v-card:visited .author-name,
+a.v-card:hover .author-name,
+a.v-card:active .author-name,
+a.v-card:focus .author-name {
+  color: #333 !important;
+}
 </style>
