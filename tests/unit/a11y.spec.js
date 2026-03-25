@@ -184,12 +184,12 @@ describe("fixFootnoteTargetSize()", () => {
 // fixNavHeaderRoles
 // ---------------------------------------------------------------------------
 describe("fixNavHeaderRoles()", () => {
-  it("sets role=presentation on header inside nav", () => {
+  it("sets role=none on header inside nav", () => {
     document.body.innerHTML =
       '<nav aria-label="Main navigation"><header>Nav Content</header></nav>';
     fixNavHeaderRoles();
     const header = document.querySelector("header");
-    expect(header.getAttribute("role")).to.equal("presentation");
+    expect(header.getAttribute("role")).to.equal("none");
   });
 
   it("does not affect header outside nav", () => {

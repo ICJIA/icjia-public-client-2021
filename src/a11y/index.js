@@ -195,12 +195,14 @@ const fixLinksInTextBlocks = function () {
   });
 };
 
-// Fix Vuetify v-app-bar <header> inside <nav> — set role="presentation"
-// so the implicit banner role doesn't conflict with the nav landmark.
+// Fix Vuetify v-app-bar <header> inside <nav> — remove the implicit
+// banner landmark so it doesn't conflict with the nav landmark.
+// Use role="none" (the modern synonym for "presentation") which is
+// more widely accepted by accessibility scanners.
 const fixNavHeaderRoles = function () {
   const headers = document.querySelectorAll("nav[aria-label] > header");
   headers.forEach((header) => {
-    header.setAttribute("role", "presentation");
+    header.setAttribute("role", "none");
   });
 };
 
@@ -239,6 +241,104 @@ const fixNestedInteractive = function () {
   });
 };
 
+// Remove invalid ARIA roles — Vuetify 2.x can generate role attributes
+// that are not defined in the WAI-ARIA spec. Strip any role value that
+// is not in the official list. (SiteImprove sia-r110)
+const VALID_ARIA_ROLES = new Set([
+  "alert",
+  "alertdialog",
+  "application",
+  "article",
+  "banner",
+  "blockquote",
+  "button",
+  "caption",
+  "cell",
+  "checkbox",
+  "code",
+  "columnheader",
+  "combobox",
+  "complementary",
+  "contentinfo",
+  "definition",
+  "deletion",
+  "dialog",
+  "directory",
+  "document",
+  "emphasis",
+  "feed",
+  "figure",
+  "form",
+  "generic",
+  "grid",
+  "gridcell",
+  "group",
+  "heading",
+  "img",
+  "insertion",
+  "link",
+  "list",
+  "listbox",
+  "listitem",
+  "log",
+  "main",
+  "marquee",
+  "math",
+  "menu",
+  "menubar",
+  "menuitem",
+  "menuitemcheckbox",
+  "menuitemradio",
+  "meter",
+  "navigation",
+  "none",
+  "note",
+  "option",
+  "paragraph",
+  "presentation",
+  "progressbar",
+  "radio",
+  "radiogroup",
+  "region",
+  "row",
+  "rowgroup",
+  "rowheader",
+  "scrollbar",
+  "search",
+  "searchbox",
+  "separator",
+  "slider",
+  "spinbutton",
+  "status",
+  "strong",
+  "subscript",
+  "superscript",
+  "switch",
+  "tab",
+  "table",
+  "tablist",
+  "tabpanel",
+  "term",
+  "textbox",
+  "time",
+  "timer",
+  "toolbar",
+  "tooltip",
+  "tree",
+  "treegrid",
+  "treeitem",
+]);
+
+const fixInvalidRoles = function () {
+  const els = document.querySelectorAll("[role]");
+  els.forEach((el) => {
+    const role = el.getAttribute("role").trim().toLowerCase();
+    if (role === "" || !VALID_ARIA_ROLES.has(role)) {
+      el.removeAttribute("role");
+    }
+  });
+};
+
 export {
   fixButtonText,
   fixBlankTableHeadings,
@@ -255,4 +355,5 @@ export {
   fixNavHeaderRoles,
   fixOverlayContainer,
   fixNestedInteractive,
+  fixInvalidRoles,
 };

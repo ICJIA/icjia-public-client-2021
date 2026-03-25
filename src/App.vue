@@ -67,6 +67,7 @@ import {
   fixNavHeaderRoles,
   fixOverlayContainer,
   fixNestedInteractive,
+  fixInvalidRoles,
 } from "@/a11y";
 
 export default {
@@ -129,6 +130,7 @@ export default {
         fixNavHeaderRoles();
         fixOverlayContainer();
         fixNestedInteractive();
+        fixInvalidRoles();
         // Delayed fixes for CMS content that loads asynchronously
         setTimeout(() => {
           fixFigureTabindex();
@@ -139,6 +141,7 @@ export default {
           fixOverlayContainer();
           fixNavHeaderRoles();
           fixNestedInteractive();
+          fixInvalidRoles();
         }, 2000);
       });
     },
