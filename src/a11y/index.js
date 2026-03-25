@@ -353,6 +353,33 @@ const fixProhibitedAriaOnImg = function () {
   });
 };
 
+// Fix WCAG 2.5.3 Label in Name — remove aria-label from interactive elements
+// where it conflicts with visible text content. SiteImprove flags elements
+// whose aria-label doesn't match the visible text inside them.
+const fixLabelInName = function () {
+  // Remove aria-label from elements that have visible text children,
+  // since the visible text should serve as the accessible name.
+  const els = document.querySelectorAll(
+    '[role="link"][aria-label], a[aria-label]'
+  );
+  els.forEach((el) => {
+    const visibleText = (el.textContent || "").trim();
+    const ariaLabel = (el.getAttribute("aria-label") || "").trim();
+    // If there's substantial visible text and the aria-label doesn't
+    // start with it (or vice versa), remove the aria-label
+    if (visibleText.length > 3 && ariaLabel.length > 0) {
+      const normalizedVisible = visibleText.replace(/\s+/g, " ").toLowerCase();
+      const normalizedLabel = ariaLabel.replace(/\s+/g, " ").toLowerCase();
+      if (
+        !normalizedLabel.startsWith(normalizedVisible) &&
+        !normalizedVisible.startsWith(normalizedLabel)
+      ) {
+        el.removeAttribute("aria-label");
+      }
+    }
+  });
+};
+
 export {
   fixButtonText,
   fixBlankTableHeadings,
@@ -371,4 +398,5 @@ export {
   fixNestedInteractive,
   fixInvalidRoles,
   fixProhibitedAriaOnImg,
+  fixLabelInName,
 };
