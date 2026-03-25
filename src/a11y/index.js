@@ -339,6 +339,20 @@ const fixInvalidRoles = function () {
   });
 };
 
+// Strip ARIA attributes that are unsupported or prohibited on img-role elements.
+// Vuetify 2.x adds aria-haspopup and aria-expanded on v-img (div[role="img"])
+// when images are inside tooltip or menu activators. (SiteImprove ARIA attribute
+// unsupported or prohibited)
+const fixProhibitedAriaOnImg = function () {
+  const imgs = document.querySelectorAll(
+    '[role="img"][aria-haspopup], [role="img"][aria-expanded], img[aria-haspopup], img[aria-expanded]'
+  );
+  imgs.forEach((el) => {
+    el.removeAttribute("aria-haspopup");
+    el.removeAttribute("aria-expanded");
+  });
+};
+
 export {
   fixButtonText,
   fixBlankTableHeadings,
@@ -356,4 +370,5 @@ export {
   fixOverlayContainer,
   fixNestedInteractive,
   fixInvalidRoles,
+  fixProhibitedAriaOnImg,
 };
