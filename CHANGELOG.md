@@ -4,6 +4,14 @@ All notable changes to the ICJIA Public Website are documented in this file.
 
 ---
 
+## [1.3.6] - 2026-03-25
+
+### Accessibility — Table Cell Context Fix (sia-r77)
+
+- **fix: Add scope attributes to CMS table headers** — Added `fixTableCellContext()` runtime fix to `src/a11y/index.js`. Adds `scope="col"` to all `<th>` elements in `<thead>` of Strapi CMS-rendered tables so `<td>` cells are programmatically associated with their column headers. Resolves SiteImprove "Table cell missing context" on 3 researchhub article pages.
+
+---
+
 ## [1.3.5] - 2026-03-25
 
 ### Accessibility — Heading Hierarchy & TOC Fix

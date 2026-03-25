@@ -452,4 +452,38 @@ export {
   fixCarouselItemRoles,
   fixLabelInName,
   fixFormFieldLabels,
+  fixTableCellContext,
+};
+
+// Fix "Table cell missing context" (sia-r77) — CMS-authored tables from
+// Strapi markdown have <th> in <thead> but lack scope attributes.
+// Add scope="col" to column headers and scope="row" to first-cell row headers
+// so <td> cells are programmatically associated with their headers.
+const fixTableCellContext = function () {
+  const tables = document.querySelectorAll(
+    ".article-body table, .markdown-body table"
+  );
+  tables.forEach((table) => {
+    // Add scope="col" to all <th> in <thead>
+    const theadThs = table.querySelectorAll("thead th");
+    theadThs.forEach((th) => {
+      if (!th.getAttribute("scope")) {
+        th.setAttribute("scope", "col");
+      }
+    });
+    // Add scope="row" to first <td> or <th> in each <tbody> row
+    // if the first cell acts as a row header (non-numeric text)
+    const tbodyRows = table.querySelectorAll("tbody tr");
+    tbodyRows.forEach((row) => {
+      const firstCell = row.querySelector("td:first-child, th:first-child");
+      if (!firstCell) return;
+      const text = (firstCell.textContent || "").trim();
+      // If first cell has substantial text (not just a number/percentage), treat as row header
+      if (text.length > 2 && !/^\d+[\d,.%]*$/.test(text)) {
+        if (firstCell.tagName === "TH" && !firstCell.getAttribute("scope")) {
+          firstCell.setAttribute("scope", "row");
+        }
+      }
+    });
+  });
 };

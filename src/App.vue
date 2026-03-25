@@ -77,6 +77,7 @@ import {
   fixCarouselItemRoles,
   fixLabelInName,
   fixFormFieldLabels,
+  fixTableCellContext,
 } from "@/a11y";
 
 export default {
@@ -159,6 +160,7 @@ export default {
           fixCarouselItemRoles();
           fixLabelInName();
           fixFormFieldLabels();
+          fixTableCellContext();
         }, 2000);
       });
     },
