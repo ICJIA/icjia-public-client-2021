@@ -163,14 +163,15 @@ View the [security policy](SECURITY.md).
 - **Skip navigation** — skip-to-content link for keyboard users
 - **Color contrast** — WCAG AA compliant (4.5:1 ratio minimum)
 - **External links** — screen reader announcement of "(opens in new tab)"
-- **Post-render CMS fixes** — JavaScript corrects accessibility issues from Strapi 3 markdown rendering (heading order, figure tabindex, chip contrast, empty table headers, footnote target size, link underlines)
+- **Post-render CMS fixes** — JavaScript corrects accessibility issues from Strapi 3 markdown rendering (heading order, figure tabindex, chip contrast, empty table headers, footnote target size, link underlines, form field labels, label-in-name conflicts, invalid ARIA roles)
 
 ### Known Remaining Issues
 
-These originate from CMS-authored content and are mitigated by post-render JavaScript. They will be fully resolved in the planned Nuxt 4 / Strapi 5 rewrite:
+These originate from CMS-authored content or external proxy sites and are mitigated by post-render JavaScript where possible. They will be fully resolved in the planned Nuxt 4 / Strapi 5 rewrite:
 
 - Heading level skips in some article bodies (CMS authors skip heading levels)
 - Occasional async data race condition on listing pages (`page-has-heading-one`)
+- Contrast issues on `/sudcontinuum`, `/mhcontinuum`, `/adultredeploy` (separate Netlify sites proxied via `_redirects`)
 
 See [CHANGELOG.md](CHANGELOG.md) for full audit details and remediation history.
 

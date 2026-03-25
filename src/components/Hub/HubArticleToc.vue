@@ -1,6 +1,6 @@
 <template>
   <div id="article-toc">
-    <h3 class="text-uppercase font-oswald mb-2">Table of contents</h3>
+    <p class="font-oswald mb-2" style="font-weight: 700; font-size: 1.17em">TABLE OF CONTENTS</p>
 
     <v-divider></v-divider>
 

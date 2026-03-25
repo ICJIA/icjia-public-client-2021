@@ -4,6 +4,15 @@ All notable changes to the ICJIA Public Website are documented in this file.
 
 ---
 
+## [1.3.5] - 2026-03-25
+
+### Accessibility — Heading Hierarchy & TOC Fix
+
+- **fix: Article pages start with h1** — Replaced `<h3>` "Table of contents" heading in `ArticleToc.vue` and `HubArticleToc.vue` with a styled `<p>` so the article `<h1>` title is the first heading in DOM order. Resolves SiteImprove "Page does not start with a level 1 heading" on all researchhub article pages.
+- **fix: Remove text-transform uppercase** — Used literal uppercase text instead of CSS `text-uppercase` class to avoid SiteImprove best-practice flag for all-caps via `text-transform`.
+
+---
+
 ## [1.3.4] - 2026-03-25
 
 ### Accessibility — WCAG 2.5.3 Label in Name Remediation
