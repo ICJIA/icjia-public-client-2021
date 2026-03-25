@@ -20,6 +20,7 @@
           v-model="query"
           label="Search"
           placeholder="Search"
+          aria-label="Search ICJIA"
           @input="instantSearch"
           style="font-weight: 900"
         />

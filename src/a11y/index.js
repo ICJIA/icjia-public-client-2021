@@ -402,6 +402,35 @@ const fixLabelInName = function () {
   });
 };
 
+// Fix form fields missing labels — Vuetify 2.x v-text-field and v-select
+// sometimes fail to associate <label> with <input> via for/id, causing
+// SiteImprove "Form field missing a label" (WCAG 1.3.1 / 4.1.2).
+// This adds aria-label from the Vuetify-rendered label text when the
+// native association is missing.
+const fixFormFieldLabels = function () {
+  const wrappers = document.querySelectorAll(
+    ".v-text-field, .v-select"
+  );
+  wrappers.forEach((wrapper) => {
+    const input = wrapper.querySelector("input, select, textarea, [role='combobox']");
+    if (!input) return;
+    // Skip if already has a proper label association
+    if (input.getAttribute("aria-label") || input.getAttribute("aria-labelledby")) return;
+    if (input.id) {
+      const associatedLabel = document.querySelector('label[for="' + input.id + '"]');
+      if (associatedLabel) return;
+    }
+    // Find the Vuetify-rendered label text
+    const label = wrapper.querySelector(".v-label");
+    if (label) {
+      const labelText = (label.textContent || "").trim();
+      if (labelText) {
+        input.setAttribute("aria-label", labelText);
+      }
+    }
+  });
+};
+
 export {
   fixButtonText,
   fixBlankTableHeadings,
@@ -422,4 +451,5 @@ export {
   fixProhibitedAriaOnImg,
   fixCarouselItemRoles,
   fixLabelInName,
+  fixFormFieldLabels,
 };

@@ -12,6 +12,7 @@
               v-model="query"
               label="Search"
               placeholder="Search"
+              aria-label="Search ICJIA"
               @input="instantSearch"
               style="font-weight: 900"
             />
@@ -34,7 +35,8 @@
                     <v-select
                       v-model="contentSelected"
                       :items="contentItems"
-                      label="Select"
+                      label="Filter by content type"
+                      aria-label="Filter results by content type"
                       persistent-hint
                       return-object
                       dense

@@ -76,6 +76,7 @@ import {
   fixProhibitedAriaOnImg,
   fixCarouselItemRoles,
   fixLabelInName,
+  fixFormFieldLabels,
 } from "@/a11y";
 
 export default {
@@ -142,6 +143,7 @@ export default {
         fixProhibitedAriaOnImg();
         fixCarouselItemRoles();
         fixLabelInName();
+        fixFormFieldLabels();
         // Delayed fixes for CMS content that loads asynchronously
         setTimeout(() => {
           fixFigureTabindex();
@@ -156,6 +158,7 @@ export default {
           fixProhibitedAriaOnImg();
           fixCarouselItemRoles();
           fixLabelInName();
+          fixFormFieldLabels();
         }, 2000);
       });
     },
