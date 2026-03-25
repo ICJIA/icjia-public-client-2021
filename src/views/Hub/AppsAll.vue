@@ -33,8 +33,8 @@
                 </span>
               </v-btn>
 
-              <v-btn value="grid" small>
-                <span aria-label="Grid view">Grid</span>
+              <v-btn value="grid" small aria-label="Grid view">
+                <span>Grid</span>
 
                 <span class="mdi mdi-view-module" aria-hidden="true"> </span>
               </v-btn>

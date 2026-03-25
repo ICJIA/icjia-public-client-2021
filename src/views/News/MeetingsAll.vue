@@ -9,10 +9,8 @@
                 <h1>ICJIA Meetings</h1>
 
                 <v-btn-toggle v-model="viewToggle" mandatory>
-                  <v-btn value="all" small elevation="1">
-                    <span class="button-weight" aria-label="By date"
-                      >By date</span
-                    >
+                  <v-btn value="all" small elevation="1" aria-label="By date">
+                    <span class="button-weight">By date</span>
 
                     <span class="mdi mdi-calendar" aria-hidden="true"> </span>
                   </v-btn>
@@ -22,9 +20,7 @@
                     small
                     aria-label="By category"
                   >
-                    <span class="button-weight" aria-label="By category"
-                      >By category</span
-                    >
+                    <span class="button-weight">By category</span>
 
                     <span
                       aria-hidden="true"
