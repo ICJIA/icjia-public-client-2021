@@ -54,6 +54,23 @@ Output goes to `dist/`.
 
 ## Testing
 
+### Unit Tests (Mocha/Chai)
+
+201 automated unit tests covering security mitigations, accessibility functions, markdown rendering, Vue components, auth store, and data integrity.
+
+```bash
+npm run tests
+```
+
+| Suite | Tests | What it guards |
+|---|---|---|
+| `security.spec.js` | 39 | XSS payloads (20+), GraphQL injection, security headers, CORS, source maps |
+| `config.spec.js` | 95 | HTTPS enforcement, 10 API data files, build config, env security |
+| `markdown.spec.js` | 21 | Heading anchors, link attributes, tables, code blocks, edge cases |
+| `a11y.spec.js` | 20 | All 8 a11y DOM fix functions (headings, tabindex, ARIA, target size) |
+| `components.spec.js` | 14 | SkipLink, Banner, Disclaimer — rendering, props, XSS in v-html |
+| `auth.spec.js` | 12 | Vuex mutations/getters, logout localStorage cleanup |
+
 ### Regression Tests (Playwright)
 
 37 end-to-end tests covering navigation, page loads, search, cards, and page structure across all major sections.
@@ -133,6 +150,8 @@ View the [security policy](SECURITY.md).
 | Core pages (12-page axe-core audit) | **12/12 zero violations** |
 | Full site sweep (143 pages, 10 content types) | **140/143 clean (98%)** |
 | Regression tests (Playwright) | **37/37 passing** |
+| Unit tests — a11y functions (Mocha/Chai) | **20/20 passing** |
+| Unit tests — security (Mocha/Chai) | **39/39 passing** |
 | Automated score (WCAG 2.1 AA) | **A / 99%+** |
 
 ### Accessibility Features
