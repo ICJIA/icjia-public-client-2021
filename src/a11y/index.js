@@ -353,6 +353,28 @@ const fixProhibitedAriaOnImg = function () {
   });
 };
 
+// Fix prohibited ARIA attributes on carousel items — Vuetify 2.x renders
+// v-carousel-item as a plain div (implicit "generic" role) which prohibits
+// aria-roledescription and aria-label. Add role="group" so these attributes
+// are valid per WAI-ARIA carousel pattern.
+const fixCarouselItemRoles = function () {
+  const items = document.querySelectorAll(
+    ".v-carousel .v-window-item[aria-roledescription], .v-carousel .v-window-item[aria-label]"
+  );
+  items.forEach((el) => {
+    if (!el.getAttribute("role")) {
+      el.setAttribute("role", "group");
+    }
+  });
+  // Also ensure the carousel container has role="region" if it has an aria-label
+  const carousels = document.querySelectorAll(".v-carousel[aria-label]");
+  carousels.forEach((el) => {
+    if (!el.getAttribute("role")) {
+      el.setAttribute("role", "region");
+    }
+  });
+};
+
 // Fix WCAG 2.5.3 Label in Name — remove aria-label from interactive elements
 // where it conflicts with visible text content. SiteImprove flags elements
 // whose aria-label doesn't match the visible text inside them.
@@ -398,5 +420,6 @@ export {
   fixNestedInteractive,
   fixInvalidRoles,
   fixProhibitedAriaOnImg,
+  fixCarouselItemRoles,
   fixLabelInName,
 };

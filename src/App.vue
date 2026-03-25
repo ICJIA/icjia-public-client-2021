@@ -74,6 +74,7 @@ import {
   fixNestedInteractive,
   fixInvalidRoles,
   fixProhibitedAriaOnImg,
+  fixCarouselItemRoles,
   fixLabelInName,
 } from "@/a11y";
 
@@ -139,6 +140,7 @@ export default {
         fixNestedInteractive();
         fixInvalidRoles();
         fixProhibitedAriaOnImg();
+        fixCarouselItemRoles();
         fixLabelInName();
         // Delayed fixes for CMS content that loads asynchronously
         setTimeout(() => {
@@ -152,6 +154,7 @@ export default {
           fixNestedInteractive();
           fixInvalidRoles();
           fixProhibitedAriaOnImg();
+          fixCarouselItemRoles();
           fixLabelInName();
         }, 2000);
       });

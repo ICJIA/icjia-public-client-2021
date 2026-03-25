@@ -4,7 +4,10 @@
       <v-container class="markdown-body" style="margin-bottom: 25px">
         <v-row class="mb-8">
           <v-col cols="12">
-            <h1 v-html="render(page.title)" v-if="page"></h1>
+            <h1
+              v-html="render(page.title).replace(/^<p>|<\/p>$/g, '')"
+              v-if="page"
+            ></h1>
             <div v-html="render(page.body)" v-if="page"></div>
           </v-col>
         </v-row>
@@ -25,11 +28,13 @@
         <v-carousel
           height="650"
           :cycle="true"
+          role="region"
           aria-label="Latest research articles slideshow"
         >
           <v-carousel-item
             v-for="(article, i) in articles"
             :key="i"
+            role="group"
             aria-roledescription="slide"
             :aria-label="'Slide ' + (i + 1) + ': ' + article.title"
           >
@@ -39,7 +44,7 @@
                   <v-img
                     v-if="article && article.splash"
                     :src="article.splash"
-                    alt="ICJIA Research Hub page splash image"
+                    alt=""
                     height="650"
                     class="hover"
                     tabindex="0"
@@ -72,27 +77,31 @@
                             </span>
                           </v-chip>
                           <div class="text-center hidden-sm-and-down" style="">
-                            <h2
+                            <p
                               style="
                                 font-size: 18px;
                                 font-weight: 300;
                                 color: #fff;
+                                margin-bottom: 0;
                               "
                             >
                               {{ article.date | format }}
-                            </h2>
+                            </p>
                           </div>
-                          <h1
+                          <p
                             class=""
                             style="
                               color: #fff;
                               font-weight: 900;
                               font-size: 36px;
                               margin-top: -5px;
+                              margin-bottom: 0;
                             "
+                            aria-role="heading"
+                            aria-level="2"
                           >
                             {{ article.title }}
-                          </h1>
+                          </p>
 
                           <div
                             style="margin-top: -10px"

@@ -6,11 +6,13 @@
       show-arrows-on-hover
       hide-delimiters
       style="border-bottom: 1px solid #d8d8d8; margin-top: -15px"
+      role="region"
       aria-label="Featured content slideshow"
     >
       <v-carousel-item
         v-for="(slide, index) in slider.slide"
         :key="index"
+        role="group"
         aria-roledescription="slide"
         :aria-label="'Slide ' + (index + 1) + ': ' + slide.title"
       >
