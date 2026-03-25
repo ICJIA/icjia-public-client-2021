@@ -44,7 +44,7 @@
                     class="hover"
                     tabindex="0"
                     role="link"
-                    :aria-label="'Read article: ' + article.title"
+                    :aria-label="article.title"
                     @click="
                       $router.push(`/researchhub/articles/${article.slug}`)
                     "

@@ -81,7 +81,7 @@
             </p>
             <router-link
               to="/"
-              aria-label="Read more about this item."
+              aria-label="Read more about this event"
               class="skiplink dark"
               title="Read more about this item."
               style="font-size: 12px; margin-top: 5px"
