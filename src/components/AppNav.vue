@@ -38,6 +38,10 @@
             text-decoration: none !important;
             color: #333 !important;
             background: none !important;
+            display: inline-flex;
+            align-items: center;
+            min-height: 44px;
+            padding: 4px 0;
           "
           ><span style="font-weight: 900 !important" class="agency"
             >ILLINOIS CRIMINAL JUSTICE INFORMATION AUTHORITY</span
