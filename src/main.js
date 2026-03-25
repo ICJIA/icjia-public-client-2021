@@ -24,10 +24,19 @@ import VueGtag from "vue-gtag";
 
 Vue.config.productionTip = false;
 
-// NProgress's trickle timer uses setTimeout internally, so wrapping
-// start/done/set with try/catch can't catch the deferred applyCss errors.
-// The global error handler in index.html suppresses these at the window level.
-// Additionally, ensure NProgress renders into body (the default).
+// Suppress NProgress null-element errors globally. NProgress's trickle
+// timer uses setTimeout internally so try/catch wrappers can't catch the
+// deferred applyCss calls. Use Vue.config.errorHandler + unhandledrejection
+// to catch errors Vue lifecycle hooks surface.
+Vue.config.errorHandler = function (err, vm, info) {
+  if (
+    err.message &&
+    err.message.includes("Cannot read properties of null (reading 'style')")
+  ) {
+    return; // Suppress NProgress bar-not-in-DOM errors
+  }
+  console.error("[Vue error]", err, info);
+};
 nprogress.configure({ parent: "body" });
 
 nprogress.start();

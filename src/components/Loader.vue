@@ -47,10 +47,18 @@
 import NProgress from "nprogress";
 export default {
   mounted() {
-    NProgress.start();
+    try {
+      NProgress.start();
+    } catch (e) {
+      // NProgress bar element may not exist yet
+    }
   },
   beforeDestroy() {
-    NProgress.done();
+    try {
+      NProgress.done();
+    } catch (e) {
+      // NProgress bar element may have been removed
+    }
   },
   data() {
     return {};
