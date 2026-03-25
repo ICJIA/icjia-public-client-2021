@@ -4,6 +4,18 @@ All notable changes to the ICJIA Public Website are documented in this file.
 
 ---
 
+## [1.3.4] - 2026-03-25
+
+### Accessibility — WCAG 2.5.3 Label in Name Remediation
+
+- **fix: ArticleView print button** — Replaced `<v-icon aria-label="Print">printer</v-icon>` with `<v-btn icon aria-label="Print article"><v-icon>mdi-printer</v-icon></v-btn>` to eliminate visible text / accessible name mismatch (icon name "printer" in DOM conflicted with aria-label "Print").
+- **fix: DatasetView download button** — Changed `aria-label="Download dataset"` to `aria-label="Download here"` to match visible button text "Download here" (WCAG 2.5.3).
+- **fix: AppNav hamburger menu** — Changed `aria-label="Open navigation menu"` to `aria-label="MENU"` to match visible text "MENU" (WCAG 2.5.3).
+
+**Note:** CMS-fetched markdown content (Strapi) is handled by the `fixLabelInName` runtime fix in `src/a11y/index.js` which strips conflicting aria-labels from interactive elements after page load.
+
+---
+
 ## [1.3.3] - 2026-03-25
 
 ### Accessibility — WCAG AA Color Contrast Remediation

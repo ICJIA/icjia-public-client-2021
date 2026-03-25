@@ -108,13 +108,14 @@
             </span>
 
             <span class="mx-2">|</span>
-            <v-icon
+            <v-btn
+              icon
               class="article-print"
-              aria-label="Print"
+              aria-label="Print article"
               @click="printArticle"
             >
-              <template>printer</template>
-            </v-icon>
+              <v-icon>mdi-printer</v-icon>
+            </v-btn>
           </div>
 
           <v-divider></v-divider>
