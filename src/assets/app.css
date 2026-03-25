@@ -372,3 +372,26 @@ a[target="_blank"]::after {
 .v-chip {
   overflow: visible !important;
 }
+
+/* WCAG 1.4.4 — prevent text clipping in Vuetify form fields at 200% zoom.
+   Vuetify 2 uses fixed pixel heights on inputs which clip text when resized.
+   (SiteImprove sia-r83) */
+.v-input .v-input__slot {
+  min-height: auto !important;
+  height: auto !important;
+}
+
+.v-text-field input,
+.v-text-field textarea,
+.v-select .v-select__selection {
+  overflow: visible !important;
+}
+
+.v-text-field .v-input__slot {
+  min-height: 2.5em !important;
+  height: auto !important;
+}
+
+.v-text-field--enclosed .v-input__slot {
+  min-height: 2.5em !important;
+}

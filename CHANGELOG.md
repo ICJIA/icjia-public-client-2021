@@ -4,6 +4,14 @@ All notable changes to the ICJIA Public Website are documented in this file.
 
 ---
 
+## [1.3.8] - 2026-03-25
+
+### Accessibility — Text Clipping at 200% Zoom (sia-r83)
+
+- **fix: Prevent Vuetify form field text clipping on resize** — Added CSS overrides in `app.css` to replace Vuetify 2's fixed pixel heights on form inputs with relative `em` units and `overflow: visible`. Resolves WCAG 1.4.4 "Text is clipped when resized" on grant status form, LAP request form, and search pages.
+
+---
+
 ## [1.3.7] - 2026-03-25
 
 ### Accessibility — Empty Container Elements (sia-r68)
