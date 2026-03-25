@@ -24,22 +24,17 @@ import VueGtag from "vue-gtag";
 
 Vue.config.productionTip = false;
 
-// Guard NProgress against null DOM element errors when called before
-// the progress bar container exists (e.g. in Vue created() hooks).
-const _npStart = nprogress.start.bind(nprogress);
-const _npDone = nprogress.done.bind(nprogress);
-nprogress.start = function () {
+// Guard NProgress against null DOM element errors. Vuetify/Vue router call
+// NProgress.start() before the bar element exists, and NProgress's internal
+// trickle timer fires setTimeout callbacks that throw asynchronously.
+// Patch NProgress.set (the core method called by start/done/inc/trickle)
+// to bail out safely when the bar element is missing.
+const _npSet = nprogress.set.bind(nprogress);
+nprogress.set = function (n) {
   try {
-    return _npStart();
+    return _npSet(n);
   } catch (e) {
-    // Silently ignore — bar element not yet in DOM
-  }
-};
-nprogress.done = function (force) {
-  try {
-    return _npDone(force);
-  } catch (e) {
-    // Silently ignore
+    // Bar element not yet in DOM — silently ignore
   }
 };
 

@@ -47,6 +47,15 @@
       href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css"
     />
     <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
+    <script>
+      // Patch NProgress.set to guard against null bar element errors
+      if (window.NProgress) {
+        var _origSet = window.NProgress.set;
+        window.NProgress.set = function (n) {
+          try { return _origSet.call(window.NProgress, n); } catch (e) {}
+        };
+      }
+    </script>
 
     <link
       rel="stylesheet"
