@@ -63,7 +63,7 @@
 }
 
 .markdown-body .pl-c {
-  color: #6a737d;
+  color: #222;
 }
 
 .markdown-body .pl-c1,
@@ -427,7 +427,7 @@
 }
 
 .markdown-body .text-gray-light {
-  color: #6a737d !important;
+  color: #222 !important;
 }
 
 .markdown-body .mb-0 {
@@ -539,7 +539,7 @@
 
 .markdown-body blockquote {
   border-left: 0.25em solid #dfe2e5;
-  color: #6a737d;
+  color: #222;
   padding: 0 1em;
 }
 
@@ -625,7 +625,7 @@
 }
 
 .markdown-body h6 {
-  color: #6a737d;
+  color: #222;
   font-size: 0.85em;
 }
 

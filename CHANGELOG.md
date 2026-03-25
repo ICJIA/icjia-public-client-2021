@@ -4,6 +4,23 @@ All notable changes to the ICJIA Public Website are documented in this file.
 
 ---
 
+## [1.3.3] - 2026-03-25
+
+### Accessibility — WCAG AA Color Contrast Remediation
+
+Comprehensive sweep of all components to eliminate mid-grey text colors (#555, #595959, #666, #777, #6a737d, #aaa) on light backgrounds. All text now uses #222 or #000 on white/light backgrounds to ensure WCAG AA 2.1 minimum contrast ratio (4.5:1).
+
+**23 files updated across:**
+- Global styles: `app.css`, `github-markdown.css`
+- Components: AppNav, AppSidebar, AttachmentList, BaseCardExpandable, BiographyCard, JobCard, MeetingTable, ModalSearch, NewsCard, PolicyTable, RequiredFormTable, SearchCard, Splash, Toc, TocPolicies
+- Views: FundingSingle, NewsSingle, PublicationsAll, PublicationEditor, Search, SearchStatic
+
+**Not changed** (light text on dark backgrounds, correct as-is): Banner, Disclaimer, HomeSplashV2, AppFooter.
+
+**Not in scope** (separate Netlify sites): `/sudcontinuum`, `/mhcontinuum`, `/adultredeploy`.
+
+---
+
 ## [1.3.2] - 2026-03-25
 
 ### Accessibility — SiteImprove ARIA & Form Label Remediation

@@ -11,11 +11,11 @@
         style="text-transform: uppercase; font-weight: 900; margin-top: -10px"
       >
         <span
-          style="font-size: 14px; color: #666"
+          style="font-size: 14px; color: #222"
           v-if="item.category === 'nofo'"
           >NOTICE OF FUNDING OPPORTUNITY
         </span>
-        <span style="font-size: 14px; color: #666" v-else
+        <span style="font-size: 14px; color: #222" v-else
           >{{ item.category }} PROGRAM</span
         >
 

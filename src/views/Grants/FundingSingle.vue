@@ -22,7 +22,7 @@
             <v-row>
               <v-col cols="12" md="8" class="markdown-body">
                 <div v-if="funding.category === 'nofo'">
-                  <div style="font-weight: 900; font-size: 18px; color: #555">
+                  <div style="font-weight: 900; font-size: 18px; color: #222">
                     Notice of Funding Opportunity
                   </div>
                 </div>

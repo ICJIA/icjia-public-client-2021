@@ -178,7 +178,7 @@ ul.toc-list li {
 }
 
 ul.toc-list li:hover {
-  color: #aaa;
+  color: #000;
   background: #eee;
 }
 

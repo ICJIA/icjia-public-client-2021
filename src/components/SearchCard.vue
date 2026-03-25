@@ -269,7 +269,7 @@ export default {
 }
 
 .search-content-type:hover {
-  color: #666;
+  color: #333;
   text-decoration: underline;
 }
 

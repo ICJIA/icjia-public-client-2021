@@ -58,19 +58,19 @@
               >{{ item.unit.title }}&nbsp;|&nbsp;</span
             >
 
-            <span style="font-weight: 700; color: #444" v-if="item.title"
+            <span style="font-weight: 700; color: #222" v-if="item.title"
               >{{ item.title }}
               <!-- <span v-if="item && item.affiliation === 'board'"> | </span> -->
             </span>
             <!-- <span
               v-if="item && item.affiliation === 'board'"
-              style="font-weight: 700; color: #444"
+              style="font-weight: 700; color: #222"
             >
               ICJIA Board
             </span> -->
             <!-- <span
               v-if="item && item.affiliation === 'staff'"
-              style="font-weight: 700; color: #444"
+              style="font-weight: 700; color: #222"
             >
               ICJIA Staff
             </span> -->
@@ -158,7 +158,7 @@ a.v-card:visited .v-card__subtitle,
 a.v-card:hover .v-card__subtitle,
 a.v-card:active .v-card__subtitle,
 a.v-card:focus .v-card__subtitle {
-  color: #444 !important;
+  color: #222 !important;
 }
 a.v-card .author-name,
 a.v-card:link .author-name,
@@ -166,6 +166,6 @@ a.v-card:visited .author-name,
 a.v-card:hover .author-name,
 a.v-card:active .author-name,
 a.v-card:focus .author-name {
-  color: #333 !important;
+  color: #222 !important;
 }
 </style>

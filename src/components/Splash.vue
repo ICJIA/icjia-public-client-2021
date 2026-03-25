@@ -60,6 +60,6 @@ export default {
   font-size: 12px;
   margin-top: -15px;
   margin-bottom: 25px;
-  color: #777;
+  color: #222;
 }
 </style>

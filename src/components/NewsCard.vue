@@ -49,7 +49,7 @@
       v-if="item.authors"
       style="
         font-weight: 700;
-        color: #595959;
+        color: #222;
         font-size: 12px;
         margin-top: -25px;
       "

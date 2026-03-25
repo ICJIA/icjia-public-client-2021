@@ -29,7 +29,7 @@
             item.end &&
             new Date(addOneDayToDate(item.end)) >= new Date()
           "
-          style="font-size: 14px; font-weight: 900; color: #666"
+          style="font-size: 14px; font-weight: 900; color: #222"
           class="mb-8"
           >&nbsp;|&nbsp;
           <span>Accepting applications through {{ item.end | format }}</span>
@@ -90,7 +90,7 @@
           ></span
         >
       </div>
-      <span class="mb-8" style="color: #666; font-size: 14px; font-weight: 400">
+      <span class="mb-8" style="color: #222; font-size: 14px; font-weight: 400">
         Posted {{ item.start | format }}</span
       >
 

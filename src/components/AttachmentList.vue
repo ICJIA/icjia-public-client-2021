@@ -35,7 +35,7 @@
       >
         <template v-slot:item.updated_at="{ item }">
           <span
-            style="width: 90px; font-size: 14px; font-weight: 700; color: #555"
+            style="width: 90px; font-size: 14px; font-weight: 700; color: #222"
           >
             {{ item.updated_at | dateFormatAlt }}&nbsp;&nbsp;
           </span>
@@ -45,7 +45,7 @@
         </template>
         <template v-slot:item.name="{ item }">
           <span
-            style="font-size: 14px; font-weight: 400; color: #555"
+            style="font-size: 14px; font-weight: 400; color: #222"
             @click.stop.prevent="routeTo(item.url)"
           >
             <span class="attachment">
@@ -70,7 +70,7 @@
         </template>
         <template v-slot:item.name="{ item }">
           <span
-            style="font-size: 14px; font-weight: 400; color: #555"
+            style="font-size: 14px; font-weight: 400; color: #222"
             @click.stop.prevent="routeTo(item.url)"
           >
             <span class="attachment">
@@ -199,7 +199,7 @@ export default {
 }
 
 .attachment:hover {
-  color: #aaa;
+  color: #333;
   text-decoration: none;
 }
 
@@ -209,6 +209,6 @@ export default {
 
 .file-name:hover {
   text-decoration: underline;
-  color: #555;
+  color: #222;
 }
 </style>

@@ -87,7 +87,7 @@
                 <v-divider v-if="child.divider"></v-divider>
                 <v-list-item-title
                   v-if="child.section"
-                  style="margin-top: 10px; font-weight: 900; color: #555"
+                  style="margin-top: 10px; font-weight: 900; color: #222"
                   class="pr-5"
                   >{{ child.section }}</v-list-item-title
                 >

@@ -167,7 +167,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #777;
+  color: #222;
   font-size: 12px;
   font-style: normal;
   margin-top: 5px;

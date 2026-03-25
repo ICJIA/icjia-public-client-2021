@@ -20,7 +20,7 @@
     >
       <template v-slot:item.start="{ item }">
         <div
-          style="width: 110px; font-size: 14px; font-weight: 700; color: #555"
+          style="width: 110px; font-size: 14px; font-weight: 700; color: #222"
         >
           {{ item.start | dateFormatAlt }}
         </div>
@@ -46,13 +46,13 @@
       </template>
 
       <template v-slot:item.category="{ item }">
-        <div style="font-size: 14px; font-weight: 700; color: #555">
+        <div style="font-size: 14px; font-weight: 700; color: #222">
           {{ getCleanCategory(item.category) }}
         </div>
       </template>
 
       <template v-slot:item.attachments="{ item }">
-        <div style="font-weight: 400; color: #555">
+        <div style="font-weight: 400; color: #222">
           <span style=""
             ><v-chip
               x-small

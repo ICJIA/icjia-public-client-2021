@@ -45,7 +45,7 @@
                     width: 90px;
                     font-size: 14px;
                     font-weight: 700;
-                    color: #555;
+                    color: #222;
                   "
                 >
                   {{ item.publicationDate | dateFormatAlt }}

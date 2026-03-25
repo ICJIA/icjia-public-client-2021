@@ -337,9 +337,9 @@ export default {
 <style>
 .author {
   font-weight: 700;
-  color: #666;
+  color: #222;
 }
 .author:hover {
-  color: #aaa;
+  color: #333;
 }
 </style>

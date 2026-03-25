@@ -41,7 +41,7 @@
                         width: 90px;
                         font-size: 14px;
                         font-weight: 700;
-                        color: #555;
+                        color: #222;
                       "
                     >
                       {{ item.publicationDate | dateFormatAlt }}
@@ -140,7 +140,7 @@
                 <div
                   d-flex
                   class="text-left"
-                  style="font-size: 12px; font-weight: 900; color: #666"
+                  style="font-size: 12px; font-weight: 900; color: #222"
                 >
                   Publication Type
                 </div>
@@ -162,7 +162,7 @@
                 <div
                   d-flex
                   class="text-left mb-3"
-                  style="font-size: 12px; font-weight: 900; color: #666"
+                  style="font-size: 12px; font-weight: 900; color: #222"
                 >
                   Summary
                 </div>

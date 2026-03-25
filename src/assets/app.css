@@ -13,7 +13,7 @@ a {
 }
 
 a:hover {
-  color: #777 !important;
+  color: #333 !important;
   text-decoration: none;
 }
 
@@ -68,7 +68,7 @@ a:hover {
   font-weight: bold;
 }
 .download-link:hover {
-  color: #555;
+  color: #333;
 
   text-decoration: underline;
 }
@@ -79,7 +79,7 @@ a:hover {
 }
 
 .white-link:hover {
-  color: #ccc !important;
+  color: #fff !important;
   text-decoration: underline !important;
 }
 
@@ -198,11 +198,11 @@ a:hover {
 
 .author-name {
   font-weight: 700 !important;
-  color: #555 !important;
+  color: #222 !important;
   text-decoration: underline !important;
 }
 .author-name:hover {
-  color: #777 !important;
+  color: #333 !important;
   text-decoration: none !important;
 }
 

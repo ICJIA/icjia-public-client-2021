@@ -20,7 +20,7 @@
     >
       <template v-slot:item.published_at="{ item }">
         <div
-          style="width: 110px; font-size: 14px; font-weight: 400; color: #555"
+          style="width: 110px; font-size: 14px; font-weight: 400; color: #222"
           class=""
         >
           <span class="">
