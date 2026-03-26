@@ -1,0 +1,25 @@
+# Illinois Criminal Justice Information Authority (ICJIA)
+
+> ICJIA is an Illinois state agency dedicated to improving the administration of criminal justice through research, grants, and policy development.
+
+## About
+
+The Illinois Criminal Justice Information Authority (ICJIA) is a state agency created in 1983 to improve the administration of criminal justice in Illinois. ICJIA brings together key leaders across the justice system and the public to identify critical issues facing the criminal justice system, propose and evaluate policies, and improve the administration of criminal justice in Illinois.
+
+## Key Functions
+
+- **Research:** Conduct and publish research on criminal justice topics in Illinois.
+- **Grants:** Administer state and federal grants for criminal justice programs.
+- **Policy Development:** Develop policies to improve criminal justice administration.
+- **Information Authority:** Serve as a clearinghouse for criminal justice information.
+
+## Website
+
+- URL: https://icjia.illinois.gov/
+- Content: News, research publications, grant opportunities, event information, and agency resources.
+- Framework: Vue.js single-page application (SPA).
+
+## Contact
+
+- Website: https://icjia.illinois.gov/about
+- Address: 60 E. Van Buren St., Suite 600, Chicago, IL 60605
