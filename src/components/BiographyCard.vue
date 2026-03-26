@@ -45,8 +45,8 @@
               :to="`/about/biographies/${item.slug}`"
               text
               x-small
-              aria-label="View Biography"
-              ><v-icon>link</v-icon></v-btn
+              :aria-label="'View biography for ' + item.fullName"
+              >View<v-icon right small>mdi-open-in-new</v-icon></v-btn
             >
           </span>
 

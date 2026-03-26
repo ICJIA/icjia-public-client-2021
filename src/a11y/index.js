@@ -431,6 +431,34 @@ const fixFormFieldLabels = function () {
   });
 };
 
+// Fix invalid `aria-role` attributes — `aria-role` is not a valid HTML attribute;
+// the correct attribute is `role`. Convert any `aria-role` to `role` if the value
+// is a valid ARIA role, otherwise remove it entirely.
+const fixAriaRoleAttribute = function () {
+  const els = document.querySelectorAll("[aria-role]");
+  els.forEach((el) => {
+    const value = (el.getAttribute("aria-role") || "").trim().toLowerCase();
+    el.removeAttribute("aria-role");
+    if (value && VALID_ARIA_ROLES.has(value) && !el.getAttribute("role")) {
+      el.setAttribute("role", value);
+    }
+  });
+};
+
+// Fix prohibited `aria-haspopup` on plain links — Vuetify 2.x v-tooltip injects
+// `aria-haspopup="true"` and `aria-expanded` on activator elements via v-bind="attrs".
+// These attributes are invalid on <a> elements (WAI-ARIA only allows them on
+// button, combobox, gridcell, menuitem, row, tab, textbox, and treeitem roles).
+const fixProhibitedAriaOnLinks = function () {
+  const links = document.querySelectorAll(
+    "a[aria-haspopup], a[aria-expanded]"
+  );
+  links.forEach((el) => {
+    el.removeAttribute("aria-haspopup");
+    el.removeAttribute("aria-expanded");
+  });
+};
+
 export {
   fixButtonText,
   fixBlankTableHeadings,
@@ -453,6 +481,8 @@ export {
   fixLabelInName,
   fixFormFieldLabels,
   fixTableCellContext,
+  fixAriaRoleAttribute,
+  fixProhibitedAriaOnLinks,
 };
 
 // Fix "Table cell missing context" (sia-r77) — CMS-authored tables from

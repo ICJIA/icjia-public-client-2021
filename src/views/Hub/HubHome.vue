@@ -97,7 +97,7 @@
                               margin-top: -5px;
                               margin-bottom: 0;
                             "
-                            aria-role="heading"
+                            role="heading"
                             aria-level="2"
                           >
                             {{ article.title }}

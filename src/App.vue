@@ -78,6 +78,8 @@ import {
   fixLabelInName,
   fixFormFieldLabels,
   fixTableCellContext,
+  fixAriaRoleAttribute,
+  fixProhibitedAriaOnLinks,
 } from "@/a11y";
 
 export default {
@@ -141,7 +143,9 @@ export default {
         fixOverlayContainer();
         fixNestedInteractive();
         fixInvalidRoles();
+        fixAriaRoleAttribute();
         fixProhibitedAriaOnImg();
+        fixProhibitedAriaOnLinks();
         fixCarouselItemRoles();
         fixLabelInName();
         fixFormFieldLabels();
@@ -156,7 +160,9 @@ export default {
           fixNavHeaderRoles();
           fixNestedInteractive();
           fixInvalidRoles();
+          fixAriaRoleAttribute();
           fixProhibitedAriaOnImg();
+          fixProhibitedAriaOnLinks();
           fixCarouselItemRoles();
           fixLabelInName();
           fixFormFieldLabels();

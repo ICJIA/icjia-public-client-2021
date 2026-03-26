@@ -548,6 +548,11 @@ export default {
 
 <style>
 .theme--light.v-calendar-weekly .v-calendar-weekly__head-weekday.v-past {
-  color: #000;
+  color: #000 !important;
+  background-color: #fff !important;
+}
+.theme--light.v-calendar-weekly .v-calendar-weekly__head-weekday {
+  color: #000 !important;
+  background-color: #fff !important;
 }
 </style>
