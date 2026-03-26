@@ -147,12 +147,11 @@ View the [security policy](SECURITY.md).
 
 | Metric | Score |
 |---|---|
-| Core pages (12-page axe-core audit) | **12/12 zero violations** |
-| Full site sweep (143 pages, 10 content types) | **140/143 clean (98%)** |
+| Full site audit (57 pages, 10 content types) | **57/57 zero violations (100%)** |
 | Regression tests (Playwright) | **37/37 passing** |
 | Unit tests — a11y functions (Mocha/Chai) | **20/20 passing** |
 | Unit tests — security (Mocha/Chai) | **39/39 passing** |
-| Automated score (WCAG 2.1 AA) | **A / 99%+** |
+| Automated score (WCAG 2.1 AA) | **A / 100%** |
 
 ### Accessibility Features
 
