@@ -187,7 +187,7 @@ See [CHANGELOG.md](CHANGELOG.md) for full audit details and remediation history.
 │   ├── router/             Vue Router configuration
 │   ├── services/           API and utility services
 │   └── plugins/            Vuetify and Apollo plugins
-├── public/                 Static assets and generated API data
+├── public/                 Static assets, generated API data, and llms.txt
 ├── tests/                  Playwright regression tests
 ├── scripts/                Audit and link checker scripts
 ├── reports/                Generated reports (CSV, JSON)

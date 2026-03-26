@@ -4,6 +4,19 @@ All notable changes to the ICJIA Public Website are documented in this file.
 
 ---
 
+## [1.3.9] - 2026-03-26
+
+### SEO & AI Readiness
+
+- **fix: Add Open Graph and Twitter Card meta tags** — Added `og:title`, `og:description`, `og:image`, `og:url`, `og:type`, `og:site_name`, and Twitter Card equivalents to `index.html` for proper social sharing previews on Facebook, LinkedIn, X, WhatsApp, Slack, and iMessage.
+- **fix: Expand meta description** — Replaced short "Illinois Criminal Justice Information Authority" description with a descriptive sentence under 160 characters.
+- **fix: Add canonical URL** — Added `<link rel="canonical">` pointing to `https://icjia.illinois.gov/`.
+- **fix: Add JSON-LD structured data** — Added `WebSite` schema with `GovernmentOrganization` publisher, logo, and `dateModified` for AI systems and search engines.
+- **fix: Add authorship meta tag** — Added `<meta name="author">` for AI attribution.
+- **fix: Add llms.txt** — Created `public/llms.txt` describing the site for LLM consumption per the llmstxt.org specification.
+
+---
+
 ## [1.3.8] - 2026-03-25
 
 ### Accessibility — Text Clipping at 200% Zoom (sia-r83)
