@@ -20,7 +20,7 @@ import NProgress from "@/services/Progress";
 // import Fuse from "fuse.js";
 import VueGtag from "vue-gtag";
 
-// import "@fortawesome/fontawesome-free/css/all.css";
+import "@fortawesome/fontawesome-free/css/all.css";
 
 Vue.config.productionTip = false;
 NProgress.start();

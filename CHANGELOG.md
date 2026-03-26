@@ -4,6 +4,14 @@ All notable changes to the ICJIA Public Website are documented in this file.
 
 ---
 
+## [1.3.11] - 2026-03-26
+
+### Fix — Font Awesome CDN 403 Error
+
+- **fix: Replace expired Font Awesome CDN kit with local npm package** — Removed `kit.fontawesome.com/170885123f.js` script from `index.html` (returning 403 on all pages). Uncommented the existing `@fortawesome/fontawesome-free` CSS import in `main.js` to load Font Awesome 5 Free from the already-installed npm dependency. All 4 icons (`fa-users`, `fa-facebook`, `fa-twitter`, `fa-globe`) are included in the free package.
+
+---
+
 ## [1.3.10] - 2026-03-26
 
 ### Accessibility — Axe-Core Audit Fixes (57/57 clean)
