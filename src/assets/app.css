@@ -17,18 +17,6 @@ a:hover {
   text-decoration: none;
 }
 
-#nprogress .bar {
-  background: #212e5a !important;
-  height: 5px !important;
-  z-index: 9999999;
-}
-
-#nprogress .spinner-icon {
-  border-top-color: #212e5a !important;
-  border-left-color: #212e5a !important;
-  z-index: 9999999;
-}
-
 .info-card:hover,
 .event-card:hover,
 .news-card:hover {

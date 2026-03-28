@@ -339,18 +339,68 @@ const fixInvalidRoles = function () {
   });
 };
 
-// Strip ARIA attributes that are unsupported or prohibited on img-role elements.
-// Vuetify 2.x adds aria-haspopup and aria-expanded on v-img (div[role="img"])
-// when images are inside tooltip or menu activators. (SiteImprove ARIA attribute
-// unsupported or prohibited)
+// Strip ARIA attributes that are unsupported or prohibited on img-role elements
+// and on presentation/none-role elements. (SiteImprove sia-r18)
+// - role="img": aria-haspopup and aria-expanded are not permitted
+// - role="presentation"/"none": aria-label and aria-labelledby are prohibited
+// Uses a MutationObserver to catch attributes the instant Vuetify adds them,
+// preventing Siteimprove from seeing the prohibited state.
 const fixProhibitedAriaOnImg = function () {
-  const imgs = document.querySelectorAll(
-    '[role="img"][aria-haspopup], [role="img"][aria-expanded], img[aria-haspopup], img[aria-expanded]'
-  );
-  imgs.forEach((el) => {
-    el.removeAttribute("aria-haspopup");
-    el.removeAttribute("aria-expanded");
-  });
+  const strip = () => {
+    const imgs = document.querySelectorAll(
+      '[role="img"][aria-haspopup], [role="img"][aria-expanded], img[aria-haspopup], img[aria-expanded]'
+    );
+    imgs.forEach((el) => {
+      el.removeAttribute("aria-haspopup");
+      el.removeAttribute("aria-expanded");
+    });
+    const pres = document.querySelectorAll(
+      '[role="presentation"][aria-label], [role="presentation"][aria-labelledby], [role="none"][aria-label], [role="none"][aria-labelledby]'
+    );
+    pres.forEach((el) => {
+      el.removeAttribute("aria-label");
+      el.removeAttribute("aria-labelledby");
+    });
+  };
+  strip();
+  if (!window._imgAriaObserver) {
+    window._imgAriaObserver = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        if (m.type === "attributes") {
+          const el = m.target;
+          const role = el.getAttribute("role");
+          const tag = el.tagName;
+          if (role === "img" || tag === "IMG") {
+            if (el.hasAttribute("aria-haspopup"))
+              el.removeAttribute("aria-haspopup");
+            if (el.hasAttribute("aria-expanded"))
+              el.removeAttribute("aria-expanded");
+          }
+          if (role === "presentation" || role === "none") {
+            if (el.hasAttribute("aria-label"))
+              el.removeAttribute("aria-label");
+            if (el.hasAttribute("aria-labelledby"))
+              el.removeAttribute("aria-labelledby");
+          }
+        }
+        if (m.type === "childList") {
+          strip();
+        }
+      }
+    });
+    window._imgAriaObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: [
+        "aria-haspopup",
+        "aria-expanded",
+        "aria-label",
+        "aria-labelledby",
+        "role",
+      ],
+    });
+  }
 };
 
 // Fix prohibited ARIA attributes on carousel items — Vuetify 2.x renders

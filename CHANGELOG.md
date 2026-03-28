@@ -4,6 +4,16 @@ All notable changes to the ICJIA Public Website are documented in this file.
 
 ---
 
+## [1.3.12] - 2026-03-28
+
+### Fix — Siteimprove ARIA Violations (sia-r110, sia-r18)
+
+- **fix: Remove `nprogress` package** — Uninstalled the `nprogress` npm dependency that injected `role="bar"` and `role="spinner"` (invalid WAI-ARIA roles) on every page. All code already uses the custom `@/services/Progress` replacement; removed leftover `#nprogress` CSS from `app.css` and commented-out references in `Toggle.vue`.
+- **fix: Upgrade `fixProhibitedAriaOnImg` to MutationObserver** — Replaced the one-shot DOM scan with a persistent MutationObserver that strips prohibited ARIA attributes the instant Vuetify adds them, before Siteimprove can capture the violation. Covers `aria-haspopup`/`aria-expanded` on `role="img"` elements and `aria-label`/`aria-labelledby` on `role="presentation"`/`role="none"` elements.
+- **fix: Remove `alt` from decorative splash image** — Cleared the `alt` attribute on the `HomeSplashV2` carousel image (`role="presentation"`) to eliminate the prohibited `aria-label` on a presentational element.
+
+---
+
 ## [1.3.11] - 2026-03-26
 
 ### Fix — Font Awesome CDN 403 Error

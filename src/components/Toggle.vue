@@ -17,7 +17,6 @@
 </template>
 
 <script>
-// import NProgress from "@/services/Progress";
 export default {
   data() {
     return {
@@ -27,10 +26,8 @@ export default {
   watch: {
     icon(newValue, oldValue) {
       if (!newValue) {
-        //nprogress.start();
         this.$emit("toggle", oldValue);
       } else {
-        ///nprogress.start();
         this.$emit("toggle", newValue);
       }
     },

@@ -39,7 +39,7 @@
                     slide.grayscale
                   )
                 "
-                alt="ICJIA home page splash image"
+                alt=""
                 height="600"
                 role="presentation"
               >
