@@ -147,7 +147,7 @@ View the [security policy](SECURITY.md).
 
 This site is audited with two complementary tools that produce **different results for the same pages**. This is expected — not a sign of inadequate remediation.
 
-**axe-core** (primary, open-source) runs in-browser after full page render, including all runtime accessibility fixes. It follows WCAG success criteria closely and only flags clear violations. This site passes axe-core with **zero violations across all 57 audited pages**.
+**axe-core** (primary, open-source) runs in-browser after full page render, including all runtime accessibility fixes. It follows WCAG success criteria closely and only flags clear violations. This site passes axe-core with **zero violations across 57 sampled pages** (see "Why 57 pages?" below).
 
 **SiteImprove** (secondary, enterprise) crawls pages remotely on a schedule. It uses a proprietary rule set (`sia-r` prefix) that applies some WCAG rules more broadly than the spec requires and includes ambiguous "cantTell" results in its violation count. SiteImprove flags issues in three categories:
 
@@ -177,11 +177,50 @@ This site is audited with two complementary tools that produce **different resul
 
 | Metric | Score |
 |---|---|
-| Full site audit (57 pages, 10 content types) | **57/57 zero violations (100%)** |
+| Sampled audit (57 pages, 10 content types) | **57/57 zero violations (100%)** |
 | Regression tests (Playwright) | **37/37 passing** |
 | Unit tests — a11y functions (Mocha/Chai) | **20/20 passing** |
 | Unit tests — security (Mocha/Chai) | **39/39 passing** |
 | Automated score (WCAG 2.1 AA) | **A / 100%** |
+
+### Why 57 pages? (axe-core sampling strategy)
+
+This site has **2,356 dynamic pages** generated from CMS content across 10 content types. The default axe-core audit tests **57 pages** (~5 randomly sampled per content type plus listing pages). This sampling approach is used because:
+
+1. **Shared templates** — all 172 grant pages render through the same Vue component, all 251 Research Hub articles use the same `ArticleView.vue`, etc. If 5 random grant pages pass, the remaining 167 will pass too — they execute identical code paths.
+
+2. **Runtime a11y fixes are global** — the 24 post-render fix functions in `src/a11y/index.js` run on every page. A fix like `fixTableCellContext()` applies to all CMS tables regardless of which article they appear in.
+
+3. **Time** — a full audit of all 2,356 pages takes ~4 hours (~6 seconds/page). The sampled audit takes ~6 minutes.
+
+4. **CMS content variations** (e.g., inline `color: red` in one article) are the only source of page-specific issues. These are handled by runtime fixes that apply globally, not per-page.
+
+**A full audit of all 2,356 pages is possible** and can be run when needed:
+
+```bash
+# Full audit — ALL pages, ALL content types (~4 hours)
+npm run audit -- all --sample 9999
+
+# Larger sample — 20 per type (~20 minutes)
+npm run audit -- all --sample 20
+
+# Full audit of one content type
+npm run audit -- hub --sample 9999
+```
+
+| Content Type | Total Pages | Default Sample |
+|---|---|---|
+| publications | 1,101 | 5 |
+| meetings | 275 | 5 |
+| hub (articles) | 251 | 5 |
+| jobs | 218 | 5 |
+| posts (news) | 180 | 5 |
+| grants | 172 | 5 |
+| biographies | 114 | 5 |
+| pages | 29 | 5 |
+| units | 10 | 5 |
+| events | 6 | 5 |
+| **Total** | **2,356** | **~57** |
 
 ### Accessibility Features
 

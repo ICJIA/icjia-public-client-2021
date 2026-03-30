@@ -48,6 +48,19 @@ Managers and stakeholders reviewing audit results should understand these differ
 
 This asymmetry is important: axe-core violations are caught and fixed during development, while SiteImprove violations are only discovered after the fact and require a manual investigation cycle.
 
+### Why axe-core audits 57 pages, not all 2,356
+
+This site has **2,356 dynamic pages** across 10 content types (1,101 publications, 275 meetings, 251 hub articles, 218 jobs, 180 posts, 172 grants, 114 biographies, 29 static pages, 10 units, 6 events). The default audit samples ~5 pages per type (57 total) because:
+
+1. **All pages within a content type share the same Vue template.** If 5 random grant pages pass, the other 167 use identical rendering code and will also pass.
+2. **The 24 runtime a11y fix functions are global** — they run on every page load regardless of content.
+3. **A full 2,356-page audit takes ~4 hours** (~6 sec/page) vs. ~6 minutes for the sampled run.
+4. The only source of page-specific violations is **CMS content variations** (e.g., an author using inline `color: red`), which are now handled by global runtime fixes like `fixInlineColorContrast()`.
+
+A full audit can be run at any time: `npm run audit -- all --sample 9999` (~4 hours). A larger sample per type is also available: `npm run audit -- all --sample 20` (~20 min).
+
+SiteImprove, by contrast, crawls the **entire live site** on every scan — which is why it sometimes surfaces issues on specific pages that the sampled axe-core audit did not visit. When this happens, a targeted axe-core audit script is written for those specific URLs (see `scripts/audit-siteimprove-*.js`) to verify and fix the issue.
+
 ### Recommendation
 
 Use **both tools together**: axe-core as the primary development-time gate (fast, accurate, zero false positives), and SiteImprove as a secondary monitoring layer (broader coverage, catches edge cases). When SiteImprove flags an issue that axe-core does not, investigate whether it is a legitimate gap, a stricter-than-spec interpretation, or a stale cached result before prioritizing remediation.
