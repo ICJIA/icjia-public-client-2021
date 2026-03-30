@@ -4,6 +4,43 @@ All notable changes to the ICJIA Public Website are documented in this file.
 
 ---
 
+## IMPORTANT: Understanding Accessibility Tool Differences — axe-core vs. SiteImprove
+
+This site has been audited extensively with **axe-core** (57/57 pages, zero violations) and continues to be monitored with **SiteImprove**. These tools produce different results for the same pages because they implement different rule sets, interpret edge cases differently, and have fundamentally different scanning architectures. **A page that passes one tool may fail the other.** This is expected behavior, not a sign of inadequate remediation.
+
+Managers and stakeholders reviewing audit results should understand these differences before drawing conclusions from either tool's output.
+
+### How the tools differ
+
+| | **axe-core** | **SiteImprove** |
+|---|---|---|
+| **Rule source** | Deque Systems' implementation of WCAG + ACT Rules | SiteImprove's proprietary implementation of WCAG + ACT Rules (`sia-r` prefix) |
+| **Scanning method** | Runs in-browser via JavaScript after full page render, including SPA route changes and async content | Remote crawler that fetches pages server-side; may or may not execute client-side JavaScript fully |
+| **When it runs** | On-demand during development and CI/CD; sees the page exactly as the user does, including all runtime a11y fixes | Periodic scheduled crawls; may cache results and re-report issues that have already been fixed |
+| **Rule strictness** | Follows WCAG success criteria closely; only flags clear violations | Applies some rules more broadly than the WCAG spec requires (e.g., sia-r14 applies "Label in Name" to landmark `<nav>` elements, not just interactive widgets as WCAG 2.5.3 specifies) |
+| **Ambiguous results** | Reports as "incomplete — needs manual review" and excludes from violation count | Reports as "failed/cantTell" and includes in the violation count, inflating the apparent number of issues |
+| **Unique rules** | `color-contrast`, `aria-hidden-focus`, `nested-interactive`, and ~90 others | sia-r90 ("role with implied hidden content has keyboard focus"), sia-r68 ("empty container"), sia-r83 ("text clipped when resized"), and others with no axe-core equivalent |
+| **Open source** | Yes — fully open source, auditable, widely adopted (used by Google Lighthouse, pa11y, jest-axe) | No — proprietary rule engine; rule logic is not publicly auditable |
+| **False positives** | Low — conservative approach means fewer false positives but may miss edge cases | Higher — broader rule interpretation catches more edge cases but also flags technically compliant code |
+| **Cost** | Free | Paid enterprise license |
+
+### Why this matters for this project
+
+1. **This site passes axe-core with zero violations across all 57 audited pages.** This is the industry-standard open-source tool used by Google, Microsoft, and most accessibility consultancies.
+
+2. **SiteImprove flags additional issues** that fall into three categories:
+   - **Legitimate gaps** that axe-core's rule set doesn't cover (e.g., sia-r83 text clipping at 200% zoom, sia-r77 table cell context). These have been remediated.
+   - **Stricter-than-spec interpretations** where SiteImprove applies WCAG rules more broadly than the spec requires (e.g., sia-r14 flagging `<nav aria-label>` landmarks — WCAG 2.5.3 only applies to user interface components). These have been fixed to satisfy SiteImprove even though they were already WCAG-compliant.
+   - **Cached/stale results** from previous crawls that no longer reflect the current state of the site.
+
+3. **Neither tool replaces manual testing.** Both are automated scanners that can only catch ~30-40% of WCAG issues. Screen reader testing, keyboard navigation testing, and cognitive accessibility review require human judgment.
+
+### Recommendation
+
+Use **both tools together**: axe-core as the primary development-time gate (fast, accurate, zero false positives), and SiteImprove as a secondary monitoring layer (broader coverage, catches edge cases). When SiteImprove flags an issue that axe-core does not, investigate whether it is a legitimate gap, a stricter-than-spec interpretation, or a stale cached result before prioritizing remediation.
+
+---
+
 ## [1.3.16] - 2026-03-30
 
 ### Fix — SiteImprove Color Contrast (sia-r69)

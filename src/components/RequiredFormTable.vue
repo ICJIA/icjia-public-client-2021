@@ -62,7 +62,7 @@
           style="
             font-size: 14px;
             font-weight: 700;
-            color: #595959;
+            color: #000;
             margin-left: -20px;
           "
           class="text-center"

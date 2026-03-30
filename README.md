@@ -143,6 +143,34 @@ View the [security policy](SECURITY.md).
 
 **Compliance target:** WCAG 2.1 Level AA (Illinois Title II ADA requirement)
 
+### Accessibility Testing Tools: axe-core vs. SiteImprove
+
+This site is audited with two complementary tools that produce **different results for the same pages**. This is expected — not a sign of inadequate remediation.
+
+**axe-core** (primary, open-source) runs in-browser after full page render, including all runtime accessibility fixes. It follows WCAG success criteria closely and only flags clear violations. This site passes axe-core with **zero violations across all 57 audited pages**.
+
+**SiteImprove** (secondary, enterprise) crawls pages remotely on a schedule. It uses a proprietary rule set (`sia-r` prefix) that applies some WCAG rules more broadly than the spec requires and includes ambiguous "cantTell" results in its violation count. SiteImprove flags issues in three categories:
+
+| Category | Example | Action |
+|---|---|---|
+| **Legitimate gaps** not covered by axe-core | sia-r83 (text clipping at 200% zoom), sia-r77 (table cell context) | Remediated |
+| **Stricter-than-spec interpretations** | sia-r14 (flags `<nav aria-label>` — WCAG 2.5.3 only applies to widgets) | Fixed to satisfy SiteImprove, though already WCAG-compliant |
+| **Cached/stale results** | Issues fixed in code but not yet recrawled | Clear on next SiteImprove scan |
+
+**Key differences:**
+
+| | axe-core | SiteImprove |
+|---|---|---|
+| Rule source | Open-source (Deque Systems) | Proprietary (`sia-r` rules) |
+| Scanning | In-browser, sees runtime JS fixes | Remote crawler, may miss client-side fixes |
+| False positives | Low | Higher — broader rule interpretation |
+| Ambiguous cases | "Incomplete — needs review" (excluded from count) | "Failed/cantTell" (included in count) |
+| Cost | Free | Paid enterprise license |
+
+**Recommendation:** Use axe-core as the development-time gate and SiteImprove as a monitoring layer. When SiteImprove flags an issue axe-core does not, investigate whether it is a legitimate gap, a stricter interpretation, or a stale result. See [CHANGELOG.md](CHANGELOG.md) for detailed analysis.
+
+> **Neither tool replaces manual testing.** Automated scanners catch ~30-40% of WCAG issues. Screen reader testing, keyboard navigation, and cognitive accessibility review require human judgment.
+
 ### Current Status (March 2026)
 
 | Metric | Score |
