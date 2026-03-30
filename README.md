@@ -160,9 +160,9 @@ View the [security policy](SECURITY.md).
 - **Semantic HTML** — proper heading hierarchy, `<nav>` landmarks, `<button>` elements
 - **ARIA labels** — carousel slides, icon buttons, search fields, modals, download links
 - **Skip navigation** — skip-to-content link for keyboard users
-- **Color contrast** — WCAG AA compliant (4.5:1 ratio minimum)
+- **Color contrast** — all text uses black (#000) or white (#fff) for maximum contrast; runtime fix overrides CMS inline color styles
 - **External links** — screen reader announcement of "(opens in new tab)"
-- **Post-render CMS fixes** — JavaScript corrects accessibility issues from Strapi 3 markdown rendering (heading order, figure tabindex, chip contrast, empty table headers, footnote target size, link underlines, form field labels, label-in-name conflicts, invalid ARIA roles)
+- **Post-render CMS fixes** — JavaScript corrects accessibility issues from Strapi 3 markdown rendering (heading order, figure tabindex, chip contrast, empty table headers, table cell context with scope/headers for simple and complex tables, footnote target size, link underlines, form field labels, label-in-name conflicts, invalid ARIA roles, empty containers, inline color contrast)
 
 ### Known Remaining Issues
 
@@ -170,7 +170,7 @@ These originate from CMS-authored content or external proxy sites and are mitiga
 
 - Heading level skips in some article bodies (CMS authors skip heading levels)
 - Occasional async data race condition on listing pages (`page-has-heading-one`)
-- Contrast issues on `/sudcontinuum`, `/mhcontinuum`, `/adultredeploy` (separate Netlify sites proxied via `_redirects`)
+- Contrast issues on `/adultredeploy` (separate Netlify site proxied via `_redirects`)
 
 See [CHANGELOG.md](CHANGELOG.md) for full audit details and remediation history.
 
