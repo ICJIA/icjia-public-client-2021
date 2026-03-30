@@ -278,16 +278,29 @@ const fixOverlayContainer = function () {
 // Fix nested-interactive: Vuetify v-select in data-table footer renders
 // div[role="button"] wrapping a focusable <input>, which nests interactive controls.
 // Remove the role and clean up ARIA attributes that depend on it.
+// Uses MutationObserver because Vuetify re-renders these after async data loads.
 const fixNestedInteractive = function () {
-  const selects = document.querySelectorAll(
-    'div[role="button"][aria-haspopup="listbox"]'
-  );
-  selects.forEach((el) => {
-    el.removeAttribute("role");
-    el.removeAttribute("aria-expanded");
-    el.removeAttribute("aria-haspopup");
-    el.removeAttribute("aria-owns");
-  });
+  const fix = () => {
+    const selects = document.querySelectorAll(
+      'div[role="button"][aria-haspopup="listbox"]'
+    );
+    selects.forEach((el) => {
+      el.removeAttribute("role");
+      el.removeAttribute("aria-expanded");
+      el.removeAttribute("aria-haspopup");
+      el.removeAttribute("aria-owns");
+    });
+  };
+  fix();
+  if (!window._nestedInteractiveObserver) {
+    window._nestedInteractiveObserver = new MutationObserver(fix);
+    window._nestedInteractiveObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["role"],
+    });
+  }
 };
 
 // Remove invalid ARIA roles — Vuetify 2.x can generate role attributes
