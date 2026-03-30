@@ -228,14 +228,12 @@ a:hover {
 .context .v-tab {
   font-size: 14px !important;
   font-weight: 700 !important;
-  color: #fff !important;
-  background: #0a3a60 !important;
+  color: #000 !important;
 }
 
 .context .v-tab--active {
   font-weight: 900 !important;
-  background: #000 !important;
-  color: #fff !important;
+  color: #000 !important;
 }
 
 /* Summary/details */
