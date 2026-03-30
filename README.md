@@ -167,6 +167,8 @@ This site is audited with two complementary tools that produce **different resul
 | Ambiguous cases | "Incomplete — needs review" (excluded from count) | "Failed/cantTell" (included in count) |
 | Cost | Free | Paid enterprise license |
 
+**Build process integration:** axe-core is integrated into the development workflow (`npm run audit`) and can be run on-demand against a local dev server before every deploy. **SiteImprove cannot be integrated into the build process** — it is a cloud service that crawls the live production site on its own schedule with no CLI, API, or local runner. Every SiteImprove flag must be manually reviewed after deployment, and results may lag days or weeks behind the current state of the code.
+
 **Recommendation:** Use axe-core as the development-time gate and SiteImprove as a monitoring layer. When SiteImprove flags an issue axe-core does not, investigate whether it is a legitimate gap, a stricter interpretation, or a stale result. See [CHANGELOG.md](CHANGELOG.md) for detailed analysis.
 
 > **Neither tool replaces manual testing.** Automated scanners catch ~30-40% of WCAG issues. Screen reader testing, keyboard navigation, and cognitive accessibility review require human judgment.

@@ -35,6 +35,19 @@ Managers and stakeholders reviewing audit results should understand these differ
 
 3. **Neither tool replaces manual testing.** Both are automated scanners that can only catch ~30-40% of WCAG issues. Screen reader testing, keyboard navigation testing, and cognitive accessibility review require human judgment.
 
+### Build process integration
+
+**axe-core** is integrated into this project's development workflow. Developers can run `npm run audit` to test any content type on-demand against WCAG 2.1 AA. The audit scripts use Puppeteer to render each page (including all runtime a11y fixes) and run axe-core analysis in the same browser context the user sees. This makes axe-core a reliable, repeatable gate that can be run before every deploy.
+
+**SiteImprove cannot be integrated into the build process.** It is a cloud-hosted service that crawls the live production site on its own schedule. There is no CLI, API, or npm package that can be run locally or in CI/CD. This means:
+
+- SiteImprove flags can only be checked **after** code is deployed to production
+- Every SiteImprove issue must be **manually reviewed** by opening the SiteImprove dashboard, identifying the flagged element, and determining whether it is a legitimate issue, a false positive, or a stale cached result
+- There is no way to run SiteImprove against a local dev server or preview deployment
+- SiteImprove results may lag days or weeks behind the actual state of the site
+
+This asymmetry is important: axe-core violations are caught and fixed during development, while SiteImprove violations are only discovered after the fact and require a manual investigation cycle.
+
 ### Recommendation
 
 Use **both tools together**: axe-core as the primary development-time gate (fast, accurate, zero false positives), and SiteImprove as a secondary monitoring layer (broader coverage, catches edge cases). When SiteImprove flags an issue that axe-core does not, investigate whether it is a legitimate gap, a stricter-than-spec interpretation, or a stale cached result before prioritizing remediation.
