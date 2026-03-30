@@ -4,6 +4,14 @@ All notable changes to the ICJIA Public Website are documented in this file.
 
 ---
 
+## [1.3.14] - 2026-03-30
+
+### Fix — SiteImprove Text Clipped When Resized (sia-r83)
+
+- **fix: Remove `overflow: hidden` from Vuetify labels, toolbar title, and list items** — Vuetify 2 sets `overflow: hidden` with fixed pixel heights on `.v-label` (20px), `.v-toolbar__title` (44px), and `.v-list-item__title`/`.v-list-item__content` elements, causing text to clip at 200% zoom (WCAG 1.4.4). Added CSS overrides in `app.css` setting `overflow: visible` and `height: auto` on all affected selectors. Resolves 2 form pages (grant-status, lap-request) and 100+ search pages flagged by SiteImprove.
+
+---
+
 ## [1.3.13] - 2026-03-30
 
 ### Fix — SiteImprove Table Cell Missing Context (sia-r77)
