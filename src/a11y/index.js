@@ -201,7 +201,10 @@ const fixInlineColorContrast = function () {
     ".article-body, .markdown-body, .v-card__text"
   );
   containers.forEach((container) => {
+    // Skip disclaimer — it uses white text on a dark background intentionally
+    if (container.closest("#disclaimer")) return;
     container.querySelectorAll("[style]").forEach((el) => {
+      if (el.closest("#disclaimer")) return;
       const style = el.getAttribute("style") || "";
       if (/color\s*:/i.test(style) && !/background/i.test(style)) {
         // Strip any inline color declaration, let inherited #000 apply

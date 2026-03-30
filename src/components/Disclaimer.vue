@@ -2,7 +2,7 @@
   <v-card
     elevation="2"
     style="
-      background: #31597a;
+      background: #1e3a52;
       border-top: 1px solid #aaa;
 
       color: #fff !important;
