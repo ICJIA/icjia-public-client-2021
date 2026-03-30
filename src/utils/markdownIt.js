@@ -15,6 +15,8 @@ const PURIFY_OPTS = {
     "data-type",
     "colspan",
     "rowspan",
+    "scope",
+    "headers",
     "allow",
     "allowfullscreen",
     "frameborder",

@@ -536,34 +536,165 @@ export {
 };
 
 // Fix "Table cell missing context" (sia-r77) — CMS-authored tables from
-// Strapi markdown have <th> in <thead> but lack scope attributes.
-// Add scope="col" to column headers and scope="row" to first-cell row headers
-// so <td> cells are programmatically associated with their headers.
+// Strapi markdown may lack scope/headers attributes. Handles three cases:
+//   1. Simple tables: scope="col" on column headers, scope="row" on row headers
+//   2. Tables without <thead>: treats first row of <th> as column headers
+//   3. Complex tables with rowspan/colspan: uses explicit id/headers attributes
 const fixTableCellContext = function () {
   const tables = document.querySelectorAll(
     ".article-body table, .markdown-body table"
   );
-  tables.forEach((table) => {
-    // Add scope="col" to all <th> in <thead>
-    const theadThs = table.querySelectorAll("thead th");
-    theadThs.forEach((th) => {
+  tables.forEach((table, tableIndex) => {
+    const hasRowspan = table.querySelector("[rowspan]");
+    const hasColspan = table.querySelector("[colspan]");
+    const isComplex = hasRowspan || hasColspan;
+
+    if (isComplex) {
+      fixComplexTable(table, tableIndex);
+    } else {
+      fixSimpleTable(table);
+    }
+  });
+};
+
+// Simple tables: add scope="col" to column headers, scope="row" to row headers
+function fixSimpleTable(table) {
+  // Find column headers — in <thead>, or first row if no <thead>
+  let headerRow = table.querySelector("thead tr");
+  if (!headerRow) {
+    // No <thead>: check if first row contains <th> elements
+    const firstRow = table.querySelector("tr");
+    if (firstRow && firstRow.querySelector("th")) {
+      headerRow = firstRow;
+    }
+  }
+  if (headerRow) {
+    headerRow.querySelectorAll("th").forEach((th) => {
       if (!th.getAttribute("scope")) {
         th.setAttribute("scope", "col");
       }
     });
-    // Add scope="row" to first <td> or <th> in each <tbody> row
-    // if the first cell acts as a row header (non-numeric text)
-    const tbodyRows = table.querySelectorAll("tbody tr");
-    tbodyRows.forEach((row) => {
-      const firstCell = row.querySelector("td:first-child, th:first-child");
-      if (!firstCell) return;
+  }
+
+  // Row headers: first cell in each body row that is <th>, or convert <td>
+  // to <th> when the first cell contains non-numeric label text
+  const bodyRows = table.querySelectorAll("tbody tr");
+  const rows = bodyRows.length ? bodyRows : table.querySelectorAll("tr");
+  rows.forEach((row) => {
+    // Skip the header row we already handled
+    if (row === headerRow) return;
+    const firstCell = row.querySelector("td:first-child, th:first-child");
+    if (!firstCell) return;
+    if (firstCell.tagName === "TH") {
+      if (!firstCell.getAttribute("scope")) {
+        firstCell.setAttribute("scope", "row");
+      }
+    } else {
+      // Convert <td> to <th scope="row"> if it looks like a label
       const text = (firstCell.textContent || "").trim();
-      // If first cell has substantial text (not just a number/percentage), treat as row header
-      if (text.length > 2 && !/^\d+[\d,.%]*$/.test(text)) {
-        if (firstCell.tagName === "TH" && !firstCell.getAttribute("scope")) {
-          firstCell.setAttribute("scope", "row");
+      if (text.length > 0 && !/^\d+[\d,.%$]*$/.test(text)) {
+        const th = document.createElement("th");
+        th.innerHTML = firstCell.innerHTML;
+        for (const attr of firstCell.attributes) {
+          th.setAttribute(attr.name, attr.value);
+        }
+        th.setAttribute("scope", "row");
+        firstCell.parentNode.replaceChild(th, firstCell);
+      }
+    }
+  });
+}
+
+// Complex tables (rowspan/colspan): generate unique IDs on <th> cells and
+// explicit headers attributes on <td> cells to satisfy sia-r77.
+function fixComplexTable(table, tableIndex) {
+  const prefix = "tbl" + tableIndex + "-";
+  // Collect all rows in order
+  const allRows = table.querySelectorAll("tr");
+  const numCols = getColumnCount(table);
+
+  // Build a grid that maps each (row, col) to the <th> that owns it,
+  // accounting for rowspan/colspan.
+  const headerGrid = []; // headerGrid[row][col] = th id
+  const cellGrid = [];   // cellGrid[row][col] = element (for rowspan tracking)
+
+  // Initialize grids
+  allRows.forEach(() => {
+    headerGrid.push(new Array(numCols).fill(null));
+    cellGrid.push(new Array(numCols).fill(null));
+  });
+
+  // Fill cellGrid to track which cell occupies each position
+  let thCounter = 0;
+  allRows.forEach((row, rowIdx) => {
+    let colIdx = 0;
+    const cells = row.querySelectorAll("th, td");
+    cells.forEach((cell) => {
+      // Find next available column
+      while (colIdx < numCols && cellGrid[rowIdx][colIdx] !== null) colIdx++;
+      const rs = parseInt(cell.getAttribute("rowspan") || "1", 10);
+      const cs = parseInt(cell.getAttribute("colspan") || "1", 10);
+
+      // Assign ID to <th> elements
+      if (cell.tagName === "TH") {
+        const id = prefix + "h" + thCounter++;
+        cell.setAttribute("id", id);
+        cell.removeAttribute("scope"); // headers attr supersedes scope
+      }
+
+      // Fill grid for all positions this cell spans
+      for (let r = 0; r < rs && rowIdx + r < allRows.length; r++) {
+        for (let c = 0; c < cs && colIdx + c < numCols; c++) {
+          cellGrid[rowIdx + r][colIdx + c] = cell;
         }
       }
+      colIdx += cs;
     });
   });
-};
+
+  // For each <td>, find all <th> cells that share a row or column position
+  allRows.forEach((row, rowIdx) => {
+    let colIdx = 0;
+    const cells = row.querySelectorAll("th, td");
+    cells.forEach((cell) => {
+      while (colIdx < numCols && cellGrid[rowIdx][colIdx] !== cell) colIdx++;
+      if (cell.tagName === "TD") {
+        const cs = parseInt(cell.getAttribute("colspan") || "1", 10);
+        const headerIds = new Set();
+        // Collect column headers: scan upward in same column(s)
+        for (let c = colIdx; c < colIdx + cs && c < numCols; c++) {
+          for (let r = rowIdx - 1; r >= 0; r--) {
+            const above = cellGrid[r][c];
+            if (above && above.tagName === "TH" && above.getAttribute("id")) {
+              headerIds.add(above.getAttribute("id"));
+              break; // closest header wins per column
+            }
+          }
+        }
+        // Collect row headers: scan leftward in same row
+        for (let c = colIdx - 1; c >= 0; c--) {
+          const left = cellGrid[rowIdx][c];
+          if (left && left.tagName === "TH" && left.getAttribute("id")) {
+            headerIds.add(left.getAttribute("id"));
+            break;
+          }
+        }
+        if (headerIds.size) {
+          cell.setAttribute("headers", [...headerIds].join(" "));
+        }
+      }
+      colIdx += parseInt(cell.getAttribute("colspan") || "1", 10);
+    });
+  });
+}
+
+// Count the number of columns in a table by examining the first row
+function getColumnCount(table) {
+  const firstRow = table.querySelector("tr");
+  if (!firstRow) return 0;
+  let count = 0;
+  firstRow.querySelectorAll("th, td").forEach((cell) => {
+    count += parseInt(cell.getAttribute("colspan") || "1", 10);
+  });
+  return count;
+}

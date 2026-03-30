@@ -4,6 +4,15 @@ All notable changes to the ICJIA Public Website are documented in this file.
 
 ---
 
+## [1.3.13] - 2026-03-30
+
+### Fix — SiteImprove Table Cell Missing Context (sia-r77)
+
+- **fix: Rewrite `fixTableCellContext()` for comprehensive table header association** — Replaced the simple `scope="col"` fix with a three-path handler that covers all CMS table patterns from Strapi: (1) simple tables get `scope="col"` on column headers and first-column `<td>` cells are converted to `<th scope="row">` when they contain label text, (2) tables without `<thead>` are detected and first-row `<th>` elements are treated as column headers, (3) complex tables with `rowspan`/`colspan` (from `markdown-it-multimd-table`) get unique `id` attributes on `<th>` cells and explicit `headers` attributes on every `<td>`. Resolves all 9 Research Hub article pages flagged by SiteImprove.
+- **fix: Add `scope` and `headers` to DOMPurify whitelist** — Added both attributes to `ADD_ATTR` in `src/services/Markdown.js` and `src/utils/markdownIt.js` so they survive sanitization if present in CMS source HTML.
+
+---
+
 ## [1.3.12] - 2026-03-28
 
 ### Fix — Siteimprove ARIA Violations (sia-r110, sia-r18)

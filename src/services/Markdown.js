@@ -70,6 +70,8 @@ const renderToHtml = function (markdown) {
       "data-type",
       "colspan",
       "rowspan",
+      "scope",
+      "headers",
       "allow",
       "allowfullscreen",
       "frameborder",
