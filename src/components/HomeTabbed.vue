@@ -345,7 +345,7 @@ export default {
 .v-tab--active {
   font-weight: 900 !important;
   background: #e8e8e8;
-  color: #333 !important;
+  color: #000 !important;
   border: 1px solid #ccc;
 }
 

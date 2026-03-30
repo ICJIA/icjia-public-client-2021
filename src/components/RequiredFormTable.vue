@@ -43,7 +43,7 @@
           style="
             font-size: 14px;
             font-weight: 700;
-            color: #333;
+            color: #000;
             padding-top: 5px;
             padding-bottom: 5px;
             text-transform: uppercase;

@@ -193,6 +193,24 @@ const fixEmptyContainers = function () {
   });
 };
 
+// Fix inline color styles in CMS content that fail WCAG AA contrast.
+// Strapi authors sometimes use "color: red" or other low-contrast inline
+// colors. Replace with black (#000) to guarantee maximum contrast.
+const fixInlineColorContrast = function () {
+  const containers = document.querySelectorAll(
+    ".article-body, .markdown-body, .v-card__text"
+  );
+  containers.forEach((container) => {
+    container.querySelectorAll("[style]").forEach((el) => {
+      const style = el.getAttribute("style") || "";
+      if (/color\s*:/i.test(style) && !/background/i.test(style)) {
+        // Strip any inline color declaration, let inherited #000 apply
+        el.style.color = "#000";
+      }
+    });
+  });
+};
+
 // Fix footnote links that are too small for touch targets (< 24px)
 const fixFootnoteTargetSize = function () {
   const footnoteLinks = document.querySelectorAll(
@@ -562,6 +580,7 @@ export {
   fixAriaRoleAttribute,
   fixProhibitedAriaOnLinks,
   fixEmptyContainers,
+  fixInlineColorContrast,
 };
 
 // Fix "Table cell missing context" (sia-r77) — CMS-authored tables from

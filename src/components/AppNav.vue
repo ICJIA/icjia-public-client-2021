@@ -36,7 +36,7 @@
           to="/"
           style="
             text-decoration: none !important;
-            color: #333 !important;
+            color: #000 !important;
             background: none !important;
             display: inline-flex;
             align-items: center;
@@ -228,7 +228,7 @@ export default {
 
 <style>
 .navItem {
-  color: #333 !important;
+  color: #000 !important;
   font-weight: 900;
 }
 

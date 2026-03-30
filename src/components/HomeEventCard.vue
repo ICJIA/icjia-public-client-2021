@@ -35,7 +35,7 @@
               style="
                 font-size: 18px;
                 font-weight: 900;
-                color: #333;
+                color: #000;
                 text-transform: uppercase;
               "
               class="mb-2"
@@ -47,7 +47,7 @@
                 font-size: 26px;
                 font-weight: 900;
                 margin-top: -15px;
-                border-bottom: 5px solid #333;
+                border-bottom: 5px solid #000;
               "
             >
               {{ getEventDateSpan() }}
@@ -56,7 +56,7 @@
               v-if="event.category !== 'nofo'"
               class="eventTime mt-4 text-left"
               style="
-                color: #333;
+                color: #000;
                 font-weight: 900;
                 text-transform: uppercase;
                 font-size: 12px;

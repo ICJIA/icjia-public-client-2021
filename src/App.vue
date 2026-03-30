@@ -81,6 +81,7 @@ import {
   fixAriaRoleAttribute,
   fixProhibitedAriaOnLinks,
   fixEmptyContainers,
+  fixInlineColorContrast,
 } from "@/a11y";
 
 export default {
@@ -169,6 +170,7 @@ export default {
           fixFormFieldLabels();
           fixTableCellContext();
           fixEmptyContainers();
+          fixInlineColorContrast();
         }, 2000);
       });
     },

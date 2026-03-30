@@ -37,7 +37,7 @@
       </template>
 
       <template v-slot:item.title="{ item }">
-        <div style="font-size: 14px; font-weight: 700; color: #333">
+        <div style="font-size: 14px; font-weight: 700; color: #000">
           <span class="">
             <strong>{{ item.title }}</strong>
           </span>

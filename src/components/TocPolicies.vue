@@ -169,7 +169,7 @@ ul.toc-list {
 }
 
 ul.toc-list li {
-  color: #333;
+  color: #000;
 
   padding: 2px 5px 2px 5px;
   cursor: pointer;

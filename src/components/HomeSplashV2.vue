@@ -241,6 +241,6 @@ export default {
 }
 
 .splash-button:hover {
-  color: #ccc !important;
+  color: #fff !important;
 }
 </style>

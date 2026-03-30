@@ -264,12 +264,12 @@ export default {
   text-decoration: underline;
 }
 .search-content-type {
-  color: #333;
+  color: #000;
   cursor: pointer;
 }
 
 .search-content-type:hover {
-  color: #333;
+  color: #000;
   text-decoration: underline;
 }
 
@@ -279,7 +279,7 @@ export default {
 }
 
 .search-title:hover {
-  color: #333;
+  color: #000;
   text-decoration: underline;
 }
 .search-card:hover {

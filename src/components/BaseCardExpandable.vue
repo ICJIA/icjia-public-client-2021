@@ -26,9 +26,13 @@
             v-if="item.contentType === 'program' && item.status != 'current'"
             :class="{
               green: item.status === 'current',
-              red: item.status === 'archived',
             }"
-            style="font-size: 12px; font-weight: 700"
+            :style="{
+              fontSize: '12px',
+              fontWeight: '700',
+              backgroundColor: item.status === 'archived' ? '#000' : undefined,
+              color: item.status === 'archived' ? '#fff' : undefined,
+            }"
           >
             <span>{{ item.status }}</span>
           </v-chip>

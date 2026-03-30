@@ -4,6 +4,18 @@ All notable changes to the ICJIA Public Website are documented in this file.
 
 ---
 
+## [1.3.16] - 2026-03-30
+
+### Fix — SiteImprove Color Contrast (sia-r69)
+
+- **fix: Replace all grey text colors with black/white across 22 files** — Replaced `#333`/`#444`/`#444d56` text colors with `#000` (black) and `#ccc` on dark backgrounds with `#fff` (white) for maximum contrast. Covers CSS files (`app.css`, `hub.css`, `github-markdown.css`), 16 Vue components, and 2 view files.
+- **fix: Correct `.context .v-tab` fallback colors** — Changed CSS fallback to `color: #fff` on dark-background tab classes (`.context .v-tab` and `.context .v-tab--active`) to avoid black-on-dark-blue if inline styles fail to apply.
+- **fix: Replace Vuetify `red` chip with black for "archived" badge** — Changed `BaseCardExpandable.vue` archived chip from Vuetify's `red` class (white on #F44336, 3.9:1 ratio) to black background with white text (21:1 ratio).
+- **fix: Add `fixInlineColorContrast()` runtime fix for CMS content** — New a11y function in `src/a11y/index.js` overrides inline `color:` styles from Strapi (e.g., `color: red`) with `#000` to guarantee WCAG AA contrast. Resolves 7 occurrences of red text on the NCHIP NOFO page.
+- **fix: Remove `markdown-body` class from footer** — The `github-markdown.css` `.markdown-body { color: #24292e }` rule was overriding `color: #fff` on the dark footer card, causing near-black text on dark blue. Removed the class since the footer doesn't need markdown styling.
+
+---
+
 ## [1.3.15] - 2026-03-30
 
 ### Fix — SiteImprove Visible Label / Accessible Name Mismatch (sia-r14)

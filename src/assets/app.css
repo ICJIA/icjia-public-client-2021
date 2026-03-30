@@ -13,7 +13,7 @@ a {
 }
 
 a:hover {
-  color: #333 !important;
+  color: #000 !important;
   text-decoration: none;
 }
 
@@ -56,7 +56,7 @@ a:hover {
   font-weight: bold;
 }
 .download-link:hover {
-  color: #333;
+  color: #000;
 
   text-decoration: underline;
 }
@@ -190,7 +190,7 @@ a:hover {
   text-decoration: underline !important;
 }
 .author-name:hover {
-  color: #333 !important;
+  color: #000 !important;
   text-decoration: none !important;
 }
 
@@ -228,15 +228,14 @@ a:hover {
 .context .v-tab {
   font-size: 14px !important;
   font-weight: 700 !important;
-  color: #444 !important;
-
+  color: #fff !important;
   background: #0a3a60 !important;
 }
 
 .context .v-tab--active {
   font-weight: 900 !important;
-  background: #333 !important;
-  color: #000 !important;
+  background: #000 !important;
+  color: #fff !important;
 }
 
 /* Summary/details */
@@ -295,7 +294,7 @@ details[open] summary ~ * {
   text-decoration: none;
 }
 .category:hover {
-  color: #444;
+  color: #000;
   text-decoration: underline;
 }
 

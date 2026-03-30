@@ -215,6 +215,6 @@ export default {
   color: #222;
 }
 .author:hover {
-  color: #333;
+  color: #000;
 }
 </style>

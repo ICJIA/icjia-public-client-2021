@@ -117,7 +117,7 @@
 export default {
   data() {
     return {
-      colors: ["#333", "#555"],
+      colors: ["#000", "#000"],
       icons: ["fact_check", "leaderboard", "map", "contact_mail"],
     };
   },

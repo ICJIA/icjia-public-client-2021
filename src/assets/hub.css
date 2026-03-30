@@ -233,7 +233,7 @@
 }
 #article-toc .toc-item {
   font-size: 1.1em;
-  color: #333;
+  color: #000;
   width: 100%;
 }
 #article-toc .toc-item:hover {

@@ -39,6 +39,6 @@ export default {
 }
 
 * >>> .banner-text a:hover {
-  color: #ccc !important;
+  color: #fff !important;
 }
 </style>

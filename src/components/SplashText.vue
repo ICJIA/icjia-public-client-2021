@@ -119,7 +119,7 @@ export default {
   font-size: 12px;
   margin-top: -15px;
   margin-bottom: 25px;
-  color: #333;
+  color: #000;
 }
 
 .banner {

@@ -4,7 +4,7 @@
       flat
       tile
       width="100%"
-      class="text-center markdown-body pb-4"
+      class="text-center pb-4"
       style="background: #0d4474"
     >
       <v-container class="mt-0" fill-height>
@@ -33,7 +33,7 @@
               </router-link>
             </div>
             <div class="pb-6" aria-hidden="true"></div>
-            <div style="font-size: 12px; font-weight: 400">
+            <div style="font-size: 12px; font-weight: 400; color: #fff">
               <router-link to="/about/" style="color: #fff; background: none"
                 >About</router-link
               >
@@ -113,7 +113,7 @@
 
             <div
               class="mt-3"
-              style="font-size: 12px; font-weight: 300; color: #ccc"
+              style="font-size: 12px; font-weight: 300; color: #fff"
             >
               <strong
                 >&#169; {{ new Date().getFullYear() }} Illinois Criminal Justice
