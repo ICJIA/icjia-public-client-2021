@@ -4,7 +4,8 @@
     style="border-bottom: 1px solid #fff; z-index: 10 !important"
     v-resize="resize"
   >
-    <nav aria-label="Breadcrumb navigation">
+    <nav aria-labelledby="nav-breadcrumb-label">
+      <span id="nav-breadcrumb-label" class="sr-only">Breadcrumb navigation</span>
       <v-app-bar
         class=""
         height="35"
@@ -84,7 +85,8 @@
       </v-app-bar>
     </nav>
 
-    <nav aria-label="Section navigation">
+    <nav aria-labelledby="nav-section-label">
+      <span id="nav-section-label" class="sr-only">Section navigation</span>
       <v-app-bar height="35" scroll-threshold="0" color="#eee">
         <v-tabs
           show-arrows

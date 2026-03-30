@@ -170,7 +170,7 @@
           </v-card-text>
         </div>
       </v-expand-transition>
-      <div class="pb-6"></div>
+      <div class="pb-6" aria-hidden="true"></div>
     </v-card>
   </div>
 </template>

@@ -80,6 +80,7 @@ import {
   fixTableCellContext,
   fixAriaRoleAttribute,
   fixProhibitedAriaOnLinks,
+  fixEmptyContainers,
 } from "@/a11y";
 
 export default {
@@ -167,6 +168,7 @@ export default {
           fixLabelInName();
           fixFormFieldLabels();
           fixTableCellContext();
+          fixEmptyContainers();
         }, 2000);
       });
     },

@@ -32,7 +32,7 @@
                 />
               </router-link>
             </div>
-            <div class="pb-6"></div>
+            <div class="pb-6" aria-hidden="true"></div>
             <div style="font-size: 12px; font-weight: 400">
               <router-link to="/about/" style="color: #fff; background: none"
                 >About</router-link

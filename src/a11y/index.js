@@ -165,6 +165,34 @@ const fixEmptyTableHeaders = function () {
   });
 };
 
+// Fix empty container elements from CMS content (sia-r68)
+// Removes empty <tr> rows and hides empty <td> cells from assistive tech.
+const fixEmptyContainers = function () {
+  const containers = document.querySelectorAll(
+    ".article-body, .markdown-body"
+  );
+  containers.forEach((container) => {
+    // Remove completely empty <tr> rows
+    container.querySelectorAll("tr").forEach((tr) => {
+      if (!tr.textContent.trim() && !tr.querySelector("img, svg, iframe")) {
+        tr.remove();
+      }
+    });
+    // Hide empty <td> cells
+    container.querySelectorAll("td").forEach((td) => {
+      if (!td.textContent.trim() && !td.querySelector("img, svg, iframe")) {
+        td.setAttribute("aria-hidden", "true");
+      }
+    });
+  });
+  // Hide any empty spacer divs site-wide
+  document.querySelectorAll("div.pb-6, div.pb-8, div.pb-10").forEach((el) => {
+    if (!el.textContent.trim() && el.children.length === 0) {
+      el.setAttribute("aria-hidden", "true");
+    }
+  });
+};
+
 // Fix footnote links that are too small for touch targets (< 24px)
 const fixFootnoteTargetSize = function () {
   const footnoteLinks = document.querySelectorAll(
@@ -533,6 +561,7 @@ export {
   fixTableCellContext,
   fixAriaRoleAttribute,
   fixProhibitedAriaOnLinks,
+  fixEmptyContainers,
 };
 
 // Fix "Table cell missing context" (sia-r77) — CMS-authored tables from

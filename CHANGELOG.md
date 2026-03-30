@@ -4,6 +4,19 @@ All notable changes to the ICJIA Public Website are documented in this file.
 
 ---
 
+## [1.3.15] - 2026-03-30
+
+### Fix — SiteImprove Visible Label / Accessible Name Mismatch (sia-r14)
+
+- **fix: Replace `aria-label` with `aria-labelledby` on `<nav>` landmarks** — Switched all three navigation landmarks (`AppNavContext.vue`, `AppNavContextBottom.vue`) from `aria-label` to `aria-labelledby` referencing `sr-only` `<span>` elements. **Note:** This is technically a SiteImprove false positive — WCAG 2.5.3 "Label in Name" only applies to user interface components (widgets), not landmark regions. Using `aria-label` to distinguish multiple `<nav>` elements is standard WAI-ARIA practice. However, SiteImprove's sia-r14 rule applies the check more broadly to any element with an `aria-label`, so this fix avoids the flag while preserving identical screen reader behavior.
+
+### Fix — SiteImprove Empty Container Elements (sia-r68)
+
+- **fix: Add `aria-hidden="true"` to empty spacer divs** — Marked empty `<div class="pb-6">` elements in `AppFooter.vue` and `JobCard.vue` with `aria-hidden="true"` so they are invisible to assistive technology.
+- **fix: Add `fixEmptyContainers()` runtime fix for CMS tables** — New a11y function in `src/a11y/index.js` removes empty `<tr>` rows and hides empty `<td>` cells (`aria-hidden="true"`) in CMS-rendered article tables. Also catches any remaining empty spacer divs site-wide. Resolves 6 pages flagged by SiteImprove.
+
+---
+
 ## [1.3.14] - 2026-03-30
 
 ### Fix — SiteImprove Text Clipped When Resized (sia-r83)
