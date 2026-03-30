@@ -67,6 +67,14 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.17] - 2026-03-30
+
+### Added — Full-Site Accessibility Audit Script
+
+- **chore: Add `scripts/audit-full-site.js`** — Standalone axe-core audit script that tests every page on the site (2,356+) against WCAG 2.1 Level AA. Loads all routes from `public/api/*.json` plus 17 static pages, runs each through Puppeteer + axe-core, and writes a detailed JSON report to `reports/`. Includes progress logging with ETA, per-content-type summary, and incremental saves every 50 pages. Estimated runtime ~4 hours for the full site. Complements the existing `npm run audit` sampling approach for periodic comprehensive validation.
+
+---
+
 ## [1.3.16] - 2026-03-30
 
 ### Fix — SiteImprove Color Contrast (sia-r69)
