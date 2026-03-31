@@ -67,6 +67,16 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.18] - 2026-03-31
+
+### Fix — Accessibility: Color Contrast in Overlays and Progressbar Labels
+
+- **fix: Exclude `.v-overlay` elements from `fixInlineColorContrast()`** — The runtime a11y fix was overriding white text to black inside Vuetify overlay components (e.g., the Research Hub carousel), breaking contrast against dark overlay backgrounds. Added `.v-overlay` to the exclusion check alongside the existing `#disclaimer` guard.
+- **fix: Add `aria-label` to all `v-progress-circular` spinners** — Vuetify's progress spinners render as `role="progressbar"` but had no accessible name, causing WCAG 4.1.2 violations. Added descriptive `aria-label` attributes to all 9 instances missing or having vague labels across 8 component files: `HubHome.vue`, `____HomeSplash.vue`, `AppView.vue`, `ArticleView.vue`, `BaseImage.vue`, `Status.vue`, `NewsCard.vue`, `InfoCard.vue`, and `HubCard.vue` (3 instances).
+- **chore: Add `scripts/audit-researchhub-sample.js`** — Targeted axe-core audit script that tests 20 Research Hub pages (hub home, articles, apps, datasets) against WCAG 2.1 AA. Verified all 20 pages clean after fixes.
+
+---
+
 ## [1.3.17] - 2026-03-30
 
 ### Added — Full-Site Accessibility Audit Script

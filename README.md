@@ -178,6 +178,7 @@ This site is audited with two complementary tools that produce **different resul
 | Metric | Score |
 |---|---|
 | Sampled audit (57 pages, 10 content types) | **57/57 zero violations (100%)** |
+| Research Hub targeted audit (20 pages) | **20/20 zero violations (100%)** |
 | Regression tests (Playwright) | **37/37 passing** |
 | Unit tests — a11y functions (Mocha/Chai) | **20/20 passing** |
 | Unit tests — security (Mocha/Chai) | **39/39 passing** |

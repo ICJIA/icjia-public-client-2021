@@ -4,7 +4,7 @@
     <v-img :height="splashHeight" :src="article.splash">
       <template #placeholder>
         <v-row class="fill-height" align="center" justify="center">
-          <v-progress-circular indeterminate />
+          <v-progress-circular indeterminate aria-label="Loading image" />
         </v-row>
       </template>
     </v-img>

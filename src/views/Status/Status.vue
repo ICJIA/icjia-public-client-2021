@@ -44,6 +44,7 @@
               color="primary"
               size="50"
               class="mt-12"
+              aria-label="Fetching status"
             ></v-progress-circular>
           </div>
           <div v-if="errorMsg && !items" class="text-center">

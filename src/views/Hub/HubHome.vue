@@ -129,6 +129,7 @@
                         <v-progress-circular
                           indeterminate
                           color="grey lighten-5"
+                          aria-label="Loading image"
                         ></v-progress-circular>
                       </v-row>
                     </template>
