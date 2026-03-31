@@ -168,9 +168,7 @@ const fixEmptyTableHeaders = function () {
 // Fix empty container elements from CMS content (sia-r68)
 // Removes empty <tr> rows and hides empty <td> cells from assistive tech.
 const fixEmptyContainers = function () {
-  const containers = document.querySelectorAll(
-    ".article-body, .markdown-body"
-  );
+  const containers = document.querySelectorAll(".article-body, .markdown-body");
   containers.forEach((container) => {
     // Remove completely empty <tr> rows
     container.querySelectorAll("tr").forEach((tr) => {
@@ -439,8 +437,7 @@ const fixProhibitedAriaOnImg = function () {
               el.removeAttribute("aria-expanded");
           }
           if (role === "presentation" || role === "none") {
-            if (el.hasAttribute("aria-label"))
-              el.removeAttribute("aria-label");
+            if (el.hasAttribute("aria-label")) el.removeAttribute("aria-label");
             if (el.hasAttribute("aria-labelledby"))
               el.removeAttribute("aria-labelledby");
           }
@@ -520,16 +517,22 @@ const fixLabelInName = function () {
 // This adds aria-label from the Vuetify-rendered label text when the
 // native association is missing.
 const fixFormFieldLabels = function () {
-  const wrappers = document.querySelectorAll(
-    ".v-text-field, .v-select"
-  );
+  const wrappers = document.querySelectorAll(".v-text-field, .v-select");
   wrappers.forEach((wrapper) => {
-    const input = wrapper.querySelector("input, select, textarea, [role='combobox']");
+    const input = wrapper.querySelector(
+      "input, select, textarea, [role='combobox']"
+    );
     if (!input) return;
     // Skip if already has a proper label association
-    if (input.getAttribute("aria-label") || input.getAttribute("aria-labelledby")) return;
+    if (
+      input.getAttribute("aria-label") ||
+      input.getAttribute("aria-labelledby")
+    )
+      return;
     if (input.id) {
-      const associatedLabel = document.querySelector('label[for="' + input.id + '"]');
+      const associatedLabel = document.querySelector(
+        'label[for="' + input.id + '"]'
+      );
       if (associatedLabel) return;
     }
     // Find the Vuetify-rendered label text
@@ -562,9 +565,7 @@ const fixAriaRoleAttribute = function () {
 // These attributes are invalid on <a> elements (WAI-ARIA only allows them on
 // button, combobox, gridcell, menuitem, row, tab, textbox, and treeitem roles).
 const fixProhibitedAriaOnLinks = function () {
-  const links = document.querySelectorAll(
-    "a[aria-haspopup], a[aria-expanded]"
-  );
+  const links = document.querySelectorAll("a[aria-haspopup], a[aria-expanded]");
   links.forEach((el) => {
     el.removeAttribute("aria-haspopup");
     el.removeAttribute("aria-expanded");
@@ -680,7 +681,7 @@ function fixComplexTable(table, tableIndex) {
   // Build a grid that maps each (row, col) to the <th> that owns it,
   // accounting for rowspan/colspan.
   const headerGrid = []; // headerGrid[row][col] = th id
-  const cellGrid = [];   // cellGrid[row][col] = element (for rowspan tracking)
+  const cellGrid = []; // cellGrid[row][col] = element (for rowspan tracking)
 
   // Initialize grids
   allRows.forEach(() => {

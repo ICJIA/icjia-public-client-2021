@@ -1,7 +1,9 @@
 <template>
   <div style="border-top: 1px solid #ddd">
     <nav aria-labelledby="nav-additional-label">
-      <span id="nav-additional-label" class="sr-only">Additional navigation</span>
+      <span id="nav-additional-label" class="sr-only"
+        >Additional navigation</span
+      >
       <v-app-bar height="35" scroll-threshold="0" color="#11568e">
         <v-tabs
           show-arrows

@@ -5,7 +5,9 @@
     v-resize="resize"
   >
     <nav aria-labelledby="nav-breadcrumb-label">
-      <span id="nav-breadcrumb-label" class="sr-only">Breadcrumb navigation</span>
+      <span id="nav-breadcrumb-label" class="sr-only"
+        >Breadcrumb navigation</span
+      >
       <v-app-bar
         class=""
         height="35"

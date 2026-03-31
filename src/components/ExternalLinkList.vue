@@ -18,8 +18,7 @@
           target="_blank"
           rel="noopener noreferrer"
           :title="item.url"
-          >{{ item.title
-          }}<span class="sr-only"> (opens in new tab)</span></a
+          >{{ item.title }}<span class="sr-only"> (opens in new tab)</span></a
         >
       </li>
     </ul>

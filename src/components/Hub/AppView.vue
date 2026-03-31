@@ -20,7 +20,10 @@
                 >
                   <template #placeholder>
                     <v-row class="fill-height" align="center" justify="center">
-                      <v-progress-circular indeterminate aria-label="Loading image" />
+                      <v-progress-circular
+                        indeterminate
+                        aria-label="Loading image"
+                      />
                     </v-row>
                   </template> </v-img
               ></v-col>
