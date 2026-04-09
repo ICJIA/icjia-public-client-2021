@@ -203,6 +203,8 @@ const fixInlineColorContrast = function () {
     if (container.closest("#disclaimer")) return;
     container.querySelectorAll("[style]").forEach((el) => {
       if (el.closest("#disclaimer") || el.closest(".v-overlay")) return;
+      // Skip chips — they have intentional background+text color pairings
+      if (el.closest(".v-chip") || el.classList.contains("v-chip")) return;
       const style = el.getAttribute("style") || "";
       if (/color\s*:/i.test(style) && !/background/i.test(style)) {
         // Strip any inline color declaration, let inherited #000 apply

@@ -84,6 +84,14 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 - **perf: Defer Roboto, Raleway, Material Icons, and MDI font CSS** — These four font stylesheets were render-blocking on every page. Applied `media="print" onload="this.media='all'"` pattern to load them asynchronously after initial paint. Added `<noscript>` fallback for no-JS environments. Lato/Oswald remain render-blocking as the primary body fonts.
 - **Result:** Render-blocking savings dropped from ~1,000–1,600ms to ~60–210ms across all pages.
 
+## [1.3.21] - 2026-04-09
+
+### Perf — Tighten Browserslist, Defer jQuery; Fix — Chip Contrast
+
+- **perf: Tighten `.browserslistrc` from `last 2 years` to `last 1 year`** — Reduces browser targets from 91 to 29, eliminating unnecessary polyfills and legacy transforms from the production bundle (~30 KiB savings).
+- **perf: Defer jQuery slim load** — Added `defer` attribute to the jQuery slim script tag in `index.html`. jQuery is only used for footnote click handling in `ArticleView.vue` and does not need to block initial render.
+- **fix: Exclude `.v-chip` elements from `fixInlineColorContrast()`** — The runtime a11y fix was overriding white text to black inside Vuetify chip components (e.g., the "NEW!" chip on homepage news cards), breaking contrast against dark chip backgrounds. Added `.v-chip` to the exclusion check in `src/a11y/index.js`.
+
 ---
 
 ## [1.3.18] - 2026-03-31
