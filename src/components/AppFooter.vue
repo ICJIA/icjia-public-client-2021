@@ -103,12 +103,22 @@
                 >Subscribe to CJ Dispatch</a
               >
               |
-              <a
-                href="javascript:void(0);"
-                style="color: #fff; background: none"
+              <button
+                type="button"
+                style="
+                  color: #fff;
+                  background: none;
+                  border: none;
+                  cursor: pointer;
+                  font-size: inherit;
+                  font-family: inherit;
+                  padding: 0;
+                  text-decoration: underline;
+                "
                 @click="openTranslationModal"
-                >Translate Site</a
               >
+                Translate Site
+              </button>
             </div>
 
             <div

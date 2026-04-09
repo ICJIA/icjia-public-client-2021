@@ -67,6 +67,16 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.19] - 2026-04-09
+
+### Fix — SEO: Dynamic Canonical URL and Non-Crawlable Anchor
+
+- **fix: Add dynamic `rel=canonical` to all routes** — The `<link rel="canonical">` tag in `index.html` was hardcoded to `https://icjia.illinois.gov/`, causing every page to claim it was the homepage. Added a `router.afterEach` hook in `src/router/index.js` that updates the canonical href to match the current route path. Lighthouse SEO audit now passes the `canonical` check on all pages.
+- **fix: Replace non-crawlable anchor with `<button>` in footer** — The "Translate Site" link in `AppFooter.vue` used `href="javascript:void(0);"`, which Lighthouse flagged as a non-crawlable anchor on every page. Replaced with a semantically correct `<button>` element styled to match the existing link appearance. Lighthouse SEO audit now passes the `crawlable-anchors` check on all pages.
+- **Result:** SEO score improved from 85 (production) / 92 (localhost) to **100** across all content types site-wide.
+
+---
+
 ## [1.3.18] - 2026-03-31
 
 ### Fix — Accessibility: Color Contrast in Overlays and Progressbar Labels

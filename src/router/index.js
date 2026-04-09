@@ -89,6 +89,15 @@ router.afterEach((routeTo, routeFrom) => {
   NProgress.done();
   const main = document.querySelector(".v-main");
   if (main) main.removeAttribute("aria-busy");
+
+  // Update rel=canonical to match current route
+  const canonical = document.querySelector('link[rel="canonical"]');
+  if (canonical) {
+    canonical.setAttribute(
+      "href",
+      "https://icjia.illinois.gov" + routeTo.fullPath
+    );
+  }
 });
 
 export default router;
