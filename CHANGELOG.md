@@ -85,6 +85,15 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 - **perf: Add `width` and `height` to initial loading indicator** — The boot-time logo and loading GIF in `index.html` had no explicit dimensions. Added `width`/`height` attributes to prevent CLS during app initialization.
 - **perf: Add `rel="preconnect"` for API and CDN domains** — Added preconnect hints for `agency.icjia-api.cloud` (GraphQL API, carousel images) and `agency.icjia.cloud` (static assets) to eliminate connection setup latency for first API requests.
 
+## [1.3.21] - 2026-04-09
+
+### Perf — Replace Carousel with Static Preloaded Hero Image
+
+- **perf: Replace `v-carousel` with static hero image** — The homepage carousel fetched its image from the Strapi API via a Thumbor proxy at runtime, making it impossible for the browser to start loading the LCP image until after the API responded. Replaced with a self-hosted static image (`public/home-splash.jpg`, 150 KiB) with CSS `filter: grayscale(100%)` and a blue-tinted overlay (`rgba(55, 90, 127, 0.55)`) to match the production appearance. Overlay text (title, teaser, buttons) is hardcoded to match the existing CMS content.
+- **perf: Add `<link rel="preload">` for hero image** — Added preload hint in `index.html` so the browser begins fetching the hero image immediately, before Vue mounts. Eliminates the API round-trip + Thumbor proxy from the critical path.
+- **chore: Remove Thumbor/GraphQL dependency from HomeSplashV2** — The component no longer imports `getImageURL`/`getGrayscaleImageURL` from `@/services/Image` or requires the `slider` prop to contain image data. The `slider` and `buttons` props are retained for backward compatibility but are no longer used for rendering.
+- **Result:** Eliminates API + Thumbor round-trip from homepage LCP critical path. A11y 100 on both desktop and mobile. Responsive layout preserved.
+
 ---
 
 ## [1.3.18] - 2026-03-31
