@@ -77,6 +77,14 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 - **reverted: Performance changes (font CSS deferral, browserslist tightening, jQuery defer)** — These changes (attempted in v1.3.20–1.3.22) caused the production site to fail to load. All reverted. Performance optimization will be deferred to the Nuxt 4 rewrite.
 - **Result:** SEO score improved from 85 to **100** site-wide. "NEW!" chip contrast fixed.
 
+## [1.3.20] - 2026-04-09
+
+### Perf — Low-Risk Image and Preconnect Fixes
+
+- **perf: Add explicit `height` to footer logo** — The `<img>` in `AppFooter.vue` had `width="100"` but no `height`, causing Lighthouse to flag `unsized-images` (layout shift). Added `height="70"` to match the 250x175 aspect ratio.
+- **perf: Add `width` and `height` to initial loading indicator** — The boot-time logo and loading GIF in `index.html` had no explicit dimensions. Added `width`/`height` attributes to prevent CLS during app initialization.
+- **perf: Add `rel="preconnect"` for API and CDN domains** — Added preconnect hints for `agency.icjia-api.cloud` (GraphQL API, carousel images) and `agency.icjia.cloud` (static assets) to eliminate connection setup latency for first API requests.
+
 ---
 
 ## [1.3.18] - 2026-03-31

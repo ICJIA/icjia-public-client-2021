@@ -28,6 +28,7 @@
                   src="/icjia-logo.png"
                   alt="ICJIA Home"
                   width="100"
+                  height="70"
                   style="border: 0px solid #ddd; display: inline"
                 />
               </router-link>
