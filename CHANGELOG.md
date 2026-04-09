@@ -94,6 +94,12 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 - **chore: Remove Thumbor/GraphQL dependency from HomeSplashV2** — The component no longer imports `getImageURL`/`getGrayscaleImageURL` from `@/services/Image` or requires the `slider` prop to contain image data. The `slider` and `buttons` props are retained for backward compatibility but are no longer used for rendering.
 - **Result:** Eliminates API + Thumbor round-trip from homepage LCP critical path. A11y 100 on both desktop and mobile. Responsive layout preserved.
 
+## [1.3.22] - 2026-04-09
+
+### Content — Update Violence Prevention Plan Link
+
+- **content: Update Statewide Violence Prevention Plan menu link** — Updated the Research dropdown menu entry from "Statewide Violence Prevention Plan: 2020-2024" (vpp.icjia.cloud) to "Statewide Violence Prevention Plan: 2025-2029" (vpp.icjia.illinois.gov).
+
 ---
 
 ## [1.3.18] - 2026-03-31
