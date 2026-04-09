@@ -75,6 +75,15 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 - **fix: Replace non-crawlable anchor with `<button>` in footer** — The "Translate Site" link in `AppFooter.vue` used `href="javascript:void(0);"`, which Lighthouse flagged as a non-crawlable anchor on every page. Replaced with a semantically correct `<button>` element styled to match the existing link appearance. Lighthouse SEO audit now passes the `crawlable-anchors` check on all pages.
 - **Result:** SEO score improved from 85 (production) / 92 (localhost) to **100** across all content types site-wide.
 
+## [1.3.20] - 2026-04-09
+
+### Perf — Defer Non-Critical Font CSS and Add font-display: swap
+
+- **perf: Upgrade Roboto to css2 API with `display=swap`** — The Roboto font link used the legacy `css?` endpoint without `font-display: swap`, blocking text rendering until the font loaded. Upgraded to `css2` API with `display=swap`.
+- **perf: Add `display=swap` to Material Icons** — Material Icons font CSS was missing `display=swap`, causing icon rendering delay.
+- **perf: Defer Roboto, Raleway, Material Icons, and MDI font CSS** — These four font stylesheets were render-blocking on every page. Applied `media="print" onload="this.media='all'"` pattern to load them asynchronously after initial paint. Added `<noscript>` fallback for no-JS environments. Lato/Oswald remain render-blocking as the primary body fonts.
+- **Result:** Render-blocking savings dropped from ~1,000–1,600ms to ~60–210ms across all pages.
+
 ---
 
 ## [1.3.18] - 2026-03-31
