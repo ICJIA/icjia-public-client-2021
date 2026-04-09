@@ -94,6 +94,12 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 - **chore: Remove Thumbor/GraphQL dependency from HomeSplashV2** — The component no longer imports `getImageURL`/`getGrayscaleImageURL` from `@/services/Image` or requires the `slider` prop to contain image data. The `slider` and `buttons` props are retained for backward compatibility but are no longer used for rendering.
 - **Result:** Eliminates API + Thumbor round-trip from homepage LCP critical path. A11y 100 on both desktop and mobile. Responsive layout preserved.
 
+## [1.3.23] - 2026-04-09
+
+### Perf — Convert Hero Image to WebP
+
+- **perf: Convert hero splash image to WebP** — Added `home-splash.webp` (94 KiB) alongside the JPG fallback (150 KiB), a 37% reduction. Uses `<picture>` element with `<source type="image/webp">` for automatic format selection with JPG fallback for older browsers. Updated preload hint to target the WebP version.
+
 ## [1.3.22] - 2026-04-09
 
 ### Content — Update Violence Prevention Plan Link

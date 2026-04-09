@@ -9,20 +9,23 @@
       overflow: hidden;
     "
   >
-    <img
-      src="/home-splash.jpg"
-      alt=""
-      role="presentation"
-      width="1000"
-      height="667"
-      style="
-        width: 100%;
-        height: 600px;
-        object-fit: cover;
-        filter: grayscale(100%);
-        display: block;
-      "
-    />
+    <picture>
+      <source srcset="/home-splash.webp" type="image/webp" />
+      <img
+        src="/home-splash.jpg"
+        alt=""
+        role="presentation"
+        width="1000"
+        height="667"
+        style="
+          width: 100%;
+          height: 600px;
+          object-fit: cover;
+          filter: grayscale(100%);
+          display: block;
+        "
+      />
+    </picture>
     <div
       style="
         position: absolute;
