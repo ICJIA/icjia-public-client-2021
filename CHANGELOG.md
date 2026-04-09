@@ -89,7 +89,7 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 ### Perf — Tighten Browserslist, Defer jQuery; Fix — Chip Contrast
 
 - **perf: Tighten `.browserslistrc` from `last 2 years` to `last 1 year`** — Reduces browser targets from 91 to 29, eliminating unnecessary polyfills and legacy transforms from the production bundle (~30 KiB savings).
-- **perf: Defer jQuery slim load** — Added `defer` attribute to the jQuery slim script tag in `index.html`. jQuery is only used for footnote click handling in `ArticleView.vue` and does not need to block initial render.
+- **~~perf: Defer jQuery slim load~~** — Reverted in v1.3.22. The inline IE-detection script depends on jQuery being loaded synchronously.
 - **fix: Exclude `.v-chip` elements from `fixInlineColorContrast()`** — The runtime a11y fix was overriding white text to black inside Vuetify chip components (e.g., the "NEW!" chip on homepage news cards), breaking contrast against dark chip backgrounds. Added `.v-chip` to the exclusion check in `src/a11y/index.js`.
 
 ---
