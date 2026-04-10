@@ -61,26 +61,18 @@
             of criminal justice. ICJIA works to ensure the criminal justice
             system in Illinois is efficient, effective, and equitable.
           </div>
-          <div class="mt-7 hidden-md-and-up">
-            <v-container>
-              <v-row>
-                <v-col>
-                  <v-btn dark small color="#0d4474" to="/grants/"
-                    >Apply for funding</v-btn
-                  >
-                </v-col>
-                <v-col>
-                  <v-btn
-                    dark
-                    small
-                    color="#0d4474"
-                    to="/forms/grant-status/"
-                    class="splash-button py-0 ml-11"
-                    >Grant Status Request
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-container>
+          <div class="mt-7 hidden-md-and-up text-center">
+            <v-btn dark small color="#0d4474" to="/grants/" class="mb-3"
+              >Apply for funding</v-btn
+            ><br />
+            <v-btn
+              dark
+              small
+              color="#0d4474"
+              to="/forms/grant-status/"
+              class="splash-button"
+              >Grant Status Request
+            </v-btn>
           </div>
           <div class="hidden-sm-and-down mt-7">
             <v-btn
