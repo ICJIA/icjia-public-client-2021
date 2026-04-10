@@ -31,7 +31,7 @@
         />
       </router-link>
 
-      <v-toolbar-title class="hidden-sm-and-down"
+      <v-toolbar-title class="hidden-md-and-down" style="overflow: hidden; max-height: 90px;"
         ><router-link
           to="/"
           style="
@@ -43,7 +43,7 @@
             min-height: 44px;
             padding: 4px 0;
           "
-          ><span style="font-weight: 900 !important" class="agency"
+          ><span style="font-weight: 900 !important; line-height: 1.3;" class="agency"
             >ILLINOIS CRIMINAL JUSTICE INFORMATION AUTHORITY</span
           ></router-link
         ></v-toolbar-title
@@ -269,6 +269,12 @@ export default {
 
 .v-toolbar__title {
   font-size: 1.15rem;
+}
+
+@media (max-width: 1264px) {
+  .v-toolbar__title {
+    font-size: 0.85rem;
+  }
 }
 
 /* .v-icon.translation {

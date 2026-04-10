@@ -67,6 +67,14 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.22] - 2026-04-10
+
+### Fix — Navbar Title Overflow on Medium Screens
+
+- **fix: Agency title overflows navbar on medium screens** — On viewports between 960–1263px, the full "ILLINOIS CRIMINAL JUSTICE INFORMATION AUTHORITY" text wrapped beyond the 90px navbar height. Changed the title visibility from `hidden-sm-and-down` to `hidden-md-and-down` so the title only appears at `lg` (1264px+) where there is sufficient space. Added `overflow: hidden`, `max-height: 90px`, and `line-height: 1.3` as safety constraints, plus a reduced font size media query for screens under 1264px.
+
+---
+
 ## [1.3.21] - 2026-04-10
 
 ### Fix — Mobile Hero Overlay Overflow
