@@ -40,14 +40,15 @@
       "
     >
       <div
-        class="px-10 pt-4 pb-7"
+        class="px-6 px-sm-10 pt-4 pb-7"
         style="
-          width: 65%;
+          width: 90%;
+          max-width: 700px;
           background: rgba(100, 100, 100, 0.9);
           text-align: center;
         "
       >
-        <div class="text-center px-5" style="min-width: 350px">
+        <div class="text-center px-2 px-sm-5">
           <h1
             class="nofo-title mt-3"
             style="color: #fff; font-size: 24px; font-weight: bold"

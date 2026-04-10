@@ -67,6 +67,14 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.21] - 2026-04-10
+
+### Fix — Mobile Hero Overlay Overflow
+
+- **fix: Hero text box overflows viewport on mobile** — The homepage hero overlay in `HomeSplashV2.vue` had `width: 65%` with `min-width: 350px`, which forced the grey text box wider than the 375px mobile viewport, clipping the title and background on the right. Replaced with `width: 90%; max-width: 700px`, removed `min-width`, and added responsive Vuetify padding (`px-6 px-sm-10`). Hero now fits cleanly on all screen sizes.
+
+---
+
 ## [1.3.20] - 2026-04-10
 
 ### Enhancement — News Index Page Redesign
