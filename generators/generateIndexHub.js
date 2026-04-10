@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 const fs = require("fs");
-const axios = require("axios");
+const { createApiClient } = require("./apiClient");
 const jsonfile = require("jsonfile");
 const _ = require("lodash");
 // const { apiBaseURL } = require("./src/config");
@@ -50,9 +50,8 @@ const query = `query {
   }
 }`;
 
-axios
-  .create({ baseURL: "https://researchhub.icjia-api.cloud" })
-  .post("/graphql", { query, validateStatus: (status) => status === 200 })
+const api = createApiClient("https://researchhub.icjia-api.cloud");
+api.postWithRetry("/graphql", { query })
   .then((res) => {
     let articles = res.data.data.articles;
     let apps = res.data.data.apps;

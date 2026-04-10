@@ -76,6 +76,8 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 - **fix: Replace deprecated `fs.rmdir()` with `fs.rm()`** in `generators/generateImagesHub.js`.
 - **chore: Remove unused cheerio internal import** from `generators/generateIndexMeetings.js`.
 - **chore: Remove "NEW!" chip from Grant Status Request button** on homepage (`HomeSplashV2.vue`).
+- **fix: Center homepage splash buttons on mobile view** — Stacked and centered the Apply for Funding and Grant Status Request buttons in mobile layout.
+- **feat: Add retry logic to all generator API calls** — Created shared `generators/apiClient.js` with `postWithRetry` and `getWithRetry` (3 retries, exponential backoff). Updated all 11 generator scripts to use it instead of raw axios. Prevents transient `ECONNRESET` failures from breaking Netlify builds.
 
 ---
 

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 const fs = require("fs");
-const axios = require("axios");
+const { createApiClient } = require("./apiClient");
 const jsonfile = require("jsonfile");
 const _ = require("lodash");
 // const { apiBaseURL } = require("./src/config");
@@ -23,9 +23,8 @@ const query = `query {
   }
 }`;
 
-axios
-  .create({ baseURL: "https://agency.icjia-api.cloud" })
-  .post("/graphql", { query, validateStatus: (status) => status === 200 })
+const api = createApiClient("https://agency.icjia-api.cloud");
+api.postWithRetry("/graphql", { query })
   .then((res) => {
     let biographies = res.data.data.biographies;
     // biographies = getUnifiedTags(biographies);

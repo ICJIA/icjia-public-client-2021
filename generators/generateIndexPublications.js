@@ -1,23 +1,25 @@
 /* eslint-disable no-unused-vars */
 const fs = require("fs");
-const axios = require("axios");
 const jsonfile = require("jsonfile");
 const _ = require("lodash");
+const { createApiClient } = require("./apiClient");
 // const { apiBaseURL } = require("./src/config");
 const allowedHost = "https://icjia.illinois.gov/researchhub";
+
+const api = createApiClient("https://agency.icjia-api.cloud");
 
 const init = async () => {
   const limit = 500;
   let pubArray = [];
   let start = 0;
-  let count = await axios.get(
+  let count = await api.getWithRetry(
     "https://agency.icjia-api.cloud/publications/count"
   );
   count = count.data;
   let iterations = Math.ceil(count / limit);
 
   for (let i = 0; i < iterations; i++) {
-    let response = await axios.get(
+    let response = await api.getWithRetry(
       `https://agency.icjia-api.cloud/publications?_limit=${limit}&_start=${start}`
     );
     pubArray = pubArray.concat(response.data);
