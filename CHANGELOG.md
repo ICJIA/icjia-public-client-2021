@@ -67,6 +67,14 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.23] - 2026-04-10
+
+### Chore — Lint Auto-Fix
+
+- **chore: Run `vue-cli-service lint` across project** — Auto-fixed formatting in `AppNav.vue` and `News.vue` (prettier/eslint corrections: attribute formatting, line breaks, quote consistency). No functional changes.
+
+---
+
 ## [1.3.22] - 2026-04-10
 
 ### Fix — Navbar Title Overflow on Medium Screens

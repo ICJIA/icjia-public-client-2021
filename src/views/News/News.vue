@@ -26,18 +26,28 @@
                     class="featured-img-col"
                   >
                     <v-img
-                      :src="`https://agency.icjia-api.cloud${featured.splash.formats.medium ? featured.splash.formats.medium.url : featured.splash.url}`"
+                      :src="`https://agency.icjia-api.cloud${
+                        featured.splash.formats.medium
+                          ? featured.splash.formats.medium.url
+                          : featured.splash.url
+                      }`"
                       :lazy-src="`https://agency.icjia-api.cloud${featured.splash.formats.thumbnail.url}`"
                       height="100%"
                       min-height="250"
                       max-height="320"
                       contain
                       position="center center"
-                      :alt="featured.splash.alternativeText || 'Featured news image'"
+                      :alt="
+                        featured.splash.alternativeText || 'Featured news image'
+                      "
                       class="grey lighten-4"
                     >
                       <template #placeholder>
-                        <v-row class="fill-height ma-0" align="center" justify="center">
+                        <v-row
+                          class="fill-height ma-0"
+                          align="center"
+                          justify="center"
+                        >
                           <v-progress-circular
                             indeterminate
                             color="blue darken-3"
@@ -47,36 +57,40 @@
                       </template>
                     </v-img>
                   </v-col>
-                  <v-col
-                    cols="12"
-                    :md="featured.splash ? 6 : 12"
-                  >
+                  <v-col cols="12" :md="featured.splash ? 6 : 12">
                     <div class="pa-6">
                       <div class="featured-badge mb-3">FEATURED</div>
                       <div class="mt-1">
-                      <span
-                        class="featured-category"
-                      >{{
-                        getProperCategory(
-                          $myApp.config.maps.news,
-                          featured.category
-                        ).toUpperCase()
-                      }}</span>
-                      <span class="featured-date">&nbsp;|&nbsp;{{ featured.publicationDate | format }}</span>
+                        <span class="featured-category">{{
+                          getProperCategory(
+                            $myApp.config.maps.news,
+                            featured.category
+                          ).toUpperCase()
+                        }}</span>
+                        <span class="featured-date"
+                          >&nbsp;|&nbsp;{{
+                            featured.publicationDate | format
+                          }}</span
+                        >
                       </div>
-                      <h2 class="featured-title mt-2 mb-3">{{ featured.title }}</h2>
-                      <p
-                        v-if="featured.summary"
-                        class="featured-summary"
-                      >{{ featured.summary }}</p>
-                      <div v-if="featured.tags && featured.tags.length" class="mt-3">
+                      <h2 class="featured-title mt-2 mb-3">
+                        {{ featured.title }}
+                      </h2>
+                      <p v-if="featured.summary" class="featured-summary">
+                        {{ featured.summary }}
+                      </p>
+                      <div
+                        v-if="featured.tags && featured.tags.length"
+                        class="mt-3"
+                      >
                         <v-chip
                           v-for="tag in featured.tags.slice(0, 4)"
                           :key="tag"
                           x-small
                           outlined
                           class="mr-1 mb-1"
-                        >{{ tag }}</v-chip>
+                          >{{ tag }}</v-chip
+                        >
                       </div>
                       <v-btn
                         small
@@ -85,7 +99,8 @@
                         class="mt-4"
                         :to="featured.fullPath"
                         :aria-label="`Read more about ${featured.title}`"
-                      >Read: {{ featured.title }}</v-btn>
+                        >Read: {{ featured.title }}</v-btn
+                      >
                     </div>
                   </v-col>
                 </v-row>
@@ -103,7 +118,8 @@
                 :dark="activeCategory === 'all'"
                 class="mr-2 mb-2"
                 @click="resetToLatest"
-              >All</v-btn>
+                >All</v-btn
+              >
               <v-btn
                 v-for="cat in categories"
                 :key="cat.category"
@@ -113,7 +129,8 @@
                 :dark="activeCategory === cat.category"
                 class="mr-2 mb-2"
                 @click="selectCategory(cat.category)"
-              >{{ cat.label }}</v-btn>
+                >{{ cat.label }}</v-btn
+              >
             </v-col>
           </v-row>
 
@@ -143,17 +160,16 @@
                         elevation="1"
                       >
                         <v-row no-gutters align="center">
-                          <v-col
-                            v-if="item.splash"
-                            cols="auto"
-                          >
+                          <v-col v-if="item.splash" cols="auto">
                             <v-img
                               :src="`https://agency.icjia-api.cloud${item.splash.formats.thumbnail.url}`"
                               width="90"
                               height="90"
                               contain
                               position="center center"
-                              :alt="item.splash.alternativeText || 'News thumbnail'"
+                              :alt="
+                                item.splash.alternativeText || 'News thumbnail'
+                              "
                               class="news-thumb grey lighten-4"
                             ></v-img>
                           </v-col>
@@ -167,7 +183,13 @@
                                 class="mr-2"
                                 style="margin-top: -1px"
                               >
-                                <span style="color: #fff !important; font-weight: 400">NEW!</span>
+                                <span
+                                  style="
+                                    color: #fff !important;
+                                    font-weight: 400;
+                                  "
+                                  >NEW!</span
+                                >
                               </v-chip>
                               <span class="news-category">{{
                                 getProperCategory(
@@ -175,13 +197,19 @@
                                   item.category
                                 ).toUpperCase()
                               }}</span>
-                              <span class="news-date">&nbsp;|&nbsp;{{ item.publicationDate | format }}</span>
+                              <span class="news-date"
+                                >&nbsp;|&nbsp;{{
+                                  item.publicationDate | format
+                                }}</span
+                              >
                             </div>
                             <h4 class="news-title mt-1">{{ item.title }}</h4>
                             <p
                               v-if="item.summary"
                               class="news-summary mt-1 mb-0"
-                            >{{ truncate(item.summary, 25) }}</p>
+                            >
+                              {{ truncate(item.summary, 25) }}
+                            </p>
                           </v-col>
                         </v-row>
                       </v-card>
@@ -192,7 +220,9 @@
                 <!-- Empty state -->
                 <v-row v-if="filteredNews && filteredNews.length === 0">
                   <v-col cols="12" class="text-center py-8">
-                    <p class="grey--text">No news items found for this category.</p>
+                    <p class="grey--text">
+                      No news items found for this category.
+                    </p>
                   </v-col>
                 </v-row>
               </div>
@@ -211,7 +241,6 @@
               ></v-pagination>
             </v-col>
           </v-row>
-
         </v-container>
       </template>
     </BaseContent>
@@ -269,8 +298,8 @@ export default {
       if (!this.allNews || this.allNews.length < 2) return [];
       const rest = this.allNews.slice(1);
       const usedCategories = new Set(rest.map((item) => item.category));
-      return (this.$myApp.config.maps.news || []).filter(
-        (cat) => usedCategories.has(cat.category)
+      return (this.$myApp.config.maps.news || []).filter((cat) =>
+        usedCategories.has(cat.category)
       );
     },
     groupedNews() {
@@ -286,9 +315,7 @@ export default {
         const pubDate = moment(item.publicationDate);
         if (pubDate.isSame(now, "month")) {
           groups.thisMonth.items.push(item);
-        } else if (
-          pubDate.isSame(now.clone().subtract(1, "month"), "month")
-        ) {
+        } else if (pubDate.isSame(now.clone().subtract(1, "month"), "month")) {
           groups.lastMonth.items.push(item);
         } else {
           groups.earlier.items.push(item);
@@ -382,7 +409,7 @@ export default {
 
 .featured-badge {
   display: inline-block;
-  background-color: #0D4474;
+  background-color: #0d4474;
   color: #fff;
   font-size: 11px;
   font-weight: 700;
