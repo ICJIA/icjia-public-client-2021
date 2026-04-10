@@ -67,6 +67,24 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.20] - 2026-04-10
+
+### Enhancement — News Index Page Redesign
+
+- **feat: Redesign `/news/` index page** — Replaced the grid/list toggle layout with a streamlined single-view design focused on reducing the 75% bounce rate.
+  - **Featured hero post** — Most recent news item displayed prominently at the top with large image, full summary, category, tags, and descriptive link text.
+  - **Category filter buttons** — Filter by News or Press Release; buttons only appear for categories with actual content.
+  - **Two-column card list with thumbnails** — Compact horizontal cards with 90x90 contained thumbnails (from splash images), category, date, title, and truncated summary. Single column on mobile.
+  - **Time-period grouping** — Posts grouped into "This Month," "Last Month," and "Earlier" with section headers.
+  - **Pagination** — 15 items per page with smooth scroll to news list on page change, accounting for fixed navbar offset.
+  - **Fade transitions** — Content fades out/in on page and filter changes to reinforce that the list updated.
+- **fix: WCAG color contrast on date text** — Changed `.featured-date` and `.news-date` from `#777` to `#555` (7:1 contrast ratio). Lighthouse a11y: **100**.
+- **fix: SEO descriptive link text** — "Read more" button now includes article title. Lighthouse SEO: **100**.
+- **No new dependencies** — Uses only existing Vuetify, moment, lodash.
+- **Result:** Lighthouse scores — A11y: **100**, SEO: **100**, Perf: 71, BP: 58 (remaining issues are sitewide/infrastructure).
+
+---
+
 ## [1.3.19] - 2026-04-09
 
 ### Fix — SEO and Chip Contrast
