@@ -78,18 +78,6 @@
                     class="splash-button py-0 ml-11"
                     >Grant Status Request
                   </v-btn>
-                  <v-chip
-                    class="ma-2"
-                    style="
-                      color: #fff;
-                      background: purple;
-                      margin-top: -19px !important;
-                      margin-left: -14px !important;
-                      padding-top: 3px;
-                    "
-                    x-small
-                    >NEW!</v-chip
-                  >
                 </v-col>
               </v-row>
             </v-container>
@@ -111,18 +99,6 @@
               class="splash-button py-0 ml-11"
               >Grant Status Request
             </v-btn>
-            <v-chip
-              class="ma-2"
-              style="
-                color: #fff;
-                background: purple;
-                margin-top: -19px !important;
-                margin-left: -14px !important;
-                padding-top: 3px;
-              "
-              x-small
-              >NEW!</v-chip
-            >
           </div>
         </div>
       </div>

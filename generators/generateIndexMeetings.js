@@ -3,7 +3,6 @@ const fs = require("fs");
 const axios = require("axios");
 const jsonfile = require("jsonfile");
 const _ = require("lodash");
-const { get } = require("cheerio/lib/api/traversing");
 // const { apiBaseURL } = require("./src/config");
 
 const query = `query {

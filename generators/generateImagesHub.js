@@ -6,7 +6,7 @@ const dirpath = "./public/images";
 if (!fs.existsSync(dirpath)) {
   fs.mkdirSync(dirpath);
 } else {
-  fs.rmdir("public/images", { recursive: true }, (err) => {
+  fs.rm("public/images", { recursive: true }, (err) => {
     if (err) {
       throw err;
     }

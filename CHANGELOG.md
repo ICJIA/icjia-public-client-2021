@@ -67,6 +67,18 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.24] - 2026-04-10
+
+### Enhancement — Node 22 Upgrade
+
+- **feat: Upgrade from Node 16 to Node 22** — Removed `node-sass@6.0.0` (native C++ binary incompatible with Node 22); project now uses `sass@1.32.13` (Dart Sass, pure JS) exclusively with `sass-loader@10.1.1`. Updated `.nvmrc` to `v22`, `netlify.toml` `NODE_VERSION` to `22`, and `package.json` engines to `>=16.x`.
+- **fix: Bake `--openssl-legacy-provider` into npm scripts** — Added `NODE_OPTIONS=--openssl-legacy-provider` to `serve`, `build`, and `lint` scripts in `package.json` so Node 22's OpenSSL 3.0 doesn't break webpack 4's md4 hashing. No manual flag needed.
+- **fix: Replace deprecated `fs.rmdir()` with `fs.rm()`** in `generators/generateImagesHub.js`.
+- **chore: Remove unused cheerio internal import** from `generators/generateIndexMeetings.js`.
+- **chore: Remove "NEW!" chip from Grant Status Request button** on homepage (`HomeSplashV2.vue`).
+
+---
+
 ## [1.3.23] - 2026-04-10
 
 ### Chore — Lint Auto-Fix
