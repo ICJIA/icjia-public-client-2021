@@ -37,6 +37,8 @@
         style="overflow: hidden; max-height: 90px"
         ><router-link
           to="/"
+          tabindex="-1"
+          aria-hidden="true"
           style="
             text-decoration: none !important;
             color: #000 !important;

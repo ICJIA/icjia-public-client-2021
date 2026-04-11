@@ -23,6 +23,28 @@ const PURIFY_OPTS = {
   ],
 };
 
+const fixImageLinks = function (html) {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const links = doc.querySelectorAll("a");
+  let changed = false;
+
+  links.forEach((a) => {
+    if (a.textContent.trim() || a.getAttribute("aria-label")) return;
+    const img = a.querySelector("img");
+    if (!img) return;
+    if ((img.getAttribute("alt") || "").trim()) return;
+
+    const href = a.getAttribute("href") || "";
+    const segment = href.split("/").filter(Boolean).pop() || "link";
+    const label = segment.replace(/[-_]/g, " ");
+    a.setAttribute("aria-label", label);
+    img.setAttribute("alt", label);
+    changed = true;
+  });
+
+  return changed ? doc.body.innerHTML : html;
+};
+
 const fixTableHeaders = function (html) {
   const doc = new DOMParser().parseFromString(html, "text/html");
   const tables = doc.querySelectorAll("table");
@@ -114,7 +136,7 @@ const createMarkdownUtils = (md) => ({
       .render(markdown)
       .replace(/#fn/g, window.location.href + "#fn");
     const sanitized = DOMPurify.sanitize(raw, PURIFY_OPTS);
-    return fixTableHeaders(sanitized);
+    return fixImageLinks(fixTableHeaders(sanitized));
   },
 });
 

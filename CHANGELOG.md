@@ -67,6 +67,19 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.26] - 2026-04-11
+
+### Fix — SiteImprove A11y Remediation (Focus Visible, Link Purpose, Image Links)
+
+Addresses SiteImprove potential issues across 158+ pages by adding keyboard focus indicators, eliminating duplicate link targets, and auto-labeling image-only links in CMS content.
+
+- **fix: Focus not visible on keyboard navigation (WCAG 2.4.7)** — Added global `:focus-visible` outline styles to `app.css` for all interactive elements (buttons, tabs, list items, text fields). Vuetify 2's ripple-only feedback is not detectable by accessibility scanners. Uses the site's primary blue (`#1565c0`) with 2px solid outline. Resolves 332 occurrences across 158 pages.
+- **fix: Duplicate links to same destination (WCAG 2.4.4)** — Multiple card components had both a `<v-card :to>` wrapper (making the entire card a link) and a nested `<v-btn :to>` or `<router-link>` to the same URL, creating invalid nested `<a>` tags. Fixed `InfoCard.vue` (removed `:to` from inner button, made decorative), `HomeEventCard.vue` (replaced `<router-link to="/">` — which incorrectly linked to the homepage — with a decorative `<span>`), and `News.vue` featured card (made inner button decorative). Added `aria-label` with item title to `HomeFeatureRibbon.vue` "Read more" buttons.
+- **fix: Duplicate nav home link (WCAG 2.4.4)** — `AppNav.vue` had two separate `<router-link to="/">` elements (logo and title text). Added `tabindex="-1"` and `aria-hidden="true"` to the title text link since the logo link already provides the accessible "ICJIA Home" navigation target.
+- **fix: Links wrapping images with empty alt text (WCAG 2.4.4)** — Added `fixImageLinks()` post-processing to both `Markdown.js` and `markdownIt.js` that detects `<a>` elements containing only an `<img>` with empty or missing `alt` and auto-derives `aria-label` and `alt` from the link URL. Resolves 2 occurrences on the interactive data article page (Tableau preview images).
+
+---
+
 ## [1.3.25] - 2026-04-11
 
 ### Fix — SiteImprove A11y Remediation (Tables, Labels, Empty Containers)

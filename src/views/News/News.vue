@@ -97,8 +97,8 @@
                         color="#0D4474"
                         dark
                         class="mt-4"
-                        :to="featured.fullPath"
-                        :aria-label="`Read more about ${featured.title}`"
+                        tabindex="-1"
+                        aria-hidden="true"
                         >Read: {{ featured.title }}</v-btn
                       >
                     </div>

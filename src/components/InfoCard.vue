@@ -51,12 +51,11 @@
         item.summary
       }}</v-card-text>
       <v-card-text>
-        <div class="text-right">
+        <div class="text-right" aria-hidden="true">
           <v-btn
             small
             text
-            :to="item.fullPath"
-            :aria-label="`Read More about ${item.title} `"
+            tabindex="-1"
           >
             {{ readMoreText }}
           </v-btn>

@@ -79,15 +79,13 @@
             <p style="color: #000" class="mt-3">
               {{ event.summary }}
             </p>
-            <router-link
-              to="/"
-              aria-label="Read more about this event"
+            <span
+              aria-hidden="true"
               class="skiplink dark"
-              title="Read more about this item."
               style="font-size: 12px; margin-top: 5px"
             >
               Read more about this event
-            </router-link>
+            </span>
           </v-col>
         </v-row>
       </v-container>
