@@ -67,6 +67,18 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.27] - 2026-04-11
+
+### Fix — A11y Data Table Remediation (Header Scoping, Hidden Focus)
+
+Fixes two axe-core violations found during a 93-page audit sweep across all main-site page types.
+
+- **fix: Data table cells missing header context (td-has-header)** — Added `fixDataTableHeaders()` to `a11y/index.js` that adds `scope="col"` to all Vuetify `v-data-table` `<th>` elements and fills the empty expand-column header with sr-only "Details" text. Applied globally via `App.vue` on every route change. Resolves the violation on `/news/meetings/` and all other data table pages (publications, policies, required forms).
+- **fix: Focusable content inside aria-hidden containers (aria-hidden-focus)** — Added `fixAriaHiddenFocus()` to `a11y/index.js` that sets `tabindex="-1"` on all focusable elements (links, buttons, inputs) inside `aria-hidden="true"` containers. Vuetify data tables with `show-expand` render collapsed expand rows as aria-hidden but leave interactive buttons tab-focusable. Resolves 150 element violations on `/about/publications`.
+- **Audit results:** 93 pages audited (20 hub articles, 20 news posts, 20 grants, 20 meetings, 20 about/pages, 3 index pages), all scoring 100/100 on both desktop and mobile a11y.
+
+---
+
 ## [1.3.26] - 2026-04-11
 
 ### Fix — SiteImprove A11y Remediation (Focus Visible, Link Purpose, Image Links)

@@ -574,6 +574,38 @@ const fixProhibitedAriaOnLinks = function () {
   });
 };
 
+// Fix Vuetify v-data-table header scoping — add scope="col" to all <th>
+// elements and fill the empty expand-column header so axe td-has-header passes.
+const fixDataTableHeaders = function () {
+  const tables = document.querySelectorAll(".v-data-table table");
+  tables.forEach((table) => {
+    table.querySelectorAll("thead th").forEach((th) => {
+      if (!th.getAttribute("scope")) {
+        th.setAttribute("scope", "col");
+      }
+      // Fill empty expand-column header
+      if (!th.textContent.trim() && !th.querySelector("img, svg")) {
+        th.innerHTML = "<span class='sr-only'>Details</span>";
+      }
+    });
+  });
+};
+
+// Fix aria-hidden-focus — Vuetify data tables with row-click handlers can
+// leave focusable elements inside aria-hidden containers (collapsed expand
+// rows, hidden pagination rows). Remove them from tab order.
+const fixAriaHiddenFocus = function () {
+  const hiddenEls = document.querySelectorAll('[aria-hidden="true"]');
+  hiddenEls.forEach((el) => {
+    const focusable = el.querySelectorAll(
+      'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    focusable.forEach((f) => {
+      f.setAttribute("tabindex", "-1");
+    });
+  });
+};
+
 export {
   fixButtonText,
   fixBlankTableHeadings,
@@ -600,6 +632,8 @@ export {
   fixProhibitedAriaOnLinks,
   fixEmptyContainers,
   fixInlineColorContrast,
+  fixDataTableHeaders,
+  fixAriaHiddenFocus,
 };
 
 // Fix "Table cell missing context" (sia-r77) — CMS-authored tables from
