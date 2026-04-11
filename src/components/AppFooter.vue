@@ -31,6 +31,7 @@
                   height="70"
                   style="border: 0px solid #ddd; display: inline"
                 />
+                <span class="sr-only">ICJIA Home</span>
               </router-link>
             </div>
             <div class="pb-6" aria-hidden="true"></div>

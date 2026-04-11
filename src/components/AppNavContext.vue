@@ -65,7 +65,7 @@
           dark
           @click="openTranslationModal()"
           v-if="contextMenu[0].showTranslation"
-          aria-label="Translate this site on Google"
+          aria-label="Translate this site"
         >
           <v-icon
             x-small

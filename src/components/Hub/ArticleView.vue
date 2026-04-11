@@ -114,6 +114,7 @@
               aria-label="Print article"
               @click="printArticle"
             >
+              <span class="sr-only">Print article</span>
               <v-icon>mdi-printer</v-icon>
             </v-btn>
           </div>

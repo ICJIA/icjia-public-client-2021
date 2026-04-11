@@ -29,6 +29,7 @@
           transition="scale-transition"
           width="90"
         />
+        <span class="sr-only">ICJIA Home</span>
       </router-link>
 
       <v-toolbar-title
@@ -143,7 +144,7 @@
             style="font-weight: 900 !important; font-size: 16px"
             @click="openSearchModal()"
           >
-            <!-- <span class="hidden-sm-and-down">Search</span> -->
+            <span class="sr-only">Search ICJIA</span>
             <v-icon color="black" style="font-size: 30px">mdi-magnify</v-icon>
           </v-btn>
         </template>

@@ -67,6 +67,18 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.25] - 2026-04-11
+
+### Fix — SiteImprove A11y Remediation (Tables, Labels, Empty Containers)
+
+Addresses three SiteImprove accessibility issues across 16+ pages by intercepting and fixing Strapi content at render time and correcting site-wide component attributes.
+
+- **fix: Table cells missing header context (sia-r77)** — Added `fixTableHeaders()` post-processing to `Markdown.js` and `markdownIt.js` that runs after DOMPurify sanitization. Pass 1: promotes first-row `<td>` to `<th scope="col">` and wraps in `<thead>`/`<tbody>` for tables with no headers. Pass 2: fixes misaligned rows where an extra empty leading `<td>` shifts cell alignment — removes the empty cell and promotes the next cell to `<th scope="row">`. Resolves 204 occurrences across 16 researchhub article pages.
+- **fix: Visible label and accessible name mismatch (sia-r14)** — Changed `SkipLink.vue` `title` from "Skip Navigation" to "Skip to content" to match `aria-label` and visible text. Changed `AppNavContext.vue` translate button `aria-label` from "Translate this site on Google" to "Translate this site" to match visible text. Satisfies WCAG 2.5.3.
+- **fix: Container element is empty (sia-r68)** — Added `<span class="sr-only">` visually hidden text inside icon-only elements so SiteImprove detects text content: ICJIA Home logo link (`AppNav.vue`, `AppFooter.vue`), Search button (`AppNav.vue`), Print button (`ArticleView.vue`). Elements already had `aria-label` but SiteImprove requires actual text nodes.
+
+---
+
 ## [1.3.24] - 2026-04-10
 
 ### Enhancement — Node 22 Upgrade

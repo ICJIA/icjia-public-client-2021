@@ -5,7 +5,7 @@
       aria-label="Skip to content"
       class="skiplink"
       @click.stop.prevent="$vuetify.goTo('#content')"
-      title="Skip Navigation"
+      title="Skip to content"
       style="font-size: 12px; color: #000 !important"
       id="skip-to-content"
     >
