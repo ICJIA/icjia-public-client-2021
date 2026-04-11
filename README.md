@@ -147,7 +147,7 @@ View the [security policy](SECURITY.md).
 
 This site is audited with two complementary tools that produce **different results for the same pages**. This is expected — not a sign of inadequate remediation.
 
-**axe-core** (primary, open-source) runs in-browser after full page render, including all runtime accessibility fixes. It follows WCAG success criteria closely and only flags clear violations. This site passes axe-core with **zero violations across 57 sampled pages** (see "Why 57 pages?" below).
+**axe-core** (primary, open-source) runs in-browser after full page render, including all runtime accessibility fixes. It follows WCAG success criteria closely and only flags clear violations. This site passes axe-core with **zero violations across 157 audited pages** (see "Sampling strategy" below).
 
 **SiteImprove** (secondary, enterprise) crawls pages remotely on a schedule. It uses a proprietary rule set (`sia-r` prefix) that applies some WCAG rules more broadly than the spec requires and includes ambiguous "cantTell" results in its violation count. SiteImprove flags issues in three categories:
 
@@ -191,7 +191,7 @@ This site has **2,356 dynamic pages** generated from CMS content across 10 conte
 
 1. **Shared templates** — all 172 grant pages render through the same Vue component, all 251 Research Hub articles use the same `ArticleView.vue`, etc. If 5 random grant pages pass, the remaining 167 will pass too — they execute identical code paths.
 
-2. **Runtime a11y fixes are global** — the 24 post-render fix functions in `src/a11y/index.js` run on every page. A fix like `fixTableCellContext()` applies to all CMS tables regardless of which article they appear in.
+2. **Runtime a11y fixes are global** — the 27 post-render fix functions in `src/a11y/index.js` run on every page. A fix like `fixTableCellContext()` applies to all CMS tables regardless of which article they appear in.
 
 3. **Time** — a full audit of all 2,356 pages takes ~4 hours (~6 seconds/page). The sampled audit takes ~6 minutes.
 
@@ -222,7 +222,7 @@ npm run audit -- hub --sample 9999
 | pages | 29 | 5 |
 | units | 10 | 5 |
 | events | 6 | 5 |
-| **Total** | **2,356** | **~57** |
+| **Total** | **2,356** | **~57 (default) / 157 (latest audit)** |
 
 ### Accessibility Features
 
@@ -233,13 +233,14 @@ npm run audit -- hub --sample 9999
 - **Skip navigation** — skip-to-content link for keyboard users
 - **Color contrast** — all text uses black (#000) or white (#fff) for maximum contrast; runtime fix overrides CMS inline color styles
 - **External links** — screen reader announcement of "(opens in new tab)"
-- **Post-render CMS fixes** — JavaScript corrects accessibility issues from Strapi 3 markdown rendering (heading order, figure tabindex, chip contrast, empty table headers, table cell context with scope/headers for simple and complex tables, footnote target size, link underlines, form field labels, label-in-name conflicts, invalid ARIA roles, empty containers, inline color contrast)
+- **Post-render CMS fixes** — JavaScript corrects accessibility issues from Strapi 3 markdown rendering (heading order, figure tabindex, chip contrast, empty table headers, table cell context with scope/headers for simple and complex tables, footnote target size, link underlines, form field labels, label-in-name conflicts, invalid ARIA roles, empty containers, inline color contrast, data table header scoping, aria-hidden focus management)
+- **SiteImprove content intercept** — Plugin-based content pipeline (`contentSanitizer.js`) fixes CMS misspellings, missing image alt text, dark-background contrast issues, and apostrophe-stripped titles before content reaches the DOM (see [SiteImprove Intercept](#siteimprove-intercept-content-pipeline) below)
 
 ### SiteImprove Intercept (Content Pipeline)
 
 #### The problem: why axe-core and SiteImprove disagree
 
-**axe-core** runs inside the browser after JavaScript executes. It sees the same DOM the user sees — including SPA route changes, async content, and runtime accessibility fixes. This site scores **100/100 on axe-core across 93+ pages**.
+**axe-core** runs inside the browser after JavaScript executes. It sees the same DOM the user sees — including SPA route changes, async content, and runtime accessibility fixes. This site scores **zero violations on axe-core across 157 audited pages**.
 
 **SiteImprove** is a remote crawler. It fetches pages server-side and attempts to execute JavaScript, but it cannot reliably parse Single Page Applications. On an SPA, much of the content is rendered client-side by JavaScript frameworks (Vue, React, Angular) after the initial page load. SiteImprove often sees partial or stale DOM states, leading it to flag issues that don't exist for real users. This is a fundamental architectural limitation — **not a deficiency in the site's accessibility**.
 
@@ -292,8 +293,10 @@ Anything that is a **text or HTML string transformation** on CMS content:
 
 | Category | Examples |
 |---|---|
-| Misspellings | Typos in Strapi content fields |
-| Missing punctuation | Apostrophes stripped by slug generation |
+| Misspellings | Typos in Strapi content fields (`fixMisspellings`) |
+| Missing punctuation | Apostrophes stripped by slug generation (`fixApostrophes`) |
+| Missing image alt text | Auto-derive alt from filenames (`fixCmsImages`) |
+| CMS color contrast | Fix dark-bg/black-text conflicts (`fixCmsContrast`) |
 | HTML attribute injection | Add `scope`, `aria-label`, `lang` to CMS HTML elements |
 | Tag wrapping/restructuring | Wrap `<table>` in scrollable `<div role="region">` |
 | Lang attributes for foreign text | Wrap British spellings in `<span lang="en-GB">` |
@@ -307,7 +310,7 @@ Anything involving **Vuetify's runtime DOM**, **CSS**, **layout**, or **behavior
 | Category | Why | Fix location |
 |---|---|---|
 | Vuetify component ARIA | Vuetify generates DOM at runtime | `a11y/index.js` |
-| Color contrast | CSS computed styles | `app.css` or `a11y/index.js` |
+| Vuetify/CSS color contrast | CSS computed styles on framework elements | `app.css` or `a11y/index.js` |
 | Focus indicators | CSS `:focus-visible` | `app.css` |
 | Text clipping at zoom | CSS overflow/layout | Component CSS |
 | Keyboard navigation | Event handlers, tabindex | `a11y/index.js` |

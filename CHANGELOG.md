@@ -94,7 +94,7 @@ Full axe-core audit of 157 pages across 5 content types (30 randomly sampled per
 - **Meetings:** 30/30 clean
 - **Pages:** 28/29 clean, 1 timeout (`/about/irb-policies-and-procedures/`)
 - **Index pages + homepage:** 8/8 clean
-- **1 failure:** `/about/i2i/` — `image-alt` (critical, 1 `<img>` without alt text) and `color-contrast` (serious, 3 elements with light text on insufficient background). This page uses custom CMS HTML with inline styles that bypass the runtime contrast fix.
+- **1 failure:** `/about/i2i/` — `image-alt` (critical, 1 `<img>` without alt text) and `color-contrast` (serious, 3 elements with light text on insufficient background). This page uses custom CMS HTML with inline styles that bypass the runtime contrast fix. **Fixed in v1.3.31.**
 
 ---
 
