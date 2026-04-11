@@ -52,11 +52,7 @@
       }}</v-card-text>
       <v-card-text>
         <div class="text-right" aria-hidden="true">
-          <v-btn
-            small
-            text
-            tabindex="-1"
-          >
+          <v-btn small text tabindex="-1">
             {{ readMoreText }}
           </v-btn>
         </div>

@@ -110,24 +110,21 @@ function fixApostrophes(text) {
 
 function fixCmsImages(html) {
   // Add alt text to images missing the alt attribute entirely
-  return html.replace(
-    /<img\b((?![^>]*\balt\s*=)[^>]*)>/gi,
-    (match, attrs) => {
-      // Try to derive alt from src filename
-      const srcMatch = attrs.match(/src=["']([^"']+)["']/i);
-      let alt = "";
-      if (srcMatch) {
-        alt = srcMatch[1]
-          .split("/")
-          .pop()
-          .replace(/[-_]/g, " ")
-          .replace(/\.[^.]+$/, "")
-          .replace(/\s[a-f0-9]{8,}$/i, "")
-          .trim();
-      }
-      return `<img alt="${alt}"${attrs}>`;
+  return html.replace(/<img\b((?![^>]*\balt\s*=)[^>]*)>/gi, (match, attrs) => {
+    // Try to derive alt from src filename
+    const srcMatch = attrs.match(/src=["']([^"']+)["']/i);
+    let alt = "";
+    if (srcMatch) {
+      alt = srcMatch[1]
+        .split("/")
+        .pop()
+        .replace(/[-_]/g, " ")
+        .replace(/\.[^.]+$/, "")
+        .replace(/\s[a-f0-9]{8,}$/i, "")
+        .trim();
     }
-  );
+    return `<img alt="${alt}"${attrs}>`;
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -171,7 +168,12 @@ function fixCmsContrast(html) {
 // ═══════════════════════════════════════════════════════════════════
 
 // Built-in plugins (always run first)
-const htmlPlugins = [fixMisspellings, fixApostrophes, fixCmsImages, fixCmsContrast];
+const htmlPlugins = [
+  fixMisspellings,
+  fixApostrophes,
+  fixCmsImages,
+  fixCmsContrast,
+];
 const textPlugins = [fixMisspellings, fixApostrophes];
 
 /**

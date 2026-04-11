@@ -65,7 +65,11 @@
                     color="blue darken-4"
                     opacity=".7"
                   >
-                    <v-btn :to="item.fullPath" :aria-label="`Read more about ${item.title}`">Read more&nbsp;&raquo;</v-btn>
+                    <v-btn
+                      :to="item.fullPath"
+                      :aria-label="`Read more about ${item.title}`"
+                      >Read more&nbsp;&raquo;</v-btn
+                    >
                   </v-overlay>
                 </v-fade-transition>
               </v-img>
@@ -128,7 +132,11 @@
                     color="blue darken-4"
                     opacity=".7"
                   >
-                    <v-btn :to="item.fullPath" :aria-label="`Read more about ${item.title}`">Read more&nbsp;&raquo;</v-btn>
+                    <v-btn
+                      :to="item.fullPath"
+                      :aria-label="`Read more about ${item.title}`"
+                      >Read more&nbsp;&raquo;</v-btn
+                    >
                   </v-overlay>
                 </v-fade-transition>
               </v-img>
