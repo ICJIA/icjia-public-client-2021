@@ -119,23 +119,58 @@ Reports are saved to `reports/`.
 
 ## Security Posture
 
-**Last audit:** March 24, 2026 — Red Team / Blue Team assessment across 2,345 routes and all application components.
+**Last audit:** April 11, 2026 — Red Team / Blue Team assessment across 2,356 routes and all application components.
 
-**Overall rating: MODERATE-HIGH** — all critical (P0) and high (P1) client-side vulnerabilities mitigated; remaining items require backend changes.
+**Overall rating: MODERATE-HIGH** — zero P0 (critical) vulnerabilities; three P1 items identified (two new, one previously known). All XSS vectors confirmed blocked by DOMPurify + route param sanitization. New risks from DOMPurify `<style>` tag allowlisting and missing CSP header identified and documented.
 
 | Category | Status | Details |
 |---|---|---|
-| **Security headers** | **Hardened** | X-Frame-Options, HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy enabled |
-| **CORS** | **Restricted** | Locked to `https://icjia.illinois.gov` (was wildcard `*`) |
-| **XSS prevention** | **Hardened** | DOMPurify sanitization at `renderToHtml()` chokepoint covers all 85 `v-html` bindings; `document.write()` replaced with DOM API |
-| **GraphQL injection** | **Mitigated** | Route params sanitized to `[a-zA-Z0-9_-]` before query interpolation |
-| **External links** | **Hardened** | `rel="noopener noreferrer"` on all markdown-rendered links |
-| **Auth tokens** | **localStorage** | JWT in localStorage; HttpOnly cookies require Strapi 3 backend migration |
+| **Security headers** | **Hardened (missing CSP)** | X-Frame-Options, HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy enabled. **No Content-Security-Policy header** — P1, recommended to add in report-only mode first |
+| **CORS** | **Restricted** | Locked to `https://icjia.illinois.gov`; no wildcard |
+| **XSS prevention** | **Hardened** | DOMPurify sanitization at `renderToHtml()` chokepoint covers all `v-html` bindings; route params regex-sanitized; `v-html` directive globally overridden with content pipeline |
+| **CSS injection** | **Mitigated (P2)** | DOMPurify now allows `<style>` tags and `style` attributes for CMS layout support. DOMPurify strips `javascript:` URLs and event handlers but CSS `url()` exfiltration is possible if CMS account is compromised. Mitigated by CMS auth; would be fully blocked by CSP |
+| **GraphQL injection** | **Mitigated** | Route params sanitized to `[a-zA-Z0-9_-]` before query interpolation; Apollo parameterized queries used elsewhere |
+| **External links** | **Mostly hardened** | `rel="noopener noreferrer"` on all markdown-rendered links; 3 template links to first-party domains missing `rel` (P3) |
+| **Auth tokens** | **localStorage (P1)** | JWT in localStorage; HttpOnly cookies require Strapi 3 backend migration |
+| **Data exposure** | **Needs attention (P2)** | Static API JSON files expose staff names in `searchMeta` fields; `searchIndex.json` (2.8 MB) mirrors full CMS database with internal metadata |
+| **Server disclosure** | **Needs attention (P2)** | `X-Powered-By: Express` header on dev server; Strapi production API leaks Node.js stack traces in error responses |
+| **Source maps** | **Hardened** | `productionSourceMap: false`; no `.map` files served |
 | **HTTPS** | **Full** | All endpoints and CDN resources use TLS |
-| **Static analysis** | **Active** | CodeQL runs on every push/PR; Dependabot monitoring enabled |
 | **Console stripping** | **Active** | Production builds remove `console.log` via Babel plugin |
+| **Dependencies** | **Needs attention (P1)** | `npm audit` reports 20 vulnerabilities (5 critical, 12 high) including Vuetify XSS advisories. DOMPurify mitigates practical impact |
+| **Env / secrets** | **Hardened** | `.env` in `.gitignore`, no credentials committed, no source maps |
 
-**Remaining items (backend-dependent):** SEC-06 (JWT HttpOnly cookies), SEC-07 (CSRF tokens), SEC-08 (login rate limiting). See [CHANGELOG.md](CHANGELOG.md) for full findings and remediation plan.
+### New findings (April 2026)
+
+| # | Finding | Severity | Status |
+|---|---|---|---|
+| SEC-09 | No Content-Security-Policy header | **P1** | Open — add CSP in report-only mode first |
+| SEC-10 | npm dependency vulnerabilities (20 total, 5 critical) | **P1** | Open — run `npm audit fix`; evaluate Vuetify 2.7.2 |
+| SEC-11 | DOMPurify `<style>` tag + `style` attr allowlisting enables CSS exfiltration | **P2** | Accepted — required for CMS layout; mitigated by CMS auth; fully blocked by CSP |
+| SEC-12 | Staff names leaked in `searchMeta` across API JSON files | **P2** | Open — strip `searchMeta` from generated JSON or sanitize staff names |
+| SEC-13 | `searchIndex.json` (2.8 MB) exposes full CMS database | **P2** | Open — reduce to title/summary/path/contentType only |
+| SEC-14 | `X-Powered-By` header discloses server framework | **P2** | Open — disable in Express/Netlify |
+| SEC-15 | Strapi production API leaks stack traces in error responses | **P2** | Open — requires Strapi backend `NODE_ENV=production` |
+| SEC-16 | No `/.well-known/security.txt` (RFC 9116) | **P3** | Open — recommended for government sites |
+| SEC-17 | Dead code `ResearchHub.js:getSingleArticleQuery()` with unsanitized interpolation | **P3** | Open — remove or sanitize |
+
+### Previously known items (unchanged)
+
+| # | Finding | Severity | Status |
+|---|---|---|---|
+| SEC-06 | JWT in localStorage (HttpOnly cookies require Strapi migration) | **P1** | Backend-dependent |
+| SEC-07 | No CSRF tokens | **P2** | Backend-dependent |
+| SEC-08 | No login rate limiting | **P2** | Backend-dependent |
+
+### Confirmed secure (April 2026)
+
+- **XSS via URL route params:** Vue Router URL-encodes payloads; regex sanitization strips injection characters. Confirmed safe.
+- **XSS via search results:** Search index is a static compile-time artifact processed through `deepSanitize()`. Low risk.
+- **Open redirect:** All redirects use hardcoded URLs; login redirect ignores query params. Confirmed safe.
+- **GraphQL introspection:** No GraphQL endpoint exposed on frontend. Confirmed safe.
+- **Admin panel exposure:** `/admin/` returns SPA shell redirect, no server-side admin. Confirmed safe.
+- **Sensitive file exposure:** `.env`, `.git/config`, `package.json` all return SPA fallback. Confirmed safe.
+- **Source map exposure:** No `.map` files served. Confirmed safe.
 
 View the [security policy](SECURITY.md).
 

@@ -67,6 +67,48 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.32] - 2026-04-11
+
+### Security — Red Team / Blue Team Audit (April 2026)
+
+Full security assessment across 2,356 routes covering XSS/injection testing, security headers, CORS, DOMPurify configuration, API data exposure, dependency vulnerabilities, and authentication.
+
+**Overall rating: MODERATE-HIGH** — zero P0 (critical); three P1 (high); six P2 (medium); three P3 (low).
+
+#### New findings
+
+- **SEC-09 (P1): No Content-Security-Policy header** — The site has no CSP, meaning any XSS bypass would have no secondary defense. Recommend adding CSP in report-only mode first: `default-src 'self'; script-src 'self' https://plausible.icjia.cloud; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' https:; connect-src 'self' https://*.icjia-api.cloud`.
+- **SEC-10 (P1): npm dependency vulnerabilities** — `npm audit` reports 20 vulnerabilities (5 critical, 12 high, 2 moderate, 1 low). Includes Vuetify XSS advisories (GHSA-q4q5-c5cv-2p68), ws ReDoS, yaml stack overflow. DOMPurify mitigates the Vuetify XSS in practice. Recommend `npm audit fix` for non-breaking fixes and evaluating Vuetify 2.7.2 upgrade.
+- **SEC-11 (P2): DOMPurify `<style>` tag allowlisting** — Added in v1.3.31 for CMS layout support. Enables CSS data exfiltration via `url()` and iframe injection if a CMS author account is compromised. DOMPurify strips `javascript:` URLs and event handlers, so XSS is still blocked. Risk accepted for CMS layout functionality; would be fully mitigated by CSP (SEC-09).
+- **SEC-12 (P2): Staff names in API data** — `searchMeta` fields across all static API JSON files expose internal staff names (grant managers, unit directors) not otherwise visible on the site. Useful for social engineering.
+- **SEC-13 (P2): searchIndex.json data exposure** — 2.8 MB file mirrors the full CMS database (2,365 records) including internal metadata. Should be reduced to only fields needed for search.
+- **SEC-14 (P2): Server framework disclosure** — `X-Powered-By: Express` header aids framework-targeted attacks. Disable with `app.disable('x-powered-by')` or Helmet middleware.
+- **SEC-15 (P2): Strapi stack trace leakage** — Production Strapi API returns full Node.js stack traces including filesystem paths (`/home/forge/agency.icjia-api.cloud/...`) in GraphQL error responses. Requires `NODE_ENV=production` on backend.
+- **SEC-16 (P3): No security.txt** — Government sites should have `/.well-known/security.txt` per RFC 9116 with vulnerability reporting contact.
+- **SEC-17 (P3): Dead code with unsanitized GraphQL interpolation** — `ResearchHub.js:getSingleArticleQuery()` accepts a slug without regex sanitization. Appears uncalled. Remove or sanitize for defense-in-depth.
+
+#### Confirmed secure
+
+- **XSS via URL route params:** Vue Router URL-encodes; regex sanitization strips injection characters.
+- **XSS via search results:** Static compile-time artifact through `deepSanitize()`.
+- **Open redirect:** All redirects hardcoded; login ignores `redirect` query param.
+- **GraphQL introspection:** No endpoint exposed on frontend.
+- **Admin panel:** SPA shell redirect only, no server-side admin.
+- **Sensitive files:** `.env`, `.git/config`, `package.json` return SPA fallback.
+- **Source maps:** Not generated in production builds.
+
+#### Unchanged from March 2026
+
+- SEC-06 (P1): JWT in localStorage (backend-dependent — requires Strapi HttpOnly cookie migration)
+- SEC-07 (P2): No CSRF tokens (backend-dependent)
+- SEC-08 (P2): No login rate limiting (backend-dependent)
+- CORS restricted to `https://icjia.illinois.gov`
+- HSTS with preload, X-Frame-Options, X-Content-Type-Options, Referrer-Policy all active
+- Console stripping active in production via Babel plugin
+- No credentials or API keys in committed code
+
+---
+
 ## [1.3.31] - 2026-04-11
 
 ### Fix — i2i Page Contrast + DOMPurify Style Preservation + Image Alt
