@@ -198,6 +198,21 @@ const fixInlineColorContrast = function () {
   const containers = document.querySelectorAll(
     ".article-body, .markdown-body, .v-card__text"
   );
+  // Check if an element or any ancestor has a dark background
+  const onDarkBackground = (el) => {
+    let node = el.parentElement;
+    while (node && node !== document.body) {
+      const bg = window.getComputedStyle(node).backgroundColor;
+      const rgb = bg.match(/\d+/g);
+      if (rgb && rgb.length >= 3) {
+        const lum =
+          (0.2126 * +rgb[0] + 0.7152 * +rgb[1] + 0.0722 * +rgb[2]) / 255;
+        if (lum < 0.4) return true;
+      }
+      node = node.parentElement;
+    }
+    return false;
+  };
   containers.forEach((container) => {
     // Skip disclaimer and overlays — they use white text on dark backgrounds intentionally
     if (container.closest("#disclaimer")) return;
@@ -207,6 +222,8 @@ const fixInlineColorContrast = function () {
       if (el.closest(".v-chip") || el.classList.contains("v-chip")) return;
       const style = el.getAttribute("style") || "";
       if (/color\s*:/i.test(style) && !/background/i.test(style)) {
+        // Skip elements on dark backgrounds — white text is intentional there
+        if (onDarkBackground(el)) return;
         // Strip any inline color declaration, let inherited #000 apply
         el.style.color = "#000";
       }

@@ -155,11 +155,12 @@ const fixImageLinks = function (html) {
 const renderToHtml = function (markdown) {
   const raw = md.render(markdown);
   const sanitized = DOMPurify.sanitize(raw, {
-    ADD_TAGS: ["figure", "figcaption", "iframe"],
+    ADD_TAGS: ["figure", "figcaption", "iframe", "style"],
     ADD_ATTR: [
       "target",
       "id",
       "class",
+      "style",
       "tabindex",
       "aria-label",
       "aria-hidden",

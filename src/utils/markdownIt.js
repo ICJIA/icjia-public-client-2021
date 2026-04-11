@@ -4,11 +4,12 @@ import { sanitizeContent } from "@/utils/contentSanitizer";
 export { createMarkdownUtils, initMarkdownIt };
 
 const PURIFY_OPTS = {
-  ADD_TAGS: ["figure", "figcaption", "iframe"],
+  ADD_TAGS: ["figure", "figcaption", "iframe", "style"],
   ADD_ATTR: [
     "target",
     "id",
     "class",
+    "style",
     "tabindex",
     "aria-label",
     "aria-hidden",

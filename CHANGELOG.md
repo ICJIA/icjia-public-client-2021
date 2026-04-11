@@ -67,6 +67,20 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.31] - 2026-04-11
+
+### Fix — i2i Page Contrast + DOMPurify Style Preservation + Image Alt
+
+Resolves the last remaining axe-core violations from the 157-page audit. All pages now pass WCAG 2.1 AA with zero violations.
+
+- **fix: Allow `style` attribute and `<style>` tags through DOMPurify** — CMS pages with custom inline styles (background colors, layout, typography) were losing all styling when DOMPurify stripped `style` attributes and `<style>` blocks. Added `style` to `ADD_ATTR` and `<style>` to `ADD_TAGS` in both `Markdown.js` and `markdownIt.js`. DOMPurify still sanitizes CSS values internally for XSS safety.
+- **fix: SiteImprove intercept for dark-background contrast (fixCmsContrast)** — The i2i page CMS content has a `<div style="background: #3C5984; color: #000">` (dark blue background with black text). The intercept changes `color: #000` to `color: #fff` on any div with a dark hex background.
+- **fix: SiteImprove intercept for missing image alt (fixCmsImages)** — Auto-derives alt text from image filenames for CMS images missing the `alt` attribute.
+- **fix: fixInlineColorContrast now checks ancestor backgrounds** — The runtime DOM fix was overriding white text to black inside dark-background CMS sections. It now detects dark ancestor backgrounds (luminance < 0.4) and skips elements that intentionally use light text on dark backgrounds.
+- **fix: deepSanitize uses sanitizeContent instead of sanitizeText** — API response strings now run through the full HTML pipeline (including fixCmsImages and fixCmsContrast), not just the text pipeline.
+
+---
+
 ## [1.3.30] - 2026-04-11
 
 ### Audit — 157-Page axe-core Accessibility Sweep (WCAG 2.1 AA)

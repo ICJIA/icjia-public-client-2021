@@ -177,7 +177,7 @@ This site is audited with two complementary tools that produce **different resul
 
 | Metric | Score |
 |---|---|
-| Full axe-core audit (157 pages, 30/type, 5 content types) | **155/157 zero violations (98.7%)** |
+| Full axe-core audit (157 pages, 30/type, 5 content types) | **157/157 zero violations (100%)** |
 | Prior Lighthouse a11y audit (93 pages, desktop + mobile) | **93/93 score 100/100** |
 | Prior sampled audit (57 pages, 10 content types) | **57/57 zero violations (100%)** |
 | Regression tests (Playwright) | **37/37 passing** |

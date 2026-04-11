@@ -104,11 +104,74 @@ function fixApostrophes(text) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// PLUGIN: fixCmsImages
+// Adds alt attributes to CMS images that are missing them.
+// ═══════════════════════════════════════════════════════════════════
+
+function fixCmsImages(html) {
+  // Add alt text to images missing the alt attribute entirely
+  return html.replace(
+    /<img\b((?![^>]*\balt\s*=)[^>]*)>/gi,
+    (match, attrs) => {
+      // Try to derive alt from src filename
+      const srcMatch = attrs.match(/src=["']([^"']+)["']/i);
+      let alt = "";
+      if (srcMatch) {
+        alt = srcMatch[1]
+          .split("/")
+          .pop()
+          .replace(/[-_]/g, " ")
+          .replace(/\.[^.]+$/, "")
+          .replace(/\s[a-f0-9]{8,}$/i, "")
+          .trim();
+      }
+      return `<img alt="${alt}"${attrs}>`;
+    }
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PLUGIN: fixCmsContrast
+// Fixes white-on-light contrast issues in CMS inline styles/classes.
+// ═══════════════════════════════════════════════════════════════════
+
+function fixCmsContrast(html) {
+  let result = html;
+
+  // Fix dark backgrounds with conflicting color: #000!important.
+  // CMS authors set background: #3C5984 (dark blue) but color: #000 (black),
+  // making text invisible. Change text to white.
+  result = result.replace(
+    /background:\s*(#[2-5][0-9a-f]{5})\s*!important;\s*color:\s*#000\s*!important/gi,
+    "background: $1 !important; color: #fff !important"
+  );
+
+  // Convert .white-heading class to inline style.
+  // DOMPurify strips <style> tags, so class-based colors like
+  // .white-heading {color: #fff !important} are lost after sanitization.
+  // Inject inline color directly on elements that use the class.
+  result = result.replace(
+    /\{\.white-heading\b/g,
+    '{style="color: #fff !important" .white-heading'
+  );
+
+  // Also handle HTML elements with class="white-heading" (non-markdown)
+  result = result.replace(
+    /class="([^"]*\bwhite-heading\b[^"]*)"/g,
+    (match, classes) => {
+      return `class="${classes}" style="color: #fff !important"`;
+    }
+  );
+
+  return result;
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // Pipeline registry
 // ═══════════════════════════════════════════════════════════════════
 
 // Built-in plugins (always run first)
-const htmlPlugins = [fixMisspellings, fixApostrophes];
+const htmlPlugins = [fixMisspellings, fixApostrophes, fixCmsImages, fixCmsContrast];
 const textPlugins = [fixMisspellings, fixApostrophes];
 
 /**
@@ -171,7 +234,7 @@ function sanitizeText(text) {
  * Use as an axios response interceptor or on raw API data.
  */
 function deepSanitize(obj) {
-  if (typeof obj === "string") return sanitizeText(obj);
+  if (typeof obj === "string") return sanitizeContent(obj);
   if (Array.isArray(obj)) return obj.map(deepSanitize);
   if (obj && typeof obj === "object") {
     const result = {};
@@ -205,6 +268,8 @@ export {
   // Expose individual plugins for testing/selective use
   fixMisspellings,
   fixApostrophes,
+  fixCmsImages,
+  fixCmsContrast,
   // Expose data for external inspection
   MISSPELLINGS,
   APOSTROPHES,
