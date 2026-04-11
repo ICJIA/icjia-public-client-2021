@@ -173,12 +173,12 @@ This site is audited with two complementary tools that produce **different resul
 
 > **Neither tool replaces manual testing.** Automated scanners catch ~30-40% of WCAG issues. Screen reader testing, keyboard navigation, and cognitive accessibility review require human judgment.
 
-### Current Status (March 2026)
+### Current Status (April 2026)
 
 | Metric | Score |
 |---|---|
-| Sampled audit (57 pages, 10 content types) | **57/57 zero violations (100%)** |
-| Research Hub targeted audit (20 pages) | **20/20 zero violations (100%)** |
+| Sampled audit (93 pages, 5 content types, desktop + mobile) | **93/93 zero violations (100%)** |
+| Prior sampled audit (57 pages, 10 content types) | **57/57 zero violations (100%)** |
 | Regression tests (Playwright) | **37/37 passing** |
 | Unit tests — a11y functions (Mocha/Chai) | **20/20 passing** |
 | Unit tests — security (Mocha/Chai) | **39/39 passing** |
@@ -234,6 +234,131 @@ npm run audit -- hub --sample 9999
 - **External links** — screen reader announcement of "(opens in new tab)"
 - **Post-render CMS fixes** — JavaScript corrects accessibility issues from Strapi 3 markdown rendering (heading order, figure tabindex, chip contrast, empty table headers, table cell context with scope/headers for simple and complex tables, footnote target size, link underlines, form field labels, label-in-name conflicts, invalid ARIA roles, empty containers, inline color contrast)
 
+### SiteImprove Intercept (Content Pipeline)
+
+#### The problem: why axe-core and SiteImprove disagree
+
+**axe-core** runs inside the browser after JavaScript executes. It sees the same DOM the user sees — including SPA route changes, async content, and runtime accessibility fixes. This site scores **100/100 on axe-core across 93+ pages**.
+
+**SiteImprove** is a remote crawler. It fetches pages server-side and attempts to execute JavaScript, but it cannot reliably parse Single Page Applications. On an SPA, much of the content is rendered client-side by JavaScript frameworks (Vue, React, Angular) after the initial page load. SiteImprove often sees partial or stale DOM states, leading it to flag issues that don't exist for real users. This is a fundamental architectural limitation — **not a deficiency in the site's accessibility**.
+
+SiteImprove also applies proprietary rules (`sia-r` prefix) that interpret WCAG more broadly than the spec requires, includes ambiguous "cantTell" results in its violation count, and caches results that may lag weeks behind the actual state of the code. The result: **SiteImprove will almost never give an SPA a perfect score, even when the site is fully WCAG 2.1 AA compliant.**
+
+#### The solution: intercept content before it reaches the DOM
+
+Since SiteImprove cannot reliably read what JavaScript renders, the strategy is to **fix content before it enters the DOM** — at the data layer, not the presentation layer. If misspellings, missing attributes, or structural issues exist in CMS content, fix them in transit between the API response and the template render. SiteImprove then sees the corrected content regardless of how well it parses the SPA.
+
+This pattern — a **SiteImprove intercept** — is applicable to any SPA + headless CMS architecture:
+
+1. **Identify the data flow.** Where does CMS content enter your app? GraphQL responses, REST API calls, static JSON, markdown rendering pipelines.
+2. **Add a transformation layer.** Insert a function that receives the raw content string and returns a corrected string. Chain multiple transformations as plugins.
+3. **Apply at every entry point.** API response interceptors (axios, fetch), GraphQL afterware links, template directive overrides, build-time data processing.
+4. **Separate content fixes from DOM fixes.** String transformations handle CMS content (misspellings, HTML attributes, tag structure). Post-render DOM mutations handle framework-generated markup (Vuetify ARIA, focus management, contrast). These are two distinct layers.
+
+The intercept does **not** replace accessibility testing — it complements it by ensuring that the content SiteImprove *can* read is as clean as possible. Runtime DOM fixes (`a11y/index.js`) handle everything else.
+
+#### This project's implementation
+
+The SiteImprove intercept for this site is a plugin-based content pipeline at `src/utils/contentSanitizer.js` that transforms all CMS content from Strapi 3 before it reaches the DOM.
+
+#### Two-layer fix model
+
+```
+CMS Content (Strapi 3)
+    |
+    v
++-------------------------------+
+|  SiteImprove intercept        |  <-- contentSanitizer.js
+|  (string transforms)          |      Fixes content BEFORE render
++-------------------------------+
+    |
+    v
+  Vue renders to DOM
+    |
+    v
++-------------------------------+
+|  Runtime DOM fixes            |  <-- a11y/index.js
+|  (post-render mutations)      |      Fixes DOM AFTER render
++-------------------------------+
+    |
+    v
+  SiteImprove crawls the page
+```
+
+#### What the intercept CAN fix
+
+Anything that is a **text or HTML string transformation** on CMS content:
+
+| Category | Examples |
+|---|---|
+| Misspellings | Typos in Strapi content fields |
+| Missing punctuation | Apostrophes stripped by slug generation |
+| HTML attribute injection | Add `scope`, `aria-label`, `lang` to CMS HTML elements |
+| Tag wrapping/restructuring | Wrap `<table>` in scrollable `<div role="region">` |
+| Lang attributes for foreign text | Wrap British spellings in `<span lang="en-GB">` |
+| Link text augmentation | Append sr-only text to vague "click here" links |
+| Empty element removal | Strip empty `<p>`, `<span>`, `<div>` from markdown output |
+
+#### What the intercept CANNOT fix
+
+Anything involving **Vuetify's runtime DOM**, **CSS**, **layout**, or **behavior** — these are handled by `src/a11y/index.js` instead:
+
+| Category | Why | Fix location |
+|---|---|---|
+| Vuetify component ARIA | Vuetify generates DOM at runtime | `a11y/index.js` |
+| Color contrast | CSS computed styles | `app.css` or `a11y/index.js` |
+| Focus indicators | CSS `:focus-visible` | `app.css` |
+| Text clipping at zoom | CSS overflow/layout | Component CSS |
+| Keyboard navigation | Event handlers, tabindex | `a11y/index.js` |
+| Landmark structure | Vue template structure | Component templates |
+| Nested interactive elements | Vuetify nests interactive controls | `a11y/index.js` |
+| Dynamic overlays/tooltips | Created after render | `a11y/index.js` (MutationObserver) |
+
+**Rule of thumb:** If the content comes from Strapi, fix it in the intercept. If the DOM comes from Vuetify or Vue templates, fix it in `a11y/index.js`.
+
+#### Adding a new SiteImprove intercept
+
+For **simple misspelling fixes**, add entries to the `MISSPELLINGS` or `APOSTROPHES` arrays in `contentSanitizer.js`:
+
+```js
+// In src/utils/contentSanitizer.js
+const MISSPELLINGS = [
+  [/\btypoHere\b/gi, "corrected"],
+  // ...
+];
+```
+
+For **more complex transformations**, write a plugin function and register it:
+
+```js
+// A plugin is any function: (text: string) => string
+function fixSomeIssue(text) {
+  return text.replace(/<table>/g, '<table role="grid">');
+}
+
+// Register for both pipelines (HTML + text)
+registerPlugin(fixSomeIssue);
+
+// Or register for one pipeline only
+registerHtmlPlugin(fixSomeIssue);   // HTML bodies only
+registerTextPlugin(fixSomeIssue);   // titles/summaries only
+```
+
+#### Interception points
+
+The pipeline intercepts content at every entry point:
+
+| Entry Point | Mechanism |
+|---|---|
+| Markdown bodies | `sanitizeContent()` in `Markdown.js` and `markdownIt.js` |
+| ResearchHub API (axios) | `sanitizeResponse()` interceptor |
+| Publications API (axios) | `deepSanitize()` on response data |
+| Apollo GraphQL | `sanitizeLink` afterware in `vue-apollo.js` |
+| `v-html` directive | Global override in `main.js` auto-sanitizes |
+| Template interpolation | `\| sanitize` filter and global `this.sanitize()` mixin |
+| Page `<title>` tags | `titleTemplate` in `App.vue` uses `sanitizeText()` |
+| Search index | `deepSanitize()` in `AppInit.js` |
+
 ### Known Remaining Issues
 
 These originate from CMS-authored content or external proxy sites and are mitigated by post-render JavaScript where possible. They will be fully resolved in the planned Nuxt 4 / Strapi 5 rewrite:
@@ -255,6 +380,7 @@ See [CHANGELOG.md](CHANGELOG.md) for full audit details and remediation history.
 │   ├── views/              Page views (~60)
 │   ├── router/             Vue Router configuration
 │   ├── services/           API and utility services
+│   ├── utils/              Content sanitizer (SiteImprove intercept) and helpers
 │   └── plugins/            Vuetify and Apollo plugins
 ├── public/                 Static assets, generated API data, and llms.txt
 ├── tests/                  Playwright regression tests

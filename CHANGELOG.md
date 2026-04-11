@@ -67,6 +67,14 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.29] - 2026-04-11
+
+### Docs — SiteImprove Intercept Documentation
+
+- **docs: Add SiteImprove intercept section to README.md** — Explains why axe-core and SiteImprove disagree on SPA sites, documents the intercept pattern as a reusable strategy for any SPA + headless CMS architecture, details the two-layer fix model (content pipeline vs. runtime DOM fixes), what the intercept can and cannot fix, how to add new intercepts (misspelling entries vs. plugin functions), and the full list of interception points. Updates project structure to include `utils/` directory. Updates audit status to 93-page sweep (April 2026).
+
+---
+
 ## [1.3.28] - 2026-04-11
 
 ### Feature — SiteImprove Content Filter (Plugin-Based Content Pipeline)
