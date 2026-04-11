@@ -151,6 +151,7 @@
 import NProgress from "@/services/Progress";
 import { fixExpandButtons, fixNestedInteractive } from "@/a11y";
 import { getPublicationType } from "@/lib/utils";
+import { deepSanitize } from "@/utils/contentSanitizer";
 import { EventBus } from "@/event-bus";
 import _ from "lodash";
 import moment from "moment";
@@ -271,7 +272,7 @@ export default {
         pubArray = pubArray.concat(response.data);
         start += limit;
       }
-      pubArray = _.uniqBy(pubArray, "id");
+      pubArray = deepSanitize(_.uniqBy(pubArray, "id"));
       let publications = pubArray.map((p) => {
         let obj = {
           ...p,

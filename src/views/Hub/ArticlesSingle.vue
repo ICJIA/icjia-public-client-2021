@@ -22,6 +22,7 @@
 <script>
 import NProgress from "@/services/Progress";
 import { renderToHtml } from "@/services/Markdown";
+import { sanitizeResponse } from "@/utils/contentSanitizer";
 //import { EventBus } from "@/event-bus";
 const axios = require("axios");
 const api = axios.create({
@@ -36,7 +37,7 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use((response) => {
   NProgress.done();
-  return response;
+  return sanitizeResponse(response);
 });
 export default {
   watch: {

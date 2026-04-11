@@ -163,3 +163,9 @@ Vue.filter("fromNow", function (timestamp) {
   return moment(timestamp).fromNow(true);
   //return moment.utc(timestamp).locale("en").fromNow(true);
 });
+
+// ── Content pipeline filter ──────────────────────────────────────
+// Sanitize CMS text (titles, summaries) before display.
+// Usage in templates:  {{ item.title | sanitize }}
+import { sanitizeText } from "@/utils/contentSanitizer";
+Vue.filter("sanitize", sanitizeText);

@@ -67,6 +67,22 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.28] - 2026-04-11
+
+### Feature — SiteImprove Content Filter (Plugin-Based Content Pipeline)
+
+Adds a plugin-based "SiteImprove filter" that intercepts all CMS content from Strapi 3 before it reaches the DOM, fixing misspellings, missing apostrophes, and other content issues that SiteImprove flags because it cannot properly parse SPA pages.
+
+- **feat: Content pipeline at `src/utils/contentSanitizer.js`** — Extensible plugin system with `registerPlugin()`, `registerHtmlPlugin()`, and `registerTextPlugin()` for adding new content transformations. Ships with two built-in plugins: `fixMisspellings` (35 typo corrections from SiteImprove scan) and `fixApostrophes` (restores apostrophes stripped by Strapi slug generation in titles).
+- **feat: Axios response interceptor** — `sanitizeResponse()` and `deepSanitize()` exports allow any axios-based API call to deep-sanitize all string values in the response. Applied to ResearchHub article, app, and dataset fetches, and to the publications bulk loader.
+- **feat: Apollo Link afterware** — `sanitizeLink` in `vue-apollo.js` intercepts all GraphQL responses from the main Strapi API and deep-sanitizes string values before they reach Vue components.
+- **feat: Global Vue integration** — `v-html` directive override auto-sanitizes all v-html content. Global mixin adds `this.sanitize()` to every component. `| sanitize` filter available for template interpolation. `titleTemplate` in App.vue sanitizes `<title>` tags.
+- **feat: Search index sanitization** — `AppInit.js` deep-sanitizes the search index at build time so search results display corrected text.
+- **fix: "langauge" typo in `LapRequest.vue`** — corrected to "language" in the form field label.
+- **Misspellings corrected:** activites, andthe, Assesing, Behavorial, Buiding, Challange, Communnity, counites, Decription, defendent, eligilble, followin, Illiois, Independant, Initative, Institue, Jounral, langauge, llinois, Newletter, oversite, payed, progam, programing, Researh, represenation, Retreived, seperated, subtance, TThe, and apostrophe-stripped words (Dont, Womens, Communitys, Countys, States Attorneys).
+
+---
+
 ## [1.3.27] - 2026-04-11
 
 ### Fix — A11y Data Table Remediation (Header Scoping, Hidden Focus)

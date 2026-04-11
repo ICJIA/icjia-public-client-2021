@@ -1,4 +1,5 @@
 import DOMPurify from "dompurify";
+import { sanitizeContent } from "@/utils/contentSanitizer";
 // const config = require("@/config/config.json");
 // import { EventBus } from "@/event-bus.js";
 // const namedHeaders = require("markdown-it-named-headers");
@@ -173,7 +174,7 @@ const renderToHtml = function (markdown) {
       "frameborder",
     ],
   });
-  return fixImageLinks(fixTableHeaders(sanitized));
+  return sanitizeContent(fixImageLinks(fixTableHeaders(sanitized)));
 };
 
 const parseHeadings = function (markdown) {

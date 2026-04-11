@@ -22,6 +22,29 @@ import VueGtag from "vue-gtag";
 
 import "@fortawesome/fontawesome-free/css/all.css";
 
+// ── Content pipeline: auto-sanitize all CMS content before display ──
+import { sanitizeContent, sanitizeText } from "@/utils/contentSanitizer";
+
+// Global mixin: every component gets sanitize() for use in templates/methods
+Vue.mixin({
+  methods: {
+    sanitize: sanitizeText,
+  },
+});
+
+// Override v-html to auto-run content through the sanitizer pipeline.
+// Any v-html="expr" will sanitize the value before inserting into the DOM.
+Vue.directive("html", {
+  bind(el, binding) {
+    el.innerHTML = sanitizeContent(binding.value || "");
+  },
+  update(el, binding) {
+    if (binding.value !== binding.oldValue) {
+      el.innerHTML = sanitizeContent(binding.value || "");
+    }
+  },
+});
+
 Vue.config.productionTip = false;
 NProgress.start();
 // Set up app wide read-only configs and install as plugin

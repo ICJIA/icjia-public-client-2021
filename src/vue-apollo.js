@@ -4,10 +4,38 @@ import {
   createApolloClient,
   restartWebsockets,
 } from "vue-cli-plugin-apollo/graphql-client";
+import { ApolloLink } from "apollo-link";
+import { sanitizeText } from "@/utils/contentSanitizer";
 import appConfig from "./config/config.json";
 //console.log("appConfig", appConfig.api.baseGraphQL);
 // Install the vue plugin
 Vue.use(VueApollo);
+
+// ── SiteImprove filter: Apollo afterware ──────────────────────────
+// Deep-sanitizes all string values in GraphQL responses before they
+// reach Vue components. This catches {{ item.title }}, v-html, and
+// every other display path without needing per-template changes.
+function deepSanitize(obj) {
+  if (typeof obj === "string") return sanitizeText(obj);
+  if (Array.isArray(obj)) return obj.map(deepSanitize);
+  if (obj && typeof obj === "object") {
+    const result = {};
+    for (const key of Object.keys(obj)) {
+      result[key] = deepSanitize(obj[key]);
+    }
+    return result;
+  }
+  return obj;
+}
+
+const sanitizeLink = new ApolloLink((operation, forward) => {
+  return forward(operation).map((response) => {
+    if (response.data) {
+      response.data = deepSanitize(response.data);
+    }
+    return response;
+  });
+});
 
 // Name of the localStorage item
 const AUTH_TOKEN = "jwt";
@@ -58,6 +86,7 @@ export function createProvider(options = {}) {
   const { apolloClient, wsClient } = createApolloClient({
     ...defaultOptions,
     ...options,
+    link: sanitizeLink,
   });
   apolloClient.wsClient = wsClient;
 

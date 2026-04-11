@@ -10,6 +10,7 @@ import NProgress from "@/services/Progress";
 import { renderToHtml, parseHeadings } from "@/services/Markdown";
 import { getImageURL } from "@/services/Image";
 import { EventBus } from "@/event-bus";
+import { sanitizeResponse } from "@/utils/contentSanitizer";
 const axios = require("axios");
 const api = axios.create({
   baseURL: "https://researchhub.icjia-api.cloud",
@@ -23,7 +24,7 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use((response) => {
   NProgress.done();
-  return response;
+  return sanitizeResponse(response);
 });
 export default {
   watch: {

@@ -103,7 +103,7 @@
                       v-model="comment"
                       auto-grow
                       filled
-                      label="Please provide as much detail as possible about your langauge access request."
+                      label="Please provide as much detail as possible about your language access request."
                       rows="10"
                       class="mt-3"
                       @click="clearAxiosError"

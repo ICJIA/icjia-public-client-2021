@@ -1,4 +1,5 @@
 import DOMPurify from "dompurify";
+import { sanitizeContent } from "@/utils/contentSanitizer";
 
 export { createMarkdownUtils, initMarkdownIt };
 
@@ -136,7 +137,7 @@ const createMarkdownUtils = (md) => ({
       .render(markdown)
       .replace(/#fn/g, window.location.href + "#fn");
     const sanitized = DOMPurify.sanitize(raw, PURIFY_OPTS);
-    return fixImageLinks(fixTableHeaders(sanitized));
+    return sanitizeContent(fixImageLinks(fixTableHeaders(sanitized)));
   },
 });
 

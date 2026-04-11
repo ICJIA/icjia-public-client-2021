@@ -58,6 +58,7 @@
 
 <script>
 // import { EventBus } from "@/event-bus";
+import { sanitizeText } from "@/utils/contentSanitizer";
 import {
   fixBlankTableHeadings,
   fixExpandButtons,
@@ -102,7 +103,10 @@ export default {
     // if no subcomponents specify a metaInfo.title, this title will be used
     title: "Illinois Criminal Justice Information Authority",
     // all titles will be injected into this template
-    titleTemplate: "ICJIA | %s",
+    // Uses function form to run CMS titles through the content sanitizer
+    titleTemplate(chunk) {
+      return chunk ? `ICJIA | ${sanitizeText(chunk)}` : "ICJIA";
+    },
   },
   data() {
     return {
