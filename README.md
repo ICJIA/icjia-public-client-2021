@@ -177,16 +177,17 @@ This site is audited with two complementary tools that produce **different resul
 
 | Metric | Score |
 |---|---|
-| Sampled audit (93 pages, 5 content types, desktop + mobile) | **93/93 zero violations (100%)** |
+| Full axe-core audit (157 pages, 30/type, 5 content types) | **155/157 zero violations (98.7%)** |
+| Prior Lighthouse a11y audit (93 pages, desktop + mobile) | **93/93 score 100/100** |
 | Prior sampled audit (57 pages, 10 content types) | **57/57 zero violations (100%)** |
 | Regression tests (Playwright) | **37/37 passing** |
 | Unit tests — a11y functions (Mocha/Chai) | **20/20 passing** |
 | Unit tests — security (Mocha/Chai) | **39/39 passing** |
 | Automated score (WCAG 2.1 AA) | **A / 100%** |
 
-### Why 57 pages? (axe-core sampling strategy)
+### Sampling strategy (157 pages of 2,356)
 
-This site has **2,356 dynamic pages** generated from CMS content across 10 content types. The default axe-core audit tests **57 pages** (~5 randomly sampled per content type plus listing pages). This sampling approach is used because:
+This site has **2,356 dynamic pages** generated from CMS content across 10 content types. The most recent axe-core audit tested **157 pages** (30 randomly sampled per content type plus index/listing pages). This sampling approach is used because:
 
 1. **Shared templates** — all 172 grant pages render through the same Vue component, all 251 Research Hub articles use the same `ArticleView.vue`, etc. If 5 random grant pages pass, the remaining 167 will pass too — they execute identical code paths.
 

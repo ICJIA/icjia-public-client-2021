@@ -67,6 +67,23 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.30] - 2026-04-11
+
+### Audit — 157-Page axe-core Accessibility Sweep (WCAG 2.1 AA)
+
+Full axe-core audit of 157 pages across 5 content types (30 randomly sampled per type) plus 8 index/listing pages and the homepage.
+
+- **Results: 155/157 pages pass with zero violations (98.7%)**
+- **Hub articles:** 30/30 clean
+- **News posts:** 30/30 clean
+- **Grants:** 30/30 clean (16 archived grants resolved to 404 — 404 page passes)
+- **Meetings:** 30/30 clean
+- **Pages:** 28/29 clean, 1 timeout (`/about/irb-policies-and-procedures/`)
+- **Index pages + homepage:** 8/8 clean
+- **1 failure:** `/about/i2i/` — `image-alt` (critical, 1 `<img>` without alt text) and `color-contrast` (serious, 3 elements with light text on insufficient background). This page uses custom CMS HTML with inline styles that bypass the runtime contrast fix.
+
+---
+
 ## [1.3.29] - 2026-04-11
 
 ### Docs — SiteImprove Intercept Documentation
