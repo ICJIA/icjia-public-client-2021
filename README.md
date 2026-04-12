@@ -14,25 +14,21 @@ Public website for the Illinois Criminal Justice Information Authority (ICJIA).
 - **Search:** Fuse.js (client-side full-text search)
 - **Hosting:** Netlify
 - **Analytics:** Plausible
-- **Node:** 16.x (required — `node-sass@6` blocks Node 17+)
+- **Node:** 22.x in production (Netlify); 16.x or newer for local development
 
 ## Requirements
 
-**Node.js 16.x is required** for local development and builds.
+**Node.js 22 LTS** is what the Netlify build runs (`netlify.toml` pins `NODE_VERSION = "22"`). Local development works on Node 16, 18, 20, or 22 — the `package.json` engines field declares `>=16.x`. If you use `nvm`, the included `.nvmrc` will pick the recommended version automatically.
 
 ```bash
-# Install and use Node 16
-nvm install 16
-nvm use 16
-node --version  # Should show v16.x.x
+nvm use            # picks up .nvmrc
+node --version     # any 16.x / 18.x / 20.x / 22.x
 ```
-
-This project includes a `.nvmrc` file. If your shell is configured for auto-switching, it will use Node 16 automatically.
 
 ## Setup
 
 ```bash
-nvm use 16
+nvm use
 npm install
 ```
 
@@ -56,7 +52,7 @@ Output goes to `dist/`.
 
 ### Unit Tests (Mocha/Chai)
 
-201 automated unit tests covering security mitigations, accessibility functions, markdown rendering, Vue components, auth store, and data integrity.
+**224 passing / 6 pending / 0 failing** — covers security mitigations, accessibility functions, markdown rendering, Vue components, the auth store, the lazy search-index loader, and data integrity.
 
 ```bash
 npm run tests
@@ -64,12 +60,13 @@ npm run tests
 
 | Suite | Tests | What it guards |
 |---|---|---|
-| `security.spec.js` | 39 | XSS payloads (20+), GraphQL injection, security headers, CORS, source maps |
-| `config.spec.js` | 95 | HTTPS enforcement, 10 API data files, build config, env security |
-| `markdown.spec.js` | 21 | Heading anchors, link attributes, tables, code blocks, edge cases |
-| `a11y.spec.js` | 20 | All 8 a11y DOM fix functions (headings, tabindex, ARIA, target size) |
-| `components.spec.js` | 14 | SkipLink, Banner, Disclaimer — rendering, props, XSS in v-html |
-| `auth.spec.js` | 12 | Vuex mutations/getters, logout localStorage cleanup |
+| `security.spec.js` | 41 | XSS payloads (20+), GraphQL injection, security headers, CORS, source maps |
+| `config.spec.js` | 84 | HTTPS enforcement, 10 API data files, build config, env security |
+| `a11y.spec.js` | 38 | All 13 a11y DOM fix functions (headings, tabindex, ARIA, target size, data-table headers, aria-hidden focus, empty aria-label) |
+| `markdown.spec.js` | 27 | Heading anchors, link attributes, tables, code blocks, edge cases |
+| `auth.spec.js` | 15 | Vuex mutations/getters, logout localStorage cleanup |
+| `search.spec.js` | 10 | Lazy-loaded search index — `getFuse()` contract, caching, failure recovery, bundle-contract guard |
+| `components.spec.js` | 9 + 6 pending | SkipLink rendering; Banner/Disclaimer pure-JS (`render()`, XSS sanitization). Vuetify-mount tests are skipped — `vuetify-loader` doesn't run inside the mocha bundle; full rendering is covered by the Playwright suite |
 
 ### Regression Tests (Playwright)
 
@@ -216,8 +213,8 @@ This site is audited with two complementary tools that produce **different resul
 | Prior Lighthouse a11y audit (93 pages, desktop + mobile) | **93/93 score 100/100** |
 | Prior sampled audit (57 pages, 10 content types) | **57/57 zero violations (100%)** |
 | Regression tests (Playwright) | **37/37 passing** |
-| Unit tests — a11y functions (Mocha/Chai) | **20/20 passing** |
-| Unit tests — security (Mocha/Chai) | **39/39 passing** |
+| Unit tests — a11y functions (Mocha/Chai) | **38/38 passing** |
+| Unit tests — security (Mocha/Chai) | **41/41 passing** |
 | Automated score (WCAG 2.1 AA) | **A / 100%** |
 
 ### Sampling strategy (157 pages of 2,356)
@@ -408,6 +405,39 @@ These originate from CMS-authored content or external proxy sites and are mitiga
 
 See [CHANGELOG.md](CHANGELOG.md) for full audit details and remediation history.
 
+## Performance
+
+A Tier 1 perf pass (April 2026, v1.3.36) targeted the highest-impact, lowest-risk wins identified in the pre-rewrite audit. No architectural changes — every fix below is a same-shape edit that the planned Nuxt 4 rewrite can either inherit or supersede.
+
+| Fix | Win |
+|---|---|
+| Lazy-load the 2.7 MB `searchIndex.json` instead of static-importing it into the entry chunk | **`dist/js/app.*.js`: 2.9 MB → 262 KB (-91%)** |
+| Defer the search-index fetch until the user opens the search modal (was firing at app boot from `ModalSearch`'s `created()` hook) | First paint no longer waits on a 2.7 MB JSON parse + `deepSanitize()` over thousands of strings |
+| Disable unused Fuse options (`includeMatches`, `includeScore`) — neither was read anywhere in the UI; `includeMatches` is Fuse's most expensive setting (per-character match positions for highlighting) | Faster per-keystroke search response in the modal |
+| Immutable `Cache-Control` headers on `/js/*`, `/css/*`, `/img/*`, `/fonts/*` (Vue CLI emits content-hashed filenames so this is safe); `searchIndex.json` gets `max-age=3600 + stale-while-revalidate=86400`; `index.html` is `must-revalidate` so users always pick up new builds | Repeat-visit JS/CSS downloads drop to ~0 |
+| Early-return on the 3 `MutationObserver`-installing a11y fixes once their observer is wired (`fixOverlayContainer`, `fixNestedInteractive`, `fixProhibitedAriaOnImg`) | Saves three broad `querySelectorAll` calls per route navigation |
+
+### Lazy search-index loader
+
+The old `AppInit.js` did `import searchIndex from "../../public/searchIndex.json"`, which inlined the entire 2.7 MB blob into the main bundle and ran `deepSanitize()` over every string before first paint. The replacement is a cached promise:
+
+```js
+// src/services/AppInit.js
+let fusePromise = null;
+const getFuse = () => {
+  if (fusePromise) return fusePromise;
+  fusePromise = fetch("/searchIndex.json")
+    .then((r) => r.json())
+    .then((idx) => new Fuse(deepSanitize(idx), config.search.site))
+    .catch((err) => { fusePromise = null; throw err; });
+  return fusePromise;
+};
+```
+
+Consumers `await this.$myApp.getFuse()` from their `created()` hook (route components: lazy by route) or from a search-open handler (`ModalSearch.vue`: lazy by user intent). The promise is cached so concurrent callers share one fetch; on rejection the cache resets so a retry is possible.
+
+`tests/unit/search.spec.js` pins this contract — including a **bundle-contract guard** that asserts `AppInit.js` never re-introduces a static `import` of `searchIndex.json`. This is the perf win that's most likely to silently regress, so CI now blocks it.
+
 ## Project Structure
 
 ```
@@ -422,7 +452,9 @@ See [CHANGELOG.md](CHANGELOG.md) for full audit details and remediation history.
 │   ├── utils/              Content sanitizer (SiteImprove intercept) and helpers
 │   └── plugins/            Vuetify and Apollo plugins
 ├── public/                 Static assets, generated API data, and llms.txt
-├── tests/                  Playwright regression tests
+├── tests/
+│   ├── unit/               Mocha/Chai unit tests (security, a11y, search, etc.)
+│   └── *.spec.js           Playwright regression tests
 ├── scripts/                Audit and link checker scripts
 ├── reports/                Generated reports (CSV, JSON)
 ├── docs/                   Accessibility audit documentation
