@@ -67,6 +67,59 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.37] - 2026-04-12
+
+### Performance — Move Search Off the Main Thread (Web Worker)
+
+After v1.3.36 lazy-loaded the 2.7 MB search index, the first keystroke after opening the search modal triggered a noticeable UI freeze on production: the input would lock, then dump out characters all at once. Root cause: even though `fetch()` is async, the work that runs when the response arrives (`r.json()` parsing the 2.7 MB blob, `deepSanitize()` walking thousands of strings with ~35 regex each, and `new Fuse(...)` building internal indices) was all synchronous on the main thread. Subsequent `fuse.search()` calls per keystroke were also synchronous and could take 50–300 ms each on a 2.7 MB index.
+
+Solution: hand the entire pipeline to a Web Worker.
+
+#### What moved to the worker
+
+- `fetch('/searchIndex.json')`
+- `JSON.parse` of the response
+- `deepSanitize()` over every string field (worker-safe regex-only port — DOMPurify isn't needed here because search-index fields are plain text)
+- `new Fuse(records, options)`
+- Per-keystroke `fuse.search(query)`
+
+The main thread's only job is now: send a `SEARCH` message, await the `RESULTS` reply, update reactive state. None of that blocks input.
+
+#### New files
+
+- **`public/searchWorker.js`** — vanilla Web Worker. `importScripts('/fuse.min.js')` loads Fuse, then a message dispatcher handles `INIT` / `SEARCH` and replies with `READY` / `RESULTS` / `ERROR`. Each search carries a request id so out-of-order responses are safe.
+- **`public/fuse.min.js`** — copy of `fuse.basic.min.js` (15 KB) auto-synced from `node_modules` via the new `npm run copy:fuse` script that's wired into `serve` and `build`.
+- **`src/services/searchClient.js`** — thin RPC wrapper around the worker. Tracks pending requests in a `Map<id, resolver>`, exposes `ready()` and `search(query)` (both Promises), and has a `terminate()` for teardown.
+
+#### Updated files
+
+- **`src/services/AppInit.js`** — `getFuse()` now returns a worker-backed client when `Worker` is available, and falls back to an in-process Fuse instance (wrapped to expose the same async `search()` shape) when it isn't (SSR, jsdom tests, very old browsers). The cached promise contract is unchanged.
+- **`src/components/ModalSearch.vue`**, **`src/views/Search.vue`**, **`src/views/Search/SearchStatic.vue`**, **`src/components/StaticSearch.vue`** — `instantSearch()` and `sortResults()` are now `async`, awaiting `this.fuse.search(q)`. Each consumer carries a monotonic `searchSeq` counter so stale results from earlier searches are discarded if the user types faster than the worker can reply.
+- **`netlify.toml`** — added Cache-Control rules for the two new root-level worker assets (`/searchWorker.js`: 1h max-age + 1d SWR; `/fuse.min.js`: 1d max-age + 1w SWR).
+- **`package.json`** — new `copy:fuse` script keeps `public/fuse.min.js` in sync with whatever Fuse version `node_modules` contains; runs automatically as part of `serve` and `build`.
+
+#### Verified in Chrome via MCP
+
+| Check | Result |
+|---|---|
+| `usingWorker` flag on the returned client | `true` |
+| `client.search('research')` | 345 results (correct) |
+| Per-query round-trip | ~41 ms |
+| 10 rapid sequential queries (`r`, `re`, `res`, …) | 414 ms total / 41 ms avg, main thread free throughout |
+| New console errors | None |
+
+The first keystroke after opening search now matches the responsiveness of the pre-lazy-load era. Per-keystroke search runs entirely off the main thread, so typing stays smooth even on slow mobile devices where Fuse search alone could take 200+ ms.
+
+### Test — Worker-Compatible API Coverage
+
+- **test: `tests/unit/search.spec.js`** — added 2 new tests (12 total) verifying:
+  - `client.search(query)` returns a Promise (worker-compatible API contract)
+  - The test environment uses the in-process fallback (`usingWorker === false`) — confirms the fallback path stays functional for CI / SSR
+- Existing tests updated to `await client.search(...)` since the API is now async-by-default
+- **Test totals:** 226 passing / 6 pending / 0 failing
+
+---
+
 ## [1.3.36] - 2026-04-12
 
 ### Performance — Tier 1 Quick Wins (pre-Nuxt-rewrite)

@@ -76,6 +76,9 @@ export default {
       content: "",
       searchInput: this.$refs.textfield,
       fuse: null,
+      // Monotonic counter used by instantSearch() to discard stale worker
+      // responses when the user types faster than the worker can reply.
+      searchSeq: 0,
       resultNumber: "s",
       arrayToList,
       getProperCategory,
@@ -128,18 +131,18 @@ export default {
         NProgress.done();
       }
     },
-    sortResults() {
+    async sortResults() {
       console.log("sorting");
-      this.queryResults = this.fuse.search(this.query.trim());
+      this.queryResults = await this.fuse.search(this.query.trim());
       if (this.sortSwitch) {
-        this.instantSearch();
+        await this.instantSearch();
         this.queryResults = _.orderBy(
           this.queryResults,
           ["item.publicationDate"],
           ["desc"]
         );
       } else {
-        this.instantSearch();
+        await this.instantSearch();
       }
     },
     focusInput() {
@@ -195,13 +198,19 @@ export default {
         this.$vuetify.goTo(0);
       });
     },
-    instantSearch() {
+    async instantSearch() {
       if (!this.query) return;
       if (!this.query.length) return;
       if (this.query.length < 2) return;
-      // Fuse may still be loading on first paint (lazy-fetched in created()).
+      // Fuse may still be loading (lazy-fetched on modal open).
       if (!this.fuse) return;
-      this.queryResults = this.fuse.search(this.query.trim());
+      // Sequence guard: when the user types fast, multiple worker round-trips
+      // are in flight. Only the latest query's results should land in the UI;
+      // earlier ones are discarded if a newer search has been issued.
+      const seq = ++this.searchSeq;
+      const results = await this.fuse.search(this.query.trim());
+      if (seq !== this.searchSeq) return; // a newer search superseded this one
+      this.queryResults = results;
     },
     displayHeadings(headings) {
       if (typeof headings === "string") {

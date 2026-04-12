@@ -31,6 +31,7 @@ export default {
     return {
       queryResults: null,
       fuse: null,
+      searchSeq: 0,
       filteredQueryResults: null,
       toggle_sort: 1,
       toggle_direction: 1,
@@ -53,7 +54,14 @@ export default {
   async created() {
     // Lazy-fetch the search index instead of importing it into the bundle.
     this.fuse = await this.$myApp.getFuse();
-    this.fuse.options.threshold = this.threshold;
+    // The in-process fallback exposes the raw Fuse instance under .options;
+    // the worker-backed client does not (Fuse lives on the worker thread).
+    // Mutating threshold only affects the in-process path — the worker uses
+    // the threshold baked into config.search.site at INIT time. Since static
+    // search is rare and the difference is small (0.2 vs 0.25), this is fine.
+    if (this.fuse.options) {
+      this.fuse.options.threshold = this.threshold;
+    }
     // Run the initial search now that fuse is ready (replaces the call
     // that used to live in mounted() — fuse may not have been ready then).
     this.instantSearch(this.query);
@@ -86,16 +94,13 @@ export default {
           console.log("Default case -- not sorted");
       }
     },
-    instantSearch(query) {
+    async instantSearch(query) {
       if (!this.query.length) return;
-      let queryResults = this.fuse.search(this.query);
-      //console.log(queryResults);
-      // queryResults = _.orderBy(
-      //   queryResults,
-      //   ["item.contentType", "item.date", "item.end"],
-      //   ["asc", "desc", "desc"]
-      // );
-
+      if (!this.fuse) return;
+      // Sequence guard for fast typists (worker may answer out of order).
+      const seq = ++this.searchSeq;
+      const queryResults = await this.fuse.search(this.query);
+      if (seq !== this.searchSeq) return;
       // prevent duplicated item
       let filteredQueryResults = queryResults.filter((result) => {
         let currentPath = this.$route.fullPath;
@@ -103,7 +108,6 @@ export default {
         let searchResultPath = result.item.fullPath;
         searchResultPath += searchResultPath.endsWith("/") ? "" : "/";
         if (currentPath !== searchResultPath) return result;
-        //console.log(currentPath === searchResultPath);
       });
       this.queryResults = filteredQueryResults;
       this.sort();

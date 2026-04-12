@@ -158,6 +158,7 @@ export default {
       content: "",
       searchInput: this.$refs.textfield,
       fuse: null,
+      searchSeq: 0,
       resultNumber: "s",
       arrayToList,
       getProperCategory,
@@ -242,18 +243,18 @@ export default {
         ]);
       }
     },
-    sortResults() {
+    async sortResults() {
       console.log("sorting");
-      this.queryResults = this.fuse.search(this.query.trim());
+      this.queryResults = await this.fuse.search(this.query.trim());
       if (this.sortSwitch) {
-        this.instantSearch();
+        await this.instantSearch();
         this.queryResults = _.orderBy(
           this.queryResults,
           ["item.publicationDate"],
           ["desc"]
         );
       } else {
-        this.instantSearch();
+        await this.instantSearch();
       }
     },
     focusInput() {
@@ -309,11 +310,16 @@ export default {
         this.$vuetify.goTo(0);
       });
     },
-    instantSearch() {
+    async instantSearch() {
       if (!this.query) return;
       if (!this.query.length) return;
       if (this.query.length < 2) return;
-      this.queryResults = this.fuse.search(this.query.trim());
+      // Sequence guard discards stale worker responses if the user types
+      // faster than the worker can reply.
+      const seq = ++this.searchSeq;
+      const results = await this.fuse.search(this.query.trim());
+      if (seq !== this.searchSeq) return;
+      this.queryResults = results;
       let contentTypes = this.queryResults.map((item) => {
         return item.item.contentType;
       });

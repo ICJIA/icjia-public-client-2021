@@ -140,17 +140,20 @@ describe("getFuse() — successful path & caching", () => {
     expect(calls).to.equal(0); // cached — no new fetches
   });
 
-  it("returns a Fuse instance that can search the loaded index", async () => {
-    const fuse = await myApp.getFuse();
-    const results = fuse.search("authority");
+  it("returns a client whose search() can search the loaded index", async () => {
+    // search() is async (Promise<results>) regardless of whether the worker
+    // path or the in-process fallback is in use. In the test environment
+    // there's no Worker (jsdom), so we exercise the in-process fallback.
+    const client = await myApp.getFuse();
+    const results = await client.search("authority");
     expect(results).to.be.an("array");
     expect(results.length).to.be.greaterThan(0);
     expect(results[0].item.fullPath).to.equal("/about/about-the-authority/");
   });
 
-  it("the cached Fuse search returns matches with item shape", async () => {
-    const fuse = await myApp.getFuse();
-    const results = fuse.search("research hub");
+  it("the cached client returns matches with item shape", async () => {
+    const client = await myApp.getFuse();
+    const results = await client.search("research hub");
     expect(results.length).to.be.greaterThan(0);
     expect(results[0]).to.have.property("item");
     expect(results[0].item).to.have.property("fullPath");
@@ -159,6 +162,17 @@ describe("getFuse() — successful path & caching", () => {
     // that contract: results should NOT carry score or matches.
     expect(results[0]).to.not.have.property("score");
     expect(results[0]).to.not.have.property("matches");
+  });
+
+  it("client.search() returns a Promise (worker-compatible API)", async () => {
+    const client = await myApp.getFuse();
+    const result = client.search("authority");
+    expect(result).to.be.an.instanceOf(Promise);
+  });
+
+  it("test environment uses the in-process fallback (no Web Worker)", async () => {
+    const client = await myApp.getFuse();
+    expect(client.usingWorker).to.equal(false);
   });
 
   after(() => {

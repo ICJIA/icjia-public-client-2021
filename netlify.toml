@@ -57,6 +57,19 @@
   [headers.values]
     Cache-Control = "public, max-age=3600, stale-while-revalidate=86400"
 
+# Search worker + Fuse.js loaded by the worker. Both live at the root and
+# aren't content-hashed, but they only change on a code release. Give them
+# a short max-age + stale-while-revalidate so most users get the cached copy.
+[[headers]]
+  for = "/searchWorker.js"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/fuse.min.js"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
 # index.html must always be revalidated so users pick up new builds
 [[headers]]
   for = "/index.html"

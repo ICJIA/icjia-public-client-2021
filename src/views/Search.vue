@@ -101,6 +101,7 @@ export default {
       content: "",
       searchInput: this.$refs.textfield,
       fuse: null,
+      searchSeq: 0,
       resultNumber: "s",
       arrayToList,
       getProperCategory,
@@ -184,13 +185,18 @@ export default {
         this.$vuetify.goTo(0);
       });
     },
-    instantSearch() {
+    async instantSearch() {
       // if (!this.query.length) return;
       if (!this.query) return;
       if (!this.query.length) return;
       // Fuse may still be loading on first paint (lazy-fetched in created()).
       if (!this.fuse) return;
-      this.queryResults = this.fuse.search(this.query);
+      // Sequence guard discards stale worker responses if the user types
+      // faster than the worker can reply (see ModalSearch for details).
+      const seq = ++this.searchSeq;
+      const results = await this.fuse.search(this.query);
+      if (seq !== this.searchSeq) return;
+      this.queryResults = results;
     },
     displayHeadings(headings) {
       if (typeof headings === "string") {
