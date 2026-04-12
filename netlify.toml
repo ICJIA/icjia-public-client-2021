@@ -17,24 +17,33 @@
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
     Access-Control-Allow-Origin = "https://icjia.illinois.gov"
-    # Content-Security-Policy (SEC-09 — promoted to ENFORCEMENT in v1.3.40)
+    # Content-Security-Policy — REPORT-ONLY mode (SEC-09)
     #
-    # Was Content-Security-Policy-Report-Only since v1.3.33; allowlist was
-    # validated against actual page loads (Chrome MCP audit, 2026-04-12)
-    # before flipping. All currently-loaded origins (Plausible, jsdelivr,
-    # cdnjs, fonts.googleapis/gstatic, agency/researchhub APIs, thumbor
-    # image.icjia.cloud via the broad img-src https:, Netlify status
-    # badges) are covered by the existing directives.
+    # Reverted from enforced → report-only in v1.3.41 out of caution: the
+    # site has no CSP report endpoint yet, so a missed allowlist entry
+    # would silently break a page in production with no telemetry.
     #
-    # worker-src 'self' added for the new search Web Worker
-    # (public/searchWorker.js + public/fuse.min.js).
-    # upgrade-insecure-requests added so any accidental http:// asset
-    # is auto-upgraded to https://, defending against mixed-content.
+    # Audit history (Chrome MCP, 2026-04-12, dev server) confirmed every
+    # origin loaded across 9 representative routes is already in the
+    # allowlist — homepage, research hub listing + article, about,
+    # biographies, grant funding, news listing, LAP form, status page.
+    # Zero iframes were observed in current content. Origin set per page:
+    #   - icjia.illinois.gov (canonical link, = 'self' in prod)
+    #   - agency.icjia.cloud, agency.icjia-api.cloud (Strapi)
+    #   - cdn.jsdelivr.net (MDI fonts), cdnjs.cloudflare.com (jQuery)
+    #   - fonts.googleapis.com, fonts.gstatic.com (Google Fonts)
+    #   - plausible.icjia.cloud (analytics)
     #
-    # If a future build needs a new third-party origin (e.g. embedding
-    # vue-tweet-embed), add it to the appropriate directive BEFORE
-    # deploying — enforced CSP will block unlisted origins outright.
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.icjia.cloud https://assets.adobedtm.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; connect-src 'self' https://agency.icjia-api.cloud https://agency.icjia.cloud https://researchhub.icjia-api.cloud https://plausible.icjia.cloud https://assets.adobedtm.com; worker-src 'self'; frame-src 'self' https://www.youtube.com https://player.vimeo.com https://public.tableau.com https://docs.google.com https://forms.office.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://agency.icjia-api.cloud; upgrade-insecure-requests"
+    # To promote to enforcement when you have monitoring in place:
+    #   rename "Content-Security-Policy-Report-Only" → "Content-Security-Policy"
+    # then deploy. No allowlist changes needed if the audit is still current.
+    #
+    # The two new directives below are also report-only:
+    #   - worker-src 'self' makes search-worker support explicit
+    #     (public/searchWorker.js + public/fuse.min.js, v1.3.37)
+    #   - upgrade-insecure-requests would auto-upgrade any http:// asset
+    #     to https:// if enforced (currently a no-op in report-only mode)
+    Content-Security-Policy-Report-Only = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.icjia.cloud https://assets.adobedtm.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; connect-src 'self' https://agency.icjia-api.cloud https://agency.icjia.cloud https://researchhub.icjia-api.cloud https://plausible.icjia.cloud https://assets.adobedtm.com; worker-src 'self'; frame-src 'self' https://www.youtube.com https://player.vimeo.com https://public.tableau.com https://docs.google.com https://forms.office.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://agency.icjia-api.cloud; upgrade-insecure-requests"
     # Hide Express server framework disclosure (SEC-14)
     X-Powered-By = ""
 

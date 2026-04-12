@@ -67,6 +67,50 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.41] - 2026-04-12
+
+### Security — Revert CSP to Report-Only (no telemetry without a report endpoint)
+
+The CSP enforcement promotion in v1.3.40 was reverted out of caution. Reason: the site has no CSP report endpoint configured, so any allowlist gap would silently break a page in production with **zero visibility** for ops or maintainers. That's the actual nightmare scenario — a missing origin breaks a feature, no error reaches Plausible (CSP violations don't generate HTTP requests, so Plausible doesn't see them), and no one notices until a user reports it.
+
+To re-promote safely later, set up a CSP report endpoint first (Netlify Edge Function, third-party like report-uri.com, or your own serverless handler), add `report-uri /your-endpoint` to the policy, observe the report stream for 1–2 weeks, then rename the header back to `Content-Security-Policy`.
+
+### Audit data preserved (Chrome MCP, 2026-04-12)
+
+The pre-promotion audit found the existing allowlist already covers everything the site loads. Re-promotion when ready should not require allowlist changes:
+
+| Route | Origins observed | All in allowlist? |
+|---|---|---|
+| `/` (homepage) | 9 origins | ✓ |
+| `/researchhub/` (listing) | 9 origins | ✓ |
+| `/researchhub/articles/r3-cohort-one-scale-and-reach-report` | 9 origins | ✓ |
+| `/about/about-the-authority/` | 9 origins | ✓ |
+| `/about/biographies/` | 9 origins | ✓ |
+| `/grants/funding/` | 9 origins | ✓ |
+| `/news/` | 9 origins | ✓ |
+| `/forms/lap-request/` | 9 origins | ✓ |
+| `/status/` (Netlify deploy badges) | 9 origins | ✓ |
+
+**Origin set (identical on every route):** `icjia.illinois.gov` (canonical link, = self in prod), `agency.icjia.cloud`, `agency.icjia-api.cloud`, `cdn.jsdelivr.net`, `cdnjs.cloudflare.com`, `fonts.googleapis.com`, `fonts.gstatic.com`, `plausible.icjia.cloud`, the page origin itself.
+
+**Zero iframes** were observed in current content. Frame-src directives (YouTube, Vimeo, Tableau, Google Forms, etc.) are pre-positioned for future embeds but unused today.
+
+### What's still in place
+
+- The allowlist itself is unchanged (still validated against the production routes above)
+- `worker-src 'self'` for the search worker
+- `upgrade-insecure-requests` for mixed-content defense
+- All other security headers (HSTS, X-Frame-Options, Referrer-Policy, Permissions-Policy) untouched
+- The two new directives are no-ops in report-only mode but become active the moment the header is renamed back to `Content-Security-Policy`
+
+### Net change in v1.3.41
+
+- `netlify.toml` — header renamed from `Content-Security-Policy` back to `Content-Security-Policy-Report-Only`. No allowlist or directive changes.
+- README security table reflects the deferred-enforcement status.
+- Performance fixes from v1.3.40 (home-splash preload removal, `loading="lazy"` on AppFooter logo + Status badges) are unaffected.
+
+---
+
 ## [1.3.40] - 2026-04-12
 
 ### Security — Promote CSP from Report-Only to Enforcement (SEC-09 closed)

@@ -122,7 +122,7 @@ Reports are saved to `reports/`.
 
 | Category | Status | Details |
 |---|---|---|
-| **Security headers** | **Hardened** | X-Frame-Options, HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy enabled. **CSP enforced** (v1.3.40) — promoted from report-only after Chrome MCP audit confirmed allowlist coverage of every loaded origin; `worker-src 'self'` and `upgrade-insecure-requests` added |
+| **Security headers** | **Hardened** | X-Frame-Options, HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy enabled. **CSP in report-only mode** (v1.3.41) — allowlist validated against 9 representative routes via Chrome MCP audit; promotion to enforcement deferred until a CSP report endpoint is in place to give visibility into any silent breakage. `worker-src 'self'` + `upgrade-insecure-requests` directives are present (no-op in report-only) |
 | **CORS** | **Restricted** | Locked to `https://icjia.illinois.gov`; no wildcard |
 | **XSS prevention** | **Hardened** | DOMPurify sanitization at `renderToHtml()` chokepoint covers all `v-html` bindings; route params regex-sanitized; `v-html` directive globally overridden with content pipeline |
 | **CSS injection** | **Mitigated (P2)** | DOMPurify now allows `<style>` tags and `style` attributes for CMS layout support. DOMPurify strips `javascript:` URLs and event handlers but CSS `url()` exfiltration is possible if CMS account is compromised. Mitigated by CMS auth; would be fully blocked by CSP |
@@ -141,7 +141,7 @@ Reports are saved to `reports/`.
 
 | # | Finding | Severity | Status |
 |---|---|---|---|
-| SEC-09 | No Content-Security-Policy header | **P1** | **Fixed (v1.3.33 report-only → v1.3.40 enforced)** — allowlist validated against live page loads via Chrome MCP before flipping; `worker-src` + `upgrade-insecure-requests` added |
+| SEC-09 | No Content-Security-Policy header | **P1** | **Mitigated (v1.3.33 report-only)** — allowlist in place since v1.3.33, validated against live page loads via Chrome MCP audit (9 routes, zero unlisted origins). Briefly enforced in v1.3.40, reverted to report-only in v1.3.41 pending a CSP report endpoint for post-deploy visibility. `worker-src 'self'` + `upgrade-insecure-requests` added |
 | SEC-10 | npm dependency vulnerabilities (20 total, 5 critical) | **P1** | Accepted — breaking changes only; deferred to Nuxt 4 rewrite; DOMPurify mitigates Vuetify XSS |
 | SEC-11 | DOMPurify `<style>` tag + `style` attr allowlisting enables CSS exfiltration | **P2** | Accepted — required for CMS layout; mitigated by CMS auth; mitigated by CSP (SEC-09) |
 | SEC-12 | Staff names leaked in `searchMeta` across API JSON files | **P2** | **Fixed (v1.3.33)** — build-time `purifySearchMeta` strips names |
