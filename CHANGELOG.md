@@ -67,6 +67,33 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.38] - 2026-04-12
+
+### UI — Remove Redundant Focus Outline on Search Input
+
+- **fix: `src/components/ModalSearch.vue`** — drop the 2px solid `#1565c0` outer outline that Vuetify draws around the search textbox on focus. The same `.v-input` already shows TWO other focus indicators that are WCAG 2.4.7 compliant on their own:
+  1. A 1px solid `#1565c0` underline rendered via `.v-input__slot::after` (~7:1 contrast against the white modal background — well above the 3:1 required by WCAG 1.4.11 for non-text UI components)
+  2. The floating label color shifts to `#1565c0`
+  Together those still meet WCAG 2.4.7 (Focus Visible, Level AA), so removing the duplicate outer ring is safe.
+- **Note on `:focus-visible`:** the original plan was to gate the outline behind `:focus-visible` so it only appeared on keyboard focus. That doesn't actually work for text inputs — per the WHATWG/W3C spec, text inputs always match `:focus-visible` regardless of how focus arrived (because typing is interaction-heavy and the user always needs to see where they're about to type). So the cleaner fix is to drop the duplicate outline entirely and trust Vuetify's built-in inline focus styling.
+- Scoped via `.v-dialog .v-input.v-input--is-focused { outline: none !important; }` so other v-inputs across the site keep their original styling.
+
+### Investigated — Fuse.js `FuseWorker` (declined for now)
+
+Reviewed [Fuse.js's official Web Workers support](https://www.fusejs.io/web-workers.html) (the `FuseWorker` class introduced in `fuse.js@7.4.0-beta.1`) as a possible replacement for our custom `searchWorker.js` + `searchClient.js`. Decided to stay on the in-house solution for this codebase. Reasons:
+
+| Concern | Detail |
+|---|---|
+| **Beta status** | `FuseWorker` ships only in `fuse.js@beta` (currently `7.4.0-beta.1`); the docs explicitly say *"the API may change based on feedback."* Putting a beta dependency in production for a maintenance-mode site is poor risk/reward. |
+| **Forced major version bump** | Adopting `FuseWorker` requires upgrading from `6.4.6` → `7.x`. Fuse 7.0.0 dropped UMD builds and switched to "proper ESM exports." Our worker uses `importScripts('/fuse.min.js')` which depends on the UMD/IIFE format — so we'd also have to rewrite the worker as an ES module worker (`new Worker(url, { type: 'module' })`). |
+| **No measurable win at our scale** | `FuseWorker`'s headline gain is *"~5x faster with 8 workers on 100K documents."* Our index has ~5K records and per-query round-trips are already ~41 ms in the existing single-worker setup (verified in Chrome). FuseWorker's parallelism would land in the noise. |
+| **Sanitization belongs in our worker** | Our worker also runs the regex-based misspelling/apostrophe sanitizer over the index at load. `FuseWorker` only handles search — adoption would require splitting sanitize out into a separate worker or moving it back to the main thread (regression). |
+| **Same-shape API** | Both APIs are `await client.search(q)` returning `Promise<results>`. Our consumers are already future-compatible — when the Nuxt 4 rewrite happens (pinned for the next few months) and Fuse 7.x is GA, switching to `FuseWorker` is a one-file change in `searchClient.js`. |
+
+The best time to adopt `FuseWorker` is during the Nuxt 4 rewrite when ESM module workers and Fuse 7.x stable are already part of the new stack. Until then the existing implementation does the same job at the same speed without beta risk.
+
+---
+
 ## [1.3.37] - 2026-04-12
 
 ### Performance — Move Search Off the Main Thread (Web Worker)

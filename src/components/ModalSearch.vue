@@ -230,4 +230,27 @@ export default {
 .author:hover {
   color: #000;
 }
+
+/* ───────────────────────────────────────────────────────────────────
+ * Remove the redundant outer focus outline on the search input.
+ *
+ * Vuetify draws a 2px solid #1565c0 outline around the entire .v-input
+ * wrapper on focus. That's redundant — the same v-input ALREADY shows
+ * two other focus indicators that are WCAG 2.4.7 compliant on their own:
+ *   1. A 1px solid #1565c0 underline via .v-input__slot::after
+ *      (~7:1 contrast vs the white modal background — well over the
+ *      3:1 required by WCAG 1.4.11 for non-text UI components)
+ *   2. The floating label color shifts to #1565c0
+ *
+ * We can't use :focus-visible to gate this (the spec mandates that text
+ * inputs always match :focus-visible because typing is interaction-heavy)
+ * — but the right fix is to drop the duplicate outer ring entirely and
+ * trust Vuetify's existing inline focus styling.
+ *
+ * Scoped to .v-dialog so other v-inputs across the site keep their
+ * original styling until we make a broader decision.
+ * ─────────────────────────────────────────────────────────────────── */
+.v-dialog .v-input.v-input--is-focused {
+  outline: none !important;
+}
 </style>
