@@ -74,15 +74,15 @@
               $vuetify.breakpoint.lg ||
               $vuetify.breakpoint.xl
             "
-            >fas fa-globe</v-icon
+            >mdi-web</v-icon
           >
           <span class="hidden-sm-and-down">Translate this site</span>
         </v-btn>
         <!--       
       <v-btn text x-small dark aria-label="Share this page on Twitter"
-        ><v-icon small>fab fa-twitter </v-icon></v-btn
+        ><v-icon small>mdi-twitter</v-icon></v-btn
       ><v-btn text x-small dark aria-label="Share this page on Facebook"
-        ><v-icon small>fab fa-facebook </v-icon></v-btn
+        ><v-icon small>mdi-facebook</v-icon></v-btn
       > -->
       </v-app-bar>
     </nav>

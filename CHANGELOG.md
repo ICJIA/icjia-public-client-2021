@@ -67,6 +67,28 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.47] - 2026-04-12
+
+### Perf — Drop Font Awesome entirely (swap 7 usages to MDI, remove whole icon library)
+
+Lighthouse mobile audit after v1.3.46 was still showing `unused-javascript: 143 KiB` and `unused-css-rules: 103 KiB` as the top remaining drags. A grep of the codebase revealed only **5 unique icons** actually in use across just 2 components — yet `main.js` was importing `@fortawesome/fontawesome-free/css/all.css`, which pulls the full FA5 stylesheet (~60 KiB CSS) and 3 webfont files (~60-90 KiB each, render-blocking). Vuetify is already shipping MDI via `@mdi/font` for every other icon on the site, so Font Awesome was purely redundant.
+
+### Changes
+
+- **`src/components/AppNavContext.vue`** — swapped `fas fa-globe` → `mdi-web`, `fab fa-twitter` → `mdi-twitter`, `fab fa-facebook` → `mdi-facebook`.
+- **`src/components/SocialSharing.vue`** — swapped `fa fa-users` → `mdi-account-group` plus the same three MDI equivalents for Twitter/Facebook/globe.
+- **`src/main.js`** — deleted `import "@fortawesome/fontawesome-free/css/all.css";`.
+- **`package.json`** — removed `@fortawesome/fontawesome-free` dependency (ran `npm uninstall`).
+
+### Net result
+
+- Whole Font Awesome CSS file (~60 KiB) no longer shipped to the client
+- 3-4 FA webfont files no longer preloaded/downloaded by the CSS
+- Visual parity preserved — MDI `mdi-twitter`, `mdi-facebook`, `mdi-web`, `mdi-account-group` are close visual matches and share Vuetify's existing sizing/color treatment
+- Production build verified (`npm run build` succeeds on v1.3.47)
+
+---
+
 ## [1.3.46] - 2026-04-12
 
 ### Perf — Drop jQuery and trim preconnects (removes 214 ms render-blocking node)

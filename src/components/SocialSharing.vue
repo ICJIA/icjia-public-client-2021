@@ -22,7 +22,7 @@
               aria-label="Click this button to share or translate this page."
             >
               <v-icon v-if="socialSharing"> mdi-close </v-icon>
-              <v-icon v-else>fa fa-users</v-icon>
+              <v-icon v-else>mdi-account-group</v-icon>
             </v-btn>
           </template>
           <span v-if="!socialSharing">Share or translate this page</span>
@@ -39,7 +39,7 @@
             v-on="on"
             aria-label="Click this button to share this page on Facebook."
           >
-            <v-icon>fab fa-facebook</v-icon>
+            <v-icon>mdi-facebook</v-icon>
           </v-btn>
         </template>
         <span>Share this page on Facebook</span>
@@ -54,7 +54,7 @@
             v-on="on"
             aria-label="Click this button to share this page on Twitter."
           >
-            <v-icon>fab fa-twitter</v-icon>
+            <v-icon>mdi-twitter</v-icon>
           </v-btn>
         </template>
         <span>Share this page on Twitter</span>
@@ -70,7 +70,7 @@
             aria-label="Click this button to translate this page on Google."
             @click="openTranslationModal()"
           >
-            <v-icon>fas fa-globe</v-icon>
+            <v-icon>mdi-web</v-icon>
           </v-btn>
         </template>
         <span>Translate this page on Google</span>
