@@ -67,6 +67,37 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.50] - 2026-04-12
+
+### Perf — Trim `moment-timezone` to America/Chicago only (−236 KiB brotli on vendor chunk)
+
+Vendor-chunk profile after v1.3.48 showed 91 KiB of `unused-javascript` still attributed to `chunk-vendors`. Sniffing the bundle and correlating with `package.json` deps pointed at `moment-timezone`: the library ships the full IANA timezone database (~900 KiB of zone data) at build time unless a webpack plugin is used to match zones. Only three files on this site touch timezones (`src/filters.js`, `src/views/Events/EventsAll.vue`, `src/components/EventCard.vue`), and the only zone they ever render is `America/Chicago` (Illinois state agency, single-timezone use).
+
+The existing `vue-cli-plugin-moment` with `locales: ["en"]` had already trimmed moment's own locale data — but that plugin does nothing for `moment-timezone`'s zone database, which is a separate build-time concern.
+
+### Changes
+
+- **`vue.config.js`** — wired `moment-timezone-data-webpack-plugin` via `chainWebpack`, scoped to `matchZones: /^America\/Chicago$/`. The regex is anchored so partial matches (e.g. `America/Chicago_Depot` — not a real zone, but illustrative) aren't accidentally included.
+- **`package.json`**:
+  - Added `moment-timezone-data-webpack-plugin` ^1.5.1 to `devDependencies`.
+  - Removed `cheerio` from `dependencies`. Grep confirmed zero imports in `src/`; a `strings` scan of the vendor chunk showed cheerio was never actually bundled (tree-shaking already excluded it), but keeping it in `dependencies` was an install-time waste (316 KiB in node_modules) and a red herring for anyone auditing deps.
+
+### Build-output verification (before → after)
+
+- `chunk-vendors.*.js` uncompressed: **1.73 MB → 992 KiB (−742 KiB, −43%)**
+- `chunk-vendors.*.js` brotli: **487 KiB → 251 KiB (−236 KiB, −48%)**
+- `chunk-vendors.*.js` gzip: ~560 KiB → 324 KiB (−236 KiB, −42%)
+
+The fact that the uncompressed drop (−742 KiB) is larger than the compressed drop (−236 KiB) confirms the removed content was JSON-like (the tz database compresses extremely well on its own, so its presence in the bundle was less painful in gzip/brotli than it appeared raw — but still a meaningful quarter-MB over the wire).
+
+### Bundle-composition notes found during the audit (kept for the next pass)
+
+- Lodash tree-shaking is already working correctly (`babel-plugin-lodash` via `vue-cli-plugin-lodash` is cherry-picking). Zero rare methods in the vendor chunk — no action needed.
+- Vuetify tree-shaking is correctly wired via `vue-cli-plugin-vuetify` → `VuetifyLoaderPlugin`. `<v-*>` template usage is a-la-carte imported at build. No action needed.
+- `date-fns` ^2.24.0 is already installed. Future work: migrate the ~30 `moment` consumers to `date-fns` for another meaningful bundle cut. Deferred — larger refactor.
+
+---
+
 ## [1.3.49] - 2026-04-12
 
 ### Fix — Tag links on article pages crash the search view (race on fuse init)
