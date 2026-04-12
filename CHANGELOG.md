@@ -67,6 +67,22 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.4.1] - 2026-04-12
+
+### Fix — Convert `generators/generateBuildInfo.js` to Day.js (Netlify postbuild crash)
+
+v1.4.0 uninstalled `moment` and `moment-timezone` but missed the Node-side `postbuild` script that injects the build banner into `dist/index.html`. The src/ sweep only covered webpack-bundled code; this script runs under Node at build time and was still `require("moment")` / `require("moment-timezone")`. Netlify's `npm run build` succeeded through webpack, then crashed in `postbuild` with `Cannot find module 'moment'`.
+
+### Fix
+
+- **`generators/generateBuildInfo.js`** — converted from moment/moment-timezone to Day.js. Can't import from `@/plugins/dayjs` here because this is a Node CJS script (no webpack, no path aliases), so plugins are registered inline: `dayjs`, `dayjs/plugin/utc`, `dayjs/plugin/timezone`, `dayjs/plugin/advancedFormat`. Banner output format (`"dddd, MMMM Do YYYY, h:mm:ssa z"`) is identical — Day.js format tokens match moment's.
+
+### Why this was missed
+
+The v1.4.0 audit grep (`grep -rl "from \"moment\"|require(\"moment\")" src --include='*.vue' --include='*.js'`) was scoped to `src/`. Node-side scripts under `generators/` and `scripts/` weren't in scope. Full-repo grep was run against src/ only because the bundle-side concern was top-of-mind. Lesson recorded in the sweep pattern: for dep removals, grep the whole repo, not just `src/`.
+
+---
+
 ## [1.4.0] - 2026-04-12
 
 ### Perf — Replace moment + moment-timezone with Day.js (−20 KiB gzipped)

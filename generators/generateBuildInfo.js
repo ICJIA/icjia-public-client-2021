@@ -1,10 +1,13 @@
 const fs = require("fs");
 const pkg = require("../package.json");
-const moment = require("moment");
-// eslint-disable-next-line no-unused-vars
-const tz = require("moment-timezone");
-const tstamp = moment();
-const chicagoTime = tstamp
+const dayjs = require("dayjs");
+const utc = require("dayjs/plugin/utc");
+const timezone = require("dayjs/plugin/timezone");
+const advancedFormat = require("dayjs/plugin/advancedFormat");
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(advancedFormat);
+const chicagoTime = dayjs()
   .tz("America/Chicago")
   .format("dddd, MMMM Do YYYY, h:mm:ssa z");
 
