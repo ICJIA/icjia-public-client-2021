@@ -21,7 +21,10 @@ if (typeof window !== "undefined") {
   if (typeof global.HTMLElement === "undefined" && window.HTMLElement) {
     global.HTMLElement = window.HTMLElement;
   }
-  if (typeof global.getComputedStyle === "undefined" && window.getComputedStyle) {
+  if (
+    typeof global.getComputedStyle === "undefined" &&
+    window.getComputedStyle
+  ) {
     global.getComputedStyle = window.getComputedStyle;
   }
 } else {

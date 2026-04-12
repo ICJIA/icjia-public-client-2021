@@ -342,9 +342,9 @@ describe("fixAriaHiddenFocus()", () => {
     expect(document.querySelector("select").getAttribute("tabindex")).to.equal(
       "-1"
     );
-    expect(document.querySelector("textarea").getAttribute("tabindex")).to.equal(
-      "-1"
-    );
+    expect(
+      document.querySelector("textarea").getAttribute("tabindex")
+    ).to.equal("-1");
   });
 
   it("does not affect focusable elements outside aria-hidden", () => {
@@ -391,7 +391,7 @@ describe("fixEmptyAriaLabel()", () => {
     expect(div.getAttribute("role")).to.equal("img");
   });
 
-  it('preserves non-empty aria-label', () => {
+  it("preserves non-empty aria-label", () => {
     document.body.innerHTML =
       '<div aria-label="Meaningful label">Content</div>';
     fixEmptyAriaLabel();

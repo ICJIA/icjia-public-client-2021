@@ -28,12 +28,7 @@
         height="667"
         fetchpriority="high"
         decoding="async"
-        style="
-          width: 100%;
-          height: 600px;
-          object-fit: cover;
-          display: block;
-        "
+        style="width: 100%; height: 600px; object-fit: cover; display: block"
       />
     </picture>
     <div
