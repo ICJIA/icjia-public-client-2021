@@ -38,12 +38,19 @@
     #   rename "Content-Security-Policy-Report-Only" → "Content-Security-Policy"
     # then deploy. No allowlist changes needed if the audit is still current.
     #
-    # The two new directives below are also report-only:
+    # Notes on the two directives added in v1.3.40:
     #   - worker-src 'self' makes search-worker support explicit
-    #     (public/searchWorker.js + public/fuse.min.js, v1.3.37)
-    #   - upgrade-insecure-requests would auto-upgrade any http:// asset
-    #     to https:// if enforced (currently a no-op in report-only mode)
-    Content-Security-Policy-Report-Only = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.icjia.cloud https://assets.adobedtm.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; connect-src 'self' https://agency.icjia-api.cloud https://agency.icjia.cloud https://researchhub.icjia-api.cloud https://plausible.icjia.cloud https://assets.adobedtm.com; worker-src 'self'; frame-src 'self' https://www.youtube.com https://player.vimeo.com https://public.tableau.com https://docs.google.com https://forms.office.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://agency.icjia-api.cloud; upgrade-insecure-requests"
+    #     (public/searchWorker.js + public/fuse.min.js, v1.3.37). Safe in
+    #     report-only.
+    #   - upgrade-insecure-requests was originally added but REMOVED in
+    #     v1.3.45: per the CSP spec this directive is only meaningful in
+    #     enforcement mode and the browser logs a console warning every
+    #     time it sees it in a Report-Only header ("'upgrade-insecure-
+    #     requests' is ignored when delivered in a report-only policy").
+    #     Re-add it inside the enforcement block when promoting:
+    #       …; form-action 'self' https://agency.icjia-api.cloud;
+    #       upgrade-insecure-requests
+    Content-Security-Policy-Report-Only = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.icjia.cloud https://assets.adobedtm.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; connect-src 'self' https://agency.icjia-api.cloud https://agency.icjia.cloud https://researchhub.icjia-api.cloud https://plausible.icjia.cloud https://assets.adobedtm.com; worker-src 'self'; frame-src 'self' https://www.youtube.com https://player.vimeo.com https://public.tableau.com https://docs.google.com https://forms.office.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://agency.icjia-api.cloud"
     # Hide Express server framework disclosure (SEC-14)
     X-Powered-By = ""
 

@@ -67,6 +67,31 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.45] - 2026-04-12
+
+### Fix — Remove `upgrade-insecure-requests` from Report-Only CSP (kills console noise)
+
+Production was emitting this Chrome console warning on every page load:
+
+```
+The Content-Security-Policy directive 'upgrade-insecure-requests' is ignored
+when delivered in a report-only policy.
+```
+
+Per the CSP spec, `upgrade-insecure-requests` only takes effect in enforcement mode — the browser ignores it in `Content-Security-Policy-Report-Only` and logs a warning saying so. The directive was added in v1.3.40 alongside the (later reverted) enforcement promotion, and stayed behind in the report-only policy after the v1.3.41 revert. The site does not actually need this directive today (no `http://` resources are served — every origin in the allowlist is HTTPS), so removing it is a no-op for security.
+
+### Fix
+
+- **`netlify.toml`** — removed `; upgrade-insecure-requests` from the `Content-Security-Policy-Report-Only` value. Updated comment to note the directive should be re-added inside the enforcement block when CSP is later promoted.
+
+### Net result
+
+- Three `console.warn` lines per page load eliminated
+- Security posture unchanged (the directive was a no-op in report-only mode anyway)
+- Re-promotion checklist amended: when renaming the header to `Content-Security-Policy`, append `; upgrade-insecure-requests` back to the value
+
+---
+
 ## [1.3.44] - 2026-04-12
 
 ### Docs — Refresh README to Reflect End of v1.3.x Perf Series
