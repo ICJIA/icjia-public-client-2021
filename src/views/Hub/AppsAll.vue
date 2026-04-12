@@ -77,7 +77,7 @@
 <script>
 /* eslint-disable no-unused-vars */
 import { GET_ALL_APPS_QUERY } from "@/graphql/hub";
-import moment from "moment";
+import dayjs from "@/plugins/dayjs";
 import _ from "lodash";
 import NProgress from "@/services/Progress";
 import { EventBus } from "@/event-bus";

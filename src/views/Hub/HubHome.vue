@@ -229,7 +229,7 @@ import { EventBus } from "@/event-bus";
 import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
 import { renderToHtml } from "@/services/Markdown";
 import NProgress from "@/services/Progress";
-import moment from "moment";
+import dayjs from "@/plugins/dayjs";
 import {
   getHubApplications,
   getHubArticlesForBanner,
@@ -285,9 +285,9 @@ export default {
   },
   methods: {
     isItNew(articleDate) {
-      const now = moment(new Date());
-      const end = moment(articleDate); // another date
-      const duration = moment.duration(now.diff(end));
+      const now = dayjs(new Date());
+      const end = dayjs(articleDate); // another date
+      const duration = dayjs.duration(now.diff(end));
       const days = duration.asDays();
       if (days <= this.$myApp.config.daysToShowNewResearch) {
         return true;

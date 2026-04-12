@@ -115,7 +115,7 @@ const arrford = require("arrford");
 import { format, parseISO } from "date-fns";
 import { getImageURL } from "@/services/Image";
 import { getProperCategory } from "@/utils/content";
-import moment from "moment";
+import dayjs from "@/plugins/dayjs";
 export default {
   computed: {
     truncation() {
@@ -184,15 +184,15 @@ export default {
 
   methods: {
     isItNew(item) {
-      const now = moment(new Date());
+      const now = dayjs(new Date());
       let targetDate;
       if (item.publicationDate) {
         targetDate = item.publicationDate;
       } else {
         targetDate = item.published_at;
       }
-      const end = moment(targetDate); // another date
-      const duration = moment.duration(now.diff(end));
+      const end = dayjs(targetDate); // another date
+      const duration = dayjs.duration(now.diff(end));
       const days = duration.asDays();
       if (days <= this.$myApp.config.daysToShowNew) {
         return true;

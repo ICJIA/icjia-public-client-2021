@@ -95,7 +95,7 @@ import {
   GET_ARTICLE_GROUP_QUERY,
   GET_ARTICLE_COUNT_QUERY,
 } from "@/graphql/hub";
-import moment from "moment";
+import dayjs from "@/plugins/dayjs";
 import _ from "lodash";
 import NProgress from "@/services/Progress";
 import { EventBus } from "@/event-bus";

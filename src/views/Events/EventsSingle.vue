@@ -35,7 +35,7 @@ import { EventBus } from "@/event-bus";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 // eslint-disable-next-line no-unused-vars
 import { getUnifiedTags } from "@/utils/content";
-import moment from "moment";
+import dayjs from "@/plugins/dayjs";
 export default {
   name: "SingleEvent",
   metaInfo() {
@@ -87,10 +87,10 @@ export default {
           //console.log(this.id);
 
           let events = ApolloQueryResult.data.events.map((event) => {
-            event.start = moment(event.start)
+            event.start = dayjs(event.start)
               .tz(this.$myApp.config.timezone)
               .toDate();
-            event.end = moment(event.end)
+            event.end = dayjs(event.end)
               .tz(this.$myApp.config.timezone)
               .toDate();
             event.startDate = event.start;

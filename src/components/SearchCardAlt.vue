@@ -243,7 +243,7 @@ import { EventBus } from "@/event-bus";
 import { getProperCategory } from "@/utils/content";
 import DOMPurify from "dompurify";
 import { renderToHtml } from "@/services/Markdown";
-import moment from "moment";
+import dayjs from "@/plugins/dayjs";
 import _ from "lodash";
 
 export default {
@@ -264,12 +264,12 @@ export default {
       }
     },
     getStartText(eventStart) {
-      let start = moment(eventStart);
+      let start = dayjs(eventStart);
       return `${start.format("dddd, MMM DD, YYYY")}`;
     },
     getEndText(eventStart, eventEnd, eventTimed) {
-      let start = moment(eventStart);
-      let end = moment(eventEnd);
+      let start = dayjs(eventStart);
+      let end = dayjs(eventEnd);
       let days = end.diff(start, "days");
       let hours = end.diff(start, "hours");
       if (!eventTimed) {

@@ -154,7 +154,7 @@ import { getPublicationType } from "@/lib/utils";
 import { deepSanitize } from "@/utils/contentSanitizer";
 import { EventBus } from "@/event-bus";
 import _ from "lodash";
-import moment from "moment";
+import dayjs from "@/plugins/dayjs";
 import axios from "axios";
 
 export default {
@@ -304,9 +304,9 @@ export default {
         targetDate = item.created_at;
       }
 
-      const now = moment(new Date());
-      const end = moment(targetDate); // another date
-      const duration = moment.duration(now.diff(end));
+      const now = dayjs(new Date());
+      const end = dayjs(targetDate); // another date
+      const duration = dayjs.duration(now.diff(end));
       const days = duration.asDays();
 
       if (days <= this.$myApp.config.daysToShowNew) {

@@ -94,20 +94,20 @@
 </template>
 
 <script>
-import moment from "moment";
+import dayjs from "@/plugins/dayjs";
 export default {
   methods: {
     getEventDayName() {
-      let start = moment(this.event.start);
-      let end = moment(this.event.end);
+      let start = dayjs(this.event.start);
+      let end = dayjs(this.event.end);
       let dayName;
       if (end.diff(start, "days")) {
         dayName = "<br/>";
-        //   moment(this.event.start).format("dddd") +
+        //   dayjs(this.event.start).format("dddd") +
         //   " - " +
-        //   moment(this.event.end).format("dddd")
+        //   dayjs(this.event.end).format("dddd")
       } else {
-        dayName = moment(this.event.start).format("dddd");
+        dayName = dayjs(this.event.start).format("dddd");
       }
       return dayName;
     },
@@ -124,8 +124,8 @@ export default {
       return string;
     },
     getEventTimeSpan() {
-      let start = moment(this.event.start);
-      let end = moment(this.event.end);
+      let start = dayjs(this.event.start);
+      let end = dayjs(this.event.end);
       let days = end.diff(start, "days");
       let hours = end.diff(start, "hours");
       let timeSpanText = "<br/>";
@@ -133,52 +133,52 @@ export default {
         timeSpanText = "All Day";
       } else if (days === 0 && hours <= 7) {
         timeSpanText =
-          moment(this.event.start).format("h:mm a") +
+          dayjs(this.event.start).format("h:mm a") +
           " - " +
-          moment(this.event.end).format("h:mm a");
+          dayjs(this.event.end).format("h:mm a");
       } else {
         timeSpanText =
-          moment(this.event.start).format("ddd, MMM DD @ h:mm a") +
+          dayjs(this.event.start).format("ddd, MMM DD @ h:mm a") +
           " - " +
-          moment(this.event.end).format("ddd, MMM DD @ h:mm a");
+          dayjs(this.event.end).format("ddd, MMM DD @ h:mm a");
       }
       //console.log(days, hours);
       return timeSpanText;
     },
     getEventDateSpan() {
-      let start = moment(this.event.start);
-      let end = moment(this.event.end);
+      let start = dayjs(this.event.start);
+      let end = dayjs(this.event.end);
       if (start.format("MMM") === end.format("MMM")) {
-        let month = moment(this.event.start).format("MMMM");
+        let month = dayjs(this.event.start).format("MMMM");
         let daySpan;
         if (end.diff(start, "days")) {
           daySpan =
-            moment(this.event.start).format("D") +
+            dayjs(this.event.start).format("D") +
             " - " +
-            moment(this.event.end).format("D");
+            dayjs(this.event.end).format("D");
         } else {
-          daySpan = moment(this.event.start).format("D");
+          daySpan = dayjs(this.event.start).format("D");
         }
         return (
-          month + " " + daySpan + ", " + moment(this.event.end).format("YYYY")
+          month + " " + daySpan + ", " + dayjs(this.event.end).format("YYYY")
         );
       } else {
         return (
-          moment(this.event.start).format("MMM") +
+          dayjs(this.event.start).format("MMM") +
           " " +
-          moment(this.event.start).format("DD") +
+          dayjs(this.event.start).format("DD") +
           " - " +
-          moment(this.event.end).format("MMM") +
+          dayjs(this.event.end).format("MMM") +
           " " +
-          moment(this.event.end).format("DD") +
+          dayjs(this.event.end).format("DD") +
           ", " +
-          moment(this.event.end).format("YYYY")
+          dayjs(this.event.end).format("YYYY")
         );
       }
     },
 
     getEventYear() {
-      return moment(this.event.start).format("YYYY");
+      return dayjs(this.event.start).format("YYYY");
     },
   },
   computed: {

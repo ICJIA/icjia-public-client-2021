@@ -121,7 +121,7 @@
 <script>
 import { EventBus } from "@/event-bus";
 import { getProperCategory } from "@/utils/content";
-import moment from "moment";
+import dayjs from "@/plugins/dayjs";
 export default {
   data() {
     return {
@@ -130,9 +130,9 @@ export default {
   },
   methods: {
     isItNew(item) {
-      const now = moment(new Date());
-      const end = moment(item.publicationDate); // another date
-      const duration = moment.duration(now.diff(end));
+      const now = dayjs(new Date());
+      const end = dayjs(item.publicationDate); // another date
+      const duration = dayjs.duration(now.diff(end));
       const days = duration.asDays();
       if (days <= this.$myApp.config.daysToShowNew) {
         return true;

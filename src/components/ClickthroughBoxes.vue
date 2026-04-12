@@ -66,7 +66,7 @@
 
 <script>
 import { renderToHtml } from "@/services/Markdown";
-import moment from "moment";
+import dayjs from "@/plugins/dayjs";
 export default {
   computed: {
     // rows() {
@@ -82,9 +82,9 @@ export default {
   methods: {
     isItNew(datePosted) {
       if (!datePosted) return false;
-      let now = moment(new Date()); //todays date
-      let end = moment(datePosted); // another date
-      let duration = moment.duration(now.diff(end));
+      let now = dayjs(new Date()); //todays date
+      let end = dayjs(datePosted); // another date
+      let duration = dayjs.duration(now.diff(end));
       let days = duration.asDays();
       if (days <= this.$myApp.config.daysToShowNew) {
         return true;

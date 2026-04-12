@@ -133,7 +133,7 @@ import { renderToHtml } from "@/services/Markdown";
 // eslint-disable-next-line no-unused-vars
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 // import _ from "lodash";
-import moment from "moment";
+import dayjs from "@/plugins/dayjs";
 export default {
   data() {
     return {
@@ -171,11 +171,11 @@ export default {
   },
   methods: {
     formatDate(date) {
-      return moment(date).format("MMM D, YYYY");
+      return dayjs(date).format("MMM D, YYYY");
     },
     daysBetween({ publishedAt, updatedAt }) {
-      const start = moment(publishedAt);
-      const end = moment(updatedAt);
+      const start = dayjs(publishedAt);
+      const end = dayjs(updatedAt);
       const duration = end.diff(start, "days");
       return `${duration}`;
     },
@@ -184,9 +184,9 @@ export default {
 
       targetDate = item.updated_at;
 
-      const now = moment(new Date());
-      const end = moment(targetDate); // another date
-      const duration = moment.duration(now.diff(end));
+      const now = dayjs(new Date());
+      const end = dayjs(targetDate); // another date
+      const duration = dayjs.duration(now.diff(end));
       const days = duration.asDays();
 
       // if (days <= this.$myApp.config.daysToShowNew) {

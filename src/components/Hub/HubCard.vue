@@ -168,7 +168,7 @@ import { EventBus } from "@/event-bus";
 const arrford = require("arrford");
 import { format, parseISO } from "date-fns";
 import { getImageURL } from "@/services/Image";
-import moment from "moment";
+import dayjs from "@/plugins/dayjs";
 export default {
   computed: {
     truncation() {
@@ -263,9 +263,9 @@ export default {
       return `${item.imagePath}`;
     },
     isItNew(itemDate) {
-      const now = moment(new Date());
-      const end = moment(itemDate); // another date
-      const duration = moment.duration(now.diff(end));
+      const now = dayjs(new Date());
+      const end = dayjs(itemDate); // another date
+      const duration = dayjs.duration(now.diff(end));
       const days = duration.asDays();
       if (days <= this.$myApp.config.daysToShowNewResearch) {
         return true;

@@ -211,7 +211,7 @@ const addOneDayToDate = function (date) {
   newDate.setDate(newDate.getDate() + 1);
   return newDate;
 };
-import moment from "moment";
+import dayjs from "@/plugins/dayjs";
 export default {
   computed: {
     tabViewHeight() {
@@ -224,9 +224,9 @@ export default {
   },
   methods: {
     isItNew(item, daysToShowNew = 7) {
-      const now = moment(new Date());
-      const end = moment(item.published_at); // another date
-      const duration = moment.duration(now.diff(end));
+      const now = dayjs(new Date());
+      const end = dayjs(item.published_at); // another date
+      const duration = dayjs.duration(now.diff(end));
 
       const days = duration.asDays();
       if (days <= daysToShowNew) {
@@ -237,9 +237,9 @@ export default {
       }
     },
     getColor(start, end) {
-      let localStart = moment().tz(this.$myApp.config.timezone);
-      let localEnd = moment(end).tz(this.$myApp.config.timezone);
-      let daysBetween = moment(localEnd).diff(moment(localStart), "days") + 1;
+      let localStart = dayjs().tz(this.$myApp.config.timezone);
+      let localEnd = dayjs(end).tz(this.$myApp.config.timezone);
+      let daysBetween = dayjs(localEnd).diff(dayjs(localStart), "days") + 1;
       if (daysBetween >= 7) {
         return "green darken-4";
       } else {

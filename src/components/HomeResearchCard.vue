@@ -124,7 +124,7 @@
 <script>
 import { getImageURL, getGrayscaleImageURL } from "@/services/Image";
 const arrford = require("arrford");
-import moment from "moment";
+import dayjs from "@/plugins/dayjs";
 export default {
   props: {
     item: {
@@ -144,9 +144,9 @@ export default {
       return arrford(authors);
     },
     isItNew(item) {
-      let now = moment(new Date()); //todays date
-      let end = moment(item.date); // another date
-      let duration = moment.duration(now.diff(end));
+      let now = dayjs(new Date()); //todays date
+      let end = dayjs(item.date); // another date
+      let duration = dayjs.duration(now.diff(end));
       let days = duration.asDays();
       if (days <= this.$myApp.config.daysToShowNewResearch) {
         return true;

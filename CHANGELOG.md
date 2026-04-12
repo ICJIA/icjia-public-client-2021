@@ -67,6 +67,63 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.4.0] - 2026-04-12
+
+### Perf — Replace moment + moment-timezone with Day.js (−20 KiB gzipped)
+
+Minor-version bump to signal the dependency swap. No user-visible behavior change — date formatting and timezone handling produce identical output — but `moment` and `moment-timezone` are removed from `dependencies` and `vue-cli-plugin-moment` + `moment-timezone-data-webpack-plugin` are removed from `devDependencies`.
+
+Day.js was chosen over date-fns (already installed) for two reasons:
+
+1. **Format tokens are moment-compatible** — `"MMMM DD, YYYY h:mm a"` works identically in Day.js. Date-fns would require translating every format string (`YYYY` → `yyyy`, `dddd` → `EEEE`, `Do` → `do`) across ~100 call sites, which is a silent-bug risk only visual testing can catch.
+2. **Smaller final bundle for this usage pattern** — Day.js base (~2 KiB gz) plus the five plugins we need (`utc`, `timezone`, `relativeTime`, `advancedFormat`, `duration`) totals ~7 KiB gz, vs. ~11-13 KiB gz for equivalent date-fns + date-fns-tz coverage of the same function set.
+
+### Changes
+
+- **`src/plugins/dayjs.js`** (new) — single shared Day.js instance. Registers the five plugins, sets `America/Chicago` as the default tz. All consumers import from `@/plugins/dayjs` so plugin registration happens exactly once.
+- **Converted 26 files** from `moment` to `dayjs` (`src/filters.js` + 25 components / views). Mechanical translation:
+  - `import moment from "moment"` → `import dayjs from "@/plugins/dayjs"`
+  - `const moment = require("moment")` / `const tz = require("moment-timezone")` → single `import dayjs from "@/plugins/dayjs"` (CJS-style in `EventCard.vue` and `EventsAll.vue`)
+  - `moment(...)` → `dayjs(...)` (all call sites)
+  - `moment.duration(...)` → `dayjs.duration(...)`
+  - `moment.tz.setDefault(...)` calls removed (set once in the plugin)
+- **`vue.config.js`** — removed `MomentTimezoneDataPlugin` webpack plugin and the `pluginOptions.moment` block (`locales: ["en"]`). Both are no-ops now that moment is gone.
+- **`package.json`** (`npm uninstall`):
+  - `moment`
+  - `moment-timezone`
+  - `vue-cli-plugin-moment`
+  - `moment-timezone-data-webpack-plugin`
+- **`package.json`** (`npm install`):
+  - `dayjs` ^1.11.20 (runtime, ~2 KiB gz base)
+
+### Day.js plugins used (and why)
+
+- `utc` — prerequisite for `timezone`
+- `timezone` — replaces `moment-timezone` for `.tz("America/Chicago")` call sites (Intl-API-backed, no bundled tz database)
+- `relativeTime` — `.fromNow()` and `.toNow()` (used in `filters.js`)
+- `advancedFormat` — `Do` ordinal tokens (e.g. `"MMMM Do YYYY"` → "April 12th 2026")
+- `duration` — `dayjs.duration(ms).asDays()` pattern used in 16 card components to compute "days since published"
+
+### Build-output verification (v1.3.51 → v1.4.0)
+
+- `chunk-vendors.*.js` uncompressed: 979 KiB → **913 KiB (−66 KiB, −7%)**
+- `chunk-vendors.*.js` brotli: 247 KiB → **233 KiB (−14 KiB, −6%)**
+- `chunk-vendors.*.js` gzip: 319 KiB → **299 KiB (−20 KiB, −6%)**
+- Lint clean; production build succeeds
+
+### Cumulative bundle trajectory (v1.3.47 baseline → v1.4.0)
+
+- v1.3.47 vendor brotli: ~487 KiB
+- v1.4.0 vendor brotli: **233 KiB (−254 KiB, −52%)** across the moment-timezone, lazy-component-registration, dead-dep, and moment→Day.js changes
+
+### Risks & things to watch after deploy
+
+- **Date output parity**: Day.js format tokens are moment-compatible, but edge cases can differ (e.g. pluralization in `fromNow()`). Primary consumers: Home, News, Events, Publications, Meetings, Required Forms, Hub articles. Eyeball dates on those pages after deploy.
+- **`moment.fromNow(true)` vs `dayjs.fromNow(true)`**: identical signature and semantics (returns relative time without suffix).
+- **`toNow()`**: same plugin (`relativeTime`) in both libraries, same behavior.
+
+---
+
 ## [1.3.51] - 2026-04-12
 
 ### Perf — Remove dead deps: AOS (unused animations) and `@mdi/js` (unused icons)

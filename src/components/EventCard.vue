@@ -167,8 +167,7 @@
 <script>
 import { nanoid } from "nanoid";
 /* eslint-disable no-unused-vars */
-const moment = require("moment");
-const tz = require("moment-timezone");
+import dayjs from "@/plugins/dayjs";
 // import { handleClicks } from "@/mixins/handleClicks";
 import { renderToHtml } from "@/services/Markdown";
 import { isRelatedContent } from "@/utils/content";
@@ -190,8 +189,8 @@ export default {
   },
   methods: {
     isWithinOneDay(eventStart, eventEnd) {
-      let start = moment(eventStart);
-      let end = moment(eventEnd);
+      let start = dayjs(eventStart);
+      let end = dayjs(eventEnd);
       let hours = end.diff(start, "hours");
       return hours;
     },
@@ -206,12 +205,12 @@ export default {
       }
     },
     getStartText(eventStart) {
-      let start = moment(eventStart);
+      let start = dayjs(eventStart);
       return `${start.format("dddd, MMM DD, YYYY")}`;
     },
     getEndText(eventStart, eventEnd, eventTimed) {
-      let start = moment(eventStart);
-      let end = moment(eventEnd);
+      let start = dayjs(eventStart);
+      let end = dayjs(eventEnd);
       let days = end.diff(start, "days");
       let hours = end.diff(start, "hours");
       if (!eventTimed) {
@@ -254,9 +253,9 @@ export default {
     },
     getRange(start, end, timed) {
       let range;
-      let localStart = moment(start).tz(this.$myApp.config.timezone);
-      let localEnd = moment(end).tz(this.$myApp.config.timezone);
-      let daysBetween = moment(localEnd).diff(moment(localStart), "days");
+      let localStart = dayjs(start).tz(this.$myApp.config.timezone);
+      let localEnd = dayjs(end).tz(this.$myApp.config.timezone);
+      let daysBetween = dayjs(localEnd).diff(dayjs(localStart), "days");
 
       if (daysBetween === 0 && timed) {
         range = ` | ${localStart.format("h:mm a")} to ${localEnd.format(

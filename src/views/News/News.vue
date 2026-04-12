@@ -257,7 +257,7 @@ import {
   getProperCategory,
 } from "@/utils/content";
 import _ from "lodash";
-import moment from "moment";
+import dayjs from "@/plugins/dayjs";
 
 const ITEMS_PER_PAGE = 15;
 
@@ -304,7 +304,7 @@ export default {
     },
     groupedNews() {
       if (!this.paginatedNews || !this.paginatedNews.length) return [];
-      const now = moment();
+      const now = dayjs();
       const groups = {
         thisMonth: { label: "This Month", items: [] },
         lastMonth: { label: "Last Month", items: [] },
@@ -312,7 +312,7 @@ export default {
       };
 
       this.paginatedNews.forEach((item) => {
-        const pubDate = moment(item.publicationDate);
+        const pubDate = dayjs(item.publicationDate);
         if (pubDate.isSame(now, "month")) {
           groups.thisMonth.items.push(item);
         } else if (pubDate.isSame(now.clone().subtract(1, "month"), "month")) {
@@ -335,9 +335,9 @@ export default {
   },
   methods: {
     isItNew(item) {
-      const now = moment(new Date());
-      const end = moment(item.publicationDate || item.published_at);
-      const duration = moment.duration(now.diff(end));
+      const now = dayjs(new Date());
+      const end = dayjs(item.publicationDate || item.published_at);
+      const duration = dayjs.duration(now.diff(end));
       const days = duration.asDays();
       return days <= this.$myApp.config.daysToShowNew;
     },

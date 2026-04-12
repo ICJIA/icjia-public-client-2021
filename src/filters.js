@@ -1,7 +1,5 @@
 import Vue from "vue";
-const moment = require("moment");
-// eslint-disable-next-line no-unused-vars
-const tz = require("moment-timezone");
+import dayjs from "@/plugins/dayjs";
 
 import appConfig from "@/config/config.json";
 
@@ -92,76 +90,69 @@ Vue.filter(
 );
 
 Vue.filter("localTime", function (timestamp) {
-  const tstamp = moment(timestamp);
+  const tstamp = dayjs(timestamp);
   return tstamp.tz(appConfig.timezone).format("h:mm a");
 });
 
 Vue.filter("month", function (timestamp) {
-  return moment(timestamp).format("MMMM");
+  return dayjs(timestamp).format("MMMM");
 });
 
 Vue.filter("shortMonth", function (timestamp) {
-  return moment(timestamp).format("MMM");
+  return dayjs(timestamp).format("MMM");
 });
 
 Vue.filter("day", function (timestamp) {
-  return moment(timestamp).format("D");
+  return dayjs(timestamp).format("D");
 });
 
 Vue.filter("timeDateFormat", function (timestamp) {
-  return moment(timestamp).format("h:mm:ss a, MMMM Do YYYY ");
+  return dayjs(timestamp).format("h:mm:ss a, MMMM Do YYYY ");
 });
 
 Vue.filter("timeFormat", function (timestamp) {
-  return moment(timestamp).format("h:mm a");
+  return dayjs(timestamp).format("h:mm a");
 });
 
 Vue.filter("dateTimeFormat", function (timestamp) {
-  return moment(timestamp).format("MM/DD/YY, h:mm:ss a ");
+  return dayjs(timestamp).format("MM/DD/YY, h:mm:ss a ");
 });
 
 Vue.filter("dateFormat", function (timestamp) {
-  return moment(timestamp).format("MMMM DD, YYYY");
+  return dayjs(timestamp).format("MMMM DD, YYYY");
 });
 
 Vue.filter("dateFormatShort", function (timestamp) {
-  return moment(timestamp).format("MM/DD/YY");
+  return dayjs(timestamp).format("MM/DD/YY");
 });
 
 Vue.filter("dateFormatAlt", function (timestamp) {
-  return moment(timestamp).format("MMM DD, YYYY");
+  return dayjs(timestamp).format("MMM DD, YYYY");
 });
 
 Vue.filter("dateFormatFull", function (timestamp) {
-  return moment(timestamp).format("dddd, MMM DD, YYYY");
+  return dayjs(timestamp).format("dddd, MMM DD, YYYY");
 });
 
 Vue.filter("timeAgoFormat", function (timestamp) {
-  return moment(timestamp).fromNow();
+  return dayjs(timestamp).fromNow();
 });
 
 Vue.filter("yearFormat", function (timestamp) {
-  return moment(timestamp).format("YYYY");
+  return dayjs(timestamp).format("YYYY");
 });
 
 Vue.filter("dayName", function (timestamp) {
-  return moment(timestamp).format("dddd");
+  return dayjs(timestamp).format("dddd");
 });
 
 Vue.filter("toNow", function (timestamp) {
-  return moment(timestamp).toNow();
+  return dayjs(timestamp).toNow();
 });
 
 Vue.filter("fromNow", function (timestamp) {
-  //let now = moment().tz(this.$myApp.config.timezone);
-
-  // return moment.utc(timestamp).locale("en").fromNow();
-  moment.tz.setDefault("America/Chicago");
-  //let dayPlusOne = moment(timestamp).utc().add(, "days");
-  //var time = moment(timestamp);
-  // console.log(moment(timestamp).utc().fromNow());
-  return moment(timestamp).fromNow(true);
-  //return moment.utc(timestamp).locale("en").fromNow(true);
+  // Default tz (America/Chicago) is set once in @/plugins/dayjs.
+  return dayjs(timestamp).fromNow(true);
 });
 
 // ── Content pipeline filter ──────────────────────────────────────

@@ -153,8 +153,7 @@ import { GET_EVENTS } from "@/graphql/events";
 // import { fixButtonText } from "@/a11y";
 import _ from "lodash";
 import NProgress from "@/services/Progress";
-const moment = require("moment");
-const tz = require("moment-timezone");
+import dayjs from "@/plugins/dayjs";
 import { EventBus } from "@/event-bus";
 import { getUnifiedTags } from "@/utils/content";
 export default {
@@ -292,9 +291,9 @@ export default {
     },
     getRange(start, end, timed) {
       let range;
-      let localStart = moment(start).tz(this.$myApp.config.timezone);
-      let localEnd = moment(end).tz(this.$myApp.config.timezone);
-      let daysBetween = moment(localEnd).diff(moment(localStart), "days");
+      let localStart = dayjs(start).tz(this.$myApp.config.timezone);
+      let localEnd = dayjs(end).tz(this.$myApp.config.timezone);
+      let daysBetween = dayjs(localEnd).diff(dayjs(localStart), "days");
       if (daysBetween === 0 && timed) {
         range = ` | ${localStart.format("h:mm a")} to ${localEnd.format(
           "h:mm a"
@@ -316,9 +315,9 @@ export default {
     },
     isItMultiday(start, end) {
       let range;
-      let localStart = moment(start).tz(this.$myApp.config.timezone);
-      let localEnd = moment(end).tz(this.$myApp.config.timezone);
-      let daysBetween = moment(localEnd).diff(moment(localStart), "days");
+      let localStart = dayjs(start).tz(this.$myApp.config.timezone);
+      let localEnd = dayjs(end).tz(this.$myApp.config.timezone);
+      let daysBetween = dayjs(localEnd).diff(dayjs(localStart), "days");
       let isItMultiday;
       if (daysBetween > 0) {
         isItMultiday = true;
@@ -347,12 +346,10 @@ export default {
       result(ApolloQueryResult) {
         //console.log("Result: ", ApolloQueryResult.data.events);
         let events = ApolloQueryResult.data.events.map((event) => {
-          event.start = moment(event.start)
+          event.start = dayjs(event.start)
             .tz(this.$myApp.config.timezone)
             .toDate();
-          event.end = moment(event.end)
-            .tz(this.$myApp.config.timezone)
-            .toDate();
+          event.end = dayjs(event.end).tz(this.$myApp.config.timezone).toDate();
 
           event.color = "green darken-4";
           event.show = false;
@@ -363,16 +360,14 @@ export default {
           return event;
         });
         let meetings = ApolloQueryResult.data.meetings.map((meeting) => {
-          meeting.start = moment(meeting.start)
+          meeting.start = dayjs(meeting.start)
             .tz(this.$myApp.config.timezone)
             .toDate();
-          meeting.end = moment(meeting.end)
+          meeting.end = dayjs(meeting.end)
             .tz(this.$myApp.config.timezone)
             .toDate();
 
-          let localStart = moment(meeting.start).tz(
-            this.$myApp.config.timezone
-          );
+          let localStart = dayjs(meeting.start).tz(this.$myApp.config.timezone);
 
           if (!this.isItMultiday(meeting.start, meeting.end)) {
             meeting.timed = true;
@@ -388,15 +383,13 @@ export default {
           return meeting;
         });
         let grants = ApolloQueryResult.data.grants.map((grant) => {
-          grant.start = moment(grant.start)
+          grant.start = dayjs(grant.start)
             .tz(this.$myApp.config.timezone)
             .toDate();
-          grant.end = moment(grant.end)
-            .tz(this.$myApp.config.timezone)
-            .toDate();
+          grant.end = dayjs(grant.end).tz(this.$myApp.config.timezone).toDate();
           grant.startDate = grant.start;
           grant.endDate = grant.end;
-          let localStart = moment(grant.start).tz(this.$myApp.config.timezone);
+          let localStart = dayjs(grant.start).tz(this.$myApp.config.timezone);
 
           if (!this.isItMultiday(grant.start, grant.end)) {
             grant.timed = true;
@@ -454,10 +447,8 @@ export default {
           return obj;
         });
         let jobs = ApolloQueryResult.data.jobs.map((job) => {
-          job.start = moment(job.start)
-            .tz(this.$myApp.config.timezone)
-            .toDate();
-          job.end = moment(job.end).tz(this.$myApp.config.timezone).toDate();
+          job.start = dayjs(job.start).tz(this.$myApp.config.timezone).toDate();
+          job.end = dayjs(job.end).tz(this.$myApp.config.timezone).toDate();
           job.startDate = job.start;
           job.endDate = job.end;
 

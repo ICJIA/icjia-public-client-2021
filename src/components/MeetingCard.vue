@@ -74,7 +74,7 @@
 /* eslint-disable no-unused-vars */
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import { renderToHtml } from "@/services/Markdown";
-import moment from "moment";
+import dayjs from "@/plugins/dayjs";
 import _ from "lodash";
 import { isRelatedContent } from "@/utils/content";
 export default {
@@ -107,9 +107,9 @@ export default {
       }
     },
     displayDate(s, e) {
-      var start = moment(s); //todays date
-      var end = moment(e); // another date
-      var duration = moment.duration(end.diff(start));
+      var start = dayjs(s); //todays date
+      var end = dayjs(e); // another date
+      var duration = dayjs.duration(end.diff(start));
       var days = duration.asDays();
       if (days > 1) {
         return `${start.format("MMM Do")} - ${end.format("MMM Do")}`;

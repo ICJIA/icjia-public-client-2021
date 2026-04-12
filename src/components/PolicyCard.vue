@@ -54,7 +54,7 @@
 /* eslint-disable no-unused-vars */
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import { renderToHtml } from "@/services/Markdown";
-import moment from "moment";
+import dayjs from "@/plugins/dayjs";
 import _ from "lodash";
 import { isRelatedContent } from "@/utils/content";
 export default {
@@ -72,11 +72,11 @@ export default {
   },
   methods: {
     formatDate(date) {
-      return moment(date).format("MMM D, YYYY");
+      return dayjs(date).format("MMM D, YYYY");
     },
     daysBetween({ publishedAt, updatedAt }) {
-      const start = moment(publishedAt);
-      const end = moment(updatedAt);
+      const start = dayjs(publishedAt);
+      const end = dayjs(updatedAt);
       const duration = end.diff(start, "days");
       return `${duration}`;
     },
@@ -89,7 +89,7 @@ export default {
       return renderToHtml(content);
     },
     displayStatus(published, updated) {
-      return `${moment(published).format("MMM Do YYYY")}`;
+      return `${dayjs(published).format("MMM Do YYYY")}`;
     },
     displayCategory(category) {
       let categoryMap = this.$myApp.config.maps.policies;
@@ -101,9 +101,9 @@ export default {
       }
     },
     displayDate(s, e) {
-      var start = moment(s); //todays date
-      var end = moment(e); // another date
-      var duration = moment.duration(end.diff(start));
+      var start = dayjs(s); //todays date
+      var end = dayjs(e); // another date
+      var duration = dayjs.duration(end.diff(start));
       var days = duration.asDays();
       if (days > 1) {
         return `${start.format("MMM Do")} - ${end.format("MMM Do")}`;

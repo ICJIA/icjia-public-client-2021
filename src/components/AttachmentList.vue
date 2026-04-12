@@ -99,7 +99,7 @@ function niceBytes(x) {
 
 import _ from "lodash";
 // eslint-disable-next-line no-unused-vars
-import moment from "moment";
+import dayjs from "@/plugins/dayjs";
 export default {
   data() {
     return {
@@ -143,9 +143,9 @@ export default {
       window.open(`https://agency.icjia-api.cloud${url}`, "_blank");
     },
     isItUpdated(item) {
-      const created = moment(this.baseItemPublished);
-      const updated = moment(item.updated_at); // another date
-      const duration = moment.duration(updated.diff(created));
+      const created = dayjs(this.baseItemPublished);
+      const updated = dayjs(item.updated_at); // another date
+      const duration = dayjs.duration(updated.diff(created));
       const days = duration.asDays();
       if (days > 1 && days < 30) {
         return true;
