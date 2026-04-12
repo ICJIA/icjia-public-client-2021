@@ -84,15 +84,13 @@ export default {
   name: "Home",
   metaInfo: {
     title: "Home",
-    link: [
-      // Preload the splash image only on the homepage (not every route)
-      {
-        rel: "preload",
-        href: "/home-splash.webp",
-        as: "image",
-        type: "image/webp",
-      },
-    ],
+    // Note: a <link rel="preload" href="/home-splash.webp"> used to live here,
+    // but vue-meta injects metaInfo links *after* the page's JS has already
+    // begun rendering the <picture> element in HomeSplashV2.vue — by the time
+    // the preload tag exists, the browser is already fetching the image via
+    // <source srcset>. The preload was redundant and triggered the
+    // "preloaded but not used within a few seconds" console warning.
+    // The image still loads via <picture> + <source>; just no fake hint.
   },
   data() {
     return {

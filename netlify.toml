@@ -17,11 +17,24 @@
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
     Access-Control-Allow-Origin = "https://icjia.illinois.gov"
-    # Content-Security-Policy (SEC-09, report-only to start)
-    # Monitors violations without breaking functionality. Review reports
-    # in the configured endpoint, then promote to enforcement by renaming
-    # to "Content-Security-Policy" once violations are triaged.
-    Content-Security-Policy-Report-Only = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.icjia.cloud https://assets.adobedtm.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; connect-src 'self' https://agency.icjia-api.cloud https://agency.icjia.cloud https://researchhub.icjia-api.cloud https://plausible.icjia.cloud https://assets.adobedtm.com; frame-src 'self' https://www.youtube.com https://player.vimeo.com https://public.tableau.com https://docs.google.com https://forms.office.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://agency.icjia-api.cloud"
+    # Content-Security-Policy (SEC-09 — promoted to ENFORCEMENT in v1.3.40)
+    #
+    # Was Content-Security-Policy-Report-Only since v1.3.33; allowlist was
+    # validated against actual page loads (Chrome MCP audit, 2026-04-12)
+    # before flipping. All currently-loaded origins (Plausible, jsdelivr,
+    # cdnjs, fonts.googleapis/gstatic, agency/researchhub APIs, thumbor
+    # image.icjia.cloud via the broad img-src https:, Netlify status
+    # badges) are covered by the existing directives.
+    #
+    # worker-src 'self' added for the new search Web Worker
+    # (public/searchWorker.js + public/fuse.min.js).
+    # upgrade-insecure-requests added so any accidental http:// asset
+    # is auto-upgraded to https://, defending against mixed-content.
+    #
+    # If a future build needs a new third-party origin (e.g. embedding
+    # vue-tweet-embed), add it to the appropriate directive BEFORE
+    # deploying — enforced CSP will block unlisted origins outright.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.icjia.cloud https://assets.adobedtm.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; connect-src 'self' https://agency.icjia-api.cloud https://agency.icjia.cloud https://researchhub.icjia-api.cloud https://plausible.icjia.cloud https://assets.adobedtm.com; worker-src 'self'; frame-src 'self' https://www.youtube.com https://player.vimeo.com https://public.tableau.com https://docs.google.com https://forms.office.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://agency.icjia-api.cloud; upgrade-insecure-requests"
     # Hide Express server framework disclosure (SEC-14)
     X-Powered-By = ""
 

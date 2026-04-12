@@ -27,6 +27,8 @@
                   v-if="item.badgeID"
                   :src="`https://api.netlify.com/api/v1/badges/${item.badgeID}/deploy-status`"
                   :alt="`Netlify build status image for ${item.name}`"
+                  loading="lazy"
+                  decoding="async"
                 />
               </template>
 

@@ -29,6 +29,8 @@
                   alt="ICJIA Home"
                   width="100"
                   height="70"
+                  loading="lazy"
+                  decoding="async"
                   style="border: 0px solid #ddd; display: inline"
                 />
                 <span class="sr-only">ICJIA Home</span>

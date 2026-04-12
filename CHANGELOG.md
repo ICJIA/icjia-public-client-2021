@@ -67,6 +67,44 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.40] - 2026-04-12
+
+### Security — Promote CSP from Report-Only to Enforcement (SEC-09 closed)
+
+- **fix: `netlify.toml`** — renamed `Content-Security-Policy-Report-Only` → `Content-Security-Policy`. The allowlist has been in place since v1.3.33 and was validated against actual production page loads via Chrome MCP audit (2026-04-12) before flipping. Verified all currently-loaded origins are covered:
+
+  | Resource | Origin | Covered by |
+  |---|---|---|
+  | App bundles | `localhost` / origin | `script-src 'self'` |
+  | jQuery (slim) | `cdnjs.cloudflare.com` | `script-src https://cdnjs.cloudflare.com` |
+  | Plausible analytics | `plausible.icjia.cloud` | `script-src` + `connect-src` |
+  | Material Design Icons CSS + woff2 | `cdn.jsdelivr.net` | `style-src` + `font-src` |
+  | Google Fonts CSS + woff2 | `fonts.googleapis.com`, `fonts.gstatic.com` | `style-src` + `font-src` |
+  | Strapi GraphQL APIs | `agency.icjia-api.cloud`, `researchhub.icjia-api.cloud` | `connect-src` |
+  | Thumbor image server | `image.icjia.cloud` | `img-src https:` |
+  | Netlify status badges (Status page) | `api.netlify.com` | `img-src https:` |
+  | Search Web Worker + Fuse.js | `localhost` / origin | `script-src 'self'` (now also `worker-src 'self'`) |
+
+- **Added directives:**
+  - `worker-src 'self'` — explicit support for `public/searchWorker.js` introduced in v1.3.37 (defaults to `script-src` when absent, but explicit is clearer for future maintenance)
+  - `upgrade-insecure-requests` — defense against accidental mixed-content; any stray `http://` resource is auto-upgraded to `https://`
+- **Closes SEC-09** in the README security table. CSP is now enforced at the Netlify edge, blocking any unlisted origin outright.
+- **Reminder for future maintenance:** if you add a new third-party origin (e.g., re-enable `vue-tweet-embed`, switch analytics providers), update the appropriate directive BEFORE deploying. Enforced CSP doesn't warn — it blocks.
+
+### Performance — Quick Wins
+
+- **fix: `src/views/Home/Home.vue`** — removed the `<link rel="preload" href="/home-splash.webp">` from `metaInfo.link`. `vue-meta` injects `metaInfo` links *after* the page's JS has already started rendering the `<picture>` element in `HomeSplashV2.vue`, so by the time the preload tag exists the browser is already fetching the image via `<source srcset>`. The preload was redundant and triggered the *"preloaded but not used within a few seconds"* console warning on every homepage visit. Image still loads via `<picture>` + `<source>`; we just dropped the false hint.
+- **fix: `src/components/AppFooter.vue`** — added `loading="lazy"` and `decoding="async"` to the footer logo `<img>`. It's below the fold on every page; lazy-loading defers it until the user scrolls.
+- **fix: `src/views/Status/Status.vue`** — added `loading="lazy"` and `decoding="async"` to the Netlify deploy-badge images. The Status page renders a long table of badges; lazy-loading defers below-viewport ones until the user scrolls.
+
+### Net result
+
+- Five console warnings per homepage visit eliminated
+- Two lazy images (footer logo on every page; Status table)
+- CSP enforcement closes the only outstanding P1 we could fix client-side without a backend change
+
+---
+
 ## [1.3.39] - 2026-04-12
 
 ### Docs — Refresh README for v1.3.37 (Web Worker) and v1.3.38 (focus outline)
