@@ -67,6 +67,56 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.42] - 2026-04-12
+
+### Performance — Async-Load Stylesheets to Eliminate ~4s of Mobile Render-Blocking
+
+The Lighthouse mobile audit on 20 representative routes (v1.3.41, post-deploy) put every page in the 55–58 perf range, with the same dominant culprit on every single one:
+
+```
+✗ render-blocking-insight: Est savings of 3,500–4,500 ms
+```
+
+Trace: 5 `<link rel="stylesheet">` tags in `public/index.html` (4 Google Fonts families + the MDI icon font from jsdelivr) all blocked rendering until they finished downloading. On mobile with high latency to fonts.googleapis.com and jsdelivr, this stacked to roughly 4 seconds of FCP delay.
+
+### Fix
+
+- **`public/index.html`** — converted all 5 stylesheets to the standard async-load pattern:
+  ```html
+  <link rel="stylesheet" href="…" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="…" /></noscript>
+  ```
+  - `media="print"` makes the browser load the file with the print media type — non-blocking for screen rendering.
+  - `onload="this.media='all'"` swaps the media to "all" once the file has loaded, so the styles apply.
+  - `<noscript>` fallback ensures the stylesheet still loads for users with JavaScript disabled.
+- **Added `display=swap`** to the two Google Fonts URLs that didn't already have it (Roboto, Material Icons). With `display=swap`, text renders immediately in the system-font fallback and swaps to the web font when it arrives, instead of staying invisible during the font load. Lato/Oswald and Raleway already had it.
+- **Added `<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />`** so the TCP/TLS handshake to jsdelivr happens in parallel with the initial HTML parse, reducing the MDI font's perceived load time.
+
+### Tradeoff
+
+Brief Flash of Unstyled Text (FOUT) on cold loads — the page renders in system fonts (Lato → Helvetica/Arial; Roboto → Helvetica/Arial; Raleway → Helvetica/Arial) for ~100–300ms, then swaps to web fonts when they arrive. MDI icons may briefly render as missing glyph boxes during the same window. This is the standard, widely-accepted tradeoff for the perf gain — every site that prioritizes mobile FCP does this.
+
+### Verified locally
+
+All 5 stylesheets confirmed working in Chrome:
+- Initial state: `media="print"` (non-blocking)
+- After load: `media="all"` (applied) with `appliedSheet: true`
+- No new console errors
+
+### Expected mobile Lighthouse impact
+
+Based on the audit numbers (3,500–4,500 ms render-blocking savings on every page):
+- **FCP: ~8s → ~4s** (cut roughly in half)
+- **Perf score: 57 → ~75–80** range (from "Needs Improvement" toward "Good")
+- **Same fix benefits every page** because the stylesheets are loaded once in `index.html`
+
+### What's still beyond reach without the rewrite
+
+- `unused-css-rules: ~100 KB` and `unused-javascript: ~170–220 KB` are Vuetify framework cost — no way to trim them within the v1.3.x line. The Nuxt 4 / Vuetify 3 (or whatever) rewrite handles this structurally.
+- Homepage LCP outlier (16.6s) is the home-splash hero image — would need image optimization (smaller resolution, AVIF, etc.) which is a separate effort.
+
+---
+
 ## [1.3.41] - 2026-04-12
 
 ### Security — Revert CSP to Report-Only (no telemetry without a report endpoint)

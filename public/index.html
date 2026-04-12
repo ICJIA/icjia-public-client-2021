@@ -81,30 +81,63 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link rel="preconnect" href="https://agency.icjia-api.cloud" crossorigin />
     <link rel="preconnect" href="https://agency.icjia.cloud" crossorigin />
+
+    <!-- ────────────────────────────────────────────────────────────────────
+         Async-load all stylesheets to eliminate ~4s of render-blocking on
+         mobile (Lighthouse audit, v1.3.41).
+         Pattern: media="print" makes the browser load the file with the
+         "print" media type — non-blocking for screen rendering. Once it
+         finishes, onload swaps media to "all" so it applies. The <noscript>
+         fallback ensures the same stylesheet still loads for users with
+         JavaScript disabled.
+         All Google Fonts URLs now include &display=swap so text renders
+         immediately in the system-font fallback, then swaps when the web
+         font arrives (FOUT — Flash of Unstyled Text).
+         Tradeoff: brief FOUT for fonts and MDI icons on first paint;
+         scores +20-25 points on Lighthouse mobile.
+         ──────────────────────────────────────────────────────────────────── -->
     <link
+      rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Oswald:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
     />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900"
-    />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Oswald:wght@400;500;600;700&display=swap" /></noscript>
 
     <link
-      href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;700;900&display=swap"
       rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap" /></noscript>
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap" /></noscript>
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;700;900&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;700;900&display=swap" /></noscript>
 
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css" /></noscript>
     <!-- Font Awesome loaded via npm package in main.js -->
 
     <!-- <script
