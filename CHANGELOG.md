@@ -67,6 +67,24 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.33] - 2026-04-11
+
+### Security + Performance — Remediate April 2026 Audit Findings
+
+Addresses the high-impact findings from the April 2026 red/blue team audit.
+
+- **fix (SEC-09): Add Content-Security-Policy header in report-only mode** — Added `Content-Security-Policy-Report-Only` header to `netlify.toml` with allowlists for Plausible, Adobe DTM, Google Fonts, CDN, Strapi API, YouTube, Vimeo, Tableau, and self-hosted assets. Report-only mode monitors violations without breaking functionality; promote to enforcement after triage.
+- **fix (SEC-12, SEC-13): Purify staff names from CMS searchMeta fields** — Added `generators/utils/purifyStaffNames.js` build-time purifier that strips current and former staff names from `searchMeta` fields across all 9 per-type JSON files before they are assembled into `searchIndex.json`. Uses `biographies.json` as the primary blocklist plus an `EXTRAS` array for former/external staff identified in the security audit. Biographies are never modified — only `searchMeta` fields on grants, units, pages, hub, posts, meetings, jobs, publications, and events are cleaned. Wired into `searchIndexAndSitemap.js` at build time.
+- **fix (SEC-14): Hide `X-Powered-By` server framework header** — Added `X-Powered-By = ""` override to `netlify.toml` to prevent Express framework disclosure in HTTP responses.
+- **perf: Fix home-splash.webp unused preload warning** — Moved the `<link rel="preload" href="/home-splash.webp">` from `public/index.html` (which loaded it on every route) to `Home.vue`'s `metaInfo.link` (which only loads it when the homepage is active). Eliminates the "preload not used" console warning on all non-homepage routes.
+- **note (SEC-10): npm dependency vulnerabilities accepted risk** — `npm audit fix` was evaluated but only produces breaking changes (Vuetify 2.7.2 upgrade, release-it 19.x). Accepting the risk pending the planned Nuxt 4 / Strapi 5 rewrite rather than introducing instability to the current site. DOMPurify continues to mitigate the Vuetify XSS advisories in practice.
+
+### Accessibility — Biography Page Audit
+
+- **audit:** 15 randomly sampled biography pages plus the `/about/icjia-staff/` index — **16/16 pass axe-core WCAG 2.1 AA with zero violations**. Staff name purification did not affect accessibility (names remain in rendered bio pages, only stripped from non-bio `searchMeta` fields).
+
+---
+
 ## [1.3.32] - 2026-04-11
 
 ### Security — Red Team / Blue Team Audit (April 2026)

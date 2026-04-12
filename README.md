@@ -125,31 +125,31 @@ Reports are saved to `reports/`.
 
 | Category | Status | Details |
 |---|---|---|
-| **Security headers** | **Hardened (missing CSP)** | X-Frame-Options, HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy enabled. **No Content-Security-Policy header** — P1, recommended to add in report-only mode first |
+| **Security headers** | **Hardened** | X-Frame-Options, HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy enabled. **CSP in report-only mode** (v1.3.33) monitors violations without breaking functionality |
 | **CORS** | **Restricted** | Locked to `https://icjia.illinois.gov`; no wildcard |
 | **XSS prevention** | **Hardened** | DOMPurify sanitization at `renderToHtml()` chokepoint covers all `v-html` bindings; route params regex-sanitized; `v-html` directive globally overridden with content pipeline |
 | **CSS injection** | **Mitigated (P2)** | DOMPurify now allows `<style>` tags and `style` attributes for CMS layout support. DOMPurify strips `javascript:` URLs and event handlers but CSS `url()` exfiltration is possible if CMS account is compromised. Mitigated by CMS auth; would be fully blocked by CSP |
 | **GraphQL injection** | **Mitigated** | Route params sanitized to `[a-zA-Z0-9_-]` before query interpolation; Apollo parameterized queries used elsewhere |
 | **External links** | **Mostly hardened** | `rel="noopener noreferrer"` on all markdown-rendered links; 3 template links to first-party domains missing `rel` (P3) |
 | **Auth tokens** | **localStorage (P1)** | JWT in localStorage; HttpOnly cookies require Strapi 3 backend migration |
-| **Data exposure** | **Needs attention (P2)** | Static API JSON files expose staff names in `searchMeta` fields; `searchIndex.json` (2.8 MB) mirrors full CMS database with internal metadata |
-| **Server disclosure** | **Needs attention (P2)** | `X-Powered-By: Express` header on dev server; Strapi production API leaks Node.js stack traces in error responses |
+| **Data exposure** | **Hardened (v1.3.33)** | Build-time `purifySearchMeta` strips staff names from all 9 per-type JSONs and `searchIndex.json` before publish. Biographies themselves are unmodified. |
+| **Server disclosure** | **Mitigated** | `X-Powered-By` header hidden via `netlify.toml` (v1.3.33). Strapi stack trace suppression still requires backend `NODE_ENV=production` (SEC-15) |
 | **Source maps** | **Hardened** | `productionSourceMap: false`; no `.map` files served |
 | **HTTPS** | **Full** | All endpoints and CDN resources use TLS |
 | **Console stripping** | **Active** | Production builds remove `console.log` via Babel plugin |
-| **Dependencies** | **Needs attention (P1)** | `npm audit` reports 20 vulnerabilities (5 critical, 12 high) including Vuetify XSS advisories. DOMPurify mitigates practical impact |
+| **Dependencies** | **Accepted risk** | `npm audit` reports 20 production vulnerabilities (5 critical, 12 high), all requiring breaking changes. DOMPurify mitigates the Vuetify XSS advisories in practice. Deferred to the planned Nuxt 4 / Strapi 5 rewrite |
 | **Env / secrets** | **Hardened** | `.env` in `.gitignore`, no credentials committed, no source maps |
 
 ### New findings (April 2026)
 
 | # | Finding | Severity | Status |
 |---|---|---|---|
-| SEC-09 | No Content-Security-Policy header | **P1** | Open — add CSP in report-only mode first |
-| SEC-10 | npm dependency vulnerabilities (20 total, 5 critical) | **P1** | Open — run `npm audit fix`; evaluate Vuetify 2.7.2 |
-| SEC-11 | DOMPurify `<style>` tag + `style` attr allowlisting enables CSS exfiltration | **P2** | Accepted — required for CMS layout; mitigated by CMS auth; fully blocked by CSP |
-| SEC-12 | Staff names leaked in `searchMeta` across API JSON files | **P2** | Open — strip `searchMeta` from generated JSON or sanitize staff names |
-| SEC-13 | `searchIndex.json` (2.8 MB) exposes full CMS database | **P2** | Open — reduce to title/summary/path/contentType only |
-| SEC-14 | `X-Powered-By` header discloses server framework | **P2** | Open — disable in Express/Netlify |
+| SEC-09 | No Content-Security-Policy header | **P1** | **Fixed (v1.3.33)** — CSP added in report-only mode |
+| SEC-10 | npm dependency vulnerabilities (20 total, 5 critical) | **P1** | Accepted — breaking changes only; deferred to Nuxt 4 rewrite; DOMPurify mitigates Vuetify XSS |
+| SEC-11 | DOMPurify `<style>` tag + `style` attr allowlisting enables CSS exfiltration | **P2** | Accepted — required for CMS layout; mitigated by CMS auth; mitigated by CSP (SEC-09) |
+| SEC-12 | Staff names leaked in `searchMeta` across API JSON files | **P2** | **Fixed (v1.3.33)** — build-time `purifySearchMeta` strips names |
+| SEC-13 | `searchIndex.json` exposes staff names alongside search data | **P2** | **Fixed (v1.3.33)** — same purification pass as SEC-12 |
+| SEC-14 | `X-Powered-By` header discloses server framework | **P2** | **Fixed (v1.3.33)** — empty header override in `netlify.toml` |
 | SEC-15 | Strapi production API leaks stack traces in error responses | **P2** | Open — requires Strapi backend `NODE_ENV=production` |
 | SEC-16 | No `/.well-known/security.txt` (RFC 9116) | **P3** | Open — recommended for government sites |
 | SEC-17 | Dead code `ResearchHub.js:getSingleArticleQuery()` with unsanitized interpolation | **P3** | Open — remove or sanitize |

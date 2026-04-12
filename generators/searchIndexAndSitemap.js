@@ -7,6 +7,44 @@ const _ = require("lodash");
 const config = require("../src/config/config.json");
 const { createWriteStream } = require("fs");
 const { SitemapStream } = require("sitemap");
+const { purifySearchMeta } = require("./utils/purifyStaffNames");
+
+// ── Purification pass (SEC-12/13): strip staff names from searchMeta ──
+// CMS editors add staff names to searchMeta so pages surface when users
+// search for those names. This leaks an internal personnel roster in the
+// static JSON. Purify each per-type JSON against the biographies roster
+// before they are assembled into the public searchIndex.
+const typeFiles = [
+  "hub",
+  "grants",
+  "pages",
+  "publications",
+  "units",
+  "jobs",
+  "meetings",
+  "posts",
+  "events",
+];
+
+for (const name of typeFiles) {
+  const filePath = `./public/api/${name}.json`;
+  if (!fs.existsSync(filePath)) continue;
+  const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
+  const cleaned = purifySearchMeta(data);
+  jsonfile.writeFileSync(filePath, cleaned);
+}
+console.log(`Purified searchMeta across ${typeFiles.length} API files`);
+
+// Re-require after purification (clear cache)
+delete require.cache[require.resolve("../public/api/hub.json")];
+delete require.cache[require.resolve("../public/api/grants.json")];
+delete require.cache[require.resolve("../public/api/pages.json")];
+delete require.cache[require.resolve("../public/api/publications.json")];
+delete require.cache[require.resolve("../public/api/units.json")];
+delete require.cache[require.resolve("../public/api/jobs.json")];
+delete require.cache[require.resolve("../public/api/meetings.json")];
+delete require.cache[require.resolve("../public/api/posts.json")];
+delete require.cache[require.resolve("../public/api/events.json")];
 
 const hub = require("../public/api/hub.json");
 const grants = require("../public/api/grants.json");

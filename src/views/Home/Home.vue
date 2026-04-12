@@ -84,6 +84,15 @@ export default {
   name: "Home",
   metaInfo: {
     title: "Home",
+    link: [
+      // Preload the splash image only on the homepage (not every route)
+      {
+        rel: "preload",
+        href: "/home-splash.webp",
+        as: "image",
+        type: "image/webp",
+      },
+    ],
   },
   data() {
     return {
