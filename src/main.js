@@ -73,10 +73,6 @@ Vue.use(VueMeta, {
   refreshOnceOnNavigation: true,
 });
 
-import AOS from "aos";
-import "aos/dist/aos.css"; // You can also use <link> for styles
-AOS.init();
-
 // import LoadScript from "vue-plugin-load-script";
 // Vue.use(LoadScript);
 

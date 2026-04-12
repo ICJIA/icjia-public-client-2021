@@ -67,6 +67,37 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.51] - 2026-04-12
+
+### Perf — Remove dead deps: AOS (unused animations) and `@mdi/js` (unused icons)
+
+Two zero-behavior-impact removals surfaced while profiling the vendor chunk:
+
+**AOS (Animate on Scroll)** was imported, CSS-imported, and `AOS.init()`-called from `src/main.js`, but the entire codebase contains **zero `data-aos` attributes** (grep across `src/**/*.{vue,js}`). The library was wired up but had never had a consumer — it shipped ~15 KiB JS + ~10 KiB CSS every page load for nothing.
+
+**`@mdi/js`** (^6.1.95, 5.8 MB installed) was listed in `dependencies` but never imported anywhere in `src/`. The site renders MDI icons via the `@mdi/font` webfont loaded from jsdelivr (see `public/index.html`), not the tree-shakeable SVG icon data in `@mdi/js`. No bundle impact (tree-shaking was already excluding it), but removing tightens the lockfile and eliminates the confusion about which MDI strategy the site uses.
+
+### Changes
+
+- **`src/main.js`** — deleted `import AOS from "aos"`, `import "aos/dist/aos.css"`, and the `AOS.init()` call.
+- **`package.json`** — `npm uninstall aos @mdi/js`.
+
+### Build-output verification (v1.3.50 → v1.3.51)
+
+- `chunk-vendors.*.js` uncompressed: 992 KiB → **979 KiB (−13 KiB)** — AOS JS gone.
+- `chunk-vendors.*.js` brotli: 251 → **247 KiB (−4 KiB)**.
+- `chunk-vendors.*.css` uncompressed: 407 KiB → **381 KiB (−26 KiB)** — AOS CSS gone.
+- `chunk-vendors.*.css` brotli: 48.75 → **46.45 KiB (−2.3 KiB)**.
+- `node_modules` footprint: ~230 KiB (aos) + ~5.8 MB (@mdi/js) reclaimed on install.
+
+### Net result
+
+- ~6 KiB brotli off the wire on every cold load (JS + CSS combined)
+- One dependency removed per removal rationale — no runtime behavior change because neither library had any consumer
+- Lint clean, production build verified
+
+---
+
 ## [1.3.50] - 2026-04-12
 
 ### Perf — Trim `moment-timezone` to America/Chicago only (−236 KiB brotli on vendor chunk)
