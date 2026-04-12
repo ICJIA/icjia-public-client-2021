@@ -67,6 +67,30 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.49] - 2026-04-12
+
+### Fix — Tag links on article pages crash the search view (race on fuse init)
+
+Clicking a tag chip in an article view (or any link that navigates to `/search/:query`) intermittently threw `Uncaught TypeError: Cannot read properties of null (reading 'search')` from `SearchStatic.vue#instantSearch` and rendered an empty results list.
+
+Root cause: `created()` kicks off `this.fuse = await this.$myApp.getFuse()` asynchronously, but `mounted()` was calling `this.instantSearch()` synchronously whenever `$route.params.query` was present. If `getFuse()` hadn't resolved by the time `mounted` fired — the normal case on a cold tag-click navigation — `this.fuse` was still `null` and `this.fuse.search(...)` crashed. The sibling component `Search.vue` (modal search) already had an `if (!this.fuse) return;` guard; `SearchStatic.vue` did not.
+
+The timing that made this surface consistently: v1.3.48's lazy component registration changed the main-bundle-parse → route-chunk-load sequence just enough to shift the relative finish times of `getFuse()` and `mounted()`. The bug was latent before; it just wasn't always deterministic.
+
+### Fix
+
+- **`src/views/Search/SearchStatic.vue`**:
+  - Moved the initial-query logic from `mounted()` to `created()`, placed *after* the `await this.$myApp.getFuse()` call so it only fires when fuse is ready.
+  - Added defensive `if (!this.fuse) return;` guards at the top of both `instantSearch()` and `sortResults()` — both methods call `this.fuse.search(...)` directly and would have the same crash under other timing paths (e.g. a user hitting sort before fuse finished loading).
+
+### Net result
+
+- Tag-click navigations from article pages render results correctly instead of throwing
+- Pattern now matches the `Search.vue` modal, `ModalSearch.vue`, and `StaticSearch.vue` — all of which guard on `this.fuse` being ready before calling `.search()`
+- No behavior change on the happy path; only the race window is closed
+
+---
+
 ## [1.3.48] - 2026-04-12
 
 ### Perf — Lazy-register global components + delete 7 unused components

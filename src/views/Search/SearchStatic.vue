@@ -186,15 +186,17 @@ export default {
     // );
     this.fuse = await this.$myApp.getFuse();
     NProgress.done();
-  },
-  mounted() {
+    // Run the initial query now that fuse is ready. This used to live in
+    // mounted() and raced the async getFuse() — clicking a tag link would
+    // navigate here, mount synchronously, and crash on this.fuse.search()
+    // before getFuse resolved.
     if (this.$route.params.query) {
-      let q = decodeURIComponent(this.$route.params.query);
-      this.query = q;
+      this.query = decodeURIComponent(this.$route.params.query);
       this.instantSearch();
       this.filterResults(null);
     }
-
+  },
+  mounted() {
     // EventBus.$on("closeSearch", () => {
     //   this.searchModal = false;
     // });
@@ -244,6 +246,7 @@ export default {
       }
     },
     async sortResults() {
+      if (!this.fuse) return;
       console.log("sorting");
       this.queryResults = await this.fuse.search(this.query.trim());
       if (this.sortSwitch) {
@@ -314,6 +317,7 @@ export default {
       if (!this.query) return;
       if (!this.query.length) return;
       if (this.query.length < 2) return;
+      if (!this.fuse) return;
       // Sequence guard discards stale worker responses if the user types
       // faster than the worker can reply.
       const seq = ++this.searchSeq;
