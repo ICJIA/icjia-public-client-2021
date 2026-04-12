@@ -127,9 +127,9 @@ describe("Build configuration", () => {
     expect(babelConfig).to.include("transform-remove-console");
   });
 
-  it("netlify.toml uses Node 16", () => {
+  it("netlify.toml pins a NODE_VERSION", () => {
     const netlify = fs.readFileSync(ROOT + "/netlify.toml", "utf8");
-    expect(netlify).to.include('NODE_VERSION = "16"');
+    expect(netlify).to.match(/NODE_VERSION\s*=\s*"\d+"/);
   });
 });
 

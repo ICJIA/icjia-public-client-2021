@@ -1,6 +1,6 @@
 {
   "name": "icjia-public-client",
-  "version": "1.3.34",
+  "version": "1.3.35",
   "private": true,
   "description": "ICJIA Public Website (2024)",
   "author": {
@@ -21,8 +21,8 @@
     "generate:search": "node ./generators/generateIndexHub && node ./generators/generateIndexUnits && node ./generators/generateIndexGrants && node ./generators/generateIndexPages && node ./generators/generateIndexMeetings && node ./generators/generateIndexEvents && node ./generators/generateIndexPosts && node ./generators/generateIndexJobs && node ./generators/generateIndexBiographies &&  node ./generators/generateIndexPublications && node ./generators/searchIndexAndSitemap",
     "postbuild": "node ./generators/generateBuildInfo",
     "test": "npx playwright test",
-    "tests": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service test:unit --recursive --timeout 10000",
-    "tests:watch": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service test:unit --recursive --timeout 10000 --watch",
+    "tests": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service test:unit --recursive --timeout 10000 --require ./tests/unit/setup.js",
+    "tests:watch": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service test:unit --recursive --timeout 10000 --require ./tests/unit/setup.js --watch",
     "audit": "node scripts/a11y-audit-by-type.js",
     "check-links": "node scripts/check-broken-links.js",
     "release": "release-it",
