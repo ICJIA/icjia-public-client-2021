@@ -407,7 +407,7 @@ See [CHANGELOG.md](CHANGELOG.md) for full audit details and remediation history.
 
 ## Performance
 
-A Tier 1 perf pass (April 2026, v1.3.36–v1.3.38) targeted the highest-impact, lowest-risk wins identified in the pre-rewrite audit. No architectural changes — every fix below is a same-shape edit that the planned Nuxt 4 rewrite can either inherit or supersede.
+A Tier 1 perf pass (April 2026, v1.3.36–v1.3.43) targeted the highest-impact, lowest-risk wins identified in the pre-rewrite audit. No architectural changes — every fix below is a same-shape edit that the planned Nuxt 4 rewrite can either inherit or supersede.
 
 | Fix | Win |
 |---|---|
@@ -418,6 +418,32 @@ A Tier 1 perf pass (April 2026, v1.3.36–v1.3.38) targeted the highest-impact, 
 | Immutable `Cache-Control` headers on `/js/*`, `/css/*`, `/img/*`, `/fonts/*` (Vue CLI emits content-hashed filenames so this is safe); `searchIndex.json` / `searchWorker.js` get `max-age=3600 + stale-while-revalidate=86400`; `fuse.min.js` gets `max-age=86400`; `index.html` is `must-revalidate` so users always pick up new builds | Repeat-visit JS/CSS downloads drop to ~0 |
 | Early-return on the 3 `MutationObserver`-installing a11y fixes once their observer is wired (`fixOverlayContainer`, `fixNestedInteractive`, `fixProhibitedAriaOnImg`) | Saves three broad `querySelectorAll` calls per route navigation |
 | Drop the redundant 2px outer focus outline on the search input (Vuetify's built-in 1px underline + label color shift already meet WCAG 2.4.7 on their own) (v1.3.38) | Cleaner search modal UI with no a11y regression |
+| Remove the `<link rel="preload" href="/home-splash.webp">` that vue-meta injected after `<picture>` had already started fetching, plus add `loading="lazy"` to the AppFooter logo and Status-page Netlify deploy badges (v1.3.40) | Eliminates 5 console warnings per homepage visit; defers below-fold images |
+| Async-load all 5 stylesheets in `index.html` (Lato/Oswald, Roboto, Material Icons, Raleway, MDI) using `media="print" onload="this.media='all'"` + `<noscript>` fallback; add `display=swap` to the two Google Fonts URLs that didn't have it; preconnect `cdn.jsdelivr.net` (v1.3.42) | **Render-blocking estimated savings: 4,000 ms → 370 ms (-90%)** across every page |
+| Re-encode the homepage hero image: pre-grayscale at the source (CSS already applied `filter: grayscale(100%)` at runtime), generate AVIF as the first `<source>`, drop quality (overlay hides artifacts), add `fetchpriority="high"` + `decoding="async"` (v1.3.43) | Hero file 94 KB WebP → **36 KB AVIF (-62%)**; homepage LCP ~16.5s → ~11s |
+
+### Mobile Lighthouse audit — final state (April 2026, post v1.3.43)
+
+20 routes sampled across all 10 content types (homepage, hub listing + article, publications, grants, posts, jobs, meetings, biographies, units, events, IRB, forms, status):
+
+| Metric | Value | Notes |
+|---|---|---|
+| Performance score | **53–58** (avg ~57) | "Needs Improvement" range; consistent across content types |
+| FCP | 7.3–8.6s | Gated by Vue mount + JS bundle parse, not by CSS or images |
+| LCP | 7.9–11.0s | Homepage no longer the outlier (was 16.5s, now ~11s after the AVIF fix) |
+| Render-blocking insight | ~370 ms savings | Down from ~4,000 ms before async stylesheets |
+| Top remaining issues | Vuetify framework cost — `unused-css-rules` (~103 KB), `unused-javascript` (~143–194 KB), long network-dependency tree | All structural; require the rewrite |
+
+### Where the v1.3.x line ends — honest framing
+
+Everything fixable inside Vue 2 / Vuetify 2 has been fixed. The remaining mobile slowness is **framework cost**: ~1.8 MB of `chunk-vendors.js` (Vue 2 + Vuetify 2 + dependencies) plus ~100 KB of unused CSS that comes with Vuetify 2. No bundle-splitting trick gets this smaller while staying on the framework — it's the price of the choice.
+
+Further perf work requires architectural change:
+- **Switching to SSR/SSG** — fixes the blank-screen-during-JS-mount problem (currently ~7s on mobile). That's the Nuxt 4 rewrite.
+- **Replacing Vuetify 2** — eliminates the framework JS/CSS overhead. Also the rewrite.
+- **Pre-rendering** — possible inside v1.3.x via vue-cli's prerender plugin, but multi-day project and only helps initial page.
+
+For the next several months until the rewrite ships, this is the best shape the site is going to be in. Mobile users get the hero image ~5s faster, search runs without freezing the UI, repeat visits are near-zero bytes, and a11y is still 157/157 axe-clean. The remaining slowness is structural — unfixable without writing a new app, which is exactly what's planned.
 
 ### Search architecture (worker-backed lazy loader)
 

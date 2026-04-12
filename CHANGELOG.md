@@ -67,6 +67,20 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.44] - 2026-04-12
+
+### Docs — Refresh README to Reflect End of v1.3.x Perf Series
+
+The README's Performance section now covers the full v1.3.36–v1.3.43 sequence (was v1.3.36–v1.3.38) and includes:
+
+- Two new rows in the perf-wins table for v1.3.40 (preload removal + lazy footer/Status images), v1.3.42 (async stylesheet loading — the **render-blocking 4,000ms → 370ms** result), and v1.3.43 (homepage hero AVIF + pre-grayscale + `fetchpriority="high"` — the **94 KB → 36 KB / LCP -5.5s** result)
+- A new **"Mobile Lighthouse audit — final state"** subsection with the actual numbers from the post-deploy audit across 20 routes (perf 53–58, FCP 7.3–8.6s, LCP 7.9–11.0s, top remaining issues all framework-level)
+- A new **"Where the v1.3.x line ends — honest framing"** subsection making explicit that further perf work requires architectural change (SSR/SSG, Vuetify swap, pre-rendering) — i.e., the planned Nuxt 4 rewrite
+
+This is a documentation-only release. No source code changes; no behavior changes. Closes the v1.3.x perf push.
+
+---
+
 ## [1.3.43] - 2026-04-12
 
 ### Performance — Optimize Homepage Hero Image (LCP outlier)
