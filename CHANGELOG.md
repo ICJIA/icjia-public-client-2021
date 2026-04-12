@@ -67,6 +67,39 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.48] - 2026-04-12
+
+### Perf — Lazy-register global components + delete 7 unused components
+
+`_globals.js` was forcing every top-level `.vue` file in `src/components/` into the main bundle via `require.context` + synchronous `Vue.component(...)`. That meant homepage-only widgets (`HomeSplashV2`, `HomeNews`, `HomeEvents`, etc.), content-type cards (`JobCard`, `MeetingCard`, `PublicationCard`, etc.), and never-used components all shipped on every route. Lighthouse had flagged `unused-javascript: 143 KiB` as the top remaining drag.
+
+Audited all 57 globally-registered components: 7 were unreferenced anywhere in `src/`, the rest split cleanly into "layout chrome needed on first paint" (9 components, mounted directly in `App.vue`) and "only needed on specific routes" (40 components).
+
+### Changes
+
+- **Deleted unused components** (`src/components/*.vue`):
+  - `____HomeSplash.vue` (malformed name, superseded by `HomeSplashV2`)
+  - `FundedMap.vue`, `InfoCard.vue`, `PolicyTable.vue`, `Test.vue`, `TocPolicies.vue`, `Toggle.vue` — zero call sites confirmed by grep across `.vue` files
+- **`src/components/_globals.js`** — split into two-tier registration:
+  - 9 layout components (`AppFooter`, `AppNav`, `AppNavContext`, `AppNavContextBottom`, `AppSidebar`, `SkipLink`, `Disclaimer`, `ModalSearch`, `ModalTranslate`) imported eagerly and registered synchronously — required on first paint
+  - every other top-level component registered as async via `require.context(".", false, /[\w-]+\.vue$/, "lazy")` + `() => lazy(fileName)` — webpack emits one chunk per component, only fetched when the component is actually rendered
+
+### Build-output verification
+
+- 40+ new on-demand chunks emitted (one per lazy-registered component)
+- `dist/css/chunk-vendors.*.css`: 443.69 KiB → 407.38 KiB (−36 KiB raw, −4.5 KiB brotli) — Vuetify CSS that was being pulled in wholesale by the auto-globals is now component-scoped
+- Main `app.js` chunk: 139 KiB uncompressed (lint + lazy conversion combined build)
+- `npm run build` succeeds; `vue-cli-service lint --no-fix` reports no errors
+
+### Net result
+
+- Route-specific components (`HomeNews`, `JobCard`, `MeetingTable`, etc.) no longer load on routes that don't use them
+- 7 dead-code files removed from the tree
+- Registration API unchanged — no `components: { ... }` declarations needed in any consumer; existing templates continue working because the global names are still registered, just with async resolvers
+- Tradeoff: first render of a lazy component has a one-frame async pause while its chunk loads. For most components this is imperceptible (chunks are 1-4 KiB), and route-level components render after their route chunk so the network is already warm
+
+---
+
 ## [1.3.47] - 2026-04-12
 
 ### Perf — Drop Font Awesome entirely (swap 7 usages to MDI, remove whole icon library)
