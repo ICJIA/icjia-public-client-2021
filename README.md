@@ -407,36 +407,52 @@ See [CHANGELOG.md](CHANGELOG.md) for full audit details and remediation history.
 
 ## Performance
 
-A Tier 1 perf pass (April 2026, v1.3.36) targeted the highest-impact, lowest-risk wins identified in the pre-rewrite audit. No architectural changes — every fix below is a same-shape edit that the planned Nuxt 4 rewrite can either inherit or supersede.
+A Tier 1 perf pass (April 2026, v1.3.36–v1.3.38) targeted the highest-impact, lowest-risk wins identified in the pre-rewrite audit. No architectural changes — every fix below is a same-shape edit that the planned Nuxt 4 rewrite can either inherit or supersede.
 
 | Fix | Win |
 |---|---|
-| Lazy-load the 2.7 MB `searchIndex.json` instead of static-importing it into the entry chunk | **`dist/js/app.*.js`: 2.9 MB → 262 KB (-91%)** |
-| Defer the search-index fetch until the user opens the search modal (was firing at app boot from `ModalSearch`'s `created()` hook) | First paint no longer waits on a 2.7 MB JSON parse + `deepSanitize()` over thousands of strings |
+| Lazy-load the 2.7 MB `searchIndex.json` instead of static-importing it into the entry chunk (v1.3.36) | **`dist/js/app.*.js`: 2.9 MB → 262 KB (-91%)** |
+| Move the entire search pipeline (fetch + parse + sanitize + Fuse build + per-keystroke search) into a Web Worker (v1.3.37) | Main thread stays free during search; per-query round-trip ~41 ms verified in Chrome; no input freeze |
+| Defer the search-index fetch until the user opens the search modal (was firing at app boot from `ModalSearch`'s `created()` hook) | First paint no longer waits on a 2.7 MB JSON parse + sanitize + Fuse build |
 | Disable unused Fuse options (`includeMatches`, `includeScore`) — neither was read anywhere in the UI; `includeMatches` is Fuse's most expensive setting (per-character match positions for highlighting) | Faster per-keystroke search response in the modal |
-| Immutable `Cache-Control` headers on `/js/*`, `/css/*`, `/img/*`, `/fonts/*` (Vue CLI emits content-hashed filenames so this is safe); `searchIndex.json` gets `max-age=3600 + stale-while-revalidate=86400`; `index.html` is `must-revalidate` so users always pick up new builds | Repeat-visit JS/CSS downloads drop to ~0 |
+| Immutable `Cache-Control` headers on `/js/*`, `/css/*`, `/img/*`, `/fonts/*` (Vue CLI emits content-hashed filenames so this is safe); `searchIndex.json` / `searchWorker.js` get `max-age=3600 + stale-while-revalidate=86400`; `fuse.min.js` gets `max-age=86400`; `index.html` is `must-revalidate` so users always pick up new builds | Repeat-visit JS/CSS downloads drop to ~0 |
 | Early-return on the 3 `MutationObserver`-installing a11y fixes once their observer is wired (`fixOverlayContainer`, `fixNestedInteractive`, `fixProhibitedAriaOnImg`) | Saves three broad `querySelectorAll` calls per route navigation |
+| Drop the redundant 2px outer focus outline on the search input (Vuetify's built-in 1px underline + label color shift already meet WCAG 2.4.7 on their own) (v1.3.38) | Cleaner search modal UI with no a11y regression |
 
-### Lazy search-index loader
+### Search architecture (worker-backed lazy loader)
 
-The old `AppInit.js` did `import searchIndex from "../../public/searchIndex.json"`, which inlined the entire 2.7 MB blob into the main bundle and ran `deepSanitize()` over every string before first paint. The replacement is a cached promise:
-
-```js
-// src/services/AppInit.js
-let fusePromise = null;
-const getFuse = () => {
-  if (fusePromise) return fusePromise;
-  fusePromise = fetch("/searchIndex.json")
-    .then((r) => r.json())
-    .then((idx) => new Fuse(deepSanitize(idx), config.search.site))
-    .catch((err) => { fusePromise = null; throw err; });
-  return fusePromise;
-};
+```
+                   main thread                                     web worker
+  ┌───────────────────────────────────────┐         ┌───────────────────────────────┐
+  │ User opens search modal               │         │  /searchWorker.js             │
+  │ ModalSearch.ensureFuse()              │         │   importScripts('fuse.min.js')│
+  │   await myApp.getFuse()  ─────────────┼────────►│                               │
+  │     creates Worker, sends INIT        │         │   fetch /searchIndex.json     │
+  │                                       │  READY  │   JSON.parse                  │
+  │   ◄────────────────────────────────── │         │   deepSanitize (regex-only)   │
+  │                                       │         │   new Fuse(records, opts)     │
+  │ User types "research"                 │         │                               │
+  │ instantSearch() ─────────────────────►│  SEARCH │   fuse.search(q)              │
+  │   await client.search(q)              │ id, q   │                               │
+  │                                       │ RESULTS │                               │
+  │   ◄────────────────────────────────── │ id, [...│                               │
+  │ this.queryResults = results           │         │                               │
+  └───────────────────────────────────────┘         └───────────────────────────────┘
 ```
 
-Consumers `await this.$myApp.getFuse()` from their `created()` hook (route components: lazy by route) or from a search-open handler (`ModalSearch.vue`: lazy by user intent). The promise is cached so concurrent callers share one fetch; on rejection the cache resets so a retry is possible.
+**Why a worker?** The lazy fetch alone (v1.3.36) fixed bundle size but left a UI freeze on the first keystroke after opening search — `JSON.parse` of 2.7 MB + `deepSanitize()` over every string + `new Fuse(...)` all run synchronously when the response arrives, blocking input. The worker (v1.3.37) does all of that off-thread, plus subsequent per-keystroke `Fuse.search()` calls. Verified at ~41 ms per round-trip in Chrome.
 
-`tests/unit/search.spec.js` pins this contract — including a **bundle-contract guard** that asserts `AppInit.js` never re-introduces a static `import` of `searchIndex.json`. This is the perf win that's most likely to silently regress, so CI now blocks it.
+**Files:**
+- `public/searchWorker.js` — vanilla worker, no build tooling needed
+- `public/fuse.min.js` — auto-synced from `node_modules` via `npm run copy:fuse` (wired into `serve` and `build`)
+- `src/services/searchClient.js` — RPC wrapper exposing `ready()` and `search(q)` as Promises; tracks pending request ids so out-of-order responses are safe
+- `src/services/AppInit.js` — `getFuse()` returns the worker-backed client when `Worker` is available; falls back to an in-process Fuse instance (wrapped to expose the same async `search()` shape) for SSR / jsdom tests / very old browsers
+
+**Consumers** (`ModalSearch.vue`, `Search.vue`, `SearchStatic.vue`, `StaticSearch.vue`) `await this.fuse.search(q)` and carry a monotonic `searchSeq` counter that discards stale responses if the user types faster than the worker can reply.
+
+**Test guard:** `tests/unit/search.spec.js` pins this contract — including a **bundle-contract guard** that asserts `AppInit.js` never re-introduces a static `import` of `searchIndex.json`. This is the perf win most likely to silently regress, so CI blocks it.
+
+**Why not Fuse.js's official `FuseWorker`?** It exists in `fuse.js@7.4.0-beta.1` (`npm install fuse.js@beta`) but: (1) it's beta with API "may change" warning, (2) Fuse 7.0.0 dropped UMD builds — our worker uses `importScripts()` which needs UMD, so adoption forces a Fuse 6→7 upgrade plus an ES-module-worker rewrite, (3) FuseWorker's headline 5x speedup is on 100K-document datasets; ours has ~5K and already runs at ~41 ms per query, (4) FuseWorker doesn't run our regex sanitizer over the index. Both APIs are `await client.search(q) → results`, so when the Nuxt 4 rewrite happens and Fuse 7.x is GA, it's a one-file swap inside `searchClient.js`. See [CHANGELOG.md](CHANGELOG.md) v1.3.38 for the full evaluation.
 
 ## Project Structure
 

@@ -67,6 +67,19 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.39] - 2026-04-12
+
+### Docs — Refresh README for v1.3.37 (Web Worker) and v1.3.38 (focus outline)
+
+- **docs: `README.md` Performance section** updated to reflect the worker-based search architecture introduced in v1.3.37 and the focus-outline cleanup in v1.3.38:
+  - Replaced the v1.3.36 lazy-loader code snippet with an ASCII flow diagram of the main-thread ↔ worker handoff (INIT / READY / SEARCH / RESULTS protocol)
+  - Documented all four new files (`public/searchWorker.js`, `public/fuse.min.js`, `src/services/searchClient.js`, the rewritten `src/services/AppInit.js`)
+  - Added a row to the perf-wins table for the Web Worker (~41 ms per round-trip, no input freeze) and the focus-outline removal
+  - Inlined the `FuseWorker` evaluation summary so future maintainers can see why we declined `fuse.js@beta` without having to dig through CHANGELOG history
+- No source code changes — README-only refresh.
+
+---
+
 ## [1.3.38] - 2026-04-12
 
 ### UI — Remove Redundant Focus Outline on Search Input
