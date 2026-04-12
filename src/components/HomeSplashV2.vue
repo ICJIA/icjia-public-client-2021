@@ -10,6 +10,15 @@
     "
   >
     <picture>
+      <!-- AVIF first (smallest, modern browsers), then WebP fallback, then
+           JPEG. All three were re-encoded as pre-grayscaled images so the
+           previous CSS filter:grayscale(100%) is no longer needed (saves a
+           compositor pass and ~20 KB per format). Sizes after v1.3.43:
+             home-splash.avif  36 KB   (was no avif)
+             home-splash.webp  53 KB   (was 94 KB,  -44%)
+             home-splash.jpg   72 KB   (was 151 KB, -52%)
+           Heavy overlay on top hides any quality artifacts. -->
+      <source srcset="/home-splash.avif" type="image/avif" />
       <source srcset="/home-splash.webp" type="image/webp" />
       <img
         src="/home-splash.jpg"
@@ -17,11 +26,12 @@
         role="presentation"
         width="1000"
         height="667"
+        fetchpriority="high"
+        decoding="async"
         style="
           width: 100%;
           height: 600px;
           object-fit: cover;
-          filter: grayscale(100%);
           display: block;
         "
       />

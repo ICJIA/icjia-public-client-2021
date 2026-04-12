@@ -67,6 +67,49 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.43] - 2026-04-12
+
+### Performance — Optimize Homepage Hero Image (LCP outlier)
+
+The 20-page mobile Lighthouse audit (v1.3.41) found that every page sat in the 55–58 perf band — except the homepage, which had **LCP 16.5s** (vs ~8.5s elsewhere). Cause: `home-splash.webp` was the LCP element and Lighthouse flagged ~82 KB of savings on `image-delivery-insight`.
+
+### Fix
+
+Re-encoded `public/home-splash.{avif,webp,jpg}` from the 1000×667 source via `sharp`, applying three observations:
+
+1. **Pre-grayscale at the source.** The CSS already applied `filter: grayscale(100%)` at render time, throwing away color data after decode. Pre-grayscaling the file means smaller bytes (no chroma channels) AND no compositor pass at runtime.
+2. **AVIF is the new modern format** — added as the first `<source>` in the `<picture>` element. ~30% smaller than WebP at equivalent quality.
+3. **Aggressive quality is fine** — the image renders behind a heavy `rgba(55, 90, 127, 0.55)` blue overlay plus a `rgba(100, 100, 100, 0.9)` content card. Quality 40 (AVIF) / 50 (WebP) / 65 (JPEG) artifacts are imperceptible under the overlay.
+
+### Size deltas
+
+| Format | Before | After | Δ |
+|---|---|---|---|
+| AVIF | (didn't exist) | 36 KB | new |
+| WebP | 94 KB | 53 KB | **-44%** |
+| JPEG | 151 KB | 72 KB | **-52%** |
+
+For modern browsers serving AVIF: **94 KB → 36 KB = 62% smaller** for the LCP image.
+
+### Other changes in `HomeSplashV2.vue`
+
+- Added `<source srcset="/home-splash.avif" type="image/avif" />` as the first `<source>` (browser picks the first format it supports)
+- Removed the `filter: grayscale(100%)` style (image is now pre-grayscaled in the file)
+- Added `fetchpriority="high"` and `decoding="async"` to the fallback `<img>` so browsers know this is the LCP candidate and can prioritize it
+
+### Expected mobile Lighthouse impact
+
+Based on Lighthouse's 82 KB savings estimate combined with the actual 58 KB AVIF reduction:
+- **Homepage LCP: ~16.5s → ~10–11s** (still the slowest page due to the SPA mount delay, but no longer 2x slower than other pages)
+- **Homepage perf score: 53 → ~62–65** (closing most of the gap with the rest of the site)
+- **Other pages: unchanged** (this fix is homepage-specific)
+
+### Honest framing — where we are
+
+The v1.3.36–v1.3.43 series has fixed every Tier-1 perf issue surfaced by the audit. What's left is framework cost — Vuetify 2 + Vue 2 = ~1.8 MB of `chunk-vendors.js` plus ~100 KB of unused CSS. None of that is fixable inside the v1.3.x line; it's architectural and waits for the Nuxt 4 rewrite. See README "Performance" section for the full list of changes and tradeoffs.
+
+---
+
 ## [1.3.42] - 2026-04-12
 
 ### Performance — Async-Load Stylesheets to Eliminate ~4s of Mobile Render-Blocking
