@@ -67,6 +67,28 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.46] - 2026-04-12
+
+### Perf — Drop jQuery and trim preconnects (removes 214 ms render-blocking node)
+
+Lighthouse mobile audit (Perf 55) flagged the initial critical-path chain as `index.html → cdnjs/jquery.slim.min.js (214 ms) → plausible /api/event (442 ms)` plus a "more than 4 preconnect connections" warning. The jQuery tag was sitting at the bottom of `<body>` without `defer`, so it blocked the HTML parser even though nothing in `index.html` actually used it — the only consumer was two `window.jQuery(...)` footnote-link handlers inside `ArticleView.vue`.
+
+### Changes
+
+- **`public/index.html`** — deleted the jQuery `<script>` tag (and the stale commented-out `code.jquery.com` tag alongside it). Removed the `cdn.jsdelivr.net` preconnect: the MDI stylesheet served from that origin is now async-loaded (v1.3.41), so the preconnect no longer helps LCP and just counted against the Lighthouse preconnect budget.
+- **`src/components/Hub/ArticleView.vue`** — replaced `window.jQuery('[id*="fnref"], .footnote-backref').on/off("click", ...)` with a vanilla `addEventListener` / `removeEventListener` pair. The handler is cached on the component instance so `beforeDestroy` can detach cleanly. Selector scoped to `this.$el` (article root) instead of `document`, which is the correct scope for footnote markup.
+- **`netlify.toml`** — dropped `https://cdnjs.cloudflare.com` from the CSP Report-Only `script-src`, `style-src`, and `font-src`: now a dead origin. Updated the allowlist audit comment accordingly.
+
+### Net result
+
+- 214 ms request removed from the mobile critical-path chain (was the #2 node after the initial HTML)
+- ~22 KiB JS no longer fetched
+- Preconnect count down from 5 → 4 (clears the Lighthouse "sparingly" warning)
+- CSP allowlist tightened by one unused origin
+- No functional change: footnote handlers still preventDefault + smooth-scroll via `$vuetify.goTo`
+
+---
+
 ## [1.3.45] - 2026-04-12
 
 ### Fix — Remove `upgrade-insecure-requests` from Report-Only CSP (kills console noise)

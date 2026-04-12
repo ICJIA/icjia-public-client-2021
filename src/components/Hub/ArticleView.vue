@@ -381,31 +381,29 @@ export default {
     },
   },
   beforeDestroy() {
-    window.jQuery('[id*="fnref"]').off("click", (e) => {
-      e.preventDefault();
-      this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`, { offset: 50 });
-    });
-    window.jQuery(".footnote-backref").off("click", (e) => {
-      e.preventDefault();
-      this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`, { offset: 50 });
-    });
-    console.log("click events removed");
+    if (this._footnoteClickHandler) {
+      this._footnoteNodes.forEach((el) =>
+        el.removeEventListener("click", this._footnoteClickHandler)
+      );
+      this._footnoteNodes = [];
+      this._footnoteClickHandler = null;
+    }
   },
   async mounted() {
     EventBus.$emit("context-label", this.item.title);
     await this.$nextTick(() => {
-      window.jQuery('[id*="fnref"]').on("click", (e) => {
+      this._footnoteClickHandler = (e) => {
         e.preventDefault();
         this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`, {
           offset: 50,
         });
-      });
-      window.jQuery(".footnote-backref").on("click", (e) => {
-        e.preventDefault();
-        this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`, {
-          offset: 50,
-        });
-      });
+      };
+      this._footnoteNodes = Array.from(
+        this.$el.querySelectorAll('[id*="fnref"], .footnote-backref')
+      );
+      this._footnoteNodes.forEach((el) =>
+        el.addEventListener("click", this._footnoteClickHandler)
+      );
     });
   },
 };
