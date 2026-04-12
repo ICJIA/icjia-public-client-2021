@@ -67,6 +67,14 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.34] - 2026-04-11
+
+### Fix — Empty ARIA Attribute on Vuetify v-image Elements
+
+- **fix: Remove empty `aria-label=""` attributes (sia-r18)** — SiteImprove flagged Vuetify 2.x `<v-image>` wrappers with empty `aria-label=""` as "ARIA attribute unsupported or prohibited." Added `fixEmptyAriaLabel()` in `a11y/index.js` that removes any `aria-label=""` attribute site-wide so the element either inherits or has no accessible name (correct for decorative images). Wired into App.vue route change and delayed fix passes.
+
+---
+
 ## [1.3.33] - 2026-04-11
 
 ### Security + Performance — Remediate April 2026 Audit Findings

@@ -623,6 +623,19 @@ const fixAriaHiddenFocus = function () {
   });
 };
 
+// Fix empty aria-label on Vuetify v-image wrappers.
+// Vuetify 2.x v-image renders <div aria-label="" role="..."> with an empty
+// aria-label when no src has an alt. SiteImprove flags this as
+// "ARIA attribute unsupported or prohibited." Remove the empty aria-label
+// so the element either inherits or has no accessible name (which is
+// the correct behavior for a decorative image).
+const fixEmptyAriaLabel = function () {
+  const els = document.querySelectorAll('[aria-label=""]');
+  els.forEach((el) => {
+    el.removeAttribute("aria-label");
+  });
+};
+
 export {
   fixButtonText,
   fixBlankTableHeadings,
@@ -651,6 +664,7 @@ export {
   fixInlineColorContrast,
   fixDataTableHeaders,
   fixAriaHiddenFocus,
+  fixEmptyAriaLabel,
 };
 
 // Fix "Table cell missing context" (sia-r77) — CMS-authored tables from

@@ -85,6 +85,7 @@ import {
   fixInlineColorContrast,
   fixDataTableHeaders,
   fixAriaHiddenFocus,
+  fixEmptyAriaLabel,
 } from "@/a11y";
 
 export default {
@@ -159,6 +160,7 @@ export default {
         fixFormFieldLabels();
         fixDataTableHeaders();
         fixAriaHiddenFocus();
+        fixEmptyAriaLabel();
         // Delayed fixes for CMS content that loads asynchronously
         setTimeout(() => {
           fixFigureTabindex();
@@ -181,6 +183,7 @@ export default {
           fixInlineColorContrast();
           fixDataTableHeaders();
           fixAriaHiddenFocus();
+          fixEmptyAriaLabel();
         }, 2000);
       });
     },
