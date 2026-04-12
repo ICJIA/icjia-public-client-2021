@@ -67,6 +67,44 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.4.2] - 2026-04-12
+
+### Perf — Self-host MDI fonts with `font-display: swap`; fix homepage news-card image size
+
+Two targeted wins from the remaining Lighthouse insight set:
+
+**1. `font-display-insight` (−120 ms) + remove last third-party CDN.** The MDI icon font has been loaded from `cdn.jsdelivr.net` since before this changelog. The upstream CSS ships without `font-display: swap`, which blocks text rendering while the webfont is fetched — consistently flagged by Lighthouse as ~120 ms of savings. Self-hosting lets us patch the `@font-face` rule and kill the last CDN dependency.
+
+**2. `image-delivery-insight` (−33 KiB) — homepage news-card image bug.** `src/components/HomeCardNews.vue#getImage` had an inert branch: both the mobile (`sm`/`xs`) and desktop paths returned `formats.small.url`. Mobile news cards stack to full-width (~360px rendered) but were being served the ~500px `small` variant. Strapi also generates a `thumbnail` variant (~245px) which is the right fit for mobile — confirmed present because `HomeFeatureRibbon.vue:16` already consumes it.
+
+### Changes
+
+**Self-host MDI:**
+- **`public/fonts/mdi/`** (new) — `materialdesignicons.min.css` + `materialdesignicons-webfont.{woff2,woff,ttf}`. The CSS's first `@font-face` rule was rewritten inline to (a) drop the IE-only `eot` format and the embedded-opentype `src:` fallback, (b) rebase URLs from `../fonts/...` to `./...` to match the co-located font files, (c) add `font-display: swap`. Rest of the icon-class declarations copied verbatim from `@mdi/font@^7.4.47`.
+- **`public/index.html`** — the async-loaded `<link rel="stylesheet">` (and its `<noscript>` fallback) now point at `/fonts/mdi/materialdesignicons.min.css` instead of the jsdelivr URL.
+- **`netlify.toml`** — removed `https://cdn.jsdelivr.net` from the CSP Report-Only `script-src` / `style-src` / `font-src` directives. Updated the allowlist audit comment. No external CDN remains on the critical path; everything except Google Fonts, Plausible, and Strapi is same-origin.
+- **`package.json`** — added `@mdi/font@^7.4.47` to `dependencies`. Checked into `public/fonts/mdi/` as static assets (pass-through copy by Vue CLI); the npm package is the source-of-truth for future refreshes.
+
+**Homepage news-card image sizing:**
+- **`src/components/HomeCardNews.vue#getImage`** — replaced the dead-branch conditional with `isMobile && formats.thumbnail ? formats.thumbnail : formats.small`. Mobile cards now get the ~245px thumbnail; desktop unchanged.
+
+### Cache headers (already in place)
+
+`netlify.toml`'s existing `[[headers]] for = "/fonts/*"` block already applies `Cache-Control: public, max-age=31536000, immutable`, so the MDI files inherit optimal caching with zero additional config. Same for the brotli-precompressed `.br` / `.gz` siblings emitted by `vue-cli-plugin-compression`.
+
+### What was NOT done (investigated, not worth the cost)
+
+- **Vue CLI `--modern` mode** — tried it, reverted. Because `.browserslistrc` is already set to `last 2 years`, the "modern" and "legacy" output bundles are byte-identical (no transpilation delta), so `--modern` only doubles `dist/` size for zero runtime benefit. The `legacy-javascript-insight: 10 KiB` in Lighthouse persists because of the eager `import "regenerator-runtime/runtime"` in `src/main.js`, not because of Babel transpilation — worth a follow-up separately.
+
+### Net result
+
+- 120 ms Lighthouse "Font display" savings (cleared)
+- One third-party origin removed (`cdn.jsdelivr.net` no longer in CSP or preconnects)
+- Homepage news-card images on mobile now served at the correct resolution — ~30 KiB saved per flagged image
+- No user-visible change; icons render identically, text renders sooner while the MDI font is still in-flight
+
+---
+
 ## [1.4.1] - 2026-04-12
 
 ### Fix — Convert `generators/generateBuildInfo.js` to Day.js (Netlify postbuild crash)

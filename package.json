@@ -1,6 +1,6 @@
 {
   "name": "icjia-public-client",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "private": true,
   "description": "ICJIA Public Website (2024)",
   "author": {
@@ -30,6 +30,7 @@
     "scripts": "npm run generate:schema && npm run generate:search && npm run generate:feeds"
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
     "arrford": "^2.0.1",
     "auto-changelog": "^2.3.0",
     "axios": "^0.21.4",

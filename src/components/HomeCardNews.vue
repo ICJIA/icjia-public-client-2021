@@ -148,16 +148,16 @@ export default {
       console.log("resize");
     },
     getImage(formats) {
-      let base = this.$myApp.config.api.base;
-      let imageURL;
-
-      if (this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs) {
-        imageURL = formats.small.url;
-      } else {
-        imageURL = formats.small.url;
-      }
-      //console.log(`${base}${imageURL}`);
-      return `${base}${imageURL}`;
+      const base = this.$myApp.config.api.base;
+      // Mobile cards stack to full-width (~360-400px rendered). Strapi's
+      // thumbnail variant (~245px) is the right fit; small (~500px) is
+      // oversized and costs ~30 KiB per image on the homepage. Fall back
+      // to small if the CMS didn't generate a thumbnail for this item.
+      const isMobile =
+        this.$vuetify.breakpoint.xs || this.$vuetify.breakpoint.sm;
+      const target =
+        isMobile && formats.thumbnail ? formats.thumbnail : formats.small;
+      return `${base}${target.url}`;
     },
     getHeight() {
       if (this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs) {
