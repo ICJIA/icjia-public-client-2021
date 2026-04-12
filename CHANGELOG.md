@@ -67,6 +67,39 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.4.3] - 2026-04-12
+
+### Perf — Kill render-blocking `@import`; preload home splash; drop eager regenerator-runtime
+
+Three targeted wins after inspecting the full Lighthouse HTML report:
+
+**1. Render-blocking `@import` in `ArticleView.vue`.** The report pointed `render-blocking-insight` at a Google Fonts URL (`?family=Gentium+Book+Basic:ital@0;1&family=Lato...&family=Oswald...`) — which was weird, because none of our `<link>` tags in `index.html` request that set. Trace: `src/components/Hub/ArticleView.vue:419` had an `@import url(...)` inside its `<style>` block. CSS `@import` is always render-blocking (the browser must fetch and parse the imported stylesheet before the component's own styles apply). Worse, this CSS ended up in the main bundle because `src/components/Hub/_hub.js` still registers Hub components synchronously — so the Google Fonts CSS was being fetched on *every* page, not just article pages.
+
+Fix: added `Gentium Book Basic` to the main async-loaded Google Fonts `<link>` in `public/index.html` (which uses the `media="print" onload="this.media='all'"` non-blocking pattern); deleted the `@import` from `ArticleView.vue`. Same font now loads the right way.
+
+**2. Home-splash LCP preload.** `lcp-discovery-insight` was flagging the home hero image as a discoverable-too-late LCP resource. The previous preload attempt (v1.3.x) used `vue-meta`, which injects tags *after* Vue mounts — so the preload tag was appearing after `<picture>` had already started fetching. Moved the preload to inline `<script>` at the top of `<head>` in `public/index.html`, conditionally creating `<link rel="preload" as="image" type="image/avif" fetchpriority="high">` only when `location.pathname === "/"`. Runs synchronously during HTML parse — browser can start the fetch before it even gets to `<body>`. The `type="image/avif"` filter means non-AVIF browsers skip the preload and get the `<picture>` WebP/JPG fallback as before.
+
+**3. Drop eager `regenerator-runtime` import.** `src/main.js:2` had `import "regenerator-runtime/runtime"` — this loads the regenerator polyfill eagerly, needed only for older browsers that don't support native async/generators. With `.browserslistrc` set to `"last 2 years"`, every target has native support, so Babel's preset-env wasn't emitting regenerator transforms anyway. Removed. Build succeeds; addresses most of `legacy-javascript-insight: 10 KiB`.
+
+### Changes
+
+- **`src/main.js`** — removed `import "regenerator-runtime/runtime"`.
+- **`public/index.html`** — inline `<script>` at top of `<head>` injects home-splash preload on `/`. Main Google Fonts `<link>` now includes `Gentium+Book+Basic:ital@0;1` alongside `Lato` + `Oswald` (same async-load pattern).
+- **`src/components/Hub/ArticleView.vue`** — deleted the `@import url("https://fonts.googleapis.com/...")` line from the `<style>` block. The Gentium font-family still applies (declared in `src/assets/hub.css:42`); it's now loaded from the main async link.
+
+### Not fixing (intentionally, per user direction)
+
+- **Vuetify PurgeCSS** — skipped. Known brittle against Vuetify's runtime-generated class names.
+
+### Net result
+
+- `render-blocking-insight` should clear (the only flagged resource was the @import)
+- `lcp-discovery-insight` should move — preload gives the browser a head start on the hero image
+- `legacy-javascript-insight: 10 KiB` should shrink or clear
+- No visible behavior change
+
+---
+
 ## [1.4.2] - 2026-04-12
 
 ### Perf — Self-host MDI fonts with `font-display: swap`; fix homepage news-card image size

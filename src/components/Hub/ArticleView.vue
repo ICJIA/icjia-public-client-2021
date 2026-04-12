@@ -416,5 +416,4 @@ export default {
   text-align: center !important;
   padding: 24px 12px !important;
 }
-@import url("https://fonts.googleapis.com/css2?family=Gentium+Book+Basic:ital@0;1&family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Oswald:wght@400;500;600;700&display=swap");
 </style>

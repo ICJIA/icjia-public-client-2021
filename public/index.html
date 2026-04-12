@@ -79,6 +79,26 @@
     />
     <title>ICJIA | Illinois Criminal Justice Information Authority</title>
 
+    <!-- LCP boost: on the home route only, preload the hero image. The
+         type filter makes non-AVIF browsers skip this (they'll get WebP
+         or JPG via <picture> in HomeSplashV2.vue). Put this before the
+         async font loads so the browser can start the fetch as soon as
+         it parses <head>. -->
+    <script>
+      (function () {
+        var p = location.pathname;
+        if (p === "/" || p === "" || p === "/index.html") {
+          var l = document.createElement("link");
+          l.rel = "preload";
+          l.as = "image";
+          l.href = "/home-splash.avif";
+          l.type = "image/avif";
+          l.fetchPriority = "high";
+          document.head.appendChild(l);
+        }
+      })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://agency.icjia-api.cloud" crossorigin />
@@ -100,11 +120,11 @@
          ──────────────────────────────────────────────────────────────────── -->
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Oswald:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Gentium+Book+Basic:ital@0;1&family=Lato:wght@300;400;700;900&family=Oswald:wght@400;500;600;700&display=swap"
       media="print"
       onload="this.media='all'"
     />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Oswald:wght@400;500;600;700&display=swap" /></noscript>
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gentium+Book+Basic:ital@0;1&family=Lato:wght@300;400;700;900&family=Oswald:wght@400;500;600;700&display=swap" /></noscript>
 
     <link
       rel="stylesheet"
