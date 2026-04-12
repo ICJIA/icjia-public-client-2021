@@ -67,6 +67,49 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.3.36] - 2026-04-12
+
+### Performance — Tier 1 Quick Wins (pre-Nuxt-rewrite)
+
+A surgical pass at the highest-impact, lowest-risk perf issues identified in the audit. No architectural changes; everything below is a same-shape edit that the Nuxt 4 rewrite can either inherit or supersede.
+
+#### 🚀 Lazy-load the 2.7 MB search index (biggest single win)
+
+- **fix: `src/services/AppInit.js` no longer statically imports `searchIndex.json`.** Previously the entire 2.7 MB blob was inlined into the entry bundle and `deepSanitize()` ran over every string before first paint. The new `getFuse()` async loader fetches `/searchIndex.json` on demand, sanitizes once, and caches the resulting Fuse instance. On fetch failure the cache resets so the next call retries.
+- **fix: `src/components/ModalSearch.vue` no longer triggers the fetch at app boot.** ModalSearch is mounted inside `App.vue`, so its old `created()` hook started loading the index on every page even when the user never opened search. Moved the load into the `EventBus.$on("search")` open handler via a new `ensureFuse()` method — the fetch now starts only when the user clicks the search icon.
+- **fix: `src/views/Search.vue`, `src/views/Search/SearchStatic.vue`, `src/components/StaticSearch.vue`** all updated to `await this.$myApp.getFuse()` from their `created()` hooks (these are route-level so the lazy fetch fires only on navigation to those pages).
+- **fix: null-guard `instantSearch()` in ModalSearch and Search** so the brief async window between `created()` firing and the fetch resolving doesn't crash if a search event arrives early.
+- **Bundle delta: `dist/js/app.*.js` shrunk from 2.9 MB → 262 KB (91% smaller)**.
+
+#### ⚡ Faster per-keystroke search
+
+- **fix: `src/config/config.json`** — disabled `includeMatches` and `includeScore` in the Fuse `site` config. Both options are unread by every consumer (`grep`-verified across `src/`); `includeMatches` in particular is Fuse's most expensive option (per-character match-position computation for highlighting). Disabling them makes per-keystroke search noticeably snappier without changing visible behaviour.
+
+#### 🗄️ Long-cache hashed assets
+
+- **fix: `netlify.toml`** — added immutable `Cache-Control: public, max-age=31536000, immutable` rules for `/js/*`, `/css/*`, `/img/*`, `/fonts/*`. Vue CLI emits content-hashed filenames so any change auto-busts the cache. `/searchIndex.json` gets a 1h max-age + 1d stale-while-revalidate, and `/index.html` is forced `must-revalidate` so users always pick up new builds. Repeat-visit JS/CSS downloads should drop to ~0.
+
+#### 🧹 Skip redundant a11y observer re-installs
+
+- **fix: `src/a11y/index.js`** — `fixOverlayContainer`, `fixNestedInteractive`, and `fixProhibitedAriaOnImg` each install a `MutationObserver`. The pre-existing guards prevented duplicate observers but still ran a `querySelectorAll` on every `fixA11y()` call (i.e., every route change). Added an early return at the top of each: once the observer is installed, subsequent calls are no-ops and the observer handles all future mutations. Saves three broad DOM walks per navigation.
+
+### Test — New Coverage for Lazy Search Loader
+
+- **test: `tests/unit/search.spec.js`** (new file, 10 tests) verifies:
+  - Module shape: `getFuse()` exists, `myApp.fuse` stays null until called
+  - Failure path: fetch error rejects and resets the cache for retry
+  - Success path: returns Fuse instance, caches the promise (concurrent calls share one fetch)
+  - Search results have correct `item` shape and (per the perf fix) NO `score` or `matches` properties
+  - **Bundle contract guard:** asserts `AppInit.js` never re-introduces a static `import` of `searchIndex.json` — pins the 2.7 MB perf win in CI
+- **Test totals:** 224 passing / 6 pending / 0 failing
+
+### Notes
+
+- Vue 2 / Options API only — `async created()` is just a lifecycle hook with the `async` keyword. No Composition API, no `setup()`, no behaviour change to the way components compose.
+- Skipped from this batch: FontAwesome removal (multiple components use `fa fa-*` via `<v-icon>` — non-trivial swap to MDI), `console.log` cleanup (`babel-plugin-transform-remove-console` already strips them in prod builds).
+
+---
+
 ## [1.3.35] - 2026-04-12
 
 ### Test — Unit Tests for New A11y Fix Functions + Test Suite Repair

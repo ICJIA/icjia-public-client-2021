@@ -151,9 +151,9 @@
     "search": {
         "site": {
             "isCaseSensitive": false,
-            "includeScore": true,
+            "includeScore": false,
             "shouldSort": true,
-            "includeMatches": true,
+            "includeMatches": false,
             "findAllMatches": true,
             "minMatchCharLength": 2,
             "location": 0,

@@ -100,13 +100,15 @@ export default {
       queryResults: [],
       content: "",
       searchInput: this.$refs.textfield,
-      fuse: this.$myApp.fuse,
+      fuse: null,
       resultNumber: "s",
       arrayToList,
       getProperCategory,
     };
   },
-  created() {},
+  async created() {
+    this.fuse = await this.$myApp.getFuse();
+  },
   mounted() {
     EventBus.$on("closeSearch", () => {
       this.searchModal = false;
@@ -186,6 +188,8 @@ export default {
       // if (!this.query.length) return;
       if (!this.query) return;
       if (!this.query.length) return;
+      // Fuse may still be loading on first paint (lazy-fetched in created()).
+      if (!this.fuse) return;
       this.queryResults = this.fuse.search(this.query);
     },
     displayHeadings(headings) {

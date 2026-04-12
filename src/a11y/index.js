@@ -275,7 +275,10 @@ const fixNavHeaderRoles = function () {
 // Fix Vuetify overlay container outside landmarks — mark as presentation
 // so it doesn't trigger the "region" best-practice rule.
 // Uses MutationObserver to catch overlays created after initial render.
+// Once the observer is installed, subsequent calls are no-ops (the observer
+// handles all future mutations) — saves a querySelectorAll on every route.
 const fixOverlayContainer = function () {
+  if (window._overlayObserver) return;
   const fix = () => {
     const overlays = document.querySelectorAll(
       "body > .v-overlay-container:not([role])"
@@ -285,18 +288,17 @@ const fixOverlayContainer = function () {
     });
   };
   fix();
-  // Watch for Vuetify adding overlay containers to body
-  if (!window._overlayObserver) {
-    window._overlayObserver = new MutationObserver(fix);
-    window._overlayObserver.observe(document.body, { childList: true });
-  }
+  window._overlayObserver = new MutationObserver(fix);
+  window._overlayObserver.observe(document.body, { childList: true });
 };
 
 // Fix nested-interactive: Vuetify v-select in data-table footer renders
 // div[role="button"] wrapping a focusable <input>, which nests interactive controls.
 // Remove the role and clean up ARIA attributes that depend on it.
 // Uses MutationObserver because Vuetify re-renders these after async data loads.
+// Once the observer is installed, subsequent calls are no-ops.
 const fixNestedInteractive = function () {
+  if (window._nestedInteractiveObserver) return;
   const fix = () => {
     const selects = document.querySelectorAll(
       'div[role="button"][aria-haspopup="listbox"]'
@@ -309,15 +311,13 @@ const fixNestedInteractive = function () {
     });
   };
   fix();
-  if (!window._nestedInteractiveObserver) {
-    window._nestedInteractiveObserver = new MutationObserver(fix);
-    window._nestedInteractiveObserver.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ["role"],
-    });
-  }
+  window._nestedInteractiveObserver = new MutationObserver(fix);
+  window._nestedInteractiveObserver.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["role"],
+  });
 };
 
 // Remove invalid ARIA roles — Vuetify 2.x can generate role attributes
@@ -424,7 +424,9 @@ const fixInvalidRoles = function () {
 // - role="presentation"/"none": aria-label and aria-labelledby are prohibited
 // Uses a MutationObserver to catch attributes the instant Vuetify adds them,
 // preventing Siteimprove from seeing the prohibited state.
+// Once the observer is installed, subsequent calls are no-ops.
 const fixProhibitedAriaOnImg = function () {
+  if (window._imgAriaObserver) return;
   const strip = () => {
     const imgs = document.querySelectorAll(
       '[role="img"][aria-haspopup], [role="img"][aria-expanded], img[aria-haspopup], img[aria-expanded]'
@@ -442,43 +444,41 @@ const fixProhibitedAriaOnImg = function () {
     });
   };
   strip();
-  if (!window._imgAriaObserver) {
-    window._imgAriaObserver = new MutationObserver((mutations) => {
-      for (const m of mutations) {
-        if (m.type === "attributes") {
-          const el = m.target;
-          const role = el.getAttribute("role");
-          const tag = el.tagName;
-          if (role === "img" || tag === "IMG") {
-            if (el.hasAttribute("aria-haspopup"))
-              el.removeAttribute("aria-haspopup");
-            if (el.hasAttribute("aria-expanded"))
-              el.removeAttribute("aria-expanded");
-          }
-          if (role === "presentation" || role === "none") {
-            if (el.hasAttribute("aria-label")) el.removeAttribute("aria-label");
-            if (el.hasAttribute("aria-labelledby"))
-              el.removeAttribute("aria-labelledby");
-          }
+  window._imgAriaObserver = new MutationObserver((mutations) => {
+    for (const m of mutations) {
+      if (m.type === "attributes") {
+        const el = m.target;
+        const role = el.getAttribute("role");
+        const tag = el.tagName;
+        if (role === "img" || tag === "IMG") {
+          if (el.hasAttribute("aria-haspopup"))
+            el.removeAttribute("aria-haspopup");
+          if (el.hasAttribute("aria-expanded"))
+            el.removeAttribute("aria-expanded");
         }
-        if (m.type === "childList") {
-          strip();
+        if (role === "presentation" || role === "none") {
+          if (el.hasAttribute("aria-label")) el.removeAttribute("aria-label");
+          if (el.hasAttribute("aria-labelledby"))
+            el.removeAttribute("aria-labelledby");
         }
       }
-    });
-    window._imgAriaObserver.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: [
-        "aria-haspopup",
-        "aria-expanded",
-        "aria-label",
-        "aria-labelledby",
-        "role",
-      ],
-    });
-  }
+      if (m.type === "childList") {
+        strip();
+      }
+    }
+  });
+  window._imgAriaObserver.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: [
+      "aria-haspopup",
+      "aria-expanded",
+      "aria-label",
+      "aria-labelledby",
+      "role",
+    ],
+  });
 };
 
 // Fix prohibited ARIA attributes on carousel items — Vuetify 2.x renders

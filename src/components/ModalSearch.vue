@@ -81,34 +81,19 @@ export default {
       getProperCategory,
     };
   },
-  async created() {
-    //console.log(process.env.NODE_ENV);
-    NProgress.start();
-    // let searchURL;
-    // if (process.env.NODE_ENV === "development") {
-    //   searchURL = "/.netlify/functions/search";
-    // } else {
-    //   searchURL = "https://icjia.illinois.gov/api/search";
-    // }
-    // let response = await fetch(searchURL);
-    // if (!response.ok) {
-    //   throw new Error(`HTTP error! status: ${response.status}`);
-    // }
-    // let data = await response.json();
-    // const fuse = new Fuse(data.message, this.$myApp.config.search.site);
-    // this.$myApp.fuse = fuse;
-    // console.warn(
-    //   "Getting search data from lambda. Length: ",
-    //   data.message.length
-    // );
-    this.fuse = this.$myApp.fuse;
-    NProgress.done();
-  },
+  // ModalSearch is mounted in App.vue at boot, so we deliberately do NOT
+  // load the Fuse index in created() — that would fire the 2.7 MB fetch on
+  // every cold load and defeat lazy loading. Instead, kick it off the moment
+  // the user opens the search modal (in the EventBus.$on("search") handler).
+  // The promise is cached in AppInit, so subsequent opens reuse it for free.
   mounted() {
     EventBus.$on("closeSearch", () => {
       this.searchModal = false;
     });
     EventBus.$on("search", (opts) => {
+      // Start fetching the index immediately on open; getFuse() caches the
+      // promise so repeated opens (and the data() consumers) share one fetch.
+      this.ensureFuse();
       this.opts = opts;
       if (this.opts && this.opts.query && this.opts.query.length) {
         this.query = this.opts.query;
@@ -126,6 +111,23 @@ export default {
     });
   },
   methods: {
+    // Lazy-load the search index on demand. Safe to call repeatedly —
+    // AppInit.getFuse() caches the promise so this is a no-op after the
+    // first invocation. Once the Fuse instance is ready, re-run any query
+    // the user typed before it landed (so the UI catches up automatically).
+    async ensureFuse() {
+      if (this.fuse) return;
+      NProgress.start();
+      try {
+        this.fuse = await this.$myApp.getFuse();
+        // If the user already typed something while we were loading, run it.
+        if (this.query && this.query.length >= 2) {
+          this.instantSearch();
+        }
+      } finally {
+        NProgress.done();
+      }
+    },
     sortResults() {
       console.log("sorting");
       this.queryResults = this.fuse.search(this.query.trim());
@@ -197,6 +199,8 @@ export default {
       if (!this.query) return;
       if (!this.query.length) return;
       if (this.query.length < 2) return;
+      // Fuse may still be loading on first paint (lazy-fetched in created()).
+      if (!this.fuse) return;
       this.queryResults = this.fuse.search(this.query.trim());
     },
     displayHeadings(headings) {

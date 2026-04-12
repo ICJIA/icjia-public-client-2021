@@ -30,7 +30,7 @@ export default {
   data() {
     return {
       queryResults: null,
-      fuse: this.$myApp.fuse,
+      fuse: null,
       filteredQueryResults: null,
       toggle_sort: 1,
       toggle_direction: 1,
@@ -50,10 +50,12 @@ export default {
       this.sort();
     },
   },
-  created() {
+  async created() {
+    // Lazy-fetch the search index instead of importing it into the bundle.
+    this.fuse = await this.$myApp.getFuse();
     this.fuse.options.threshold = this.threshold;
-  },
-  mounted() {
+    // Run the initial search now that fuse is ready (replaces the call
+    // that used to live in mounted() — fuse may not have been ready then).
     this.instantSearch(this.query);
   },
   methods: {

@@ -183,7 +183,7 @@ export default {
     //   "Getting search data from lambda. Length: ",
     //   data.message.length
     // );
-    this.fuse = this.$myApp.fuse;
+    this.fuse = await this.$myApp.getFuse();
     NProgress.done();
   },
   mounted() {
