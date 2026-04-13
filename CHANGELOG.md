@@ -67,6 +67,29 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.8] - 2026-04-13
+
+### A11y / UX — Strip dead external links from CMS content
+
+SiteImprove's "Pages with broken links" report (2026-04-13) flagged 309 unique external URLs as **"Broken link (confirmed)"** — 4xx/5xx or DNS-fail responses. These references appear in CMS content (mostly research-hub articles authored 2017–2021) and point at third-party resources that have since been moved or taken offline. Editorial cannot update the source content, so the dead links would remain clickable indefinitely, leading users into 404s.
+
+Fix: new `unwrapBrokenLinks` plugin in `contentSanitizer.js`. At render time, every `<a href="…">` is checked against the confirmed-broken URL list in `src/utils/brokenLinks.js`. Matches are replaced with the link's inner text — visible content is preserved (so the citation/reference still reads naturally), but the anchor tag is removed so users can't click into a broken destination. Inline formatting inside the link (`<strong>`, `<em>`, `<code>`) is preserved.
+
+URL matching is case-insensitive and tolerant of one trailing `.`/`,`/`;` — CMS authors often type "see http://example.com." which makes the period part of the href; the normalized comparison treats both forms as the same URL.
+
+Only **"Broken link (confirmed)"** entries are stripped. The 233 "Needs review" entries from the same report are left alone — those failed for reasons that may be transient (CAPTCHAs, rate limits, temporary outages, geographic blocks) and should not be removed without verification.
+
+### Files
+
+- `src/utils/brokenLinks.js` — NEW. 309-entry URL list + `isBrokenUrl()` matcher with normalization.
+- `src/utils/contentSanitizer.js` — adds `unwrapBrokenLinks` plugin and registers it in the html pipeline (runs after the link-rewriting plugins, before table fixes).
+
+### Maintenance
+
+When SiteImprove publishes a new broken-links report, regenerate `BROKEN_URLS` in `brokenLinks.js`: filter the CSV for `Broken link (confirmed)`, lowercase, dedupe, paste in. The plugin picks it up automatically — no other changes needed.
+
+---
+
 ## [1.5.7] - 2026-04-13
 
 ### Docs — Manager-facing Nuxt 4 upgrade proposal

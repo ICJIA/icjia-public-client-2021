@@ -673,6 +673,56 @@ function fixCmsSameHrefLinkLabels(html) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// PLUGIN: unwrapBrokenLinks
+// SiteImprove "Broken link (confirmed)" report flags external URLs
+// that return 4xx/5xx or fail DNS resolution. These appear in CMS
+// content authored years ago and reference resources that have since
+// been moved or taken offline. Editorial cannot update them — content
+// is locked. Fix: at render time, replace <a href="dead-url">text</a>
+// with just `text` (no link), preserving the surrounding sentence so
+// readers see the reference but cannot click into a 404.
+//
+// The list of confirmed-broken URLs lives in `brokenLinks.js` and is
+// regenerated from each fresh SiteImprove export. Only "confirmed"
+// entries are removed; "Needs review" entries (CAPTCHAs, rate limits,
+// transient outages) are left alone.
+// ═══════════════════════════════════════════════════════════════════
+
+import { isBrokenUrl } from "./brokenLinks";
+
+function unwrapBrokenLinks(html) {
+  if (!html || typeof html !== "string") return html;
+  if (html.indexOf("<a") === -1) return html;
+
+  let doc;
+  try {
+    doc = new DOMParser().parseFromString(html, "text/html");
+  } catch (_e) {
+    return html;
+  }
+
+  const links = doc.querySelectorAll("a[href]");
+  if (!links.length) return html;
+
+  let changed = false;
+  links.forEach((a) => {
+    const href = a.getAttribute("href") || "";
+    if (!isBrokenUrl(href)) return;
+    // Replace the <a> with its child nodes (preserves inline formatting
+    // like <strong>, <em>, <code> inside the original link text).
+    const parent = a.parentNode;
+    if (!parent) return;
+    while (a.firstChild) {
+      parent.insertBefore(a.firstChild, a);
+    }
+    parent.removeChild(a);
+    changed = true;
+  });
+
+  return changed ? doc.body.innerHTML : html;
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // Pipeline registry
 // ═══════════════════════════════════════════════════════════════════
 
@@ -686,6 +736,7 @@ const htmlPlugins = [
   fixCmsLinkAltText,
   fixCmsDuplicateLinkText,
   fixCmsSameHrefLinkLabels,
+  unwrapBrokenLinks,
   fixCmsTables,
 ];
 const textPlugins = [fixMisspellings, fixApostrophes];
@@ -791,6 +842,7 @@ export {
   fixCmsLinkAltText,
   fixCmsDuplicateLinkText,
   fixCmsSameHrefLinkLabels,
+  unwrapBrokenLinks,
   // Expose data for external inspection
   MISSPELLINGS,
   APOSTROPHES,
