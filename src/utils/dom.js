@@ -1,4 +1,4 @@
-import { EventBus } from "@/event-bus";
+import { goToSearch } from "@/utils/search";
 
 const attachInternalLinks = function (vm) {
   vm.$nextTick(() => {
@@ -6,14 +6,11 @@ const attachInternalLinks = function (vm) {
     for (const node of els) {
       node.addEventListener("click", function (e) {
         e.preventDefault();
-        console.log("internal click: ", e.target.href);
-        //vm.$router.push(this.dataset.eventLink);
         let url = e.target.href;
         url = url.replace(/^.*\/\/[^/]+/, "");
         vm.$router.push(url).catch(() => {});
       });
     }
-    console.log("attachInternalLinks: ", els);
   });
 };
 
@@ -24,14 +21,12 @@ const attachSearchEvents = function (vm) {
       el.classList.add("author-name");
       el.addEventListener("click", function (e) {
         e.preventDefault();
-        let opts = {
-          query: e.target.innerText,
-          type: "hub",
-        };
-        EventBus.$emit("search", opts);
+        // Was: EventBus.$emit("search", { query, type: "hub" }) → modal.
+        // Now navigates to /search/:query so the user keeps context and
+        // can open hits in new tabs.
+        goToSearch(vm.$router, { query: e.target.innerText, type: "hub" });
       });
     }
-    console.log("attachInternalLinks: ", els);
   });
 };
 

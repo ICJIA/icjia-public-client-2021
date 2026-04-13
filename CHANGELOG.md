@@ -67,6 +67,184 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.5] - 2026-04-13
+
+### UX — Search overhaul + first batch of audit-driven quick wins
+
+This release lands the search-modal-to-/search refactor (the most-complained-about interaction on the site) plus five audit-driven UX improvements identified in the v1.5.5 internal UX audit. Nothing in this release changes API contracts, ships new features, or affects content; it is entirely interaction-layer cleanup.
+
+---
+
+### 1. Search modal → /search page (every entry point)
+
+The legacy flow: clicking a tag, author, category, or "search similar" CTA fired `EventBus.$emit("search", { query, type })`, which opened `ModalSearch` over the current page. Picking a hit closed the modal and same-tab-navigated to the result, **destroying the result list with no Back path back to it**. Nearly every "I clicked the wrong tag and now I have to start over" complaint traced to that one design choice.
+
+**Now:**
+
+- **Every search entry point** — header search icon (`AppNav`), context bar buttons (`AppNavContext`, `AppNavContextBottom`), tag chips (`BasePropChip`), author/bio names (`BiographyCard`, all staff/board pages), category clicks across cards (`NewsCard`, `HomeCardNews`, `HubCard`, `DatasetView`, `ArticleView`), "search similar" buttons on `JobCard` / `BaseCardExpandable`, internal markdown `[data-event-search]` triggers — routes to `/search/:encodedQuery` (or bare `/search` for the empty-query case from the header icon).
+- **Search results on `/search`** — click opens the destination in a new browser tab (`target=_blank`, `rel=noopener,noreferrer`). The `/search` tab is never unloaded; users get back to their result list by switching tabs or closing the result tab.
+- **Header search icon clicked again** — clears any in-progress query + result set and refocuses the input. No stale state.
+
+The modal still exists in the codebase because nothing currently triggers it — leaving it in place avoids touching `App.vue`'s mount tree right before the Nuxt rewrite. It's effectively dead code now and can be deleted in the rewrite.
+
+**New utility — `src/utils/search.js`** (no Vue dependency)
+
+- `goToSearch(router, opts)` — pushes `/search/:encodedQuery?filter=:type` for queries with text, or bare `/search` (Search1 route) for empty-query "open the search page" intent. Tolerates `NavigationDuplicated`. Accepts `opts.type` or `opts.filter` for back-compat.
+- `openInNewTab(path)` — `window.open(absoluteUrl, "_blank", "noopener,noreferrer")`; absolute URL is computed from `window.location.origin` so origin-relative SPA paths open at the right host.
+
+**Components updated** (live emits replaced with `goToSearch`):
+
+`AppNav`, `AppNavContext`, `AppNavContextBottom`, `SearchCard`, `SearchCardAlt`, `BasePropChip`, `BiographyCard`, `JobCard`, `BaseCardExpandable`, `NewsCard`, `HomeCardNews`, `Hub/ArticleView`, `Hub/HubCard`, `Hub/DatasetView`, `views/Hub/HubStaff`, `views/InformationSystems/ISUStaff`, `views/About/CompositionAndMembership`, `views/News/NewsSingle`, `views/Grants/GrantsStaff`, `utils/dom.js`. `SearchCard` and `SearchCardAlt` gained an `isStatic` prop so the same component opens new tabs on `/search` and same-tab inside the (now-orphaned) modal.
+
+**`SearchStatic.vue` watchers** for `$route.params.query` so:
+- A nav from `/search/foo` → `/search/bar` updates the input + results without remount.
+- A nav from `/search/anything` → `/search` (bare) clears the input, results, and filter, and refocuses the search field. This is what makes "header icon = fresh search" work.
+
+---
+
+### 2. New filter-chip toolbar on `/search` (replaces navy panel + dropdown)
+
+The old filter UI on `/search` was a heavy navy `v-card` containing a centered "Filter results by:" label and a white `v-select`. Two clicks (open dropdown, pick option) to apply a filter; users couldn't see what types were available without opening the dropdown; on mobile the entire panel was hidden via `hidden-sm-and-down` so mobile users had no filter at all.
+
+**New design** (`SearchStatic.vue` + scoped CSS):
+
+- A quiet single-line summary: "**17** of **96** results for *"domestic"*" — with the active vs. total counts bolded.
+- A horizontal chip row beneath: `[ NO FILTER 96 ] [ MEETINGS 41 ] [ PUBLICATIONS 30 ] [ ARTICLES 17 ] [ NEWS 3 ] [ FUNDING 3 ] ...` — pills with type-name + count badge, sorted by count descending.
+- Chips are real `<button>` elements with `aria-pressed`; the active chip inverts to solid black (matches the v1.5.3 high-contrast `.v-chip` aesthetic).
+- New computed `availableFilterChips` derives the chip list from `queryResults` so chips with zero hits never appear — the row never lies about what's available.
+- Added `prettifyType()` to map raw `contentType` strings (`article`, `biography`, `funding`) to human labels (`Articles`, `Biographies`, `Funding`).
+- Toolbar shows on mobile too (no more `hidden-sm-and-down`).
+
+One click = one filter applied. No dropdown indirection.
+
+---
+
+### 3. Empty-state message on `/search`
+
+When a query returned zero hits, the page silently rendered an empty list — users had no idea if they were still loading, if their search was malformed, or if there genuinely were no results.
+
+Now: when `query.length >= 2 && fuse && queryResults.length === 0`, renders:
+
+> **No results for *"xyz"*.**
+> Try a shorter or differently-spelled term, or [browse all articles](/researchhub/articles), [news](/news/), or [grants](/grants/).
+
+Plus a quieter "Keep typing — search starts at 2 characters" hint when the user has typed only one character.
+
+---
+
+### 4. Debounced search input (both `SearchStatic` and `ModalSearch`)
+
+`@input="instantSearch"` fired the full Fuse query on every keystroke. Typing "domestic violence" fired ~17 searches. The 2.7 MB index is in-memory but Fuse's per-query work is O(items × fields), and on lower-spec phones the lag was perceptible.
+
+Now: `created()` wraps `instantSearch` with `_.debounce(fn, 250)` and the template uses `@input="debouncedSearch"`. 250ms is the sweet spot — fast enough to feel live, slow enough to skip mid-word work. Lodash was already imported in both files.
+
+---
+
+### 5. Smarter `scrollBehavior` in `router/index.js`
+
+Was: `scrollBehavior: () => ({ x: 0, y: 0 })` — yanked every navigation back to the top, including back-button restorations and same-route query changes (the `Load more` pagination, the new `?view=list` view-toggle URL state, etc.).
+
+Now:
+
+```js
+scrollBehavior(to, from, savedPosition) {
+  if (savedPosition) return savedPosition;            // back/forward restores
+  if (to.hash) return { selector: to.hash };          // anchor links work
+  if (from && to.path === from.path) return null;     // query-only change preserves scroll
+  return { x: 0, y: 0 };                              // everything else top
+}
+```
+
+Five lines, fixes three audit findings simultaneously: scroll-to-top destroying context, anchor links not jumping, and "Load more" yanking users away from the button they just clicked.
+
+---
+
+### 6. URL-backed view toggle on the three `*All.vue` views
+
+`Hub/ArticlesAll`, `Hub/DatasetsAll`, `Hub/AppsAll` each had a `v-btn-toggle` for List vs. Grid that mutated local `orientation` state. Refresh → reset to "grid". Bookmark → reset to "grid". Back → reset to "grid".
+
+Now: `data()` initializes `orientation` from `this.$route.query.view` and a `watch` on `orientation` mirrors changes to `?view=list` (or removes the param for the default "grid"). Combined with the smarter `scrollBehavior` above, toggling no longer yanks scroll. Bookmarkable + shareable + survives refresh.
+
+---
+
+### 7. Quieter focus rings on light surfaces
+
+The v1.5.3 focus-visible rule added a `box-shadow: 0 0 0 4px rgba(255,255,255,0.9)` halo around every focused element, plus a separate `.v-text-field:focus-within { outline: 2px solid #1565c0 }` ring on every Vuetify text-field wrapper. Stacked together that produced an 8px-thick blue+white ring around any focused input, particularly loud on autofocused fields like the `/search` input where the ring appeared the moment the page loaded.
+
+Now:
+
+- Default `:focus-visible` is just `outline: 2px solid #1565c0; outline-offset: 2px`. Clean, single-purpose, accessible.
+- Dropped the `.v-text-field:focus-within` wrapper outline entirely. Vuetify text/select/textarea fields already have a built-in focus indicator: the bottom underline thickens from 1px gray to 2px blue, the floating label changes color, and the clear button appears. That state change satisfies WCAG 2.4.7 on its own without an outer ring.
+- Dark-surface override (`header.v-app-bar :focus-visible`, navy splash blocks) keeps a 1px dark inner shadow + a yellow outline so contrast against the navy header is preserved.
+
+### 8. `/search` always lands with cursor in the input
+
+The `<v-text-field autofocus>` HTML5 attribute fires once per element mount, which is unreliable across Vue Router transitions — `SearchStatic` is reused when going from `/search` to `/search/foo`, so `autofocus` doesn't re-run on subsequent visits. Explicit `this.$refs.textfield.focus()` in `mounted()` (wrapped in `$nextTick`) guarantees the cursor lands in the input no matter how the user got to the page: header icon, footer icon, tag click, direct URL, or browser back/forward. Same focus call also runs in the route-watcher's empty-query branch (header-icon-while-already-on-/search case).
+
+Inlined the focus call rather than delegating to a `methods.focusSearchInput()` helper so partial-HMR cache scenarios can never strand it (had a transient `this.focusSearchInput is not a function` error during development when cache-loader updated the template/mounted block ahead of the methods block).
+
+---
+
+### 8. Breadcrumb truncation fixed
+
+`AppNavContext.vue:58` had `{{ contextTitle | truncate(8) }}` — cut breadcrumb titles to 8 *characters*, so "Crime Victim Compensation Fund" became "Crime Vi…". Read as a parser bug to anyone seeing it.
+
+Now: dropped the filter; switched to CSS `text-overflow: ellipsis` with `max-width: 60ch` so titles wrap or truncate gracefully based on viewport width. Full title is preserved in the `title` attribute for hover. No more weird mid-word cuts.
+
+---
+
+### What's NOT in this release (deferred)
+
+The UX audit identified ~15 findings; this release lands the highest-impact 9. Deferred for triage / Nuxt rewrite:
+
+- URL-backed filter/sort/page state on `*All.vue` views beyond the view toggle (e.g., filter by category, sort by date) — needs per-view design
+- "Back to list" link on `*Single.vue` views — wide-touch change
+- Single-page form recovery affordances (success state with "submit another", focus-first-error) — `Forms/GrantStatus.vue`, `Forms/LapRequest.vue`
+- News-card mid-sentence truncation (use `truncateBySentence`)
+- Loading skeletons in remaining `*All.vue` / `*Home.vue` views
+- CTA wording standardization ("Read more" / "View" / "Continue")
+- `console.log` cleanup in production code
+- Carousel auto-cycle toggle on home page
+- "More" overflow in `AppNavContext` rendering raw text instead of links
+- Mobile counters in `*All.vue` (currently hidden via `hidden-sm-and-down`)
+
+---
+
+### Tests
+
+249/249 unit tests passing. No new specs needed — the refactors are interaction-layer (routing + UI), exercised by existing component tests. Manual verification was done for each of the 8 changes via the Chrome DevTools MCP browser session.
+
+### Manual test plan
+
+Search behavior:
+
+- [ ] Click any tag chip on a Research Hub article → lands on `/search/:tag`, chips show available content types with counts
+- [ ] Click an author name → lands on `/search/:name`
+- [ ] Click a result card on `/search` → opens destination in a new tab; the `/search` tab is unchanged
+- [ ] Click the header search icon → goes to bare `/search`, input is empty, focus is in the input
+- [ ] Click the header search icon while already on `/search/foo` → input clears, results clear
+- [ ] Type into `/search` input → only one Fuse search per ~250ms pause (not per keystroke)
+- [ ] Search for `zzznoresults` → shows "No results for…" with browse links
+- [ ] Click chip "ARTICLES 17" → result list filters down to articles, chip turns black, count summary updates
+- [ ] Click chip "NO FILTER" → clears the filter, all 96 back
+
+Scroll + view-toggle:
+
+- [ ] On `/researchhub/articles` toggle to List → URL becomes `/researchhub/articles?view=list`
+- [ ] Refresh → still in List view
+- [ ] Bookmark `…?view=list`, open in a new tab → starts in List view
+- [ ] Click Load More → no scroll-to-top
+- [ ] Click an article → drill in → Back → restores scroll position
+- [ ] Click an in-page anchor link → scrolls to anchor
+
+Other:
+
+- [ ] Tab through any page → focus ring is a clean 2px blue outline, no thick white halo
+- [ ] Tab through the navy header → focus ring is yellow + dark
+- [ ] Open a page with a long title (e.g., a research article) → breadcrumb shows the full title up to the viewport edge with ellipsis, hover shows full text
+
+---
+
 ## [1.5.4] - 2026-04-13
 
 ### A11y — Skip-to-content link actually moves focus now

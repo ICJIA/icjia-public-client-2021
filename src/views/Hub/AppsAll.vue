@@ -89,8 +89,20 @@ export default {
       loading: true,
       content: [],
       initialLoad: true,
-      orientation: "grid",
+      // Bookmarkable view-toggle: ?view=list survives refresh + back/forward.
+      orientation: this.$route.query.view === "list" ? "list" : "grid",
     };
+  },
+
+  watch: {
+    orientation(next) {
+      const desired = next === "list" ? "list" : undefined;
+      if ((this.$route.query.view || undefined) === desired) return;
+      const query = { ...this.$route.query };
+      if (desired) query.view = desired;
+      else delete query.view;
+      this.$router.replace({ path: this.$route.path, query }).catch(() => {});
+    },
   },
 
   methods: {

@@ -52,10 +52,19 @@
             {{ contextMenu[0].shortLabel }}</span
           >
           <span
-            style="font-weight: 300"
+            style="
+              font-weight: 300;
+              display: inline-block;
+              max-width: 60ch;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              vertical-align: bottom;
+            "
             class="hidden-sm-and-down"
             v-if="contextTitle"
-            >&nbsp;&raquo;&nbsp;{{ contextTitle | truncate(8) }}
+            :title="contextTitle"
+            >&nbsp;&raquo;&nbsp;{{ contextTitle }}
           </span>
         </span>
         <v-spacer></v-spacer>
@@ -141,6 +150,7 @@
 
 <script>
 import { EventBus } from "@/event-bus";
+import { goToSearch } from "@/utils/search";
 export default {
   props: {
     data() {
@@ -194,7 +204,9 @@ export default {
       this.currentTab = "test";
     },
     fireEvent() {
-      EventBus.$emit("search");
+      // Was: EventBus.$emit("search") → ModalSearch. Now navigates to
+      // the /search page like every other search trigger.
+      goToSearch(this.$router, {});
       this.$nextTick(() => {
         this.contextTab = undefined;
         this.selectTab();

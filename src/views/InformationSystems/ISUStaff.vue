@@ -34,6 +34,7 @@ import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import { GET_BIOGRAPHIES_BY_UNIT_QUERY } from "@/graphql/biographies";
 import { GET_SINGLE_UNIT_QUERY } from "@/graphql/units";
 import { EventBus } from "@/event-bus";
+import { goToSearch } from "@/utils/search";
 
 import { renderToHtml } from "@/services/Markdown";
 import _ from "lodash";
@@ -59,11 +60,10 @@ export default {
       return renderToHtml(content);
     },
     search(name) {
-      let opts = {
+      goToSearch(this.$router, {
         query: name,
         type: "innovation-and-digital-services",
-      };
-      EventBus.$emit("search", opts);
+      });
     },
   },
   apollo: {

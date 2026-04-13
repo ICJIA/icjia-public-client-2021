@@ -44,6 +44,7 @@
 
 <script>
 import { EventBus } from "@/event-bus";
+import { goToSearch } from "@/utils/search";
 export default {
   data() {
     return {
@@ -82,7 +83,9 @@ export default {
       //this.currentTab = "test";
     },
     fireEvent() {
-      EventBus.$emit("search");
+      // Was: EventBus.$emit("search") → ModalSearch. Now navigates to
+      // the /search page like every other search trigger.
+      goToSearch(this.$router, {});
       this.$nextTick(() => {
         this.contextTab = undefined;
         this.selectTab();

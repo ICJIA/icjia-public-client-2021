@@ -146,7 +146,7 @@
 
 <script>
 import { format } from "@/utils/itemFormatter";
-import { EventBus } from "@/event-bus";
+import { goToSearch } from "@/utils/search";
 
 const arr2table = ({ arr, cols = ["name", "type", "definition", "values"] }) =>
   `<table>${getThead({ cols })}${getTbody({ cols, rows: arr })}</table>`;
@@ -225,12 +225,10 @@ export default {
   },
   methods: {
     categoryClick(e) {
-      //console.log("chip click: ", e.target.innerHTML);
-      let opts = {
+      goToSearch(this.$router, {
         query: e.target.innerText.toLowerCase(),
         type: "hub",
-      };
-      EventBus.$emit("search", opts);
+      });
     },
     downloadHelper() {
       const { hash, ext } = this.dataset.datafile;

@@ -240,6 +240,7 @@
 <script>
 /* eslint-disable no-unused-vars */
 import { EventBus } from "@/event-bus";
+import { goToSearch, openInNewTab } from "@/utils/search";
 import { getProperCategory } from "@/utils/content";
 import DOMPurify from "dompurify";
 import { renderToHtml } from "@/services/Markdown";
@@ -298,11 +299,7 @@ export default {
     },
 
     search(name) {
-      let opts = {
-        query: name,
-        type: "general",
-      };
-      EventBus.$emit("search", opts);
+      goToSearch(this.$router, { query: name, type: "general" });
     },
 
     goToExternal(url) {
@@ -334,9 +331,15 @@ export default {
       return cleanExt.substring(1);
     },
     route(path) {
+      // Mirror SearchCard: when rendered on the static /search page, open
+      // the hit in a new tab so users keep their result list. When used
+      // inside the modal, keep the legacy same-tab + close-modal behavior.
+      if (this.isStatic) {
+        openInNewTab(path);
+        return;
+      }
       EventBus.$emit("closeSearch");
-
-      this.$router.push(path).catch((err) => {
+      this.$router.push(path).catch(() => {
         this.$vuetify.goTo(0);
       });
     },
@@ -345,6 +348,10 @@ export default {
     item: {
       type: Object,
       default: () => {},
+    },
+    isStatic: {
+      type: Boolean,
+      default: false,
     },
   },
 };

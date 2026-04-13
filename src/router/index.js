@@ -60,7 +60,18 @@ const router = new VueRouter({
   mode: "history",
   base: appConfig.publicPath,
   routes,
+  // Smarter scroll restoration — was: always { x:0, y:0 } which yanked
+  // back-button users away from where they came back to and broke
+  // anchor links. Now:
+  //   - back/forward navigations restore the saved scroll position
+  //   - in-page anchor navigations scroll to the target element
+  //   - query-only changes on the same path (pagination, filters,
+  //     view-toggle URL state) preserve scroll
+  //   - everything else still scrolls to top
   scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) return savedPosition;
+    if (to.hash) return { selector: to.hash, behavior: "smooth" };
+    if (from && to.path === from.path) return null;
     return { x: 0, y: 0 };
   },
 });

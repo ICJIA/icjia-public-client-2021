@@ -504,27 +504,27 @@ a[target="_blank"]::after {
 }
 
 /* Focus-visible styles for keyboard accessibility (WCAG 2.4.7).
-   Double-ring technique: a dark 2px outline plus a light 2px box-shadow
-   ring guarantees the focus indicator is visible against any background
-   (including the dark-navy header, white content, and colored splashes).
-   SiteImprove's sia-r65 "Is focus visible?" cannot algorithmically verify
-   focus indicators, but this combination also eliminates real edge-case
-   regressions on dark surfaces. */
+   Default surfaces use a clean 2px blue outline (ratio ~6:1 against
+   white = passes 3:1 non-text contrast). The heavy white box-shadow
+   halo from v1.5.3 was visually intrusive on common backgrounds and
+   added no contrast benefit on light surfaces, so it's gone — kept
+   only on dark surfaces where the blue ring would otherwise blend
+   into the navy header. */
 :focus-visible {
   outline: 2px solid #1565c0 !important;
   outline-offset: 2px !important;
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9) !important;
 }
 
-/* On dark surfaces (dark header, navy blocks), invert the rings so both
-   are visible: outer bright-yellow outline + inner dark shadow. */
+/* On dark surfaces (dark header, navy blocks), the default blue ring
+   has poor contrast against navy. Switch to a yellow outline + thin
+   dark inner shadow so it reads against #0A3A60-family backgrounds. */
 header.v-app-bar :focus-visible,
 .dark-surface :focus-visible,
 [style*="background: #0A3A60"] :focus-visible,
 [style*="background:#0A3A60"] :focus-visible {
   outline: 2px solid #ffdd00 !important;
   outline-offset: 2px !important;
-  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.85) !important;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.7) !important;
 }
 
 .v-btn:focus-visible,
@@ -535,13 +535,17 @@ header.v-app-bar :focus-visible,
   outline-offset: 2px !important;
 }
 
+/* Vuetify text/select/textarea inputs have their own focus indicator —
+   the bottom underline thickens from 1px gray to 2px blue and the floating
+   label changes color. That's a contrast-meeting state change per WCAG 2.4.7
+   on its own, so we suppress the browser's default outline on the inner
+   <input>/<textarea> and we deliberately do NOT add an outer outline ring
+   on the wrapper. The previous v1.5.3 wrapper outline was redundant
+   (double-marked the focused field) and read as visual noise — particularly
+   on autofocused fields like /search where the ring appears the moment the
+   page loads. */
 .v-text-field input:focus-visible,
 .v-select input:focus-visible,
 .v-textarea textarea:focus-visible {
   outline: none !important;
-}
-
-.v-text-field:focus-within {
-  outline: 2px solid #1565c0;
-  outline-offset: 2px;
 }

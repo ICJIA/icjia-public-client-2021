@@ -88,7 +88,7 @@
 
 <script>
 import { renderToHtml } from "@/services/Markdown";
-import { EventBus } from "@/event-bus";
+import { goToSearch } from "@/utils/search";
 export default {
   mounted() {
     const els = document.getElementsByClassName("author-name");
@@ -98,11 +98,10 @@ export default {
   },
   methods: {
     search(name) {
-      let opts = {
-        query: name,
-        type: "general",
-      };
-      EventBus.$emit("search", opts);
+      // Was: EventBus.$emit("search", { query: name }) — opened the modal.
+      // Users asked to land on /search so they could see all hits for the
+      // name, open a specific one in a new tab, and come back here.
+      goToSearch(this.$router, { query: name, type: "general" });
     },
     render(content) {
       return renderToHtml(content);

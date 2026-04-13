@@ -198,6 +198,7 @@ import { format } from "@/utils/itemFormatter";
 import { createMarkdownUtils, initMarkdownIt } from "@/utils/markdownIt";
 import { initTexmath } from "@/utils/texmath";
 import { EventBus } from "@/event-bus";
+import { goToSearch } from "@/utils/search";
 
 export default {
   sync: false,
@@ -287,20 +288,13 @@ export default {
   },
   methods: {
     openSearch(item) {
-      // let opts = {
-      //   query: item,
-      //   type: "hub",
-      // };
-      // EventBus.$emit("search", opts);
-      this.$router.push("/search/" + item);
+      goToSearch(this.$router, { query: item, type: "hub" });
     },
     categoryClick(e) {
-      //console.log("chip click: ", e.target.innerHTML);
-      let opts = {
+      goToSearch(this.$router, {
         query: e.target.innerText.toLowerCase(),
         type: "hub",
-      };
-      EventBus.$emit("search", opts);
+      });
     },
     async downloadHelper(type) {
       await this.downloader(type);

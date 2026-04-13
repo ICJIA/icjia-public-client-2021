@@ -93,6 +93,7 @@
 /* eslint-disable no-unused-vars */
 import { EventBus } from "@/event-bus";
 import { getProperCategory } from "@/utils/content";
+import { goToSearch, openInNewTab } from "@/utils/search";
 import DOMPurify from "dompurify";
 import { renderToHtml } from "@/services/Markdown";
 import dayjs from "@/plugins/dayjs";
@@ -156,11 +157,7 @@ export default {
     },
 
     search(name) {
-      let opts = {
-        query: name,
-        type: "general",
-      };
-      EventBus.$emit("search", opts);
+      goToSearch(this.$router, { query: name, type: "general" });
     },
 
     goToExternal(url) {
@@ -174,29 +171,8 @@ export default {
       }
     },
     click(e) {
-      if (this.isStatic) {
-        console.log("tag click: ", e.target.innerText.trim().toLowerCase());
-        // window.plausible("tag_click", {
-        //   props: { tag: e.target.innerText.trim().toLowerCase() },
-        // });
-        this.$router
-          .push("/search/" + e.target.innerText.toLowerCase().trim() + "/")
-          .catch((err) => {
-            this.$vuetify.goTo(0);
-          });
-        console.log("static page click: ", this.isStatic);
-      } else {
-        console.log("tag click: ", e.target.innerText.trim().toLowerCase());
-        // window.plausible("tag_click", {
-        //   props: { tag: e.target.innerText.trim().toLowerCase() },
-        // });
-        //console.log("chip click: ", e.target.innerHTML);
-        let opts = {
-          query: e.target.innerText.trim().toLowerCase(),
-          type: "general",
-        };
-        EventBus.$emit("search", opts);
-      }
+      const query = e.target.innerText.trim().toLowerCase();
+      goToSearch(this.$router, { query, type: "general" });
     },
     // download(result) {
     //   let download = `${path}`;
@@ -217,12 +193,17 @@ export default {
       return cleanExt.substring(1);
     },
     route(path) {
+      // When the card is rendered on the static /search page we open the
+      // destination in a new tab so users keep their result list intact
+      // (the #1 complaint about the old modal was losing the result set
+      // the moment they clicked a hit). When rendered inside the modal
+      // we keep the legacy same-tab navigation + close-modal behavior.
+      if (this.isStatic) {
+        openInNewTab(path);
+        return;
+      }
       EventBus.$emit("closeSearch");
-      //console.log("search conversion: ", path, "query: ", this.query);
-      // window.plausible("search_conversion", {
-      //   props: { query: this.query, path: path },
-      // });
-      this.$router.push(path).catch((err) => {
+      this.$router.push(path).catch(() => {
         this.$vuetify.goTo(0);
       });
     },

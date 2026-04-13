@@ -14,7 +14,7 @@ Public website for the Illinois Criminal Justice Information Authority (ICJIA).
 - **Date handling:** Day.js (migrated from moment in v1.4.0)
 - **Icons:** MDI webfont, self-hosted at `/fonts/mdi/` with `font-display: swap` (v1.4.2)
 - **Typography:** Lato (body) + Oswald (headings), consolidated in v1.5.1 from six font families
-- **Search:** Fuse.js (client-side full-text search, Web Worker)
+- **Search:** Fuse.js (client-side full-text search, Web Worker). Page-first UX as of v1.5.5: every search entry point (header icon, footer icon, tags, names, categories) navigates to `/search/:query`; result clicks open in new tabs so the result list survives. Filter chips show available content types with hit counts.
 - **Hosting:** Netlify
 - **Analytics:** Plausible (self-hosted)
 - **Node:** 22.x in production (Netlify); 16.x or newer for local development
@@ -57,7 +57,7 @@ Output goes to `dist/`.
 
 ### Unit Tests (Mocha/Chai)
 
-**224 passing / 6 pending / 0 failing** — covers security mitigations, accessibility functions, markdown rendering, Vue components, the auth store, the lazy search-index loader, and data integrity.
+**249 passing / 6 pending / 0 failing** — covers security mitigations, accessibility functions, markdown rendering, Vue components, the auth store, the lazy search-index loader, the CMS-content sanitizer pipeline (v1.5.2), and data integrity.
 
 ```bash
 npm run tests
@@ -71,6 +71,7 @@ npm run tests
 | `markdown.spec.js` | 27 | Heading anchors, link attributes, tables, code blocks, edge cases |
 | `auth.spec.js` | 15 | Vuex mutations/getters, logout localStorage cleanup |
 | `search.spec.js` | 10 | Lazy-loaded search index — `getFuse()` contract, caching, failure recovery, bundle-contract guard |
+| `contentSanitizer.spec.js` | 23 | CMS-intercept pipeline — table scope/headers/id, empty-container stripping, image-only link alt, duplicate-link-text disambiguation, Word-blue contrast (v1.5.2) |
 | `components.spec.js` | 9 + 6 pending | SkipLink rendering; Banner/Disclaimer pure-JS (`render()`, XSS sanitization). Vuetify-mount tests are skipped — `vuetify-loader` doesn't run inside the mocha bundle; full rendering is covered by the Playwright suite |
 
 ### Regression Tests (Playwright)

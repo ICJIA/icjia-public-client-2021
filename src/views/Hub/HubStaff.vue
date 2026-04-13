@@ -33,6 +33,7 @@
 <script>
 import NProgress from "@/services/Progress";
 import { EventBus } from "@/event-bus";
+import { goToSearch } from "@/utils/search";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_BIOGRAPHIES_BY_UNIT_QUERY } from "@/graphql/biographies";
 import { GET_SINGLE_UNIT_QUERY } from "@/graphql/units";
@@ -56,11 +57,7 @@ export default {
       return renderToHtml(content);
     },
     search(name) {
-      let opts = {
-        query: name,
-        type: "hub",
-      };
-      EventBus.$emit("search", opts);
+      goToSearch(this.$router, { query: name, type: "hub" });
     },
   },
   apollo: {

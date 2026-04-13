@@ -12,21 +12,21 @@
 </template>
 
 <script>
-// eslint-disable-next-line no-unused-vars
-import { EventBus } from "@/event-bus";
+import { goToSearch } from "@/utils/search";
 export default {
   methods: {
     chipClick(e) {
-      //console.log("chip click: ", e.target.innerHTML);
-      console.log("tag click: ", e.target.innerText.trim().toLowerCase());
-      window.plausible("tag_click", {
-        props: { tag: e.target.innerText.trim().toLowerCase() },
-      });
-      let opts = {
-        query: e.target.innerText.trim(),
-        type: "hub",
-      };
-      EventBus.$emit("search", opts);
+      const query = e.target.innerText.trim();
+      try {
+        window.plausible("tag_click", { props: { tag: query.toLowerCase() } });
+      } catch (_e) {
+        /* plausible may not be loaded in dev/test */
+      }
+      // Was: EventBus.$emit("search", { query, type: "hub" }) — opened the
+      // search modal and destroyed the user's current scroll/result context.
+      // Now navigates to /search/:query; the result page keeps the user's
+      // context intact and lets them open hits in new tabs.
+      goToSearch(this.$router, { query, type: "hub" });
     },
   },
 };

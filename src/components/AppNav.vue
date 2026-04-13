@@ -158,13 +158,17 @@
 
 <script>
 import { EventBus } from "@/event-bus";
+import { goToSearch } from "@/utils/search";
 export default {
   methods: {
     toggleSidebar() {
       EventBus.$emit("toggleSidebar");
     },
     openSearchModal() {
-      EventBus.$emit("search");
+      // Was: EventBus.$emit("search") which opened ModalSearch.
+      // All search entry points now navigate to the /search page so
+      // users keep their result list and can open hits in new tabs.
+      goToSearch(this.$router, {});
     },
     openTranslationModal() {
       EventBus.$emit("translate", this.$route.fullPath);

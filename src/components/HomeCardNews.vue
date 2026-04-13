@@ -119,7 +119,7 @@
 </template>
 
 <script>
-import { EventBus } from "@/event-bus";
+import { goToSearch } from "@/utils/search";
 import { getProperCategory } from "@/utils/content";
 import dayjs from "@/plugins/dayjs";
 export default {
@@ -167,11 +167,7 @@ export default {
       }
     },
     search(name) {
-      let opts = {
-        query: name,
-        type: "general",
-      };
-      EventBus.$emit("search", opts);
+      goToSearch(this.$router, { query: name, type: "general" });
     },
     routeTo(fullPath) {
       //console.log(fullPath);

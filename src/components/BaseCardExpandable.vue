@@ -137,7 +137,7 @@ const addOneDayToDate = function (date) {
   return newDate;
 };
 import { renderToHtml } from "@/services/Markdown";
-import { EventBus } from "@/event-bus";
+import { goToSearch } from "@/utils/search";
 import { isRelatedContent } from "@/utils/content";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 export default {
@@ -164,11 +164,7 @@ export default {
       return renderToHtml(content);
     },
     search(name) {
-      let opts = {
-        query: name,
-        type: "general",
-      };
-      EventBus.$emit("search", opts);
+      goToSearch(this.$router, { query: name, type: "general" });
     },
   },
   props: {

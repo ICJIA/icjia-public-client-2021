@@ -20,7 +20,7 @@
             v-model="query"
             label="Search"
             placeholder="Search"
-            @input="instantSearch"
+            @input="debouncedSearch"
             style="font-weight: 900"
           />
 
@@ -83,6 +83,12 @@ export default {
       arrayToList,
       getProperCategory,
     };
+  },
+  created() {
+    // Debounce the input handler so typing fires one Fuse search per
+    // pause instead of one per keystroke. 250ms is the sweet spot —
+    // fast enough to feel live, slow enough to skip mid-word work.
+    this.debouncedSearch = _.debounce(this.instantSearch, 250);
   },
   // ModalSearch is mounted in App.vue at boot, so we deliberately do NOT
   // load the Fuse index in created() — that would fire the 2.7 MB fetch on

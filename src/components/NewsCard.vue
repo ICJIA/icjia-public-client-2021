@@ -110,7 +110,7 @@
 </template>
 
 <script>
-import { EventBus } from "@/event-bus";
+import { goToSearch } from "@/utils/search";
 const arrford = require("arrford");
 import { format, parseISO } from "date-fns";
 import { getImageURL } from "@/services/Image";
@@ -201,12 +201,10 @@ export default {
       }
     },
     categoryClick(e) {
-      //console.log("chip click: ", e.target.innerHTML);
-      let opts = {
+      goToSearch(this.$router, {
         query: e.target.innerText.toLowerCase(),
         type: "hub",
-      };
-      EventBus.$emit("search", opts);
+      });
     },
     errorHandler(id) {
       console.log("error for image: ", id);
@@ -262,11 +260,7 @@ export default {
       this.$emit("resize");
     },
     search(name) {
-      let opts = {
-        query: name,
-        type: "general",
-      };
-      EventBus.$emit("search", opts);
+      goToSearch(this.$router, { query: name, type: "general" });
     },
   },
 };

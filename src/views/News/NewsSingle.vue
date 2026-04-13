@@ -78,6 +78,7 @@ import {
 } from "@/utils/content";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import { EventBus } from "@/event-bus";
+import { goToSearch } from "@/utils/search";
 export default {
   data() {
     return {
@@ -92,11 +93,7 @@ export default {
   },
   methods: {
     search(name) {
-      let opts = {
-        query: name,
-        type: "general",
-      };
-      EventBus.$emit("search", opts);
+      goToSearch(this.$router, { query: name, type: "general" });
     },
     getCategory(category) {
       return getProperCategory(this.$myApp.config.maps.news, category);

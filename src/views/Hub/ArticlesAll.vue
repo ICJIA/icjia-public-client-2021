@@ -113,8 +113,24 @@ export default {
       view: "grid",
       initialLoad: true,
       masonry: null,
-      orientation: "grid",
+      // Initialize from URL so deep links and back-navigations restore
+      // the user's view + pagination. Was: hard-coded "grid" / start: 0
+      // which threw away state on every visit.
+      orientation: this.$route.query.view === "list" ? "list" : "grid",
     };
+  },
+
+  watch: {
+    // Mirror the view toggle into ?view=list so the toggle is
+    // bookmarkable, shareable, and survives a refresh.
+    orientation(next) {
+      const desired = next === "list" ? "list" : undefined;
+      if ((this.$route.query.view || undefined) === desired) return;
+      const query = { ...this.$route.query };
+      if (desired) query.view = desired;
+      else delete query.view;
+      this.$router.replace({ path: this.$route.path, query }).catch(() => {});
+    },
   },
 
   methods: {
@@ -127,13 +143,11 @@ export default {
     toggle(e) {
       this.view = e;
       this.initialView = true;
-      // console.log('view: ', this.view)
       this.resize();
       NProgress.done();
     },
     loadMore() {
       this.start = this.start + this.articleLimit;
-      console.log("load more here", this.start, this.articleLimit);
     },
   },
   mounted() {

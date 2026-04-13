@@ -41,6 +41,7 @@
 /* eslint-disable no-unused-vars */
 import NProgress from "@/services/Progress";
 import { EventBus } from "@/event-bus";
+import { goToSearch } from "@/utils/search";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_ALL_BIOGRAPHIES_QUERY } from "@/graphql/biographies";
 import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
@@ -78,11 +79,7 @@ export default {
       return renderToHtml(content);
     },
     search(name) {
-      let opts = {
-        query: name,
-        type: "hub",
-      };
-      EventBus.$emit("search", opts);
+      goToSearch(this.$router, { query: name, type: "hub" });
     },
   },
   apollo: {
