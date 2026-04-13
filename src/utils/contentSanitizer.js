@@ -602,6 +602,77 @@ function fixCmsDuplicateLinkText(html) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// PLUGIN: fixCmsSameHrefLinkLabels
+// SiteImprove sia-r81 "Do these links (in the same context) go to the
+// same page?" flags when two or more links in the same content block
+// point at the same href but expose different accessible names
+// (different visible text, different aria-labels, or one text + one
+// image alt). Screen-reader users then hear two distinct-sounding
+// destinations that are actually one. Fix: normalize each group's
+// aria-label to the longest accessible name in the group — visible
+// text is left untouched; only the accessible name is unified.
+// ═══════════════════════════════════════════════════════════════════
+
+function fixCmsSameHrefLinkLabels(html) {
+  if (!html || typeof html !== "string") return html;
+  if (html.indexOf("<a") === -1) return html;
+
+  let doc;
+  try {
+    doc = new DOMParser().parseFromString(html, "text/html");
+  } catch (_e) {
+    return html;
+  }
+
+  const links = Array.from(doc.querySelectorAll("a[href]"));
+  if (links.length < 2) return html;
+
+  // Compute accessible name: aria-label, else text, else img alt
+  const accName = (a) => {
+    const aria = (a.getAttribute("aria-label") || "").trim();
+    if (aria) return aria;
+    const text = (a.textContent || "").replace(/\s+/g, " ").trim();
+    if (text) return text;
+    const img = a.querySelector("img[alt]");
+    if (img) return (img.getAttribute("alt") || "").trim();
+    return "";
+  };
+
+  // Bucket by (context, href). Context = closest block ancestor.
+  const byGroup = new Map();
+  links.forEach((a) => {
+    const href = (a.getAttribute("href") || "").trim();
+    if (!href) return;
+    const ctx =
+      a.closest("ul, ol, p, section, article, div.markdown-body") || doc.body;
+    const key = ctx.tagName + "|" + href;
+    if (!byGroup.has(key)) byGroup.set(key, []);
+    byGroup.get(key).push(a);
+  });
+
+  let changed = false;
+  byGroup.forEach((group) => {
+    if (group.length < 2) return;
+    const names = group.map(accName).filter(Boolean);
+    if (names.length < 2) return;
+    const unique = new Set(names.map((n) => n.toLowerCase()));
+    if (unique.size < 2) return; // Already consistent
+    // Pick the longest, most descriptive name as the canonical label
+    const canonical = names.reduce((a, b) => (b.length > a.length ? b : a), "");
+    if (!canonical) return;
+    group.forEach((a) => {
+      if (accName(a).toLowerCase() === canonical.toLowerCase()) return;
+      if (!a.getAttribute("aria-label")) {
+        a.setAttribute("aria-label", canonical);
+        changed = true;
+      }
+    });
+  });
+
+  return changed ? doc.body.innerHTML : html;
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // Pipeline registry
 // ═══════════════════════════════════════════════════════════════════
 
@@ -614,6 +685,7 @@ const htmlPlugins = [
   fixCmsEmptyContainers,
   fixCmsLinkAltText,
   fixCmsDuplicateLinkText,
+  fixCmsSameHrefLinkLabels,
   fixCmsTables,
 ];
 const textPlugins = [fixMisspellings, fixApostrophes];
@@ -718,6 +790,7 @@ export {
   fixCmsEmptyContainers,
   fixCmsLinkAltText,
   fixCmsDuplicateLinkText,
+  fixCmsSameHrefLinkLabels,
   // Expose data for external inspection
   MISSPELLINGS,
   APOSTROPHES,

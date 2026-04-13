@@ -2,16 +2,10 @@
   <v-btn
     class="chip mr-1"
     x-small
-    color="grey lighten-3"
+    color="white"
     depressed
     rounded
     @click.prevent.stop="chipClick($event)"
-    style="
-      font-size: 10px;
-      font-weight: bold;
-      min-height: 24px;
-      min-width: 24px;
-    "
   >
     <slot></slot>
   </v-btn>

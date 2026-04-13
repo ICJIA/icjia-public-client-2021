@@ -20,8 +20,7 @@
 .v-application input,
 .v-application select,
 .v-application textarea {
-  font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif !important;
+  font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
 }
 
 .v-application .text-h1,
@@ -303,9 +302,6 @@ details[open] summary ~ * {
   animation: sweep 0.5s ease-in-out;
 }
 
-
-
-
 @keyframes sweep {
   0% {
     opacity: 0;
@@ -399,6 +395,46 @@ a[target="_blank"]::after {
   overflow: visible !important;
 }
 
+/* High-contrast chip/tag styling (WCAG 1.4.3, 1.4.11).
+   BasePropChip renders as <v-btn class="chip">, so we target both. Vuetify's
+   default grey-lighten-* chips fail 4.5:1 text contrast and have no visible
+   border against light backgrounds. Standardize on: white fill, black text,
+   2px dark border — contrast ratio 21:1 on the text, 12.6:1 on the border
+   against white surfaces. Also applied to `.v-chip` to cover any direct
+   v-chip usage across cards, tables, and content blocks. */
+.v-btn.chip,
+.v-chip.v-chip {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #222222 !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  min-height: 24px !important;
+  min-width: 24px !important;
+  letter-spacing: 0.5px;
+}
+
+.v-btn.chip .v-btn__content,
+.v-chip .v-chip__content {
+  color: #000000 !important;
+}
+
+.v-btn.chip:hover,
+.v-btn.chip:focus-visible,
+.v-chip.v-chip:hover,
+.v-chip.v-chip:focus-visible {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #000000 !important;
+}
+
+.v-btn.chip:hover .v-btn__content,
+.v-btn.chip:focus-visible .v-btn__content,
+.v-chip:hover .v-chip__content,
+.v-chip:focus-visible .v-chip__content {
+  color: #ffffff !important;
+}
+
 /* WCAG 1.4.4 — prevent text clipping in Vuetify form fields at 200% zoom.
    Vuetify 2 uses fixed pixel heights on inputs which clip text when resized.
    (SiteImprove sia-r83) */
@@ -440,10 +476,28 @@ a[target="_blank"]::after {
   height: auto !important;
 }
 
-/* Focus-visible styles for keyboard accessibility (WCAG 2.4.7) */
+/* Focus-visible styles for keyboard accessibility (WCAG 2.4.7).
+   Double-ring technique: a dark 2px outline plus a light 2px box-shadow
+   ring guarantees the focus indicator is visible against any background
+   (including the dark-navy header, white content, and colored splashes).
+   SiteImprove's sia-r65 "Is focus visible?" cannot algorithmically verify
+   focus indicators, but this combination also eliminates real edge-case
+   regressions on dark surfaces. */
 :focus-visible {
   outline: 2px solid #1565c0 !important;
   outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9) !important;
+}
+
+/* On dark surfaces (dark header, navy blocks), invert the rings so both
+   are visible: outer bright-yellow outline + inner dark shadow. */
+header.v-app-bar :focus-visible,
+.dark-surface :focus-visible,
+[style*="background: #0A3A60"] :focus-visible,
+[style*="background:#0A3A60"] :focus-visible {
+  outline: 2px solid #ffdd00 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.85) !important;
 }
 
 .v-btn:focus-visible,

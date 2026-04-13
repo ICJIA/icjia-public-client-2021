@@ -10,6 +10,7 @@ import {
   fixCmsEmptyContainers,
   fixCmsLinkAltText,
   fixCmsDuplicateLinkText,
+  fixCmsSameHrefLinkLabels,
   fixCmsContrast,
   sanitizeContent,
 } from "@/utils/contentSanitizer";
@@ -137,6 +138,32 @@ describe("fixCmsDuplicateLinkText", () => {
   it("leaves unique links untouched", () => {
     const html = '<p><a href="/a">First</a> and <a href="/b">Second</a></p>';
     const out = fixCmsDuplicateLinkText(html);
+    expect(out).to.not.include("aria-label");
+  });
+});
+
+describe("fixCmsSameHrefLinkLabels", () => {
+  it("normalizes aria-label when same-href links have different text", () => {
+    const html =
+      "<ul>" +
+      '<li><a href="/article/x">Annual Report 2024</a></li>' +
+      '<li><a href="/article/x">Read more</a></li>' +
+      "</ul>";
+    const out = fixCmsSameHrefLinkLabels(html);
+    expect(out).to.include('aria-label="Annual Report 2024"');
+    // Only the shorter link gets the aria-label
+    expect((out.match(/aria-label=/g) || []).length).to.equal(1);
+  });
+
+  it("does not touch different-href links with different text", () => {
+    const html = '<p><a href="/a">Alpha</a> and <a href="/b">Beta</a></p>';
+    const out = fixCmsSameHrefLinkLabels(html);
+    expect(out).to.not.include("aria-label");
+  });
+
+  it("does not touch same-href links with identical text", () => {
+    const html = '<p><a href="/x">Same</a> and <a href="/x">Same</a></p>';
+    const out = fixCmsSameHrefLinkLabels(html);
     expect(out).to.not.include("aria-label");
   });
 });

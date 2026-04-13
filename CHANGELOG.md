@@ -67,6 +67,67 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.3] - 2026-04-13
+
+### A11y — Focus hardening, chip contrast, same-href link labeling
+
+This release addresses SiteImprove's 2026-04-13 "potential issues" report (sia-r65 focus visibility, sia-r81 same-context same-page links — 77 occurrences total, all `cantTell`), plus a visible contrast regression on BasePropChip that was spotted in a manual review.
+
+### Chip contrast — high-contrast standard (BasePropChip + global `.v-chip`)
+
+`BasePropChip.vue` rendered category/tag chips with Vuetify's `grey lighten-3` fill and default text color (mid-gray on light-gray), failing the 4.5:1 text-contrast minimum and producing almost-invisible chips on the Research Hub articles list and inside every article body.
+
+- **`src/components/Hub/BasePropChip.vue`** — switched `color="grey lighten-3"` → `color="white"`. Removed the inline `style=""` block (moved to CSS).
+- **`src/assets/app.css`** — added a high-contrast chip rule that targets both `.v-btn.chip` (BasePropChip's rendered output) and `.v-chip.v-chip` (any direct `<v-chip>` usage anywhere on the site):
+  - Default state: white fill, black text (21:1 ratio), 2px `#222` border (12.6:1 against white)
+  - Hover / focus-visible state: inverts to black fill, white text
+  - Covers every component that uses `BasePropChip` — `JobCard`, `PublicationCard`, `SearchCardAlt`, `EventCard`, `ArticleView`, `HubCard`, `MeetingCard`, `RequiredFormCard`, `PolicyCard`, `NewsCard`, `AppView`, `BaseCardExpandable`, `DatasetView`, `FundingSingle`, `NewsSingle`, `BasePage`, and two i2i singles (18 files total)
+
+The existing runtime `fixChipContrast()` in `src/a11y/index.js` is now redundant for these elements (new CSS produces 21:1, far above its 4.5:1 gate) but left in place as defense-in-depth for any third-party Vuetify components that escape the site-wide rule.
+
+### Focus visibility — real fix + hardening (sia-r65 potential)
+
+**Real fix — `.markdown-body .anchor:focus` had no replacement.** `src/assets/github-markdown.css:21` removed focus outline on heading anchor links (the `#`-link icon next to each heading in article content) without a `:focus-visible` replacement. Keyboard users tabbing through a long article lost all focus indication when hitting these anchors. Replaced with `:focus-visible { outline: 2px solid #1565c0; outline-offset: 2px }`. The v1.5.1 audit listed three `outline:none` rules as "paired with replacements"; this fourth one was missed.
+
+**Hardening — double-ring focus indicator in `src/assets/app.css`.** The previous universal `:focus-visible { outline: 2px solid #1565c0 }` had good contrast on white (~6:1) but poor contrast on the site's navy header (`rgb(10, 58, 96)` ≈ 2:1 against `#1565c0`). Changed to:
+
+1. **Default surfaces** — blue outline + white box-shadow halo. Dark-blue inner ring + white outer ring, visible against any mid-tone background.
+2. **Dark surfaces** (`header.v-app-bar :focus-visible`, `.dark-surface :focus-visible`, plus selectors for inline `background: #0A3A60` blocks) — inverted to yellow outline + black box-shadow halo. Bright-yellow inner + dark outer, visible against navy.
+
+Writing better focus CSS doesn't change SiteImprove's sia-r65 count (the rule is `cantTell` for every focusable element regardless of styling — there's no static-analysis algorithm that can verify "the focus ring is clearly visible"). This change reduces *real* keyboard-navigation risk; the SiteImprove flags will stay in the dashboard as manual-review items.
+
+### Plugin — `fixCmsSameHrefLinkLabels` (sia-r81 proactive remediation)
+
+SiteImprove's sia-r81 flags when two or more links in the same content block point at the same href but expose different accessible names (e.g., a thumbnail link and a "Read more" link to the same article, where the thumbnail has no alt text and "Read more" carries the accessible name). Screen-reader users then hear two distinct-sounding destinations that are actually one.
+
+New plugin in `src/utils/contentSanitizer.js`:
+
+- Collects every `<a href>` in the document
+- Buckets by `(ancestor context, href)` — context is the closest `ul`/`ol`/`p`/`section`/`article`/`.markdown-body` ancestor
+- For each bucket with >1 link, computes each link's accessible name (priority: `aria-label` → visible text → wrapped `<img alt>`)
+- If the bucket has >1 distinct accessible name, stamps the longest/most-descriptive name as `aria-label` on any link whose current accessible name differs
+- Visible text is never touched — only the screen-reader-exposed name is unified
+
+Like `fixCmsDuplicateLinkText` (the same-text-different-hrefs case from v1.5.2), this runs at pre-render time via the HTML sanitizer pipeline, so the rendered DOM already has consistent labels when SiteImprove (or a screen reader) inspects it.
+
+### Tests
+
+Added three specs to `tests/unit/contentSanitizer.spec.js` covering the new plugin. 23 plugin specs total, 249 unit tests in the suite, all passing.
+
+### What was not done (and why)
+
+**sia-r65 and sia-r81 will continue to show in SiteImprove.** Both are `failed/cantTell` rules — the crawler cannot algorithmically confirm or deny them for any page element. They are tracked as part of the manual-review backlog, not the automated-remediation backlog. The fixes in this release reduce the *real-world* likelihood of a visual focus or link-naming regression, but they don't change SiteImprove's flag count.
+
+### Net result
+
+- Chip text contrast: low-contrast grey-on-grey → 21:1 black-on-white with a dark border
+- One real focus-indicator regression fixed (heading anchors)
+- Universal focus-ring visible against light, mid-tone, and dark backgrounds
+- Same-href links in same context now expose a single, consistent accessible name to screen readers
+- 249/249 unit tests passing
+
+---
+
 ## [1.5.2] - 2026-04-13
 
 ### A11y — SiteImprove remediation via pre-render CMS intercept
