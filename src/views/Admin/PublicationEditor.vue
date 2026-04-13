@@ -248,6 +248,7 @@
                   <a
                     :href="getPermaLink(singlePublication.slug)"
                     target="_blank"
+                    rel="noopener noreferrer"
                     class="permalink"
                   >
                     {{ getPermaLink(singlePublication.slug) }}</a

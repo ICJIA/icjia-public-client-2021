@@ -140,7 +140,11 @@ export default {
       window.plausible("Outbound Link: Click", {
         props: { url: "https://agency.icjia-api.cloud" + url },
       });
-      window.open(`https://agency.icjia-api.cloud${url}`, "_blank");
+      window.open(
+        `https://agency.icjia-api.cloud${url}`,
+        "_blank",
+        "noopener,noreferrer"
+      );
     },
     isItUpdated(item) {
       const created = dayjs(this.baseItemPublished);

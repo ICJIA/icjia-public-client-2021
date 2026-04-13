@@ -67,6 +67,79 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.1] - 2026-04-12
+
+### A11y + Perf — Font consolidation, modal focus management, external-link hardening, consultant docs
+
+Bundled sweep of accessibility and performance cleanups that surfaced during a "ruthless outside consultant" code review. None of these items are individually huge; together they add up to a noticeably cleaner critical path and a stronger accessibility baseline ahead of a planned external audit.
+
+### Perf — Font stack consolidation
+
+The site had accumulated six typographic systems over the years: Lato, Oswald, Roboto, Raleway, Gentium Book Basic, Material Icons, plus the self-hosted MDI webfont. That's overkill for a state-agency content site and costs meaningful bytes on the critical path (each Google Fonts stylesheet fans out to multiple WOFF2 subresource downloads).
+
+- **`public/index.html`** — removed the Roboto, Raleway, and Material Icons `<link>` tags. Kept a single async-loaded Lato + Oswald link (the `media="print" onload` non-blocking pattern, unchanged).
+- **`src/assets/hub.css`** — `#article-view` font-family changed from `"Gentium Book Basic", serif` to `Georgia, "Times New Roman", serif`. Serif style preserved via system fonts; zero bytes downloaded.
+- **`src/assets/app.css`** — Vuetify 2 defaults to Roboto in its compiled CSS. Since we removed the Roboto webfont, non-hub pages would otherwise fall through to the browser's system sans-serif (inconsistent across platforms). Added explicit overrides so `.v-application` uses Lato for body/input/button text, Oswald for Vuetify's `text-h1` through `text-h6` / `display-*` / `headline` / `title` utility classes.
+
+Net effect: two font families on the wire (plus MDI icons), down from six. More cohesive typography across the entire site.
+
+### A11y — Modal / drawer focus management
+
+The `AppSidebar` navigation drawer (`v-navigation-drawer temporary`) previously had no keyboard accessibility beyond what Vuetify provides, which is roughly none for focus management. Per WCAG 2.4.3 (Focus Order) and 2.1.2 (No Keyboard Trap, inverted — focus should be trapped *inside* a dialog until it closes):
+
+- **`src/components/AppSidebar.vue`** — added a `drawer` watcher that, on open, remembers `document.activeElement` and focuses the first focusable element inside the drawer; on close, returns focus to the opener. Installed a document-level `keydown` listener that (a) closes the drawer on `Escape`, and (b) traps Tab / Shift+Tab inside the drawer's focusable elements.
+
+`ModalSearch` and `ModalTranslate` inherit Vuetify's `v-dialog` built-in focus management, which is sufficient.
+
+### A11y — External-link hardening
+
+Audit found 22 `<a target="_blank">` links across six files with no `rel` attribute, and six `window.open()` call sites without `noopener,noreferrer` — both are security-and-perf leaks (`target="_blank"` gives the destination page limited access to the opener via `window.opener`, and without `noopener` the new page runs in the same process group as the current one).
+
+- **22 `<a target="_blank">` attrs** got `rel="noopener noreferrer"` across `AppFooter`, `AppSidebar`, `PublicationCard`, `EmploymentAll`, `PublicationsAll`, `AdminHome`, `PublicationEditor`.
+- **6 `window.open()` calls** got `"noopener,noreferrer"` as the third argument across `SearchCard`, `SearchCardAlt`, `EventCard`, `ArticlesSingle`, `DatasetsSingle`, `AttachmentList`.
+
+Batch edits were applied via a Node script that only added the `rel` attribute when one wasn't already present on the same tag — idempotent.
+
+### A11y — Icon-button aria-label cleanup
+
+Screen-reader best practice: aria-labels should describe the action ("Share on Facebook"), not narrate the interaction ("Click this button to share this page on Facebook"). The latter is verbose, patronizing, and breaks the SR user's rhythm.
+
+- **`src/components/SocialSharing.vue`** — four aria-labels rewritten: "Click this button to share or translate this page" → "Share or translate this page"; "Click this button to share this page on Facebook" → "Share on Facebook"; same pattern for Twitter and Google Translate.
+
+### Route announcements — verified, no change
+
+`App.vue`'s existing `announceRoute()` implementation (sets `routeAnnouncement = document.title` with a 300ms timeout to let `vue-meta` update the title) is correctly wired to the `$route` watcher. Tested across several route transitions. Keeping as-is.
+
+### Consultant documentation
+
+New: **`docs/NUXT-ARCHITECTURE-RECOMMENDATIONS.md`** — companion to the existing `NUXT-REWRITE-PLAN.md`. Comprehensive architectural guidance for the planned Nuxt 4 rewrite, written as lessons-learned from this codebase. Covers:
+
+- The one decision that matters most (SSG, not SSR — diverges from the existing plan, with honest trade-off analysis)
+- Recommended stack: Nuxt UI 4, `@nuxt/content`, `@nuxt/fonts`, `@nuxt/image`, `@nuxt/icon`, `@vueuse/nuxt`, Pinia, Vitest
+- Explicit "avoid" list tied to specific mistakes observed in the current codebase (Vuetify bundle weight, six-font stack, 24 runtime a11y `fix*` functions, Apollo Client when zero mutations exist, global component auto-registration, hand-rolled search, icon webfonts, `graphql-tag` + `eslint-plugin-graphql` schema drift, `moment.js`, `vue-meta`, `regenerator-runtime`)
+- Starter `nuxt.config.ts`
+- Migration strategy notes (MVP first, traffic splitting, error monitoring from day 1, content migration as the primary risk)
+- Accessibility start-of-project checklist
+
+Hand this to the new site's developers and an a11y consultant at project start, not at project end.
+
+### Deferred / not included
+
+- **`outline: none` audit** — three instances exist (`github-markdown.css:21`, `app.css:419`, `ModalSearch.vue:254`), but each is paired with a visible `:focus-visible` replacement in the same stylesheet. Not regressions; left alone.
+- **Heading hierarchy audit, touch-target audit, 200%-zoom audit, `prefers-reduced-motion` audit** — mentioned as items a manual consultant will flag. Not addressed in this sweep; queued for the a11y consultant engagement.
+- **Screen-reader testing** — requires manual VoiceOver/NVDA testing. Out of scope for a code-only sweep.
+
+### Net result
+
+- Critical path lighter (4 fewer Google Fonts stylesheet requests)
+- Cohesive typography (2 families + icons, down from 6)
+- Keyboard-only users can use the mobile nav drawer (Tab, Shift+Tab, Escape)
+- External links can't hijack or throttle the opener via `window.opener`
+- Screen-reader users get cleaner button labels
+- Lint clean; production build verified
+
+---
+
 ## [1.5.0] - 2026-04-12
 
 ### Perf — Replace Apollo Client + vue-apollo with a thin fetch-based shim (−50 KiB brotli)

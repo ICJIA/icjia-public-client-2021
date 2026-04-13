@@ -156,7 +156,8 @@ export default {
       console.log("---");
       window.open(
         `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`,
-        "_blank"
+        "_blank",
+        "noopener,noreferrer"
       );
       // console.log(hash, ext);
       //console.log(type, this.article);

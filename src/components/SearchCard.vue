@@ -166,7 +166,7 @@ export default {
     goToExternal(url) {
       //
       if (url.indexOf("://") > 0 || url.indexOf("//") === 0) {
-        window.open(url);
+        window.open(url, "_blank", "noopener,noreferrer");
         console.log("absolute: ", url);
       } else {
         this.$router.push(url);
@@ -203,7 +203,7 @@ export default {
     //   console.log("download: ", download);
     //   //console.log("ext: ", ext);
     //   if (download.includes("pdf")) {
-    //     window.open(download);
+    //     window.open(download, "_blank", "noopener,noreferrer");
     //   } else {
     //     location.href = download;
     //   }

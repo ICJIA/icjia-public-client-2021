@@ -103,7 +103,8 @@ export default {
 
       window.open(
         `https://researchhub.icjia-api.cloud/uploads/${hash}${ext}`,
-        "_blank"
+        "_blank",
+        "noopener,noreferrer"
       );
     },
   },

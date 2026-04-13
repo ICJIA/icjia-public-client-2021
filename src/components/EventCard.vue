@@ -235,7 +235,7 @@ export default {
     goToExternal(url) {
       //
       if (url.indexOf("://") > 0 || url.indexOf("//") === 0) {
-        window.open(url);
+        window.open(url, "_blank", "noopener,noreferrer");
         console.log("absolute: ", url);
       } else {
         this.$router.push(url);
@@ -246,7 +246,7 @@ export default {
       let download = `${this.$myApp.config.api.base}${file.url}`;
       //console.log("download: ", download);
       if (file.ext === ".pdf") {
-        window.open(download);
+        window.open(download, "_blank", "noopener,noreferrer");
       } else {
         location.href = download;
       }

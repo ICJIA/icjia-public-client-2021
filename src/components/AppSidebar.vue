@@ -42,6 +42,9 @@
                   :to="isLinkExternal(child.link) ? null : child.link"
                   :href="isLinkExternal(child.link) ? child.link : null"
                   :target="isLinkExternal(child.link) ? '_blank' : null"
+                  :rel="
+                    isLinkExternal(child.link) ? 'noopener noreferrer' : null
+                  "
                   class="ml-7"
                   style="color: #111"
                 >
@@ -68,6 +71,7 @@
               :to="isLinkExternal(menu.link) ? null : menu.link"
               :href="isLinkExternal(menu.link) ? menu.link : null"
               :target="isLinkExternal(menu.link) ? '_blank' : null"
+              :rel="isLinkExternal(menu.link) ? 'noopener noreferrer' : null"
             >
               <v-list-item-content>
                 <v-list-item-title style="font-size: 18px; font-weight: bold"
@@ -113,13 +117,63 @@ export default {
       };
       return isExternal(originalURL);
     },
+    // Keyboard a11y for the navigation drawer (v1.5.1):
+    //   - Esc closes the drawer
+    //   - Tab / Shift+Tab cycle only within drawer contents (focus trap)
+    // v-navigation-drawer does not handle either on its own.
+    handleKeydown(e) {
+      if (!this.drawer) return;
+      if (e.key === "Escape") {
+        this.drawer = false;
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const focusables = Array.from(
+        this.$el.querySelectorAll(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => el.offsetParent !== null);
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    },
+  },
+  watch: {
+    drawer(isOpen) {
+      if (isOpen) {
+        // Remember the element that opened the drawer so focus can
+        // return there when the drawer closes (WCAG 2.4.3 Focus Order).
+        this._prevFocus = document.activeElement;
+        this.$nextTick(() => {
+          const first = this.$el.querySelector(
+            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          );
+          if (first) first.focus();
+        });
+        document.addEventListener("keydown", this.handleKeydown);
+      } else {
+        document.removeEventListener("keydown", this.handleKeydown);
+        if (this._prevFocus && typeof this._prevFocus.focus === "function") {
+          this._prevFocus.focus();
+        }
+      }
+    },
   },
   mounted() {
     EventBus.$on("toggleSidebar", () => {
-      console.log("sidebar toggled");
       this.drawer = !this.drawer;
       EventBus.$emit("sidebarToggled", this.drawer);
     });
+  },
+  beforeDestroy() {
+    document.removeEventListener("keydown", this.handleKeydown);
   },
 };
 </script>

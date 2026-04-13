@@ -30,16 +30,23 @@
                 <a
                   href="https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free"
                   target="_blank"
+                  rel="noopener noreferrer"
                   >Font Awesome 5.x</a
                 >
               </li>
               <li>
-                <a href="https://fonts.google.com/icons" target="_blank"
+                <a
+                  href="https://fonts.google.com/icons"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Google Material Design Icons</a
                 >
               </li>
               <li>
-                <a href="https://materialdesignicons.com/" target="_blank"
+                <a
+                  href="https://materialdesignicons.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Material Design Icons</a
                 >
               </li>
@@ -47,13 +54,19 @@
             <h2>External Info</h2>
             <ul>
               <li>
-                <a href="https://analytics.google.com" target="_blank"
+                <a
+                  href="https://analytics.google.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Google Analytics</a
                 >
               </li>
 
               <li>
-                <a href="https://material.io/design" target="_blank"
+                <a
+                  href="https://material.io/design"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Google Material Design Specifications</a
                 >
               </li>
@@ -61,31 +74,47 @@
                 <a
                   href="https://search.google.com/search-console"
                   target="_blank"
+                  rel="noopener noreferrer"
                   >Google Search Console</a
                 >
               </li>
               <li>
-                <a href="https://jamstack.org/" target="_blank"
+                <a
+                  href="https://jamstack.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Jamstack (site architecture)</a
                 >
               </li>
               <li>
-                <a href="https://strapi.io/" target="_blank"
+                <a
+                  href="https://strapi.io/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Strapi (Headless CMS)</a
                 >
               </li>
               <li>
-                <a href="https://vuejs.org/" target="_blank"
+                <a
+                  href="https://vuejs.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Vue.js (JS Framework)</a
                 >
               </li>
               <li>
-                <a href="https://vuejs.org/" target="_blank"
+                <a
+                  href="https://vuejs.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Vuetify (UI Framework)</a
                 >
               </li>
               <li>
-                <a href="https://nuxt.com/" target="_blank"
+                <a
+                  href="https://nuxt.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Nuxt 3 (Web Framework)</a
                 >
               </li>

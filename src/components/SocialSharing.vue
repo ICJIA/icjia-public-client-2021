@@ -8,7 +8,7 @@
       :open-on-hover="false"
       absolute
       fixed
-      aria-label="Click this button to share or translate this page."
+      aria-label="Share or translate this page"
     >
       <template v-slot:activator>
         <v-tooltip left>
@@ -19,7 +19,7 @@
               dark
               fab
               v-on="on"
-              aria-label="Click this button to share or translate this page."
+              aria-label="Share or translate this page"
             >
               <v-icon v-if="socialSharing"> mdi-close </v-icon>
               <v-icon v-else>mdi-account-group</v-icon>
@@ -37,7 +37,7 @@
             small
             color="#3b5998"
             v-on="on"
-            aria-label="Click this button to share this page on Facebook."
+            aria-label="Share on Facebook"
           >
             <v-icon>mdi-facebook</v-icon>
           </v-btn>
@@ -52,7 +52,7 @@
             small
             color="#1DA1F2"
             v-on="on"
-            aria-label="Click this button to share this page on Twitter."
+            aria-label="Share on Twitter"
           >
             <v-icon>mdi-twitter</v-icon>
           </v-btn>
@@ -67,7 +67,7 @@
             small
             color="#4285F4"
             v-on="on"
-            aria-label="Click this button to translate this page on Google."
+            aria-label="Translate this page with Google Translate"
             @click="openTranslationModal()"
           >
             <v-icon>mdi-web</v-icon>

@@ -10,7 +10,10 @@
                   <h1 v-html="render(page.title)"></h1>
                   <p>
                     Visit the
-                    <a href="https://illinois.jobs2web.com/" target="_blank"
+                    <a
+                      href="https://illinois.jobs2web.com/"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       >State of Illinois web-based electronic hiring system</a
                     >
                     for job opportunities in Illinois government. This system
@@ -74,6 +77,7 @@
                         Please check back soon or subscribe to the
                         <a
                           target="_blank"
+                          rel="noopener noreferrer"
                           href="https://visitor.r20.constantcontact.com/manage/optin?v=001MqUcqqvjwLCJXlLMSWbTe3zHHmEQgFeBuHvBcJWTbwgrxFbDSGx4HSUPpI6DJWMUPgbljtLxffqIcGFTgCnr-auak88ybvRxpoJlTMGPtZs%3D"
                           >CJ Dispatch</a
                         >
@@ -119,6 +123,7 @@
                     <a
                       href="https://agency.icjia-api.cloud/uploads/ICJIA_Research_Internship_Flyer_Updated_June_2022_bc5d48166b.pdf"
                       target="_blank"
+                      rel="noopener noreferrer"
                       >Download the latest internship flyer >></a
                     >
                   </p>

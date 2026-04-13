@@ -105,6 +105,7 @@
                     ><v-btn
                       :href="item.fileURL"
                       target="_blank"
+                      rel="noopener noreferrer"
                       x-small
                       @click="registerDownload(item)"
                       >Download PDF<v-icon right>mdi-download</v-icon></v-btn
@@ -131,7 +132,10 @@
           <div class="mt-5" style="font-size: 12px; text-align: center">
             Individual publications are also available for download from the
             ICJIA Document Archive:
-            <a href="https://archive.icjia.cloud" target="_blank"
+            <a
+              href="https://archive.icjia.cloud"
+              target="_blank"
+              rel="noopener noreferrer"
               >https://archive.icjia.cloud</a
             >
           </div></v-row

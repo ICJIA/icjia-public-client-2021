@@ -71,6 +71,7 @@
                 href="https://archive.icjia.cloud"
                 style="color: #fff; background: none"
                 target="_blank"
+                rel="noopener noreferrer"
                 >Document Archive</a
               >
 
@@ -104,6 +105,7 @@
                 href="https://visitor.r20.constantcontact.com/manage/optin?v=001MqUcqqvjwLCJXlLMSWbTe3zHHmEQgFeBuHvBcJWTbwgrxFbDSGx4HSUPpI6DJWMUPgbljtLxffqIcGFTgCnr-auak88ybvRxpoJlTMGPtZs%3D"
                 style="color: #fff; background: none"
                 target="_blank"
+                rel="noopener noreferrer"
                 >Subscribe to CJ Dispatch</a
               >
               |

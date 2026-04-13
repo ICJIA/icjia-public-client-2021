@@ -50,7 +50,7 @@
           <span style="font-weight: 700">Download&nbsp;</span><br />
           <!-- <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
-              <a :href="item.fileURL" target="_blank" v-bind="attrs" v-on="on"
+              <a :href="item.fileURL" target="_blank" rel="noopener noreferrer" v-bind="attrs" v-on="on"
                 >{{ item.title }}
               </a>
             </template>
@@ -60,6 +60,7 @@
             :href="item.fileURL"
             @click="registerDownload(item)"
             target="_blank"
+            rel="noopener noreferrer"
             >{{ item.title }}
           </a>
           &nbsp;<v-chip x-small style="font-weight: 900">{{
@@ -83,7 +84,10 @@
         Individual publications, as well as old meeting agendas, minutes, and
         materials, are always available for download from the ICJIA Document
         Archive:
-        <a href="https://archive.icjia.cloud" target="_blank"
+        <a
+          href="https://archive.icjia.cloud"
+          target="_blank"
+          rel="noopener noreferrer"
           >https://archive.icjia.cloud</a
         >
       </div>

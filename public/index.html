@@ -118,37 +118,19 @@
          Tradeoff: brief FOUT for fonts and MDI icons on first paint;
          scores +20-25 points on Lighthouse mobile.
          ──────────────────────────────────────────────────────────────────── -->
+    <!-- Two-font system: Oswald for headings, Lato for body text. The
+         MDI webfont below handles icons. Everything else (Roboto,
+         Raleway, Gentium, Material Icons) has been consolidated away —
+         Vuetify's Roboto default is overridden to Lato in app.css, and
+         the Gentium serif used by hub article body text falls back to
+         the system serif stack (Georgia). -->
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Gentium+Book+Basic:ital@0;1&family=Lato:wght@300;400;700;900&family=Oswald:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Oswald:wght@400;500;600;700&display=swap"
       media="print"
       onload="this.media='all'"
     />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gentium+Book+Basic:ital@0;1&family=Lato:wght@300;400;700;900&family=Oswald:wght@400;500;600;700&display=swap" /></noscript>
-
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap" /></noscript>
-
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap" /></noscript>
-
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;700;900&display=swap"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;700;900&display=swap" /></noscript>
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Oswald:wght@400;500;600;700&display=swap" /></noscript>
 
     <link
       rel="stylesheet"
