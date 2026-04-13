@@ -10,11 +10,16 @@ Public website for the Illinois Criminal Justice Information Authority (ICJIA).
 
 - **Framework:** Vue 2.6 / Vuetify 2.5
 - **Build:** Vue CLI 4 / Webpack 4
-- **CMS:** Strapi 3 (GraphQL API)
-- **Search:** Fuse.js (client-side full-text search)
+- **CMS:** Strapi 3 (GraphQL, accessed via a ~160-line fetch-based client in `src/gql-client.js` as of v1.5.0 — Apollo stack removed)
+- **Date handling:** Day.js (migrated from moment in v1.4.0)
+- **Icons:** MDI webfont, self-hosted at `/fonts/mdi/` with `font-display: swap` (v1.4.2)
+- **Typography:** Lato (body) + Oswald (headings), consolidated in v1.5.1 from six font families
+- **Search:** Fuse.js (client-side full-text search, Web Worker)
 - **Hosting:** Netlify
-- **Analytics:** Plausible
+- **Analytics:** Plausible (self-hosted)
 - **Node:** 22.x in production (Netlify); 16.x or newer for local development
+
+**Planning for the successor site:** see `docs/NUXT-REWRITE-PLAN.md` and `docs/NUXT-ARCHITECTURE-RECOMMENDATIONS.md` for the Nuxt 4 rewrite plan and lessons-learned guidance.
 
 ## Requirements
 
@@ -126,7 +131,7 @@ Reports are saved to `reports/`.
 | **CORS** | **Restricted** | Locked to `https://icjia.illinois.gov`; no wildcard |
 | **XSS prevention** | **Hardened** | DOMPurify sanitization at `renderToHtml()` chokepoint covers all `v-html` bindings; route params regex-sanitized; `v-html` directive globally overridden with content pipeline |
 | **CSS injection** | **Mitigated (P2)** | DOMPurify now allows `<style>` tags and `style` attributes for CMS layout support. DOMPurify strips `javascript:` URLs and event handlers but CSS `url()` exfiltration is possible if CMS account is compromised. Mitigated by CMS auth; would be fully blocked by CSP |
-| **GraphQL injection** | **Mitigated** | Route params sanitized to `[a-zA-Z0-9_-]` before query interpolation; Apollo parameterized queries used elsewhere |
+| **GraphQL injection** | **Mitigated** | Route params sanitized to `[a-zA-Z0-9_-]` before query interpolation; fetch-based parameterized queries (variables, not string interpolation) used elsewhere — see `src/gql-client.js` |
 | **External links** | **Mostly hardened** | `rel="noopener noreferrer"` on all markdown-rendered links; 3 template links to first-party domains missing `rel` (P3) |
 | **Auth tokens** | **localStorage (P1)** | JWT in localStorage; HttpOnly cookies require Strapi 3 backend migration |
 | **Data exposure** | **Hardened (v1.3.33)** | Build-time `purifySearchMeta` strips staff names from all 9 per-type JSONs and `searchIndex.json` before publish. Biographies themselves are unmodified. |
@@ -389,7 +394,7 @@ The pipeline intercepts content at every entry point:
 | Markdown bodies | `sanitizeContent()` in `Markdown.js` and `markdownIt.js` |
 | ResearchHub API (axios) | `sanitizeResponse()` interceptor |
 | Publications API (axios) | `deepSanitize()` on response data |
-| Apollo GraphQL | `sanitizeLink` afterware in `vue-apollo.js` |
+| GraphQL responses | `deepSanitize` afterware in `src/gql-client.js` (recursively sanitizes every string in every response) |
 | `v-html` directive | Global override in `main.js` auto-sanitizes |
 | Template interpolation | `\| sanitize` filter and global `this.sanitize()` mixin |
 | Page `<title>` tags | `titleTemplate` in `App.vue` uses `sanitizeText()` |
@@ -492,7 +497,9 @@ For the next several months until the rewrite ships, this is the best shape the 
 │   ├── router/             Vue Router configuration
 │   ├── services/           API and utility services
 │   ├── utils/              Content sanitizer (SiteImprove intercept) and helpers
-│   └── plugins/            Vuetify and Apollo plugins
+│   ├── mixins/             Global mixins (e.g. apollo-shim.js — reads components' `apollo: {}` blocks)
+│   ├── gql-client.js       Fetch-based GraphQL client (replaces Apollo, v1.5.0)
+│   └── plugins/            Vuetify, Day.js plugins
 ├── public/                 Static assets, generated API data, and llms.txt
 ├── tests/
 │   ├── unit/               Mocha/Chai unit tests (security, a11y, search, etc.)
