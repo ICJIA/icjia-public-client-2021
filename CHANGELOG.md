@@ -67,6 +67,65 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.0] - 2026-04-12
+
+### Perf — Replace Apollo Client + vue-apollo with a thin fetch-based shim (−50 KiB brotli)
+
+Minor-version bump to signal the dependency break. No user-visible behavior change — every page that consumed CMS content still does — but the Apollo Client stack is out of the tree and the 41 consumer components weren't touched. A survey of the codebase before starting this migration showed: zero mutations, zero subscriptions, zero `$apollo.query`/`$apollo.mutate` imperative calls, `cache-first` default with 20+ views explicitly setting `fetchPolicy: "no-cache"`. The only Apollo features actually realized on this site were (a) the in-memory response cache, which was opted out of by most consumers, and (b) the `sanitizeLink` afterware that deep-sanitizes every string in every response. Both are preserved.
+
+### Architecture
+
+**Two new files replace the Apollo stack entirely:**
+
+- **`src/gql-client.js`** (~160 LOC) — fetch-based GraphQL client. Plain `POST` to the Strapi endpoint with a timed-out `AbortController` (8s), single retry on transient network errors, in-flight request deduplication, in-memory response cache (Map-keyed by endpoint + query + variables), and the `deepSanitize` afterware moved verbatim from the old `src/vue-apollo.js`. Exports a `gql` template tag that returns the raw GraphQL string — no AST parsing on the client, source-side syntax unchanged (ESLint's graphql plugin still validates `gql` templates against `schema.json` at lint time). Rich errors carry `.graphQLErrors`, `.networkError`, `.status`, `.timeout` flags; all errors also dispatch a `gql-error` CustomEvent on `window` so future observability can attach without code changes.
+
+- **`src/mixins/apollo-shim.js`** (~80 LOC) — Vue global mixin that reads each component's `this.$options.apollo` block and dispatches queries through `runQuery()`. Registered once in `main.js` via `Vue.mixin(gqlShim)`. Installs a reactive `this.$apollo = Vue.observable({ loading: false })` in `beforeCreate` on any component that declares `apollo: {}`, so the ~21 templates that bind `:loading="$apollo.loading"` continue working identically to vue-apollo. Preserves support for `query`, `variables` (function or object), `result()`, `error()`, `fetchPolicy`, `prefetch` (accepted for syntax parity; no-op without SSR), and `context.uri` (per-query endpoint override used by 3 Hub views that hit `researchhub.icjia-api.cloud` instead of the default `agency.icjia-api.cloud`).
+
+**What changed in consumer code: one line per `src/graphql/*.js` file.**
+
+All 15 GraphQL-query files had their `import gql from "graphql-tag"` replaced with `import { gql } from "@/gql-client"`. The `gql\`query { ... }\`` syntax is unchanged. **Zero changes were required in any of the 41 components** that declare `apollo: {}` blocks — the shim reads the same option shape vue-apollo did.
+
+### Enhancements beyond what the old Apollo config had
+
+Five small additions that make the fetch-based client strictly better than the vue-apollo configuration it replaces:
+
+1. **Timeout** — `AbortController` with an 8-second cap. Apollo had no timeout; a slow Strapi could hang indefinitely.
+2. **Retry once on transient network errors** — only on connection-level failures (`TypeError`, `AbortError`), not on HTTP 4xx/5xx or GraphQL errors (those are deterministic). Apollo's retry-link was never wired here.
+3. **Request deduplication** — identical simultaneous in-flight queries share a single promise. Matches Apollo's built-in behavior.
+4. **Rich errors** — `.graphQLErrors` array alongside `.message`, `.networkError` flag, `.status` for HTTP failures, `.timeout` for aborts. `error()` callback handlers continue accessing `err.message` (back-compat) but can now also inspect the rest.
+5. **Telemetry hook** — every error dispatches a `gql-error` CustomEvent on `window`. Zero cost if nothing listens; ready for Sentry / Plausible / custom analytics without touching client code.
+
+### Changes
+
+- **Deleted:** `src/vue-apollo.js`
+- **New:** `src/gql-client.js`, `src/mixins/apollo-shim.js`
+- **Modified:** `src/main.js` (register the mixin, drop `apolloProvider` from root Vue instance), `vue.config.js` (dropped `pluginOptions.apollo`), 15 `src/graphql/*.js` files (one-line import change)
+- **`package.json`:** uninstalled `vue-apollo`, `vue-cli-plugin-apollo`, `graphql-tag`. Kept `graphql` + `eslint-plugin-graphql` (dev-time schema validation; no runtime impact).
+
+### Build-output verification (v1.4.3 → v1.5.0)
+
+- `chunk-vendors.*.js` uncompressed: 913 KiB → **678 KiB (−235 KiB, −26%)**
+- `chunk-vendors.*.js` brotli: 233 KiB → **183 KiB (−50 KiB, −21%)**
+- `chunk-vendors.*.js` gzip: 299 KiB → **231 KiB (−68 KiB, −23%)**
+- Build succeeds; lint clean; all 41 consumer components work unmodified.
+
+### Cumulative bundle trajectory (v1.3.47 baseline → v1.5.0)
+
+- v1.3.47 vendor brotli: ~487 KiB
+- v1.5.0 vendor brotli: **183 KiB (−304 KiB, −62%)** across the moment-timezone trim, lazy component registration, dead-dep removal, moment→Day.js migration, MDI self-host, and Apollo removal.
+
+### What was deliberately not replicated from Apollo
+
+- **Normalized cross-query cache** — Apollo normalizes responses by `__typename + id` and updates every view that references the same entity when any query mutates it. This codebase has zero mutations, so no consumer exists for this feature. Safe loss.
+- **Subscriptions / websockets** — `wsEndpoint` was `null` in the old vue-apollo config. Never used.
+- **Operation AST parsing** — `graphql-tag` parsed templates into an AST. Our `gql` returns the raw string. Strapi receives and parses it server-side exactly as before.
+
+### Migration tested across
+
+Home, About (BasePage), News listing, News single, Events listing, Events single, Funding listing, Funding single, Hub home, Hub articles listing (`/articles`), Hub datasets listing, Hub apps listing, Meetings, Required Forms, Staff, Publications, IRB. All routes that use GraphQL render correctly. Race condition on the `/search/:query` (tag-click) route that surfaced during migration testing was fixed in v1.4.x before this ship.
+
+---
+
 ## [1.4.3] - 2026-04-12
 
 ### Perf — Kill render-blocking `@import`; preload home splash; drop eager regenerator-runtime

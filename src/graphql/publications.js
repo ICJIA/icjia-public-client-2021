@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import { gql } from "@/gql-client";
 
 const GET_ALL_PUBLICATIONS_QUERY = gql`
   query allPubs {

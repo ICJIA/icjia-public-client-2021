@@ -1,5 +1,5 @@
 /* eslint-disable graphql/template-strings */
-import gql from "graphql-tag";
+import { gql } from "@/gql-client";
 
 const GET_ALL_NEWS_QUERY = gql`
   query news {

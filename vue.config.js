@@ -31,9 +31,6 @@ module.exports = {
         minRatio: 0.8,
       },
     },
-    apollo: {
-      enableEngine: true,
-    },
   },
   transpileDependencies: ["vuetify", "nanoid", "fuse.js"],
 };

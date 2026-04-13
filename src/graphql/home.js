@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import { gql } from "@/gql-client";
 /* eslint-disable graphql/template-strings */
 const GET_HOME = gql`
   query Home(

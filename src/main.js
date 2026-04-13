@@ -4,7 +4,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
-import { createProvider } from "./vue-apollo";
+import gqlShim from "@/mixins/apollo-shim";
 import "@/assets/app.css";
 import "@/assets/github-markdown.css";
 import "@/components/_globals";
@@ -28,6 +28,11 @@ Vue.mixin({
     sanitize: sanitizeText,
   },
 });
+
+// GraphQL shim: reads `apollo: {}` option blocks on components and
+// dispatches queries through @/gql-client (fetch-based). Replaces
+// vue-apollo without any changes to the 41 consumer components.
+Vue.mixin(gqlShim);
 
 // Override v-html to auto-run content through the sanitizer pipeline.
 // Any v-html="expr" will sanitize the value before inserting into the DOM.
@@ -94,7 +99,6 @@ new Vue({
   router,
   store,
   vuetify,
-  apolloProvider: createProvider(),
   render: (h) => h(App),
 }).$mount("#app");
 

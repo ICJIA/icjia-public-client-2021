@@ -2,7 +2,7 @@
 /* Querying different GraphQL server -- no way for multiple schemas. */
 /* See: https://github.com/apollographql/apollo-tooling/issues/1535 */
 
-import gql from "graphql-tag";
+import { gql } from "@/gql-client";
 const ignoredGqlTag = gql;
 
 const GET_ARTICLE_COUNT_QUERY = ignoredGqlTag`
