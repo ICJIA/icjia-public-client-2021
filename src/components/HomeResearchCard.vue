@@ -88,13 +88,10 @@
               v-if="isItNew(item)"
               label
               small
-              color="#0D4474"
               class="mr-1"
               style="margin-top: -2px"
             >
-              <span style="color: #fff !important; font-weight: 400">
-                NEW!
-              </span>
+              <span style="color: #000000 !important; font-weight: 700">NEW!</span>
             </v-chip>
             {{ item.title }}
           </div></v-card-text

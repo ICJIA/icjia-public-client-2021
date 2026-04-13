@@ -67,6 +67,29 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.6] - 2026-04-13
+
+### A11y — Fix white-on-white "NEW!" chips on home cards
+
+A contrastcap audit of the production site surfaced a `ratio: 1` failure on the homepage "NEW!" badge. Root cause: the v1.5.x chip-contrast remediation added a blanket `.v-chip.v-chip { background:#fff !important; color:#000 !important }` rule in `app.css` to standardize all chips to a high-contrast white-fill / black-text / 2px-black-border treatment, but three card components (`HubCard.vue`, `HomeCardNews.vue`, `HomeResearchCard.vue`) still passed `color="#0D4474"` on their "NEW!" chips with an inner `<span style="color:#fff !important">`. The blanket CSS overrode the navy background but inline `!important` kept the text white — producing white-on-white, invisible text.
+
+Fix: removed the `color="#0D4474"` prop and the inline white color on all three components. Chips now inherit the standard treatment — white background, 2px black border, bold black "NEW!" text (21:1 contrast, passes AAA).
+
+- `src/components/Hub/HubCard.vue` — homepage research-hub cards
+- `src/components/HomeCardNews.vue` — homepage news-tabbed cards
+- `src/components/HomeResearchCard.vue` — homepage research cards
+- `src/components/NewsCard.vue` — news listing cards (same pattern, now consistent)
+
+Also audited with contrastcap across 7 representative page types (home, about, news post, researchhub landing, publications, events, staff). The remaining contrastcap "failures" on the interior `.v-tabs.context` bar are **false positives** — live computed styles are `rgb(0,0,0)` on `rgb(238,238,238)` (~18.6:1, passes AA). contrastcap's DOM traversal walks through Vuetify's transparent wrappers (`.v-slide-group`, `.v-tabs`, `.v-toolbar__content`) and its fallback pixel sampler picks up the hero image behind the sticky app bar. Hardened the traversal by painting `#eee` on `.v-tabs.context` and slide-group wrappers in `app.css`, which eliminates the false positives without changing rendering.
+
+### Verification
+
+- axe-core AA: 0 violations on homepage (localhost)
+- All four affected chip components updated consistently
+- Tab-bar hardening: purely additive CSS, no visual change
+
+---
+
 ## [1.5.5] - 2026-04-13
 
 ### UX — Search overhaul + first batch of audit-driven quick wins

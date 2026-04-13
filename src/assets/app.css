@@ -462,6 +462,17 @@ a[target="_blank"]::after {
   color: #ffffff !important;
 }
 
+/* Context tab bar — paint solid bg on the tabs wrapper so contrast auditors
+   (which walk the DOM for a non-transparent ancestor) resolve #eee instead
+   of pixel-sampling the hero image behind the sticky app-bar. Rendering is
+   unchanged; this just makes the background discoverable via computed style. */
+#contextBar .v-tabs.context,
+#contextBar .v-tabs.context .v-tabs-bar,
+#contextBar .v-tabs.context .v-slide-group__wrapper,
+#contextBar .v-tabs.context .v-slide-group__content {
+  background-color: #eeeeee;
+}
+
 /* WCAG 1.4.4 — prevent text clipping in Vuetify form fields at 200% zoom.
    Vuetify 2 uses fixed pixel heights on inputs which clip text when resized.
    (SiteImprove sia-r83) */
