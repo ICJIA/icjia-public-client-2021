@@ -67,6 +67,14 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.7] - 2026-04-13
+
+### Docs — Manager-facing Nuxt 4 upgrade proposal
+
+Added `docs/WEBSITE-UPGRADE-PROPOSAL.md` and `.docx` — a stakeholder-facing proposal for rewriting the Vue 2 site on Nuxt 4. Documentation only; no code, build, or runtime changes. The proposal is in-flight and being circulated for stakeholder feedback before scoping.
+
+---
+
 ## [1.5.6] - 2026-04-13
 
 ### A11y — Fix white-on-white "NEW!" chips on home cards
