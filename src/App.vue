@@ -17,7 +17,7 @@
         id="context-bar"
         :key="`top-context-${$route.fullPath}`"
       ></AppNavContext>
-      <div id="content">
+      <div id="content" tabindex="-1">
         <router-view
           :key="`routerView-${$route.fullPath}`"
           class="page mb-12"

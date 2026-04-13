@@ -67,6 +67,70 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.4] - 2026-04-13
+
+### A11y — Skip-to-content link actually moves focus now
+
+The `SkipLink` component has shipped on this site for years as a `<router-link to="#content" @click="$vuetify.goTo('#content')">`. On paper, that's a WCAG 2.4.1 skip link. In practice it was broken for keyboard users:
+
+1. `$vuetify.goTo('#content')` **scrolls** to the target but does not move DOM focus. After activating the skip link, `document.activeElement` was still the skip link itself.
+2. `<div id="content">` in `App.vue` had no `tabindex`, so even if code had called `focus()` on it, the call would have been a no-op — non-interactive elements can't receive programmatic focus without `tabindex`.
+3. The next Tab press therefore landed on the element *after the skip link in DOM order* (the hamburger/menu button or the home logo router-link) — back into the header, not into the main content. The skip link scrolled the viewport but the keyboard user ended up tabbing through the whole header again.
+
+This was caught while verifying skip-link behavior across a deterministic sample of 29 pages spanning every section (home, research articles, news, publications, grants, meetings, events, jobs, IRB, biographies, units) — pulled from `public/api/*.json`. Before the fix, 0/29 moved focus to `#content`. After the fix, 29/29 do.
+
+### Changes
+
+- **`src/components/SkipLink.vue`** — rewrote as `<a href="#content">` (no router-link), with an `onSkip` handler that: (a) prevents the default anchor jump, (b) calls `target.scrollIntoView({ behavior: 'smooth' })`, (c) calls `target.focus({ preventScroll: true })`, and (d) `history.replaceState` updates the URL hash so the Back button behaves. Removed the now-redundant `aria-label="Skip to content"` — the visible text provides the accessible name, carrying both risks a sia-r38 "Visible label and accessible name do not match" flag. Keyboard `Enter` and `Space` both trigger the handler.
+
+- **`src/App.vue`** — added `tabindex="-1"` to `<div id="content">`. This makes it a programmatic focus target without putting it in the natural Tab order.
+
+- **`src/assets/app.css`** — rewrote the `.skiplink` rules. Previously the `:focus` state contained an invalid declaration (`position: 0px;` — CSS position takes keywords, not lengths) that did nothing. Replaced with a clean clip-path/clip pattern (rest: 1×1px clipped, absolutely positioned; focus: expands to `top: 8px; left: 8px`, white background, black text, blue 2px outline, subtle drop shadow). Added `:focus-visible` as well as `:focus` so it works with mouse-navigation suppression.
+
+- **`#content:focus` / `#content:focus-visible`** — suppress the focus outline on the wrapper div. The wrapper is only a focus *target* for the skip link; the visible focus ring should land on whatever interactive element the user tabs to next *inside* the content, not on the outer div.
+
+### Test coverage
+
+- Existing unit tests in `tests/unit/components.spec.js` updated: `aria-label` assertion replaced with visible-text assertion; `to` attribute assertion replaced with `href` attribute assertion (aligned with the router-link → plain-anchor change). 249/249 tests pass.
+
+- New behavioral verification (not a unit test — ran once via Chrome DevTools MCP during development): 29 URLs sampled deterministically from `public/api/*.json` (1 home + 3 each from hub, posts, publications, grants, meetings, events, jobs + 3 IRB/pages + 3 biographies + 1 unit). Script: navigate to each, focus the skip link, click it, assert `document.activeElement === document.getElementById('content')`. Result: 29/29 pass.
+
+### URL list used for verification
+
+```
+/
+/researchhub/articles/restore-reinvest-and-renew-r3-cohort-one-scale-and-reach-report/
+/researchhub/articles/a-content-analysis-of-illinois-school-bullying-policies/
+/researchhub/articles/police-knowledge-attitudes-and-beliefs-about-opioid-addiction-treatment-and-harm-reduction-a-survey-of-illinois-officers/
+/news/pritzker-administration-awards-3-5-million-in-restore-reinvest-and-renew-program-grants-in-response-to-summer-violence/
+/news/icjia-budget-committee-funding-actions/
+/news/icjia-sfy-22-annual-report/
+/about/publications/co-responder-program-overview-east-st-louis-embrace/
+/about/publications/an-analysis-of-factors-associated-with-suicide-among-justice-involved-illinois-violent-death-decedents/
+/about/publications/sex-offenses-sex-offender-registration-task-force-final-report/
+/grants/funding/2020-casa/
+/grants/funding/2020-byrne-drug/
+/grants/funding/2019-infonet/
+/news/meetings/uniform-statewide-crime-statistics-task-force-agenda-april-14-2026/
+/news/meetings/community-based-corrections-task-force-meeting-october-29-2025/
+/news/meetings/authority-board-meeting-may-8-2025/
+/events/webinar-the-pandemic-s-impact-on-illinois-criminal-justice-and-victim-services/
+/events/labor-day-2021/
+/events/webinar-policing-in-an-era-of-reform-nov-3-2021/
+/about/employment/criminal-justice-specialist-i-chicago-office-vpi-unit-req-54665/
+/about/employment/bilingual-capacity-building-coach-contractual-req-47433/
+/about/employment/ari-researcher-contractual-req-41949/
+/researchhub/hub-overview/
+/irb/irb-members-and-staff/
+/irb/irb-policies-and-procedures/
+/about/biographies/sharyn-adams/
+/about/biographies/keith-calloway/
+/about/biographies/maria-di-meglio/
+/about/units/federal-and-state-grants-unit/
+```
+
+---
+
 ## [1.5.3] - 2026-04-13
 
 ### A11y — Focus hardening, chip contrast, same-href link labeling

@@ -33,11 +33,15 @@ describe("SkipLink component", () => {
     expect(link.exists()).to.be.true;
   });
 
-  it("has correct aria-label", () => {
+  it("exposes 'Skip to content' as the accessible name via visible text", () => {
+    // The v1.5.3 rewrite removed aria-label because the visible text is
+    // already "Skip to content" — carrying both would risk sia-r38
+    // "Visible label and accessible name do not match" and adds nothing
+    // for screen readers.
     const router = new VueRouter();
     const wrapper = shallowMount(SkipLink, { localVue, vuetify, router });
     const link = wrapper.find("#skip-to-content");
-    expect(link.attributes("aria-label")).to.equal("Skip to content");
+    expect(link.text().trim()).to.equal("Skip to content");
   });
 
   it("has correct text content", () => {
@@ -52,11 +56,15 @@ describe("SkipLink component", () => {
     expect(wrapper.element.tagName).to.equal("NAV");
   });
 
-  it("links to #content", () => {
+  it("links to #content via href (not router-link)", () => {
+    // The v1.5.3 rewrite switched from <router-link to="#content"> to a
+    // plain <a href="#content"> so the skip action doesn't trigger a
+    // Vue Router navigation — hash-only navigation should stay within
+    // the current route and let the @click handler manage focus.
     const router = new VueRouter();
     const wrapper = shallowMount(SkipLink, { localVue, vuetify, router });
     const link = wrapper.find("#skip-to-content");
-    expect(link.attributes("to")).to.equal("#content");
+    expect(link.attributes("href")).to.equal("#content");
   });
 });
 
