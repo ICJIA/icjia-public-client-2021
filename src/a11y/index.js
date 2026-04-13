@@ -528,6 +528,39 @@ const fixLabelInName = function () {
       }
     }
   });
+
+  // Buttons/links with aria-label whose only visible "text" is a Material
+  // icon ligature (the icon name as textContent, replaced by a glyph via
+  // CSS font). SiteImprove reads the ligature text as the visible label
+  // and flags a mismatch. Fix: hide the icon descendant from the a11y
+  // tree so aria-label becomes the single accessible name.
+  const iconCarriers = document.querySelectorAll(
+    "button[aria-label], a[aria-label], [role=button][aria-label]"
+  );
+  iconCarriers.forEach((el) => {
+    const ariaLabel = (el.getAttribute("aria-label") || "").trim();
+    if (!ariaLabel) return;
+    const icons = el.querySelectorAll(
+      ".v-icon, .material-icons, .mdi, i.fa, [class*='mdi-']"
+    );
+    if (!icons.length) return;
+    // Visible text with icons stripped
+    let stripped = el.textContent || "";
+    icons.forEach((i) => {
+      stripped = stripped.replace(i.textContent || "", "");
+    });
+    stripped = stripped.trim();
+    // If the non-icon visible text is empty or much shorter than the
+    // icon text contribution, the icon glyph is dominating the visible
+    // label. Hide the icon(s) from the a11y tree.
+    if (stripped.length === 0 || stripped.length < ariaLabel.length / 2) {
+      icons.forEach((i) => {
+        if (!i.hasAttribute("aria-hidden")) {
+          i.setAttribute("aria-hidden", "true");
+        }
+      });
+    }
+  });
 };
 
 // Fix form fields missing labels — Vuetify 2.x v-text-field and v-select

@@ -82,12 +82,14 @@
 
         <span v-if="showLink">
           |
-          <v-icon
-            class="link"
+          <button
+            type="button"
+            class="job-link-btn"
             aria-label="Go to job posting"
             @click.stop.prevent="$router.push(item.fullPath)"
-            >link</v-icon
-          ></span
+          >
+            <v-icon aria-hidden="true" class="link">link</v-icon>
+          </button></span
         >
       </div>
       <span class="mb-8" style="color: #222; font-size: 14px; font-weight: 400">
@@ -275,5 +277,17 @@ export default {
 .program-title:hover,
 .link:hover {
   text-decoration: underline;
+}
+.job-link-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  vertical-align: middle;
+  color: inherit;
+}
+.job-link-btn:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
 }
 </style>

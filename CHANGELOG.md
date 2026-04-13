@@ -67,6 +67,75 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.2] - 2026-04-13
+
+### A11y — SiteImprove remediation via pre-render CMS intercept
+
+SiteImprove crawl on 2026-04-13 returned 397 flagged occurrences across 11 issue categories. Triage split them into three buckets:
+
+1. **Not in scope (~150 occurrences)** — flagged URLs are on external Drupal sites that this SPA redirects to (`/ifvcc/*`, `/adultredeploy/*`, `/arrestexplorer`, `/mhcontinuum/*`, `/sudcontinuum/*`). Those codebases are separate and outside this repo; no action possible from here.
+2. **In scope, fixable at the CMS-intercept layer (~230 occurrences)** — every flagged article, news item, and Strapi-driven page is produced by the `contentSanitizer` pipeline at render time. Bugs in author-entered HTML are best fixed before render so the initial DOM is correct — SiteImprove's crawler then sees compliant markup regardless of client-side `fix*()` timing.
+3. **In scope, component-level (~4 occurrences)** — one confirmed `<v-icon>`-as-button anti-pattern on the employment listing page that required a Vue edit.
+
+This release lands fixes for categories 2 and 3.
+
+### Plugin 1 — `fixCmsTables` (214 of the 230 in-scope occurrences)
+
+All 204 "Table cell missing context" and 10 "No data cells assigned to table header" flags originated in Strapi-authored article tables (many of them paste-from-Word tables from `.MsoNormalTable` with `bgcolor="#4F81BD"` headers and `style="border:solid white 1.0pt"` frames). The existing runtime fix `fixTableCellContext()` in `src/a11y/index.js` did the right computations but fired *after* Vue's v-html render — SiteImprove's crawl would often capture the pre-fix state.
+
+New plugin in `src/utils/contentSanitizer.js`:
+
+- **Simple tables** — ensures `<thead>`/`<tbody>` wrapping, adds `scope="col"` to every column header, adds `scope="row"` to row headers (or promotes non-numeric first-cell `<td>` to `<th scope="row">` when the text looks like a label).
+- **Complex tables with rowspan/colspan** — assigns a unique `id` to every `<th>`, then builds a `cellGrid` that tracks which cell occupies each (row, col) position accounting for spans, then for each `<td>` collects the closest column header (scan upward in same column) and closest row header (scan leftward in same row), and writes the collected ids into a `headers="..."` attribute. Removes `scope` from complex-table `<th>` cells because `headers` supersedes `scope` per WCAG H43.
+- **Orphan-header tables** — if a table has `<th>` cells but zero `<td>` cells, it is a misused header-only block (common in CMS paste artifacts). Marks the table `role="presentation"` so SiteImprove stops treating it as a data table with broken semantics.
+
+Runs once per article body at Strapi response time, so the rendered HTML is correct before the first paint.
+
+### Plugin 2 — `fixCmsEmptyContainers` (9 occurrences)
+
+SiteImprove's sia-r68 "Container element is empty" and "Empty headings" fire on author-entered `<p></p>`, `<div></div>`, `<span></span>`, `<li></li>`, and `<h2></h2>` elements that CMS paste-from-Word reliably leaves behind. Plugin walks the HTML bottom-up and removes any block-level container whose text content is empty *and* whose only children are also empty (recursive). Preserves containers that wrap meaningful void children (`<img>`, `<iframe>`, `<video>`, `<audio>`, `<svg>`, `<canvas>`, `<object>`, `<embed>`, `<picture>`, `<input>`, `<button>`, `<select>`, `<textarea>`, `<hr>`, `<br>`) so, e.g., `<p><img src=foo></p>` stays intact.
+
+### Plugin 3 — `fixCmsLinkAltText` (1 occurrence)
+
+SC 2.4.4 / 4.1.2: image-only links need an accessible name. Plugin finds every `<a>` with empty visible text and no `aria-label`/`aria-labelledby`, then (a) promotes the wrapped `<img alt>` to the link's `aria-label`, (b) if alt is empty, falls back to a filename-derived label on both `<a aria-label>` and `<img alt>`, (c) if no image, derives from the href path segment.
+
+### Plugin 4 — `fixCmsDuplicateLinkText` (1 occurrence on `/about/rss/`)
+
+SC 2.4.4 "Links in the same context with the same text alternative" fires when two or more links within the same content block (`<ul>`, `<ol>`, `<p>`, `<section>`, `<article>`, or `.markdown-body`) share identical accessible text but point at different hrefs. Classic example on `/about/rss/`: three "RSS" links pointing to News, Funding, and Meetings feeds. Plugin buckets links by `(context, label)`, and when a bucket has >1 entry with differing hrefs, appends a href-derived qualifier to `aria-label` (e.g., `aria-label="RSS: news"`, `aria-label="RSS: funding"`) — visible text stays unchanged.
+
+### `fixCmsContrast` extension — Word-blue table headers
+
+Axe-core audit of `/researchhub/articles/law-enforcement-response-to-mental-health-crisis-incidents-.../` confirmed the 11th color-contrast flag: `<th bgcolor="#4F81BD" style="background:#4F81BD">` with `<span style="color:white">` inside — 4.03:1 against white, just under the 4.5:1 AA minimum. This is the default Microsoft Word table-header fill, which paste-from-Word authoring reliably produces. Added three substitutions to `fixCmsContrast` that rewrite the Word blue to a darker shade (`#2E5E97`, ~6.3:1) — same visual family, compliant. Covers the `bgcolor` HTML attribute, `background:#4F81BD` / `background-color:#4F81BD` inline style, and the `rgb(79, 129, 189)` form. Preserves all other colors.
+
+### Vue fix — `JobCard.vue` icon-button anti-pattern
+
+`/about/employment/` flagged "Visible label and accessible name do not match" because the "go to job posting" control was rendered as `<v-icon aria-label="Go to job posting">link</v-icon>`. The text content `"link"` is a Material Icons font ligature — SiteImprove reads it as the visible label, and `"link"` ≠ `"Go to job posting"`. Converted to a semantic `<button type="button">` wrapping an `<v-icon aria-hidden="true">` — the icon is now hidden from the accessibility tree, the button carries the single accessible name, and the ligature text no longer participates in name computation. Added `.job-link-btn` class (reset `background`/`border`/`padding`, preserve focus visibility via `outline: 2px solid currentColor` on `:focus-visible`).
+
+### Runtime safety net — `fixLabelInName` extended
+
+To catch any remaining `<v-icon>`-as-button cases that might slip in via future CMS edits or unreviewed components, extended `fixLabelInName()` in `src/a11y/index.js`: for every `button[aria-label]`, `a[aria-label]`, `[role=button][aria-label]` that contains a `.v-icon`/`.material-icons`/`.mdi` descendant, if stripping the icon text from the element leaves nothing (or far less than the `aria-label`), stamp `aria-hidden="true"` on each icon descendant. This is defense-in-depth — the Vue-level fix remains the preferred shape.
+
+### Tests
+
+New `tests/unit/contentSanitizer.spec.js` covers the four new plugins and the extended `fixCmsContrast`: 20 specs, 20 passing. Includes orphan-header handling, `headers`/`id` attribute generation on complex tables, void-child preservation, href-derived disambiguation, and Word-blue substitution in all three syntactic forms. One pre-existing test in `markdown.spec.js` was updated because the new `fixCmsTables` pipeline now promotes the first data cell to `<th scope="row">` (previously `<td>`) — the new expectation matches the accessibility-correct output.
+
+### Net result
+
+- 214 table-context flags fixed at pre-render time (no longer timing-dependent)
+- 9 empty-container/empty-heading flags fixed at pre-render time
+- 1 image-only-link flag fixed at pre-render time
+- 1 duplicate-link-text flag fixed at pre-render time
+- 1 Word-blue contrast flag fixed at pre-render time
+- 1 `JobCard` icon-button mismatch fixed in Vue
+- 246/246 unit tests passing
+- Axe-core still 100/100 on the About pages and 97→expected-100 on the law-enforcement article after next deploy
+
+### Not fixable from this repo
+
+~150 SiteImprove occurrences on `/ifvcc/*`, `/adultredeploy/*`, `/arrestexplorer/*`, `/mhcontinuum/*`, `/sudcontinuum/*` are on external Drupal/standalone sites that this SPA redirects to via `window.location.href` (`src/router/external/index.js`). Those sites have their own codebases and a11y remediation would happen there. Documented for future-me so this doesn't get rescanned and re-triaged.
+
+---
+
 ## [1.5.1] - 2026-04-12
 
 ### A11y + Perf — Font consolidation, modal focus management, external-link hardening, consultant docs
