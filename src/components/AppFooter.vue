@@ -26,7 +26,7 @@
               >
                 <img
                   src="/icjia-logo.png"
-                  alt="ICJIA Home"
+                  alt=""
                   width="100"
                   height="70"
                   loading="lazy"

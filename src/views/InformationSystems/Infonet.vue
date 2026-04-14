@@ -14,7 +14,9 @@
               <div v-html="render(content.body)"></div>
               <div class="text-center mt-10" style="font-weight: 900">
                 Visit the new InfoNet website for more information:
-                <a href="https://infonet.icjia.illinois.gov"
+                <a
+                  href="https://infonet.icjia.illinois.gov"
+                  style="text-decoration: underline"
                   >https://infonet.icjia.illinois.gov</a
                 >
               </div>

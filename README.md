@@ -85,23 +85,44 @@ npm run test
 
 ### Accessibility Audit (axe-core)
 
-WCAG 2.1 Level AA compliance testing across all content types. Uses axe-core via Puppeteer.
+WCAG 2.2 Level AA compliance testing across every page in `public/sitemap.xml` using axe-core (the same engine the `axecap` MCP wraps).
 
 ```bash
-# List available content types and page counts
-npm run audit
+# Full-site audit — every URL in sitemap.xml, 5 parallel workers, resumable
+node scripts/a11y-sitemap-audit.mjs --concurrency=5
 
-# Audit a specific content type (5 random samples)
-npm run audit -- posts
+# Start a fresh audit (archives the prior run under reports/a11y-full-audit/archive/<date>/)
+node scripts/a11y-sitemap-audit.mjs --fresh --concurrency=5
 
-# Audit with more samples
-npm run audit -- hub --sample 10
+# Include axe-core best-practice rules alongside WCAG A/AA
+node scripts/a11y-sitemap-audit.mjs --fresh --tags=wcag2a,wcag2aa,wcag21a,wcag21aa,wcag22aa,best-practice
 
-# Audit all content types
-npm run audit -- all --sample 5
+# Re-run only the pages that errored last time
+node scripts/a11y-sitemap-audit.mjs --retry
+
+# Rebuild summary from existing per-page JSON without re-auditing
+node scripts/a11y-sitemap-audit.mjs --summary
+
+# Smoke test on a handful of URLs
+node scripts/a11y-sitemap-audit.mjs --limit=10
 ```
 
-Results are saved to `reports/accessibility-audit-results/`.
+Requires dev server on `localhost:8080` (`npm run dev`). Results land in:
+
+- `reports/a11y-full-audit/_summary.md` — human-readable, rule × page matrix
+- `reports/a11y-full-audit/_summary.csv` — same data, CSV
+- `reports/a11y-full-audit/_manifest.ndjson` — one line per completed page (the resume key — re-running without `--fresh` skips anything already recorded here)
+- `reports/a11y-full-audit/pages/<slug>.json` — full axe result per page
+- `reports/a11y-full-audit/_failures.ndjson` — unreachable / timed-out URLs
+- `reports/a11y-full-audit/archive/<date>/` — prior full runs, preserved by `--fresh`
+
+Legacy sampled auditor (kept for quick content-type checks):
+
+```bash
+npm run audit              # list content types
+npm run audit -- posts     # 5 random samples of one type
+npm run audit -- all --sample 20
+```
 
 ### Broken Link Checker
 
@@ -185,7 +206,7 @@ View the [security policy](SECURITY.md).
 
 This site is audited with two complementary tools that produce **different results for the same pages**. This is expected — not a sign of inadequate remediation.
 
-**axe-core** (primary, open-source) runs in-browser after full page render, including all runtime accessibility fixes. It follows WCAG success criteria closely and only flags clear violations. This site passes axe-core with **zero violations across 157 audited pages** (see "Sampling strategy" below).
+**axe-core** (primary, open-source) runs in-browser after full page render, including all runtime accessibility fixes. It follows WCAG success criteria closely and only flags clear violations. This site passes axe-core with **zero violations across all 2,367 pages in `sitemap.xml`** (full-site audit, April 14 2026 — see "Full-site audit record" below).
 
 **SiteImprove** (secondary, enterprise) crawls pages remotely on a schedule. It uses a proprietary rule set (`sia-r` prefix) that applies some WCAG rules more broadly than the spec requires and includes ambiguous "cantTell" results in its violation count. SiteImprove flags issues in three categories:
 
@@ -215,52 +236,66 @@ This site is audited with two complementary tools that produce **different resul
 
 | Metric | Score |
 |---|---|
-| Full axe-core audit (157 pages, 30/type, 5 content types) | **157/157 zero violations (100%)** |
+| **Full-site axe-core audit — every URL in `sitemap.xml` (v1.5.9, April 14 2026)** | **2,367 / 2,367 zero violations (100%)** |
+| WCAG tags audited | `wcag2a` + `wcag2aa` + `wcag21a` + `wcag21aa` + `wcag22aa` |
+| axe-core version | 4.11.2 |
+| Runtime | 28m 15s (5 parallel workers) |
+| Errors / unreachable | 0 |
 | Prior Lighthouse a11y audit (93 pages, desktop + mobile) | **93/93 score 100/100** |
-| Prior sampled audit (57 pages, 10 content types) | **57/57 zero violations (100%)** |
 | Regression tests (Playwright) | **37/37 passing** |
 | Unit tests — a11y functions (Mocha/Chai) | **38/38 passing** |
 | Unit tests — security (Mocha/Chai) | **41/41 passing** |
-| Automated score (WCAG 2.1 AA) | **A / 100%** |
+| Automated score (WCAG 2.2 AA) | **A / 100%** |
 
-### Sampling strategy (157 pages of 2,356)
+### Full-site audit record (April 14 2026)
 
-This site has **2,356 dynamic pages** generated from CMS content across 10 content types. The most recent axe-core audit tested **157 pages** (30 randomly sampled per content type plus index/listing pages). This sampling approach is used because:
+Every single URL in `public/sitemap.xml` (2,367 URLs) was audited in one pass with axe-core 4.11.2 at WCAG 2.2 Level AA conformance. Zero violations, zero errors. Full per-page JSON is preserved under `reports/a11y-full-audit/archive/2026-04-14/` for audit-trail purposes.
 
-1. **Shared templates** — all 172 grant pages render through the same Vue component, all 251 Research Hub articles use the same `ArticleView.vue`, etc. If 5 random grant pages pass, the remaining 167 will pass too — they execute identical code paths.
+**Seven pages originally failed on first pass; all were remediated before the final archived run:**
 
-2. **Runtime a11y fixes are global** — the 27 post-render fix functions in `src/a11y/index.js` run on every page. A fix like `fixTableCellContext()` applies to all CMS tables regardless of which article they appear in.
+| Page | Rule | Fix |
+|---|---|---|
+| researchhub/articles/illinois-firearm-prohibitors-… | `list` | `fixCmsInvalidListChildren` — wrap non-`<li>` children of `<ul>`/`<ol>` |
+| researchhub/articles/firearm-restraining-orders… | `td-headers-attr` | `fixCmsTables` now strips stale `headers` from TH elements |
+| researchhub/articles/law-enforcement-response-to-mental-health-crisis… | `color-contrast` | `fixCmsOrphanWhite` — propagate dark TD background onto the inner span so axe resolves contrast correctly |
+| grants/funding/2019-ifvcc | `scrollable-region-focusable` | `fixCmsFocusablePre` — add `tabindex="0"` to `<pre>` blocks |
+| grants/funding/nchip-LE-for-live-scan-equipment… | `color-contrast` | `fixCmsContrast` rewrites `color: red` (`#ff0000`, 3.99:1) to `#c00` (5.89:1) |
+| innovation-and-digital-services/infonet | `link-in-text-block` | Added `text-decoration: underline` in `Infonet.vue` |
+| grants/funding (listings) | `color-contrast` | `text-color="white"` on deadline v-chips + `app.css` override scoped to `:not(.white--text)` |
 
-3. **Time** — a full audit of all 2,356 pages takes ~4 hours (~6 seconds/page). The sampled audit takes ~6 minutes.
+All CMS-content fixes go through the pre-render pipeline (`src/utils/contentSanitizer.js`) so the HTML that ships is already correct — no flash of inaccessible content, no post-render DOM mutations, SSR-safe if the site later migrates to Nuxt.
 
-4. **CMS content variations** (e.g., inline `color: red` in one article) are the only source of page-specific issues. These are handled by runtime fixes that apply globally, not per-page.
+### Re-running the full audit
 
-**A full audit of all 2,356 pages is possible** and can be run when needed:
+Six months from now, on any branch, against any state of the sitemap:
 
 ```bash
-# Full audit — ALL pages, ALL content types (~4 hours)
-npm run audit -- all --sample 9999
-
-# Larger sample — 20 per type (~20 minutes)
-npm run audit -- all --sample 20
-
-# Full audit of one content type
-npm run audit -- hub --sample 9999
+npm run dev     # in one terminal — serves on :8080
+node scripts/a11y-sitemap-audit.mjs --fresh --concurrency=5
 ```
 
-| Content Type | Total Pages | Default Sample |
-|---|---|---|
-| publications | 1,101 | 5 |
-| meetings | 275 | 5 |
-| hub (articles) | 251 | 5 |
-| jobs | 218 | 5 |
-| posts (news) | 180 | 5 |
-| grants | 172 | 5 |
-| biographies | 114 | 5 |
-| pages | 29 | 5 |
-| units | 10 | 5 |
-| events | 6 | 5 |
-| **Total** | **2,356** | **~57 (default) / 157 (latest audit)** |
+`--fresh` archives the prior run to `reports/a11y-full-audit/archive/<YYYY-MM-DD>/` before starting, so no history is lost. If the run is interrupted, omit `--fresh` to resume from the manifest.
+
+### Why "full audit, not sampled"
+
+An earlier version of this page documented a sampled strategy (157 pages of 2,356). That strategy was correct for its time — pages within a content type share templates, and runtime fixes propagate globally. But manager-facing compliance records require exhaustive coverage: "every page was audited" is a stronger claim than "a representative sample passed." The full-site runner above produces that record in ~28 minutes, so there is no reason not to run it.
+
+Page counts by content type at the most recent audit (derived from `sitemap.xml`):
+
+| Content Type | Total Pages |
+|---|---|
+| publications | 1,101 |
+| meetings | 275 |
+| hub (articles) | 251 |
+| jobs | 218 |
+| posts (news) | 180 |
+| grants | 172 |
+| biographies | 114 |
+| pages | 29 |
+| units | 10 |
+| events | 6 |
+| static / system | 11 |
+| **Total** | **2,367** |
 
 ### Accessibility Features
 
@@ -278,7 +313,7 @@ npm run audit -- hub --sample 9999
 
 #### The problem: why axe-core and SiteImprove disagree
 
-**axe-core** runs inside the browser after JavaScript executes. It sees the same DOM the user sees — including SPA route changes, async content, and runtime accessibility fixes. This site scores **zero violations on axe-core across 157 audited pages**.
+**axe-core** runs inside the browser after JavaScript executes. It sees the same DOM the user sees — including SPA route changes, async content, and runtime accessibility fixes. This site scores **zero violations on axe-core across all 2,367 pages in `sitemap.xml`** (full-site audit, April 14 2026).
 
 **SiteImprove** is a remote crawler. It fetches pages server-side and attempts to execute JavaScript, but it cannot reliably parse Single Page Applications. On an SPA, much of the content is rendered client-side by JavaScript frameworks (Vue, React, Angular) after the initial page load. SiteImprove often sees partial or stale DOM states, leading it to flag issues that don't exist for real users. This is a fundamental architectural limitation — **not a deficiency in the site's accessibility**.
 

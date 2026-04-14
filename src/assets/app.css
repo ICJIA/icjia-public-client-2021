@@ -144,6 +144,50 @@ a:hover {
   text-decoration: underline;
 }
 
+/* Download-link buttons: styled as buttons but semantically real <a href>
+   so the browser's native download fires on click, works with keyboard,
+   right-click save, middle-click new tab, and doesn't depend on Vue's
+   click binding inside v-data-table scoped slots (which was unreliable
+   and silently broke downloads in v1.5.8). */
+.download-link-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  background: #fff;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #000;
+  text-decoration: none;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.download-link-btn:hover,
+.download-link-btn:focus-visible {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+  text-decoration: none;
+  outline: none;
+}
+
+.download-link-btn:hover .v-icon,
+.download-link-btn:focus-visible .v-icon {
+  color: #fff !important;
+}
+
+.required-form-cell {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.required-form-cell:hover {
+  text-decoration: underline;
+}
+
 .sr-only {
   border: 0 !important;
   clip: rect(0 0 0 0) !important;
@@ -429,8 +473,8 @@ a[target="_blank"]::after {
    2px dark border — contrast ratio 21:1 on the text, 12.6:1 on the border
    against white surfaces. Also applied to `.v-chip` to cover any direct
    v-chip usage across cards, tables, and content blocks. */
-.v-btn.chip,
-.v-chip.v-chip {
+.v-btn.chip:not(.white--text),
+.v-chip.v-chip:not(.white--text) {
   background-color: #ffffff !important;
   color: #000000 !important;
   border: 2px solid #222222 !important;
@@ -441,24 +485,33 @@ a[target="_blank"]::after {
   letter-spacing: 0.5px;
 }
 
-.v-btn.chip .v-btn__content,
-.v-chip .v-chip__content {
+.v-btn.chip:not(.white--text) .v-btn__content,
+.v-chip:not(.white--text) .v-chip__content {
   color: #000000 !important;
 }
 
-.v-btn.chip:hover,
-.v-btn.chip:focus-visible,
-.v-chip.v-chip:hover,
-.v-chip.v-chip:focus-visible {
+.v-btn.chip:not(.white--text):hover,
+.v-btn.chip:not(.white--text):focus-visible,
+.v-chip.v-chip:not(.white--text):hover,
+.v-chip.v-chip:not(.white--text):focus-visible {
   background-color: #000000 !important;
   color: #ffffff !important;
   border-color: #000000 !important;
 }
 
-.v-btn.chip:hover .v-btn__content,
-.v-btn.chip:focus-visible .v-btn__content,
-.v-chip:hover .v-chip__content,
-.v-chip:focus-visible .v-chip__content {
+.v-btn.chip:not(.white--text):hover .v-btn__content,
+.v-btn.chip:not(.white--text):focus-visible .v-btn__content,
+.v-chip:not(.white--text):hover .v-chip__content,
+.v-chip:not(.white--text):focus-visible .v-chip__content {
+  color: #ffffff !important;
+}
+
+/* Deadline/Expired chips (BaseCardExpandable) opt out of the b/w
+   standardization via text-color="white" → .white--text. The Vuetify
+   green.darken-4 / red.darken-4 background provides >7:1 contrast
+   against white content text; make the content color explicit so
+   axe-core reads it directly at the span level. */
+.v-chip.v-chip.white--text .v-chip__content {
   color: #ffffff !important;
 }
 

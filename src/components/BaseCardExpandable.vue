@@ -42,6 +42,7 @@
           <v-chip
             small
             color="green darken-4"
+            text-color="white"
             style="font-size: 12px; font-weight: 700"
             v-if="new Date(addOneDayToDate(item.end)) >= new Date()"
             >&nbsp;Deadline: {{ item.end | dateFormatAlt }}&nbsp;</v-chip
@@ -50,6 +51,7 @@
             small
             style="font-size: 12px; font-weight: 700"
             color="red darken-4"
+            text-color="white"
             v-if="new Date(addOneDayToDate(item.end)) < new Date()"
           >
             &nbsp;Expired: {{ item.end | dateFormatAlt }} &nbsp;

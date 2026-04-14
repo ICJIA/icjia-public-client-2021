@@ -47,10 +47,23 @@ public/employment-json1.json
 public/searchIndex.json
 public/sitemap.xml
 .codegpt
+.claude/
 
 # Generated reports (timestamped)
 reports/accessibility-audit-results/
 reports/broken-links-report-*.csv
+
+# Full-site a11y audit — commit only the archived summary/manifest/urls
+# files (the audit-trail record). Per-page JSONs are ~52MB and noisy.
+# Transient in-progress state at the top level is also ignored.
+reports/a11y-full-audit/pages/
+reports/a11y-full-audit/archive/*/pages/
+reports/a11y-full-audit/_manifest.ndjson
+reports/a11y-full-audit/_failures.ndjson
+reports/a11y-full-audit/_summary.md
+reports/a11y-full-audit/_summary.csv
+reports/a11y-full-audit/_urls.txt
+reports/a11y-full-audit/_run.log
 
 # Test artifacts
 test-results/

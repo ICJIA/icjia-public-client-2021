@@ -44,14 +44,15 @@
           <span style="font-size: 12px">{{ niceBytes(item.size) }}</span>
         </template>
         <template v-slot:item.name="{ item }">
-          <span
-            style="font-size: 14px; font-weight: 400; color: #222"
-            @click.stop.prevent="routeTo(item.url)"
+          <a
+            :href="fileUrl(item.url)"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="attachment"
+            @click.stop="trackDownload(item.url)"
           >
-            <span class="attachment">
-              {{ item.name }}
-            </span>
-          </span>
+            {{ item.name }}
+          </a>
         </template>
       </v-data-table>
       <v-data-table
@@ -69,14 +70,15 @@
           <span style="font-size: 12px">{{ niceBytes(item.size) }}</span>
         </template>
         <template v-slot:item.name="{ item }">
-          <span
-            style="font-size: 14px; font-weight: 400; color: #222"
-            @click.stop.prevent="routeTo(item.url)"
+          <a
+            :href="fileUrl(item.url)"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="attachment"
+            @click.stop="trackDownload(item.url)"
           >
-            <span class="attachment">
-              {{ item.name }}
-            </span>
-          </span>
+            {{ item.name }}
+          </a>
         </template>
       </v-data-table>
     </div>
@@ -134,17 +136,22 @@ export default {
     };
   },
   methods: {
-    routeTo(url) {
-      console.log(url);
-      window.plausible("file_download", { props: { url: url } });
-      window.plausible("Outbound Link: Click", {
-        props: { url: "https://agency.icjia-api.cloud" + url },
-      });
-      window.open(
-        `https://agency.icjia-api.cloud${url}`,
-        "_blank",
-        "noopener,noreferrer"
-      );
+    fileUrl(url) {
+      return `https://agency.icjia-api.cloud${url}`;
+    },
+    trackDownload(url) {
+      // Fire-and-forget analytics; do NOT block the browser's native download
+      // (no preventDefault — the anchor's href triggers the download directly).
+      try {
+        if (typeof window.plausible === "function") {
+          window.plausible("file_download", { props: { url } });
+          window.plausible("Outbound Link: Click", {
+            props: { url: this.fileUrl(url) },
+          });
+        }
+      } catch (_e) {
+        /* analytics failure must never block downloads */
+      }
     },
     isItUpdated(item) {
       const created = dayjs(this.baseItemPublished);

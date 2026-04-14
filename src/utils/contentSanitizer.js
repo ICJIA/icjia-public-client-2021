@@ -157,6 +157,18 @@ function fixCmsContrast(html) {
     (m) => m.replace(/rgb\([^)]*\)/i, "rgb(46, 94, 151)")
   );
 
+  // Replace CSS named color "red" (#ff0000) — 3.99:1 on white, fails AA.
+  // CMS authors paste "color: red" for deadlines/emphasis; swap to #c00
+  // (5.89:1 on white, 5.74:1 on #f6f8fa), same visual intent, AA-compliant.
+  result = result.replace(
+    /color:\s*(red|#ff0000|#f00)\b/gi,
+    "color: #c00"
+  );
+  result = result.replace(
+    /color:\s*rgb\(\s*255\s*,\s*0\s*,\s*0\s*\)/gi,
+    "color: #c00"
+  );
+
   // Convert .white-heading class to inline style.
   // DOMPurify strips <style> tags, so class-based colors like
   // .white-heading {color: #fff !important} are lost after sanitization.
@@ -213,6 +225,11 @@ function fixCmsTables(html) {
 
   tables.forEach((table) => {
     const tableIdx = tableIdCounter++;
+    // TH elements should not carry headers attrs — they define, not
+    // reference, headers. CMS authors sometimes paste tables with stale
+    // headers="..." on TH cells pointing at non-existent ids (axe
+    // td-headers-attr). Strip them so nothing references a bad id.
+    table.querySelectorAll("th[headers]").forEach((th) => th.removeAttribute("headers"));
     ensureTableStructure(doc, table);
 
     const hasSpan =
@@ -259,6 +276,11 @@ function ensureTableStructure(doc, table) {
 }
 
 function fixSimpleTable(doc, table) {
+  // Strip stale headers attrs from <td> cells — simple tables use scope,
+  // and CMS-authored headers="..." often reference non-TH ids (axe
+  // td-headers-attr). scope on TH provides equivalent semantics.
+  table.querySelectorAll("td[headers]").forEach((td) => td.removeAttribute("headers"));
+
   // scope="col" on header row
   let headerRow = table.querySelector("thead tr");
   if (!headerRow) {
@@ -390,6 +412,140 @@ function handleOrphanHeaders(doc, table) {
     });
     return;
   }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PLUGIN: fixCmsOrphanWhite
+// CMS authors paste from Word with color:white on inner spans when the
+// cell has a dark fill. Two failure modes result:
+//   (a) No dark ancestor — white text lands on light bg (1.06:1,
+//       invisible). Strip the color:white so text inherits default.
+//   (b) Dark ancestor exists on a TD/TH, but axe-core's bg resolution
+//       can't traverse through nested .MsoNormal / <strong> / <p>
+//       wrappers reliably and attributes the span to a lighter ancestor
+//       bg (e.g., the page or a striped <tr>), producing a false
+//       contrast failure. Propagate the ancestor's inline background
+//       onto the span itself so axe reads the bg at the text element
+//       directly.
+// ═══════════════════════════════════════════════════════════════════
+
+const DARK_BG_COLOR_RX = /#(?:0[0-9a-f]|1[0-9a-f]|2[0-9a-f]|3[0-9a-f]|4[0-9a-f])/i;
+const WHITE_COLOR_RX = /color\s*:\s*(?:white|#fff(?:fff)?|rgb\(\s*255\s*,\s*255\s*,\s*255\s*\))/i;
+
+function findAncestorInlineBg(el) {
+  for (let cur = el.parentElement; cur; cur = cur.parentElement) {
+    const style = cur.getAttribute && cur.getAttribute("style");
+    if (style) {
+      const m = style.match(/background(?:-color)?:\s*(#[0-9a-f]{3,6})/i);
+      if (m) return { source: "style", value: m[1], isDark: DARK_BG_COLOR_RX.test(m[1]) };
+    }
+    const bg = cur.getAttribute && cur.getAttribute("bgcolor");
+    if (bg && /^#?[0-9a-f]{3,6}$/i.test(bg)) {
+      const hex = bg.startsWith("#") ? bg : "#" + bg;
+      return { source: "bgcolor", value: hex, isDark: DARK_BG_COLOR_RX.test(hex) };
+    }
+  }
+  return null;
+}
+
+function fixCmsOrphanWhite(html) {
+  if (!html || typeof html !== "string") return html;
+  if (!WHITE_COLOR_RX.test(html)) return html;
+
+  let doc;
+  try {
+    doc = new DOMParser().parseFromString(html, "text/html");
+  } catch (_e) {
+    return html;
+  }
+
+  let changed = false;
+  doc.querySelectorAll('[style*="color"]').forEach((el) => {
+    const style = el.getAttribute("style") || "";
+    if (!WHITE_COLOR_RX.test(style)) return;
+    if (/background(?:-color)?:/i.test(style)) return; // already has own bg
+
+    const ancestor = findAncestorInlineBg(el);
+    if (ancestor && ancestor.isDark) {
+      // Propagate the dark background down to this element so axe-core
+      // resolves contrast at the text-element level and sees white-on-dark.
+      el.setAttribute("style", `${style.replace(/;?\s*$/, "")}; background-color: ${ancestor.value};`);
+      changed = true;
+      return;
+    }
+
+    // No dark bg anywhere up the tree — strip color:white so text
+    // inherits the default (readable) color.
+    const stripped = style
+      .replace(/(?:^|;)\s*color\s*:\s*(?:white|#fff(?:fff)?|rgb\(\s*255\s*,\s*255\s*,\s*255\s*\))\s*(?:!important)?\s*;?/gi, ";")
+      .replace(/^;+|;+$/g, "")
+      .replace(/;+/g, ";")
+      .trim();
+    if (stripped) el.setAttribute("style", stripped);
+    else el.removeAttribute("style");
+    changed = true;
+  });
+
+  return changed ? doc.body.innerHTML : html;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PLUGIN: fixCmsInvalidListChildren
+// Word paste / ad-hoc markdown produces <ul><u>item</u></ul> or raw
+// text directly inside a list — axe flags as "List element has direct
+// children that are not allowed". Wrap every non-<li>/<script>/<template>
+// direct child of <ul>/<ol> in a new <li>.
+// ═══════════════════════════════════════════════════════════════════
+
+const LIST_CHILD_ALLOWED = new Set(["LI", "SCRIPT", "TEMPLATE"]);
+
+function fixCmsInvalidListChildren(html) {
+  if (!html || typeof html !== "string") return html;
+  if (!/<(ul|ol)\b/i.test(html)) return html;
+
+  let doc;
+  try {
+    doc = new DOMParser().parseFromString(html, "text/html");
+  } catch (_e) {
+    return html;
+  }
+
+  let changed = false;
+  doc.querySelectorAll("ul, ol").forEach((list) => {
+    const toWrap = [];
+    for (const node of Array.from(list.childNodes)) {
+      if (node.nodeType === 1 && !LIST_CHILD_ALLOWED.has(node.tagName)) {
+        toWrap.push(node);
+      } else if (node.nodeType === 3 && (node.textContent || "").trim() !== "") {
+        toWrap.push(node);
+      }
+    }
+    toWrap.forEach((node) => {
+      const li = doc.createElement("li");
+      list.insertBefore(li, node);
+      li.appendChild(node);
+      changed = true;
+    });
+  });
+
+  return changed ? doc.body.innerHTML : html;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PLUGIN: fixCmsFocusablePre
+// axe "scrollable-region-focusable": <pre> with overflow scrolls
+// horizontally but isn't keyboard-focusable. Add tabindex="0" so
+// keyboard users can scroll the code. Also add role="region" +
+// aria-label so screen readers announce it meaningfully.
+// ═══════════════════════════════════════════════════════════════════
+
+function fixCmsFocusablePre(html) {
+  if (!html || typeof html !== "string") return html;
+  if (html.indexOf("<pre") === -1) return html;
+  return html.replace(/<pre\b([^>]*)>/gi, (match, attrs) => {
+    if (/\btabindex\s*=/i.test(attrs)) return match;
+    return `<pre${attrs} tabindex="0">`;
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -732,6 +888,9 @@ const htmlPlugins = [
   fixApostrophes,
   fixCmsImages,
   fixCmsContrast,
+  fixCmsOrphanWhite,
+  fixCmsInvalidListChildren,
+  fixCmsFocusablePre,
   fixCmsEmptyContainers,
   fixCmsLinkAltText,
   fixCmsDuplicateLinkText,

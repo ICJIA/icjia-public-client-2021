@@ -116,11 +116,19 @@
                         }}</a>
                       </td>
                       <td style="font-size: 14px" class="text-center">
-                        <v-btn x-small @click="downloadFile(item)"
-                          >Download&nbsp;<v-icon right color="blue"
-                            >mdi mdi-download-circle-outline</v-icon
-                          ></v-btn
+                        <a
+                          :href="fileUrl(item.attachments[0])"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="download-link-btn"
+                          :aria-label="`Download ${item.title} (opens in new tab)`"
+                          @click="trackDownload(item.attachments[0])"
                         >
+                          Download
+                          <v-icon right color="blue" small
+                            >mdi mdi-download-circle-outline</v-icon
+                          >
+                        </a>
                       </td>
                     </tr>
                   </tbody>
@@ -167,12 +175,20 @@ export default {
     EventBus.$emit("context-label", "Rules");
   },
   methods: {
-    downloadFile(item) {
-      console.log("click to download", item.attachments[0].url);
-      window.open(
-        "https://agency.icjia-api.cloud" + item.attachments[0].url,
-        "_blank"
-      );
+    fileUrl(attachment) {
+      return attachment && attachment.url
+        ? "https://agency.icjia-api.cloud" + attachment.url
+        : "#";
+    },
+    trackDownload(attachment) {
+      // Native <a href> drives the download; this only logs analytics.
+      try {
+        if (typeof window.plausible === "function") {
+          const url = this.fileUrl(attachment);
+          window.plausible("file_download", { props: { url } });
+          window.plausible("Outbound Link: Click", { props: { url } });
+        }
+      } catch (_e) { /* ignore — never block downloads */ }
     },
   },
   apollo: {

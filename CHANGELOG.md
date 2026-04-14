@@ -67,6 +67,82 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.9] - 2026-04-14
+
+### A11y — Full-site axe-core audit: 2,367 / 2,367 pages clean (WCAG 2.2 AA, zero violations)
+
+Expanded the accessibility compliance record from a sampled audit (157 pages) to a **full-site audit of every URL in `public/sitemap.xml` (2,367 pages)**, per a manager-directed requirement to document audit coverage at the per-page level. The run completed in 28 minutes 15 seconds with zero violations and zero errors against axe-core 4.11.2 at WCAG 2.2 Level AA conformance (`wcag2a` + `wcag2aa` + `wcag21a` + `wcag21aa` + `wcag22aa`).
+
+The first pass surfaced 7 dirty pages; all were remediated in this release before the final archived run.
+
+### New — `scripts/a11y-sitemap-audit.mjs`
+
+Standalone Node runner that audits every URL in the sitemap in parallel (default 5 workers), resumable via NDJSON manifest. Uses `@axe-core/playwright`-equivalent injection (`axe.min.js` via `page.addScriptTag` + `axe.run()`) so results match what the `axecap` MCP produces.
+
+- `--fresh` — archive prior run to `reports/a11y-full-audit/archive/<YYYY-MM-DD>/` and start over.
+- `--retry` — re-audit only URLs that errored last time.
+- `--summary` — rebuild `_summary.md`/`_summary.csv` from per-page JSONs without re-auditing.
+- `--tags=...` — override the default WCAG tag set (e.g., add `best-practice`).
+- `--concurrency=N` — parallel browser contexts (1–8, default 4). Keep at ≤5 against the prod Strapi API to avoid saturating GraphQL.
+
+Output files (stable contract across re-runs):
+- `reports/a11y-full-audit/_summary.md` + `_summary.csv` — rule × pages matrix
+- `reports/a11y-full-audit/_manifest.ndjson` — one line per completed page, the resume key
+- `reports/a11y-full-audit/pages/<slug>.json` — full axe result per page
+- `reports/a11y-full-audit/archive/<YYYY-MM-DD>/` — prior runs, preserved
+
+### CMS content pipeline — new plugins in `contentSanitizer.js`
+
+Five new plugins close the gaps that surfaced as violations in the first audit pass. All run pre-render against CMS HTML (not post-render DOM fixes), so the HTML that ships is already correct.
+
+- **`fixCmsContrast` — red text rewrite.** CMS authors paste `<span style="color: red">` for deadlines/emphasis. `#ff0000` on white is only 3.99:1 (fails AA 4.5:1). Plugin rewrites `color: red` / `#ff0000` / `#f00` / `rgb(255,0,0)` → `#c00` (5.89:1), same visual intent, AA-compliant.
+- **`fixCmsOrphanWhite`** — Word-paste tables with dark-fill cells strip down to `color:white` inline on text while the cell bg survives only as a class-based style. Two failure modes: (a) white text lands on light bg (1.06:1, invisible) — strip the inline color; (b) ancestor has an inline dark bg but axe-core's contrast algorithm can't walk through nested `.MsoNormal`/`<strong>`/`<p>` wrappers reliably and attributes the span to a lighter ancestor — propagate the nearest dark inline background onto the span itself so axe reads contrast at the text-element level.
+- **`fixCmsInvalidListChildren`** — Word-paste produces `<ul><u>item</u></ul>` or raw text directly inside a list (axe `list` rule: "direct children that are not allowed"). Wrap every non-`<li>`/`<script>`/`<template>` child of `<ul>`/`<ol>` in a synthetic `<li>`.
+- **`fixCmsFocusablePre`** — `<pre><code>` blocks with horizontal scroll fail `scrollable-region-focusable` because they're not keyboard-reachable. Add `tabindex="0"` to all `<pre>` elements missing one.
+- **`fixCmsTables` — strip stale `headers` attrs.** THs should not carry `headers` (they define, not reference, headers); CMS-authored tables sometimes include stale `headers="cmstbl0-h1"` pointing at ids that don't exist in the table. Strip from all THs at the start of `fixCmsTables`. Simple tables also strip TD `headers` attrs (scope on TH provides equivalent semantics).
+
+### Template / style fixes
+
+- **`BaseCardExpandable.vue`** — added `text-color="white"` to the deadline (green) and expired (red) v-chips so Vuetify's `.white--text` class is applied, making the white-on-dark-green contrast explicit to axe.
+- **`app.css`** — scoped the site-wide `.v-chip.v-chip { background:#fff; color:#000 }` standardization rule to `:not(.white--text)`. Chips that explicitly opt into white text (Deadline, Expired, and any future colored badge) now keep their declared color class; default Vuetify grey chips still get the high-contrast b/w treatment from v1.5.6.
+- **`Infonet.vue`** — added `text-decoration: underline` on the single external link (axe `link-in-text-block`: link needed visible distinction from surrounding bold text, 2.55:1 was insufficient).
+- **`AppFooter.vue`** — footer logo had `alt="ICJIA Home"` matching the `router-link`'s `aria-label="ICJIA Home"` and the `.sr-only` hidden text "ICJIA Home" — triple-redundant, flags axe `image-redundant-alt` (best-practice). Set `alt=""` so the image is decorative in context of the already-labeled link.
+
+### Critical fix — attachment downloads were silently broken
+
+`AttachmentList.vue` and `RequiredFormTable.vue` rendered attachment rows as `<span>`/`<div>` with `@click.stop.prevent="routeTo(item.url)"` handlers inside Vuetify `v-data-table` scoped slots. Inside that slot context, Vue's click binding was not attaching reliably — clicks bubbled through the DOM but the handler never fired, so `window.open(...)` never ran and no download happened. The failure was silent: no console error, no UI feedback, click does nothing.
+
+**Root cause:** v-data-table scoped slot rendering does not preserve per-element event listener bindings deterministically in Vue 2 / Vuetify 2.6 — the DOM node survives but the handler is lost. `RulesRegsPoliciesAll.vue` had the same pattern on the Policies "Download" button (`<v-btn @click="downloadFile(item)">`).
+
+**Fix:** replaced every click-handled attachment/download span/div/v-btn with a real `<a href="https://agency.icjia-api.cloud/…" target="_blank" rel="noopener noreferrer">`. The browser's native anchor navigation fires the download directly — no Vue click binding required. Analytics (`window.plausible`) moved to a non-preventing `@click` handler wrapped in try/catch, so a broken analytics script can never block a download again.
+
+Side benefit: real anchors are keyboard-accessible, right-click → save works, middle-click → new tab works, and screen readers announce them as links instead of as interactive spans. The download button in `RequiredFormTable.vue` cell dropped the `<v-btn>`-inside-`<a>` nesting (invalid HTML, nested-interactive a11y error) in favor of a styled-anchor pattern (`.download-link-btn` in `app.css`).
+
+### UX — remove "| link" affordance from /grants/programs/
+
+`ProgramsAll.vue` was rendering a pipe + link icon under each program title via `BaseCardExpandable`'s `showLink` prop. Redundant now that the program title itself is the navigation affordance. Set `:showLink="false"` on the Programs list to match the pattern used everywhere else (Funding, GrantsHome, ProgramsSingle).
+
+### Documentation
+
+README's "Accessibility Audit" and "Current Status" sections now document the full-site audit record, the per-content-type page breakdown derived from the live sitemap, the seven remediated violations with their fixes, and the command to re-run the audit (`node scripts/a11y-sitemap-audit.mjs --fresh --concurrency=5`). Rationale for "full audit, not sampled" added — manager-facing compliance records require exhaustive coverage rather than representative sampling.
+
+### Files
+
+- `scripts/a11y-sitemap-audit.mjs` — NEW. Parallel resumable runner.
+- `src/utils/contentSanitizer.js` — five new plugins + TH headers strip.
+- `src/components/AttachmentList.vue` — real anchors, defensive analytics.
+- `src/components/RequiredFormTable.vue` — real anchors across all four slots; `.download-link-btn` styling.
+- `src/components/BaseCardExpandable.vue` — `text-color="white"` on deadline/expired chips.
+- `src/components/AppFooter.vue` — empty alt on logo (decorative in labeled link).
+- `src/views/Grants/RulesRegsPoliciesAll.vue` — Policies download button → real anchor.
+- `src/views/Grants/ProgramsAll.vue` — `:showLink="false"`.
+- `src/views/InformationSystems/Infonet.vue` — underline on raw URL.
+- `src/assets/app.css` — chip rule scoped to `:not(.white--text)`; shared `.download-link-btn` styles.
+- `README.md` — full-site audit record + re-run instructions.
+- `reports/a11y-full-audit/archive/2026-04-14/` — archived per-page JSONs from the final 2,367-page clean run.
+
+---
+
 ## [1.5.8] - 2026-04-13
 
 ### A11y / UX — Strip dead external links from CMS content

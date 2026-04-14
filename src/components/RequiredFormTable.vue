@@ -15,31 +15,38 @@
       style="border: 1px solid #eee; background: #fff"
     >
       <template v-slot:item.published_at="{ item }">
-        <div
+        <a
+          :href="fileUrl(item.attachments[0])"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="required-form-cell"
           style="width: 110px; font-size: 14px; font-weight: 400; color: #222"
-          class=""
-          @click.stop.prevent="downloadFile(item.attachments[0])"
+          @click="trackDownload(item.attachments[0])"
         >
-          <span class="">
-            {{ item.published_at | dateFormatAlt }}
-          </span>
-        </div>
+          {{ item.published_at | dateFormatAlt }}
+        </a>
       </template>
 
       <!--eslint-disable-next-line vue/no-unused-vars -->
       <template v-slot:item.updated_at="{ item }">
-        <div
-          class="text-center"
-          style="margin-left: -5px"
-          @click.stop.prevent="downloadFile(item.attachments[0])"
+        <a
+          :href="fileUrl(item.attachments[0])"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="required-form-cell text-center"
+          style="margin-left: -5px; color: #222"
+          @click="trackDownload(item.attachments[0])"
         >
           {{ formatDate(item.updated_at) }}
-        </div>
+        </a>
       </template>
 
       <template v-slot:item.title="{ item }">
-        <div
-          @click.stop.prevent="downloadFile(item.attachments[0])"
+        <a
+          :href="fileUrl(item.attachments[0])"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="required-form-cell"
           style="
             font-size: 14px;
             font-weight: 700;
@@ -48,41 +55,28 @@
             padding-bottom: 5px;
             text-transform: uppercase;
           "
+          @click="trackDownload(item.attachments[0])"
         >
-          <span class="">
-            <strong>{{ item.title }}</strong>
-          </span>
-        </div>
+          <strong>{{ item.title }}</strong>
+        </a>
       </template>
 
       <!--eslint-disable-next-line vue/no-unused-vars -->
       <template v-slot:item.attachments[0].url="{ item }">
-        <div
-          @click.stop.prevent="downloadFile(item.attachments[0])"
-          style="
-            font-size: 14px;
-            font-weight: 700;
-            color: #000;
-            margin-left: -20px;
-          "
-          class="text-center"
+        <a
+          :href="fileUrl(item.attachments[0])"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="download-link-btn"
+          :aria-label="`Download ${item.title} (opens in new tab)`"
+          :title="`Download ${item.title}`"
+          @click="trackDownload(item.attachments[0])"
         >
-          <v-tooltip top>
-            <template v-slot:activator="{ on, attrs }">
-              <!-- {{ item.attachments[0].url }} -->
-              <v-btn x-small
-                >Download Form&nbsp;<v-icon
-                  right
-                  color="blue"
-                  v-bind="attrs"
-                  v-on="on"
-                  >mdi mdi-download-circle-outline</v-icon
-                ></v-btn
-              >
-            </template>
-            <span>Click to download form</span>
-          </v-tooltip>
-        </div>
+          Download Form
+          <v-icon right color="blue" small
+            >mdi mdi-download-circle-outline</v-icon
+          >
+        </a>
       </template>
 
       <!-- eslint-disable-next-line vue/no-unused-vars -->
@@ -201,10 +195,21 @@ export default {
         return false;
       }
     },
-    downloadFile(item) {
-      let url = "https://agency.icjia-api.cloud" + item.url;
-      window.plausible("Outbound Link: Click", { props: { url: url } });
-      window.open(url, "_blank");
+    fileUrl(attachment) {
+      return attachment && attachment.url
+        ? "https://agency.icjia-api.cloud" + attachment.url
+        : "#";
+    },
+    trackDownload(attachment) {
+      // Native <a href> handles the download; this only records analytics.
+      // Must not throw — analytics failure cannot block the download.
+      try {
+        if (typeof window.plausible === "function") {
+          const url = this.fileUrl(attachment);
+          window.plausible("file_download", { props: { url } });
+          window.plausible("Outbound Link: Click", { props: { url } });
+        }
+      } catch (_e) { /* ignore */ }
     },
     generateSlug(heading) {
       return slug(heading);
@@ -256,4 +261,17 @@ export default {
 tbody tr:nth-of-type(even) {
   background-color: rgba(0, 0, 0, 0.02);
 }
+
+.required-form-cell {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.required-form-cell:hover {
+  text-decoration: underline;
+}
+
+/* .download-link-btn styles live in src/assets/app.css so both
+   RequiredFormTable and RulesRegsPoliciesAll share them. */
 </style>
