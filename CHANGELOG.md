@@ -67,6 +67,42 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.10] - 2026-04-14
+
+### Critical fix — Apollo shim missed the default data assignment; ~20+ single-item detail pages stuck on "LOADING…" forever
+
+Single-item detail views — `/grants/programs/<slug>/`, `/about/publications/<slug>/`, `/about/units/<slug>/`, `/about/staff-and-board/<slug>/`, several others — loaded the page shell, fetched the GraphQL response successfully (200, full data in body), then sat on "LOADING…" indefinitely. No dev-console error. No network error. Refresh didn't help. The audit runner surfaced the same symptom during the full-site run when hitting these routes under concurrent load, but the root cause was the same regardless of load: a bug in the Apollo compatibility shim that broke *every* component declaring both an `apollo: { name: { result() {} } }` handler AND reading `this[name]` inside it.
+
+**Is this a result of the Apollo → fetch change?** Yes. `src/gql-client.js` replaced `vue-apollo` with a native-`fetch` client, and `src/mixins/apollo-shim.js` replicates the `apollo: {}` component option on top of it. The shim's `then` block had the wrong branching:
+
+```js
+// BUG (pre-v1.5.10):
+if (typeof spec.result === "function") {
+  spec.result.call(this, result);          // called, but…
+} else if (result.data && result.data[key] !== undefined) {
+  this[key] = result.data[key];            // …this branch only runs
+}                                          //    when result() is ABSENT
+```
+
+Real `vue-apollo` does both: it assigns `this[key] = result.data[key]` **first**, then calls `result()`. So in a component like `ProgramsSingle.vue` where `result()` reads `this.programs` to build the display model, `this.programs` was always `undefined` under the shim, `.map()` threw a `TypeError`, the promise's `.catch` branch invoked the component's `error()` handler (which only stores the message in `this.error`), and the render stayed gated behind `v-if="program"` forever. No console noise because the error was caught by a handler that didn't log.
+
+**Fix:** `src/mixins/apollo-shim.js` now mirrors vue-apollo — assigns `this[key]` from `result.data[key]` *before* calling `spec.result()`. The else-if became an if; both branches now run when both are present.
+
+**Blast radius:** ~20+ single-item / list views share this pattern — Home, GrantsHome, ProgramsAll / ProgramsSingle, PoliciesAll, FundingAll / FundingSingle, RequiredFormsAll, RulesRegsPoliciesAll, GrantsStaff, IRBHome, IRBMeetings, CompositionAndMembership, Covid, PublicationsSingle, UnitsSingle, EmploymentAll, Staff, AboutHome, StaffAndBoardSingle, and more. All are repaired by the one-line shim fix; no per-component changes were needed.
+
+**Why we didn't catch this during the gql-client swap:** the shim's test coverage validated the happy path (no `result()` handler → default assignment works). The unhappy path (with `result()` handler) only fails when the handler *also* reads `this[key]`, which is a pattern vue-apollo makes so natural it rarely appears in docs. The detail-page rendering path had to execute end-to-end to trigger it, and the full-site a11y audit is what finally exercised every detail route.
+
+### UX — remove search-on-click from program titles (`ProgramsAll`)
+
+`ProgramsAll.vue` was passing `:openSearch="true"` to `BaseCardExpandable`, which made the h2 title click handler navigate to `/search/<title>` instead of to the program detail page. With the detail pages now loading correctly (apollo-shim fix above), clicking the title routes to the program page as intended — removed the `:openSearch="true"` prop.
+
+### Files
+
+- `src/mixins/apollo-shim.js` — default assignment always runs alongside `result()`; matches vue-apollo semantics.
+- `src/views/Grants/ProgramsAll.vue` — dropped `:openSearch="true"`.
+
+---
+
 ## [1.5.9] - 2026-04-14
 
 ### A11y — Full-site axe-core audit: 2,367 / 2,367 pages clean (WCAG 2.2 AA, zero violations)

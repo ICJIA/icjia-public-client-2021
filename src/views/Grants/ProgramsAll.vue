@@ -57,7 +57,6 @@
                 >
                   <BaseCardExpandable
                     :item="program"
-                    :openSearch="true"
                     :showLink="false"
                   ></BaseCardExpandable></div
               ></v-col>

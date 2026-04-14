@@ -59,12 +59,18 @@ export default {
 
       runQuery(spec.query, variables, spec.fetchPolicy, endpoint)
         .then((result) => {
+          // vue-apollo assigns the component data key BEFORE calling
+          // the result() hook, so handlers that read `this[key]` work.
+          // Earlier versions of this shim skipped the assignment when
+          // a result() was present, which broke ProgramsSingle (v1.5.9):
+          // the handler read `this.programs` (undefined) and the
+          // resulting TypeError was swallowed by the error() hook,
+          // leaving the page stuck on "LOADING..." with no console error.
+          if (result.data && result.data[key] !== undefined) {
+            this[key] = result.data[key];
+          }
           if (typeof spec.result === "function") {
             spec.result.call(this, result);
-          } else if (result.data && result.data[key] !== undefined) {
-            // Default assignment — matches vue-apollo's behavior when
-            // no result() handler is provided.
-            this[key] = result.data[key];
           }
         })
         .catch((err) => {
