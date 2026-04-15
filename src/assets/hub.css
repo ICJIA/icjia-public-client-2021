@@ -180,6 +180,27 @@
   font-size: 16px;
   text-indent: 0;
 }
+/* Captions that were downgraded from h4/h5/h6 inside figure/table
+   containers by contentSanitizer (sia-r78). Re-apply the visual
+   treatment the original headings had. */
+#article-view .article-body .article-caption {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  margin-bottom: 11px;
+  margin-top: 11px;
+  text-indent: 0;
+}
+#article-view .article-body .article-caption--h4 {
+  font-size: 17px;
+}
+#article-view .article-body .article-caption--h5 {
+  font-size: 14px;
+}
+#article-view .article-body .article-caption--h6 {
+  font-family: "Lato";
+  font-size: 13px;
+}
 #article-view .article-body .article-table {
   margin-left: auto;
   margin-right: auto;

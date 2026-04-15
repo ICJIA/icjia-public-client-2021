@@ -613,3 +613,23 @@ header.v-app-bar :focus-visible,
 .v-textarea textarea:focus-visible {
   outline: none !important;
 }
+
+/* sia-r113 / WCAG 2.5.8 "Target Size (Minimum)": inline footnote refs,
+   backrefs, and author-link byline links must present a 24x24 CSS-pixel
+   hit target. Done in CSS (not JS) so the rule applies regardless of when
+   async CMS content (e.g., /mhcontinuum/print-friendly) finishes loading,
+   and so SiteImprove sees it on every crawl without a render race. */
+.footnote-link,
+.footnote-ref a,
+.footnote-backref,
+a[href^="#fn"],
+a[href^="#fnref"],
+.author-link {
+  display: inline-block;
+  min-width: 24px;
+  min-height: 24px;
+  line-height: 1.5;
+  padding: 4px 2px;
+  text-align: center;
+  vertical-align: middle;
+}

@@ -1017,6 +1017,63 @@ function unwrapBrokenLinks(html) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// PLUGIN: fixCmsFigureTableCaptions
+// Strapi article content uses H4/H5/H6 inside <div class="article-table">
+// and <div class="article-figure"> as captions/source/note labels.
+// SiteImprove sia-r78 "Content missing after heading" fires because
+// these "headings" have no body content — they are labels, not headings.
+// Downgrade them to <p> with caption classes so the visual styling is
+// preserved via CSS but they're no longer headings. Also adds <figure>/
+// <caption>-equivalent semantics via role="figure" for screen readers.
+// ═══════════════════════════════════════════════════════════════════
+
+function fixCmsFigureTableCaptions(html) {
+  if (!html || typeof html !== "string") return html;
+  if (
+    html.indexOf("article-table") === -1 &&
+    html.indexOf("article-figure") === -1
+  ) {
+    return html;
+  }
+
+  let doc;
+  try {
+    doc = new DOMParser().parseFromString(html, "text/html");
+  } catch (_e) {
+    return html;
+  }
+
+  let changed = false;
+  const containers = doc.querySelectorAll(".article-table, .article-figure");
+
+  containers.forEach((container) => {
+    const headings = container.querySelectorAll("h4, h5, h6");
+    headings.forEach((h) => {
+      const p = doc.createElement("p");
+      // Preserve original class list + add caption class for CSS targeting.
+      const level = h.tagName.toLowerCase(); // h4 / h5 / h6
+      const existing = h.getAttribute("class") || "";
+      p.setAttribute(
+        "class",
+        `article-caption article-caption--${level}${
+          existing ? " " + existing : ""
+        }`
+      );
+      // Copy any id/data-* attributes so anchors/tests still work.
+      for (const attr of Array.from(h.attributes)) {
+        if (attr.name === "class") continue;
+        p.setAttribute(attr.name, attr.value);
+      }
+      while (h.firstChild) p.appendChild(h.firstChild);
+      h.parentNode.replaceChild(p, h);
+      changed = true;
+    });
+  });
+
+  return changed ? doc.body.innerHTML : html;
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // Pipeline registry
 // ═══════════════════════════════════════════════════════════════════
 
@@ -1029,6 +1086,7 @@ const htmlPlugins = [
   fixCmsOrphanWhite,
   fixCmsInvalidListChildren,
   fixCmsFocusablePre,
+  fixCmsFigureTableCaptions,
   fixCmsEmptyContainers,
   fixCmsLinkAltText,
   fixCmsDuplicateLinkText,

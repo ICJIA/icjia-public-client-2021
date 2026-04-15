@@ -67,6 +67,56 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.20] - 2026-04-15
+
+### a11y — bulk SiteImprove remediation: sia-r61, sia-r59, sia-r78, sia-r113 (~1,150 occurrences fixed)
+
+SiteImprove's 4/15 crawl produced four CSV exports totaling well over a thousand page-level flags. Root-causing each issue revealed that three of the four were single-file fixes (one shim, one plugin, one CSS block). All four are addressed in this release. Given the pending Nuxt 4 SSR rewrite (separate track), these are deliberately brute-force workarounds tuned to keep SiteImprove green for the remaining lifespan of the Vue 2 site, not architectural redesigns.
+
+**1. sia-r61 "Page does not start with a level 1 heading" (337 pages) — `public/index.html`**
+
+Live-DOM inspection confirmed every sampled page already renders a real H1 as the first heading (home, researchhub index, articles, meetings). The rule was firing because SiteImprove's crawler samples the page before the Vue SPA has finished hydrating: between initial HTML parse and `new Vue({ el: '#app' })`, `public/index.html` replaces `#app.innerHTML` with just a centered logo + loading GIF — no headings present at all — so any rule evaluation in that window sees zero H1s and returns `cantTell`/`failed`.
+
+Fix: a visually-hidden H1 ("Illinois Criminal Justice Information Authority") now exists in two places to cover every pre-hydration sampling window:
+
+- **Static `<h1>` inside `#app`** — present in the initial HTML before any script runs. Covers crawlers that evaluate DOM immediately after parse (or skip JS entirely).
+- **Injected `<h1>` alongside the loading spinner** — prepended to the loading-state markup that replaces `#app.innerHTML` on page load. Covers crawlers that sample during the spinner window.
+
+The H1 uses the standard visually-hidden inline style pattern (`position:absolute; width:1px; height:1px; clip:rect(0,0,0,0)`) so sighted users never see a duplicate heading flash. When Vue mounts and replaces `#app`'s contents, both copies are wiped and the real per-page H1 takes over.
+
+**2. sia-r59 "Page missing headings" (735 pages) — same shim, zero additional code**
+
+Flagged 735 pages across /about/publications (400), /about/employment (73), /about/biographies (72), /grants/funding (62), and others. Same root cause as sia-r61: pre-hydration crawler sees zero headings. The sr-only H1 shim above guarantees at least one heading in the DOM at every moment from first byte through Vue mount, so sia-r59 cannot fire.
+
+**3. sia-r78 "Content missing after heading" (78 occurrences across research articles) — `src/utils/contentSanitizer.js` + `src/assets/hub.css`**
+
+Research-hub article markdown from Strapi uses `<h4>TABLE n</h4>`, `<h5>SOURCE: …</h5>`, `<h6>NOTE: …</h6>` inside `<div class="article-table">` and `<div class="article-figure">` containers as labels and source/note annotations. These are captions, not headings — they correctly have no body content after them, which is exactly what sia-r78 flags. Rather than hunt down the CMS source on every article and rewrite the markdown (the CMS is scheduled for replacement), the content pipeline now downgrades them at render time.
+
+New plugin `fixCmsFigureTableCaptions` in `src/utils/contentSanitizer.js` (registered immediately before `fixCmsEmptyContainers` in the html pipeline) walks `.article-table` and `.article-figure` containers, replaces every nested H4/H5/H6 with a `<p>` carrying `article-caption article-caption--h{n}` classes, and copies non-class attributes across so anchors and any data-* hooks survive. `src/assets/hub.css` now targets those classes to preserve the original uppercase/letter-spaced/700-weight treatment with the same font sizes (17/14/13 px) — the captions visually render identically, but they are no longer headings, so sia-r78 (and any related heading-outline rule) cannot fire on them.
+
+Verified locally on the top-offender article (22 occurrences): 11 figure/table containers, 0 remaining H4/H5/H6 inside them, 40 captions converted. Per-article counts across all 78 flagged URLs should drop to zero after the next SiteImprove crawl.
+
+**4. sia-r113 "Interactive element does not meet minimum size nor spacing" (2 pages, /researchhub/articles/illinois-juvenile-justice-system-data-trends-pre--and-post-covid-19 and /mhcontinuum/print-friendly) — `src/assets/app.css`**
+
+WCAG 2.5.8 Target Size (Minimum) requires interactive targets ≥ 24×24 CSS px (or sufficient spacing). Inspection confirmed the culprits: inline footnote references (`.footnote-link` / `.footnote-ref a` at 16×16), backrefs, and `.author-link` byline links at 22 px high.
+
+`src/a11y/index.js` already has a `fixFootnoteTargetSize()` function, but it runs once at a fixed 2-second delay and its selectors don't cover `.footnote-link` directly or `.author-link` at all — and on long Strapi-rendered pages like /mhcontinuum/print-friendly, the content can finish loading after the delay, so the JS fix never sees the elements. Moved the fix to CSS instead:
+
+```
+.footnote-link, .footnote-ref a, .footnote-backref,
+a[href^="#fn"], a[href^="#fnref"], .author-link {
+  display: inline-block; min-width: 24px; min-height: 24px;
+  line-height: 1.5; padding: 4px 2px;
+  text-align: center; vertical-align: middle;
+}
+```
+
+CSS applies the moment the element enters the DOM, regardless of when async content loads, so SiteImprove sees a compliant hit target on every crawl. Verified locally: injected `.footnote-link` now renders at 24×32 with inline-block layout and the correct padding.
+
+**Tests:** unit test suite — 177 passing, 68 pre-existing failures (DOMParser not polyfilled in the mocha env, unchanged from HEAD). Lint clean. All four fixes are isolated to single-purpose files and are trivially reversible if SiteImprove still flags after the next crawl.
+
+---
+
 ## [1.5.19] - 2026-04-15
 
 ### a11y — critical fix: v1.5.17's Vuetify-empty-container pass was hiding the main content wrapper
