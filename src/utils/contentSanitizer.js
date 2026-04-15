@@ -274,6 +274,54 @@ function ensureTableStructure(doc, table) {
       table.appendChild(tbody);
     }
   }
+
+  normalizeRaggedRows(doc, table);
+}
+
+// CMS authors sometimes add a "continuation" row with a single cell in
+// an otherwise multi-column table, used as a visual spillover of the
+// previous row's data ("Performance Period | September 1, 2025, to"
+// followed by a single-cell row "June 30. 2026"). Markdown or the CMS
+// editor may emit that lone cell as <th> — which, after fixComplexTable
+// assigns it an id, becomes a header that no <td> in the table
+// references, triggering SiteImprove sia-r46 "No data cells assigned
+// to table header". Convert any single-cell row in a multi-column
+// table into <td colspan="N"> so the cell is semantically data, not a
+// header, and gets properly associated with the column headers above
+// via the usual headers="..." assignment.
+function normalizeRaggedRows(doc, table) {
+  const allRows = Array.from(table.querySelectorAll("tr"));
+  if (allRows.length < 2) return;
+  let maxCols = 0;
+  allRows.forEach((row) => {
+    let count = 0;
+    row.querySelectorAll("th, td").forEach((cell) => {
+      count += parseInt(cell.getAttribute("colspan") || "1", 10);
+    });
+    if (count > maxCols) maxCols = count;
+  });
+  if (maxCols < 2) return;
+
+  allRows.forEach((row) => {
+    const cells = row.querySelectorAll("th, td");
+    if (cells.length !== 1) return;
+    const cell = cells[0];
+    const currentSpan = parseInt(cell.getAttribute("colspan") || "1", 10);
+    if (currentSpan >= maxCols) return;
+    if (cell.tagName === "TH") {
+      // Downgrade to <td colspan="maxCols">
+      const td = doc.createElement("td");
+      td.innerHTML = cell.innerHTML;
+      for (const attr of cell.attributes) {
+        if (attr.name === "scope" || attr.name === "id") continue;
+        td.setAttribute(attr.name, attr.value);
+      }
+      td.setAttribute("colspan", String(maxCols));
+      cell.parentNode.replaceChild(td, cell);
+    } else {
+      cell.setAttribute("colspan", String(maxCols));
+    }
+  });
 }
 
 function fixSimpleTable(doc, table) {
@@ -312,6 +360,10 @@ function fixSimpleTable(doc, table) {
     // they're placeholders for empty cells, not row labels.
     const srOnly = firstCell.querySelector(".sr-only");
     if (srOnly && srOnly.textContent.trim() === "No data") return;
+    // Don't promote the sole cell of a single-cell row. Such rows are
+    // visual continuations of the previous row's data (handled by
+    // normalizeRaggedRows into <td colspan="N">), not row labels.
+    if (row.querySelectorAll("th, td").length < 2) return;
     const text = (firstCell.textContent || "").trim();
     if (text.length > 0 && !/^\d+[\d,.%$]*$/.test(text)) {
       const th = doc.createElement("th");
@@ -348,8 +400,12 @@ function fixComplexTable(doc, table, tableIndex) {
         if (!cell.getAttribute("id")) {
           cell.setAttribute("id", prefix + "h" + thCounter++);
         }
-        // headers attr supersedes scope; remove scope to avoid conflicts
-        cell.removeAttribute("scope");
+        // Keep scope alongside id — WCAG/W3C allow both, and some
+        // SiteImprove rules accept either as programmatic association.
+        // Column headers that govern columns of row-label THs
+        // (e.g. "Task" labeling the row-header column) have no <td>
+        // referencing them via headers, so their scope="col" is the
+        // only signal that they are headers of that column.
       }
 
       for (let r = 0; r < rs && rowIdx + r < allRows.length; r++) {

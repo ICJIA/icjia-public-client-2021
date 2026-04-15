@@ -67,6 +67,24 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.16] - 2026-04-15
+
+### a11y — ragged-row cells downgraded to data + scope preserved on headers (sia-r46)
+
+The CB-VIP NOFO grant page (`/grants/funding/community-based-violence-intervention-and-prevention-program-notice-of-funding-opportunity-sfy-26-cb-vip-nofo-2117-0501/`) survived v1.5.15 with one remaining sia-r46 flag. Root cause: the CMS-authored schedule table has a "continuation" row with a single cell — "June 30. 2026" — used as visual spillover of the previous row's date range ("Performance Period | September 1, 2025, to"). After `fixSimpleTable` promoted it to `<th>` (non-numeric text in the first cell of its row) and `fixComplexTable` assigned it an `id`, the cell became an orphan header: no `<td>` in the table referenced it, triggering SiteImprove's "No data cells assigned to table header".
+
+Three changes in both `src/utils/contentSanitizer.js` and `src/a11y/index.js`:
+
+1. **New `normalizeRaggedRows()` helper** — runs before any promotion / header-attribution logic. For any table with at least two rows and at least two columns, any row with only a single cell is converted to `<td colspan="N">` where N is the column count. Single-cell rows in multi-column tables are almost always visual continuations, not row labels. Downgrading the cell to `<td>` lets `fixComplexTable` associate it with the governing column headers via `headers="..."` just like any other data cell — no orphan header.
+
+2. **Row-label promotion guard** — `fixSimpleTable` (both sanitizer and runtime) now skips promotion when the row contains only a single cell. Prevents re-promotion of the ragged cell after `normalizeRaggedRows` already downgraded it.
+
+3. **Preserve `scope` on headers** — `fixComplexTable` previously stripped `scope` after assigning `id`, on the theory that `headers`/`id` "supersedes" scope. WCAG allows both to coexist, and some SiteImprove rule interpretations rely on `scope` as an association signal (especially for column headers that govern columns of row-label `<th>`s — those headers have no `<td>` referencing them). Now every `<th>` carries both `scope` AND `id`, maximizing cross-scanner compatibility.
+
+Verified on localhost: the CB-VIP table's last row is now `<td colspan="2" headers="cmstbl3-h6 cmstbl3-h1">June 30. 2026</td>` — a data cell spanning both columns, associated with the "Performance Period" row header and the "Date" column header. All 7 THs carry both scope and id; all 6 TDs carry headers attrs. Lint clean.
+
+---
+
 ## [1.5.15] - 2026-04-15
 
 ### a11y — explicit header/id attrs on all table cells + stop filling `<th>` (sia-r46)

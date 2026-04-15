@@ -750,11 +750,53 @@ export {
 //   1. Simple tables: scope="col" on column headers, scope="row" on row headers
 //   2. Tables without <thead>: treats first row of <th> as column headers
 //   3. Complex tables with rowspan/colspan: uses explicit id/headers attributes
+// CMS authors sometimes emit a single-cell row in a multi-column
+// table as visual continuation of the previous row's data. If that
+// lone cell is <th>, fixComplexTable will assign it an id, creating
+// an orphan header with no data cells referencing it — SiteImprove
+// sia-r46 flags that. Convert single-cell rows to <td colspan="N">
+// so they remain data, governed by the column headers above.
+const normalizeRaggedRows = function (table) {
+  const allRows = Array.from(table.querySelectorAll("tr"));
+  if (allRows.length < 2) return;
+  let maxCols = 0;
+  allRows.forEach((row) => {
+    let count = 0;
+    row.querySelectorAll("th, td").forEach((cell) => {
+      count += parseInt(cell.getAttribute("colspan") || "1", 10);
+    });
+    if (count > maxCols) maxCols = count;
+  });
+  if (maxCols < 2) return;
+  allRows.forEach((row) => {
+    const cells = row.querySelectorAll("th, td");
+    if (cells.length !== 1) return;
+    const cell = cells[0];
+    const currentSpan = parseInt(cell.getAttribute("colspan") || "1", 10);
+    if (currentSpan >= maxCols) return;
+    if (cell.tagName === "TH") {
+      const td = document.createElement("td");
+      td.innerHTML = cell.innerHTML;
+      for (const attr of cell.attributes) {
+        if (attr.name === "scope" || attr.name === "id") continue;
+        td.setAttribute(attr.name, attr.value);
+      }
+      td.setAttribute("colspan", String(maxCols));
+      cell.parentNode.replaceChild(td, cell);
+    } else {
+      cell.setAttribute("colspan", String(maxCols));
+    }
+  });
+};
+
 const fixTableCellContext = function () {
   const tables = document.querySelectorAll(
     ".article-body table, .markdown-body table"
   );
   tables.forEach((table, tableIndex) => {
+    // Normalize single-cell continuation rows before any promotion or
+    // header/id attribution runs.
+    normalizeRaggedRows(table);
     // Always run the simple-table pass first — it promotes row-label
     // <td>s to <th scope="row"> and ensures <th scope="col"> on the
     // header row. Then always run the complex-table pass to assign
@@ -806,6 +848,12 @@ function fixSimpleTable(table) {
       // labels, and promoting them creates phantom header rows.
       const srOnly = firstCell.querySelector(".sr-only");
       if (srOnly && srOnly.textContent.trim() === "No data") return;
+      // Don't promote the sole cell of a single-cell row. Such rows
+      // are visual continuations of the previous row's data (already
+      // spanned across all columns by normalizeRaggedRows), not row
+      // labels. Promoting them creates orphan headers that SiteImprove
+      // sia-r46 flags as "no data cells assigned".
+      if (row.querySelectorAll("th, td").length < 2) return;
       const text = (firstCell.textContent || "").trim();
       if (text.length > 0 && !/^\d+[\d,.%$]*$/.test(text)) {
         const th = document.createElement("th");
@@ -850,11 +898,14 @@ function fixComplexTable(table, tableIndex) {
       const rs = parseInt(cell.getAttribute("rowspan") || "1", 10);
       const cs = parseInt(cell.getAttribute("colspan") || "1", 10);
 
-      // Assign ID to <th> elements
+      // Assign ID to <th> elements. Keep any existing scope attr —
+      // scope and id/headers can coexist and some scanners accept
+      // either as a programmatic header-to-cell association.
       if (cell.tagName === "TH") {
-        const id = prefix + "h" + thCounter++;
-        cell.setAttribute("id", id);
-        cell.removeAttribute("scope"); // headers attr supersedes scope
+        if (!cell.getAttribute("id")) {
+          const id = prefix + "h" + thCounter++;
+          cell.setAttribute("id", id);
+        }
       }
 
       // Fill grid for all positions this cell spans
