@@ -165,8 +165,17 @@ const fixEmptyTableHeaders = function () {
   });
 };
 
-// Fix empty container elements from CMS content (sia-r68)
-// Removes empty <tr> rows and hides empty <td> cells from assistive tech.
+// Fix empty container elements from CMS content (sia-r68 / sia-r77).
+// Removes completely empty <tr> rows, and fills empty <td>/<th> cells
+// with a visible em-dash + sr-only "No data" label so the cell has
+// content for both sighted users and screen readers. Filling (rather
+// than hiding with aria-hidden) is required to satisfy sia-r77
+// "Table cell missing context" — SiteImprove's rule checks DOM cell
+// content, not aria-hidden status, so hidden-but-present empty cells
+// continue to fail until they carry real text.
+const EMPTY_CELL_FILL_HTML =
+  '<span aria-hidden="true">\u2014</span><span class="sr-only">No data</span>';
+
 const fixEmptyContainers = function () {
   const containers = document.querySelectorAll(".article-body, .markdown-body");
   containers.forEach((container) => {
@@ -176,11 +185,20 @@ const fixEmptyContainers = function () {
         tr.remove();
       }
     });
-    // Hide empty <td> cells
-    container.querySelectorAll("td").forEach((td) => {
-      if (!td.textContent.trim() && !td.querySelector("img, svg, iframe")) {
-        td.setAttribute("aria-hidden", "true");
-      }
+    // Fill empty <td>/<th> cells with em-dash + sr-only "No data"
+    container.querySelectorAll("td, th").forEach((cell) => {
+      if (cell.textContent.trim()) return;
+      if (
+        cell.querySelector(
+          "img, svg, iframe, video, audio, canvas, input, button, picture"
+        )
+      )
+        return;
+      // Don't re-fill cells already processed (CMS sanitizer or prior run)
+      if (cell.querySelector(".sr-only")) return;
+      cell.innerHTML = EMPTY_CELL_FILL_HTML;
+      // Clear any stale aria-hidden from earlier (hide-based) implementations
+      cell.removeAttribute("aria-hidden");
     });
   });
   // Hide any empty spacer divs site-wide

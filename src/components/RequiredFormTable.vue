@@ -209,7 +209,9 @@ export default {
           window.plausible("file_download", { props: { url } });
           window.plausible("Outbound Link: Click", { props: { url } });
         }
-      } catch (_e) { /* ignore */ }
+      } catch (_e) {
+        /* ignore */
+      }
     },
     generateSlug(heading) {
       return slug(heading);

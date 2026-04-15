@@ -67,6 +67,27 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.14] - 2026-04-15
+
+### a11y — fill empty table cells with em-dash + "No data" sr-only (sia-r77)
+
+SiteImprove's 4/15 crawl flagged three researchhub articles for sia-r77 "Table cell missing context": 25 / 15 / 7 occurrences across `study-of-self-reported-synthetic-drug-use`, `law-enforcement-response-to-mental-health-crisis-incidents`, and `parole-and-mandatory-supervised-release-in-illinois`. Root cause: CMS-authored data tables use empty `<td>`/`<th>` cells for visual formatting. The earlier `fixCmsTables` plugin assigns scope/headers relationships so a screen reader knows WHICH headers govern each cell, but an empty cell still has no content to announce — SiteImprove reads this as context-missing. The earlier runtime `fixEmptyContainers` hid these cells with `aria-hidden="true"`, which addresses SR noise but does not satisfy sia-r77 (the rule inspects DOM content, not ARIA visibility).
+
+Brute-force fix: every empty data cell is now filled with `<span aria-hidden="true">—</span><span class="sr-only">No data</span>`. Sighted users see an em-dash; screen readers announce "No data". The cell is structurally non-empty, which satisfies sia-r77 across the entire site.
+
+Two layers:
+
+- **CMS pipeline** — new `fixCmsEmptyTableCells` plugin in `src/utils/contentSanitizer.js`, registered after `fixCmsTables` so headers/scope are in place before cells are filled. Pre-render, so SiteImprove sees filled cells regardless of its JS render-budget.
+- **Runtime** — `fixEmptyContainers()` in `src/a11y/index.js` now fills instead of hides. Also clears any stale `aria-hidden` from prior invocations. Covers non-CMS tables and any cells the sanitizer misses.
+
+Both passes skip cells that already contain meaningful non-text content (images, iframes, videos, canvas, inputs, buttons, picture, SVG) so media-only cells are never overwritten.
+
+Also ran `npm run lint` — all 18 pre-existing prettier warnings auto-fixed site-wide.
+
+Verified on localhost: `study-of-self-reported-synthetic-drug-use` had 17 cells filled on the flagged table (0 remaining empty); `law-enforcement-response` had 2 cells filled. Both articles read through correctly with dummy data announced as "No data" by SR.
+
+---
+
 ## [1.5.13] - 2026-04-15
 
 ### a11y + content — unwrap all links to expired IFVCC Planning NOFO #2096-2611 AmpliFund opportunity

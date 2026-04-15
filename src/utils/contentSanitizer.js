@@ -160,10 +160,7 @@ function fixCmsContrast(html) {
   // Replace CSS named color "red" (#ff0000) — 3.99:1 on white, fails AA.
   // CMS authors paste "color: red" for deadlines/emphasis; swap to #c00
   // (5.89:1 on white, 5.74:1 on #f6f8fa), same visual intent, AA-compliant.
-  result = result.replace(
-    /color:\s*(red|#ff0000|#f00)\b/gi,
-    "color: #c00"
-  );
+  result = result.replace(/color:\s*(red|#ff0000|#f00)\b/gi, "color: #c00");
   result = result.replace(
     /color:\s*rgb\(\s*255\s*,\s*0\s*,\s*0\s*\)/gi,
     "color: #c00"
@@ -229,7 +226,9 @@ function fixCmsTables(html) {
     // reference, headers. CMS authors sometimes paste tables with stale
     // headers="..." on TH cells pointing at non-existent ids (axe
     // td-headers-attr). Strip them so nothing references a bad id.
-    table.querySelectorAll("th[headers]").forEach((th) => th.removeAttribute("headers"));
+    table
+      .querySelectorAll("th[headers]")
+      .forEach((th) => th.removeAttribute("headers"));
     ensureTableStructure(doc, table);
 
     const hasSpan =
@@ -279,7 +278,9 @@ function fixSimpleTable(doc, table) {
   // Strip stale headers attrs from <td> cells — simple tables use scope,
   // and CMS-authored headers="..." often reference non-TH ids (axe
   // td-headers-attr). scope on TH provides equivalent semantics.
-  table.querySelectorAll("td[headers]").forEach((td) => td.removeAttribute("headers"));
+  table
+    .querySelectorAll("td[headers]")
+    .forEach((td) => td.removeAttribute("headers"));
 
   // scope="col" on header row
   let headerRow = table.querySelector("thead tr");
@@ -429,20 +430,31 @@ function handleOrphanHeaders(doc, table) {
 //       directly.
 // ═══════════════════════════════════════════════════════════════════
 
-const DARK_BG_COLOR_RX = /#(?:0[0-9a-f]|1[0-9a-f]|2[0-9a-f]|3[0-9a-f]|4[0-9a-f])/i;
-const WHITE_COLOR_RX = /color\s*:\s*(?:white|#fff(?:fff)?|rgb\(\s*255\s*,\s*255\s*,\s*255\s*\))/i;
+const DARK_BG_COLOR_RX =
+  /#(?:0[0-9a-f]|1[0-9a-f]|2[0-9a-f]|3[0-9a-f]|4[0-9a-f])/i;
+const WHITE_COLOR_RX =
+  /color\s*:\s*(?:white|#fff(?:fff)?|rgb\(\s*255\s*,\s*255\s*,\s*255\s*\))/i;
 
 function findAncestorInlineBg(el) {
   for (let cur = el.parentElement; cur; cur = cur.parentElement) {
     const style = cur.getAttribute && cur.getAttribute("style");
     if (style) {
       const m = style.match(/background(?:-color)?:\s*(#[0-9a-f]{3,6})/i);
-      if (m) return { source: "style", value: m[1], isDark: DARK_BG_COLOR_RX.test(m[1]) };
+      if (m)
+        return {
+          source: "style",
+          value: m[1],
+          isDark: DARK_BG_COLOR_RX.test(m[1]),
+        };
     }
     const bg = cur.getAttribute && cur.getAttribute("bgcolor");
     if (bg && /^#?[0-9a-f]{3,6}$/i.test(bg)) {
       const hex = bg.startsWith("#") ? bg : "#" + bg;
-      return { source: "bgcolor", value: hex, isDark: DARK_BG_COLOR_RX.test(hex) };
+      return {
+        source: "bgcolor",
+        value: hex,
+        isDark: DARK_BG_COLOR_RX.test(hex),
+      };
     }
   }
   return null;
@@ -469,7 +481,10 @@ function fixCmsOrphanWhite(html) {
     if (ancestor && ancestor.isDark) {
       // Propagate the dark background down to this element so axe-core
       // resolves contrast at the text-element level and sees white-on-dark.
-      el.setAttribute("style", `${style.replace(/;?\s*$/, "")}; background-color: ${ancestor.value};`);
+      el.setAttribute(
+        "style",
+        `${style.replace(/;?\s*$/, "")}; background-color: ${ancestor.value};`
+      );
       changed = true;
       return;
     }
@@ -477,7 +492,10 @@ function fixCmsOrphanWhite(html) {
     // No dark bg anywhere up the tree — strip color:white so text
     // inherits the default (readable) color.
     const stripped = style
-      .replace(/(?:^|;)\s*color\s*:\s*(?:white|#fff(?:fff)?|rgb\(\s*255\s*,\s*255\s*,\s*255\s*\))\s*(?:!important)?\s*;?/gi, ";")
+      .replace(
+        /(?:^|;)\s*color\s*:\s*(?:white|#fff(?:fff)?|rgb\(\s*255\s*,\s*255\s*,\s*255\s*\))\s*(?:!important)?\s*;?/gi,
+        ";"
+      )
       .replace(/^;+|;+$/g, "")
       .replace(/;+/g, ";")
       .trim();
@@ -516,7 +534,10 @@ function fixCmsInvalidListChildren(html) {
     for (const node of Array.from(list.childNodes)) {
       if (node.nodeType === 1 && !LIST_CHILD_ALLOWED.has(node.tagName)) {
         toWrap.push(node);
-      } else if (node.nodeType === 3 && (node.textContent || "").trim() !== "") {
+      } else if (
+        node.nodeType === 3 &&
+        (node.textContent || "").trim() !== ""
+      ) {
         toWrap.push(node);
       }
     }
@@ -829,6 +850,56 @@ function fixCmsSameHrefLinkLabels(html) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// PLUGIN: fixCmsEmptyTableCells
+// Eliminates SiteImprove sia-r77 "Table cell missing context" on CMS-
+// authored data tables that use empty cells for visual formatting.
+// The earlier fixCmsTables plugin assigns scope/headers relationships
+// so a screen reader knows WHICH headers govern each cell, but an
+// empty <td> still has no content for a screen reader to announce —
+// SiteImprove flags this as context-missing.
+//
+// Brute-force fix: fill every empty <td> and <th> with an em-dash for
+// sighted users and an sr-only "No data" label for assistive tech.
+// The cell becomes non-empty structurally (satisfies sia-r77) and
+// conveys intent ("there is no value here") to both audiences.
+//
+// Skips cells that already contain meaningful non-text content
+// (images, iframes, svg, etc.) so media-only cells aren't overwritten.
+// Runs AFTER fixCmsTables so the table's header/scope structure is
+// already in place before cells are filled.
+// ═══════════════════════════════════════════════════════════════════
+
+const EMPTY_CELL_FILL =
+  '<span aria-hidden="true">\u2014</span><span class="sr-only">No data</span>';
+const CELL_MEDIA_SELECTOR =
+  "img, iframe, svg, video, audio, canvas, object, embed, picture, input, button";
+
+function fixCmsEmptyTableCells(html) {
+  if (!html || typeof html !== "string") return html;
+  if (html.indexOf("<table") === -1) return html;
+
+  let doc;
+  try {
+    doc = new DOMParser().parseFromString(html, "text/html");
+  } catch (_e) {
+    return html;
+  }
+
+  const cells = doc.querySelectorAll("td, th");
+  if (!cells.length) return html;
+
+  let changed = false;
+  cells.forEach((cell) => {
+    if ((cell.textContent || "").trim()) return;
+    if (cell.querySelector(CELL_MEDIA_SELECTOR)) return;
+    cell.innerHTML = EMPTY_CELL_FILL;
+    changed = true;
+  });
+
+  return changed ? doc.body.innerHTML : html;
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // PLUGIN: unwrapBrokenLinks
 // SiteImprove "Broken link (confirmed)" report flags external URLs
 // that return 4xx/5xx or fail DNS resolution. These appear in CMS
@@ -897,6 +968,7 @@ const htmlPlugins = [
   fixCmsSameHrefLinkLabels,
   unwrapBrokenLinks,
   fixCmsTables,
+  fixCmsEmptyTableCells,
 ];
 const textPlugins = [fixMisspellings, fixApostrophes];
 
@@ -1002,6 +1074,7 @@ export {
   fixCmsDuplicateLinkText,
   fixCmsSameHrefLinkLabels,
   unwrapBrokenLinks,
+  fixCmsEmptyTableCells,
   // Expose data for external inspection
   MISSPELLINGS,
   APOSTROPHES,

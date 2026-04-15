@@ -361,9 +361,7 @@ function normalize(url) {
   return u;
 }
 
-const BROKEN_SET = new Set(
-  [...BROKEN_URLS, ...EXPIRED_URLS].map(normalize)
-);
+const BROKEN_SET = new Set([...BROKEN_URLS, ...EXPIRED_URLS].map(normalize));
 
 /**
  * Returns true if the given URL is on the confirmed-broken or

@@ -108,11 +108,7 @@
             </span>
 
             <span class="mx-2">|</span>
-            <v-btn
-              icon
-              class="article-print"
-              @click="printArticle"
-            >
+            <v-btn icon class="article-print" @click="printArticle">
               <span class="sr-only">Print article</span>
               <v-icon>mdi-printer</v-icon>
             </v-btn>

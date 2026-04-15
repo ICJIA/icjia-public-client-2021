@@ -188,7 +188,9 @@ export default {
           window.plausible("file_download", { props: { url } });
           window.plausible("Outbound Link: Click", { props: { url } });
         }
-      } catch (_e) { /* ignore — never block downloads */ }
+      } catch (_e) {
+        /* ignore — never block downloads */
+      }
     },
   },
   apollo: {
