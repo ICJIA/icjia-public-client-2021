@@ -67,7 +67,13 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
-## [1.5.10] - 2026-04-14
+## [1.5.11] - 2026-04-15
+
+### a11y — silence SiteImprove sia-r14 "Label in Name" cantTell flags on Vuetify chrome buttons
+
+SiteImprove's 4/15 crawl flagged 30 page occurrences of sia-r14 across article, grant, and hub pages. All flags resolved to the same 6 site-chrome elements repeated per page: the hamburger `MENU` button, header/footer `ICJIA Home` logo links, `SEARCH ICJIA`, `TRANSLATE THIS SITE`, and `PRINT ARTICLE` v-btns. Each had an `aria-label` authored in mixed case (e.g. `aria-label="Search ICJIA"`) while Vuetify's CSS `text-transform: uppercase` rendered the visible label uppercase — technically label-in-name compliant under normalized-case comparison (which is why axe-core never flagged them), but SiteImprove could not resolve the ambiguity and escalated to `cantTell`.
+
+Extended `fixLabelInName()` in `src/a11y/index.js` with a final pass that strips redundant `aria-label` from any `<button>` / `<a>` / `[role=button]` / `[role=link]` whose normalized aria-label already equals (or is contained in / contains) the normalized visible text. Without the attribute, the accessible name is computed directly from the visible text — a self-referential match SiteImprove cannot flag. Runs on initial mount and every route change via the existing `fixA11y()` pipeline in `App.vue`. Verified against localhost:8080: 6 carriers before, 0 after. No axe-core regression (the visible text remains as the accessible name).
 
 ### Critical fix — Apollo shim missed the default data assignment; ~20+ single-item detail pages stuck on "LOADING…" forever
 

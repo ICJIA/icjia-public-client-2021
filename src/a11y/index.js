@@ -561,6 +561,30 @@ const fixLabelInName = function () {
       });
     }
   });
+
+  // Strip redundant aria-label on interactive elements whose visible text
+  // already matches the label (case-insensitive, whitespace-normalized).
+  // SiteImprove sia-r14 flags these as "cantTell" because Vuetify's
+  // CSS text-transform uppercases the visible label while the authored
+  // aria-label remains mixed-case. Removing the redundant aria-label
+  // lets the accessible name be computed from the visible text itself,
+  // which is trivially label-in-name compliant.
+  const norm = (s) => (s || "").replace(/\s+/g, " ").trim().toLowerCase();
+  const redundantCarriers = document.querySelectorAll(
+    'button[aria-label], a[aria-label], [role="button"][aria-label], [role="link"][aria-label]'
+  );
+  redundantCarriers.forEach((el) => {
+    const label = norm(el.getAttribute("aria-label"));
+    const visible = norm(el.innerText || el.textContent);
+    if (!label || !visible) return;
+    if (
+      label === visible ||
+      visible.includes(label) ||
+      label.includes(visible)
+    ) {
+      el.removeAttribute("aria-label");
+    }
+  });
 };
 
 // Fix form fields missing labels — Vuetify 2.x v-text-field and v-select
