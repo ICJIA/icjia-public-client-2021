@@ -111,7 +111,6 @@
             <v-btn
               icon
               class="article-print"
-              aria-label="Print article"
               @click="printArticle"
             >
               <span class="sr-only">Print article</span>

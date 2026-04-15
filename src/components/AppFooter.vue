@@ -19,11 +19,7 @@
             style="color: white"
           >
             <div>
-              <router-link
-                to="/"
-                aria-label="ICJIA Home"
-                style="text-decoration: none"
-              >
+              <router-link to="/" style="text-decoration: none">
                 <img
                   src="/icjia-logo.png"
                   alt=""

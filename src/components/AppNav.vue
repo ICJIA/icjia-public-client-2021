@@ -10,17 +10,16 @@
           cursor: pointer;
         "
         @click="toggleSidebar()"
-        aria-label="MENU"
         :aria-expanded="sidebarOpen ? 'true' : 'false'"
       >
-        <span class="v-icon mdi mdi-menu"></span>
+        <span class="v-icon mdi mdi-menu" aria-hidden="true"></span>
         <div style="font-size: 10px; font-weight: 900">MENU</div>
       </button>
 
       <v-spacer
         v-if="$vuetify.breakpoint.sm || $vuetify.breakpoint.xs"
       ></v-spacer>
-      <router-link to="/" aria-label="ICJIA Home" style="text-decoration: none">
+      <router-link to="/" style="text-decoration: none">
         <v-img
           alt="ICJIA Logo"
           class="shrink mr-3"
@@ -142,7 +141,6 @@
             v-bind="attrs"
             v-on="on"
             class="navItem"
-            aria-label="Search ICJIA"
             style="font-weight: 900 !important; font-size: 16px"
             @click="openSearchModal()"
           >

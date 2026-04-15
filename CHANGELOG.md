@@ -67,6 +67,30 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.12] - 2026-04-15
+
+### a11y — source-level removal of redundant aria-labels on 5 Vuetify chrome elements (sia-r14)
+
+Belt-and-suspenders follow-up to 1.5.11. The runtime `fixLabelInName()` strip in 1.5.11 silences SiteImprove sia-r14 at desktop viewport (the width SiteImprove crawls at), but relies on JS executing before SiteImprove captures the DOM — which is timing-sensitive with their bounded render budget. Moving the fix to source eliminates the race entirely: the HTML emitted by Vue never carries the redundant `aria-label` in the first place.
+
+Removed `aria-label` from five site-chrome elements where the accessible name is already provided by visible text or an adjacent `<span class="sr-only">`:
+
+- `src/components/AppNav.vue:13` — hamburger `<button aria-label="MENU">` (visible "MENU" text below the icon serves as accessible name)
+- `src/components/AppNav.vue:23` — header `<router-link aria-label="ICJIA Home">` (inner `<span class="sr-only">ICJIA Home</span>` serves)
+- `src/components/AppNav.vue:145` — search `<v-btn aria-label="Search ICJIA">` (inner `<span class="sr-only">Search ICJIA</span>` serves)
+- `src/components/AppFooter.vue:24` — footer `<router-link aria-label="ICJIA Home">` (inner `<span class="sr-only">ICJIA Home</span>` serves)
+- `src/components/Hub/ArticleView.vue:114` — print `<v-btn aria-label="Print article">` (inner `<span class="sr-only">Print article</span>` serves)
+
+Also added `aria-hidden="true"` to the hamburger icon `<span class="v-icon mdi mdi-menu">` so its ligature text doesn't contaminate the accessible name.
+
+The translate button in `AppNavContext.vue` is intentionally left alone at source: on `xs`/`sm` breakpoints the visible "Translate this site" text is hidden and only the globe icon shows, so removing `aria-label` would leave the button with no accessible name on mobile. The runtime strip in 1.5.11 handles the desktop-width case SiteImprove crawls.
+
+The runtime `fixLabelInName()` pass from 1.5.11 is kept in place as a catch-all for future regressions and for any Vuetify-generated attributes that reappear. With these source fixes, the runtime pass is a no-op for the 5 addressed elements but still protects against new redundant aria-labels added to components in the future.
+
+Verified on `localhost:8080`: accessible names preserved ("MENU", "ICJIA Home", "Search ICJIA", "Print article", "ICJIA Home") with zero aria-label carriers remaining site-wide.
+
+---
+
 ## [1.5.11] - 2026-04-15
 
 ### a11y — silence SiteImprove sia-r14 "Label in Name" cantTell flags on Vuetify chrome buttons
