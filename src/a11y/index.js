@@ -731,12 +731,20 @@ const MEANINGFUL_CHILD_TAGS = new Set([
   "INPUT",
   "SELECT",
   "TEXTAREA",
+  // Interactive controls: even empty, these are focusable and must
+  // not live inside an aria-hidden ancestor (sia-r17).
+  "BUTTON",
+  "A",
 ]);
 
 const elementIsEmpty = function (el) {
   if ((el.textContent || "").trim()) return false;
   for (const child of el.children) {
     if (MEANINGFUL_CHILD_TAGS.has(child.tagName)) return false;
+    // Any element with a non-"-1" tabindex is focusable — never hide
+    // an ancestor of a focusable element.
+    const ti = child.getAttribute("tabindex");
+    if (ti !== null && ti !== "-1") return false;
     if (!elementIsEmpty(child)) return false;
   }
   return true;

@@ -67,6 +67,20 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.18] - 2026-04-15
+
+### a11y — prevent sia-r17 regression from v1.5.17 Vuetify empty-container fix
+
+SiteImprove's 4/15 crawl flagged one researchhub article for sia-r17 "Hidden element has focusable content" (redeploy-illinois-findings, 1 occurrence). That specific flag predates v1.5.17 and should clear once it redeploys — but v1.5.17's new `fixVuetifyEmptyContainers()` could introduce a new class of sia-r17 hits if it aria-hid an ancestor of a focusable element. Two hardenings:
+
+1. **Pipeline reorder** — in `src/App.vue`, `fixAriaHiddenFocus()` now runs AFTER `fixVuetifyEmptyContainers()` (was before). Any focusable descendants of newly-aria-hidden Vuetify containers immediately get `tabindex="-1"` in the same pass, eliminating the ~2-second window between passes where they would be both tab-reachable and inside an aria-hidden ancestor.
+
+2. **Hardened empty check** — `elementIsEmpty()` in `src/a11y/index.js` now also treats `<button>`, `<a>`, and any element with a non-`-1` `tabindex` as "not empty" for the purposes of deciding whether to aria-hide an ancestor. Previously only media/form elements counted; a Vuetify container holding an empty `<button>` could be marked presentational while the button remained focusable. Now such containers are skipped entirely — belt-and-suspenders to the pipeline reorder.
+
+Verified on localhost: 0 sia-r17 violations across the flagged page and site-chrome. Lint clean.
+
+---
+
 ## [1.5.17] - 2026-04-15
 
 ### a11y — suppress Vuetify internal empty containers (sia-r68)

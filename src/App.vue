@@ -160,9 +160,13 @@ export default {
         fixLabelInName();
         fixFormFieldLabels();
         fixDataTableHeaders();
-        fixAriaHiddenFocus();
         fixEmptyAriaLabel();
         fixVuetifyEmptyContainers();
+        // Must run AFTER fixVuetifyEmptyContainers so any focusable
+        // descendants of newly-aria-hidden containers get tabindex=-1
+        // in the same pass (otherwise sia-r17 "Hidden element has
+        // focusable content" fires until the next route change).
+        fixAriaHiddenFocus();
         // Delayed fixes for CMS content that loads asynchronously
         setTimeout(() => {
           fixFigureTabindex();
@@ -184,9 +188,9 @@ export default {
           fixEmptyContainers();
           fixInlineColorContrast();
           fixDataTableHeaders();
-          fixAriaHiddenFocus();
           fixEmptyAriaLabel();
           fixVuetifyEmptyContainers();
+          fixAriaHiddenFocus();
         }, 2000);
       });
     },
