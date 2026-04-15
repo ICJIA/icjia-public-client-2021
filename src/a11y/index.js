@@ -185,8 +185,11 @@ const fixEmptyContainers = function () {
         tr.remove();
       }
     });
-    // Fill empty <td>/<th> cells with em-dash + sr-only "No data"
-    container.querySelectorAll("td, th").forEach((cell) => {
+    // Fill empty <td> cells with em-dash + sr-only "No data".
+    // <th> cells are intentionally skipped — an empty header commonly
+    // marks a corner/spacer position, and filling it would mislead
+    // screen readers into announcing "No data" as a column/row label.
+    container.querySelectorAll("td").forEach((cell) => {
       if (cell.textContent.trim()) return;
       if (
         cell.querySelector(
@@ -752,15 +755,14 @@ const fixTableCellContext = function () {
     ".article-body table, .markdown-body table"
   );
   tables.forEach((table, tableIndex) => {
-    const hasRowspan = table.querySelector("[rowspan]");
-    const hasColspan = table.querySelector("[colspan]");
-    const isComplex = hasRowspan || hasColspan;
-
-    if (isComplex) {
-      fixComplexTable(table, tableIndex);
-    } else {
-      fixSimpleTable(table);
-    }
+    // Always run the simple-table pass first — it promotes row-label
+    // <td>s to <th scope="row"> and ensures <th scope="col"> on the
+    // header row. Then always run the complex-table pass to assign
+    // explicit id/headers attributes on every cell. This satisfies
+    // SiteImprove sia-r46 "No data cells assigned to table header"
+    // across all tables, not just those with rowspan/colspan.
+    fixSimpleTable(table);
+    fixComplexTable(table, tableIndex);
   });
 };
 
@@ -797,7 +799,13 @@ function fixSimpleTable(table) {
         firstCell.setAttribute("scope", "row");
       }
     } else {
-      // Convert <td> to <th scope="row"> if it looks like a label
+      // Convert <td> to <th scope="row"> if it looks like a label.
+      // Skip cells whose only content is the "No data" filler span
+      // inserted by fixEmptyContainers / fixCmsEmptyTableCells —
+      // those are placeholders for genuinely empty cells, not row
+      // labels, and promoting them creates phantom header rows.
+      const srOnly = firstCell.querySelector(".sr-only");
+      if (srOnly && srOnly.textContent.trim() === "No data") return;
       const text = (firstCell.textContent || "").trim();
       if (text.length > 0 && !/^\d+[\d,.%$]*$/.test(text)) {
         const th = document.createElement("th");

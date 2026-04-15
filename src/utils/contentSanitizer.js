@@ -231,13 +231,15 @@ function fixCmsTables(html) {
       .forEach((th) => th.removeAttribute("headers"));
     ensureTableStructure(doc, table);
 
-    const hasSpan =
-      table.querySelector("[rowspan]") || table.querySelector("[colspan]");
-    if (hasSpan) {
-      fixComplexTable(doc, table, tableIdx);
-    } else {
-      fixSimpleTable(doc, table);
-    }
+    // Always run the simple-table pass first — it promotes row-label
+    // <td>s to <th scope="row"> and ensures <th scope="col"> on the
+    // header row. Then always run the complex-table pass to assign
+    // explicit id/headers attributes on every cell, which satisfies
+    // SiteImprove sia-r46 "No data cells assigned to table header"
+    // unambiguously (H43 allows scope OR headers; explicit headers
+    // attrs are the safer option across scanner interpretations).
+    fixSimpleTable(doc, table);
+    fixComplexTable(doc, table, tableIdx);
 
     handleOrphanHeaders(doc, table);
   });
@@ -306,6 +308,10 @@ function fixSimpleTable(doc, table) {
         firstCell.setAttribute("scope", "row");
       return;
     }
+    // Skip cells whose only content is the "No data" filler —
+    // they're placeholders for empty cells, not row labels.
+    const srOnly = firstCell.querySelector(".sr-only");
+    if (srOnly && srOnly.textContent.trim() === "No data") return;
     const text = (firstCell.textContent || "").trim();
     if (text.length > 0 && !/^\d+[\d,.%$]*$/.test(text)) {
       const th = doc.createElement("th");
@@ -885,7 +891,12 @@ function fixCmsEmptyTableCells(html) {
     return html;
   }
 
-  const cells = doc.querySelectorAll("td, th");
+  // Only fill <td> cells. Empty <th> cells are intentionally left alone
+  // — a blank header commonly marks a corner/spacer position (e.g. the
+  // cell above a row-label column), and filling it with "No data" would
+  // mislead screen readers into announcing a nonsensical header label.
+  // sia-r77 flags data cells missing context, not empty headers.
+  const cells = doc.querySelectorAll("td");
   if (!cells.length) return html;
 
   let changed = false;

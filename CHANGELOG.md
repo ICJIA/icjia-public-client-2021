@@ -67,6 +67,22 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.15] - 2026-04-15
+
+### a11y — explicit header/id attrs on all table cells + stop filling `<th>` (sia-r46)
+
+SiteImprove's 4/15 crawl surfaced a second table-related issue, sia-r46 "No data cells assigned to table header" on seven articles (11/6/2/2/1/1/1 occurrences). Two distinct bugs came into focus:
+
+1. **sia-r46 root cause** — the existing `fixCmsTables` plugin (CMS sanitizer) and runtime `fixTableCellContext` only applied explicit `id`/`headers` attribute relationships when a table had `rowspan`/`colspan`. Simple tables were left with `scope` attributes only. WCAG H43 accepts either approach, but SiteImprove's stricter interpretation of sia-r46 does not always recognize scope-based association — particularly for tables with multi-row headers where the authored `<th>` structure doesn't cleanly map to a single header per column. Fix: both passes now always run the complex-table logic (assign a unique `id` to every `<th>`, compute the set of governing column + row headers for every `<td>`, and write them into `headers="..."`). This satisfies sia-r46 unambiguously on every table, simple or complex.
+
+2. **v1.5.14 regression** — `fixCmsEmptyTableCells` and runtime `fixEmptyContainers` filled both `<td>` AND `<th>` cells. Some tables have legitimately empty header cells — corner/spacer positions (the cell above a row-label column) — and filling those with "No data" gave the table a phantom header reading "No data" at a position that should be blank. Fix: both passes now select only `<td>`. Empty headers stay empty, which is valid HTML and doesn't violate sia-r77 (that rule flags data cells, not headers).
+
+Additional guard: both `fixSimpleTable` variants (sanitizer + runtime) now skip row-label promotion on cells whose only content is the "No data" filler. Without this guard, a sanitizer-filled `<td>` could be promoted to `<th>` at runtime when `fixTableCellContext` sees the "—No data" string as a row label — the exact path by which two leftover phantom headers survived v1.5.14 on the probation-clients article.
+
+Verified on the top-flagged page (probation-clients-barriers, 3 tables, 200+ cells): 0 overfilled `<th>`, 0 `<td>` without `headers` attr, 0 `<th>` without `id`. Same pattern on the women-police-leaders article. Lint clean.
+
+---
+
 ## [1.5.14] - 2026-04-15
 
 ### a11y — fill empty table cells with em-dash + "No data" sr-only (sia-r77)
