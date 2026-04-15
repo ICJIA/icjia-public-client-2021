@@ -332,6 +332,25 @@ const BROKEN_URLS = [
   "https://www2.ed.gov/policy/gen/guid/fpco/ferpa/students.html",
 ];
 
+/**
+ * List of expired-grant / expired-opportunity URLs.
+ *
+ * Semantically distinct from BROKEN_URLS: the URL still resolves (no
+ * 4xx/5xx), but the underlying resource is an expired funding
+ * opportunity that no one can act on anymore. Editorial wants these
+ * unwrapped to plain text so users can't click into a dead end, and
+ * so short non-descriptive link text (e.g. "here") stops triggering
+ * sia-r14 / WCAG 2.4.4 flags on pages that reference the opportunity.
+ *
+ * Unwrapped by the same `unwrapBrokenLinks` plugin in
+ * contentSanitizer.js — the pipeline treats both lists identically.
+ */
+const EXPIRED_URLS = [
+  // IFVCC Planning NOFO #2096-2611 — expired grant opportunity
+  // Referenced on /grants/funding/ifvcc-planning-nofo-2096-2611/
+  "https://il.amplifund.com/public/opportunities/details/4337e6e0-27fe-4d86-84fd-53d990fac031",
+];
+
 // Strip a single trailing punctuation char (`.`, `,`, `;`) — CMS authors
 // commonly write "see http://example.com." which makes the period part
 // of the href. Comparison treats both forms as the same URL.
@@ -342,12 +361,14 @@ function normalize(url) {
   return u;
 }
 
-const BROKEN_SET = new Set(BROKEN_URLS.map(normalize));
+const BROKEN_SET = new Set(
+  [...BROKEN_URLS, ...EXPIRED_URLS].map(normalize)
+);
 
 /**
- * Returns true if the given URL is on the confirmed-broken list.
- * Comparison is case-insensitive and tolerant of one trailing
- * punctuation character.
+ * Returns true if the given URL is on the confirmed-broken or
+ * expired-grant lists. Comparison is case-insensitive and tolerant
+ * of one trailing punctuation character.
  */
 function isBrokenUrl(url) {
   if (!url) return false;

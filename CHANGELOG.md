@@ -67,6 +67,20 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.13] - 2026-04-15
+
+### a11y + content — unwrap all links to expired IFVCC Planning NOFO #2096-2611 AmpliFund opportunity
+
+`/grants/funding/ifvcc-planning-nofo-2096-2611/` was still failing SiteImprove sia-r14 after the v1.5.12 chrome-button source fix. Root cause was a non-descriptive "here" link (`<a target="_blank" href="https://il.amplifund.com/...">here.</a>`) pointing to the expired AmpliFund opportunity. Editorial confirmed the grant is expired and no one can act on it — so the link is dead weight whether or not SiteImprove flags it.
+
+Added a new `EXPIRED_URLS` array to `src/utils/brokenLinks.js` alongside the existing `BROKEN_URLS` list, and merged both into the lookup set used by the `unwrapBrokenLinks` sanitizer plugin. The two lists are semantically distinct — `BROKEN_URLS` is confirmed 4xx/5xx/DNS-fail from SiteImprove, `EXPIRED_URLS` is editorially-flagged dead-but-still-resolving opportunities — but the pipeline treats them identically: every matching `<a href="...">text</a>` becomes plain `text` at render time.
+
+Registered the IFVCC Planning NOFO #2096-2611 AmpliFund URL. All four AmpliFund links on the grant page are now unwrapped (three with long descriptive text plus the "here." link); the surrounding prose is preserved. Verified on localhost: zero AmpliFund `<a>` elements remain, both "here" references appear as plain text.
+
+When additional expired grants are identified in future SiteImprove crawls or editorial reviews, add the opportunity URL to `EXPIRED_URLS` — no other wiring needed.
+
+---
+
 ## [1.5.12] - 2026-04-15
 
 ### a11y — source-level removal of redundant aria-labels on 5 Vuetify chrome elements (sia-r14)
