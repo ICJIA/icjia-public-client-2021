@@ -67,6 +67,33 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.17] - 2026-04-15
+
+### a11y — suppress Vuetify internal empty containers (sia-r68)
+
+SiteImprove's 4/15 crawl flagged seven pages for sia-r68 "Container element is empty" (14/5/1/1/1/1/1 occurrences). Diagnostic on the top-flagged article found 32 empty containers — all Vuetify 2.x internal layout/styling scaffolding, not CMS content:
+
+- `.v-image__image` (background-image carrier)
+- `.v-responsive__sizer`, `.v-responsive__content` (aspect-ratio math divs)
+- `.spacer` (Vuetify flex spacer)
+- `.v-menu`, `.v-tooltip` (wrappers that stay empty until activated)
+- `.v-list-item__icon` (icon slots with only `aria-hidden` children)
+- `.v-navigation-drawer__border`
+- `.v-slide-group__prev`, `.v-slide-group__next` (disabled scroll arrows)
+- `.v-tabs-slider-wrapper`, `.v-tabs-slider` (animated underline)
+- `.v-dialog__container`
+- `#app-progress-bar`, `#app-progress-spinner` (custom loader helpers)
+
+The existing `fixCmsEmptyContainers` sanitizer plugin already strips empty containers from CMS HTML before render, so flagged emptiness lives entirely in the Vue/Vuetify-rendered chrome. Filling them with visible text would break layout, and they are already decoration only — screen readers should never announce them.
+
+Added `fixVuetifyEmptyContainers()` to `src/a11y/index.js`. It runs on mount and on each route change (and in the delayed async pass to catch late-mounted components). For every empty element matching the Vuetify class prefix, a small allowlist of known decorative classes, and the custom progress-bar/spinner IDs — outside CMS article bodies — the fix applies `role="presentation"` + `aria-hidden="true"`. Both attributes remove the element from the accessibility tree; sia-r68 only applies to elements *in* the accessibility tree, so the rule no longer fires on them.
+
+Helper `elementIsEmpty()` recursively checks for text content or meaningful media/form children (`img`, `iframe`, `svg`, `canvas`, `input`, etc.) so elements that wrap real content are never incorrectly marked presentational.
+
+Verified on `probable-posttraumatic-stress-disorder` (top-flagged page, 14 occurrences): 32 empty Vuetify containers on load → 31 immediately presentation-ized + `aria-hidden` → 2 residual (`#app-progress-bar`, `#app-progress-spinner`, now covered by the widened selector) → 0 remaining after the fix is complete. Lint clean.
+
+---
+
 ## [1.5.16] - 2026-04-15
 
 ### a11y — ragged-row cells downgraded to data + scope preserved on headers (sia-r46)

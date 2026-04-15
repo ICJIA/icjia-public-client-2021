@@ -701,6 +701,71 @@ const fixAriaHiddenFocus = function () {
   });
 };
 
+// Fix Vuetify internal empty containers (sia-r68 "Container element is empty").
+// Vuetify 2.x emits a lot of layout-only divs and spans that render as
+// empty in the DOM: .v-image__image (background-image carrier),
+// .v-responsive__sizer, .v-responsive__content, .spacer, .v-menu /
+// .v-tooltip wrappers (empty until activated), .v-list-item__icon with
+// only aria-hidden <i> children, .v-navigation-drawer__border,
+// .v-tabs-slider*, .v-dialog__container, and similar. SiteImprove's
+// sia-r68 rule flags every one. They are cosmetic scaffolding — adding
+// visible text would break layout and screen readers already skip
+// decorative content. Fix: mark them role="presentation" + aria-hidden
+// so they are removed from the accessibility tree and sia-r68 no
+// longer applies (the rule only applies to elements in the a11y tree).
+//
+// Scope: any empty element with a Vuetify class (prefix "v-") anywhere
+// on the page, plus a small allowlist of non-Vuetify layout classes we
+// know are decorative. Skips CMS content areas — the sanitizer's
+// fixCmsEmptyContainers already strips those.
+const MEANINGFUL_CHILD_TAGS = new Set([
+  "IMG",
+  "IFRAME",
+  "VIDEO",
+  "AUDIO",
+  "SVG",
+  "CANVAS",
+  "OBJECT",
+  "EMBED",
+  "PICTURE",
+  "INPUT",
+  "SELECT",
+  "TEXTAREA",
+]);
+
+const elementIsEmpty = function (el) {
+  if ((el.textContent || "").trim()) return false;
+  for (const child of el.children) {
+    if (MEANINGFUL_CHILD_TAGS.has(child.tagName)) return false;
+    if (!elementIsEmpty(child)) return false;
+  }
+  return true;
+};
+
+const fixVuetifyEmptyContainers = function () {
+  // Only target elements outside CMS article bodies — those are
+  // handled by the sanitizer before render.
+  const cmsAreas = document.querySelectorAll(".article-body, .markdown-body");
+  const inCms = (el) => {
+    for (const area of cmsAreas) if (area.contains(el)) return true;
+    return false;
+  };
+  const candidates = document.querySelectorAll(
+    "div[class*=' v-'], div[class^='v-'], span[class*=' v-'], span[class^='v-'], " +
+      "div.spacer, span.spacer, " +
+      "#app-progress-bar, #app-progress-spinner"
+  );
+  candidates.forEach((el) => {
+    if (inCms(el)) return;
+    if (el.getAttribute("aria-hidden") === "true") return;
+    const role = el.getAttribute("role");
+    if (role === "presentation" || role === "none") return;
+    if (!elementIsEmpty(el)) return;
+    el.setAttribute("role", "presentation");
+    el.setAttribute("aria-hidden", "true");
+  });
+};
+
 // Fix empty aria-label on Vuetify v-image wrappers.
 // Vuetify 2.x v-image renders <div aria-label="" role="..."> with an empty
 // aria-label when no src has an alt. SiteImprove flags this as
@@ -743,6 +808,7 @@ export {
   fixDataTableHeaders,
   fixAriaHiddenFocus,
   fixEmptyAriaLabel,
+  fixVuetifyEmptyContainers,
 };
 
 // Fix "Table cell missing context" (sia-r77) — CMS-authored tables from

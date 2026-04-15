@@ -86,6 +86,7 @@ import {
   fixDataTableHeaders,
   fixAriaHiddenFocus,
   fixEmptyAriaLabel,
+  fixVuetifyEmptyContainers,
 } from "@/a11y";
 
 export default {
@@ -161,6 +162,7 @@ export default {
         fixDataTableHeaders();
         fixAriaHiddenFocus();
         fixEmptyAriaLabel();
+        fixVuetifyEmptyContainers();
         // Delayed fixes for CMS content that loads asynchronously
         setTimeout(() => {
           fixFigureTabindex();
@@ -184,6 +186,7 @@ export default {
           fixDataTableHeaders();
           fixAriaHiddenFocus();
           fixEmptyAriaLabel();
+          fixVuetifyEmptyContainers();
         }, 2000);
       });
     },
