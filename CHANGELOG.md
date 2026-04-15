@@ -67,6 +67,24 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.19] - 2026-04-15
+
+### a11y — critical fix: v1.5.17's Vuetify-empty-container pass was hiding the main content wrapper
+
+SiteImprove flagged one researchhub article (`an-exploratory-evaluation-of-redeploy-illinois-findings-on-incentive-based-juvenile-diversion-services`) for sia-r17 "Hidden element has focusable content" and a11y-best-practice "Skip to main content link is missing". Diagnostic showed the actual cause: `<div class="v-main__wrap" role="presentation" aria-hidden="true">` — the entire page content wrapper was marked presentational, which cascaded into 60+ focusables being inside an aria-hidden ancestor, and the skip-link (which lives inside `v-main__wrap`) being removed from the accessibility tree.
+
+Root cause was v1.5.17's `fixVuetifyEmptyContainers()` using an over-broad `div[class*=' v-'], div[class^='v-']` selector. That matches **every** Vuetify element including structural wrappers like `v-main__wrap`, `v-main`, `v-application`, `v-navigation-drawer`, `v-toolbar`, `v-card`, `v-row`, `v-col`. Combined with the function's "is it empty right now?" check running in the initial `$nextTick`, any structural container that hadn't yet received its async CMS content was marked `aria-hidden="true"` + `role="presentation"`. By the time the GraphQL article fetch finished and the content populated those wrappers, the aria-hidden attribute was still there. Grant pages and other static-rendered pages didn't hit this window because their content was present immediately — which is why only this one researchhub article was flagged.
+
+Two-part fix in `src/a11y/index.js`:
+
+1. **Explicit allowlist, not a prefix match** — `VUETIFY_DECORATIVE_CLASSES` is now a hand-curated list of only the decorative internal classes (`.v-image__image`, `.v-responsive__sizer`, `.v-menu__content`, `.v-tooltip__content`, `.v-list-item__icon`, `.v-navigation-drawer__border`, `.v-slide-group__prev/next`, `.v-tabs-slider*`, `.v-dialog__container`, `.spacer`). The broad `v-*` selector is gone. Structural containers are no longer candidates for hiding, full stop.
+
+2. **`STRUCTURAL_CLASSES_NEVER_HIDE` allowlist + cleanup pass** — even with the narrow selector, any future regression from a similarly-over-broad rule would be caught by a defense-in-depth cleanup: on every pipeline run, any element carrying one of the structural classes (`v-main`, `v-main__wrap`, `v-application`, `v-application--wrap`, `v-app-bar`, `v-navigation-drawer`, `v-navigation-drawer__content`, `v-toolbar`, `v-content`, `v-card*`, `v-container`, `v-row`, `v-col`, `v-list`, `v-sheet`) has any `aria-hidden="true"` / `role="presentation"` / `role="none"` stripped off. This also cleans up any state that v1.5.17 may have already written into the DOM on existing browser sessions.
+
+Verified on `redeploy-illinois-findings` (the flagged page): `v-main__wrap` no longer has `aria-hidden` or `role`; the `<a class="skiplink" href="#content">` is present; 0 focusables remain inside any aria-hidden ancestor (108 total focusables all correctly tab-reachable). Lint clean.
+
+---
+
 ## [1.5.18] - 2026-04-15
 
 ### a11y — prevent sia-r17 regression from v1.5.17 Vuetify empty-container fix

@@ -750,25 +750,131 @@ const elementIsEmpty = function (el) {
   return true;
 };
 
+// Explicit allowlist of Vuetify internal classes that are ALWAYS
+// decorative scaffolding and safe to hide from the accessibility tree
+// when empty. A broad `v-*` prefix would catch critical structural
+// containers (v-main, v-main__wrap, v-application, v-navigation-drawer,
+// v-app-bar, v-toolbar, v-card, v-row, etc.) — some of which render
+// empty during the $nextTick window before async CMS content loads.
+// Hiding those containers breaks the entire page's accessibility tree.
+const VUETIFY_DECORATIVE_CLASSES = [
+  // v-image internals (background-image carrier + sizing)
+  "v-image__image",
+  "v-image__placeholder",
+  "v-responsive__sizer",
+  "v-responsive__content",
+  // Layout spacers
+  "spacer",
+  // Menus / tooltips stay empty until activated
+  "v-menu__content",
+  "v-tooltip__content",
+  // v-list-item icon slot often holds only aria-hidden <i>
+  "v-list-item__icon",
+  "v-list-group__header__append-icon",
+  // Navigation drawer and tab/slide group decoration
+  "v-navigation-drawer__border",
+  "v-slide-group__prev",
+  "v-slide-group__next",
+  "v-slide-group__prev--disabled",
+  "v-slide-group__next--disabled",
+  "v-tabs-slider-wrapper",
+  "v-tabs-slider",
+  // Dialog / overlay containers empty until activated
+  "v-dialog__container",
+  // Custom progress helpers
+  "app-progress-bar",
+  "app-progress-spinner",
+];
+
+// IDs to cover (classes alone don't catch these)
+const VUETIFY_DECORATIVE_IDS = ["app-progress-bar", "app-progress-spinner"];
+
+// Structural classes that must NEVER be hidden, even if they appear
+// empty during the $nextTick window. These wrap page content and
+// site chrome; hiding them cascades sia-r17 failures across every
+// focusable element inside.
+const STRUCTURAL_CLASSES_NEVER_HIDE = new Set([
+  "v-main",
+  "v-main__wrap",
+  "v-application",
+  "v-application--wrap",
+  "v-app-bar",
+  "v-navigation-drawer",
+  "v-navigation-drawer__content",
+  "v-toolbar",
+  "v-content",
+  "v-card",
+  "v-card__text",
+  "v-card__title",
+  "v-container",
+  "v-row",
+  "v-col",
+  "v-list",
+  "v-sheet",
+]);
+
+const hasStructuralAncestor = function (el) {
+  let node = el;
+  while (node && node !== document.body) {
+    const cls = node.className;
+    if (typeof cls === "string") {
+      for (const tok of cls.split(/\s+/)) {
+        if (STRUCTURAL_CLASSES_NEVER_HIDE.has(tok)) return true;
+      }
+    }
+    node = node.parentElement;
+  }
+  return false;
+};
+
 const fixVuetifyEmptyContainers = function () {
-  // Only target elements outside CMS article bodies — those are
-  // handled by the sanitizer before render.
+  // Belt-and-suspenders cleanup: if a prior build's over-broad selector
+  // left aria-hidden/presentation on a structural container (e.g.
+  // v-main__wrap captured during the empty-on-mount window), undo it.
+  STRUCTURAL_CLASSES_NEVER_HIDE.forEach((cls) => {
+    document
+      .querySelectorAll(
+        `.${cls}[aria-hidden="true"], .${cls}[role="presentation"], .${cls}[role="none"]`
+      )
+      .forEach((el) => {
+        if (el.getAttribute("aria-hidden") === "true")
+          el.removeAttribute("aria-hidden");
+        const r = el.getAttribute("role");
+        if (r === "presentation" || r === "none") el.removeAttribute("role");
+      });
+  });
+
   const cmsAreas = document.querySelectorAll(".article-body, .markdown-body");
   const inCms = (el) => {
     for (const area of cmsAreas) if (area.contains(el)) return true;
     return false;
   };
-  const candidates = document.querySelectorAll(
-    "div[class*=' v-'], div[class^='v-'], span[class*=' v-'], span[class^='v-'], " +
-      "div.spacer, span.spacer, " +
-      "#app-progress-bar, #app-progress-spinner"
+
+  const classSelector = VUETIFY_DECORATIVE_CLASSES.map((c) => `.${c}`).join(
+    ", "
   );
+  const idSelector = VUETIFY_DECORATIVE_IDS.map((i) => `#${i}`).join(", ");
+  const candidates = document.querySelectorAll(
+    classSelector + ", " + idSelector
+  );
+
   candidates.forEach((el) => {
     if (inCms(el)) return;
+    // Never hide an element whose classList intersects the structural
+    // allowlist (unlikely given the narrow selector but safe guard).
+    if (typeof el.className === "string") {
+      for (const tok of el.className.split(/\s+/)) {
+        if (STRUCTURAL_CLASSES_NEVER_HIDE.has(tok)) return;
+      }
+    }
     if (el.getAttribute("aria-hidden") === "true") return;
     const role = el.getAttribute("role");
     if (role === "presentation" || role === "none") return;
     if (!elementIsEmpty(el)) return;
+    // Defense in depth: if any ancestor is a structural container, we
+    // are inside page content — don't start hiding things there either.
+    // (The selector is already narrow enough that this rarely matters.)
+    void hasStructuralAncestor;
     el.setAttribute("role", "presentation");
     el.setAttribute("aria-hidden", "true");
   });
