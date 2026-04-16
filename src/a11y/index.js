@@ -989,8 +989,68 @@ const fixTableCellContext = function () {
   });
 };
 
+// Promote every <td> in a row to <th scope="col">, preserving attributes.
+// Used for header rows that were rendered as styled <td> cells by a CMS.
+function promoteRowTdsToColumnHeaders(row) {
+  row.querySelectorAll("td").forEach((td) => {
+    const th = document.createElement("th");
+    th.innerHTML = td.innerHTML;
+    for (const attr of td.attributes) {
+      th.setAttribute(attr.name, attr.value);
+    }
+    if (!th.getAttribute("scope")) th.setAttribute("scope", "col");
+    td.parentNode.replaceChild(th, td);
+  });
+  row.querySelectorAll("th").forEach((th) => {
+    if (!th.getAttribute("scope")) th.setAttribute("scope", "col");
+  });
+}
+
+// Heuristic for detecting a column-header row that was rendered as
+// <td> cells. Two strong signals: bgcolor styling (Word/Excel-style
+// export), and a row of uniformly short bold cells. "No data" filler
+// cells are ignored when evaluating the bold-and-short signal.
+function isLikelyHeaderRow(row) {
+  const cells = Array.from(row.querySelectorAll("td, th"));
+  if (cells.length < 2) return false;
+  if (cells.some((c) => c.hasAttribute("bgcolor"))) return true;
+  const nonFiller = cells.filter((c) => {
+    const sr = c.querySelector(".sr-only");
+    return !(sr && sr.textContent.trim() === "No data");
+  });
+  if (nonFiller.length < 2) return false;
+  const allBolded = nonFiller.every((c) => c.querySelector("strong, b"));
+  if (!allBolded) return false;
+  const avgLen =
+    nonFiller.reduce((a, c) => a + (c.textContent || "").trim().length, 0) /
+    nonFiller.length;
+  return avgLen < 15;
+}
+
 // Simple tables: add scope="col" to column headers, scope="row" to row headers
 function fixSimpleTable(table) {
+  // Anything inside <thead> is a column header by definition. Some CMS
+  // exports wrap header cells in <td> — promote those to <th scope="col">.
+  table.querySelectorAll("thead tr").forEach(promoteRowTdsToColumnHeaders);
+
+  // Two-level / styled-td header pattern: CMS tables sometimes render
+  // column headers as the first <tbody> row using styled <td> cells
+  // (bgcolor, or all-bolded short text). Promote that row if it looks
+  // like headers AND the row after it looks like a data row.
+  const firstTbodyRow = table.querySelector("tbody tr");
+  let promotedFirstTbody = false;
+  if (firstTbodyRow && !firstTbodyRow.querySelector("th")) {
+    if (isLikelyHeaderRow(firstTbodyRow)) {
+      const next = firstTbodyRow.nextElementSibling;
+      const nextFirst = next ? next.querySelector("td, th") : null;
+      const nextText = nextFirst ? (nextFirst.textContent || "").trim() : "";
+      if (nextText && !/^\d+[\d,.%$]*$/.test(nextText)) {
+        promoteRowTdsToColumnHeaders(firstTbodyRow);
+        promotedFirstTbody = true;
+      }
+    }
+  }
+
   // Find column headers — in <thead>, or first row if no <thead>
   let headerRow = table.querySelector("thead tr");
   if (!headerRow) {
@@ -1015,6 +1075,7 @@ function fixSimpleTable(table) {
   rows.forEach((row) => {
     // Skip the header row we already handled
     if (row === headerRow) return;
+    if (promotedFirstTbody && row === firstTbodyRow) return;
     const firstCell = row.querySelector("td:first-child, th:first-child");
     if (!firstCell) return;
     if (firstCell.tagName === "TH") {

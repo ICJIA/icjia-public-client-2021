@@ -67,6 +67,23 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.24] - 2026-04-16
+
+### a11y — sia-r77 table cell context: promote styled-td header rows to `<th scope="col">`
+
+SiteImprove's 4/16 crawl flagged 16 occurrences of sia-r77 "Table cell missing context" across 2 researchhub articles — fidelity drug-court (12 occ) and law-enforcement mental-health (4 occ). Root cause: both tables rendered column headers as `<td>` cells (styled with `<strong>` or `bgcolor`), not `<th>`. `fixSimpleTable` never promoted them:
+
+1. For the fidelity table, the thead row's cells were `<td>` (not `<th>`), and `fixSimpleTable` only adjusted `scope="col"` on existing `<th>` elements in thead — so the thead `<td>`s stayed as data cells. The first tbody row was also a header row (numeric sub-headers under a `colspan=9` thead cell), but the body-row loop bailed out because the first cell was a `"—No data"` sr-only filler.
+2. For the mental-health table (no `<thead>`), the first tbody row was the column-header row styled via `bgcolor="#2E5E97"`, but bailed out for the same `"—No data"` reason.
+
+**`src/a11y/index.js` + `src/utils/contentSanitizer.js`** — two additions to both `fixSimpleTable` variants:
+- Promote all `<td>` in any `<thead>` row to `<th scope="col">`. Anything in thead is a column header by definition.
+- Detect and promote header-like first `<tbody>` rows. A row is treated as a column-header row if any cell has a `bgcolor` attribute (Word/Excel-style export) or if all non-filler cells are `<strong>`-wrapped with short text (avg < 15 chars). Guarded by checking the next row starts with a non-numeric row label, so data tables that happen to have all-bolded first rows aren't falsely promoted.
+
+Verified with axe-core: both previously-flagged pages now pass full WCAG 2.1 AA (0 violations); all 9 previously-fixed table pages still pass.
+
+---
+
 ## [1.5.23] - 2026-04-16
 
 ### ui — publications "NEW!" chip: black label for visibility

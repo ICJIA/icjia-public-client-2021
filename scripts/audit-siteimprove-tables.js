@@ -17,6 +17,8 @@ const PAGES = [
   { url: "/researchhub/articles/national-and-illinois-youth-substance-use-risk-factors-prevalence-and-treatment/", name: "Youth Substance Use" },
   { url: "/researchhub/articles/violence-interrupters-a-review-of-the-literature/", name: "Violence Interrupters" },
   { url: "/researchhub/articles/lewd-sexual-display-in-a-penal-institution-2024-report/", name: "Lewd Display 2024" },
+  { url: "/researchhub/articles/fidelity-to-the-evidence-based-drug-court-model-an-examination-of-adult-redeploy-illinois-programs/", name: "Fidelity drug-court (12 occ fixed v1.5.24)" },
+  { url: "/researchhub/articles/law-enforcement-response-to-mental-health-crisis-incidents-a-survey-of-illinois-police-and-sheriff-s-departments/", name: "Law enforcement MH (4 occ fixed v1.5.24)" },
 ];
 
 async function run() {

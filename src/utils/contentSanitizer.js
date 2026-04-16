@@ -324,6 +324,38 @@ function normalizeRaggedRows(doc, table) {
   });
 }
 
+function promoteRowTdsToColumnHeaders(doc, row) {
+  row.querySelectorAll("td").forEach((td) => {
+    const th = doc.createElement("th");
+    th.innerHTML = td.innerHTML;
+    for (const attr of td.attributes) {
+      th.setAttribute(attr.name, attr.value);
+    }
+    if (!th.getAttribute("scope")) th.setAttribute("scope", "col");
+    td.parentNode.replaceChild(th, td);
+  });
+  row.querySelectorAll("th").forEach((th) => {
+    if (!th.getAttribute("scope")) th.setAttribute("scope", "col");
+  });
+}
+
+function isLikelyHeaderRow(row) {
+  const cells = Array.from(row.querySelectorAll("td, th"));
+  if (cells.length < 2) return false;
+  if (cells.some((c) => c.hasAttribute("bgcolor"))) return true;
+  const nonFiller = cells.filter((c) => {
+    const sr = c.querySelector(".sr-only");
+    return !(sr && sr.textContent.trim() === "No data");
+  });
+  if (nonFiller.length < 2) return false;
+  const allBolded = nonFiller.every((c) => c.querySelector("strong, b"));
+  if (!allBolded) return false;
+  const avgLen =
+    nonFiller.reduce((a, c) => a + (c.textContent || "").trim().length, 0) /
+    nonFiller.length;
+  return avgLen < 15;
+}
+
 function fixSimpleTable(doc, table) {
   // Strip stale headers attrs from <td> cells — simple tables use scope,
   // and CMS-authored headers="..." often reference non-TH ids (axe
@@ -331,6 +363,30 @@ function fixSimpleTable(doc, table) {
   table
     .querySelectorAll("td[headers]")
     .forEach((td) => td.removeAttribute("headers"));
+
+  // Anything inside <thead> is a column header by definition — promote
+  // any <td> to <th scope="col"> (some CMS exports wrap header cells
+  // in <td>).
+  table
+    .querySelectorAll("thead tr")
+    .forEach((row) => promoteRowTdsToColumnHeaders(doc, row));
+
+  // Two-level / styled-td header pattern: the first <tbody> row may
+  // actually be column headers rendered as styled <td> cells. Promote
+  // it if it looks like headers AND the row after looks like data.
+  const firstTbodyRow = table.querySelector("tbody tr");
+  let promotedFirstTbody = false;
+  if (firstTbodyRow && !firstTbodyRow.querySelector("th")) {
+    if (isLikelyHeaderRow(firstTbodyRow)) {
+      const next = firstTbodyRow.nextElementSibling;
+      const nextFirst = next ? next.querySelector("td, th") : null;
+      const nextText = nextFirst ? (nextFirst.textContent || "").trim() : "";
+      if (nextText && !/^\d+[\d,.%$]*$/.test(nextText)) {
+        promoteRowTdsToColumnHeaders(doc, firstTbodyRow);
+        promotedFirstTbody = true;
+      }
+    }
+  }
 
   // scope="col" on header row
   let headerRow = table.querySelector("thead tr");
@@ -349,6 +405,7 @@ function fixSimpleTable(doc, table) {
   const rows = bodyRows.length ? bodyRows : table.querySelectorAll("tr");
   rows.forEach((row) => {
     if (row === headerRow) return;
+    if (promotedFirstTbody && row === firstTbodyRow) return;
     const firstCell = row.querySelector("td:first-child, th:first-child");
     if (!firstCell) return;
     if (firstCell.tagName === "TH") {

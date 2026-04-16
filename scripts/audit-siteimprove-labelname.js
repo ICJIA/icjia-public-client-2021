@@ -8,9 +8,12 @@ const { AxePuppeteer } = require("@axe-core/puppeteer");
 const BASE_URL = "http://localhost:8080";
 
 const PAGES = [
-  { url: "/researchhub/dicra/", name: "DICRA (3 occ)" },
-  { url: "/about/employment/", name: "Employment (2 occ)" },
   { url: "/about/", name: "About (2 occ)" },
+  { url: "/about/privacy/", name: "Privacy (2 occ)" },
+  { url: "/researchhub/articles/comprehensive-legal-services-for-victims-of-crime/", name: "Comp legal svcs (1 occ)" },
+  { url: "/researchhub/articles/the-victim-offender-overlap-examining-the-relationship-between-victimization-and-offending/", name: "Victim-offender overlap (1 occ)" },
+  { url: "/researchhub/articles/firearm-prohibitors-and-records-improvement-task-force-2023-report/", name: "Firearm prohibitors (1 occ)" },
+  { url: "/researchhub/articles/what-s-next-for-infonet-how-a-statewide-case-management-system-is-shaping-responses-to-illinois-victims/", name: "InfoNet next (1 occ)" },
 ];
 
 async function run() {
