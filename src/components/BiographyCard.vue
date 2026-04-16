@@ -22,11 +22,11 @@
           ></v-img>
         </v-avatar>
         <span>
-          <v-tooltip top>
+          <v-tooltip top v-if="showName">
             <template v-slot:activator="{ on, attrs }">
-              <span
+              <h2
                 class="text-h5 author-name hover ml-3"
-                role="button"
+                style="cursor: pointer"
                 tabindex="0"
                 @click.stop.prevent="search(item.fullName)"
                 @keydown.enter.stop.prevent="search(item.fullName)"
@@ -34,7 +34,7 @@
                 v-on="on"
                 >{{ item.fullName }}<span v-if="item.suffix">,&nbsp;</span
                 >{{ item.suffix }}
-              </span>
+              </h2>
             </template>
             <span>Search ICJIA for {{ item.fullName }}</span>
           </v-tooltip>
@@ -111,6 +111,10 @@ export default {
     item: {
       type: Object,
       default: () => {},
+    },
+    showName: {
+      type: Boolean,
+      default: true,
     },
     showLink: {
       type: Boolean,

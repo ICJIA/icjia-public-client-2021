@@ -3,8 +3,8 @@
     <v-container v-if="item">
       <v-row>
         <v-col cols="12" class="mt-5">
-          <h1 class="sr-only">{{ item.fullName }}</h1>
-          <BiographyCard :item="item" :showLink="false"></BiographyCard>
+          <h1 class="mb-4">{{ item.fullName }}<span v-if="item.suffix">, {{ item.suffix }}</span></h1>
+          <BiographyCard :item="item" :showLink="false" :showName="false"></BiographyCard>
 
           <StaticSearch
             :query="item.fullName"

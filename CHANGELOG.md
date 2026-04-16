@@ -67,6 +67,18 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.22] - 2026-04-16
+
+### a11y — biography pages: visible H1 + semantic heading hierarchy (sia-r59)
+
+SiteImprove flagged 72 biography pages under sia-r59 ("Page missing headings"). While most of the 553 `/about/` flags are stale pre-hydration data (addressed in v1.5.20), the biography pages had a genuine structural issue: the person's name was rendered as a styled `<span>` inside a Vuetify card, with only an sr-only H1 for screen readers.
+
+**`StaffAndBoardSingle.vue`** — Replaced the sr-only `<h1>` with a visible H1 displaying the person's name above the card. The card receives `showName="false"` to avoid duplicating the name.
+
+**`BiographyCard.vue`** — Changed the name element from `<span role="button">` to `<h2>` for proper heading hierarchy. Added a `showName` prop (default `true`) so the single-page view can suppress the in-card name when an H1 is already present. All 7 listing-page usages (composition & membership, staff org, hub staff, grants staff, ISU staff, unit cards) automatically gain H2 headings with no template changes needed.
+
+---
+
 ## [1.5.21] - 2026-04-16
 
 ### a11y — sia-r87 skip link + sia-r113 target size refinement
