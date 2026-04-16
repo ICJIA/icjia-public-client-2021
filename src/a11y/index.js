@@ -252,16 +252,17 @@ const fixInlineColorContrast = function () {
   });
 };
 
-// Fix footnote links that are too small for touch targets (< 24px)
+// Fix footnote links that are too small for touch targets (sia-r113 / WCAG 2.5.8)
+// Inline styles reinforce the CSS rule in app.css for async-loaded CMS content.
 const fixFootnoteTargetSize = function () {
   const footnoteLinks = document.querySelectorAll(
     ".footnote-ref a, .footnote-backref, a[href^='#fn'], a[href^='#fnref']"
   );
   footnoteLinks.forEach((link) => {
     link.style.display = "inline-block";
-    link.style.minWidth = "24px";
-    link.style.minHeight = "24px";
-    link.style.lineHeight = "24px";
+    link.style.minWidth = "28px";
+    link.style.minHeight = "28px";
+    link.style.lineHeight = "28px";
     link.style.textAlign = "center";
   });
 };

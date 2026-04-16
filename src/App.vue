@@ -10,7 +10,7 @@
     <AppNav @hook:mounted="fixA11y()"></AppNav>
     <AppSidebar></AppSidebar>
 
-    <v-main style="background: #fcfcfc">
+    <v-main id="main-content" tabindex="-1" style="background: #fcfcfc">
       <AppNavContext
         :contextMenu="topContextMenu"
         v-if="topContextMenu"

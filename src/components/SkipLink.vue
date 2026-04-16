@@ -1,14 +1,14 @@
 <template>
   <nav aria-label="Skip navigation">
     <a
-      href="#content"
+      href="#main-content"
       class="skiplink"
       id="skip-to-content"
       @click="onSkip"
       @keydown.enter.prevent="onSkip"
       @keydown.space.prevent="onSkip"
     >
-      Skip to content
+      Skip to main content
     </a>
   </nav>
 </template>
@@ -23,7 +23,7 @@ export default {
       // #content, then programmatically move focus there. #content has
       // tabindex="-1" in App.vue so focus() actually takes effect.
       if (e) e.preventDefault();
-      const target = document.getElementById("content");
+      const target = document.getElementById("main-content");
       if (!target) return;
       // Use native scroll so we don't depend on Vuetify's goTo resolving
       // across route changes or dialog contexts.
@@ -39,7 +39,7 @@ export default {
       // the location bar reflects the anchor and the Back button works
       // as users expect.
       if (window.history && window.history.replaceState) {
-        window.history.replaceState(null, "", "#content");
+        window.history.replaceState(null, "", "#main-content");
       }
     },
   },

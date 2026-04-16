@@ -280,6 +280,8 @@ a:hover {
    focus outline on the wrapper div (it's a target, not an interactive
    element — the user's focus should visibly land on the first heading
    or interactive element inside, not on the outer wrapper). */
+#main-content:focus,
+#main-content:focus-visible,
 #content:focus,
 #content:focus-visible {
   outline: none !important;
@@ -626,10 +628,10 @@ a[href^="#fn"],
 a[href^="#fnref"],
 .author-link {
   display: inline-block;
-  min-width: 24px;
-  min-height: 24px;
+  min-width: 28px;
+  min-height: 28px;
   line-height: 1.5;
-  padding: 4px 2px;
+  padding: 4px 4px;
   text-align: center;
   vertical-align: middle;
 }

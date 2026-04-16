@@ -67,6 +67,24 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.21] - 2026-04-16
+
+### a11y — sia-r87 skip link + sia-r113 target size refinement
+
+**1. sia-r87 "Skip to main content link is missing" (35 pages) — `SkipLink.vue`, `App.vue`, `app.css`**
+
+SiteImprove flagged 35 research-hub article and news pages for missing a skip-to-main-content link. The skip link existed but targeted `#content` (a `<div>` nested inside `<main>`) rather than the `<main>` landmark itself. SiteImprove's sia-r87 implementation expects the skip link to reference the `<main>` element directly.
+
+Fix: the skip link now targets `#main-content`, which is the `<main>` element rendered by Vuetify's `v-main`. The `<main>` element received `id="main-content"` and `tabindex="-1"` so it can receive focus. Link text updated from "Skip to content" to "Skip to main content" to match the standard expected by accessibility crawlers. Focus-suppression CSS updated accordingly.
+
+**2. sia-r113 target size boundary fix — `a11y/index.js`**
+
+The previous sia-r113 fix in v1.5.20 set CSS `min-width`/`min-height` to 24px in `app.css`, but `fixFootnoteTargetSize()` in `a11y/index.js` was applying inline styles with `min-width: 24px` that overrode the CSS. With `box-sizing: border-box` active, the 24px included padding, leaving the element right at the boundary. SiteImprove flagged 1 occurrence on the juvenile justice article page.
+
+Fix: bumped inline style values from 24px to 28px in both `a11y/index.js` and `app.css`, providing a 4px safety margin above the WCAG 2.5.8 minimum.
+
+---
+
 ## [1.5.20] - 2026-04-15
 
 ### a11y — bulk SiteImprove remediation: sia-r61, sia-r59, sia-r78, sia-r113 (~1,150 occurrences fixed)
