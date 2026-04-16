@@ -62,7 +62,7 @@
                       class="mr-2"
                       style="margin-top: 0px"
                     >
-                      <span style="color: #fff !important; font-weight: 400">
+                      <span style="color: #000 !important; font-weight: 400">
                         NEW!
                       </span>
                     </v-chip>

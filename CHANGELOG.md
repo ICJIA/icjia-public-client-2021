@@ -67,6 +67,16 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.23] - 2026-04-16
+
+### ui — publications "NEW!" chip: black label for visibility
+
+The "NEW!" chip on `/researchhub/publications/` was rendering as a blank outline. A global Vuetify override (`.v-chip.v-chip:not(.white--text) { background-color: #fff !important }`) forces all chips to a white background, but the chip's inline label was white text — resulting in white-on-white and an empty-looking chip.
+
+**`PublicationsAll.vue`** — Changed the inline label color from `#fff` to `#000` so the "NEW!" text is visible against the overridden white chip background (21:1 contrast).
+
+---
+
 ## [1.5.22] - 2026-04-16
 
 ### a11y — biography pages: visible H1 + semantic heading hierarchy (sia-r59)
