@@ -67,6 +67,16 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.25] - 2026-04-16
+
+### docs — SiteImprove false-positives running log
+
+Added [docs/SITEIMPROVE-FALSE-POSITIVES.md](docs/SITEIMPROVE-FALSE-POSITIVES.md) — a living reference table documenting confirmed SiteImprove false-positive patterns on this site. SiteImprove re-reports the same stricter-than-WCAG flags on every crawl (e.g., sia-r14 "Label in Name" applied to landmark `<nav>` elements), and stakeholders repeatedly ask about them. The running log lets us cite a permanent explanation instead of re-diagnosing the same flag each crawl.
+
+Initial entry: sia-r14 on landmark `<nav>` elements with sr-only `aria-labelledby` labels — 8 occurrences across 6 pages in the 2026-04-16 crawl. ACT Rule 2ee8b8 scopes "Label in Name" to interactive widgets; landmarks are out of scope. Verified clean by axe-core WCAG 2.1 AA via `scripts/audit-siteimprove-labelname.js`. Recommended action: mark as Accepted in SiteImprove inspector with the comment supplied in the table.
+
+---
+
 ## [1.5.24] - 2026-04-16
 
 ### a11y — sia-r77 table cell context: promote styled-td header rows to `<th scope="col">`
