@@ -32,7 +32,8 @@
                 @keydown.enter.stop.prevent="search(item.fullName)"
                 v-bind="attrs"
                 v-on="on"
-                >{{ item.fullName }}<span v-if="item.suffix">,&nbsp;</span
+              >
+                {{ item.fullName }}<span v-if="item.suffix">,&nbsp;</span
                 >{{ item.suffix }}
               </h2>
             </template>
