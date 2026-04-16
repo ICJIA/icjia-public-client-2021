@@ -6,9 +6,17 @@ All notable changes to the ICJIA Public Website are documented in this file.
 
 ## IMPORTANT: Understanding Accessibility Tool Differences — axe-core vs. SiteImprove
 
-This site has been audited extensively with **axe-core** (57/57 pages, zero violations) and continues to be monitored with **SiteImprove**. These tools produce different results for the same pages because they implement different rule sets, interpret edge cases differently, and have fundamentally different scanning architectures. **A page that passes one tool may fail the other.** This is expected behavior, not a sign of inadequate remediation.
+This site is audited with two complementary tools — **axe-core** (industry-standard, open-source) and **SiteImprove** (proprietary enterprise crawler). They produce different results for the same pages because they use different rule sets, scan in different ways, and treat ambiguous cases differently. **A page that passes one tool may still be flagged by the other.** This is expected behavior; it does not indicate inadequate remediation.
 
 Managers and stakeholders reviewing audit results should understand these differences before drawing conclusions from either tool's output.
+
+### For stakeholders — the short version
+
+- **axe-core score: 2,367 / 2,367 pages pass WCAG 2.1 AA with zero violations** (full-site audit, April 14 2026). axe-core is the open-source engine used by Google Lighthouse, Microsoft, pa11y, and most accessibility consultancies.
+- **SiteImprove reports a lower score** because (a) it applies proprietary rules that are stricter than the published WCAG and W3C ACT Rules, and (b) its remote crawler cannot fully execute the JavaScript that renders this Single Page Application. Both limitations are architectural to SiteImprove and documented by the vendor itself.
+- **SiteImprove cannot be integrated into the build process.** There is no CLI, API, or local runner. Every SiteImprove flag must be manually reviewed after deployment, and results can lag days or weeks behind the live code.
+- **Every new SiteImprove report is triaged on arrival.** If axe-core also flags the issue, it is fixed in code. If axe-core is clean and the flag matches a known stricter-than-spec rule, it is logged as a false positive with W3C/ACT Rules citations and verification evidence.
+- **Known false-positive patterns are tracked in [docs/SITEIMPROVE-FALSE-POSITIVES.md](docs/SITEIMPROVE-FALSE-POSITIVES.md)** — a running table with pattern, reason, verification source, first-reported date, and the recommended comment to paste into SiteImprove's inspector when marking occurrences as accepted. New patterns are added as they appear.
 
 ### How the tools differ
 
@@ -26,12 +34,12 @@ Managers and stakeholders reviewing audit results should understand these differ
 
 ### Why this matters for this project
 
-1. **This site passes axe-core with zero violations across all 57 audited pages.** This is the industry-standard open-source tool used by Google, Microsoft, and most accessibility consultancies.
+1. **This site passes axe-core with zero violations across all 2,367 pages in `sitemap.xml`** (full-site audit, April 14 2026, axe-core 4.11.2, WCAG 2.2 Level AA). axe-core is the industry-standard open-source engine used by Google, Microsoft, and most accessibility consultancies. The complete per-page JSON is preserved under `reports/a11y-full-audit/archive/2026-04-14/` for audit-trail purposes.
 
 2. **SiteImprove flags additional issues** that fall into three categories:
-   - **Legitimate gaps** that axe-core's rule set doesn't cover (e.g., sia-r83 text clipping at 200% zoom, sia-r77 table cell context). These have been remediated.
-   - **Stricter-than-spec interpretations** where SiteImprove applies WCAG rules more broadly than the spec requires (e.g., sia-r14 flagging `<nav aria-label>` landmarks — WCAG 2.5.3 only applies to user interface components). These have been fixed to satisfy SiteImprove even though they were already WCAG-compliant.
-   - **Cached/stale results** from previous crawls that no longer reflect the current state of the site.
+   - **Legitimate gaps** that axe-core's rule set doesn't cover (e.g., sia-r83 text clipping at 200% zoom, sia-r77 table cell context). These have been remediated in code. When a new gap is discovered via a SiteImprove report, a targeted axe-core audit script is written for those URLs (see `scripts/audit-siteimprove-*.js`) to verify the fix.
+   - **Stricter-than-spec interpretations** where SiteImprove applies WCAG rules more broadly than the spec requires (e.g., sia-r14 flagging landmark `<nav>` elements — WCAG 2.5.3 and W3C ACT Rule 2ee8b8 only apply "Label in Name" to interactive widgets, not landmarks). These are logged in [docs/SITEIMPROVE-FALSE-POSITIVES.md](docs/SITEIMPROVE-FALSE-POSITIVES.md) with citations and verification evidence, then marked as Accepted in the SiteImprove inspector.
+   - **Cached/stale results** from previous crawls that no longer reflect the current state of the site. These clear on the next SiteImprove recrawl.
 
 3. **Neither tool replaces manual testing.** Both are automated scanners that can only catch ~30-40% of WCAG issues. Screen reader testing, keyboard navigation testing, and cognitive accessibility review require human judgment.
 
@@ -48,22 +56,60 @@ Managers and stakeholders reviewing audit results should understand these differ
 
 This asymmetry is important: axe-core violations are caught and fixed during development, while SiteImprove violations are only discovered after the fact and require a manual investigation cycle.
 
-### Why axe-core audits 57 pages, not all 2,356
+### Audit coverage — every URL in the sitemap
 
-This site has **2,356 dynamic pages** across 10 content types (1,101 publications, 275 meetings, 251 hub articles, 218 jobs, 180 posts, 172 grants, 114 biographies, 29 static pages, 10 units, 6 events). The default audit samples ~5 pages per type (57 total) because:
+This site has **2,367 URLs across 10 content types** (1,101 publications, 275 meetings, 251 hub articles, 218 jobs, 180 posts, 172 grants, 114 biographies, 29 static pages, 10 units, 6 events, 11 system). As of v1.5.9 (April 14 2026), **every single URL in `public/sitemap.xml` is audited with axe-core** on each full-site run — no sampling.
 
-1. **All pages within a content type share the same Vue template.** If 5 random grant pages pass, the other 167 use identical rendering code and will also pass.
-2. **The 24 runtime a11y fix functions are global** — they run on every page load regardless of content.
-3. **A full 2,356-page audit takes ~4 hours** (~6 sec/page) vs. ~6 minutes for the sampled run.
-4. The only source of page-specific violations is **CMS content variations** (e.g., an author using inline `color: red`), which are now handled by global runtime fixes like `fixInlineColorContrast()`.
+The full-site auditor at `scripts/a11y-sitemap-audit.mjs` runs 5 parallel workers against the local dev server and completes in ~28 minutes. It is resumable, archives prior runs under `reports/a11y-full-audit/archive/<date>/`, and records a per-page JSON plus a rule × page matrix. The April 14 2026 archive shows **2,367 / 2,367 pages with zero violations, zero errors** at WCAG 2.2 Level AA.
 
-A full audit can be run at any time: `npm run audit -- all --sample 9999` (~4 hours). A larger sample per type is also available: `npm run audit -- all --sample 20` (~20 min).
+```bash
+# Full-site audit, every URL in sitemap.xml, fresh archive
+node scripts/a11y-sitemap-audit.mjs --fresh --concurrency=5
+```
 
-SiteImprove, by contrast, crawls the **entire live site** on every scan — which is why it sometimes surfaces issues on specific pages that the sampled axe-core audit did not visit. When this happens, a targeted axe-core audit script is written for those specific URLs (see `scripts/audit-siteimprove-*.js`) to verify and fix the issue.
+An earlier version of this document described a sampled audit strategy (~57 pages, one per content type). That strategy was technically defensible — pages within a content type share templates and the runtime a11y fix functions are global — but manager-facing compliance records benefit from exhaustive coverage. "Every page in the sitemap was audited" is a stronger, more defensible claim than "a representative sample passed," and the full-site runner produces that record in under half an hour.
+
+SiteImprove, by contrast, crawls the live production site on its own schedule and sometimes surfaces issues on specific pages that axe-core already covered. When this happens, a **targeted axe-core audit script** is written for those exact URLs (see `scripts/audit-siteimprove-*.js`) to independently verify and — if it is a real issue — fix it. If axe-core confirms the pages are clean, the flag is logged in [docs/SITEIMPROVE-FALSE-POSITIVES.md](docs/SITEIMPROVE-FALSE-POSITIVES.md) with citations.
 
 ### Recommendation
 
-Use **both tools together**: axe-core as the primary development-time gate (fast, accurate, zero false positives), and SiteImprove as a secondary monitoring layer (broader coverage, catches edge cases). When SiteImprove flags an issue that axe-core does not, investigate whether it is a legitimate gap, a stricter-than-spec interpretation, or a stale cached result before prioritizing remediation.
+Use **both tools together**: axe-core as the primary development-time gate (fast, accurate, zero false positives), and SiteImprove as a secondary monitoring layer (broader coverage, catches edge cases). When SiteImprove flags an issue that axe-core does not, triage it:
+
+1. Run the relevant targeted audit at `scripts/audit-siteimprove-*.js` (or write a new one) to confirm or deny axe-core agreement.
+2. If axe-core also flags it, remediate in code and document the fix in a CHANGELOG entry.
+3. If axe-core is clean and the pattern matches a stricter-than-spec rule, add an entry to [docs/SITEIMPROVE-FALSE-POSITIVES.md](docs/SITEIMPROVE-FALSE-POSITIVES.md) and mark the occurrences as Accepted in the SiteImprove inspector with the comment supplied in the table.
+4. Stale-cache flags clear on the next SiteImprove recrawl — no action needed beyond waiting.
+
+---
+
+## [1.5.26] - 2026-04-16
+
+### a11y — eliminate orphan `<th>` cells introduced by the v1.5.24 two-level header promotion
+
+A partial post-fix audit (axe-core + Lighthouse + contrastcap) on the fidelity drug-court article surfaced a side effect of v1.5.24's multi-row header promotion: 3 of the 16 promoted `<th>` cells had **zero** referencing `<td>` cells, which axe-core flags as `th-has-data-cells` (Needs Review) and SiteImprove would flag as sia-r46 "No data cells assigned to table header" on its next crawl. The three orphans were:
+
+1. **"County program"** — the corner cell over the row-label column. Its data "cells" are the row-header `<th>`s, not data cells — no `<td>` references it.
+2. **"Key component"** (colspan=9) — the group header spanning all nine numeric sub-headers. `fixComplexTable` collected only the closest column header per data cell, stopping at the sub-header below and never reaching the group header above.
+3. **"—No data"** — the empty corner cell at the intersection of the row-label column and the second header row. A spacer, not a semantic header.
+
+**`src/a11y/index.js` + `src/utils/contentSanitizer.js`** — two small changes to both a11y variants:
+
+- `promoteRowTdsToColumnHeaders` now skips `<td>` cells whose sole content is the `"No data"` sr-only filler. Those cells are corner/spacer positions in two-level header rows and should remain `<td>`. This alone eliminated orphan #3 above.
+- `fixComplexTable`'s column-header scan no longer `break`s after the closest `<th>` — it continues up the column and adds every `<th>` above. This propagates group-header IDs into data cells' `headers` attributes and eliminates orphans #1 and #2.
+
+Verified on the fidelity table: 16 `<th>` cells, 0 orphans — "Key component" now has 45 referencing `<td>`s (all cells in its 9 spanned columns), "County program" has 1 (down from orphan), every row/sub-header still has its prior referencing count. Axe-core re-audit: 0 violations on fidelity + law-enforcement + the 9 previously-fixed table pages (11/11 clean).
+
+### audit — partial accessibility audit record (3 pages, 3 tools)
+
+Post-fix validation run captured for the audit trail. All three tools independently confirm the site is clean on the audited pages:
+
+| Tool | Page | Result |
+|---|---|---|
+| axe-core (WCAG 2.1 AA + best-practice) | `/about/` | **0 violations** (1 color-contrast Needs Review on Vuetify v-tabs — dynamic background) |
+| axe-core (WCAG 2.1 AA + best-practice) | `/researchhub/articles/fidelity-…` | **0 violations** (1 color-contrast Needs Review; `th-has-data-cells` Needs Review *resolved in this release*) |
+| Lighthouse a11y (desktop) | `/about/` | **100 / 100** |
+| contrastcap WCAG AA | `/about/` | 72 pass / 5 warnings / 7 "failures" — all 7 "failures" confirmed to be **pixel-sampler false positives** (reported `#000 on #000` = 1:1); live DOM inspection shows Vuetify tabs render black text on `#eeeeee` ≈ **18:1 contrast** (passes AA comfortably). The contrastcap pixel sampler mis-reads tabs rendered over transparent/image backgrounds; its `backgroundSource: "pixel-sample-over-image"` label is the explicit warning that the value is not from the computed style. Logged as a known tool limitation in [docs/SITEIMPROVE-FALSE-POSITIVES.md](docs/SITEIMPROVE-FALSE-POSITIVES.md) so future audits don't re-litigate it. |
+| axe-core regression (11 pages with tables) | `scripts/audit-siteimprove-tables.js` | **11 / 11 clean** — no regressions from v1.5.24/v1.5.26 table-header work |
 
 ---
 

@@ -228,7 +228,7 @@ This site is audited with two complementary tools that produce **different resul
 
 **Build process integration:** axe-core is integrated into the development workflow (`npm run audit`) and can be run on-demand against a local dev server before every deploy. **SiteImprove cannot be integrated into the build process** — it is a cloud service that crawls the live production site on its own schedule with no CLI, API, or local runner. Every SiteImprove flag must be manually reviewed after deployment, and results may lag days or weeks behind the current state of the code.
 
-**Recommendation:** Use axe-core as the development-time gate and SiteImprove as a monitoring layer. When SiteImprove flags an issue axe-core does not, investigate whether it is a legitimate gap, a stricter interpretation, or a stale result. See [CHANGELOG.md](CHANGELOG.md) for detailed analysis.
+**Recommendation:** Use axe-core as the development-time gate and SiteImprove as a monitoring layer. When SiteImprove flags an issue axe-core does not, investigate whether it is a legitimate gap, a stricter interpretation, or a stale result. Known stricter-than-spec false-positive patterns (e.g. sia-r14 on landmark `<nav>` elements) are logged in [docs/SITEIMPROVE-FALSE-POSITIVES.md](docs/SITEIMPROVE-FALSE-POSITIVES.md) with W3C/ACT Rules citations, verification evidence, and the exact comment to paste when marking occurrences as Accepted in the SiteImprove inspector. See [CHANGELOG.md](CHANGELOG.md) for detailed analysis.
 
 > **Neither tool replaces manual testing.** Automated scanners catch ~30-40% of WCAG issues. Screen reader testing, keyboard navigation, and cognitive accessibility review require human judgment.
 
@@ -484,7 +484,7 @@ Further perf work requires architectural change:
 - **Replacing Vuetify 2** — eliminates the framework JS/CSS overhead. Also the rewrite.
 - **Pre-rendering** — possible inside v1.3.x via vue-cli's prerender plugin, but multi-day project and only helps initial page.
 
-For the next several months until the rewrite ships, this is the best shape the site is going to be in. Mobile users get the hero image ~5s faster, search runs without freezing the UI, repeat visits are near-zero bytes, and a11y is still 157/157 axe-clean. The remaining slowness is structural — unfixable without writing a new app, which is exactly what's planned.
+For the next several months until the rewrite ships, this is the best shape the site is going to be in. Mobile users get the hero image ~5s faster, search runs without freezing the UI, repeat visits are near-zero bytes, and a11y is still 2,367/2,367 axe-clean (full-site audit, April 14 2026). The remaining slowness is structural — unfixable without writing a new app, which is exactly what's planned.
 
 ### Search architecture (worker-backed lazy loader)
 

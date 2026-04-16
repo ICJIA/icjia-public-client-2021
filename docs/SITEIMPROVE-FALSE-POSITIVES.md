@@ -21,6 +21,17 @@ For background on why the two tools differ, see the "axe-core vs. SiteImprove" s
 
 ---
 
+## Other audit-tool false positives
+
+This table covers false positives from other auditors (axe-core Needs Review, Lighthouse, contrastcap, etc.) that are **not** SiteImprove but may appear in the same audit trail. Documenting them here prevents re-investigation.
+
+| # | Tool | Rule / check | Pattern | Why it's a false positive | Verified by |
+|---|---|---|---|---|---|
+| A | contrastcap | pixel-sample-over-image contrast "failures" on Vuetify v-tabs | `.v-tab` elements sampled and reported as `foreground: #000000, background: #000000, ratio: 1:1` | contrastcap's pixel sampler reads the underlying pixel under the text, but Vuetify tabs have transparent parent backgrounds that allow the tool to hit black pixels outside the visible tab chrome. The tool flags this explicitly via `backgroundSource: "pixel-sample-over-image"`. Actual computed styles: `color: rgb(0, 0, 0)` on `background-color: rgb(238, 238, 238)` → **~18:1 contrast, passes WCAG AA by a wide margin**. | Chrome DevTools `getComputedStyle` on the flagged `.v-tab` elements (2026-04-16) |
+| B | axe-core | `color-contrast` Needs Review on Vuetify v-tabs | `(17 el) .v-slide-group__content > .v-tab` on pages with v-tabs widgets | Same underlying cause as #A: axe-core cannot auto-verify contrast when the background involves dynamic CSS (tab active/hover states, slide-group transitions). It correctly classifies these as Needs Review, not Violation. Live inspection confirms contrast is fine. | axe-core Needs-Review classification (not a Violation); live-DOM verification |
+
+---
+
 ## Verification commands
 
 Each targeted audit script runs the full axe-core WCAG 2.1 AA rule set against a specific list of pages. Use these to verify that a reported SiteImprove issue is (or is not) a false positive:

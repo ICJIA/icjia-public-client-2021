@@ -325,7 +325,12 @@ function normalizeRaggedRows(doc, table) {
 }
 
 function promoteRowTdsToColumnHeaders(doc, row) {
+  // Skip "No data" filler cells — they are corner/spacer positions in
+  // two-level header rows. Promoting them to <th> creates orphan headers
+  // that sia-r46 flags as "no data cells assigned to table header".
   row.querySelectorAll("td").forEach((td) => {
+    const sr = td.querySelector(".sr-only");
+    if (sr && sr.textContent.trim() === "No data") return;
     const th = doc.createElement("th");
     th.innerHTML = td.innerHTML;
     for (const attr of td.attributes) {
@@ -482,12 +487,21 @@ function fixComplexTable(doc, table, tableIndex) {
       if (cell.tagName === "TD") {
         const cs = parseInt(cell.getAttribute("colspan") || "1", 10);
         const headerIds = new Set();
+        // Include every <th> above, not just the closest — group headers
+        // (multi-row column headers) otherwise become orphan <th> cells
+        // that sia-r46 and axe `th-has-data-cells` flag.
         for (let c = colIdx; c < colIdx + cs && c < numCols; c++) {
+          let lastSeen = null;
           for (let r = rowIdx - 1; r >= 0; r--) {
             const above = cellGrid[r][c];
-            if (above && above.tagName === "TH" && above.getAttribute("id")) {
+            if (
+              above &&
+              above !== lastSeen &&
+              above.tagName === "TH" &&
+              above.getAttribute("id")
+            ) {
               headerIds.add(above.getAttribute("id"));
-              break;
+              lastSeen = above;
             }
           }
         }

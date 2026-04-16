@@ -991,8 +991,15 @@ const fixTableCellContext = function () {
 
 // Promote every <td> in a row to <th scope="col">, preserving attributes.
 // Used for header rows that were rendered as styled <td> cells by a CMS.
+// Skips "No data" filler cells — they are corner/spacer positions (e.g.
+// the intersection of row headers and column headers in a two-level
+// header), not semantic column headers. Leaving them as <td> avoids
+// creating orphan <th> cells that axe `th-has-data-cells` and
+// SiteImprove sia-r46 would flag.
 function promoteRowTdsToColumnHeaders(row) {
   row.querySelectorAll("td").forEach((td) => {
+    const sr = td.querySelector(".sr-only");
+    if (sr && sr.textContent.trim() === "No data") return;
     const th = document.createElement("th");
     th.innerHTML = td.innerHTML;
     for (const attr of td.attributes) {
@@ -1169,13 +1176,23 @@ function fixComplexTable(table, tableIndex) {
       if (cell.tagName === "TD") {
         const cs = parseInt(cell.getAttribute("colspan") || "1", 10);
         const headerIds = new Set();
-        // Collect column headers: scan upward in same column(s)
+        // Collect column headers: scan upward in same column(s). Include
+        // every <th> above, not just the closest — in a two-level header
+        // (group header spanning several sub-headers) data cells need to
+        // reference both levels, otherwise the group header becomes an
+        // orphan that sia-r46 / axe `th-has-data-cells` flags.
         for (let c = colIdx; c < colIdx + cs && c < numCols; c++) {
+          let lastSeen = null;
           for (let r = rowIdx - 1; r >= 0; r--) {
             const above = cellGrid[r][c];
-            if (above && above.tagName === "TH" && above.getAttribute("id")) {
+            if (
+              above &&
+              above !== lastSeen &&
+              above.tagName === "TH" &&
+              above.getAttribute("id")
+            ) {
               headerIds.add(above.getAttribute("id"));
-              break; // closest header wins per column
+              lastSeen = above;
             }
           }
         }
