@@ -9,7 +9,6 @@
           </h1>
           <BiographyCard
             :item="item"
-            :showLink="false"
             :showName="false"
           ></BiographyCard>
 

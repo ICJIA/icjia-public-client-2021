@@ -25,6 +25,7 @@
           <v-tooltip top v-if="showName">
             <template v-slot:activator="{ on, attrs }">
               <h2
+                :id="item.slug ? `bio-${item.slug}` : undefined"
                 class="text-h5 author-name hover ml-3"
                 style="cursor: pointer"
                 tabindex="0"
@@ -39,17 +40,6 @@
             </template>
             <span>Search ICJIA for {{ item.fullName }}</span>
           </v-tooltip>
-          <span v-if="showLink">
-            <span>&nbsp;|&nbsp;</span>
-            <v-btn
-              style="margin-bottom: 4px !important; margin-left: -3px"
-              :to="`/about/biographies/${item.slug}`"
-              text
-              x-small
-              :aria-label="'View biography for ' + item.fullName"
-              >View<v-icon right small>mdi-open-in-new</v-icon></v-btn
-            >
-          </span>
 
           <v-card-subtitle style="margin-top: -10px">
             <span
@@ -114,10 +104,6 @@ export default {
       default: () => {},
     },
     showName: {
-      type: Boolean,
-      default: true,
-    },
-    showLink: {
       type: Boolean,
       default: true,
     },

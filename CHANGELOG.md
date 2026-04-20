@@ -82,6 +82,21 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.28] - 2026-04-20
+
+### fix — biography TOC scroll targets + remove redundant VIEW button
+
+**TOC scrolling on `/about/composition-and-membership/`.** The sidebar TOC listed every board member but clicking an entry did nothing. `Toc.vue` builds scroll targets from `document.querySelectorAll("h2")` and calls `$vuetify.goTo('#' + h2.id)`. The biography name `<h2>` in `BiographyCard.vue` had no `id`, so every entry resolved to `#` (a no-op). Gave the h2 a guarded `id="bio-{slug}"` — the slug is already unique per biography record, so there is no collision risk across the board/staff listings, and the conditional leaves the attribute off if a record somehow ships without a slug.
+
+**Redundant VIEW button.** `BiographyCard.vue` rendered a small `VIEW ⧉` button next to every member name. The enclosing `v-card` already has `:to="/about/biographies/{slug}"`, so the entire card is a navigation link — the inline button was a duplicate affordance. Removed the button block and the `showLink` prop entirely (no caller passed `:showLink="true"`; the only explicit usage was `:showLink="false"` in `StaffAndBoardSingle.vue`, now dropped).
+
+**Files:**
+
+- `src/components/BiographyCard.vue` — h2 gains `:id="item.slug ? 'bio-' + item.slug : undefined"`; VIEW button span + `showLink` prop removed.
+- `src/views/About/StaffAndBoardSingle.vue` — stale `:showLink="false"` removed.
+
+---
+
 ## [1.5.27] - 2026-04-20
 
 ### fix — restore year in meeting/policy/required-form card dates
