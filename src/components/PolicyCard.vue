@@ -109,7 +109,7 @@ export default {
         return `${start.format("MMM Do")} - ${end.format("MMM Do")}`;
       } else {
         return `<span class='policy-date'><span>${start.format(
-          "dddd MMM DD, yyyy"
+          "dddd MMM DD, YYYY"
         )}</span>, ${start.format("hh:mm A")} - ${end.format(
           "hh:mm A"
         )}</span>`;

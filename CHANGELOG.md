@@ -82,6 +82,22 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.27] - 2026-04-20
+
+### fix — restore year in meeting/policy/required-form card dates
+
+The card subtitle was rendering `Wednesday Apr 22, yyyy, 10:00 AM - 11:30 AM` — literal `yyyy` instead of the year — on the Meetings, Policies, and Required Forms listings. The `yyyy` token is **date-fns** syntax; these three components format through **dayjs**, which treats unknown tokens as literals and requires `YYYY` for a 4-digit year. The mismatch was introduced during the moment → dayjs migration noted in CHANGELOG 1156, where most format strings were translated correctly but these three card components kept the date-fns tokens.
+
+Changed `"dddd MMM DD, yyyy"` → `"dddd MMM DD, YYYY"` in:
+
+- `src/components/MeetingCard.vue:118`
+- `src/components/RequiredFormCard.vue:112`
+- `src/components/PolicyCard.vue:112`
+
+`NewsCard.vue` and `Hub/HubCard.vue` intentionally keep lowercase `yyyy` — those call date-fns `format()`, where `yyyy` is correct.
+
+---
+
 ## [1.5.26] - 2026-04-16
 
 ### a11y — eliminate orphan `<th>` cells introduced by the v1.5.24 two-level header promotion
