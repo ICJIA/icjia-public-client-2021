@@ -83,8 +83,78 @@ import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 export default {
   name: "FundingSingle",
   metaInfo() {
+    const funding = this.funding;
+    if (!funding) return {};
+    const slug = funding.slug || this.$route.params.slug;
+    const url = `https://icjia.illinois.gov/grants/funding/${slug}`;
+    const STRAPI_BASE = "https://agency.icjia-api.cloud";
+    const EXT_TO_MIME = {
+      pdf: "application/pdf",
+      doc: "application/msword",
+      docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      xls: "application/vnd.ms-excel",
+      xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      csv: "text/csv",
+      txt: "text/plain",
+      zip: "application/zip",
+    };
+    const normalizeUrl = (u) => {
+      if (typeof u !== "string" || !u) return null;
+      const t = u.trim();
+      if (/^https?:\/\//.test(t)) return t;
+      if (t.startsWith("/")) return `${STRAPI_BASE}${t}`;
+      return null;
+    };
+    const jsonld = {
+      "@context": "https://schema.org",
+      "@type": "GovernmentService",
+      name: funding.title,
+      serviceType: "Grant funding opportunity",
+      provider: {
+        "@type": "GovernmentOrganization",
+        name: "Illinois Criminal Justice Information Authority",
+        alternateName: "ICJIA",
+        url: "https://icjia.illinois.gov",
+      },
+      areaServed: { "@type": "State", name: "Illinois" },
+      url,
+      inLanguage: "en-US",
+    };
+    if (funding.summary) jsonld.description = funding.summary;
+    if (funding.published_at) jsonld.datePosted = funding.published_at;
+    if (funding.end) jsonld.validThrough = funding.end;
+    if (funding.start && funding.end) {
+      jsonld.hoursAvailable = {
+        "@type": "OpeningHoursSpecification",
+        validFrom: funding.start,
+        validThrough: funding.end,
+      };
+    }
+    if (Array.isArray(funding.attachments) && funding.attachments.length) {
+      const normalized = funding.attachments
+        .map((a) => {
+          if (!a) return null;
+          const contentUrl = normalizeUrl(a.url);
+          if (!contentUrl || !a.name) return null;
+          const ext = (a.ext || "").replace(/^\./, "").toLowerCase();
+          return {
+            "@type": "MediaObject",
+            name: a.name,
+            contentUrl,
+            ...(ext ? { encodingFormat: EXT_TO_MIME[ext] || ext } : {}),
+          };
+        })
+        .filter(Boolean);
+      if (normalized.length) jsonld.associatedMedia = normalized;
+    }
     return {
-      title: this.funding && this.funding.title ? this.funding.title : null,
+      title: funding.title,
+      script: [
+        {
+          type: "application/ld+json",
+          json: jsonld,
+        },
+      ],
     };
   },
   data() {

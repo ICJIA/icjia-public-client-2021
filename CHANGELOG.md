@@ -82,6 +82,31 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.30] - 2026-04-22
+
+### feat — GovernmentService JSON-LD schema on grant NOFO pages
+
+Added schema.org `GovernmentService` structured data to every `/grants/funding/:slug` page via vue-meta, following the same pattern shipped in 1.5.29 for ResearchHub articles. This lets Google, Perplexity, and AI assistants (any crawler that executes JS on SPA pages) identify each page as a grant funding opportunity with structured metadata — name, deadline, posting date, funding window, attachments as `MediaObject`s, and ICJIA as the `GovernmentOrganization` provider.
+
+**Why GovernmentService (and not MonetaryGrant or FAQ):** schema.org's `MonetaryGrant` describes an awarded grant, not a funding announcement, so it was the wrong shape. `GovernmentService` maps cleanly to a NOFO — it's literally "a service provided by the government" with built-in fields for provider, serviceType, areaServed, and the `hoursAvailable` / `validThrough` window that matches our funding-period semantics.
+
+**Attachments are fully qualified URLs.** Strapi returns attachment URLs as relative paths (e.g. `/uploads/file.pdf`); the metaInfo builder prefixes them with `https://agency.icjia-api.cloud` before emitting them in JSON-LD so crawlers can follow them. An extension-to-MIME map (`pdf`, `doc`, `docx`, `xls`, `xlsx`, `csv`, `txt`, `zip`) produces proper `encodingFormat` values; unknown extensions fall back to the bare extension string rather than breaking the payload.
+
+**Schema is emitted on expired NOFOs too.** Expired opportunities are retained on the site for agency-lawyer reference; emitting the schema with a past `validThrough` signals the closure to crawlers while preserving archival SEO. Suppressing schema on expired pages would erase that archival value.
+
+**Page `<title>` behavior preserved.** The existing `metaInfo()` set the NOFO title; the extended version keeps that and adds the JSON-LD `script` block.
+
+**Files:**
+
+- `src/views/Grants/FundingSingle.vue` — `metaInfo()` extended from `{ title }` to `{ title, script: [{ type: 'application/ld+json', json: {...} }] }`. Pre-load guard returns `{}` when `this.funding` is null; attachments without a normalizable URL or without a `name` are filtered out before being emitted.
+- `package.json` — version bump to 1.5.30.
+
+**Verified in dev against two expired NOFOs** (R3 Youth Development/Violence Prevention, Bullying Prevention) — 1.8KB payloads, all attachments resolved to `https://agency.icjia-api.cloud/...`, correct MIME types (`application/pdf`, `application/zip`), past `validThrough` values render as expected.
+
+**Post-deploy validation:** paste any NOFO URL into Google Rich Results Test (`https://search.google.com/test/rich-results`) and Schema.org Validator (`https://validator.schema.org/`) to confirm the `GovernmentService` type is detected. Known caveat (documented 1.5.29): non-JS-executing crawlers (GPTBot, ClaudeBot) will not see the schema until the site ships behind SSR/SSG in the Nuxt 4 rewrite.
+
+---
+
 ## [1.5.29] - 2026-04-22
 
 ### feat — ScholarlyArticle JSON-LD schema on ResearchHub article pages
