@@ -79,7 +79,9 @@ export default {
     },
     setToc() {
       this.$nextTick(() => {
-        const sections = Array.from(document.querySelectorAll("h2"));
+        const sections = Array.from(document.querySelectorAll("h2")).filter(
+          (h2) => !h2.closest("#disclaimer")
+        );
         sections.forEach((section) => {
           let obj = {};
           obj.text = section.innerText;
@@ -91,7 +93,9 @@ export default {
   },
   async mounted() {
     await this.setToc();
-    var section = document.querySelectorAll("h2");
+    var section = Array.from(document.querySelectorAll("h2")).filter(
+      (h2) => !h2.closest("#disclaimer")
+    );
     if (section) {
       var sections = {};
       var i = 0;

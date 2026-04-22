@@ -82,6 +82,29 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.33] - 2026-04-22
+
+### fix — exclude disclaimer heading from page TOC
+
+The floating TOC on BasePage-rendered pages (ResearchHub landing pages like `/researchhub/dicra/`, etc.) was listing "NOTICE OF FEDERAL FUNDING AND FEDERAL DISCLAIMER" as its last entry. That heading belongs to the site-wide `<Disclaimer>` component mounted at the app level (`App.vue:28-33`, outside the routed content), not to the page's own content outline, so it shouldn't appear in the TOC.
+
+**Root cause:** `Toc.vue` builds the TOC with `document.querySelectorAll("h2")` — an unscoped sweep of every h2 in the document. The disclaimer renders its label as an `<h2>` (`Disclaimer.vue:18`), so it got picked up like any other page section. The same unscoped query is also used by the scroll-spy logic that highlights the active TOC item as the user scrolls.
+
+**Fix:** added a `.closest("#disclaimer")` filter to both queries in `Toc.vue` (the initial TOC build in `setToc()` and the scroll-spy offset map in `mounted()`). Any h2 that lives inside `#disclaimer` is skipped. The filter is anchored to the disclaimer container's ID — it won't affect any in-content headings, even if they happen to duplicate the disclaimer's text.
+
+**Why not switch the disclaimer to a non-h2:** `<h2>` is semantically correct for the disclaimer — it's a discrete named section of the page outline for assistive-tech users. Dropping to a `<p>` or `<div role="heading">` would hurt screen-reader navigation to preserve a visual-only TOC behavior.
+
+**Why not use the existing `selector` prop:** `Toc.vue` has a `selector` prop defaulting to `#scrollArea`, but the prop is defined and never consumed anywhere in the component (the queries go straight to `document`). Wiring it up properly would also require adding the `#scrollArea` wrapper in every consumer. Out of scope for a one-page visual fix; tracked mentally for the Nuxt rewrite.
+
+**Files:**
+
+- `src/components/Toc.vue` — filter `#disclaimer` descendants out of both the TOC-build and scroll-spy h2 queries.
+- `package.json` — version bump to 1.5.33.
+
+**Verified:** DICRA TOC now lists six FAQ headings and nothing else. Disclaimer still renders correctly at the bottom of the page.
+
+---
+
 ## [1.5.32] - 2026-04-22
 
 ### fix — restore Google Material Icons webfont for Strapi-supplied card icons
