@@ -88,6 +88,60 @@ export default {
       isRelated: false,
     };
   },
+  metaInfo() {
+    const news = this.news;
+    if (!news) return {};
+    const slug = news.slug || this.$route.params.slug;
+    const url = `https://icjia.illinois.gov/news/${slug}`;
+    const STRAPI_BASE = "https://agency.icjia-api.cloud";
+    const normalizeUrl = (u) => {
+      if (typeof u !== "string" || !u) return null;
+      const t = u.trim();
+      if (/^https?:\/\//.test(t)) return t;
+      if (t.startsWith("/")) return `${STRAPI_BASE}${t}`;
+      return null;
+    };
+    let image = null;
+    if (news.splash) {
+      const fmts = news.splash.formats || {};
+      const raw =
+        (fmts.medium && fmts.medium.url) ||
+        (fmts.small && fmts.small.url) ||
+        (fmts.large && fmts.large.url) ||
+        news.splash.url;
+      image = normalizeUrl(raw);
+    }
+    const datePublished = news.dateOverride || news.published_at;
+    const jsonld = {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: news.title,
+      name: news.title,
+      url,
+      inLanguage: "en-US",
+      publisher: {
+        "@type": "GovernmentOrganization",
+        name: "Illinois Criminal Justice Information Authority",
+        alternateName: "ICJIA",
+        url: "https://icjia.illinois.gov",
+      },
+      mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    };
+    if (datePublished) jsonld.datePublished = datePublished;
+    if (news.updated_at) jsonld.dateModified = news.updated_at;
+    if (news.summary) jsonld.description = news.summary;
+    if (image) jsonld.image = image;
+    if (Array.isArray(news.tags) && news.tags.length) {
+      const keywords = news.tags
+        .map((t) => (typeof t === "string" ? t : t && t.title))
+        .filter(Boolean);
+      if (keywords.length) jsonld.keywords = keywords.join(", ");
+    }
+    return {
+      title: news.title,
+      script: [{ type: "application/ld+json", json: jsonld }],
+    };
+  },
   created() {
     NProgress.start();
   },

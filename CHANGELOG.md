@@ -82,6 +82,34 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.31] - 2026-04-22
+
+### feat — Article + Event JSON-LD schemas on news posts and meeting pages
+
+Extends the structured-data coverage to the two remaining **dynamic** content streams: news posts (updated ~2×/week) and board/committee meetings (monthly+). Both use the same `metaInfo()` pattern shipped in 1.5.29 and 1.5.30.
+
+**News posts (`/news/:slug`):** emits schema.org `Article` with `headline`, `datePublished` (prefers `dateOverride` over `published_at` so editorially-backdated posts get the intended date), `dateModified` (from `updated_at` — important freshness signal for content that changes multiple times a week), `description` (summary), `image` (prefers `splash.formats.medium.url`, falls back to `small`/`large`/raw — all URL-normalized with the Strapi prefix), `keywords` (tags), `publisher` (ICJIA), `mainEntityOfPage`, and `url`. `Author` is intentionally omitted because the post GraphQL query doesn't expose author records — better to emit nothing than hardcode.
+
+**Meetings (`/news/meetings/:slug`):** emits schema.org `Event` with `name`, `startDate`/`endDate` (the CMS `start`/`end` fields are already ISO), `eventStatus` (maps `isCancelled` → `EventCancelled`, else `EventScheduled`), `eventAttendanceMode: MixedEventAttendanceMode` (honest about the always-hybrid posture), `organizer` (ICJIA), `description` (summary), and `associatedMedia[]` for attachments (agenda/minutes PDFs with fully-qualified URLs + proper MIME types via the same EXT→MIME map used on NOFOs).
+
+**Location handling for meetings:** the CMS has no structured physical-address field, and the physical venue varies per meeting (downtown Chicago, sometimes Bilandic Building, sometimes elsewhere — documented in each meeting's agenda PDF). The schema emits `location: VirtualLocation` **only when the meeting's `external.url` is populated** (covers virtual-participation links, which are typically always included). When `external.url` is absent, `location` is omitted entirely rather than guessed — keeps the schema honest and still schema-valid. Crawlers / AI assistants that want the physical address can fetch the agenda PDF via `associatedMedia`, which is always present.
+
+Verified in dev against a news post (`icjia-budget-actions-taken-april-9-2026` — Article, 1.7KB, image URL resolves to `https://agency.icjia-api.cloud/uploads/medium_...`, `dateModified` populated) and a Budget Committee meeting (Event, 1.5KB, 3 attachment MediaObjects with fully-qualified URLs and proper `application/pdf` MIME type, `MixedEventAttendanceMode`, location gracefully omitted because this meeting's `external` array was empty).
+
+**Why type choices:**
+- News: `Article` over `NewsArticle` — ICJIA publishes institutional updates, not journalism. `NewsArticle` implies publisher-center registration and editorial policies that don't apply here. Both get parsed the same way by AI assistants and Google; `Article` is semantically correct for a government agency's updates.
+- Meetings: `Event` — standard schema, well-supported by Google rich results when `location` is present (our virtual-link case), and always AI-parseable.
+
+**Files:**
+
+- `src/views/News/NewsSingle.vue` — added `metaInfo()` returning title + JSON-LD script; no existing metaInfo on this component previously.
+- `src/views/News/MeetingsSingle.vue` — same pattern; also adds the VirtualLocation-from-`external.url` logic and the attachments-as-MediaObject block shared with NOFO pages.
+- `package.json` — version bump to 1.5.31.
+
+**Post-deploy validation:** paste `/news/<recent-slug>` and `/news/meetings/<recent-slug>` into Google's Rich Results Test and Schema.org Validator. SPA crawler caveat documented in 1.5.29 still applies: non-JS-executing crawlers (GPTBot, ClaudeBot) don't see this yet — waits on the Nuxt 4 SSR rewrite.
+
+---
+
 ## [1.5.30] - 2026-04-22
 
 ### feat — GovernmentService JSON-LD schema on grant NOFO pages
