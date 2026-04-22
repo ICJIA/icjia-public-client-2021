@@ -59,6 +59,55 @@ export default {
       isTOCSticky: false,
     };
   },
+  metaInfo() {
+    const article = this.article;
+    if (!article) return {};
+    const slug = article.slug || this.$route.params.slug;
+    const url = `https://icjia.illinois.gov/researchhub/articles/${slug}`;
+    const isUrl = (s) =>
+      typeof s === "string" && /^(https?:)?\/\//.test(s.trim());
+    const image = isUrl(article.splash)
+      ? article.splash
+      : isUrl(article.thumbnail)
+      ? article.thumbnail
+      : null;
+    const jsonld = {
+      "@context": "https://schema.org",
+      "@type": "ScholarlyArticle",
+      headline: article.title,
+      name: article.title,
+      datePublished: article.date,
+      url,
+      inLanguage: "en-US",
+      publisher: {
+        "@type": "GovernmentOrganization",
+        name: "Illinois Criminal Justice Information Authority",
+        alternateName: "ICJIA",
+        url: "https://icjia.illinois.gov",
+      },
+    };
+    if (Array.isArray(article.authors) && article.authors.length) {
+      jsonld.author = article.authors
+        .filter((a) => a && a.title)
+        .map((a) => ({
+          "@type": "Person",
+          name: a.title,
+          ...(a.description ? { description: a.description } : {}),
+        }));
+    }
+    if (article.abstract) jsonld.abstract = article.abstract;
+    if (article.citation) jsonld.citation = article.citation;
+    if (image) jsonld.image = image;
+    return {
+      title: article.title,
+      script: [
+        {
+          type: "application/ld+json",
+          json: jsonld,
+        },
+      ],
+    };
+  },
   methods: {
     childMounted() {
       console.log("child mounted");

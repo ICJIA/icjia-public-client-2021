@@ -82,6 +82,27 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.29] - 2026-04-22
+
+### feat — ScholarlyArticle JSON-LD schema on ResearchHub article pages
+
+Added `application/ld+json` structured data (schema.org `ScholarlyArticle`) to every ResearchHub article detail page via vue-meta. The schema lets Google emit rich results for research articles in SERP, and gives AI assistants that execute JavaScript (Perplexity, OAI-SearchBot / ChatGPT search, Googlebot) a parseable description of each article — title, author(s), publish date, abstract, citation, canonical URL, and the ICJIA publisher entity.
+
+All fields populate from the existing ResearchHub GraphQL response; no API changes were required. The payload is emitted only when `this.article` is populated, so pre-load and error states produce no orphan `<script>` tag. Authors without a `.title` are filtered out before mapping to `schema.org/Person`; optional fields (`abstract`, `citation`, `image`) are only added when present.
+
+This page also previously shipped without an article-specific `<title>` — the same `metaInfo()` now sets the page title to the article title, matching the pattern used on `/grants/funding/:slug`.
+
+**Crawler visibility caveat (documented, not a bug in this change):** because the site is a client-rendered SPA, only crawlers that execute JavaScript will see the JSON-LD. That covers the measurable AI-referral traffic already visible in Plausible (ChatGPT, Perplexity) and Googlebot's deferred render. Crawlers that do not execute JavaScript (GPTBot, ClaudeBot) will still not see the schema until the site ships behind SSR/SSG in the Nuxt 4 rewrite — at which point `metaInfo()` can be swapped to `useHead()` and the payload transfers directly.
+
+**Files:**
+
+- `src/views/Hub/ArticlesSingle.vue` — added `metaInfo()` that returns `title` + `script: [{ type: 'application/ld+json', json: {...} }]` built from the GraphQL article record.
+- `package.json` — version bump to 1.5.29.
+
+**Validation plan (post-deploy):** paste a published article URL (e.g. `/researchhub/articles/the-2021-safe-t-act-icjia-roles-and-responsibilities`) into Google's Rich Results Test and Schema.org Validator to confirm the `ScholarlyArticle` type is detected and no required fields are missing.
+
+---
+
 ## [1.5.28] - 2026-04-20
 
 ### fix — biography TOC scroll targets + remove redundant VIEW button
