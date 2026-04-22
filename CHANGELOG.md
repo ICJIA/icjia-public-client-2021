@@ -82,6 +82,27 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.32] - 2026-04-22
+
+### fix — restore Google Material Icons webfont for Strapi-supplied card icons
+
+The ClickthroughBoxes cards at the bottom of ResearchHub pages (e.g., `/researchhub/dicra/`) were rendering icon names as literal text instead of glyphs — `data_thresholding`, `file_download`, `article` etc. appeared as raw strings under the card titles.
+
+**Root cause:** the font-consolidation sweep in 1.5.1 (commit 5cecb11) removed the `https://fonts.googleapis.com/icon?family=Material+Icons` stylesheet alongside Roboto/Raleway/Gentium as part of a perf cleanup. What that sweep missed is that Strapi-authored `box.icon` values use **Google Material Icons** naming conventions (underscore-style: `data_thresholding`), not MDI naming conventions (kebab-style: `mdi-chart-box-outline`). Vuetify's `<v-icon>` applies the `.material-icons` class when the value isn't prefixed with `mdi-` or `fa-`, but the font backing that class was gone, so the browser rendered the icon ligature text with the fallback `Lato` family.
+
+**Fix:** re-added the Google Material Icons stylesheet to `public/index.html` using the same async-load pattern as the other webfonts (`media="print"` + `onload="this.media='all'"` with a `<noscript>` fallback). The font is non-render-blocking — the perf trade-off vs. the consolidation is a single additional HTTP request for the woff2, loaded after first paint.
+
+**Why not map names client-side:** considered translating Google → MDI names in `ClickthroughBoxes.vue`, but CMS authors control the vocabulary and the same pattern could exist in other components with CMS-fed icons. Keeping the font loaded preserves the author-facing contract and requires no coordination with content editors.
+
+**Files:**
+
+- `public/index.html` — re-added Material Icons `<link>` + `<noscript>` pair; updated the two-font-system comment to reflect that Material Icons is back and explain why (distinct from MDI).
+- `package.json` — version bump to 1.5.32.
+
+**Verified:** DICRA page cards now render `data_thresholding`, `file_download`, and `article` as icon glyphs.
+
+---
+
 ## [1.5.31] - 2026-04-22
 
 ### feat — Article + Event JSON-LD schemas on news posts and meeting pages
