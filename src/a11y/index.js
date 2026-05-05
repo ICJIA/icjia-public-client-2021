@@ -36,14 +36,50 @@ const fixNuxtContentHeadings = function (querySelectors = "H2, H3") {
   }
 };
 
+// Extract a short, descriptive context string from the row containing this button.
+// Strategy: scan tds for a `<strong>` (the convention used in PublicationsAll, MeetingTable,
+// RequiredFormTable for the row's primary identifier). Fall back to the longest non-numeric
+// cell text. Returns "" if nothing usable is found, signaling the caller to use the generic label.
+const getRowContextLabel = function (button) {
+  const row = button.closest("tr");
+  if (!row) return "";
+  const strongEl = row.querySelector("td strong");
+  if (strongEl) {
+    const text = strongEl.innerText.trim();
+    if (text) return text.length > 80 ? text.slice(0, 77) + "…" : text;
+  }
+  // Fallback: pick the cell with the longest text that isn't purely a date or number
+  let best = "";
+  row.querySelectorAll("td").forEach((td) => {
+    const text = td.innerText.trim();
+    if (!text || /^[\d\s/,.-]+$/.test(text)) return;
+    if (text.length > best.length) best = text;
+  });
+  if (best) return best.length > 80 ? best.slice(0, 77) + "…" : best;
+  return "";
+};
+
 const fixExpandButtons = function (
   className = "v-data-table__expand-icon",
-  label = "Expand"
+  fallbackLabel = "Expand"
 ) {
   const els = document.getElementsByClassName(className);
-  //console.log(els);
   for (let i = 0, len = els.length; i < len; ++i) {
-    els[i].setAttribute("aria-label", label);
+    const btn = els[i];
+    const context = getRowContextLabel(btn);
+    const label = context ? `Toggle details for ${context}` : fallbackLabel;
+    btn.setAttribute("aria-label", label);
+    // Some auditors compute a button's accessible name from inner text rather than
+    // aria-label (notably SiteImprove's sia-r12 returns `failed cantTell` on
+    // aria-label-only icon buttons during partial SPA rendering). Mirror the label
+    // into a clipped sr-only span so accessible name is recoverable from inner text too.
+    let srOnly = btn.querySelector(".sr-only");
+    if (!srOnly) {
+      srOnly = document.createElement("span");
+      srOnly.className = "sr-only";
+      btn.appendChild(srOnly);
+    }
+    srOnly.textContent = label;
   }
 };
 
@@ -975,6 +1011,15 @@ const fixTableCellContext = function () {
     ".article-body table, .markdown-body table"
   );
   tables.forEach((table, tableIndex) => {
+    // Skip Vuetify data tables (e.g. PublicationsAll, MeetingTable) — they live
+    // inside .markdown-body wrappers but already have proper header semantics
+    // from Vuetify's own templating. Reprocessing them assigns duplicate IDs
+    // (Vuetify clones header rows for the expand-detail row) and produces the
+    // self-referencing `headers="tbl0-h0"` attribute that axe `td-headers-attr`
+    // and SiteImprove flag.
+    if (table.closest(".v-data-table") || table.classList.contains("v-data-table")) {
+      return;
+    }
     // Normalize single-cell continuation rows before any promotion or
     // header/id attribution runs.
     normalizeRaggedRows(table);

@@ -82,6 +82,40 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.37] - 2026-05-05
+
+### fix — per-row accessible names on Publications page expand buttons + skip Vuetify tables in fixTableCellContext
+
+A 2026-05-05 SiteImprove crawl flagged **150 occurrences of `sia-r12` "Button missing a text alternative"** on `/researchhub/publications/`. Investigation found these are the Vuetify `v-data-table` row-expand chevron buttons (one per row × 150 items-per-page). Each button had Vuetify's default `aria-label="Expand"` — technically WCAG 4.1.2 compliant (axe-core was reporting 100/100 already), but **all 150 buttons shared the same generic label** with no row context. Two related fixes shipped together:
+
+**1. Per-row descriptive accessible names on `.v-data-table__expand-icon` buttons.**
+
+`fixExpandButtons()` in `src/a11y/index.js` was extending Vuetify's expand button by setting `aria-label="Expand"` (a constant). Replaced with per-row context: each button now derives its label from the row's primary identifier (a `<td><strong>` if present, otherwise the longest non-numeric cell text, truncated to 80 chars). Format: `"Toggle details for {row title}"`. The label is mirrored into a clipped `<span class="sr-only">` child of the button — Vuetify reactively re-renders attributes during sort/filter operations and clobbers `aria-label`, but it preserves child DOM nodes my function appended, so the sr-only span survives and provides the accessible name via the WAI accessible-name calculation (inner text fallback). Verified across all 150 publication rows: **146 unique accessible names**, 0 empty.
+
+The function still falls back to its previous generic label if no row context can be derived, preserving behavior for any caller (`MeetingTable.vue`, `RequiredFormTable.vue`) that runs against a table without a clear row-identifier convention.
+
+**2. Skip Vuetify `v-data-table` instances in `fixTableCellContext`.**
+
+While verifying the fix, lightcap a11y on `/researchhub/publications/` started reporting a `td-headers-attr` violation: a `<th>` with `id="tbl0-h0"` and `headers="tbl0-h0"` (self-reference). Root cause: `fixTableCellContext` selects `.article-body table, .markdown-body table` and `PublicationsAll.vue` wraps the v-data-table in a `<div class="markdown-body">` shell. The function ran `fixComplexTable` against the v-data-table, which already has its own header semantics from Vuetify's templating — Vuetify clones the header row into the expand-detail row, so the function assigned the same `tbl0-h0` ID twice and produced a self-referencing headers attribute on the second `<th>`. Fixed by short-circuiting the loop when the table is inside a `.v-data-table` container or has the class itself. The page returns to **100/100, 0 issues** in lightcap WCAG 2.1 AA audit.
+
+This td-headers-attr regression was latent — earlier `fixTableCellContext` runs may have completed before the v-data-table fully mounted, so axe-core sometimes audited a clean DOM. The fix makes the behavior deterministic across all SPA navigation paths.
+
+**Why this is a real fix, not a "false positive":** sia-r12 was technically passing WCAG 4.1.2 because every button had `aria-label="Expand"`. But shared generic labels across 150 buttons fail WCAG 2.4.6 "Headings and Labels" in spirit (labels should describe the topic or purpose). Per-row context is a genuine improvement, and it has the side benefit of giving SiteImprove's crawler an unambiguous accessible-name source on every button regardless of its render-state interpretation.
+
+**Files:**
+
+- `src/a11y/index.js` — added `getRowContextLabel(button)` helper (scans the closest `<tr>` for a `<td><strong>` or longest non-numeric cell, truncated to 80 chars). Rewrote `fixExpandButtons` to compose `"Toggle details for {context}"` and mirror the label into a clipped `<span class="sr-only">` child for reliable accessible-name resolution. Added an early-return in `fixTableCellContext` to skip tables inside `.v-data-table` (or with that class), preventing duplicate-ID assignment and the resulting self-referencing `headers` attribute.
+- `package.json` — version bump to 1.5.37.
+
+**Verified:**
+
+- `lightcap` WCAG 2.1 AA on `/researchhub/publications/`: **100/100, 0 issues** post-fix (was 97/100 with td-headers-attr regression mid-investigation).
+- Direct DOM query: 150 expand buttons, **146 unique accessible names**, 0 empty.
+- Sample names: "Toggle details for 2025 Illinois Family Violence Coordinating Council Strategic Plan Summary", "Toggle details for Illinois Domestic Violence Fatality Review Committee: 2025 Annual Report", "Toggle details for 2025 Task Force on Missing and Murdered Chicago Women Annual Report", etc.
+- The 4 collisions in unique-name count are repeated rows in the underlying publications data (e.g. multiple "Co-Responder Program Overview" entries), not a function bug.
+
+---
+
 ## [1.5.36] - 2026-05-05
 
 ### docs — log expanded sia-r14 SiteImprove false-positive scope (no code change)
