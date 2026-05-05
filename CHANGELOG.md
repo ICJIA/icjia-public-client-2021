@@ -82,6 +82,29 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.36] - 2026-05-05
+
+### docs — log expanded sia-r14 SiteImprove false-positive scope (no code change)
+
+SiteImprove re-crawled the site on 2026-05-05 and exported a CSV ("Pages with a specific issue") flagging **88 occurrences across 39 unique URLs** with rule `sia-r14` "Visible label and accessible name do not match" (WCAG 2.5.3). All flagged URLs match the **already-documented landmark-`<nav>` false-positive pattern** described in `docs/SITEIMPROVE-FALSE-POSITIVES.md` row #1: each `<nav aria-labelledby="…">` in the global app shell (Breadcrumb / Section / Additional) targets an `<h2 class="sr-only">` whose accessible-name text differs from the visible interactive labels inside the nav.
+
+**Why the URL list grew:** the original 2026-04-16 batch was 6 pages. The new batch spans every page type on the site — about pages, grants/funding NOFOs, grants/programs, news, researchhub articles, and the DICRA hub — because the `<nav aria-labelledby>` structure lives in the shared app shell that every route renders. SiteImprove's URL list grows as it samples more pages, but the underlying mechanism is one shell, three navs, identical sr-only label pattern.
+
+**Why this remains a false positive (not a fix):** WCAG 2.5.3 and W3C ACT Rule 2ee8b8 scope "Label in Name" to **interactive widgets**, not landmarks. Distinguishing multiple `<nav>` landmarks via `aria-labelledby` to an sr-only label is required best practice — it's how screen reader users tell the navs apart in landmark menus. Removing the labels would actively harm accessibility. axe-core (the open-source WCAG engine used by Google Lighthouse and most a11y consultancies) reports zero violations on every flagged URL.
+
+**Verified:** ran `node scripts/audit-siteimprove-labelname.js` against all 47 URLs (the 6 from 2026-04-16 plus all 43 unique paths from the 2026-05-05 CSV, including trailing-slash variants where SiteImprove flagged both). Result: zero axe-core WCAG 2.1 AA violations on every page.
+
+**Files:**
+
+- `docs/SITEIMPROVE-FALSE-POSITIVES.md` — extended row #1 with the 2026-05-05 crawl date, broader URL scope note ("pattern lives in the global app shell — fires on every page"), and explicit guidance to bulk-Accept all `sia-r14` occurrences as a class going forward (rather than per-URL triage). Updated the suggested SiteImprove inspector comment to reference this doc directly.
+- `README.md` — added a new **"Documented SiteImprove false positives"** subsection inside the Accessibility section. Includes a stakeholder-facing table per false-positive rule (`sia-r14` for now) with six columns: Where it appears, Why SiteImprove flags it, Why axe-core does not flag it, Why it is a false positive (with W3C/ACT Rules citation), and the Recommended action. Also added a four-row triage matrix explaining the four categories of SiteImprove findings (real violations, legitimate gaps, stricter-than-spec, cached/stale) and a three-step decision tree for handling new flags. The intent is that managers, IT staff, and incoming developers can answer "is this finding real?" from the README without digging into the docs/.
+- `scripts/audit-siteimprove-labelname.js` — expanded `PAGES` from 6 entries to 47 (combined batch); updated header comment to document the merged sample and root cause.
+- `package.json` — version bump to 1.5.36.
+
+**Recommended action for the SiteImprove flags:** bulk-mark all `sia-r14` occurrences on the 39 reported URLs as Accepted in the SiteImprove inspector with the comment in `docs/SITEIMPROVE-FALSE-POSITIVES.md` row #1. No code change is required, and none should be made — modifying the landmark labels would regress the screen-reader experience.
+
+---
+
 ## [1.5.35] - 2026-05-05
 
 ### fix — darken job-card "click for full listing" hint and restore translate-button accessible name on mobile
