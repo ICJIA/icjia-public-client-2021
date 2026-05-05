@@ -79,18 +79,6 @@
         >
           {{ item.title }}
         </h2>
-
-        <span v-if="showLink">
-          |
-          <button
-            type="button"
-            class="job-link-btn"
-            aria-label="Go to job posting"
-            @click.stop.prevent="$router.push(item.fullPath)"
-          >
-            <v-icon aria-hidden="true" class="link">link</v-icon>
-          </button></span
-        >
       </div>
       <span class="mb-8" style="color: #222; font-size: 14px; font-weight: 400">
         Posted {{ item.start | format }}</span
@@ -172,6 +160,14 @@
           </v-card-text>
         </div>
       </v-expand-transition>
+      <div
+        v-if="isClickable && summaryOnly"
+        class="d-flex justify-end align-center pr-3 pb-3 click-hint"
+        aria-hidden="true"
+      >
+        <span>Click for full job listing</span>
+        <v-icon small class="ml-1 click-hint-icon">arrow_forward</v-icon>
+      </div>
       <div class="pb-6" aria-hidden="true"></div>
     </v-card>
   </div>
@@ -229,10 +225,6 @@ export default {
       type: Boolean,
       default: true,
     },
-    showLink: {
-      type: Boolean,
-      default: true,
-    },
     showReadMore: {
       type: Boolean,
       default: false,
@@ -274,16 +266,17 @@ export default {
 .link:hover {
   text-decoration: underline;
 }
-.job-link-btn {
-  background: none;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  vertical-align: middle;
-  color: inherit;
+.click-hint {
+  font-size: 13px;
+  color: #555;
+  font-style: italic;
 }
-.job-link-btn:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 2px;
+.click-hint-icon.v-icon {
+  font-size: 16px;
+  color: #555;
+}
+.card:hover .click-hint,
+.card:hover .click-hint-icon.v-icon {
+  color: #1976d2;
 }
 </style>

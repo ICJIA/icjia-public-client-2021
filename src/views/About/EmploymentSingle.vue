@@ -10,7 +10,6 @@
                 :item="job"
                 :summaryOnly="false"
                 :openSearch="true"
-                :showLink="false"
                 :showReadMore="false"
                 :isClickable="false"
               ></JobCard>

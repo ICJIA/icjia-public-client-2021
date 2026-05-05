@@ -82,6 +82,34 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.34] - 2026-05-05
+
+### fix — clarify clickability of job cards on `/about/employment/`
+
+Two related changes to the job listing cards:
+
+1. **Removed the redundant pipe + chainlink icon** that sat next to each job title. It was originally added when the title alone wasn't routable; the whole card has been clickable for some time now (`@click` on the `<v-card>` with `role="link"` and `tabindex="0"`), so the inline link button was duplicating the card's own affordance.
+2. **Added a "Click for full job listing →" hint at the lower right** of each summary card. Multiple users reported they didn't realize the card itself was clickable — the hint makes the affordance explicit without changing the interaction model.
+
+**Why a visible hint instead of relying on hover/cursor:** the cards already use `cursor: pointer` and a hover state, but those signals are easy to miss on touch devices and for users who scan rather than hover. An always-visible textual hint is the smallest possible change that fixes the discoverability gap.
+
+**Why `aria-hidden="true"` on the hint:** the card itself is exposed to assistive tech as a link via `role="link"` and is keyboard-operable (Enter activates `routeTo()`). Screen readers announce it as a link already; reading "Click for full job listing" to those users would be redundant noise. The hint is purely a sighted-user affordance.
+
+**Visibility rules:** the hint only renders when `isClickable && summaryOnly` is true — i.e., on the listing page (`EmploymentAll.vue`), not on the single-job page (`EmploymentSingle.vue`) where the card is the destination, not a link to one.
+
+**Cleanup:** removed the now-unused `showLink` prop from `JobCard.vue` and its bindings in `EmploymentAll.vue` and `EmploymentSingle.vue`.
+
+**Files:**
+
+- `src/components/JobCard.vue` — removed pipe + `<v-icon>link</v-icon>` button next to title; added bottom-right hint row gated by `isClickable && summaryOnly`; added `.click-hint` and `.click-hint-icon` styles with a hover color shift to match the card's hover affordance; removed `showLink` prop.
+- `src/views/About/EmploymentAll.vue` — dropped `:showLink="true"` binding.
+- `src/views/About/EmploymentSingle.vue` — dropped `:showLink="false"` binding.
+- `package.json` — version bump to 1.5.34.
+
+**Verified:** `/about/employment/` listing cards no longer show the pipe/chainlink, and the lower-right hint reads "Click for full job listing →". Single-job pages render unchanged.
+
+---
+
 ## [1.5.33] - 2026-04-22
 
 ### fix — exclude disclaimer heading from page TOC

@@ -59,7 +59,6 @@
                         :item="job"
                         :summaryOnly="true"
                         :openSearch="false"
-                        :showLink="true"
                         :showReadMore="true"
                       ></JobCard>
                     </div>
