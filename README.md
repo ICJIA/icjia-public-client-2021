@@ -63,16 +63,57 @@ Output goes to `dist/`.
 npm run tests
 ```
 
-| Suite | Tests | What it guards |
-|---|---|---|
-| `security.spec.js` | 41 | XSS payloads (20+), GraphQL injection, security headers, CORS, source maps |
-| `config.spec.js` | 84 | HTTPS enforcement, 10 API data files, build config, env security |
-| `a11y.spec.js` | 38 | All 13 a11y DOM fix functions (headings, tabindex, ARIA, target size, data-table headers, aria-hidden focus, empty aria-label) |
-| `markdown.spec.js` | 27 | Heading anchors, link attributes, tables, code blocks, edge cases |
-| `auth.spec.js` | 15 | Vuex mutations/getters, logout localStorage cleanup |
-| `search.spec.js` | 10 | Lazy-loaded search index — `getFuse()` contract, caching, failure recovery, bundle-contract guard |
-| `contentSanitizer.spec.js` | 23 | CMS-intercept pipeline — table scope/headers/id, empty-container stripping, image-only link alt, duplicate-link-text disambiguation, Word-blue contrast (v1.5.2) |
-| `components.spec.js` | 9 + 6 pending | SkipLink rendering; Banner/Disclaimer pure-JS (`render()`, XSS sanitization). Vuetify-mount tests are skipped — `vuetify-loader` doesn't run inside the mocha bundle; full rendering is covered by the Playwright suite |
+<table>
+  <thead>
+    <tr>
+      <th align="left">Suite</th>
+      <th align="left">Tests</th>
+      <th align="left">What it guards</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr valign="top">
+      <td><code>security.spec.js</code></td>
+      <td>41</td>
+      <td>XSS payloads (20+), GraphQL injection, security headers, CORS, source maps</td>
+    </tr>
+    <tr valign="top">
+      <td><code>config.spec.js</code></td>
+      <td>84</td>
+      <td>HTTPS enforcement, 10 API data files, build config, env security</td>
+    </tr>
+    <tr valign="top">
+      <td><code>a11y.spec.js</code></td>
+      <td>38</td>
+      <td>All 13 a11y DOM fix functions (headings, tabindex, ARIA, target size, data-table headers, aria-hidden focus, empty aria-label)</td>
+    </tr>
+    <tr valign="top">
+      <td><code>markdown.spec.js</code></td>
+      <td>27</td>
+      <td>Heading anchors, link attributes, tables, code blocks, edge cases</td>
+    </tr>
+    <tr valign="top">
+      <td><code>auth.spec.js</code></td>
+      <td>15</td>
+      <td>Vuex mutations/getters, logout localStorage cleanup</td>
+    </tr>
+    <tr valign="top">
+      <td><code>search.spec.js</code></td>
+      <td>10</td>
+      <td>Lazy-loaded search index — <code>getFuse()</code> contract, caching, failure recovery, bundle-contract guard</td>
+    </tr>
+    <tr valign="top">
+      <td><code>contentSanitizer.spec.js</code></td>
+      <td>23</td>
+      <td>CMS-intercept pipeline — table scope/headers/id, empty-container stripping, image-only link alt, duplicate-link-text disambiguation, Word-blue contrast (v1.5.2)</td>
+    </tr>
+    <tr valign="top">
+      <td><code>components.spec.js</code></td>
+      <td>9 + 6 pending</td>
+      <td>SkipLink rendering; Banner/Disclaimer pure-JS (<code>render()</code>, XSS sanitization). Vuetify-mount tests are skipped — <code>vuetify-loader</code> doesn't run inside the mocha bundle; full rendering is covered by the Playwright suite</td>
+    </tr>
+  </tbody>
+</table>
 
 ### Regression Tests (Playwright)
 
@@ -147,44 +188,189 @@ Reports are saved to `reports/`.
 
 **Overall rating: MODERATE-HIGH** — zero P0 (critical) vulnerabilities; three P1 items identified (two new, one previously known). All XSS vectors confirmed blocked by DOMPurify + route param sanitization. New risks from DOMPurify `<style>` tag allowlisting and missing CSP header identified and documented.
 
-| Category | Status | Details |
-|---|---|---|
-| **Security headers** | **Hardened** | X-Frame-Options, HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy enabled. **CSP in report-only mode** (v1.3.41) — allowlist validated against 9 representative routes via Chrome MCP audit; promotion to enforcement deferred until a CSP report endpoint is in place to give visibility into any silent breakage. `worker-src 'self'` + `upgrade-insecure-requests` directives are present (no-op in report-only) |
-| **CORS** | **Restricted** | Locked to `https://icjia.illinois.gov`; no wildcard |
-| **XSS prevention** | **Hardened** | DOMPurify sanitization at `renderToHtml()` chokepoint covers all `v-html` bindings; route params regex-sanitized; `v-html` directive globally overridden with content pipeline |
-| **CSS injection** | **Mitigated (P2)** | DOMPurify now allows `<style>` tags and `style` attributes for CMS layout support. DOMPurify strips `javascript:` URLs and event handlers but CSS `url()` exfiltration is possible if CMS account is compromised. Mitigated by CMS auth; would be fully blocked by CSP |
-| **GraphQL injection** | **Mitigated** | Route params sanitized to `[a-zA-Z0-9_-]` before query interpolation; fetch-based parameterized queries (variables, not string interpolation) used elsewhere — see `src/gql-client.js` |
-| **External links** | **Mostly hardened** | `rel="noopener noreferrer"` on all markdown-rendered links; 3 template links to first-party domains missing `rel` (P3) |
-| **Auth tokens** | **localStorage (P1)** | JWT in localStorage; HttpOnly cookies require Strapi 3 backend migration |
-| **Data exposure** | **Hardened (v1.3.33)** | Build-time `purifySearchMeta` strips staff names from all 9 per-type JSONs and `searchIndex.json` before publish. Biographies themselves are unmodified. |
-| **Server disclosure** | **Mitigated** | `X-Powered-By` header hidden via `netlify.toml` (v1.3.33). Strapi stack trace suppression still requires backend `NODE_ENV=production` (SEC-15) |
-| **Source maps** | **Hardened** | `productionSourceMap: false`; no `.map` files served |
-| **HTTPS** | **Full** | All endpoints and CDN resources use TLS |
-| **Console stripping** | **Active** | Production builds remove `console.log` via Babel plugin |
-| **Dependencies** | **Accepted risk** | `npm audit` reports 20 production vulnerabilities (5 critical, 12 high), all requiring breaking changes. DOMPurify mitigates the Vuetify XSS advisories in practice. Deferred to the planned Nuxt 4 / Strapi 5 rewrite |
-| **Env / secrets** | **Hardened** | `.env` in `.gitignore`, no credentials committed, no source maps |
+<table>
+  <thead>
+    <tr>
+      <th align="left">Category</th>
+      <th align="left">Status</th>
+      <th align="left">Details</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr valign="top">
+      <td><strong>Security headers</strong></td>
+      <td><strong>Hardened</strong></td>
+      <td>X-Frame-Options, HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy enabled. <strong>CSP in report-only mode</strong> (v1.3.41) — allowlist validated against 9 representative routes via Chrome MCP audit; promotion to enforcement deferred until a CSP report endpoint is in place to give visibility into any silent breakage. <code>worker-src 'self'</code> + <code>upgrade-insecure-requests</code> directives are present (no-op in report-only)</td>
+    </tr>
+    <tr valign="top">
+      <td><strong>CORS</strong></td>
+      <td><strong>Restricted</strong></td>
+      <td>Locked to <code>https://icjia.illinois.gov</code>; no wildcard</td>
+    </tr>
+    <tr valign="top">
+      <td><strong>XSS prevention</strong></td>
+      <td><strong>Hardened</strong></td>
+      <td>DOMPurify sanitization at <code>renderToHtml()</code> chokepoint covers all <code>v-html</code> bindings; route params regex-sanitized; <code>v-html</code> directive globally overridden with content pipeline</td>
+    </tr>
+    <tr valign="top">
+      <td><strong>CSS injection</strong></td>
+      <td><strong>Mitigated (P2)</strong></td>
+      <td>DOMPurify now allows <code>&lt;style&gt;</code> tags and <code>style</code> attributes for CMS layout support. DOMPurify strips <code>javascript:</code> URLs and event handlers but CSS <code>url()</code> exfiltration is possible if CMS account is compromised. Mitigated by CMS auth; would be fully blocked by CSP</td>
+    </tr>
+    <tr valign="top">
+      <td><strong>GraphQL injection</strong></td>
+      <td><strong>Mitigated</strong></td>
+      <td>Route params sanitized to <code>[a-zA-Z0-9_-]</code> before query interpolation; fetch-based parameterized queries (variables, not string interpolation) used elsewhere — see <code>src/gql-client.js</code></td>
+    </tr>
+    <tr valign="top">
+      <td><strong>External links</strong></td>
+      <td><strong>Mostly hardened</strong></td>
+      <td><code>rel=&quot;noopener noreferrer&quot;</code> on all markdown-rendered links; 3 template links to first-party domains missing <code>rel</code> (P3)</td>
+    </tr>
+    <tr valign="top">
+      <td><strong>Auth tokens</strong></td>
+      <td><strong>localStorage (P1)</strong></td>
+      <td>JWT in localStorage; HttpOnly cookies require Strapi 3 backend migration</td>
+    </tr>
+    <tr valign="top">
+      <td><strong>Data exposure</strong></td>
+      <td><strong>Hardened (v1.3.33)</strong></td>
+      <td>Build-time <code>purifySearchMeta</code> strips staff names from all 9 per-type JSONs and <code>searchIndex.json</code> before publish. Biographies themselves are unmodified.</td>
+    </tr>
+    <tr valign="top">
+      <td><strong>Server disclosure</strong></td>
+      <td><strong>Mitigated</strong></td>
+      <td><code>X-Powered-By</code> header hidden via <code>netlify.toml</code> (v1.3.33). Strapi stack trace suppression still requires backend <code>NODE_ENV=production</code> (SEC-15)</td>
+    </tr>
+    <tr valign="top">
+      <td><strong>Source maps</strong></td>
+      <td><strong>Hardened</strong></td>
+      <td><code>productionSourceMap: false</code>; no <code>.map</code> files served</td>
+    </tr>
+    <tr valign="top">
+      <td><strong>HTTPS</strong></td>
+      <td><strong>Full</strong></td>
+      <td>All endpoints and CDN resources use TLS</td>
+    </tr>
+    <tr valign="top">
+      <td><strong>Console stripping</strong></td>
+      <td><strong>Active</strong></td>
+      <td>Production builds remove <code>console.log</code> via Babel plugin</td>
+    </tr>
+    <tr valign="top">
+      <td><strong>Dependencies</strong></td>
+      <td><strong>Accepted risk</strong></td>
+      <td><code>npm audit</code> reports 20 production vulnerabilities (5 critical, 12 high), all requiring breaking changes. DOMPurify mitigates the Vuetify XSS advisories in practice. Deferred to the planned Nuxt 4 / Strapi 5 rewrite</td>
+    </tr>
+    <tr valign="top">
+      <td><strong>Env / secrets</strong></td>
+      <td><strong>Hardened</strong></td>
+      <td><code>.env</code> in <code>.gitignore</code>, no credentials committed, no source maps</td>
+    </tr>
+  </tbody>
+</table>
 
 ### New findings (April 2026)
 
-| # | Finding | Severity | Status |
-|---|---|---|---|
-| SEC-09 | No Content-Security-Policy header | **P1** | **Mitigated (v1.3.33 report-only)** — allowlist in place since v1.3.33, validated against live page loads via Chrome MCP audit (9 routes, zero unlisted origins). Briefly enforced in v1.3.40, reverted to report-only in v1.3.41 pending a CSP report endpoint for post-deploy visibility. `worker-src 'self'` + `upgrade-insecure-requests` added |
-| SEC-10 | npm dependency vulnerabilities (20 total, 5 critical) | **P1** | Accepted — breaking changes only; deferred to Nuxt 4 rewrite; DOMPurify mitigates Vuetify XSS |
-| SEC-11 | DOMPurify `<style>` tag + `style` attr allowlisting enables CSS exfiltration | **P2** | Accepted — required for CMS layout; mitigated by CMS auth; mitigated by CSP (SEC-09) |
-| SEC-12 | Staff names leaked in `searchMeta` across API JSON files | **P2** | **Fixed (v1.3.33)** — build-time `purifySearchMeta` strips names |
-| SEC-13 | `searchIndex.json` exposes staff names alongside search data | **P2** | **Fixed (v1.3.33)** — same purification pass as SEC-12 |
-| SEC-14 | `X-Powered-By` header discloses server framework | **P2** | **Fixed (v1.3.33)** — empty header override in `netlify.toml` |
-| SEC-15 | Strapi production API leaks stack traces in error responses | **P2** | Open — requires Strapi backend `NODE_ENV=production` |
-| SEC-16 | No `/.well-known/security.txt` (RFC 9116) | **P3** | Open — recommended for government sites |
-| SEC-17 | Dead code `ResearchHub.js:getSingleArticleQuery()` with unsanitized interpolation | **P3** | Open — remove or sanitize |
+<table>
+  <thead>
+    <tr>
+      <th align="left"><h1></h1></th>
+      <th align="left">Finding</th>
+      <th align="left">Severity</th>
+      <th align="left">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr valign="top">
+      <td>SEC-09</td>
+      <td>No Content-Security-Policy header</td>
+      <td><strong>P1</strong></td>
+      <td><strong>Mitigated (v1.3.33 report-only)</strong> — allowlist in place since v1.3.33, validated against live page loads via Chrome MCP audit (9 routes, zero unlisted origins). Briefly enforced in v1.3.40, reverted to report-only in v1.3.41 pending a CSP report endpoint for post-deploy visibility. <code>worker-src 'self'</code> + <code>upgrade-insecure-requests</code> added</td>
+    </tr>
+    <tr valign="top">
+      <td>SEC-10</td>
+      <td>npm dependency vulnerabilities (20 total, 5 critical)</td>
+      <td><strong>P1</strong></td>
+      <td>Accepted — breaking changes only; deferred to Nuxt 4 rewrite; DOMPurify mitigates Vuetify XSS</td>
+    </tr>
+    <tr valign="top">
+      <td>SEC-11</td>
+      <td>DOMPurify <code>&lt;style&gt;</code> tag + <code>style</code> attr allowlisting enables CSS exfiltration</td>
+      <td><strong>P2</strong></td>
+      <td>Accepted — required for CMS layout; mitigated by CMS auth; mitigated by CSP (SEC-09)</td>
+    </tr>
+    <tr valign="top">
+      <td>SEC-12</td>
+      <td>Staff names leaked in <code>searchMeta</code> across API JSON files</td>
+      <td><strong>P2</strong></td>
+      <td><strong>Fixed (v1.3.33)</strong> — build-time <code>purifySearchMeta</code> strips names</td>
+    </tr>
+    <tr valign="top">
+      <td>SEC-13</td>
+      <td><code>searchIndex.json</code> exposes staff names alongside search data</td>
+      <td><strong>P2</strong></td>
+      <td><strong>Fixed (v1.3.33)</strong> — same purification pass as SEC-12</td>
+    </tr>
+    <tr valign="top">
+      <td>SEC-14</td>
+      <td><code>X-Powered-By</code> header discloses server framework</td>
+      <td><strong>P2</strong></td>
+      <td><strong>Fixed (v1.3.33)</strong> — empty header override in <code>netlify.toml</code></td>
+    </tr>
+    <tr valign="top">
+      <td>SEC-15</td>
+      <td>Strapi production API leaks stack traces in error responses</td>
+      <td><strong>P2</strong></td>
+      <td>Open — requires Strapi backend <code>NODE_ENV=production</code></td>
+    </tr>
+    <tr valign="top">
+      <td>SEC-16</td>
+      <td>No <code>/.well-known/security.txt</code> (RFC 9116)</td>
+      <td><strong>P3</strong></td>
+      <td>Open — recommended for government sites</td>
+    </tr>
+    <tr valign="top">
+      <td>SEC-17</td>
+      <td>Dead code <code>ResearchHub.js:getSingleArticleQuery()</code> with unsanitized interpolation</td>
+      <td><strong>P3</strong></td>
+      <td>Open — remove or sanitize</td>
+    </tr>
+  </tbody>
+</table>
 
 ### Previously known items (unchanged)
 
-| # | Finding | Severity | Status |
-|---|---|---|---|
-| SEC-06 | JWT in localStorage (HttpOnly cookies require Strapi migration) | **P1** | Backend-dependent |
-| SEC-07 | No CSRF tokens | **P2** | Backend-dependent |
-| SEC-08 | No login rate limiting | **P2** | Backend-dependent |
+<table>
+  <thead>
+    <tr>
+      <th align="left"><h1></h1></th>
+      <th align="left">Finding</th>
+      <th align="left">Severity</th>
+      <th align="left">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr valign="top">
+      <td>SEC-06</td>
+      <td>JWT in localStorage (HttpOnly cookies require Strapi migration)</td>
+      <td><strong>P1</strong></td>
+      <td>Backend-dependent</td>
+    </tr>
+    <tr valign="top">
+      <td>SEC-07</td>
+      <td>No CSRF tokens</td>
+      <td><strong>P2</strong></td>
+      <td>Backend-dependent</td>
+    </tr>
+    <tr valign="top">
+      <td>SEC-08</td>
+      <td>No login rate limiting</td>
+      <td><strong>P2</strong></td>
+      <td>Backend-dependent</td>
+    </tr>
+  </tbody>
+</table>
 
 ### Confirmed secure (April 2026)
 
@@ -210,21 +396,71 @@ This site is audited with two complementary tools that produce **different resul
 
 **SiteImprove** (secondary, enterprise) crawls pages remotely on a schedule. It uses a proprietary rule set (`sia-r` prefix) that applies some WCAG rules more broadly than the spec requires and includes ambiguous "cantTell" results in its violation count. SiteImprove flags issues in three categories:
 
-| Category | Example | Action |
-|---|---|---|
-| **Legitimate gaps** not covered by axe-core | sia-r83 (text clipping at 200% zoom), sia-r77 (table cell context) | Remediated |
-| **Stricter-than-spec interpretations** | sia-r14 (flags `<nav aria-label>` — WCAG 2.5.3 only applies to widgets) | Fixed to satisfy SiteImprove, though already WCAG-compliant |
-| **Cached/stale results** | Issues fixed in code but not yet recrawled | Clear on next SiteImprove scan |
+<table>
+  <thead>
+    <tr>
+      <th align="left">Category</th>
+      <th align="left">Example</th>
+      <th align="left">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr valign="top">
+      <td><strong>Legitimate gaps</strong> not covered by axe-core</td>
+      <td>sia-r83 (text clipping at 200% zoom), sia-r77 (table cell context)</td>
+      <td>Remediated</td>
+    </tr>
+    <tr valign="top">
+      <td><strong>Stricter-than-spec interpretations</strong></td>
+      <td>sia-r14 (flags <code>&lt;nav aria-label&gt;</code> — WCAG 2.5.3 only applies to widgets)</td>
+      <td>Fixed to satisfy SiteImprove, though already WCAG-compliant</td>
+    </tr>
+    <tr valign="top">
+      <td><strong>Cached/stale results</strong></td>
+      <td>Issues fixed in code but not yet recrawled</td>
+      <td>Clear on next SiteImprove scan</td>
+    </tr>
+  </tbody>
+</table>
 
 **Key differences:**
 
-| | axe-core | SiteImprove |
-|---|---|---|
-| Rule source | Open-source (Deque Systems) | Proprietary (`sia-r` rules) |
-| Scanning | In-browser, sees runtime JS fixes | Remote crawler, may miss client-side fixes |
-| False positives | Low | Higher — broader rule interpretation |
-| Ambiguous cases | "Incomplete — needs review" (excluded from count) | "Failed/cantTell" (included in count) |
-| Cost | Free | Paid enterprise license |
+<table>
+  <thead>
+    <tr>
+      <th align="left"></th>
+      <th align="left">axe-core</th>
+      <th align="left">SiteImprove</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr valign="top">
+      <td>Rule source</td>
+      <td>Open-source (Deque Systems)</td>
+      <td>Proprietary (<code>sia-r</code> rules)</td>
+    </tr>
+    <tr valign="top">
+      <td>Scanning</td>
+      <td>In-browser, sees runtime JS fixes</td>
+      <td>Remote crawler, may miss client-side fixes</td>
+    </tr>
+    <tr valign="top">
+      <td>False positives</td>
+      <td>Low</td>
+      <td>Higher — broader rule interpretation</td>
+    </tr>
+    <tr valign="top">
+      <td>Ambiguous cases</td>
+      <td>&quot;Incomplete — needs review&quot; (excluded from count)</td>
+      <td>&quot;Failed/cantTell&quot; (included in count)</td>
+    </tr>
+    <tr valign="top">
+      <td>Cost</td>
+      <td>Free</td>
+      <td>Paid enterprise license</td>
+    </tr>
+  </tbody>
+</table>
 
 **Build process integration:** axe-core is integrated into the development workflow (`npm run audit`) and can be run on-demand against a local dev server before every deploy. **SiteImprove cannot be integrated into the build process** — it is a cloud service that crawls the live production site on its own schedule with no CLI, API, or local runner. Every SiteImprove flag must be manually reviewed after deployment, and results may lag days or weeks behind the current state of the code.
 
@@ -236,37 +472,121 @@ This site is audited with two complementary tools that produce **different resul
 
 The table below catalogs SiteImprove flags that have been confirmed as false positives — issues SiteImprove reports as failures (or `failed cantTell`) that **are not actual WCAG violations** and should not be remediated in code. Each entry has been cross-checked against axe-core (the open-source engine used by Google, Microsoft, and most accessibility consultancies) and the W3C ACT Rules. The canonical, frequently-updated source is [docs/SITEIMPROVE-FALSE-POSITIVES.md](docs/SITEIMPROVE-FALSE-POSITIVES.md); this table is a summary for stakeholders.
 
-| Rule | Issue name | Where it appears | Why SiteImprove flags it | Why axe-core does not flag it | Why it is a false positive | Recommended action |
-|---|---|---|---|---|---|---|
-| **sia-r14** | Visible label and accessible name do not match | Every page on the site (the global app shell renders three landmark `<nav>` elements: Breadcrumb, Section, Additional). Each `<nav aria-labelledby="…">` points to an `<h2 class="sr-only">` like "Breadcrumb navigation" / "Section navigation" / "Additional navigation". | SiteImprove applies "Label in Name" (WCAG 2.5.3) more broadly than the W3C spec — it compares the nav's accessible name (the sr-only `aria-labelledby` text) to the visible labels of interactive children inside the nav. They do not match by design (e.g. `<nav>` accessible name = "Breadcrumb navigation", visible link text = "ICJIA » About » Employment"), so SiteImprove returns `failed cantTell` ("can't auto-verify, needs manual review"). Every page has 3 navs × 1 mismatch each → flag count grows linearly with crawl scope. | axe-core implements WCAG 2.5.3 to its published scope: the rule applies to **interactive widgets** (buttons, links, form controls, custom widgets with `role="button"`, etc.), not to **landmarks**. Landmarks (`<nav>`, `<main>`, `<aside>`, etc.) labelled via `aria-labelledby` are explicitly out of scope, so axe-core does not apply the rule to them at all. Result: zero violations on every flagged page. | [W3C ACT Rule 2ee8b8 "Visible label is part of accessible name"](https://www.w3.org/WAI/standards-guidelines/act/rules/2ee8b8/) — the canonical implementation of WCAG 2.5.3 — explicitly scopes the rule to "any element [that] has a [semantic role][] inheriting from `widget`." Landmarks do not inherit from `widget`, so the rule does not apply. Furthermore, **distinguishing multiple `<nav>` landmarks via sr-only `aria-labelledby` is required best practice**: when a page has more than one nav, screen readers list them in their landmark menu by accessible name, and unlabeled or duplicate-labeled navs are unusable. Removing the labels to satisfy SiteImprove would actively harm screen-reader users. | Bulk-mark every `sia-r14` occurrence as Accepted in the SiteImprove inspector with the comment in [docs/SITEIMPROVE-FALSE-POSITIVES.md](docs/SITEIMPROVE-FALSE-POSITIVES.md) row #1. Because the pattern lives in the shared app shell, future crawls will continue to surface new URLs with this flag — Accept them as a class, not per-URL. |
+<table>
+  <thead>
+    <tr>
+      <th align="left">Rule</th>
+      <th align="left">Issue name</th>
+      <th align="left">Where it appears</th>
+      <th align="left">Why SiteImprove flags it</th>
+      <th align="left">Why axe-core does not flag it</th>
+      <th align="left">Why it is a false positive</th>
+      <th align="left">Recommended action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr valign="top">
+      <td><strong>sia-r14</strong></td>
+      <td>Visible label and accessible name do not match</td>
+      <td>Every page on the site (the global app shell renders three landmark <code>&lt;nav&gt;</code> elements: Breadcrumb, Section, Additional). Each <code>&lt;nav aria-labelledby=&quot;…&quot;&gt;</code> points to an <code>&lt;h2 class=&quot;sr-only&quot;&gt;</code> like &quot;Breadcrumb navigation&quot; / &quot;Section navigation&quot; / &quot;Additional navigation&quot;.</td>
+      <td>SiteImprove applies &quot;Label in Name&quot; (WCAG 2.5.3) more broadly than the W3C spec — it compares the nav's accessible name (the sr-only <code>aria-labelledby</code> text) to the visible labels of interactive children inside the nav. They do not match by design (e.g. <code>&lt;nav&gt;</code> accessible name = &quot;Breadcrumb navigation&quot;, visible link text = &quot;ICJIA » About » Employment&quot;), so SiteImprove returns <code>failed cantTell</code> (&quot;can't auto-verify, needs manual review&quot;). Every page has 3 navs × 1 mismatch each → flag count grows linearly with crawl scope.</td>
+      <td>axe-core implements WCAG 2.5.3 to its published scope: the rule applies to <strong>interactive widgets</strong> (buttons, links, form controls, custom widgets with <code>role=&quot;button&quot;</code>, etc.), not to <strong>landmarks</strong>. Landmarks (<code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;aside&gt;</code>, etc.) labelled via <code>aria-labelledby</code> are explicitly out of scope, so axe-core does not apply the rule to them at all. Result: zero violations on every flagged page.</td>
+      <td><a href="https://www.w3.org/WAI/standards-guidelines/act/rules/2ee8b8/">W3C ACT Rule 2ee8b8 &quot;Visible label is part of accessible name&quot;</a> — the canonical implementation of WCAG 2.5.3 — explicitly scopes the rule to &quot;any element [that] has a [semantic role][] inheriting from <code>widget</code>.&quot; Landmarks do not inherit from <code>widget</code>, so the rule does not apply. Furthermore, <strong>distinguishing multiple <code>&lt;nav&gt;</code> landmarks via sr-only <code>aria-labelledby</code> is required best practice</strong>: when a page has more than one nav, screen readers list them in their landmark menu by accessible name, and unlabeled or duplicate-labeled navs are unusable. Removing the labels to satisfy SiteImprove would actively harm screen-reader users.</td>
+      <td>Bulk-mark every <code>sia-r14</code> occurrence as Accepted in the SiteImprove inspector with the comment in <a href="docs/SITEIMPROVE-FALSE-POSITIVES.md">docs/SITEIMPROVE-FALSE-POSITIVES.md</a> row #1. Because the pattern lives in the shared app shell, future crawls will continue to surface new URLs with this flag — Accept them as a class, not per-URL.</td>
+    </tr>
+  </tbody>
+</table>
 
 **Why the two tools disagree, in one sentence:** axe-core implements published WCAG/ACT rules at their stated scope; SiteImprove's proprietary `sia-r` rules apply some of those same WCAG criteria more broadly than the spec defines, then return `failed cantTell` on the broader set — counting ambiguous cases as failures that other auditors classify as out-of-scope.
 
 **Categories of SiteImprove findings (full triage workflow):**
 
-| Category | What it is | What to do |
-|---|---|---|
-| Real WCAG violations also flagged by axe-core | Confirmed accessibility bug | Fix in code (CMS-content fixes go through `src/utils/contentSanitizer.js`; component fixes go in the relevant `.vue` file) |
-| Legitimate gaps not covered by axe-core | E.g. `sia-r83` (text clipping at 200% zoom), `sia-r77` (table cell context). axe-core's rule set genuinely does not check these. | Fix in code; add a targeted axe-core verification script under `scripts/audit-siteimprove-<rule>.js` |
-| **Stricter-than-spec interpretations (this table)** | SiteImprove applies a WCAG rule beyond the scope the spec/ACT defines. axe-core is silent because the rule does not apply. | **Do not fix.** Document in `docs/SITEIMPROVE-FALSE-POSITIVES.md`, mark as Accepted in SiteImprove with citation. |
-| Cached/stale results | Issue was fixed in code but SiteImprove's last crawl was earlier. | Wait for next recrawl; verify with axe-core that the fix is still in place. |
+<table>
+  <thead>
+    <tr>
+      <th align="left">Category</th>
+      <th align="left">What it is</th>
+      <th align="left">What to do</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr valign="top">
+      <td>Real WCAG violations also flagged by axe-core</td>
+      <td>Confirmed accessibility bug</td>
+      <td>Fix in code (CMS-content fixes go through <code>src/utils/contentSanitizer.js</code>; component fixes go in the relevant <code>.vue</code> file)</td>
+    </tr>
+    <tr valign="top">
+      <td>Legitimate gaps not covered by axe-core</td>
+      <td>E.g. <code>sia-r83</code> (text clipping at 200% zoom), <code>sia-r77</code> (table cell context). axe-core's rule set genuinely does not check these.</td>
+      <td>Fix in code; add a targeted axe-core verification script under <code>scripts/audit-siteimprove-&lt;rule&gt;.js</code></td>
+    </tr>
+    <tr valign="top">
+      <td><strong>Stricter-than-spec interpretations (this table)</strong></td>
+      <td>SiteImprove applies a WCAG rule beyond the scope the spec/ACT defines. axe-core is silent because the rule does not apply.</td>
+      <td><strong>Do not fix.</strong> Document in <code>docs/SITEIMPROVE-FALSE-POSITIVES.md</code>, mark as Accepted in SiteImprove with citation.</td>
+    </tr>
+    <tr valign="top">
+      <td>Cached/stale results</td>
+      <td>Issue was fixed in code but SiteImprove's last crawl was earlier.</td>
+      <td>Wait for next recrawl; verify with axe-core that the fix is still in place.</td>
+    </tr>
+  </tbody>
+</table>
 
 The decision tree: **(1)** does axe-core also flag this URL? If yes, fix the code. **(2)** Is the rule a known stricter-than-spec pattern from this table? If yes, mark Accepted with the citation. **(3)** Otherwise, treat as a new pattern: write a targeted audit script, verify with axe-core, and if axe-core is clean, add a new row to `docs/SITEIMPROVE-FALSE-POSITIVES.md`.
 
 ### Current Status (April 2026)
 
-| Metric | Score |
-|---|---|
-| **Full-site axe-core audit — every URL in `sitemap.xml` (v1.5.9, April 14 2026)** | **2,367 / 2,367 zero violations (100%)** |
-| WCAG tags audited | `wcag2a` + `wcag2aa` + `wcag21a` + `wcag21aa` + `wcag22aa` |
-| axe-core version | 4.11.2 |
-| Runtime | 28m 15s (5 parallel workers) |
-| Errors / unreachable | 0 |
-| Prior Lighthouse a11y audit (93 pages, desktop + mobile) | **93/93 score 100/100** |
-| Regression tests (Playwright) | **37/37 passing** |
-| Unit tests — a11y functions (Mocha/Chai) | **38/38 passing** |
-| Unit tests — security (Mocha/Chai) | **41/41 passing** |
-| Automated score (WCAG 2.2 AA) | **A / 100%** |
+<table>
+  <thead>
+    <tr>
+      <th align="left">Metric</th>
+      <th align="left">Score</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr valign="top">
+      <td><strong>Full-site axe-core audit — every URL in <code>sitemap.xml</code> (v1.5.9, April 14 2026)</strong></td>
+      <td><strong>2,367 / 2,367 zero violations (100%)</strong></td>
+    </tr>
+    <tr valign="top">
+      <td>WCAG tags audited</td>
+      <td><code>wcag2a</code> + <code>wcag2aa</code> + <code>wcag21a</code> + <code>wcag21aa</code> + <code>wcag22aa</code></td>
+    </tr>
+    <tr valign="top">
+      <td>axe-core version</td>
+      <td>4.11.2</td>
+    </tr>
+    <tr valign="top">
+      <td>Runtime</td>
+      <td>28m 15s (5 parallel workers)</td>
+    </tr>
+    <tr valign="top">
+      <td>Errors / unreachable</td>
+      <td>0</td>
+    </tr>
+    <tr valign="top">
+      <td>Prior Lighthouse a11y audit (93 pages, desktop + mobile)</td>
+      <td><strong>93/93 score 100/100</strong></td>
+    </tr>
+    <tr valign="top">
+      <td>Regression tests (Playwright)</td>
+      <td><strong>37/37 passing</strong></td>
+    </tr>
+    <tr valign="top">
+      <td>Unit tests — a11y functions (Mocha/Chai)</td>
+      <td><strong>38/38 passing</strong></td>
+    </tr>
+    <tr valign="top">
+      <td>Unit tests — security (Mocha/Chai)</td>
+      <td><strong>41/41 passing</strong></td>
+    </tr>
+    <tr valign="top">
+      <td>Automated score (WCAG 2.2 AA)</td>
+      <td><strong>A / 100%</strong></td>
+    </tr>
+  </tbody>
+</table>
 
 ### Full-site audit record (April 14 2026)
 
@@ -274,15 +594,52 @@ Every single URL in `public/sitemap.xml` (2,367 URLs) was audited in one pass wi
 
 **Seven pages originally failed on first pass; all were remediated before the final archived run:**
 
-| Page | Rule | Fix |
-|---|---|---|
-| researchhub/articles/illinois-firearm-prohibitors-… | `list` | `fixCmsInvalidListChildren` — wrap non-`<li>` children of `<ul>`/`<ol>` |
-| researchhub/articles/firearm-restraining-orders… | `td-headers-attr` | `fixCmsTables` now strips stale `headers` from TH elements |
-| researchhub/articles/law-enforcement-response-to-mental-health-crisis… | `color-contrast` | `fixCmsOrphanWhite` — propagate dark TD background onto the inner span so axe resolves contrast correctly |
-| grants/funding/2019-ifvcc | `scrollable-region-focusable` | `fixCmsFocusablePre` — add `tabindex="0"` to `<pre>` blocks |
-| grants/funding/nchip-LE-for-live-scan-equipment… | `color-contrast` | `fixCmsContrast` rewrites `color: red` (`#ff0000`, 3.99:1) to `#c00` (5.89:1) |
-| innovation-and-digital-services/infonet | `link-in-text-block` | Added `text-decoration: underline` in `Infonet.vue` |
-| grants/funding (listings) | `color-contrast` | `text-color="white"` on deadline v-chips + `app.css` override scoped to `:not(.white--text)` |
+<table>
+  <thead>
+    <tr>
+      <th align="left">Page</th>
+      <th align="left">Rule</th>
+      <th align="left">Fix</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr valign="top">
+      <td>researchhub/articles/illinois-firearm-prohibitors-…</td>
+      <td><code>list</code></td>
+      <td><code>fixCmsInvalidListChildren</code> — wrap non-<code>&lt;li&gt;</code> children of <code>&lt;ul&gt;</code>/<code>&lt;ol&gt;</code></td>
+    </tr>
+    <tr valign="top">
+      <td>researchhub/articles/firearm-restraining-orders…</td>
+      <td><code>td-headers-attr</code></td>
+      <td><code>fixCmsTables</code> now strips stale <code>headers</code> from TH elements</td>
+    </tr>
+    <tr valign="top">
+      <td>researchhub/articles/law-enforcement-response-to-mental-health-crisis…</td>
+      <td><code>color-contrast</code></td>
+      <td><code>fixCmsOrphanWhite</code> — propagate dark TD background onto the inner span so axe resolves contrast correctly</td>
+    </tr>
+    <tr valign="top">
+      <td>grants/funding/2019-ifvcc</td>
+      <td><code>scrollable-region-focusable</code></td>
+      <td><code>fixCmsFocusablePre</code> — add <code>tabindex=&quot;0&quot;</code> to <code>&lt;pre&gt;</code> blocks</td>
+    </tr>
+    <tr valign="top">
+      <td>grants/funding/nchip-LE-for-live-scan-equipment…</td>
+      <td><code>color-contrast</code></td>
+      <td><code>fixCmsContrast</code> rewrites <code>color: red</code> (<code>#ff0000</code>, 3.99:1) to <code>#c00</code> (5.89:1)</td>
+    </tr>
+    <tr valign="top">
+      <td>innovation-and-digital-services/infonet</td>
+      <td><code>link-in-text-block</code></td>
+      <td>Added <code>text-decoration: underline</code> in <code>Infonet.vue</code></td>
+    </tr>
+    <tr valign="top">
+      <td>grants/funding (listings)</td>
+      <td><code>color-contrast</code></td>
+      <td><code>text-color=&quot;white&quot;</code> on deadline v-chips + <code>app.css</code> override scoped to <code>:not(.white--text)</code></td>
+    </tr>
+  </tbody>
+</table>
 
 All CMS-content fixes go through the pre-render pipeline (`src/utils/contentSanitizer.js`) so the HTML that ships is already correct — no flash of inaccessible content, no post-render DOM mutations, SSR-safe if the site later migrates to Nuxt.
 
@@ -303,20 +660,64 @@ An earlier version of this page documented a sampled strategy (157 pages of 2,35
 
 Page counts by content type at the most recent audit (derived from `sitemap.xml`):
 
-| Content Type | Total Pages |
-|---|---|
-| publications | 1,101 |
-| meetings | 275 |
-| hub (articles) | 251 |
-| jobs | 218 |
-| posts (news) | 180 |
-| grants | 172 |
-| biographies | 114 |
-| pages | 29 |
-| units | 10 |
-| events | 6 |
-| static / system | 11 |
-| **Total** | **2,367** |
+<table>
+  <thead>
+    <tr>
+      <th align="left">Content Type</th>
+      <th align="left">Total Pages</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr valign="top">
+      <td>publications</td>
+      <td>1,101</td>
+    </tr>
+    <tr valign="top">
+      <td>meetings</td>
+      <td>275</td>
+    </tr>
+    <tr valign="top">
+      <td>hub (articles)</td>
+      <td>251</td>
+    </tr>
+    <tr valign="top">
+      <td>jobs</td>
+      <td>218</td>
+    </tr>
+    <tr valign="top">
+      <td>posts (news)</td>
+      <td>180</td>
+    </tr>
+    <tr valign="top">
+      <td>grants</td>
+      <td>172</td>
+    </tr>
+    <tr valign="top">
+      <td>biographies</td>
+      <td>114</td>
+    </tr>
+    <tr valign="top">
+      <td>pages</td>
+      <td>29</td>
+    </tr>
+    <tr valign="top">
+      <td>units</td>
+      <td>10</td>
+    </tr>
+    <tr valign="top">
+      <td>events</td>
+      <td>6</td>
+    </tr>
+    <tr valign="top">
+      <td>static / system</td>
+      <td>11</td>
+    </tr>
+    <tr valign="top">
+      <td><strong>Total</strong></td>
+      <td><strong>2,367</strong></td>
+    </tr>
+  </tbody>
+</table>
 
 ### Accessibility Features
 
@@ -385,32 +786,108 @@ CMS Content (Strapi 3)
 
 Anything that is a **text or HTML string transformation** on CMS content:
 
-| Category | Examples |
-|---|---|
-| Misspellings | Typos in Strapi content fields (`fixMisspellings`) |
-| Missing punctuation | Apostrophes stripped by slug generation (`fixApostrophes`) |
-| Missing image alt text | Auto-derive alt from filenames (`fixCmsImages`) |
-| CMS color contrast | Fix dark-bg/black-text conflicts (`fixCmsContrast`) |
-| HTML attribute injection | Add `scope`, `aria-label`, `lang` to CMS HTML elements |
-| Tag wrapping/restructuring | Wrap `<table>` in scrollable `<div role="region">` |
-| Lang attributes for foreign text | Wrap British spellings in `<span lang="en-GB">` |
-| Link text augmentation | Append sr-only text to vague "click here" links |
-| Empty element removal | Strip empty `<p>`, `<span>`, `<div>` from markdown output |
+<table>
+  <thead>
+    <tr>
+      <th align="left">Category</th>
+      <th align="left">Examples</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr valign="top">
+      <td>Misspellings</td>
+      <td>Typos in Strapi content fields (<code>fixMisspellings</code>)</td>
+    </tr>
+    <tr valign="top">
+      <td>Missing punctuation</td>
+      <td>Apostrophes stripped by slug generation (<code>fixApostrophes</code>)</td>
+    </tr>
+    <tr valign="top">
+      <td>Missing image alt text</td>
+      <td>Auto-derive alt from filenames (<code>fixCmsImages</code>)</td>
+    </tr>
+    <tr valign="top">
+      <td>CMS color contrast</td>
+      <td>Fix dark-bg/black-text conflicts (<code>fixCmsContrast</code>)</td>
+    </tr>
+    <tr valign="top">
+      <td>HTML attribute injection</td>
+      <td>Add <code>scope</code>, <code>aria-label</code>, <code>lang</code> to CMS HTML elements</td>
+    </tr>
+    <tr valign="top">
+      <td>Tag wrapping/restructuring</td>
+      <td>Wrap <code>&lt;table&gt;</code> in scrollable <code>&lt;div role=&quot;region&quot;&gt;</code></td>
+    </tr>
+    <tr valign="top">
+      <td>Lang attributes for foreign text</td>
+      <td>Wrap British spellings in <code>&lt;span lang=&quot;en-GB&quot;&gt;</code></td>
+    </tr>
+    <tr valign="top">
+      <td>Link text augmentation</td>
+      <td>Append sr-only text to vague &quot;click here&quot; links</td>
+    </tr>
+    <tr valign="top">
+      <td>Empty element removal</td>
+      <td>Strip empty <code>&lt;p&gt;</code>, <code>&lt;span&gt;</code>, <code>&lt;div&gt;</code> from markdown output</td>
+    </tr>
+  </tbody>
+</table>
 
 #### What the intercept CANNOT fix
 
 Anything involving **Vuetify's runtime DOM**, **CSS**, **layout**, or **behavior** — these are handled by `src/a11y/index.js` instead:
 
-| Category | Why | Fix location |
-|---|---|---|
-| Vuetify component ARIA | Vuetify generates DOM at runtime | `a11y/index.js` |
-| Vuetify/CSS color contrast | CSS computed styles on framework elements | `app.css` or `a11y/index.js` |
-| Focus indicators | CSS `:focus-visible` | `app.css` |
-| Text clipping at zoom | CSS overflow/layout | Component CSS |
-| Keyboard navigation | Event handlers, tabindex | `a11y/index.js` |
-| Landmark structure | Vue template structure | Component templates |
-| Nested interactive elements | Vuetify nests interactive controls | `a11y/index.js` |
-| Dynamic overlays/tooltips | Created after render | `a11y/index.js` (MutationObserver) |
+<table>
+  <thead>
+    <tr>
+      <th align="left">Category</th>
+      <th align="left">Why</th>
+      <th align="left">Fix location</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr valign="top">
+      <td>Vuetify component ARIA</td>
+      <td>Vuetify generates DOM at runtime</td>
+      <td><code>a11y/index.js</code></td>
+    </tr>
+    <tr valign="top">
+      <td>Vuetify/CSS color contrast</td>
+      <td>CSS computed styles on framework elements</td>
+      <td><code>app.css</code> or <code>a11y/index.js</code></td>
+    </tr>
+    <tr valign="top">
+      <td>Focus indicators</td>
+      <td>CSS <code>:focus-visible</code></td>
+      <td><code>app.css</code></td>
+    </tr>
+    <tr valign="top">
+      <td>Text clipping at zoom</td>
+      <td>CSS overflow/layout</td>
+      <td>Component CSS</td>
+    </tr>
+    <tr valign="top">
+      <td>Keyboard navigation</td>
+      <td>Event handlers, tabindex</td>
+      <td><code>a11y/index.js</code></td>
+    </tr>
+    <tr valign="top">
+      <td>Landmark structure</td>
+      <td>Vue template structure</td>
+      <td>Component templates</td>
+    </tr>
+    <tr valign="top">
+      <td>Nested interactive elements</td>
+      <td>Vuetify nests interactive controls</td>
+      <td><code>a11y/index.js</code></td>
+    </tr>
+    <tr valign="top">
+      <td>Dynamic overlays/tooltips</td>
+      <td>Created after render</td>
+      <td><code>a11y/index.js</code> (MutationObserver)</td>
+    </tr>
+  </tbody>
+</table>
 
 **Rule of thumb:** If the content comes from Strapi, fix it in the intercept. If the DOM comes from Vuetify or Vue templates, fix it in `a11y/index.js`.
 
@@ -446,16 +923,48 @@ registerTextPlugin(fixSomeIssue);   // titles/summaries only
 
 The pipeline intercepts content at every entry point:
 
-| Entry Point | Mechanism |
-|---|---|
-| Markdown bodies | `sanitizeContent()` in `Markdown.js` and `markdownIt.js` |
-| ResearchHub API (axios) | `sanitizeResponse()` interceptor |
-| Publications API (axios) | `deepSanitize()` on response data |
-| GraphQL responses | `deepSanitize` afterware in `src/gql-client.js` (recursively sanitizes every string in every response) |
-| `v-html` directive | Global override in `main.js` auto-sanitizes |
-| Template interpolation | `\| sanitize` filter and global `this.sanitize()` mixin |
-| Page `<title>` tags | `titleTemplate` in `App.vue` uses `sanitizeText()` |
-| Search index | `deepSanitize()` in `AppInit.js` |
+<table>
+  <thead>
+    <tr>
+      <th align="left">Entry Point</th>
+      <th align="left">Mechanism</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr valign="top">
+      <td>Markdown bodies</td>
+      <td><code>sanitizeContent()</code> in <code>Markdown.js</code> and <code>markdownIt.js</code></td>
+    </tr>
+    <tr valign="top">
+      <td>ResearchHub API (axios)</td>
+      <td><code>sanitizeResponse()</code> interceptor</td>
+    </tr>
+    <tr valign="top">
+      <td>Publications API (axios)</td>
+      <td><code>deepSanitize()</code> on response data</td>
+    </tr>
+    <tr valign="top">
+      <td>GraphQL responses</td>
+      <td><code>deepSanitize</code> afterware in <code>src/gql-client.js</code> (recursively sanitizes every string in every response)</td>
+    </tr>
+    <tr valign="top">
+      <td><code>v-html</code> directive</td>
+      <td>Global override in <code>main.js</code> auto-sanitizes</td>
+    </tr>
+    <tr valign="top">
+      <td>Template interpolation</td>
+      <td><code>\| sanitize</code> filter and global <code>this.sanitize()</code> mixin</td>
+    </tr>
+    <tr valign="top">
+      <td>Page <code>&lt;title&gt;</code> tags</td>
+      <td><code>titleTemplate</code> in <code>App.vue</code> uses <code>sanitizeText()</code></td>
+    </tr>
+    <tr valign="top">
+      <td>Search index</td>
+      <td><code>deepSanitize()</code> in <code>AppInit.js</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### Known Remaining Issues
 
@@ -471,30 +980,97 @@ See [CHANGELOG.md](CHANGELOG.md) for full audit details and remediation history.
 
 A Tier 1 perf pass (April 2026, v1.3.36–v1.3.43) targeted the highest-impact, lowest-risk wins identified in the pre-rewrite audit. No architectural changes — every fix below is a same-shape edit that the planned Nuxt 4 rewrite can either inherit or supersede.
 
-| Fix | Win |
-|---|---|
-| Lazy-load the 2.7 MB `searchIndex.json` instead of static-importing it into the entry chunk (v1.3.36) | **`dist/js/app.*.js`: 2.9 MB → 262 KB (-91%)** |
-| Move the entire search pipeline (fetch + parse + sanitize + Fuse build + per-keystroke search) into a Web Worker (v1.3.37) | Main thread stays free during search; per-query round-trip ~41 ms verified in Chrome; no input freeze |
-| Defer the search-index fetch until the user opens the search modal (was firing at app boot from `ModalSearch`'s `created()` hook) | First paint no longer waits on a 2.7 MB JSON parse + sanitize + Fuse build |
-| Disable unused Fuse options (`includeMatches`, `includeScore`) — neither was read anywhere in the UI; `includeMatches` is Fuse's most expensive setting (per-character match positions for highlighting) | Faster per-keystroke search response in the modal |
-| Immutable `Cache-Control` headers on `/js/*`, `/css/*`, `/img/*`, `/fonts/*` (Vue CLI emits content-hashed filenames so this is safe); `searchIndex.json` / `searchWorker.js` get `max-age=3600 + stale-while-revalidate=86400`; `fuse.min.js` gets `max-age=86400`; `index.html` is `must-revalidate` so users always pick up new builds | Repeat-visit JS/CSS downloads drop to ~0 |
-| Early-return on the 3 `MutationObserver`-installing a11y fixes once their observer is wired (`fixOverlayContainer`, `fixNestedInteractive`, `fixProhibitedAriaOnImg`) | Saves three broad `querySelectorAll` calls per route navigation |
-| Drop the redundant 2px outer focus outline on the search input (Vuetify's built-in 1px underline + label color shift already meet WCAG 2.4.7 on their own) (v1.3.38) | Cleaner search modal UI with no a11y regression |
-| Remove the `<link rel="preload" href="/home-splash.webp">` that vue-meta injected after `<picture>` had already started fetching, plus add `loading="lazy"` to the AppFooter logo and Status-page Netlify deploy badges (v1.3.40) | Eliminates 5 console warnings per homepage visit; defers below-fold images |
-| Async-load all 5 stylesheets in `index.html` (Lato/Oswald, Roboto, Material Icons, Raleway, MDI) using `media="print" onload="this.media='all'"` + `<noscript>` fallback; add `display=swap` to the two Google Fonts URLs that didn't have it; preconnect `cdn.jsdelivr.net` (v1.3.42) | **Render-blocking estimated savings: 4,000 ms → 370 ms (-90%)** across every page |
-| Re-encode the homepage hero image: pre-grayscale at the source (CSS already applied `filter: grayscale(100%)` at runtime), generate AVIF as the first `<source>`, drop quality (overlay hides artifacts), add `fetchpriority="high"` + `decoding="async"` (v1.3.43) | Hero file 94 KB WebP → **36 KB AVIF (-62%)**; homepage LCP ~16.5s → ~11s |
+<table>
+  <thead>
+    <tr>
+      <th align="left">Fix</th>
+      <th align="left">Win</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr valign="top">
+      <td>Lazy-load the 2.7 MB <code>searchIndex.json</code> instead of static-importing it into the entry chunk (v1.3.36)</td>
+      <td><strong><code>dist/js/app.*.js</code>: 2.9 MB → 262 KB (-91%)</strong></td>
+    </tr>
+    <tr valign="top">
+      <td>Move the entire search pipeline (fetch + parse + sanitize + Fuse build + per-keystroke search) into a Web Worker (v1.3.37)</td>
+      <td>Main thread stays free during search; per-query round-trip ~41 ms verified in Chrome; no input freeze</td>
+    </tr>
+    <tr valign="top">
+      <td>Defer the search-index fetch until the user opens the search modal (was firing at app boot from <code>ModalSearch</code>'s <code>created()</code> hook)</td>
+      <td>First paint no longer waits on a 2.7 MB JSON parse + sanitize + Fuse build</td>
+    </tr>
+    <tr valign="top">
+      <td>Disable unused Fuse options (<code>includeMatches</code>, <code>includeScore</code>) — neither was read anywhere in the UI; <code>includeMatches</code> is Fuse's most expensive setting (per-character match positions for highlighting)</td>
+      <td>Faster per-keystroke search response in the modal</td>
+    </tr>
+    <tr valign="top">
+      <td>Immutable <code>Cache-Control</code> headers on <code>/js/*</code>, <code>/css/*</code>, <code>/img/*</code>, <code>/fonts/*</code> (Vue CLI emits content-hashed filenames so this is safe); <code>searchIndex.json</code> / <code>searchWorker.js</code> get <code>max-age=3600 + stale-while-revalidate=86400</code>; <code>fuse.min.js</code> gets <code>max-age=86400</code>; <code>index.html</code> is <code>must-revalidate</code> so users always pick up new builds</td>
+      <td>Repeat-visit JS/CSS downloads drop to ~0</td>
+    </tr>
+    <tr valign="top">
+      <td>Early-return on the 3 <code>MutationObserver</code>-installing a11y fixes once their observer is wired (<code>fixOverlayContainer</code>, <code>fixNestedInteractive</code>, <code>fixProhibitedAriaOnImg</code>)</td>
+      <td>Saves three broad <code>querySelectorAll</code> calls per route navigation</td>
+    </tr>
+    <tr valign="top">
+      <td>Drop the redundant 2px outer focus outline on the search input (Vuetify's built-in 1px underline + label color shift already meet WCAG 2.4.7 on their own) (v1.3.38)</td>
+      <td>Cleaner search modal UI with no a11y regression</td>
+    </tr>
+    <tr valign="top">
+      <td>Remove the <code>&lt;link rel=&quot;preload&quot; href=&quot;/home-splash.webp&quot;&gt;</code> that vue-meta injected after <code>&lt;picture&gt;</code> had already started fetching, plus add <code>loading=&quot;lazy&quot;</code> to the AppFooter logo and Status-page Netlify deploy badges (v1.3.40)</td>
+      <td>Eliminates 5 console warnings per homepage visit; defers below-fold images</td>
+    </tr>
+    <tr valign="top">
+      <td>Async-load all 5 stylesheets in <code>index.html</code> (Lato/Oswald, Roboto, Material Icons, Raleway, MDI) using <code>media=&quot;print&quot; onload=&quot;this.media='all'&quot;</code> + <code>&lt;noscript&gt;</code> fallback; add <code>display=swap</code> to the two Google Fonts URLs that didn't have it; preconnect <code>cdn.jsdelivr.net</code> (v1.3.42)</td>
+      <td><strong>Render-blocking estimated savings: 4,000 ms → 370 ms (-90%)</strong> across every page</td>
+    </tr>
+    <tr valign="top">
+      <td>Re-encode the homepage hero image: pre-grayscale at the source (CSS already applied <code>filter: grayscale(100%)</code> at runtime), generate AVIF as the first <code>&lt;source&gt;</code>, drop quality (overlay hides artifacts), add <code>fetchpriority=&quot;high&quot;</code> + <code>decoding=&quot;async&quot;</code> (v1.3.43)</td>
+      <td>Hero file 94 KB WebP → <strong>36 KB AVIF (-62%)</strong>; homepage LCP ~16.5s → ~11s</td>
+    </tr>
+  </tbody>
+</table>
 
 ### Mobile Lighthouse audit — final state (April 2026, post v1.3.43)
 
 20 routes sampled across all 10 content types (homepage, hub listing + article, publications, grants, posts, jobs, meetings, biographies, units, events, IRB, forms, status):
 
-| Metric | Value | Notes |
-|---|---|---|
-| Performance score | **53–58** (avg ~57) | "Needs Improvement" range; consistent across content types |
-| FCP | 7.3–8.6s | Gated by Vue mount + JS bundle parse, not by CSS or images |
-| LCP | 7.9–11.0s | Homepage no longer the outlier (was 16.5s, now ~11s after the AVIF fix) |
-| Render-blocking insight | ~370 ms savings | Down from ~4,000 ms before async stylesheets |
-| Top remaining issues | Vuetify framework cost — `unused-css-rules` (~103 KB), `unused-javascript` (~143–194 KB), long network-dependency tree | All structural; require the rewrite |
+<table>
+  <thead>
+    <tr>
+      <th align="left">Metric</th>
+      <th align="left">Value</th>
+      <th align="left">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr valign="top">
+      <td>Performance score</td>
+      <td><strong>53–58</strong> (avg ~57)</td>
+      <td>&quot;Needs Improvement&quot; range; consistent across content types</td>
+    </tr>
+    <tr valign="top">
+      <td>FCP</td>
+      <td>7.3–8.6s</td>
+      <td>Gated by Vue mount + JS bundle parse, not by CSS or images</td>
+    </tr>
+    <tr valign="top">
+      <td>LCP</td>
+      <td>7.9–11.0s</td>
+      <td>Homepage no longer the outlier (was 16.5s, now ~11s after the AVIF fix)</td>
+    </tr>
+    <tr valign="top">
+      <td>Render-blocking insight</td>
+      <td>~370 ms savings</td>
+      <td>Down from ~4,000 ms before async stylesheets</td>
+    </tr>
+    <tr valign="top">
+      <td>Top remaining issues</td>
+      <td>Vuetify framework cost — <code>unused-css-rules</code> (~103 KB), <code>unused-javascript</code> (~143–194 KB), long network-dependency tree</td>
+      <td>All structural; require the rewrite</td>
+    </tr>
+  </tbody>
+</table>
 
 ### Where the v1.3.x line ends — honest framing
 

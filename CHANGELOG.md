@@ -82,6 +82,26 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.39] - 2026-05-05
+
+### docs — top-align all README table cells (Markdown → HTML conversion)
+
+GitHub-flavored markdown tables don't expose `vertical-align` per cell, and GitHub's rendered CSS doesn't override the browser's `<td>` default of `vertical-align: middle`. On the SiteImprove false-positives table (and the other long-cell tables in the README), this produced visibly mis-aligned content: a 1-line cell sat in the middle of a 30-line row, while a 30-line cell next to it ran the full height. Eye tracking down the row was awkward — short content was lost in vertical whitespace.
+
+**Fix:** converted every markdown pipe-table in `README.md` (16 in total) to HTML `<table>` blocks with `<tr valign="top">` on each data row. Cell content now starts at the top of every row consistently.
+
+**Conversion preserved markdown formatting inside cells:** `**bold**` → `<strong>`, `` `code` `` → `<code>`, `[text](url)` → `<a href>`, `<tag>` → `&lt;tag&gt;`. The raw HTML produces identical rendered output to the prior markdown for cell contents, only the alignment changes.
+
+**Implementation:** wrote a one-shot `scripts/tables-to-html.js` that uses `markdown-it` (already a project dependency) to render each cell's inline markdown to HTML, then emits an HTML table with the `valign="top"` row attribute. The script tracks fenced code blocks and skips any pipe-character ASCII art inside them — verified by the two-layer fix-model diagram in the Accessibility section, which uses `|` as box-drawing borders and is preserved as-is. Future README edits should add new tables as HTML directly (re-running the script is not idempotent — it would mangle existing HTML tables).
+
+**Files:**
+
+- `README.md` — 16 markdown pipe-tables rewritten as `<table>` blocks with `<tr valign="top">` on every data row.
+- `scripts/tables-to-html.js` — one-shot conversion tool (kept in repo for posterity / re-running on a fresh markdown table if needed).
+- `package.json` — version bump to 1.5.39.
+
+---
+
 ## [1.5.38] - 2026-05-05
 
 ### docs — log axe-DevTools `advanced/heading-markup` AI rule as known false positive on card kickers (no code change)
