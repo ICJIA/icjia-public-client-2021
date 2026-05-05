@@ -268,15 +268,16 @@ export default {
 }
 .click-hint {
   font-size: 13px;
-  color: #555;
+  color: #222;
   font-style: italic;
+  font-weight: 600;
 }
 .click-hint-icon.v-icon {
   font-size: 16px;
-  color: #555;
+  color: #222;
 }
 .card:hover .click-hint,
 .card:hover .click-hint-icon.v-icon {
-  color: #1976d2;
+  color: #0d47a1;
 }
 </style>

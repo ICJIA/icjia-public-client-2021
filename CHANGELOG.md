@@ -82,6 +82,38 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.35] - 2026-05-05
+
+### fix — darken job-card "click for full listing" hint and restore translate-button accessible name on mobile
+
+Two unrelated a11y fixes shipped together as a follow-up to 1.5.34.
+
+**1. Darkened the JobCard click hint to AAA contrast.**
+
+The "Click for full job listing →" hint added in 1.5.34 used `#555` on white (7.46:1 — passes WCAG AA but not AAA for normal-size italic text). Darkened it to `#222` (15.91:1) and added `font-weight: 600` to make it more discoverable as an actionable affordance. Hover state shifted from the lighter `#1976d2` to `#0d47a1` (a darker blue) to keep contrast strong on hover too.
+
+**2. Fixed mobile a11y — "Translate this site" button had no accessible name on small viewports.**
+
+The translate-modal trigger in `AppNavContext.vue` rendered as `<v-btn>` with the visible label inside a `<span class="hidden-sm-and-down">`. On mobile (≤md), only the `mdi-web` icon was visible, and the icon is `aria-hidden="true"` — so the rendered button had no accessible name. Lighthouse mobile audit flagged it as a critical `button-name` violation (WCAG 4.1.2).
+
+The component already had `aria-label="Translate this site"` on the `<v-btn>`, but Vuetify 2.x doesn't propagate that attribute to the rendered `<button>` element in this configuration — `getAttribute('aria-label')` returned `null` on the rendered button.
+
+**Fix:** dropped the `aria-label` (which wasn't being applied anyway) and used the same pattern as the search button in `AppNav.vue`: an always-present `<span class="sr-only">Translate this site</span>` inside the button gives it a reliable accessible name at every viewport. The visible "Translate this site" label on desktop is now `aria-hidden="true"` to prevent screen readers from announcing the name twice.
+
+**Verified:**
+
+- `mcp__contrastcap__check_element_contrast` on `.click-hint` returns 15.91:1 (AAA pass at 7:1 threshold).
+- Lightcap (Lighthouse) a11y audit on `/about/employment/`: **100/100 desktop, 100/100 mobile, 0 issues** at WCAG-only filter. (Mobile previously scored 95/100 with the button-name issue.)
+- Card layout verified responsive at 320×568, 375×667, 768×1024, and 1280×800 — no horizontal overflow, hint pinned right at every viewport, title wraps gracefully on narrow widths.
+
+**Files:**
+
+- `src/components/JobCard.vue` — `.click-hint` color `#555` → `#222`, added `font-weight: 600`; hover color `#1976d2` → `#0d47a1`.
+- `src/components/AppNavContext.vue` — replaced ineffective `aria-label="Translate this site"` on the `<v-btn>` with an internal `<span class="sr-only">`; marked the existing visible label `aria-hidden="true"` to avoid duplicate announcement.
+- `package.json` — version bump to 1.5.35.
+
+---
+
 ## [1.5.34] - 2026-05-05
 
 ### fix — clarify clickability of job cards on `/about/employment/`

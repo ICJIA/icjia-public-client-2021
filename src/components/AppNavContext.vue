@@ -74,8 +74,8 @@
           dark
           @click="openTranslationModal()"
           v-if="contextMenu[0].showTranslation"
-          aria-label="Translate this site"
         >
+          <span class="sr-only">Translate this site</span>
           <v-icon
             x-small
             :left="
@@ -85,7 +85,9 @@
             "
             >mdi-web</v-icon
           >
-          <span class="hidden-sm-and-down">Translate this site</span>
+          <span class="hidden-sm-and-down" aria-hidden="true"
+            >Translate this site</span
+          >
         </v-btn>
         <!--       
       <v-btn text x-small dark aria-label="Share this page on Twitter"
