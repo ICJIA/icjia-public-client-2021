@@ -82,6 +82,33 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.38] - 2026-05-05
+
+### docs — log axe-DevTools `advanced/heading-markup` AI rule as known false positive on card kickers (no code change)
+
+A 2026-05-05 axe-DevTools (Deque browser extension, v4.127.1) advanced-rules audit on `https://icjia.illinois.gov/grants/programs/` flagged **one serious issue**: `advanced/heading-markup` on a `<span>state PROGRAM</span>` kicker label inside `BaseCardExpandable.vue`. The same kicker pattern lives in `JobCard.vue` (`{category} EMPLOYMENT`) and `EventCard.vue` (`EMPLOYMENT OPENING`), so the rule will fire on `/about/employment/`, `/news/events/`, and any other listing page with these cards.
+
+**The rule:** Deque's [`advanced/heading-markup`](https://docs.deque.com/advanced-rules/1/en/advanced/heading-markup) is an AI/ML-driven heuristic that detects elements that *look* like headings (uppercase, bold, visually prominent) but aren't marked up as `<h1>`–`<h6>` or `role="heading"`. Every report carries a confidence percentage; this one was 84%. It is **explicitly opt-in** in the axe-DevTools extension and **is not part of standard axe-core**. Tags: `advanced`, `non-deterministic`, `AI`.
+
+**Why this is a false positive (not a fix):**
+
+1. **The card already has a real heading.** Each `<v-card>` renders an `<h2>` for the program/job/event title immediately below the kicker. The kicker is metadata (category indicator), not the card's heading.
+2. **Promoting kickers to real headings would degrade accessibility.** A listing page renders many cards (often 30+). Marking each kicker as `<h3>STATE PROGRAM</h3>` would produce 30+ identical "STATE PROGRAM" entries in screen-reader heading and landmark navigation menus — actively *worse* than the current pattern, where each card has a unique h2 title.
+3. **The kicker pattern is standard journalism/card UX.** NYT, BBC, Vox, ProPublica, and similar sites use bold/uppercase kicker labels above article titles. The h2 is the card's heading; the kicker is supporting taxonomy.
+4. **WCAG 1.3.1 ("Info and Relationships") does not require kickers to be headings.** Programmatic determination is satisfied by the distinct visual styling plus the surrounding `<h2>`. axe-core (the deterministic engine that drives Lighthouse, pa11y, and most accessibility consultancies) does not flag this — only the opt-in axe-DevTools AI rule does.
+5. **Restructuring to satisfy the rule has no clear path.** The rule wants either heading markup (downside above) or different visual styling (the bold/uppercase styling is intentional design). There is no markup or ARIA pattern that reliably defeats the AI heuristic without changing visual design or polluting the heading outline.
+
+**Verified clean by deterministic tooling:** axe-core WCAG 2.1 AA full-site audit (April 14 2026) — **2,367/2,367 pages, zero violations**. lightcap (Lighthouse + axe-core) on `/grants/programs/`, `/about/employment/`, `/researchhub/publications/`, etc.: **100/100 desktop and mobile, 0 issues**.
+
+**Files:**
+
+- `docs/SITEIMPROVE-FALSE-POSITIVES.md` — added row C to the "Other audit-tool false positives" table documenting this rule, the kicker pattern, the WCAG/UX rationale for not changing the markup, and verification evidence.
+- `package.json` — version bump to 1.5.38.
+
+**Recommended action for axe-DevTools advanced/heading-markup flags:** ignore the flag in the axe-DevTools extension UI with a comment citing this row. The rule is non-deterministic — re-running the audit can produce different confidence scores or different flagged elements on the same page, so per-occurrence triage is not productive. The pattern is documented; the flag is known.
+
+---
+
 ## [1.5.37] - 2026-05-05
 
 ### fix — per-row accessible names on Publications page expand buttons + skip Vuetify tables in fixTableCellContext
