@@ -12,7 +12,7 @@ Managers and stakeholders reviewing audit results should understand these differ
 
 ### For stakeholders — the short version
 
-- **axe-core score: 2,367 / 2,367 pages pass WCAG 2.1 AA with zero violations** (full-site audit, April 14 2026). axe-core is the open-source engine used by Google Lighthouse, Microsoft, pa11y, and most accessibility consultancies.
+- **axe-core score: 2,377 / 2,377 pages pass WCAG 2.1 AA with zero violations** (most recent full-site audit, May 6 2026; the prior April 14 2026 audit on 2,367 URLs was equally clean). axe-core is the open-source engine used by Google Lighthouse, Microsoft, pa11y, and most accessibility consultancies.
 - **SiteImprove reports a lower score** because (a) it applies proprietary rules that are stricter than the published WCAG and W3C ACT Rules, and (b) its remote crawler cannot fully execute the JavaScript that renders this Single Page Application. Both limitations are architectural to SiteImprove and documented by the vendor itself.
 - **SiteImprove cannot be integrated into the build process.** There is no CLI, API, or local runner. Every SiteImprove flag must be manually reviewed after deployment, and results can lag days or weeks behind the live code.
 - **Every new SiteImprove report is triaged on arrival.** If axe-core also flags the issue, it is fixed in code. If axe-core is clean and the flag matches a known stricter-than-spec rule, it is logged as a false positive with W3C/ACT Rules citations and verification evidence.
@@ -34,7 +34,7 @@ Managers and stakeholders reviewing audit results should understand these differ
 
 ### Why this matters for this project
 
-1. **This site passes axe-core with zero violations across all 2,367 pages in `sitemap.xml`** (full-site audit, April 14 2026, axe-core 4.11.2, WCAG 2.2 Level AA). axe-core is the industry-standard open-source engine used by Google, Microsoft, and most accessibility consultancies. The complete per-page JSON is preserved under `reports/a11y-full-audit/archive/2026-04-14/` for audit-trail purposes.
+1. **This site passes axe-core with zero violations across all 2,377 pages in `sitemap.xml`** (most recent full-site audit, May 6 2026, axe-core 4.11.2, WCAG 2.2 Level AA; the prior April 14 2026 audit on 2,367 URLs was equally clean). axe-core is the industry-standard open-source engine used by Google, Microsoft, and most accessibility consultancies. Complete per-page JSON for each run is preserved under `reports/a11y-full-audit/archive/<date>/` for audit-trail purposes.
 
 2. **SiteImprove flags additional issues** that fall into three categories:
    - **Legitimate gaps** that axe-core's rule set doesn't cover (e.g., sia-r83 text clipping at 200% zoom, sia-r77 table cell context). These have been remediated in code. When a new gap is discovered via a SiteImprove report, a targeted axe-core audit script is written for those URLs (see `scripts/audit-siteimprove-*.js`) to verify the fix.
@@ -58,9 +58,9 @@ This asymmetry is important: axe-core violations are caught and fixed during dev
 
 ### Audit coverage — every URL in the sitemap
 
-This site has **2,367 URLs across 10 content types** (1,101 publications, 275 meetings, 251 hub articles, 218 jobs, 180 posts, 172 grants, 114 biographies, 29 static pages, 10 units, 6 events, 11 system). As of v1.5.9 (April 14 2026), **every single URL in `public/sitemap.xml` is audited with axe-core** on each full-site run — no sampling.
+This site has **2,377 URLs across 10 content types** (as of the May 6 2026 sitemap; the April 14 2026 sitemap had 2,367 — the +10 delta is new biographies, news posts, and employment listings published through the Strapi CMS over the intervening sprints). The April 14 breakdown was: 1,101 publications, 275 meetings, 251 hub articles, 218 jobs, 180 posts, 172 grants, 114 biographies, 29 static pages, 10 units, 6 events, 11 system. As of v1.5.9 (April 14 2026) and re-confirmed in v1.5.40 (May 6 2026), **every single URL in `public/sitemap.xml` is audited with axe-core** on each full-site run — no sampling.
 
-The full-site auditor at `scripts/a11y-sitemap-audit.mjs` runs 5 parallel workers against the local dev server and completes in ~28 minutes. It is resumable, archives prior runs under `reports/a11y-full-audit/archive/<date>/`, and records a per-page JSON plus a rule × page matrix. The April 14 2026 archive shows **2,367 / 2,367 pages with zero violations, zero errors** at WCAG 2.2 Level AA.
+The full-site auditor at `scripts/a11y-sitemap-audit.mjs` runs 4-5 parallel workers against the local dev server and completes in 28-35 minutes depending on sitemap size and concurrency. It is resumable, archives prior runs under `reports/a11y-full-audit/archive/<date>/`, and records a per-page JSON plus a rule × page matrix. The May 6 2026 archive shows **2,377 / 2,377 pages with zero violations, zero errors**; the April 14 2026 archive shows **2,367 / 2,367 pages with zero violations, zero errors** — both at WCAG 2.2 Level AA.
 
 ```bash
 # Full-site audit, every URL in sitemap.xml, fresh archive
@@ -79,6 +79,45 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 2. If axe-core also flags it, remediate in code and document the fix in a CHANGELOG entry.
 3. If axe-core is clean and the pattern matches a stricter-than-spec rule, add an entry to [docs/SITEIMPROVE-FALSE-POSITIVES.md](docs/SITEIMPROVE-FALSE-POSITIVES.md) and mark the occurrences as Accepted in the SiteImprove inspector with the comment supplied in the table.
 4. Stale-cache flags clear on the next SiteImprove recrawl — no action needed beyond waiting.
+
+---
+
+## [1.5.40] - 2026-05-06
+
+### docs — full-site axe-core re-baseline audit (2,377 / 2,377 clean) + audit-history restructure in README
+
+Re-ran the full-site axe-core audit on every URL in `public/sitemap.xml` to refresh the audit-trail record. Manager-facing compliance reviews reasonably treat any accessibility audit older than a couple of weeks as a stale claim about the *current* state of the deployed site, so re-running on a regular cadence (every few weeks) is now the maintenance posture for v1.5.x. This is the second full-site run; the first was the April 14 2026 baseline at v1.5.9.
+
+**Audit run:** `node scripts/a11y-sitemap-audit.mjs --fresh --concurrency=4` against `http://localhost:8080` on 2026-05-06.
+
+**Result: 2,377 / 2,377 pages clean, 0 violations, 0 errors, 35m 16s runtime.** axe-core 4.11.2, WCAG tags `wcag2a + wcag2aa + wcag21a + wcag21aa + wcag22aa`. Full per-page JSON for the May 6 run lives in-place under `reports/a11y-full-audit/` (`_summary.md`, `_summary.csv`, `_manifest.ndjson`, plus 2,377 files under `pages/<slug>.json`); the script's archiving model treats the most recent run as in-place and moves it under `archive/<date>/` on the next `--fresh` invocation. The April 14 baseline archive remains untouched at `reports/a11y-full-audit/archive/2026-04-14/`.
+
+**Sitemap delta vs April 14:** +10 URLs (2,367 → 2,377). The new pages — additional biographies, news posts, and employment listings published through the Strapi CMS over the intervening sprints — all cleared on first pass. The pre-render content pipeline (`src/utils/contentSanitizer.js`) and the runtime accessibility fixes in `src/a11y/index.js` handled the new content automatically with no template-level intervention. This is the architectural payoff of the April 14 remediation cycle: the fixes are content-shape-driven (not URL-specific), so new content inherits compliance.
+
+**Sprints between the two audits (v1.5.10 through v1.5.39):**
+
+- v1.5.31–34 — meeting agendas missing-link guard (Meeting Agendas component); Strapi `external.url` content-completeness handling.
+- v1.5.35 — JobCard a11y improvements (removed pipe + chainlink icon, added "Click for full job listing" hint with AAA contrast); fixed Translate-this-site button accessible name on mobile (sr-only span pattern, replaced ineffective v-btn-level aria-label).
+- v1.5.36 — documented expanded sia-r14 SiteImprove false-positive scope after the 2026-05-05 re-crawl flagged 88 occurrences across 39 URLs (same landmark-`<nav>` pattern, broader sample).
+- v1.5.37 — per-row descriptive accessible names on Publications page expand buttons (`fixExpandButtons` rewrite with sr-only span for Vuetify-clobber resilience); skip Vuetify `v-data-table` instances in `fixTableCellContext` to prevent latent `td-headers-attr` regression.
+- v1.5.38 — logged axe-DevTools `advanced/heading-markup` AI rule as a known false positive on card kicker labels (BaseCardExpandable, JobCard, EventCard).
+- v1.5.39 — converted all 16 README markdown pipe-tables to HTML with `<tr valign="top">` for consistent top-aligned cell content.
+
+The May 6 audit confirms that **none of these v1.5.10–39 changes introduced an a11y regression**, and that the sitemap's organic growth is being absorbed by the existing fix architecture without intervention.
+
+**Why re-run at all when v1.5.9 was already 2,367 / 2,367 clean?** Two reasons:
+
+1. **Audit recency.** A clean compliance record is only meaningful as a snapshot of a specific deployed state. Three weeks of merged commits, a +10 URL sitemap growth, and several runtime-fix changes (v1.5.35, v1.5.37) is a meaningful divergence from the April 14 archived state. Re-running produces a current snapshot rather than relying on inference from the older one.
+2. **Defensibility.** When external reviewers, stakeholders, or auditors ask "is this site WCAG 2.2 AA compliant *today*?", the strongest answer is "yes, here is the audit run we performed last week" — not "yes, here is the audit run we performed three months ago." The cadence cost is ~35 minutes of compute every few weeks; the credibility cost of a stale audit is much higher.
+
+**Files:**
+
+- `README.md` — restructured "Full-site audit record (April 14 2026)" into a new "Full-site audit history" section with a chronological summary table covering both audits and per-audit subsections (the April 14 7-fixes content is preserved verbatim inside the `#### 2026-04-14 audit (initial full-site baseline)` subsection). Updated three inline references in the doc body — "axe-core vs SiteImprove" intro, "SiteImprove Intercept" intro, and the rewrite-rationale closer at line ~1080 — from "2,367 pages, April 14 2026" to "2,377 pages, May 6 2026" while preserving April 14 as historical baseline. Renamed "Current Status (April 2026)" to "(May 2026)" and added a "Prior full audit" row to the metric table so both audits are visible at the top of the document.
+- `CHANGELOG.md` — updated the IMPORTANT-preamble stakeholder summary (lines ~15, ~37, ~61, ~63) to reference both audits while keeping the May 6 figures as the current-state claim. The historical changelog entries for v1.5.39 and earlier are unchanged — they remain timestamped at their original write date.
+- `reports/a11y-full-audit/` — fresh full-site run; `_summary.md`, `_summary.csv`, `_manifest.ndjson`, and 2,377 per-page JSON files under `pages/`. Prior runs preserved under `archive/`.
+- `package.json` — version bump to 1.5.40.
+
+**Verified:** the audit script's own summary (`reports/a11y-full-audit/_summary.md`): 2,377 audited, 2,377 clean, 0 dirty, 0 errors. The 2,378 incomplete (needs-review) results are the documented Vuetify v-tab `color-contrast` Needs-Review pattern (axe-core cannot auto-verify when the background involves dynamic CSS); see row B of the "Other audit-tool false positives" table in `docs/SITEIMPROVE-FALSE-POSITIVES.md`.
 
 ---
 

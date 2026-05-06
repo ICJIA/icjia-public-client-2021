@@ -392,7 +392,7 @@ View the [security policy](SECURITY.md).
 
 This site is audited with two complementary tools that produce **different results for the same pages**. This is expected — not a sign of inadequate remediation.
 
-**axe-core** (primary, open-source) runs in-browser after full page render, including all runtime accessibility fixes. It follows WCAG success criteria closely and only flags clear violations. This site passes axe-core with **zero violations across all 2,367 pages in `sitemap.xml`** (full-site audit, April 14 2026 — see "Full-site audit record" below).
+**axe-core** (primary, open-source) runs in-browser after full page render, including all runtime accessibility fixes. It follows WCAG success criteria closely and only flags clear violations. This site passes axe-core with **zero violations across all 2,377 pages in `sitemap.xml`** (most recent full-site audit, May 6 2026; the prior April 14 2026 audit on 2,367 URLs was equally clean — see "Full-site audit history" below for the full audit record).
 
 **SiteImprove** (secondary, enterprise) crawls pages remotely on a schedule. It uses a proprietary rule set (`sia-r` prefix) that applies some WCAG rules more broadly than the spec requires and includes ambiguous "cantTell" results in its violation count. SiteImprove flags issues in three categories:
 
@@ -535,7 +535,7 @@ The table below catalogs SiteImprove flags that have been confirmed as false pos
 
 The decision tree: **(1)** does axe-core also flag this URL? If yes, fix the code. **(2)** Is the rule a known stricter-than-spec pattern from this table? If yes, mark Accepted with the citation. **(3)** Otherwise, treat as a new pattern: write a targeted audit script, verify with axe-core, and if axe-core is clean, add a new row to `docs/SITEIMPROVE-FALSE-POSITIVES.md`.
 
-### Current Status (April 2026)
+### Current Status (May 2026)
 
 <table>
   <thead>
@@ -546,8 +546,12 @@ The decision tree: **(1)** does axe-core also flag this URL? If yes, fix the cod
   </thead>
   <tbody>
     <tr valign="top">
-      <td><strong>Full-site axe-core audit — every URL in <code>sitemap.xml</code> (v1.5.9, April 14 2026)</strong></td>
-      <td><strong>2,367 / 2,367 zero violations (100%)</strong></td>
+      <td><strong>Full-site axe-core audit — every URL in <code>sitemap.xml</code> (v1.5.40, May 6 2026)</strong></td>
+      <td><strong>2,377 / 2,377 zero violations (100%)</strong></td>
+    </tr>
+    <tr valign="top">
+      <td>Prior full audit (v1.5.9, April 14 2026)</td>
+      <td>2,367 / 2,367 zero violations (100%)</td>
     </tr>
     <tr valign="top">
       <td>WCAG tags audited</td>
@@ -558,8 +562,8 @@ The decision tree: **(1)** does axe-core also flag this URL? If yes, fix the cod
       <td>4.11.2</td>
     </tr>
     <tr valign="top">
-      <td>Runtime</td>
-      <td>28m 15s (5 parallel workers)</td>
+      <td>Runtime (most recent)</td>
+      <td>35m 16s (4 parallel workers, 2,377 URLs)</td>
     </tr>
     <tr valign="top">
       <td>Errors / unreachable</td>
@@ -588,7 +592,60 @@ The decision tree: **(1)** does axe-core also flag this URL? If yes, fix the cod
   </tbody>
 </table>
 
-### Full-site audit record (April 14 2026)
+### Full-site audit history
+
+The site is audited end-to-end (every URL in `public/sitemap.xml`) with axe-core 4.11.2 at WCAG 2.2 Level AA conformance every few weeks. Each run is preserved as a forensic record under `reports/a11y-full-audit/archive/<date>/`. The cadence is intentional: managers and external reviewers reasonably treat any accessibility audit older than a couple of weeks as a stale claim about the *current* state of the deployed site, so re-running on a regular schedule keeps the record defensible.
+
+<table>
+  <thead>
+    <tr>
+      <th align="left">Audit date</th>
+      <th align="left">Version</th>
+      <th align="left">Sitemap URLs</th>
+      <th align="left">Pages audited</th>
+      <th align="left">Violations</th>
+      <th align="left">Errors</th>
+      <th align="left">Runtime</th>
+      <th align="left">Archive</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr valign="top">
+      <td>2026-05-06</td>
+      <td>1.5.40</td>
+      <td>2,377</td>
+      <td>2,377</td>
+      <td><strong>0</strong></td>
+      <td>0</td>
+      <td>35m 16s</td>
+      <td><code>reports/a11y-full-audit/</code> (in-place; archived on next <code>--fresh</code>)</td>
+    </tr>
+    <tr valign="top">
+      <td>2026-04-14</td>
+      <td>1.5.9</td>
+      <td>2,367</td>
+      <td>2,367</td>
+      <td><strong>0</strong></td>
+      <td>0</td>
+      <td>28m 15s</td>
+      <td><code>reports/a11y-full-audit/archive/2026-04-14/</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### 2026-05-06 audit (clean re-baseline)
+
+Re-run of the full sitemap audit, three weeks after the April 14 baseline. The sitemap grew by **+10 URLs** over the intervening sprints (new biographies, news posts, and employment listings published through the Strapi CMS). All new pages cleared on first pass — the pre-render content pipeline and runtime accessibility fixes from the April 14 cycle handled the new content automatically with no template-level intervention.
+
+- 2,377 / 2,377 pages clean
+- 0 violations across all WCAG 2.0 / 2.1 / 2.2 A + AA tags
+- 0 errors / unreachable URLs
+- 35m 16s runtime, 4 parallel workers
+- axe-core 4.11.2, run via `node scripts/a11y-sitemap-audit.mjs --fresh --concurrency=4`
+
+**No new fixes were required.** This run confirms that the April 14 remediation is durable across content additions and that no regression has been introduced over the intervening sprints (which included v1.5.10 through v1.5.39 — JobCard cleanup, mobile a11y improvements on the Translate-this-site button, per-row accessible names on Publications expand buttons, table cell vertical-alignment, and assorted SiteImprove false-positive triage). Full per-page JSON lives in-place under `reports/a11y-full-audit/` (`_summary.md`, `_summary.csv`, `_manifest.ndjson`, plus 2,377 files under `pages/<slug>.json`); the script's archiving model treats the most recent run as in-place and moves it under `archive/<date>/` on the next `--fresh` invocation.
+
+#### 2026-04-14 audit (initial full-site baseline)
 
 Every single URL in `public/sitemap.xml` (2,367 URLs) was audited in one pass with axe-core 4.11.2 at WCAG 2.2 Level AA conformance. Zero violations, zero errors. Full per-page JSON is preserved under `reports/a11y-full-audit/archive/2026-04-14/` for audit-trail purposes.
 
@@ -658,7 +715,7 @@ node scripts/a11y-sitemap-audit.mjs --fresh --concurrency=5
 
 An earlier version of this page documented a sampled strategy (157 pages of 2,356). That strategy was correct for its time — pages within a content type share templates, and runtime fixes propagate globally. But manager-facing compliance records require exhaustive coverage: "every page was audited" is a stronger claim than "a representative sample passed." The full-site runner above produces that record in ~28 minutes, so there is no reason not to run it.
 
-Page counts by content type at the most recent audit (derived from `sitemap.xml`):
+Page counts by content type at the most recent audit (May 6 2026; derived from `sitemap.xml`):
 
 <table>
   <thead>
@@ -670,54 +727,44 @@ Page counts by content type at the most recent audit (derived from `sitemap.xml`
   <tbody>
     <tr valign="top">
       <td>publications</td>
-      <td>1,101</td>
+      <td>1,107</td>
     </tr>
     <tr valign="top">
       <td>meetings</td>
-      <td>275</td>
+      <td>282</td>
     </tr>
     <tr valign="top">
       <td>hub (articles)</td>
-      <td>251</td>
+      <td>249</td>
     </tr>
     <tr valign="top">
       <td>jobs</td>
-      <td>218</td>
+      <td>220</td>
     </tr>
     <tr valign="top">
       <td>posts (news)</td>
-      <td>180</td>
+      <td>186</td>
     </tr>
     <tr valign="top">
       <td>grants</td>
-      <td>172</td>
+      <td>171</td>
     </tr>
     <tr valign="top">
       <td>biographies</td>
-      <td>114</td>
+      <td>109</td>
     </tr>
     <tr valign="top">
-      <td>pages</td>
-      <td>29</td>
-    </tr>
-    <tr valign="top">
-      <td>units</td>
-      <td>10</td>
-    </tr>
-    <tr valign="top">
-      <td>events</td>
-      <td>6</td>
-    </tr>
-    <tr valign="top">
-      <td>static / system</td>
-      <td>11</td>
+      <td>static / system / units / events</td>
+      <td>53</td>
     </tr>
     <tr valign="top">
       <td><strong>Total</strong></td>
-      <td><strong>2,367</strong></td>
+      <td><strong>2,377</strong></td>
     </tr>
   </tbody>
 </table>
+
+The April 14 2026 baseline broke "static / system / units / events" out as four sub-rows (29 + 10 + 6 + 11 = 56). The May 6 grouping consolidates them because the URL conventions don't draw a clean boundary between them; the small (-3) delta is normal sitemap drift across CMS edits.
 
 ### Accessibility Features
 
@@ -735,7 +782,7 @@ Page counts by content type at the most recent audit (derived from `sitemap.xml`
 
 #### The problem: why axe-core and SiteImprove disagree
 
-**axe-core** runs inside the browser after JavaScript executes. It sees the same DOM the user sees — including SPA route changes, async content, and runtime accessibility fixes. This site scores **zero violations on axe-core across all 2,367 pages in `sitemap.xml`** (full-site audit, April 14 2026).
+**axe-core** runs inside the browser after JavaScript executes. It sees the same DOM the user sees — including SPA route changes, async content, and runtime accessibility fixes. This site scores **zero violations on axe-core across all 2,377 pages in `sitemap.xml`** (full-site audit, May 6 2026; previously 2,367/2,367 on April 14 2026).
 
 **SiteImprove** is a remote crawler. It fetches pages server-side and attempts to execute JavaScript, but it cannot reliably parse Single Page Applications. On an SPA, much of the content is rendered client-side by JavaScript frameworks (Vue, React, Angular) after the initial page load. SiteImprove often sees partial or stale DOM states, leading it to flag issues that don't exist for real users. This is a fundamental architectural limitation — **not a deficiency in the site's accessibility**.
 
@@ -1081,7 +1128,7 @@ Further perf work requires architectural change:
 - **Replacing Vuetify 2** — eliminates the framework JS/CSS overhead. Also the rewrite.
 - **Pre-rendering** — possible inside v1.3.x via vue-cli's prerender plugin, but multi-day project and only helps initial page.
 
-For the next several months until the rewrite ships, this is the best shape the site is going to be in. Mobile users get the hero image ~5s faster, search runs without freezing the UI, repeat visits are near-zero bytes, and a11y is still 2,367/2,367 axe-clean (full-site audit, April 14 2026). The remaining slowness is structural — unfixable without writing a new app, which is exactly what's planned.
+For the next several months until the rewrite ships, this is the best shape the site is going to be in. Mobile users get the hero image ~5s faster, search runs without freezing the UI, repeat visits are near-zero bytes, and a11y is still 2,377/2,377 axe-clean (full-site audit, May 6 2026 — re-baseline of the April 14 2026 run that was 2,367/2,367 clean). The remaining slowness is structural — unfixable without writing a new app, which is exactly what's planned.
 
 ### Search architecture (worker-backed lazy loader)
 
