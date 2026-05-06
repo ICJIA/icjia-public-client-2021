@@ -165,6 +165,64 @@ npm run audit -- posts     # 5 random samples of one type
 npm run audit -- all --sample 20
 ```
 
+### Accessibility Audit (IBM Equal Access — parallel pipeline)
+
+A second, independent rule engine running against the same sitemap, used to **triangulate** axe-core results when SiteImprove flags pages that axe-core scores clean. IBM's [Equal Access Toolkit](https://github.com/IBMa/equal-access) implements W3C ACT Rules + IBM's own WCAG 2.0/2.1/2.2 ruleset and is the engine behind IBM's enterprise accessibility tooling. Distinct from axe-core; not the same tool with a different name. Configured via `.achecker.yml` at the repo root (currently scoped to `WCAG_2_2`).
+
+```bash
+# Full-site IBM audit — every URL in sitemap.xml, 4 parallel workers, resumable
+node scripts/a11y-sitemap-audit-ibm.mjs --fresh --concurrency=4
+
+# Smoke test on a handful of URLs
+node scripts/a11y-sitemap-audit-ibm.mjs --fresh --concurrency=2 --limit=10
+
+# Re-run only the pages that errored last time
+node scripts/a11y-sitemap-audit-ibm.mjs --retry
+
+# Rebuild summary from existing per-page JSON without re-auditing
+node scripts/a11y-sitemap-audit-ibm.mjs --summary
+```
+
+Requires dev server on `localhost:8080` (`npm run serve`). Results land in `reports/a11y-full-audit-ibm/` with the same shape as the axe-core auditor (`_summary.md`, `_summary.csv`, `_manifest.ndjson`, `pages/<slug>.json`, `_failures.ndjson`, `archive/<date>/`). Runtime is ~3-4× the axe-core auditor — IBM's rule engine is heavier and the per-page scan time is longer (5-7s vs ~3.5s).
+
+**How IBM categorizes findings (vs axe-core):**
+
+<table>
+  <thead>
+    <tr>
+      <th align="left">IBM level</th>
+      <th align="left">axe-core equivalent</th>
+      <th align="left">What it means</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr valign="top">
+      <td><code>violation</code></td>
+      <td><code>violation</code></td>
+      <td>Confirmed WCAG failure. Both tools agree this is a real fix.</td>
+    </tr>
+    <tr valign="top">
+      <td><code>potentialviolation</code></td>
+      <td><code>incomplete</code> (Needs Review)</td>
+      <td>Tool can't auto-determine. Manual review needed. Often a "Verify..." or "Confirm..." check on patterns the static analyzer can't disambiguate (focus visibility under dynamic CSS, sensory language, kicker-vs-heading detection).</td>
+    </tr>
+    <tr valign="top">
+      <td><code>recommendation</code> / <code>potentialrecommendation</code></td>
+      <td><code>best-practice</code> tag</td>
+      <td>Beyond-spec suggestions (UX-flavored a11y patterns). Not a WCAG conformance gate.</td>
+    </tr>
+    <tr valign="top">
+      <td><code>manual</code></td>
+      <td>(no equivalent)</td>
+      <td>Test cannot be automated at all — requires human keyboard / AT testing.</td>
+    </tr>
+  </tbody>
+</table>
+
+When the auditor reports `CLEAN(pv65)`, that's "0 violations, 65 potentialviolations" — the page is clean by IBM's strict definition; the 65 are cantTell results where IBM is asking for human review. Most are repeating patterns (focus-visibility on every styled element, etc.) that require one decision per pattern, not one per element.
+
+See "Multi-tool audit triangulation" below for how to use IBM + axe-core together.
+
 ### Broken Link Checker
 
 Crawls pages and checks all external links. Outputs a CSV for content authors to fix broken URLs.
@@ -534,6 +592,47 @@ The table below catalogs SiteImprove flags that have been confirmed as false pos
 </table>
 
 The decision tree: **(1)** does axe-core also flag this URL? If yes, fix the code. **(2)** Is the rule a known stricter-than-spec pattern from this table? If yes, mark Accepted with the citation. **(3)** Otherwise, treat as a new pattern: write a targeted audit script, verify with axe-core, and if axe-core is clean, add a new row to `docs/SITEIMPROVE-FALSE-POSITIVES.md`.
+
+### Multi-tool audit triangulation
+
+Two independent automated rule engines now run against every page in `public/sitemap.xml`:
+
+<table>
+  <thead>
+    <tr>
+      <th align="left">Tool</th>
+      <th align="left">Rule engine</th>
+      <th align="left">Standard surface</th>
+      <th align="left">Script</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr valign="top">
+      <td><strong>axe-core 4.11.2</strong></td>
+      <td>Deque (open source)</td>
+      <td>WCAG 2.x SC + W3C ACT Rules. The reference implementation that Lighthouse, pa11y, jest-axe, and most consultancies wrap.</td>
+      <td><code>scripts/a11y-sitemap-audit.mjs</code></td>
+    </tr>
+    <tr valign="top">
+      <td><strong>IBM Equal Access</strong></td>
+      <td>IBM (open source, distinct from axe-core)</td>
+      <td>WCAG 2.0/2.1/2.2 + W3C ACT Rules + IBM's own ruleset. Configured to <code>WCAG_2_2</code> policy via <code>.achecker.yml</code>.</td>
+      <td><code>scripts/a11y-sitemap-audit-ibm.mjs</code></td>
+    </tr>
+  </tbody>
+</table>
+
+**Why two tools, not just one:** axe-core and IBM Equal Access implement WCAG and the W3C ACT Rules independently. They agree on most violations (the rule sets overlap heavily for WCAG 2.0 / 2.1 A + AA), but they diverge in edge cases — different default tag groupings, different cantTell vs violation thresholds, different non-spec extras. When **both tools score a page clean** and SiteImprove still flags it, that's a strong signal SiteImprove's rule is stricter-than-spec. When **the two tools disagree**, the disagreement itself is the finding — it points at exactly the rule that needs human review.
+
+**Triangulation decision tree (when SiteImprove flags a URL):**
+
+1. Run axe-core: `node scripts/a11y-sitemap-audit.mjs --limit=1` (or check the most recent full-site archive).
+2. Run IBM: `node scripts/a11y-sitemap-audit-ibm.mjs --limit=1` against the same URL.
+3. **Both clean** → SiteImprove's rule is stricter-than-spec. Document in `docs/SITEIMPROVE-FALSE-POSITIVES.md` with both tools cited and mark Accepted in SiteImprove.
+4. **One clean, one dirty** → real edge case worth reading. Look at which rule fired and why; the disagreeing tool usually documents its rationale in its rule reference. Decide based on the WCAG SC text.
+5. **Both dirty** → real WCAG violation. Fix in code.
+
+A practical example of (4): **WCAG 2.5.8 "Target Size (Minimum)"** is a real WCAG 2.2 AA criterion. axe-core ships its `target-size` rule under the `best-practice` tag (not in the default `wcag22aa` tag set), so axe-core's standard run misses it. IBM Equal Access flags it under `target_spacing_sufficient` as a full violation. The IBM smoke test on 10 biography pages (2026-05-06) caught two violations on Vuetify `v-btn x-small` toggles — a finding axe-core's standard run did not surface. To get parity from axe-core, add `--tags=...,best-practice` to the axe-core auditor, or include axe-core's `target-size` rule explicitly.
 
 ### Current Status (May 2026)
 

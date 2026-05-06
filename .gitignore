@@ -65,6 +65,17 @@ reports/a11y-full-audit/_summary.csv
 reports/a11y-full-audit/_urls.txt
 reports/a11y-full-audit/_run.log
 
+# IBM Equal Access (accessibility-checker) parallel pipeline — same shape as
+# the axe-core audit above. Per-page JSON is large and tool-version-specific.
+reports/a11y-full-audit-ibm/pages/
+reports/a11y-full-audit-ibm/archive/*/pages/
+reports/a11y-full-audit-ibm/_manifest.ndjson
+reports/a11y-full-audit-ibm/_failures.ndjson
+reports/a11y-full-audit-ibm/_summary.md
+reports/a11y-full-audit-ibm/_summary.csv
+reports/a11y-full-audit-ibm/_urls.txt
+reports/a11y-full-audit-ibm/_run.log
+
 # Test artifacts
 test-results/
 

@@ -82,6 +82,51 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.41] - 2026-05-06
+
+### feat — IBM Equal Access (accessibility-checker) parallel auditor for multi-tool triangulation against SiteImprove
+
+Added a **second independent rule engine** running against every URL in `public/sitemap.xml`, alongside the existing axe-core auditor. IBM Equal Access (open source, distinct from axe-core, used in IBM's enterprise accessibility tooling) implements W3C ACT Rules + IBM's own WCAG 2.0/2.1/2.2 ruleset. The motivation: managers and external reviewers seeing **axe-core: 0 violations** on the same pages SiteImprove flags as failures need a second open-source tool to triangulate against. When axe-core AND IBM both score a page clean, the case that SiteImprove's rule is stricter-than-spec is much stronger than relying on one tool alone.
+
+**The triangulation framework:**
+
+1. SiteImprove flags a URL.
+2. Run axe-core on that URL: `node scripts/a11y-sitemap-audit.mjs --limit=1` (or check the most recent full-site archive).
+3. Run IBM on that URL: `node scripts/a11y-sitemap-audit-ibm.mjs --limit=1`.
+4. **Both clean** → SiteImprove's rule is stricter-than-spec; document and Accept.
+5. **One clean, one dirty** → real edge case worth reading; the disagreement is the finding.
+6. **Both dirty** → real WCAG violation; fix in code.
+
+**Smoke test (10 biography pages, 2026-05-06):** 8 / 10 clean of violations, 2 / 10 dirty (1 violation each). The two violations were both `target_spacing_sufficient` on Vuetify `v-btn x-small` toggles in the StaticSearch component — **WCAG 2.5.8 "Target Size (Minimum)"**, a real WCAG 2.2 AA criterion. **axe-core's standard run does not flag this** because the corresponding axe-core rule (`target-size`) ships under the `best-practice` tag, not the default `wcag22aa` tag set we audit against. This is exactly the kind of finding multi-tool triangulation surfaces — the disagreement is real and actionable. **Triage decision:** open as a follow-up rather than blocking this release; the biography pages affected are still 0-violation by the axe-core gate that the April 14 baseline and May 6 re-baseline used. A separate v1.5.42+ pass will either (a) fix the v-btn-toggle spacing in `StaticSearch.vue` / `EventToggle.vue`, or (b) explicitly add `target-size` to the axe-core auditor's tag list and re-baseline.
+
+**IBM categorization vs axe-core (for stakeholder mapping):**
+
+- IBM `violation` ≡ axe-core `violation` — both confirmed WCAG failures.
+- IBM `potentialviolation` ≡ axe-core `incomplete` (Needs Review) — cantTell results, manual review needed.
+- IBM `recommendation` / `potentialrecommendation` ≡ axe-core `best-practice` tag — beyond-spec suggestions.
+- IBM `manual` — no axe-core equivalent; flags tests that cannot be automated.
+
+When the IBM auditor reports `CLEAN(pv65)`, that's "0 violations, 65 potentialviolations" — the page is clean by IBM's strict definition; the 65 are cantTell results, mostly repeating per-element patterns (focus visibility on every styled element, etc.) that resolve in batches.
+
+**Files:**
+
+- `package.json` — added `accessibility-checker@^4.0.17` as a devDependency. Version bump to 1.5.41.
+- `.achecker.yml` (new) — IBM Equal Access config: `WCAG_2_2` policy, `failLevels: [violation, potentialviolation]`, `outputFormat: [disable]` (we write our own per-page JSON). Cache folder under `/tmp/accessibility-checker`.
+- `scripts/a11y-sitemap-audit-ibm.mjs` (new) — mirrors `scripts/a11y-sitemap-audit.mjs`'s architecture (Playwright-driven, parallel workers, resumable manifest, archived prior runs under `archive/<date>/`) but routes each Playwright page through `aChecker.getCompliance()`. Output schema: `{ url, auditedAt, durationMs, tool, toolID, ruleArchive, policies, counts, violations[], potentialviolations[] }` per page; aggregate `_summary.md` + `_summary.csv` cross-page.
+- `.gitignore` — added the same per-page-JSON / manifest / summary ignore rules for `reports/a11y-full-audit-ibm/` that already existed for `reports/a11y-full-audit/`.
+- `README.md` — new "Accessibility Audit (IBM Equal Access — parallel pipeline)" section under Audit Methodology with run commands, output paths, runtime expectations, and an IBM-vs-axe-core categorization table; new "Multi-tool audit triangulation" section under "Documented SiteImprove false positives" explaining the two-tool decision tree and citing the v-btn-toggle target-size finding as a worked example.
+- `docs/SITEIMPROVE-FALSE-POSITIVES.md` — updated triage instructions to call for IBM verification when a flag is not in the existing table; added a "Second-tool verification (IBM Equal Access)" subsection in the verification-commands area explaining how to run IBM and how to read its output levels (`violation` / `potentialviolation` / `recommendation` / `manual`). Future false-positive entries can cite "Verified clean by axe-core + IBM Equal Access" instead of just one tool — the strongest automated-verification claim available.
+
+**Why IBM (not WAVE, not pa11y):**
+
+- **WAVE (WebAIM)** has no free CLI / API — the free product is browser-extension only, the API is paid per-credit (~$0.005/page, ~$12 for the full sitemap once). Not viable for a programmatic parallel pipeline; remains useful as a manual third opinion on selected pages.
+- **pa11y with HTMLCS** uses a different rule engine (Squiz HTMLCS) but does not claim W3C ACT Rules conformance and is less actively maintained. A reasonable fourth opinion if needed.
+- **IBM Equal Access** is open source, runs as an npm package (`accessibility-checker`), claims explicit W3C ACT Rules conformance, distinct rule engine from axe-core, and is enterprise-credible (Fortune 500 / IBM-internal use). Best fit for a programmatic parallel pipeline alongside axe-core.
+
+**Runtime cost:** IBM's rule engine is heavier than axe-core (~5-7s per page vs ~3.5s for axe-core). A full 2,377-URL IBM run takes roughly 2 hours at concurrency 4, vs 35 minutes for the axe-core auditor. This is acceptable for the every-few-weeks audit cadence; not run on every CI build.
+
+---
+
 ## [1.5.40] - 2026-05-06
 
 ### docs — full-site axe-core re-baseline audit (2,377 / 2,377 clean) + audit-history restructure in README

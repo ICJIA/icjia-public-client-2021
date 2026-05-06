@@ -1,0 +1,36 @@
+# IBM Equal Access (accessibility-checker) configuration
+# Used by scripts/a11y-sitemap-audit-ibm.mjs as a parallel auditor alongside
+# scripts/a11y-sitemap-audit.mjs (axe-core). See README "Multi-tool audit
+# triangulation" for rationale.
+
+# Pin to the latest IBM rule archive (auto-fetches WCAG 2.0/2.1/2.2 + ACT Rules)
+ruleArchive: latest
+
+# Scan against the WCAG 2.2 AA policy (matches what axe-core runs)
+policies:
+  - WCAG_2_2
+
+# What counts as a failure for our pipeline
+failLevels:
+  - violation
+  - potentialviolation
+
+# Levels we want to capture in the per-page report
+reportLevels:
+  - violation
+  - potentialviolation
+  - recommendation
+  - potentialrecommendation
+  - manual
+
+# Disable IBM's own file-output — our auditor writes its own per-page JSON
+outputFormat:
+  - disable
+
+# Where IBM caches the engine + rule archives
+cacheFolder: /tmp/accessibility-checker
+
+# Used only when IBM launches its own headless browser (we drive Playwright instead)
+puppeteerArgs:
+  - --no-sandbox
+  - --disable-setuid-sandbox

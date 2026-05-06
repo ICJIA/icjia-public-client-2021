@@ -2,14 +2,14 @@
 
 SiteImprove's proprietary rule engine is stricter than WCAG and the W3C ACT Rules in several places. Pages that pass axe-core cleanly (the industry-standard open-source tool used by Google, Microsoft, and most accessibility consultancies) sometimes continue to appear in SiteImprove reports under `failed` or `failed cantTell` (cantTell = "can't auto-verify, needs manual review").
 
-This document is a running log of confirmed false-positive patterns on this site — flags that SiteImprove keeps reporting but that represent correct accessibility practice (or at worst, stricter-than-spec rule interpretations). Each entry includes the pattern, why it is a false positive, verification evidence, and the recommended action in SiteImprove.
+This document is a running log of confirmed false-positive patterns on this site — flags that SiteImprove keeps reporting but that represent correct accessibility practice (or at worst, stricter-than-spec rule interpretations). Each entry includes the pattern, why it is a false positive, verification evidence (now from **two independent rule engines** where possible), and the recommended action in SiteImprove.
 
 **How to use this document:**
 - When a new SiteImprove report arrives, check the rule against this table before remediating.
 - If the flag matches a documented false-positive pattern, mark the occurrence as "Accepted" in SiteImprove's inspector with a short comment citing the entry here.
-- If the flag is a new pattern (not in this table), triage it — run the targeted axe-core audit scripts in `scripts/audit-siteimprove-*.js` and compare results. If axe-core also flags it, remediate. If axe-core is clean and the rule is one of the known stricter-than-spec rules, add a new entry here.
+- If the flag is a new pattern (not in this table), triage it with **multi-tool triangulation**: run the targeted axe-core audit scripts in `scripts/audit-siteimprove-*.js`, then run the IBM Equal Access auditor (`node scripts/a11y-sitemap-audit-ibm.mjs --limit=N`) on the same URLs. If **both axe-core and IBM** are clean, that's a strong stricter-than-spec signal — add a new entry here. If either tool flags it, remediate.
 
-For background on why the two tools differ, see the "axe-core vs. SiteImprove" section at the top of [CHANGELOG.md](../CHANGELOG.md).
+For background on why the two tools differ, see the "axe-core vs. SiteImprove" section at the top of [CHANGELOG.md](../CHANGELOG.md), and "Multi-tool audit triangulation" in [README.md](../README.md).
 
 ---
 
@@ -50,7 +50,23 @@ node scripts/audit-siteimprove-empty.js
 node scripts/audit-siteimprove-textclip.js
 ```
 
-A full-site audit (~4 hours, all 2,356 pages) is available via `npm run audit -- all --sample 9999`. A faster sampled audit (~20 min) uses `npm run audit -- all --sample 20`.
+A full-site axe-core audit (every URL in `sitemap.xml`, ~35 min at concurrency 4) runs via `node scripts/a11y-sitemap-audit.mjs --fresh --concurrency=4`.
+
+### Second-tool verification (IBM Equal Access)
+
+When a SiteImprove flag does not match any existing row in this document, run the **IBM Equal Access** auditor against the same URLs. IBM uses an independent rule engine from axe-core (see "Multi-tool audit triangulation" in [README.md](../README.md) for tool comparison). If **both** axe-core and IBM agree the page is clean, that is the strongest false-positive signal — two independent open-source WCAG 2.x + ACT-Rules implementations both disagreeing with SiteImprove.
+
+```bash
+# Smoke test against a few URLs (faster — ~30s for 10 URLs)
+node scripts/a11y-sitemap-audit-ibm.mjs --fresh --concurrency=2 --limit=10
+
+# Full-site IBM audit (~2 hours at concurrency 4 — heavier rule engine than axe-core)
+node scripts/a11y-sitemap-audit-ibm.mjs --fresh --concurrency=4
+```
+
+Output lands in `reports/a11y-full-audit-ibm/` with the same shape as the axe-core auditor. **Reading IBM output:** `violation` = confirmed WCAG failure (fix it); `potentialviolation` = cantTell, equivalent to axe-core's `incomplete` (manual review needed); `recommendation` = beyond-spec UX suggestion (not a conformance gate); `manual` = test cannot be automated.
+
+When a SiteImprove false-positive entry below cites "Verified clean by axe-core (full-site audit)", that means axe-core's standard `wcag2a + wcag2aa + wcag21a + wcag21aa + wcag22aa` tag set returned 0 violations. Where IBM Equal Access has also been run on the same URLs, the verification cell will say "axe-core + IBM Equal Access" — that is the strongest verification claim available from automated tooling.
 
 ---
 
