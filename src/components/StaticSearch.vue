@@ -4,13 +4,13 @@
     <div class="ml-4" v-if="queryResults && queryResults.length > 2">
       <!-- <span style="font-size: 12px; font-weight: 900">SORT BY:</span> -->
       <v-btn-toggle v-model="toggle_sort" mandatory class="mb-4">
-        <v-btn x-small elevation="1" class="button-weight"> Title </v-btn>
-        <v-btn x-small elevation="1" class="button-weight"> Date </v-btn>
+        <v-btn small elevation="1" class="button-weight"> Title </v-btn>
+        <v-btn small elevation="1" class="button-weight"> Date </v-btn>
       </v-btn-toggle>
       &nbsp;&nbsp;
       <v-btn-toggle v-model="toggle_direction" mandatory class="mb-4">
-        <v-btn x-small elevation="1" class="button-weight"> Ascending </v-btn>
-        <v-btn x-small elevation="1" class="button-weight"> Descending </v-btn>
+        <v-btn small elevation="1" class="button-weight"> Ascending </v-btn>
+        <v-btn small elevation="1" class="button-weight"> Descending </v-btn>
       </v-btn-toggle>
     </div>
     <div v-for="(result, index) in queryResults" :key="index" class="px-3 mt-6">

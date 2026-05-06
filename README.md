@@ -632,7 +632,7 @@ Two independent automated rule engines now run against every page in `public/sit
 4. **One clean, one dirty** → real edge case worth reading. Look at which rule fired and why; the disagreeing tool usually documents its rationale in its rule reference. Decide based on the WCAG SC text.
 5. **Both dirty** → real WCAG violation. Fix in code.
 
-A practical example of (4): **WCAG 2.5.8 "Target Size (Minimum)"** is a real WCAG 2.2 AA criterion. axe-core ships its `target-size` rule under the `best-practice` tag (not in the default `wcag22aa` tag set), so axe-core's standard run misses it. IBM Equal Access flags it under `target_spacing_sufficient` as a full violation. The IBM smoke test on 10 biography pages (2026-05-06) caught two violations on Vuetify `v-btn x-small` toggles — a finding axe-core's standard run did not surface. To get parity from axe-core, add `--tags=...,best-practice` to the axe-core auditor, or include axe-core's `target-size` rule explicitly.
+A practical example of (4) — **WCAG 2.5.8 "Target Size (Minimum)" on `v-btn x-small` toggles, fixed in v1.5.42 (2026-05-06).** The IBM smoke test on 10 biography pages caught two violations of `target_spacing_sufficient` on Vuetify `v-btn x-small` toggles in `src/components/StaticSearch.vue` (Title / Date / Ascending / Descending — rendering at ~57×20 to 99×20 CSS px). Forensic probe (`scripts/probe-target-size.mjs`) confirmed axe-core 4.11.2's `target-size` rule **is** in the `wcag22aa` tag set (tags: `[cat.sensory-and-visual-cues, wcag22aa, wcag258]`) — so our standard sitemap audit was running it. axe-core simply concluded the toggles passed via WCAG 2.5.8's spacing-fallback ("a 24-CSS-pixel-diameter circle around each undersized target doesn't intersect another target"); IBM evaluated the same fallback geometry and concluded they failed. Both interpretations are defensible under the spec text. The unambiguous fix: change `x-small` (~20px tall) to `small` (28px tall) so both engines agree under the *size* branch of WCAG 2.5.8 instead of the *spacing* branch. After the fix, IBM smoke 10/10 clean (was 8/10), axe-core unchanged at 10/10 clean. See `CHANGELOG.md` v1.5.42 for the full investigation and `scripts/probe-button-sizes.mjs` for the rendered-size measurement template.
 
 ### Current Status (May 2026)
 
@@ -645,8 +645,12 @@ A practical example of (4): **WCAG 2.5.8 "Target Size (Minimum)"** is a real WCA
   </thead>
   <tbody>
     <tr valign="top">
-      <td><strong>Full-site axe-core audit — every URL in <code>sitemap.xml</code> (v1.5.40, May 6 2026)</strong></td>
+      <td><strong>Full-site axe-core audit — every URL in <code>sitemap.xml</code> (v1.5.42, May 6 2026 afternoon)</strong></td>
       <td><strong>2,377 / 2,377 zero violations (100%)</strong></td>
+    </tr>
+    <tr valign="top">
+      <td>Pre-target-size baseline (v1.5.40, May 6 2026 morning)</td>
+      <td>2,377 / 2,377 zero violations (100%)</td>
     </tr>
     <tr valign="top">
       <td>Prior full audit (v1.5.9, April 14 2026)</td>
@@ -710,14 +714,24 @@ The site is audited end-to-end (every URL in `public/sitemap.xml`) with axe-core
   </thead>
   <tbody>
     <tr valign="top">
-      <td>2026-05-06</td>
+      <td>2026-05-06 (afternoon)</td>
+      <td>1.5.42</td>
+      <td>2,377</td>
+      <td>2,377</td>
+      <td><strong>0</strong></td>
+      <td>0</td>
+      <td>35m 24s</td>
+      <td><code>reports/a11y-full-audit/</code> (in-place; archived on next <code>--fresh</code>)</td>
+    </tr>
+    <tr valign="top">
+      <td>2026-05-06 (morning)</td>
       <td>1.5.40</td>
       <td>2,377</td>
       <td>2,377</td>
       <td><strong>0</strong></td>
       <td>0</td>
       <td>35m 16s</td>
-      <td><code>reports/a11y-full-audit/</code> (in-place; archived on next <code>--fresh</code>)</td>
+      <td>archived in v1.5.42 baseline run</td>
     </tr>
     <tr valign="top">
       <td>2026-04-14</td>
@@ -732,7 +746,19 @@ The site is audited end-to-end (every URL in `public/sitemap.xml`) with axe-core
   </tbody>
 </table>
 
-#### 2026-05-06 audit (clean re-baseline)
+#### 2026-05-06 (afternoon) audit (v1.5.42 — post-target-size remediation)
+
+Same-day re-baseline after the v1.5.42 fix to `src/components/StaticSearch.vue` toggles. IBM Equal Access (the new parallel auditor introduced in v1.5.41) caught a `target_spacing_sufficient` violation on the four `<v-btn x-small>` toggles (Title / Date / Ascending / Descending) on biography pages — WCAG 2.5.8 (Target Size Minimum). axe-core's standard `wcag22aa` tag-set run was passing the same toggles via WCAG 2.5.8's spacing-fallback. The fix changed `x-small` (~20px tall) to `small` (28px tall) so **both** engines agree under the *size* branch of WCAG 2.5.8.
+
+- 2,377 / 2,377 pages clean
+- 0 violations across all WCAG 2.0 / 2.1 / 2.2 A + AA tags
+- 0 errors / unreachable URLs
+- 35m 24s runtime, 4 parallel workers
+- axe-core 4.11.2, run via `node scripts/a11y-sitemap-audit.mjs --fresh --concurrency=4`
+
+**One real WCAG 2.2 AA fix landed** (StaticSearch toggles), with no new regressions site-wide. This run is the multi-tool gate's first end-to-end success — IBM caught what axe-core's algorithm missed, the fix shipped, and both engines now agree the site is clean. Full per-page JSON lives in-place under `reports/a11y-full-audit/`; the v1.5.40 morning archive moved under `archive/<date>/` automatically on this run's `--fresh` invocation.
+
+#### 2026-05-06 (morning) audit (v1.5.40 — pre-target-size baseline)
 
 Re-run of the full sitemap audit, three weeks after the April 14 baseline. The sitemap grew by **+10 URLs** over the intervening sprints (new biographies, news posts, and employment listings published through the Strapi CMS). All new pages cleared on first pass — the pre-render content pipeline and runtime accessibility fixes from the April 14 cycle handled the new content automatically with no template-level intervention.
 
@@ -742,7 +768,7 @@ Re-run of the full sitemap audit, three weeks after the April 14 baseline. The s
 - 35m 16s runtime, 4 parallel workers
 - axe-core 4.11.2, run via `node scripts/a11y-sitemap-audit.mjs --fresh --concurrency=4`
 
-**No new fixes were required.** This run confirms that the April 14 remediation is durable across content additions and that no regression has been introduced over the intervening sprints (which included v1.5.10 through v1.5.39 — JobCard cleanup, mobile a11y improvements on the Translate-this-site button, per-row accessible names on Publications expand buttons, table cell vertical-alignment, and assorted SiteImprove false-positive triage). Full per-page JSON lives in-place under `reports/a11y-full-audit/` (`_summary.md`, `_summary.csv`, `_manifest.ndjson`, plus 2,377 files under `pages/<slug>.json`); the script's archiving model treats the most recent run as in-place and moves it under `archive/<date>/` on the next `--fresh` invocation.
+**No new fixes were required at this stage.** This run confirms the April 14 remediation is durable across content additions and that no regression has been introduced over the intervening sprints (v1.5.10–v1.5.39 — JobCard cleanup, mobile a11y improvements on the Translate-this-site button, per-row accessible names on Publications expand buttons, table cell vertical-alignment, and assorted SiteImprove false-positive triage). The afternoon v1.5.42 run above supersedes this archive as the current claim — but this morning run is preserved as the **pre-IBM-triangulation** baseline, since the target-size finding was discovered between this run and the afternoon re-baseline.
 
 #### 2026-04-14 audit (initial full-site baseline)
 

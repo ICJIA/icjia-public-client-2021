@@ -82,6 +82,51 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.42] - 2026-05-06
+
+### fix — WCAG 2.5.8 (Target Size Minimum) on StaticSearch.vue toggles + full-site axe-core re-baseline
+
+Resolved the `target_spacing_sufficient` violation IBM Equal Access caught in the v1.5.41 smoke test. Four `<v-btn x-small>` toggles in `src/components/StaticSearch.vue` (Title / Date / Ascending / Descending) were rendering at ~57×20 to 99×20 CSS px — under the WCAG 2.5.8 minimum of 24×24. Changed `x-small` to `small` (28px tall in Vuetify 2), bringing all toggles to ≥24px in both axes.
+
+**Why this is a multi-tool triangulation case study, not a simple fix:**
+
+- `target-size` is **already in axe-core 4.11.2's `wcag22aa` tag set** (verified by listing the rule's tags via `axe.getRules()` — tags are `[cat.sensory-and-visual-cues, wcag22aa, wcag258]`). Our existing sitemap audit was running this rule the whole time.
+- axe-core's algorithm evaluates WCAG 2.5.8's spacing fallback ("a 24-CSS-pixel-diameter circle centered on the bounding box doesn't intersect another target") and concluded these toggles passed. The standard-tag run reported `passes.target-size: 1 rules, 148 nodes, 0 violations, 0 incomplete`.
+- IBM Equal Access evaluates the same WCAG 2.5.8 with a different spacing-geometry implementation and concluded the toggles failed.
+- Both interpretations are defensible under the WCAG 2.5.8 spec text. The disagreement isn't a bug in either tool; it's a genuine ambiguity in the spacing-fallback geometry that the spec authors did not fully nail down.
+- **The unambiguous fix was to make the buttons big enough that both engines agree they pass under the *size* branch of WCAG 2.5.8, not the *spacing* branch.** That is the discipline of multi-tool triangulation: when two open-source ACT-Rules-conformant engines disagree on the same SC, the correct response is to remediate so neither has to make a judgment call. The triangulation framework introduced in v1.5.41 explicitly anticipated this case as the "one clean, one dirty → real edge case worth reading" branch of the decision tree.
+
+**Forensic probes (kept in the repo as templates for future investigations):**
+
+- `scripts/probe-target-size.mjs` — runs axe-core's standard `wcag22aa` tag-set run + a `target-size`-rule-only run on a single URL, and dumps violations / incomplete / passes counts plus failure summaries. Use this when you want to know exactly what axe-core says about a specific rule on a specific page, without re-running the full sitemap auditor.
+- `scripts/probe-button-sizes.mjs` — measures every rendered `<button class="v-btn">` size on a single URL via `getBoundingClientRect()`, lists which are under 24×24, and shows a size-bucket distribution. Use this to confirm or deny "is this button actually too small?" by reading the browser's truth, without trusting any auditor's verdict.
+
+**Verification:**
+
+- StaticSearch toggle dimensions (probe-button-sizes): pre-fix `56×20, 60×20, 108×20, 116×20` → post-fix `56×28, 60×28, 108×28, 116×28`. All ≥24px in both axes.
+- IBM smoke test re-run (10 biography pages, identical sample): pre-fix `8 clean, 2 dirty (1 violation each on /sharyn-adams and /elizabeth-salisbury-afshar)` → post-fix `10 clean, 0 dirty, 0 errors`.
+- axe-core smoke test re-run (same 10 pages): unchanged at `10 clean, 0 dirty, 0 errors`. axe-core was already passing — the spacing-fallback gave it a green light. The fix doesn't change axe-core's verdict on these pages; it makes both engines agree.
+- Full-site axe-core re-baseline (2026-05-06 afternoon, post-fix): **2,377 / 2,377 pages clean, 0 violations, 0 errors, 35m 24s runtime** at concurrency 4. axe-core 4.11.2, WCAG tag set `wcag2a + wcag2aa + wcag21a + wcag21aa + wcag22aa`. This is the first audit-trail snapshot under the multi-tool gate (axe-core + IBM Equal Access). The v1.5.40 morning archive auto-moved under `reports/a11y-full-audit/archive/<date>/` on this run's `--fresh` invocation.
+
+**Buttons NOT changed (deliberately — verified passing in both tools):**
+
+- `src/components/AppNavContext.vue` Translate-this-site button (158×20, top app bar, `text x-small dark`): the 12px-radius circle around its bounding box doesn't intersect any other target (top of page above the app bar, the section-nav separator below at `height="35"` is outside the circle). Both axe-core and IBM agree this passes via the spacing-fallback branch of WCAG 2.5.8 — no remediation needed. Kept at `x-small` to preserve the top-bar visual layout (changing to `small` would shift the bar height).
+- `src/components/EventToggle.vue` List View / Calendar View toggles: already `small` (28px tall) since before this audit cycle. No change needed; included here for completeness.
+
+**Files:**
+
+- `src/components/StaticSearch.vue` — `x-small` → `small` on 4 `v-btn` toggles (Title / Date / Ascending / Descending). No CSS or behavioral change.
+- `scripts/probe-target-size.mjs` (new) — forensic probe for axe-core target-size rule behavior on a single URL.
+- `scripts/probe-button-sizes.mjs` (new) — forensic probe for rendered v-btn sizes on a single URL.
+- `package.json` — version bump to 1.5.42.
+- `README.md` — added v1.5.42 row to the "Full-site audit history" table; updated the "Multi-tool audit triangulation" worked-example paragraph to reflect that the v-btn-toggle target-size finding has been remediated and now passes both tools.
+
+**The triangulation lesson, for future SiteImprove flag triage:**
+
+When SiteImprove flags a URL on a rule axe-core scores clean, run IBM. If IBM also flags it, you have **2-vs-1** against axe-core's pass — strong signal that the spec interpretation axe-core is using is the loose one and a fix is warranted. If IBM agrees with axe-core, you have **2-vs-1** against SiteImprove — strong stricter-than-spec signal, document as false positive. The v1.5.42 fix was the first case under this regime, and the framework worked exactly as designed: IBM caught what axe-core's algorithm missed, and we shipped a real WCAG 2.2 AA improvement that strengthens the audit posture against both auditors and any future tool with even stricter spacing geometry.
+
+---
+
 ## [1.5.41] - 2026-05-06
 
 ### feat — IBM Equal Access (accessibility-checker) parallel auditor for multi-tool triangulation against SiteImprove
