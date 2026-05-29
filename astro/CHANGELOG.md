@@ -3,6 +3,17 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.2.2] — 2026-05-29 — Fix SSR function dependency resolution on Netlify
+
+### Fixed
+- Deployed SSR function crashed at runtime: `Cannot find package 'cookie'`.
+  Astro's runtime imports `cookie` (transitive dep), but pnpm's default
+  symlinked `node_modules` has no top-level `node_modules/cookie` for Netlify's
+  function bundler to trace. Added `astro/.npmrc` `node-linker=hoisted` (flat,
+  npm-style layout) — fixes the whole class of transitive runtime-dep
+  resolution failures in the SSR function. (Static SSG migrations never hit
+  this; SSR is new territory.)
+
 ## [0.2.1] — 2026-05-29 — Netlify branch-deploy preview
 
 ### Added
