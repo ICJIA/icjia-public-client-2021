@@ -3,6 +3,17 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.8.1] — 2026-05-29 — Chrome VR-tuning: footer matched to prod
+
+### Changed
+- `SiteFooter` height matched to prod (measured via a Playwright probe: 196px
+  desktop, logo 100×70 at 20px from top) — inner padding `pt-5 pb-5`, widened to
+  `max-w-6xl`. Footer is visually matched (navy, centered logo, underlined white
+  links, copyright); residual ~5% desktop / ~10% mobile (link wrap) is text AA +
+  minor spacing.
+- VR harness: **element-level capture** (`route.selector`) + a `footer-home`
+  route, so the footer (variable page-bottom) can be isolated and diffed.
+
 ## [0.8.0] — 2026-05-29 — Phase 1: chrome VR-tuning (pass 1)
 
 ### Changed

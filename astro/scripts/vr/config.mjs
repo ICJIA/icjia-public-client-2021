@@ -28,8 +28,9 @@ export const VIEWPORTS = [
 //   mask     : CSS selectors painted out before diffing (volatile content;
 //              applied on whichever site has them).
 export const ROUTES = [
-  // Chrome: header band only — meaningful now (header/nav are built).
+  // Chrome: header band + footer element — meaningful now (chrome is built).
   { id: "header-home", path: "/", clipTop: 90, mask: [] },
+  { id: "footer-home", path: "/", selector: "footer", mask: [] },
   // Full-page routes — large diffs until the matching template is built; the
   // diff PNGs still show where the chrome differs at the top.
   { id: "home", path: "/", fullPage: true, mask: [] },

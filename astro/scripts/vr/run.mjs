@@ -60,12 +60,22 @@ async function snap(context, base, route, vp) {
   }
   await page.waitForTimeout(SETTLE_MS);
 
-  const opts = route.fullPage
-    ? { fullPage: true }
-    : route.clipTop
-      ? { clip: { x: 0, y: 0, width: vp.width, height: route.clipTop } }
-      : {};
-  const buf = await page.screenshot(opts);
+  let buf;
+  if (route.selector) {
+    // Element-level capture (e.g. the footer, which sits at a variable
+    // page-bottom). Same selector must resolve on both sites.
+    const el = page.locator(route.selector).first();
+    await el.scrollIntoViewIfNeeded().catch(() => {});
+    await page.waitForTimeout(200);
+    buf = await el.screenshot();
+  } else {
+    const opts = route.fullPage
+      ? { fullPage: true }
+      : route.clipTop
+        ? { clip: { x: 0, y: 0, width: vp.width, height: route.clipTop } }
+        : {};
+    buf = await page.screenshot(opts);
+  }
   await page.close();
   return PNG.sync.read(buf);
 }
