@@ -23,10 +23,10 @@ setCache(Astro.response, "news");
 ---
 
 <BaseLayout title={post.title} description={post.summary}>
-  <main id="main-content" class="markdown-body mx-auto max-w-3xl p-8 md:p-12">
+  <article class="markdown-body mx-auto max-w-3xl p-8 md:p-12">
     <h1>{post.title}</h1>
     {post.summary && <p class="text-lg text-gray-700">{post.summary}</p>}
     {/* safeBodyHtml = markdown-it → DOMPurify → fixTableHeaders → fixImageLinks → contentSanitizer, all server-side */}
     <div set:html={post.safeBodyHtml} />
-  </main>
+  </article>
 </BaseLayout>

@@ -14,6 +14,10 @@
    font override). Scoped content stylesheets (github-markdown.css for
    .markdown-body, article-view.css for #article-view) override within their
    own scope, matching the Vue site. */
+/* Alpine: hide x-cloak elements (dropdown panels, mobile drawer) until Alpine
+   initializes, preventing a flash of open menus on first paint. */
+[x-cloak] { display: none !important; }
+
 body {
   font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }

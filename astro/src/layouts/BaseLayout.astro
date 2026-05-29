@@ -10,6 +10,8 @@ import '@fontsource/oswald/500.css';
 import '@fontsource/oswald/600.css';
 import '@fontsource/oswald/700.css';
 import '../styles/global.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 
 interface Props {
   title?: string;
@@ -28,6 +30,10 @@ const { title = 'ICJIA', description = '' } = Astro.props;
   </head>
   <body>
     <a class="skiplink" href="#main-content">Skip to main content</a>
-    <slot />
+    <SiteHeader />
+    <main id="main-content" class="min-h-[60vh] pt-[90px]">
+      <slot />
+    </main>
+    <SiteFooter />
   </body>
 </html>

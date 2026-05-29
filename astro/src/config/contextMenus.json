@@ -1,0 +1,376 @@
+[
+    {
+        "name": "Grants",
+        "label": "Federal and State Grants Unit",
+        "shortLabel": "FSGU",
+        "pathPrefix": "/grants/",
+        "defaultPath": "/grants/fsgu-home/",
+        "showTranslation": true,
+        "location": "top",
+        "items": [
+            {
+                "label": "Funding Opportunities",
+                "path": "/grants/funding/"
+            },
+            {
+                "label": "Funded Programs",
+                "path": "/grants/programs/"
+            },
+            {
+                "label": "Funded Programs Map",
+                "path": "/grants/funded-programs-map/"
+            },
+            {
+                "label": "Grant Status Request",
+                "path": "/forms/grant-status/"
+            },
+            {
+                "label": "Training",
+                "path": "/grants/training/"
+            },
+            {
+                "label": "Required Forms",
+                "path": "/grants/required-forms/"
+            },
+            {
+                "label": "Rules, Regulations, Policies",
+                "path": "/grants/rules-regs-policies/"
+            }
+        ]
+    },
+    {
+        "name": "researchhub",
+        "label": "Research and Analysis Unit",
+        "shortLabel": "Research",
+        "pathPrefix": "/researchhub/",
+        "defaultPath": "/researchhub/",
+        "showTranslation": true,
+        "location": "top",
+        "items": [
+            {
+                "label": "Research Hub",
+                "path": "/researchhub/"
+            },
+            {
+                "label": "R&A Overview",
+                "path": "/researchhub/hub-overview/"
+            },
+            {
+                "label": "Articles",
+                "path": "/researchhub/articles/"
+            },
+            {
+                "label": "Web Applications",
+                "path": "/researchhub/apps/"
+            },
+            {
+                "label": "Datasets",
+                "path": "/researchhub/datasets/"
+            },
+            {
+                "label": "Publications",
+                "path": "/researchhub/publications/"
+            },
+            {
+                "label": "Institutional Review Board",
+                "path": "/irb/"
+            }
+        ]
+    },
+    {
+        "name": "irb",
+        "label": "ICJIA Institutional Review Board",
+        "shortLabel": "IRB",
+        "pathPrefix": "/irb/",
+        "defaultPath": "/irb/",
+        "showTranslation": true,
+        "location": "top",
+        "items": [
+            {
+                "label": "IRB Home",
+                "path": "/irb/"
+            },
+            {
+                "label": "Members & Staff",
+                "path": "/irb/irb-members-and-staff/"
+            },
+            {
+                "label": "Meetings",
+                "path": "/irb/irb-meetings/"
+            },
+            {
+                "label": "Policies",
+                "path": "/irb/irb-policies-and-procedures/"
+            },
+            {
+                "label": "Resources",
+                "path": "/irb/irb-other-resources/"
+            },
+            {
+                "label": "Research Hub",
+                "path": "/researchhub/"
+            }
+        ]
+    },
+    {
+        "name": "newsAndInfo",
+        "label": "News & Information",
+        "shortLabel": "News & Info",
+        "pathPrefix": "/news/",
+        "defaultPath": "/news/",
+        "showTranslation": true,
+        "location": "top",
+        "items": [
+            {
+                "label": "News & Information",
+                "path": "/news/"
+            },
+            {
+                "label": "Meetings",
+                "path": "/news/meetings/"
+            },
+            {
+                "label": "Funding Opportunities",
+                "path": "/news/funding/"
+            },
+            {
+                "label": "Employment",
+                "path": "/news/employment/"
+            },
+            {
+                "label": "Events",
+                "path": "/news/events/"
+            },
+            {
+                "label": "Publications",
+                "path": "/news/publications/"
+            },
+            {
+                "label": "Press",
+                "path": "/press/"
+            }
+        ]
+    },
+    {
+        "name": "meetings",
+        "label": "ICJIA Meetings",
+        "shortLabel": "Meetings",
+        "pathPrefix": "/meetings/",
+        "defaultPath": "/meetings/",
+        "showTranslation": true,
+        "location": "top",
+        "items": [
+            {
+                "label": "News & Information",
+                "path": "/news/"
+            },
+            {
+                "label": "Meetings",
+                "path": "/meetings/"
+            },
+            {
+                "label": "Funding Opportunities",
+                "path": "/grants/funding/"
+            },
+            {
+                "label": "Employment",
+                "path": "/about/employment/"
+            },
+            {
+                "label": "Events",
+                "path": "/events/"
+            },
+            {
+                "label": "Press",
+                "path": "/press/"
+            }
+        ]
+    },
+    {
+        "name": "events",
+        "label": "ICJIA Events",
+        "shortLabel": "Events",
+        "pathPrefix": "/events/",
+        "defaultPath": "/events/",
+        "showTranslation": true,
+        "location": "top",
+        "items": [
+            {
+                "label": "News & Information",
+                "path": "/news/"
+            },
+            {
+                "label": "Meetings",
+                "path": "/news/meetings/"
+            },
+            {
+                "label": "Funding Opportunities",
+                "path": "/news/funding/"
+            },
+            {
+                "label": "Employment",
+                "path": "/news/employment/"
+            },
+            {
+                "label": "Events",
+                "path": "/news/events/"
+            },
+            {
+                "label": "Press",
+                "path": "/press/"
+            }
+        ]
+    },
+    {
+        "name": "About",
+        "label": "ICJIA Overview",
+        "shortLabel": "Overview",
+        "pathPrefix": "/about/",
+        "defaultPath": "/about/",
+        "showTranslation": true,
+        "location": "top",
+        "items": [
+            {
+                "label": "About ICJIA",
+                "path": "/about/"
+            },
+            {
+                "label": "Composition & Membership",
+                "path": "/about/composition-and-membership/"
+            },
+            {
+                "label": "Staff Organization",
+                "path": "/about/icjia-staff/"
+            },
+            {
+                "label": "Values",
+                "path": "/about/icjia-values/"
+            },
+            {
+                "label": "Committees",
+                "path": "/about/icjia-committees/"
+            },
+            {
+                "label": "Publications",
+                "path": "/about/publications/"
+            },
+            {
+                "label": "Death in Custody Reporting",
+                "path": "/about/dicra/"
+            },
+            {
+                "label": "FOIA",
+                "path": "/about/foia/"
+            },
+            {
+                "label": "Employment",
+                "path": "/about/employment/"
+            },
+            {
+                "label": "Contact",
+                "path": "/about/contact/"
+            }
+        ]
+    },
+    {
+        "name": "IDS",
+        "label": "Innovation and Digital Services ",
+        "shortLabel": "IDS",
+        "pathPrefix": "/innovation-and-digital-services/",
+        "defaultPath": "/innovation-and-digital-services/",
+        "showTranslation": true,
+        "location": "top",
+        "items": [
+            {
+                "label": "IDS Home",
+                "path": "/innovation-and-digital-services/"
+            },
+            {
+                "label": "Infonet",
+                "path": "/innovation-and-digital-services/infonet/"
+            },
+            {
+                "label": "Drone Reporting",
+                "path": "/innovation-and-digital-services/drone/"
+            }
+        ]
+    },
+    {
+        "name": "Admin",
+        "label": "Site Administration ",
+        "shortLabel": "Admin",
+        "pathPrefix": "/admin/",
+        "defaultPath": "/admin/",
+        "showTranslation": false,
+        "location": "top",
+        "items": [
+            {
+                "label": "Admin Home",
+                "path": "/admin/"
+            },
+            {
+                "label": "Color Palette",
+                "path": "/admin/colors/"
+            },
+            {
+                "label": "Publication List Editor",
+                "path": "/admin/publications/"
+            }
+        ]
+    },
+    {
+        "name": "Footer",
+        "label": null,
+        "shortLabel": null,
+        "pathPrefix": null,
+        "defaultPath": null,
+        "showTranslation": false,
+        "location": "bottom",
+        "items": [
+            {
+                "label": "About",
+                "path": "/about/"
+            },
+            {
+                "label": "Contact",
+                "path": "/about/contact/"
+            },
+            {
+                "label": "Employment",
+                "path": "/about/employment/"
+            },
+            {
+                "label": "Events",
+                "path": "/events/"
+            },
+            {
+                "label": "Funding",
+                "path": "/grants/funding/"
+            },
+            {
+                "label": "Grant Status Request",
+                "path": "/forms/grant-status/"
+            },
+            {
+                "label": "Meetings",
+                "path": "/news/meetings/"
+            },
+            {
+                "label": "News & Information",
+                "path": "/news/"
+            },
+            {
+                "label": "Press",
+                "path": "/press/"
+            },
+            {
+                "label": "Research",
+                "path": "/researchhub/"
+            },
+            {
+                "label": "Training",
+                "path": "/grants/training/"
+            }
+        ]
+    }
+]

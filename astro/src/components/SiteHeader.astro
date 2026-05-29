@@ -1,0 +1,170 @@
+---
+// Site header / primary navigation — port of AppNav.vue + AppSidebar.vue.
+// Fixed 90px white app bar: hamburger+drawer below md (960px), 90px logo,
+// agency title at lg+ (1264px), menus.json dropdowns at md+, search → /search/.
+// Native HTML + Tailwind + Alpine (one x-data root; ARIA disclosure pattern).
+import { Icon } from 'astro-icon/components';
+import menus from '../config/menus.json';
+
+const menuList = menus.menu;
+const ext = (item: { external?: boolean }) => item.external === true;
+---
+
+<header
+  class="dark-surface fixed inset-x-0 top-0 z-50 flex h-[90px] items-center bg-white px-2 shadow-sm md:px-4"
+  x-data="{ open: null, drawer: false, sub: null }"
+  x-on:keydown.escape.window="open = null; drawer = false"
+>
+  {/* Hamburger — mobile only (below md=960) */}
+  <button
+    type="button"
+    class="hover mr-2 flex w-[70px] flex-col items-center justify-center border-0 bg-transparent md:hidden"
+    x-on:click="drawer = !drawer"
+    x-bind:aria-expanded="drawer ? 'true' : 'false'"
+    aria-controls="mobile-drawer"
+    aria-label="Menu"
+  >
+    <Icon name="mdi:menu" class="text-[28px]" aria-hidden="true" />
+    <span class="text-[10px] font-black leading-none">MENU</span>
+  </button>
+
+  {/* Logo → home */}
+  <a href="/" class="mr-3 inline-flex shrink-0 items-center no-underline">
+    <img src="/icjia-logo.png" alt="" width="90" height="70" class="h-auto w-[90px]" />
+    <span class="sr-only">ICJIA Home</span>
+  </a>
+
+  {/* Agency title — lg+ only (decorative; logo carries the home link) */}
+  <a
+    href="/"
+    tabindex="-1"
+    aria-hidden="true"
+    class="hidden items-center !text-black no-underline lg:inline-flex"
+  >
+    <span class="agency text-[1.15rem] font-black leading-tight">
+      ILLINOIS CRIMINAL JUSTICE INFORMATION AUTHORITY
+    </span>
+  </a>
+
+  <div class="flex-1"></div>
+
+  {/* Desktop nav — md+ */}
+  <nav aria-label="Main" class="hidden items-center md:flex" x-on:click.outside="open = null">
+    {
+      menuList.map((menu, i) => (
+        <div class="relative">
+          <button
+            type="button"
+            class="navItem inline-flex h-[90px] items-center px-3 text-base font-black text-black"
+            aria-haspopup="true"
+            x-bind:aria-expanded={`open === ${i} ? 'true' : 'false'`}
+            x-on:click={`open === ${i} ? open = null : open = ${i}`}
+          >
+            {menu.main}
+            <Icon name="mdi:menu-down" class="ml-0.5 text-[20px]" aria-hidden="true" />
+          </button>
+          <div
+            x-show={`open === ${i}`}
+            x-cloak
+            x-transition
+            class="absolute right-0 top-[90px] z-50 min-w-[280px] border border-gray-200 bg-white py-2 shadow-lg"
+            role="menu"
+          >
+            <ul>
+              {menu.children.map((c: any) =>
+                c.section ? (
+                  <li class="px-4 pb-1 pt-3 text-sm font-black text-[#222]">{c.section}</li>
+                ) : c.divider ? (
+                  <li aria-hidden="true">
+                    <hr class="my-1 border-gray-200" />
+                  </li>
+                ) : (
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      href={c.link}
+                      target={ext(c) ? '_blank' : undefined}
+                      rel={ext(c) ? 'noopener noreferrer' : undefined}
+                      class="flex items-center gap-1 px-4 py-1.5 text-xs !font-normal !text-black no-underline hover:bg-gray-100"
+                    >
+                      {c.title}
+                      {c.icon && <Icon name={c.icon.startsWith('mdi') ? c.icon.replace('mdi-', 'mdi:') : `mdi:${c.icon}`} class="text-sm" aria-hidden="true" />}
+                    </a>
+                  </li>
+                )
+              )}
+            </ul>
+          </div>
+        </div>
+      ))
+    }
+    <a
+      href="/search/"
+      class="navItem inline-flex h-[90px] items-center px-3"
+      aria-label="Search ICJIA"
+    >
+      <Icon name="mdi:magnify" class="text-[30px] text-black" aria-hidden="true" />
+    </a>
+  </nav>
+
+  {/* Mobile drawer + backdrop — siblings of the bar (avoids the
+      backdrop-filter focus trap noted in the checklist) */}
+  <div
+    x-show="drawer"
+    x-cloak
+    x-transition.opacity
+    class="fixed inset-0 top-[90px] z-40 bg-black/50 md:hidden"
+    x-on:click="drawer = false"
+    aria-hidden="true"
+  >
+  </div>
+  <div
+    id="mobile-drawer"
+    x-show="drawer"
+    x-cloak
+    x-transition:enter-start="-translate-x-full"
+    x-transition:enter-end="translate-x-0"
+    class="fixed bottom-0 left-0 top-[90px] z-50 w-[300px] max-w-[85vw] overflow-y-auto bg-white shadow-xl md:hidden"
+  >
+    <nav aria-label="Mobile">
+      <a href="/search/" class="flex items-center gap-2 border-b border-gray-200 px-4 py-3 !font-black !text-black">
+        <Icon name="mdi:magnify" class="text-[22px]" aria-hidden="true" /> Search ICJIA
+      </a>
+      <ul>
+        {
+          menuList.map((menu, i) => (
+            <li class="border-b border-gray-100">
+              <button
+                type="button"
+                class="flex w-full items-center justify-between px-4 py-3 text-left text-base font-black text-black"
+                x-bind:aria-expanded={`sub === ${i} ? 'true' : 'false'`}
+                x-on:click={`sub === ${i} ? sub = null : sub = ${i}`}
+              >
+                {menu.main}
+                <Icon name="mdi:chevron-down" class="text-[22px]" aria-hidden="true" />
+              </button>
+              <ul x-show={`sub === ${i}`} x-cloak class="bg-gray-50 pb-2">
+                {menu.children.map((c: any) =>
+                  c.section ? (
+                    <li class="px-5 pb-1 pt-2 text-xs font-black uppercase text-[#444]">{c.section}</li>
+                  ) : c.divider ? null : (
+                    <li>
+                      <a
+                        href={c.link}
+                        target={ext(c) ? '_blank' : undefined}
+                        rel={ext(c) ? 'noopener noreferrer' : undefined}
+                        class="block px-5 py-1.5 text-sm !font-normal !text-black no-underline"
+                      >
+                        {c.title}
+                      </a>
+                    </li>
+                  )
+                )}
+              </ul>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>

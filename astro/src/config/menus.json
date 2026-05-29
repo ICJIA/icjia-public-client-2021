@@ -1,0 +1,239 @@
+{
+    "menu": [
+        {
+            "main": "About",
+            "nudgeLeft": "57px",
+            "children": [
+                {
+                    "section": "About ICJIA"
+                },
+                {
+                    "title": "Overview",
+                    "link": "/about/"
+                },
+                {
+                    "title": "Board Members",
+                    "link": "/about/composition-and-membership/"
+                },
+                {
+                    "title": "Staff Organization",
+                    "link": "/about/icjia-staff/"
+                },
+                {
+                    "title": "Values",
+                    "link": "/about/icjia-values/"
+                },
+                {
+                    "divider": true
+                },
+                {
+                    "section": "News & Information"
+                },
+                {
+                    "title": "News",
+                    "link": "/news/"
+                },
+                {
+                    "title": "Events",
+                    "link": "/events/"
+                },
+                {
+                    "title": "Meetings",
+                    "link": "/news/meetings/"
+                },
+                {
+                    "title": "Employment",
+                    "link": "/about/employment/"
+                },
+                {
+                    "title": "Press",
+                    "link": "/news/press/"
+                },
+                {
+                    "title": "Contact ICJIA",
+                    "link": "/about/contact/"
+                },
+                {
+                    "divider": true
+                },
+                {
+                    "section": "Annual Report"
+                },
+                {
+                    "title": "FY2025 Annual Report",
+                    "link": "https://agency.icjia-api.cloud/uploads/SFY_25_Annual_Report_Final_67436fc6ff_ba00340a2f.pdf",
+                    "icon": "download",
+                    "external": true
+                }
+            ]
+        },
+        {
+            "main": "Research",
+            "nudgeLeft": "170px",
+            "children": [
+                {
+                    "section": "Illinois Statistical Analysis Center (SAC)"
+                },
+                {
+                    "title": "Overview",
+                    "link": "/researchhub/hub-overview/"
+                },
+                {
+                    "title": "Research Hub Home",
+                    "link": "/researchhub/"
+                },
+                {
+                    "title": "Articles",
+                    "link": "/researchhub/articles/"
+                },
+                {
+                    "title": "Web Applications",
+                    "link": "/researchhub/apps/"
+                },
+                {
+                    "title": "Datasets",
+                    "link": "/researchhub/datasets/"
+                },
+                {
+                    "title": "Publications",
+                    "link": "/researchhub/publications/"
+                },
+                {
+                    "title": "Institutional Review Board",
+                    "link": "/irb/"
+                },
+                {
+                    "divider": true
+                },
+                {
+                    "section": "InfoNet"
+                },
+                {
+                    "title": "InfoNet Overview",
+                    "link": "/innovation-and-digital-services/infonet/"
+                }
+            ]
+        },
+        {
+            "main": "Grant Resources",
+            "nudgeLeft": "2px",
+            "children": [
+                {
+                    "title": "Grant Status Request",
+                    "link": "/forms/grant-status/"
+                },
+                {
+                    "title": "Funding Opportunities",
+                    "link": "/grants/funding/"
+                },
+                {
+                    "title": "Funded Programs",
+                    "link": "/grants/programs/"
+                },
+                {
+                    "title": "Funded Programs Map",
+                    "link": "/grants/funded-programs-map/"
+                },
+                {
+                    "divider": true
+                },
+                {
+                    "section": "Resources"
+                },
+                {
+                    "title": "Training",
+                    "link": "/grants/training/"
+                },
+                {
+                    "title": "Required Forms",
+                    "link": "/grants/required-forms/"
+                },
+                {
+                    "title": "Rules, Regulations, Policies",
+                    "link": "/grants/policies/"
+                }
+            ]
+        },
+        {
+            "main": "Partners",
+            "nudgeLeft": "78px",
+            "children": [
+                {
+                    "section": "Websites"
+                },
+                {
+                    "title": "Adult Redeploy Illinois",
+                    "link": "https://icjia.illinois.gov/adultredeploy/",
+                    "icon": "mdi-open-in-new",
+                    "external": true
+                },
+                {
+                    "title": "Illinois Domestic Violence Fatality Review",
+                    "link": "http://dvfr.illinois.gov",
+                    "icon": "mdi-open-in-new",
+                    "external": true
+                },
+                {
+                    "title": "Illinois Family Violence Coordinating Councils",
+                    "link": "http://icjia.illinois.gov/ifvcc/",
+                    "icon": "mdi-open-in-new",
+                    "external": true
+                },
+                {
+                    "title": "Illinois Heals",
+                    "link": "http://ilheals.com",
+                    "icon": "mdi-open-in-new",
+                    "external": true
+                },
+                {
+                    "title": "Institute to Innovate (i2i)",
+                    "link": "http://i2i.illinois.gov",
+                    "icon": "mdi-open-in-new",
+                    "external": true
+                },
+                {
+                    "title": "Restore, Reinvest, Renew (R3)",
+                    "link": "https://r3.illinois.gov/",
+                    "icon": "mdi-open-in-new",
+                    "external": true
+                },
+                {
+                    "title": "Sentencing Policy and Advisory Council",
+                    "link": "https://spac.illinois.gov/",
+                    "icon": "mdi-open-in-new",
+                    "external": true
+                },
+                {
+                    "divider": true
+                },
+                {
+                    "section": "Plans and Initiatives"
+                },
+                {
+                    "title": "Illinois Edward Byrne Memorial Justice Research Grant Strategic Plan 2024-2029",
+                    "link": "https://researchhub.icjia-api.cloud/uploads/JAG%202024-29%20FINAL%20DRAFT%208-2024-240808T19411840.pdf",
+                    "icon": "mdi-open-in-new",
+                    "external": true
+                },
+                {
+                    "title": "Illinois Edward Byrne State Crisis Intervention Program (SCIP) Plan: 2023",
+                    "link": "https://agency.icjia-api.cloud/uploads/SCIP_Plan_dcfbbe3669.pdf",
+                    "icon": "mdi-open-in-new",
+                    "external": true
+                },
+                {
+                    "title": "Illinois JAG Strategic Plan: 2019-2024",
+                    "link": "https://agency.icjia-api.cloud/uploads/Illinois_JAG_Strategic_Plan_c5287026fe.pdf",
+                    "icon": "mdi-open-in-new",
+                    "external": true
+                },
+                {
+                    "title": "Statewide Violence Prevention Plan: 2025-2029",
+                    "link": "https://vpp.icjia.illinois.gov/",
+                    "icon": "mdi-open-in-new",
+                    "external": true
+                }
+            ]
+        }
+    ]
+}

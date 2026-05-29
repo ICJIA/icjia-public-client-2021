@@ -3,6 +3,29 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.5.0] — 2026-05-29 — Phase 1: site chrome (header, nav, footer)
+
+### Added
+- `SiteHeader.astro`: fixed 90px white app bar — 90px logo (→ home), agency
+  title (lg+), `menus.json`-driven dropdown nav (md+) with an ARIA disclosure
+  pattern + inline-SVG MDI icons, search → `/search/`, and a mobile hamburger
+  **drawer** (below 960px) with accordion sub-menus. Native HTML + Tailwind +
+  Alpine (single `x-data` root; Escape/click-outside close).
+- `SiteFooter.astro`: navy (`#0d4474`) footer — logo, link row (About, Contact,
+  Search, Document Archive, FOIA, Language Access, Privacy, Grant Status,
+  Subscribe, Translate), copyright. (Translate wired in Phase 4.)
+- `BaseLayout` composes skiplink → header → `<main id="main-content">` → footer;
+  pages no longer carry their own `<main>`. `menus.json` + `contextMenus.json`
+  copied into the project. `[x-cloak]` guard hides menus until Alpine inits.
+
+### Verified
+- Home + news render under the chrome (HTTP 200, logo/title/nav/footer present,
+  23 inline SVG icons, no runtime errors). Production build emits the SSR function.
+
+### Pending (VR pass)
+- Pixel-tune header/footer spacing + colors against prod; focus-trap the mobile
+  drawer (`@alpinejs/focus`); context sub-nav (`AppNavContext`).
+
 ## [0.4.0] — 2026-05-29 — Phase 1: design-system foundation
 
 ### Added
