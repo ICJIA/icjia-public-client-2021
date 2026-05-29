@@ -1,6 +1,6 @@
 {
   "name": "icjia-public-client",
-  "version": "1.5.42",
+  "version": "1.5.43",
   "private": true,
   "description": "ICJIA Public Website (2024)",
   "author": {
@@ -26,6 +26,7 @@
     "tests:watch": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service test:unit --recursive --timeout 10000 --require ./tests/unit/setup.js --watch",
     "audit": "node scripts/a11y-audit-by-type.js",
     "check-links": "node scripts/check-broken-links.js",
+    "export:publications": "node scripts/export-publications.js",
     "release": "release-it",
     "scripts": "npm run generate:schema && npm run generate:search && npm run generate:feeds"
   },
@@ -96,6 +97,7 @@
     "eslint": "^7.32.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^7.18.0",
+    "exceljs": "^4.4.0",
     "prettier": "^2.4.0",
     "puppeteer": "^24.23.0",
     "release-it": "^14.11.5",

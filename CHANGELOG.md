@@ -82,6 +82,37 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.43] - 2026-05-29
+
+### feat — Publications export for accessibility analysis (`npm run export:publications`)
+
+A regenerable script that exports **all** ICJIA publications to a spreadsheet (`.xlsx` + `.csv`) so a manager can review every published document for accessibility. One row per publication, sorted most-recent-first, with **Publication Date as the leading column**.
+
+**What it produces** — written to `scripts/output/publications-<date>.{xlsx,csv}` (the directory is gitignored). Each run keeps **exactly one report set**: it deletes any previous `publications-*.{xlsx,csv}` and writes the current dated pair. There is no `-latest` copy — the date in the filename is the freshness signal.
+
+- Every publication in the CMS — **1,108** at first run — not just the 990 the live "All Publications" page currently lists (see Known limitation below).
+- Absolute, clickable links in both columns managers care about: the **dynamically generated detail page** (`https://icjia.illinois.gov/about/publications/{slug}/`) and the **hosted file** (the PDF/document URL, already absolute from Strapi). Rendered as real Excel hyperlinks in the `.xlsx`.
+- A **Web Article URL** column (`articleURL`, the researchhub article that corresponds to a PDF) so authors can judge whether a given PDF is still relevant.
+- Accessibility-triage columns: file type, file size (human-readable + raw bytes), and a live **File Status** from a per-file `HEAD` request that doubles as a broken-link check. The first run surfaced **4 dead file links** (3× 404 on researchhub uploads, 1× 403 from rand.org).
+- Publications with no hosted file (44 at first run) are kept and flagged via **Has Hosted File = no**.
+
+**Columns (11):** Publication Date, Title, Type, Page URL, File URL, Web Article URL, File Type, File Size, File Size (bytes), File Status, Has Hosted File. (`datasetURL`, `applicationURL`, and `slug` are still fetched and kept on each row object but not emitted as columns for now — re-add by listing them in the script's `COLUMNS` array.)
+
+**How it works:** paginates the public Strapi REST collection endpoint (`/publications?_limit=500&_start=N`) against `/publications/count` — the same pattern as `generators/generateIndexPublications.js` — which avoids the GraphQL row-count ceiling (the live GraphQL query errors past ~950 rows). No authentication required; all data is public. Reuses the repo's `axios` retry client (`generators/apiClient.js`); file URLs receive the same case-correction the live site applies in `PublicationsSingle.vue` (`/Compiler/`→`/compiler/`, `/OGA/`→`/oga/`, `/researchreports/`→`/ResearchReports/`).
+
+**Files:**
+
+- `scripts/export-publications.js` (new) — the export script. Flags: `--no-head` (skip the file HEAD pass), `--limit=N` (REST page size).
+- `scripts/lib/publications-export-helpers.js` (new) — pure helpers (`buildPageUrl`, `normalizeFileUrl`, `parseFileType`, `formatBytes`, `csvEscape`).
+- `tests/unit/publications-export-helpers.spec.js` (new) — 30 unit tests for the helpers (mocha + chai).
+- `docs/superpowers/specs/2026-05-29-publications-export-design.md` (new) — design spec, for all developers.
+- `package.json` — added `export:publications` script; declared `exceljs@^4.4.0` as a devDependency (previously only present transitively via `accessibility-checker`); version bump to 1.5.43.
+- `.gitignore` — ignore `scripts/output/`.
+
+**Known limitation (flagged for follow-up):** `src/graphql/publications.js` `GET_ALL_PUBLICATIONS_QUERY` uses `limit: 990`, so the site's "All Publications" page lists only the 990 most-recent of 1,108 publications; the ~118 oldest are reachable by direct URL but not listed. This export includes all of them. Raising that cap is out of scope for this change.
+
+---
+
 ## [1.5.42] - 2026-05-06
 
 ### fix — WCAG 2.5.8 (Target Size Minimum) on StaticSearch.vue toggles + full-site axe-core re-baseline

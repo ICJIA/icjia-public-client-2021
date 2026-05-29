@@ -81,3 +81,6 @@ test-results/
 
 # Large generated files
 repomix-output.xml
+
+# Generated publication exports (regenerate via: npm run export:publications)
+scripts/output/
