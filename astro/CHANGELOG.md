@@ -3,6 +3,29 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.4.0] — 2026-05-29 — Phase 1: design-system foundation
+
+### Added
+- Self-hosted fonts via `@fontsource` (Lato 300/400/700/900, Oswald
+  400/500/600/700) — same families/weights as the legacy Google Fonts, so glyph
+  metrics match. Loaded in `BaseLayout`.
+- `astro-icon` + `@iconify-json/mdi` (inline SVG; 21 MDI icons inventoried from
+  the legacy app) — replaces the MDI webfont.
+- Continuity stylesheets ported from the Vue site:
+  - `github-markdown.css` (verbatim) → `.markdown-body` CMS bodies
+  - `article-view.css` (from `hub.css`) → Research Hub `#article-view` serif
+    typography (Georgia body / Oswald headings, exact px sizes)
+  - `legacy-globals.css` → curated from `app.css`: global links, focus-visible,
+    skip link, sr-only utilities, card hover, `<details>`/sweep, target-size
+    minimums, `(opens in new tab)` hint, and a native `.chip` re-implementing
+    the Vuetify chip-contrast fix. Vuetify-DOM-specific rules intentionally
+    dropped (re-created on native components as built).
+- Tailwind 4 `@theme` tokens: `--color-primary` #1565c0, `--color-navy`,
+  `--font-body`/`--font-heading`, breakpoints at Vuetify px (600/960/1264/1904).
+
+### Verified
+- Production build compiles with all CSS imports + fonts + astro-icon.
+
 ## [0.3.0] — 2026-05-29 — End-to-end live-data SSR news page (proven)
 
 ### Added

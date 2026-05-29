@@ -2,6 +2,7 @@ import { defineConfig, envField } from 'astro/config';
 import netlify from '@astrojs/netlify';
 import node from '@astrojs/node';
 import alpinejs from '@astrojs/alpinejs';
+import icon from 'astro-icon';
 import tailwindcss from '@tailwindcss/vite';
 
 // ICJIA flagship — live-data SSR migration.
@@ -26,7 +27,7 @@ export default defineConfig({
   trailingSlash: 'always',
   build: { inlineStylesheets: 'auto' },
   vite: { plugins: [tailwindcss()] },
-  integrations: [alpinejs()],
+  integrations: [alpinejs(), icon()],
   env: {
     schema: {
       // Strapi endpoints — public read, no token. Server-context (fetched

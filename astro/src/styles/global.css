@@ -1,35 +1,34 @@
 @import "tailwindcss";
 
+/* Continuity stylesheets, imported after Tailwind so their scoped rules win
+ * over preflight within their scope:
+ *   github-markdown.css → .markdown-body (CMS article bodies, GFM)
+ *   article-view.css    → #article-view / #dataset-view (Research Hub serif)
+ *   legacy-globals.css  → links, focus, skiplink, sr utilities, card hover, …
+ */
+@import "./github-markdown.css";
+@import "./article-view.css";
+@import "./legacy-globals.css";
+
 /*
- * ICJIA design tokens — Tailwind 4 CSS-first theme.
- * Phase 0 stub: only the brand color + Vuetify-aligned breakpoints.
- * Phase 1 fills in the full token set (type scale, spacing, elevation,
- * radius) extracted from Vuetify 2.5.12 defaults + a prod computed-style
- * probe. See plan: "Pixel-perfect Vuetify → Tailwind".
+ * ICJIA design tokens (Tailwind 4 CSS-first theme).
+ * Phase 1: fonts + brand colors + Vuetify-aligned breakpoints. Component-level
+ * tokens (elevation, exact type scale) are added as chrome is built + VR'd.
  */
 @theme inline {
-  /* The one real brand token (Vuetify themes.light.primary). */
+  /* Brand (Vuetify themes.light.primary) + navy header surface. */
   --color-primary: #1565c0;
+  --color-navy: #0a3a60;
 
-  /*
-   * Breakpoints REDEFINED to Vuetify 2 px values (NOT Tailwind defaults of
-   * 640/768/1024/1280). Hard rule: every `md="4"` / `d-md-flex` /
-   * `hidden-sm-and-down` in the legacy templates reflows at these widths, so
-   * sm:/md:/lg:/xl: must mean the same thing for pixel-parity.
-   */
+  /* Fonts — self-hosted via @fontsource (same glyphs as the legacy Google
+     Fonts, so metrics match). */
+  --font-body: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-heading: "Oswald", "Lato", sans-serif;
+
+  /* Breakpoints REDEFINED to Vuetify 2 px (NOT Tailwind defaults) so every
+     md:/lg:/etc. reflows where the legacy layout does. */
   --breakpoint-sm: 600px;
   --breakpoint-md: 960px;
   --breakpoint-lg: 1264px;
   --breakpoint-xl: 1904px;
-}
-
-/* Skip link — full styling ported verbatim from legacy app.css in Phase 1. */
-.skiplink {
-  position: absolute;
-  left: -9999px;
-  top: 0;
-  z-index: 100;
-}
-.skiplink:focus {
-  left: 0;
 }
