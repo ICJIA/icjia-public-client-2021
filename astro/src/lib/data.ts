@@ -9,7 +9,10 @@ import "./server-dom"; // ensure global DOMParser (linkedom) is installed
 // @ts-expect-error — gql-client.js is plain JS (ported verbatim)
 import { runQuery } from "./gql-client.js";
 import { renderToHtml } from "./markdown.js";
-import { GET_SINGLE_POST_QUERY } from "../graphql/news.js";
+import { GET_SINGLE_POST_QUERY, GET_ALL_NEWS_QUERY } from "../graphql/news.js";
+
+// Strapi (agency) host — splash URLs come back as /uploads/... relative paths.
+const STRAPI_BASE = "https://agency.icjia-api.cloud";
 
 export interface StrapiImage {
   caption?: string;
@@ -50,4 +53,43 @@ export async function getNewsPost(slug: string): Promise<NewsPost | null> {
     ...post,
     safeBodyHtml: post.body ? renderToHtml(post.body) : "",
   } as NewsPost;
+}
+
+export interface NewsListItem {
+  id: string;
+  title: string;
+  slug: string;
+  summary?: string;
+  category?: string;
+  published_at?: string;
+  dateOverride?: string;
+  tags?: Array<{ title: string; slug: string }>;
+  splash?: StrapiImage | null;
+}
+
+/** Fetch all news posts (newest first), live, for the /news/ listing. */
+export async function getAllNews(): Promise<NewsListItem[]> {
+  const { data } = await runQuery(GET_ALL_NEWS_QUERY, {}, "no-cache");
+  return (data?.posts ?? []) as NewsListItem[];
+}
+
+/** Format an ISO date in America/Chicago (matches the legacy site's tz). */
+export function formatDate(iso?: string): string {
+  if (!iso) return "";
+  try {
+    return new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Chicago",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(new Date(iso));
+  } catch {
+    return "";
+  }
+}
+
+/** Resolve a Strapi image URL (relative /uploads/... → absolute). */
+export function strapiUrl(url?: string | null): string | null {
+  if (!url) return null;
+  return url.startsWith("http") ? url : STRAPI_BASE + url;
 }

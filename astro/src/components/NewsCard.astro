@@ -1,0 +1,36 @@
+---
+import { formatDate, strapiUrl, type NewsListItem } from '../lib/data';
+
+interface Props {
+  item: NewsListItem;
+}
+const { item } = Astro.props;
+const date = formatDate(item.dateOverride || item.published_at);
+const splash = strapiUrl(item.splash?.url);
+const href = `/news/${item.slug}/`;
+---
+
+<article class="card flex flex-col overflow-hidden border border-gray-200 bg-white">
+  {
+    splash && (
+      <a href={href} class="block no-underline" tabindex="-1" aria-hidden="true">
+        <img
+          src={splash}
+          alt={item.splash?.alternativeText || ''}
+          loading="lazy"
+          decoding="async"
+          width="400"
+          height="176"
+          class="h-44 w-full object-cover"
+        />
+      </a>
+    )
+  }
+  <div class="flex flex-1 flex-col p-4">
+    <h2 class="mb-1 text-lg leading-snug">
+      <a href={href} class="!text-black hover:!text-primary">{item.title}</a>
+    </h2>
+    {date && <p class="mb-2 text-xs font-normal text-gray-600">{date}</p>}
+    {item.summary && <p class="text-sm font-normal text-gray-800">{item.summary}</p>}
+  </div>
+</article>

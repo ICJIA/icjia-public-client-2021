@@ -6,6 +6,14 @@
 // seconds, with edge-fast TTFB for the cache-hit majority — which is how we
 // hit mobile perf 95-98+ while keeping data live.
 //
+// This shared edge cache intentionally REPLACES the legacy gql-client
+// per-session in-memory cache (a client-side SPA mechanism that has no place in
+// SSR, where fetches run server-side). Decision (2026-05-29, with the user):
+// the edge cache delivers the same "don't re-fetch the same page" speed
+// cross-user, with background revalidation, so per-session caching was not
+// ported. Server fetches stay fetchPolicy:"no-cache" so the edge is the single
+// intentional cache layer.
+//
 // TTLs are tuned per content type by editorial cadence (see migration plan).
 type Kind =
   | "home"

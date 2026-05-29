@@ -3,6 +3,27 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.7.0] — 2026-05-29 — Phase 3 (start): News listing + caching decision
+
+### Added
+- **`/news/` listing** — live-data SSR; all posts newest-first as cards
+  (Tailwind grid 1/2/3 cols at the Vuetify breakpoints) linking to the article
+  pages. `NewsCard.astro` (splash + title + America/Chicago date + summary),
+  `data.getAllNews()`, `formatDate()` (Intl, Chicago tz), `strapiUrl()` image
+  helper.
+
+### Decided (with user)
+- Caching: keep the shared Netlify **edge cache** (s-maxage + SWR) rather than
+  porting the legacy per-session gql cache — same "don't re-fetch" speed,
+  cross-user, with background revalidation. Documented in `cache.ts`.
+
+### Verified
+- `/news/` renders 188 live cards under the chrome (HTTP 200, no errors).
+
+### Pending (VR pass for this template)
+- Match prod's pagination + card layout + category labels; trim the 188-card DOM
+  for the mobile-perf gate.
+
 ## [0.6.0] — 2026-05-29 — Visual-regression harness + chrome asset fix
 
 ### Added
