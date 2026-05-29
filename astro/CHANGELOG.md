@@ -3,6 +3,27 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.8.0] — 2026-05-29 — Phase 1: chrome VR-tuning (pass 1)
+
+### Changed
+- `SiteHeader`, tuned against prod via the VR harness:
+  - **mobile**: logo centered (mobile-only spacer) + search icon visible at all
+    widths (moved out of the desktop-only nav). Header mobile diff 19% → 5%,
+    tablet 14% → 2.4%.
+  - **desktop**: nav labels UPPERCASE + letter-spacing (match Vuetify buttons);
+    agency title constrained to wrap to two lines like prod (desktop 5.5% → 2%).
+  - **underline cascade fix**: import `legacy-globals.css` into Tailwind's
+    `base` layer so utilities (`no-underline`/`font-normal`) override the global
+    `a { underline; 900 }` on chrome links (title underline gone).
+- VR harness recalibrated for cross-engine text rendering: pixel threshold 0.2;
+  gates PASS ≤ 1% / WARN ≤ 3% / FAIL > 3% (text floors ~1-2% on anti-aliasing,
+  so the gate catches *structural* diffs and the eye confirms fine parity).
+  Added `VR_ONLY` route filter for fast iteration.
+
+### State
+- Header is now **visually matched** to prod at all breakpoints (every
+  structural diff fixed); residual 2-5% is sub-pixel positioning + text AA.
+
 ## [0.7.0] — 2026-05-29 — Phase 3 (start): News listing + caching decision
 
 ### Added

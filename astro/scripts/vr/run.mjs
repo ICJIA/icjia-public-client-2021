@@ -93,7 +93,11 @@ function align(a, b) {
   const browser = await chromium.launch();
   const results = [];
 
-  for (const route of ROUTES) {
+  // VR_ONLY=<substring> limits routes for fast iteration (e.g. VR_ONLY=header).
+  const only = process.env.VR_ONLY;
+  const routes = only ? ROUTES.filter((r) => r.id.includes(only)) : ROUTES;
+
+  for (const route of routes) {
     for (const vp of VIEWPORTS) {
       const ctxProd = await browser.newContext({ deviceScaleFactor: vp.dsf });
       const ctxNew = await browser.newContext({ deviceScaleFactor: vp.dsf });

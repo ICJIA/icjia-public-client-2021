@@ -28,6 +28,9 @@ const ext = (item: { external?: boolean }) => item.external === true;
     <span class="text-[10px] font-black leading-none">MENU</span>
   </button>
 
+  {/* Mobile-only spacer: centers the logo between hamburger and search (matches prod). */}
+  <div class="flex-1 md:hidden"></div>
+
   {/* Logo → home */}
   <a href="/" class="mr-3 inline-flex shrink-0 items-center no-underline">
     <img src="/icjia-logo.png" alt="" width="90" height="70" class="h-auto w-[90px]" />
@@ -39,9 +42,9 @@ const ext = (item: { external?: boolean }) => item.external === true;
     href="/"
     tabindex="-1"
     aria-hidden="true"
-    class="hidden items-center !text-black no-underline lg:inline-flex"
+    class="hidden max-w-[420px] items-center !text-black no-underline lg:flex"
   >
-    <span class="agency text-[1.15rem] font-black leading-tight">
+    <span class="agency text-[1.15rem] font-black leading-[1.3]">
       ILLINOIS CRIMINAL JUSTICE INFORMATION AUTHORITY
     </span>
   </a>
@@ -55,7 +58,7 @@ const ext = (item: { external?: boolean }) => item.external === true;
         <div class="relative">
           <button
             type="button"
-            class="navItem inline-flex h-[90px] items-center px-3 text-base font-black text-black"
+            class="navItem inline-flex h-[90px] items-center px-3 text-base font-black uppercase tracking-wide text-black"
             aria-haspopup="true"
             x-bind:aria-expanded={`open === ${i} ? 'true' : 'false'`}
             x-on:click={`open === ${i} ? open = null : open = ${i}`}
@@ -98,14 +101,16 @@ const ext = (item: { external?: boolean }) => item.external === true;
         </div>
       ))
     }
-    <a
-      href="/search/"
-      class="navItem inline-flex h-[90px] items-center px-3"
-      aria-label="Search ICJIA"
-    >
-      <Icon name="mdi:magnify" class="text-[30px] text-black" aria-hidden="true" />
-    </a>
   </nav>
+
+  {/* Search — always visible (right), at every width (matches prod) */}
+  <a
+    href="/search/"
+    class="navItem inline-flex h-[90px] shrink-0 items-center px-3"
+    aria-label="Search ICJIA"
+  >
+    <Icon name="mdi:magnify" class="text-[30px] text-black" aria-hidden="true" />
+  </a>
 
   {/* Mobile drawer + backdrop — siblings of the bar (avoids the
       backdrop-filter focus trap noted in the checklist) */}

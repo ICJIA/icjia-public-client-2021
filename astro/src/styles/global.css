@@ -8,7 +8,11 @@
  */
 @import "./github-markdown.css";
 @import "./article-view.css";
-@import "./legacy-globals.css";
+/* legacy-globals into the `base` layer so Tailwind utilities (utilities layer,
+ * which cascades later) can override element defaults like the global
+ * `a { underline; font-weight:900 }` on chrome links — without it, that
+ * unlayered rule beats `no-underline`/`font-normal` utilities. */
+@import "./legacy-globals.css" layer(base);
 
 /*
  * ICJIA design tokens (Tailwind 4 CSS-first theme).
