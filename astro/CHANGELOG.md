@@ -3,6 +3,33 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.12.1] — 2026-05-29 — VR harness: full-page lazy-load + home baseline
+
+### Changed
+- `scripts/vr/run.mjs` — full-page captures now (1) strip the Astro dev-toolbar
+  overlay (NEW-site dev-only artifact, absent on prod), (2) scroll through the
+  page to trigger lazy / below-fold images (both sites lazy-load CMS imagery —
+  e.g. the client-fetched Research strip) then return to top + settle network,
+  and (3) honor a per-route `settleMs`.
+- `scripts/vr/config.mjs` — home route `settleMs: 2500` (client Research fetch +
+  base64 decode).
+
+### Baseline (home, prod vs local, all 5 breakpoints)
+- Chrome routes hold their known cross-engine range (header 2–5%, footer ~5%,
+  hero 6–11% — confirmed visually matched in Phase 1).
+- **home fullPage: 25–33%.** Side-by-side shows the layout is **structurally
+  correct** (hero, News & Information [cards + Funding/Meetings/Employment tabs],
+  3 click-through boxes, Latest Research [vertical tabs + 3 cards], footer all
+  align). The high % is **cumulative vertical drift** (solid-red on *displaced*
+  solid-color regions — the navy boxes + the whole footer go fully red, which
+  only happens under vertical offset, not AA) **+ the cross-engine text-AA floor**
+  amplified by a near-wall-to-wall-text page. Not broken layout.
+
+### Pending (home pixel-tune — top-down, since drift cascades)
+- Match section heights/gaps top→down so lower sections snap back into alignment
+  (hero text-box size/overlay; News & Info card + tab-panel spacing; inter-section
+  gaps `my-5`/`-20px`/`-10px`; box height/color; research card image height).
+
 ## [0.12.0] — 2026-05-29 — Phase 3: home "Latest Research" strip (live, deferred-fetch)
 
 ### Added

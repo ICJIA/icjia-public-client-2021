@@ -35,7 +35,9 @@ export const ROUTES = [
   { id: "home-hero", path: "/", clipTop: 690, mask: [] },
   // Full-page routes — large diffs until the matching template is built; the
   // diff PNGs still show where the chrome differs at the top.
-  { id: "home", path: "/", fullPage: true, mask: [] },
+  // settleMs: extra time for the client-fetched Research strip (both sites load
+  // it after mount) to render + decode its base64 imagery before capture.
+  { id: "home", path: "/", fullPage: true, mask: [], settleMs: 2500 },
   {
     id: "news-article",
     path: "/news/co-responder-programs-serve-people-in-crisis/",

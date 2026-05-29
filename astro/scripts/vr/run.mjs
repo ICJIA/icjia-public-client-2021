@@ -58,7 +58,35 @@ async function snap(context, base, route, vp) {
       }, sel)
       .catch(() => {});
   }
-  await page.waitForTimeout(SETTLE_MS);
+  // Remove the Astro dev toolbar (NEW site in dev only — a bottom-of-page
+  // overlay absent on prod). No-op on prod.
+  await page.evaluate(() => document.querySelector("astro-dev-toolbar")?.remove()).catch(() => {});
+  // Full-page diffs: scroll through to trigger lazy / below-fold images (both
+  // sites lazy-load CMS imagery — e.g. the home Research strip fetches client-
+  // side), then return to top and let the network settle so everything is
+  // painted before capture.
+  if (route.fullPage) {
+    await page
+      .evaluate(
+        () =>
+          new Promise((resolve) => {
+            let y = 0;
+            const tick = () => {
+              window.scrollTo(0, y);
+              y += Math.round(window.innerHeight * 0.8);
+              if (y < document.body.scrollHeight) setTimeout(tick, 120);
+              else {
+                window.scrollTo(0, 0);
+                setTimeout(resolve, 200);
+              }
+            };
+            tick();
+          }),
+      )
+      .catch(() => {});
+    await page.waitForLoadState("networkidle", { timeout: 10000 }).catch(() => {});
+  }
+  await page.waitForTimeout(route.settleMs || SETTLE_MS);
 
   let buf;
   if (route.selector) {
