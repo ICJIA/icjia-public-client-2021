@@ -1,28 +1,20 @@
 ---
-import { formatDate, strapiUrl, type NewsListItem } from '../lib/data';
+import { formatDate, type NewsListItem } from '../lib/data';
+import CmsImage from './CmsImage.astro';
 
 interface Props {
   item: NewsListItem;
 }
 const { item } = Astro.props;
 const date = formatDate(item.dateOverride || item.published_at);
-const splash = strapiUrl(item.splash?.url);
 const href = `/news/${item.slug}/`;
 ---
 
 <article class="card flex flex-col overflow-hidden border border-gray-200 bg-white">
   {
-    splash && (
+    item.splash?.url && (
       <a href={href} class="block no-underline" tabindex="-1" aria-hidden="true">
-        <img
-          src={splash}
-          alt={item.splash?.alternativeText || ''}
-          loading="lazy"
-          decoding="async"
-          width="400"
-          height="176"
-          class="h-44 w-full object-cover"
-        />
+        <CmsImage image={item.splash} alt="" class="h-44 w-full object-cover" />
       </a>
     )
   }

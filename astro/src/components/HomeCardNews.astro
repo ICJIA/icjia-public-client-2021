@@ -2,7 +2,8 @@
 // Home news card — ported from HomeCardNews.vue. Clickable card: image left
 // (md), category | date + title (+ "NEW!") + truncated summary right. Top rule
 // between cards (index > 0).
-import { newsCategoryLabel, formatDate, isNew, homeNewsImage } from '../lib/data';
+import { newsCategoryLabel, formatDate, isNew } from '../lib/data';
+import CmsImage from './CmsImage.astro';
 
 interface Props {
   item: any;
@@ -10,7 +11,6 @@ interface Props {
 }
 const { item, index = 0 } = Astro.props;
 
-const img = homeNewsImage(item.splash);
 const date = formatDate(item.publicationDate);
 const cat = newsCategoryLabel(item.category).toUpperCase();
 const fresh = isNew(item.publicationDate);
@@ -25,13 +25,7 @@ const summary = words.slice(0, 30).join(" ") + (words.length > 30 ? "..." : "");
 >
   <div class="grid grid-cols-1 gap-4 p-4 md:grid-cols-12">
     <div class="md:col-span-4">
-      <img
-        src={img || "/icjia-half-splash-thumb-v2.jpg"}
-        alt=""
-        loading="lazy"
-        decoding="async"
-        class="max-h-[200px] w-full object-contain"
-      />
+      <CmsImage image={item.splash} alt="" class="max-h-[200px] w-full object-contain" />
     </div>
     <div class="md:col-span-8">
       <p class="text-sm !font-normal !text-black">

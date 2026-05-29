@@ -57,6 +57,8 @@ const GET_HOME = gql`
       }
       splash {
         url
+        width
+        height
         formats
       }
     }

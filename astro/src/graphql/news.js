@@ -21,6 +21,8 @@ const GET_ALL_NEWS_QUERY = gql`
         caption
         alternativeText
         url
+        width
+        height
         formats
       }
     }
@@ -63,6 +65,8 @@ const GET_ALL_PRESS_QUERY = gql`
         caption
         alternativeText
         url
+        width
+        height
         formats
       }
     }
@@ -125,6 +129,8 @@ const GET_SINGLE_POST_QUERY = gql`
         caption
         alternativeText
         url
+        width
+        height
         formats
       }
     }

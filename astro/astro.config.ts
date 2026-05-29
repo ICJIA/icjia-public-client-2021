@@ -26,6 +26,12 @@ export default defineConfig({
   adapter: isDevServer ? node({ mode: 'standalone' }) : netlify(),
   trailingSlash: 'always',
   build: { inlineStylesheets: 'auto' },
+  // Astro image optimization for live CMS images (astro:assets — Sharp in dev,
+  // Netlify Image CDN on deploy; the Netlify adapter auto-allowlists these hosts
+  // for remote_images). NO Thumbor: CMS images are compressed by Astro only and
+  // served SAME-ORIGIN (which also stops the third-party cookie being sent to the
+  // Strapi host — the Lighthouse best-practices ding).
+  image: { domains: ['agency.icjia-api.cloud'] },
   vite: { plugins: [tailwindcss()] },
   integrations: [alpinejs(), icon()],
   env: {
@@ -46,11 +52,6 @@ export default defineConfig({
         context: 'server',
         access: 'public',
         default: 'https://researchhub.icjia-api.cloud/graphql',
-      }),
-      PUBLIC_IMAGE_SERVER: envField.string({
-        context: 'server',
-        access: 'public',
-        default: 'https://image.icjia.cloud',
       }),
     },
   },

@@ -1,0 +1,43 @@
+---
+// CMS image — optimized by Astro only (astro:assets <Image>; Sharp in dev,
+// Netlify Image CDN on deploy). NO Thumbor. The optimized URL is same-origin,
+// so loading CMS imagery never sends a third-party cookie to the Strapi host.
+// Dimensions come from Strapi format metadata (via pickStrapiImage) so <Image>
+// does not fetch the source to infer size at request time (keeps SSR TTFB low).
+// Falls back to a local static asset when a record has no image.
+import { Image } from 'astro:assets';
+import { pickStrapiImage, type StrapiImage } from '../lib/data';
+
+interface Props {
+  image?: StrapiImage | null;
+  alt?: string;
+  class?: string;
+  fallback?: string;
+  loading?: 'lazy' | 'eager';
+}
+const {
+  image,
+  alt = '',
+  class: klass = '',
+  fallback = '/icjia-half-splash-thumb-v2.jpg',
+  loading = 'lazy',
+} = Astro.props;
+
+const pick = pickStrapiImage(image);
+---
+
+{
+  pick ? (
+    <Image
+      src={pick.url}
+      width={pick.width}
+      height={pick.height}
+      alt={alt}
+      loading={loading}
+      decoding="async"
+      class={klass}
+    />
+  ) : (
+    <img src={fallback} alt={alt} loading={loading} decoding="async" class={klass} />
+  )
+}

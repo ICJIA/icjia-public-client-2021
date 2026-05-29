@@ -3,6 +3,45 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.13.0] — 2026-05-29 — Lighthouse fixes: Astro image optimization (no Thumbor) + target-size
+
+### Lighthouse baseline (mobile, branch deploy home)
+- **Performance 98** ✅ · **SEO 100** ✅ · accessibility 96 · best-practices 96.
+  (Perf hit the 98 stretch even with the 2.1MB Research strip — it's deferred.)
+
+### Fixed — accessibility 96 → (target 100)
+- `target-size`: the one offender was the WidgetBar single-link ("RESEARCH HUB »").
+  Gave it `inline-block py-1` for a ≥24px tap target (WCAG 2.5.8); the bar is
+  flex-centered so the visible text doesn't move.
+
+### Changed — images: **NO Thumbor; Astro `astro:assets` only** (user directive)
+- Removed the unused `PUBLIC_IMAGE_SERVER` (`image.icjia.cloud`/Thumbor) env field.
+  No Thumbor anywhere in `astro/`.
+- New `CmsImage.astro` — wraps `<Image>` (Sharp in dev, Netlify Image CDN on
+  deploy) for live CMS images, dims from Strapi `formats` metadata (no
+  fetch-to-infer at request time), local fallback when a record has no image.
+- `astro.config.ts` `image.domains: ['agency.icjia-api.cloud']` — the Netlify
+  adapter auto-allowlists this for `remote_images` and routes through
+  `/.netlify/images`.
+- Converted `HomeCardNews` + `NewsCard` to `CmsImage`; added `width height` to
+  the news/home `splash` GraphQL selections.
+
+### Fixed — best-practices 96 → (target 100)
+- `inspector-issues` was a third-party **Cookie** sent to `agency.icjia-api.cloud`
+  on its cross-origin `/uploads/*` images. Now images load **same-origin**
+  (`/_image/` dev, `/.netlify/images` prod), so that cookie is never sent.
+- Bonus: huge compression — a news splash went **273KB PNG → 9KB WebP**.
+
+### Verified
+- Build clean. Home + `/news/` emit **0** cross-origin `agency.icjia-api.cloud`
+  `<img src>`; `/_image/` endpoint returns `image/webp` 200 (159 optimized
+  images on the listing). Re-audit the deploy to confirm a11y/bp reach 100.
+
+### Pending
+- Article-body **inline** CMS images (inside rendered markdown) still point at
+  Strapi — needs a markdown-pipeline URL rewrite to route them through Astro
+  optimization too (tracked follow-up).
+
 ## [0.12.1] — 2026-05-29 — VR harness: full-page lazy-load + home baseline
 
 ### Changed

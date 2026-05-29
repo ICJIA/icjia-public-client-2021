@@ -69,19 +69,44 @@ export function formatDateShort(iso?: string): string {
   }
 }
 
-/** Home news card image — Strapi `small` (or thumbnail) format, absolute. */
-export function homeNewsImage(splash?: StrapiImage | null): string | null {
-  if (!splash) return null;
-  const f = (splash.formats || {}) as Record<string, { url?: string }>;
-  const url = f.small?.url || f.thumbnail?.url || splash.url;
-  return url ? strapiUrl(url) : null;
-}
-
 export interface StrapiImage {
   caption?: string;
   alternativeText?: string;
   url?: string;
+  width?: number;
+  height?: number;
   formats?: Record<string, unknown>;
+}
+
+export interface StrapiImagePick {
+  url: string;
+  width: number;
+  height: number;
+}
+
+/**
+ * Pick the best Strapi image format for an optimized astro:assets <Image> —
+ * returns an absolute url + intrinsic width/height so <Image> needn't fetch the
+ * image to infer dimensions at request time. Prefers ~card-sized sources
+ * (small ≈ 500px, medium ≈ 750px) over thumbnail/large, then the original.
+ */
+export function pickStrapiImage(splash?: StrapiImage | null): StrapiImagePick | null {
+  if (!splash) return null;
+  const f = (splash.formats || {}) as Record<
+    string,
+    { url?: string; width?: number; height?: number }
+  >;
+  for (const c of [f.small, f.medium, f.thumbnail, f.large]) {
+    if (c?.url && c.width && c.height) {
+      const u = strapiUrl(c.url);
+      if (u) return { url: u, width: c.width, height: c.height };
+    }
+  }
+  if (splash.url && splash.width && splash.height) {
+    const u = strapiUrl(splash.url);
+    if (u) return { url: u, width: splash.width, height: splash.height };
+  }
+  return null;
 }
 
 export interface NewsPost {

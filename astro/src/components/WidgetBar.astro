@@ -64,7 +64,12 @@ const { title, mobileTitle, menuItems = [] } = Astro.props;
         </div>
       </div>
     ) : menuItems.length === 1 ? (
-      <a href={menuItems[0].url} class="text-base font-black uppercase !text-black no-underline">
+      // inline-block + py-1 gives the link a ≥24px tap target (WCAG 2.5.8);
+      // the bar is flex-centered so the visible text doesn't move.
+      <a
+        href={menuItems[0].url}
+        class="inline-block py-1 text-base font-black uppercase !text-black no-underline"
+      >
         {menuItems[0].label} &raquo;
       </a>
     ) : null
