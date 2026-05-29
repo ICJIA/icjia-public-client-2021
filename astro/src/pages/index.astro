@@ -46,7 +46,10 @@ const newsMenuItems = [
   <div class="my-5"></div>
   <HomeClickThroughBoxes boxes={home.boxes.slice(0, 3)} />
 
-  <div style="margin-top: -20px">
+  {/* No negative top margin: the prior -20px pulled this bar up into the boxes
+      above, overlapping the "Technical Assistance" box link with the
+      "Research Hub" link (a11y target-size fail). Exact gap is VR-tune territory. */}
+  <div class="mt-2">
     <HomeResearch />
   </div>
 </BaseLayout>

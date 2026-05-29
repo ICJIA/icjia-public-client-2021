@@ -9,10 +9,13 @@ This is the live-data SSR migration tracked on the `feat/astro-migration` branch
 - **Performance 98** ✅ · **SEO 100** ✅ · accessibility 96 · best-practices 96.
   (Perf hit the 98 stretch even with the 2.1MB Research strip — it's deferred.)
 
-### Fixed — accessibility 96 → (target 100)
+### Fixed — accessibility 96 → **100** ✅ (verified, mobile, localhost)
 - `target-size`: the one offender was the WidgetBar single-link ("RESEARCH HUB »").
-  Gave it `inline-block py-1` for a ≥24px tap target (WCAG 2.5.8); the bar is
-  flex-centered so the visible text doesn't move.
+  Two parts: (1) `inline-block py-1` so the link itself is ≥24×24px (WCAG 2.5.8);
+  (2) **removed the `margin-top:-20px`** that had pulled the Latest Research bar up
+  into the boxes above — the "Technical Assistance" box link was *overlapping* the
+  link's top ~11px, obscuring it (measured via DevTools). With no overlap the
+  ≥24×24 link passes. (Also removes a latent visual overlap; exact gap is VR-tune.)
 
 ### Changed — images: **NO Thumbor; Astro `astro:assets` only** (user directive)
 - Removed the unused `PUBLIC_IMAGE_SERVER` (`image.icjia.cloud`/Thumbor) env field.
