@@ -31,6 +31,8 @@ export const ROUTES = [
   // Chrome: header band + footer element — meaningful now (chrome is built).
   { id: "header-home", path: "/", clipTop: 90, mask: [] },
   { id: "footer-home", path: "/", selector: "footer", mask: [] },
+  // Home hero: header (90) + splash (600). Splash is static (no live data).
+  { id: "home-hero", path: "/", clipTop: 690, mask: [] },
   // Full-page routes — large diffs until the matching template is built; the
   // diff PNGs still show where the chrome differs at the top.
   { id: "home", path: "/", fullPage: true, mask: [] },

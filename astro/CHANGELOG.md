@@ -3,6 +3,21 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.9.0] — 2026-05-29 — Phase 3: home hero (splash)
+
+### Added
+- `HomeSplash.astro` — static hero ported from `HomeSplashV2.vue`: pre-grayscaled
+  `/home-splash.{avif,webp,jpg}` + blue overlay + centered title/tagline + navy
+  "Apply for funding" / "Grant Status Request" buttons. **Replaces the home
+  placeholder.** Splash images copied to `public/`.
+- VR `home-hero` route (header + 600px splash).
+
+### State
+- Home hero **visually matches prod** (same image/overlay/box/buttons); the
+  ~8-10% hero diff is header + splash text AA + minor button spacing.
+- Remaining home sections (News + tabbed funding/employment/meetings,
+  click-through boxes, Research) build next, fed by `getHome()`.
+
 ## [0.8.1] — 2026-05-29 — Chrome VR-tuning: footer matched to prod
 
 ### Changed

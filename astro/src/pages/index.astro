@@ -1,19 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import HomeSplash from '../components/HomeSplash.astro';
 ---
 
-<BaseLayout title="ICJIA — Astro migration scaffold" description="Phase 0 scaffold smoke test.">
-  <div class="mx-auto max-w-3xl p-8 md:p-12">
-    <h1 class="text-3xl font-bold text-primary">ICJIA Astro scaffold</h1>
-    <p class="mt-4 text-gray-700">
-      SSR scaffold is live (Astro 6 + Tailwind 4 + Alpine, Netlify adapter).
-      Phase 0 in progress — data layer + sanitizer parity gate next.
-    </p>
-    <p
-      class="mt-6 inline-block rounded bg-primary px-4 py-2 text-white"
-      x-data="{ ok: true }"
-      x-text="ok ? 'Alpine is wired ✓' : ''"
-    >
-    </p>
-  </div>
+<BaseLayout
+  title="ICJIA — Illinois Criminal Justice Information Authority"
+  description="The Illinois Criminal Justice Information Authority (ICJIA) is a state agency dedicated to improving the administration of criminal justice in Illinois."
+>
+  <HomeSplash />
+  {/* Building next, fed by getHome(): News & Information (HomeNews + tabbed
+      funding/employment/meetings), click-through boxes, and Research. */}
 </BaseLayout>
