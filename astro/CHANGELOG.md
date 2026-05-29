@@ -3,6 +3,13 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.2.1] — 2026-05-29 — Netlify branch-deploy preview
+
+### Added
+- `netlify.toml` `[context."feat/astro-migration"]` (base=astro, `pnpm build`)
+  so this branch deploys the Astro app for a live Netlify preview while
+  production/`main` keeps building the legacy Vue root.
+
 ## [0.2.0] — 2026-05-29 — Phase 0 data layer + SSR parity gate (GO ✓)
 
 ### Added

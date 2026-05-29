@@ -104,3 +104,25 @@
   for = "/index.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+# ──────────────────────────────────────────────────────────────────────────
+# Astro migration branch (feat/astro-migration)
+#
+# Builds the NEW Astro SSR app from the astro/ subfolder instead of the legacy
+# Vue app at the repo root. Production (main) is unaffected — it still uses the
+# root [build] block above. Gives a live Netlify branch-deploy preview of the
+# migration while the current site stays live.
+#
+# base="astro": Netlify installs deps + runs the build there (auto-detecting
+# pnpm from astro/pnpm-lock.yaml + the packageManager field). command/publish
+# resolve relative to base, so publish="dist" → astro/dist. The @astrojs/netlify
+# adapter emits the SSR function + _redirects automatically.
+# ──────────────────────────────────────────────────────────────────────────
+[context."feat/astro-migration"]
+  base = "astro"
+  command = "pnpm build"
+  publish = "dist"
+
+[context."feat/astro-migration".environment]
+  NODE_VERSION = "22"
+  PNPM_VERSION = "10.33.4"
