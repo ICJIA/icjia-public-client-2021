@@ -5,6 +5,7 @@ import WidgetBar from '../components/WidgetBar.astro';
 import HomeCardNews from '../components/HomeCardNews.astro';
 import HomeTabbed from '../components/HomeTabbed.astro';
 import HomeClickThroughBoxes from '../components/HomeClickThroughBoxes.astro';
+import HomeResearch from '../components/HomeResearch.astro';
 import { getHome } from '../lib/data';
 import { setCache } from '../lib/cache';
 
@@ -45,5 +46,7 @@ const newsMenuItems = [
   <div class="my-5"></div>
   <HomeClickThroughBoxes boxes={home.boxes.slice(0, 3)} />
 
-  {/* Research strip builds next (needs the ResearchHub query). */}
+  <div style="margin-top: -20px">
+    <HomeResearch />
+  </div>
 </BaseLayout>

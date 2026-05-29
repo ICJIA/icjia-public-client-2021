@@ -3,6 +3,56 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.12.0] — 2026-05-29 — Phase 3: home "Latest Research" strip (live, deferred-fetch)
+
+### Added
+- `src/lib/research.ts` — ResearchHub (2nd Strapi) data layer for the home strip:
+  `getHomeResearch()` fetches articles / apps / datasets (limit 3 each) via a
+  plain server-side `fetch` (no `deepSanitize`, matching the legacy
+  `services/ResearchHub.js` axios path). Ports the exact text logic from
+  `src/filters.js`: `format` date (full month, zero-padded day, tz-offset
+  correction), `truncateBySentence` (first 2 sentences only when >2 exist),
+  Oxford-comma author join (`arrford`), and `isNew` (`daysToShowNewResearch=10`).
+- `src/pages/api/home-research.json.ts` — same-origin SSR JSON endpoint, edge-
+  cached `s-maxage=120, swr=300` (the plan's hub TTL).
+- `HomeResearch.astro` — "Latest Research" `WidgetBar` + ARIA tablist (Articles /
+  Web Apps / Datasets), vertical tabs on md+ / horizontal on mobile (matches the
+  legacy `:vertical` breakpoint), 3 cards/tab. Data loads CLIENT-SIDE on Alpine
+  `init()` from the endpoint; lazy images; skeleton while loading. Wired into the
+  home below the click-through boxes (`margin-top: -20px`, matching `Home.vue`).
+
+### Architecture decision (flagged — deviates from SSR-everything)
+- **The hub stores splash/app images as base64 data-URIs in the GraphQL
+  response — 49KB–674KB each.** 3 articles + 3 apps ≈ **~2.1MB**. SSR-inlining
+  them would blow the home response to ~2–3MB and fail the 95+ mobile perf
+  target. The legacy `HomeResearch.vue` fetches this strip **client-side in
+  `mounted()`** (not in the initial HTML) and lazy-loads below the fold — so
+  fetching after load is the *faithful* reproduction, not a compromise.
+- Routed through a **same-origin** SSR endpoint (not a direct browser→hub call):
+  keeps the initial HTML lean, removes a browser CORS dependency on the hub,
+  is edge-cacheable, and lets `connect-src` stay `'self'` (no need to keep the
+  researchhub entry in the future CSP).
+
+### Verified
+- Build clean. `/api/home-research.json` → 200, 3+3+3 items, correct
+  `dateLabel`/`isNew`/Oxford-`authors`/`teaser`; base64 imgs for articles+apps,
+  null for datasets.
+- **Home HTML carries 0 inlined base64 blobs** (the 2.1MB stays in the deferred
+  endpoint) — perf protected.
+- Real-browser (Chrome) a11y tree: cards populate after the fetch; dates
+  ("May 22, 2026"), "NEW!" on ≤10-day items only, single + two-author Oxford
+  joins, teasers, and `/researchhub/.../` links all correct. Endpoint + alpinejs
+  + styles all 200. (Lone console 504 = Astro **dev-toolbar** chunk, dev-only,
+  absent in builds.)
+
+### Pending
+- **VR-tune the full home vs prod** (News & Information + boxes + this strip):
+  the vertical-tabs desktop layout, card image height/spacing, and "NEW!" chip
+  style are structural approximations. The "NEW!" chip is computed at server
+  request-time → **VR mask candidate** (browser clock is frozen, server clock
+  is not). Consider switching article cards from `splash` (49–674KB) to
+  `thumbnail` (9–44KB) if VR shows them indistinguishable at 250px — a perf win.
+
 ## [0.11.0] — 2026-05-29 — Phase 3: home click-through boxes
 
 ### Added

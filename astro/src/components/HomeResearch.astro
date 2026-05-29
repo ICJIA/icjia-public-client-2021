@@ -1,0 +1,144 @@
+---
+// Home "Latest Research" strip — ported from HomeResearch.vue. Three tabs
+// (Articles / Web Apps / Datasets), 3 cards each, fetched from the ResearchHub
+// Strapi. Data loads CLIENT-SIDE after page load (Alpine init → same-origin
+// /api/home-research.json) exactly as the legacy did in mounted(), keeping the
+// ~2MB of base64 hub images out of the initial HTML. Tabs are vertical on md+
+// and horizontal on mobile (matches the legacy :vertical breakpoint).
+import WidgetBar from './WidgetBar.astro';
+
+const researchMenuItems = [{ label: 'Research Hub', url: '/researchhub/' }];
+const tabs = ['Articles', 'Web Apps', 'Datasets'];
+// panel i → the Alpine array it iterates
+const panels = [
+  { i: 0, arr: 'articles' },
+  { i: 1, arr: 'apps' },
+  { i: 2, arr: 'datasets' },
+];
+---
+
+<div>
+  <WidgetBar title="Latest Research" mobileTitle="Research" menuItems={researchMenuItems} />
+
+  <div
+    class="mb-[18px] bg-white"
+    x-data="{
+      loading: true, tab: 0, articles: [], apps: [], datasets: [],
+      init() {
+        fetch('/api/home-research.json')
+          .then((r) => r.json())
+          .then((d) => { this.articles = d.articles || []; this.apps = d.apps || []; this.datasets = d.datasets || []; })
+          .catch(() => {})
+          .finally(() => { this.loading = false; });
+      },
+    }"
+    x-cloak
+  >
+    <div class="md:flex">
+      {/* Tablist — horizontal on mobile, vertical column on md+ */}
+      <div
+        role="tablist"
+        aria-label="Latest research"
+        class="flex md:w-[200px] md:shrink-0 md:flex-col"
+      >
+        {
+          tabs.map((t, i) => (
+            <button
+              type="button"
+              role="tab"
+              id={`research-tab-${i}`}
+              aria-controls={`research-panel-${i}`}
+              class="research-tab grow border border-transparent px-3 py-3 text-[20px] md:grow-0"
+              x-bind:aria-selected={`tab === ${i} ? 'true' : 'false'`}
+              x-bind:tabindex={`tab === ${i} ? 0 : -1`}
+              x-bind:class={`tab === ${i} ? 'research-tab--active' : ''`}
+              x-on:click={`tab = ${i}`}
+            >
+              {t}
+            </button>
+          ))
+        }
+      </div>
+
+      {/* Content area */}
+      <div class="md:flex-1">
+        {/* Loading skeleton (active area) */}
+        <div x-show="loading" class="grid grid-cols-1 gap-px md:grid-cols-3">
+          {[0, 1, 2].map(() => (
+            <div class="h-[300px] animate-pulse bg-[#f0f0f0]"></div>
+          ))}
+        </div>
+
+        {/* Panels — one per tab (correct ARIA), each iterates its array */}
+        <div x-show="!loading">
+          {
+            panels.map((p) => (
+              <div
+                role="tabpanel"
+                id={`research-panel-${p.i}`}
+                aria-labelledby={`research-tab-${p.i}`}
+                x-show={`tab === ${p.i}`}
+                class="grid grid-cols-1 md:grid-cols-3"
+              >
+                <template x-for={`item in ${p.arr}`} x-bind:key="item.fullPath">
+                  <a
+                    x-bind:href="item.fullPath"
+                    class="card hover block border-l border-[#e8e8e8] px-3 py-1 no-underline"
+                  >
+                    <template x-if="item.img">
+                      <img
+                        x-bind:src="item.img"
+                        loading="lazy"
+                        decoding="async"
+                        alt=""
+                        class="h-[250px] w-full object-cover"
+                      />
+                    </template>
+                    <div class="px-5 pb-3 pt-2">
+                      <p class="text-[12px] !text-black" x-text="item.dateLabel"></p>
+                      <div class="mt-1 text-[22px] font-bold leading-[28px] !text-black">
+                        <template x-if="item.isNew">
+                          <span class="research-chip">NEW!</span>
+                        </template>
+                        <span x-text="item.title"></span>
+                      </div>
+                      <template x-if="item.authors">
+                        <p class="mt-2 text-[12px] font-bold !text-[#222]" x-text="item.authors"></p>
+                      </template>
+                      <p class="mt-2 text-[14px] !font-normal !text-black" x-text="item.teaser"></p>
+                    </div>
+                  </a>
+                </template>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .research-tab {
+    font-weight: 400;
+    color: #000;
+    letter-spacing: 0.01rem;
+  }
+  .research-tab--active {
+    font-weight: 900;
+    background: #e8e8e8;
+    color: #000;
+    border: 1px solid #ddd;
+  }
+  .research-chip {
+    display: inline-block;
+    background: #e0e0e0;
+    color: #000;
+    font-weight: 700;
+    font-size: 0.6em;
+    padding: 1px 8px;
+    border-radius: 4px;
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+</style>
