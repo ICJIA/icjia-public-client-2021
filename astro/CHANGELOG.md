@@ -3,6 +3,24 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.6.0] — 2026-05-29 — Visual-regression harness + chrome asset fix
+
+### Added
+- **VR harness** (`scripts/vr/`): standalone Playwright + pixelmatch comparing
+  prod (`icjia.illinois.gov`) vs the new site (local dev or a deploy URL via
+  `VR_NEW`) at the 5 Vuetify breakpoints. Normalized captures (frozen clock,
+  animations off, `fonts.ready`, maskable regions); a header-band clip for
+  chrome-focused diffing plus full-page routes. Writes prod/new/diff PNGs +
+  `report.md`; gates PASS ≤ 0.1% / WARN ≤ 1% / FAIL. Run with `pnpm vr`.
+
+### Fixed
+- `astro/public/` never existed, so `/icjia-logo.png` and `/favicon.ico` 404'd —
+  the **header and footer logos were silently broken** (an earlier `cp` failed
+  behind `2>/dev/null`). Created `astro/public/`, copied the logo + favicon,
+  added a favicon `<link>`.
+- **Sticky footer**: `BaseLayout` body is now a flex column (`min-h-screen`) with
+  `main flex-1`, so the footer sits at the viewport bottom on short pages.
+
 ## [0.5.0] — 2026-05-29 — Phase 1: site chrome (header, nav, footer)
 
 ### Added

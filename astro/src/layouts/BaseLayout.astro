@@ -25,13 +25,17 @@ const { title = 'ICJIA', description = '' } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
   </head>
-  <body>
+  <body class="flex min-h-screen flex-col">
     <a class="skiplink" href="#main-content">Skip to main content</a>
     <SiteHeader />
-    <main id="main-content" class="min-h-[60vh] pt-[90px]">
+    {/* flex-1 makes main fill remaining height so the footer sticks to the
+        bottom of the viewport on short pages (sticky-footer layout). The fixed
+        header is out of flow, so pt-[90px] clears it. */}
+    <main id="main-content" class="flex-1 pt-[90px]">
       <slot />
     </main>
     <SiteFooter />
