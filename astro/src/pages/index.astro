@@ -4,6 +4,7 @@ import HomeSplash from '../components/HomeSplash.astro';
 import WidgetBar from '../components/WidgetBar.astro';
 import HomeCardNews from '../components/HomeCardNews.astro';
 import HomeTabbed from '../components/HomeTabbed.astro';
+import HomeClickThroughBoxes from '../components/HomeClickThroughBoxes.astro';
 import { getHome } from '../lib/data';
 import { setCache } from '../lib/cache';
 
@@ -41,5 +42,8 @@ const newsMenuItems = [
     </div>
   </div>
 
-  {/* Click-through boxes + Research strip build next. */}
+  <div class="my-5"></div>
+  <HomeClickThroughBoxes boxes={home.boxes.slice(0, 3)} />
+
+  {/* Research strip builds next (needs the ResearchHub query). */}
 </BaseLayout>

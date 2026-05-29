@@ -3,6 +3,24 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.11.0] — 2026-05-29 — Phase 3: home click-through boxes
+
+### Added
+- `HomeClickThroughBoxes.astro` — row of 3 navy (#0E4471) clickable cards
+  (icon + uppercase title + teaser + optional "NEW!" badge), wired into the home
+  below News & Information. CMS icon names mapped to MDI equivalents
+  (people→account-group, pending-actions→clipboard-text-clock,
+  account-balance→bank).
+
+### Verified
+- Home renders 3 live boxes (Request Grant Status, Subscribe, Technical
+  Assistance) — HTTP 200, no errors.
+
+### Pending
+- Home **Research strip** (needs the ResearchHub GraphQL query); then VR-tune
+  the full home vs prod. Box icons are MDI approximations of prod's Material
+  glyphs (VR-tune item).
+
 ## [0.10.0] — 2026-05-29 — Phase 3: home News & Information (live)
 
 ### Added
