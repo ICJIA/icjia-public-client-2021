@@ -1,5 +1,6 @@
 import { defineConfig, envField } from 'astro/config';
 import netlify from '@astrojs/netlify';
+import node from '@astrojs/node';
 import alpinejs from '@astrojs/alpinejs';
 import tailwindcss from '@tailwindcss/vite';
 
@@ -9,10 +10,19 @@ import tailwindcss from '@tailwindcss/vite';
 // stale-while-revalidate CDN cache (set per-route via Astro.response.headers)
 // keeps perf high while content stays live. CMS-independent routes opt into
 // `export const prerender = true` per page.
+// Local `astro dev` uses @astrojs/node; the build / Netlify branch-deploy uses
+// @astrojs/netlify. Why: the Netlify adapter's dev integration reads the root
+// netlify.toml and mis-resolves the branch context's `base = "astro"` relative
+// to the Astro root (looks for astro/astro) — there is no per-cwd fix. The node
+// adapter never touches netlify.toml, so dev just works. Both are interchangeable
+// because the data layer + pages are adapter-agnostic — this is also the
+// @astrojs/node escape hatch the plan keeps for a possible DigitalOcean move.
+const isDevServer = process.argv.includes('dev');
+
 export default defineConfig({
   site: 'https://icjia.illinois.gov',
   output: 'server',
-  adapter: netlify(),
+  adapter: isDevServer ? node({ mode: 'standalone' }) : netlify(),
   trailingSlash: 'always',
   build: { inlineStylesheets: 'auto' },
   vite: { plugins: [tailwindcss()] },

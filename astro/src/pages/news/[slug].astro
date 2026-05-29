@@ -1,0 +1,32 @@
+---
+// Live-data SSR news article.
+// Fetches the post from Strapi server-side per request, renders + sanitizes the
+// body server-side, and emits complete HTML. No client-side data fetch, no
+// spinner, no hydration. Freshness governed by the per-route CDN cache.
+//
+// Phase 0 spike: proves the end-to-end live-data SSR pipeline. Pixel-perfect
+// chrome/typography arrives in Phase 1/3 (this uses the .markdown-body class
+// the legacy site uses, but the full continuity CSS lands later).
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getNewsPost } from "../../lib/data";
+import { setCache } from "../../lib/cache";
+
+const { slug } = Astro.params;
+const post = slug ? await getNewsPost(slug) : null;
+
+if (!post) {
+  return new Response("Not found", { status: 404 });
+}
+
+// Live, but edge-cached for 60s with background revalidation.
+setCache(Astro.response, "news");
+---
+
+<BaseLayout title={post.title} description={post.summary}>
+  <main id="main-content" class="markdown-body mx-auto max-w-3xl p-8 md:p-12">
+    <h1>{post.title}</h1>
+    {post.summary && <p class="text-lg text-gray-700">{post.summary}</p>}
+    {/* safeBodyHtml = markdown-it → DOMPurify → fixTableHeaders → fixImageLinks → contentSanitizer, all server-side */}
+    <div set:html={post.safeBodyHtml} />
+  </main>
+</BaseLayout>

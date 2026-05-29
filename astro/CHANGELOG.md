@@ -3,6 +3,27 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.3.0] — 2026-05-29 — End-to-end live-data SSR news page (proven)
+
+### Added
+- `src/graphql/news.js` (ported query), `src/lib/markdown.js` (server-side
+  pipeline: markdown-it + plugins → jsdom-backed DOMPurify → fixTableHeaders →
+  fixImageLinks → contentSanitizer), `src/lib/cache.ts` (per-route s-maxage +
+  stale-while-revalidate), `src/lib/data.ts` (`getNewsPost`, live per-request
+  fetch), `src/pages/news/[slug].astro` (SSR).
+- `@astrojs/node` adapter for local `astro dev`; `@astrojs/netlify` only for the
+  build/deploy. The Netlify adapter's dev integration reads `netlify.toml` and
+  mis-resolves the branch-context `base="astro"`; node sidesteps it and is the
+  adapter-agnostic escape hatch the plan keeps. `jsdom` moved to dependencies
+  (runtime dep of the markdown pipeline).
+
+### Verified
+- Live SSR article renders: HTTP 200, full title + 8 markdown paragraphs in the
+  server HTML (content is server-rendered, not client-fetched),
+  `Cache-Control: public, s-maxage=60, stale-while-revalidate=300`.
+- Production (netlify-adapter) build emits the SSR function cleanly with the
+  jsdom/markdown stack.
+
 ## [0.2.2] — 2026-05-29 — Fix SSR function dependency resolution on Netlify
 
 ### Fixed
