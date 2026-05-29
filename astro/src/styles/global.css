@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+/*
+ * ICJIA design tokens — Tailwind 4 CSS-first theme.
+ * Phase 0 stub: only the brand color + Vuetify-aligned breakpoints.
+ * Phase 1 fills in the full token set (type scale, spacing, elevation,
+ * radius) extracted from Vuetify 2.5.12 defaults + a prod computed-style
+ * probe. See plan: "Pixel-perfect Vuetify → Tailwind".
+ */
+@theme inline {
+  /* The one real brand token (Vuetify themes.light.primary). */
+  --color-primary: #1565c0;
+
+  /*
+   * Breakpoints REDEFINED to Vuetify 2 px values (NOT Tailwind defaults of
+   * 640/768/1024/1280). Hard rule: every `md="4"` / `d-md-flex` /
+   * `hidden-sm-and-down` in the legacy templates reflows at these widths, so
+   * sm:/md:/lg:/xl: must mean the same thing for pixel-parity.
+   */
+  --breakpoint-sm: 600px;
+  --breakpoint-md: 960px;
+  --breakpoint-lg: 1264px;
+  --breakpoint-xl: 1904px;
+}
+
+/* Skip link — full styling ported verbatim from legacy app.css in Phase 1. */
+.skiplink {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+}
+.skiplink:focus {
+  left: 0;
+}

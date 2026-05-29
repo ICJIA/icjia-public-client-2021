@@ -1,0 +1,17 @@
+# build output
+dist/
+# generated types
+.astro/
+# netlify adapter / local netlify state
+.netlify/
+# deps
+node_modules/
+# env
+.env
+.env.production
+.env.local
+# logs
+*.log
+# visual-regression artifacts (captures + diffs are large; keep masks/config in git)
+scripts/vr/__captures__/
+scripts/vr/__diffs__/
