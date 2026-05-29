@@ -1,12 +1,12 @@
 ---
-import { formatDate, type NewsListItem } from '../lib/data';
+import { formatNewsDate, type NewsListItem } from '../lib/data';
 import CmsImage from './CmsImage.astro';
 
 interface Props {
   item: NewsListItem;
 }
 const { item } = Astro.props;
-const date = formatDate(item.dateOverride || item.published_at);
+const date = formatNewsDate(item.publicationDate || item.dateOverride || item.published_at);
 const href = `/news/${item.slug}/`;
 ---
 

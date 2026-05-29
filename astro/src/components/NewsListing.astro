@@ -1,0 +1,420 @@
+---
+// /news/ listing — live-data SSR with parity to the legacy News.vue:
+//   • featured card (most-recent post)
+//   • category filter buttons (All + categories present)
+//   • month-grouped list (This Month / Last Month / Earlier), 2-col
+//   • pagination (15/page)
+//
+// Rendering model: the featured card + page 1 are server-rendered (real HTML so
+// SiteImprove/axe/Google + no-JS users see content and links). Alpine then takes
+// over the list via x-for — the reliable list primitive — to filter/paginate/
+// group instantly (matching the SPA), keeping only the current page in the DOM
+// (~15 items, like prod) instead of the whole 180+ archive. (Per-item x-show
+// across the full archive was tried and is NOT reliably reactive at this scale.)
+// Client-list thumbnails are pre-optimized server-side via getImage() so they
+// stay same-origin (no Thumbor, no third-party cookie). Exact Vuetify spacing +
+// v-pagination ellipsis = VR-tune follow-up.
+import { getImage } from 'astro:assets';
+import CmsImage from './CmsImage.astro';
+import {
+  formatNewsDate,
+  newsCategoryLabel,
+  truncateWords,
+  isNew,
+  pickStrapiImage,
+  NEWS_CATEGORIES,
+  BUCKET_LABELS,
+  type NewsListItem,
+} from '../lib/data';
+
+interface Props {
+  items: NewsListItem[];
+}
+const { items } = Astro.props;
+
+const PER_PAGE = 15;
+const featured = items[0] ?? null;
+const rest = items.slice(1);
+
+// Filter buttons: config-ordered categories that actually appear in `rest`.
+const present = new Set(rest.map((i) => i.category));
+const categories = NEWS_CATEGORIES.filter((c) => present.has(c.category));
+
+// Client list data (consumed by Alpine x-for). Thumbnails are optimized
+// server-side → same-origin URL (Sharp in dev, Netlify Image CDN on deploy).
+const listData = await Promise.all(
+  rest.map(async (item) => {
+    let img: string | null = null;
+    const pick = pickStrapiImage(item.splash);
+    if (pick) {
+      const w = 180; // 2× the 90px display box
+      const h = Math.max(1, Math.round((pick.height / pick.width) * w));
+      const opt = await getImage({ src: pick.url, width: w, height: h, format: 'webp' });
+      img = opt.src;
+    }
+    return {
+      p: item.fullPath,
+      t: item.title,
+      s: item.summary ? truncateWords(item.summary, 25) : '',
+      cl: newsCategoryLabel(item.category).toUpperCase(),
+      c: item.category ?? '',
+      d: formatNewsDate(item.publicationDate),
+      b: item.bucket ?? 'earlier',
+      n: isNew(item.publicationDate, 5),
+      img,
+    };
+  }),
+);
+// JSON-in-HTML: neutralize "</script>" / "<" so the data island can't break out.
+const listJson = JSON.stringify(listData).replace(/</g, '\\u003c');
+
+// Server-rendered page 1 (SEO / no-JS baseline), grouped by month.
+const page1 = rest.slice(0, PER_PAGE);
+const ssrGroups = (['this', 'last', 'earlier'] as const)
+  .map((k) => ({ label: BUCKET_LABELS[k], items: page1.filter((it) => (it.bucket ?? 'earlier') === k) }))
+  .filter((g) => g.items.length > 0);
+---
+
+<div class="markdown-body news-listing mb-12">
+  <h1 class="page-heading mb-4">News &amp; Information</h1>
+
+  {
+    featured && (
+      <a
+        href={featured.fullPath}
+        class={`featured-card mb-6 ${featured.splash?.url ? 'md:grid md:grid-cols-2' : 'block'}`}
+      >
+        {featured.splash?.url && (
+          <div class="featured-img-col bg-gray-100">
+            <CmsImage
+              image={featured.splash}
+              alt={featured.splash.alternativeText || 'Featured news image'}
+              loading="eager"
+              class="h-full max-h-[320px] min-h-[250px] w-full object-contain"
+            />
+          </div>
+        )}
+        <div class="p-6">
+          <span class="featured-badge mb-3 block w-fit">FEATURED</span>
+          <div class="mt-1">
+            <span class="featured-category">{newsCategoryLabel(featured.category).toUpperCase()}</span>
+            <span class="featured-date">&nbsp;|&nbsp;{formatNewsDate(featured.publicationDate)}</span>
+          </div>
+          <h2 class="featured-title mt-2 mb-3">{featured.title}</h2>
+          {featured.summary && <p class="featured-summary">{featured.summary}</p>}
+          {featured.tags && featured.tags.length > 0 && (
+            <div class="mt-3">
+              {featured.tags.slice(0, 4).map((tag) => (
+                <span class="chip">{tag}</span>
+              ))}
+            </div>
+          )}
+          <span class="read-btn mt-4 inline-block" aria-hidden="true">
+            Read: {featured.title}
+          </span>
+        </div>
+      </a>
+    )
+  }
+
+  <script type="application/json" id="news-data" set:html={listJson}></script>
+
+  <div
+    x-data={`{
+      all: JSON.parse(document.getElementById('news-data').textContent),
+      cat: 'all', page: 1, perPage: ${PER_PAGE}, ready: false,
+      init(){ this.ready = true; },
+      get filtered(){ return this.cat==='all' ? this.all : this.all.filter((x)=>x.c===this.cat); },
+      get totalPages(){ return Math.max(1, Math.ceil(this.filtered.length/this.perPage)); },
+      get pageItems(){ const s=(this.page-1)*this.perPage; return this.filtered.slice(s, s+this.perPage); },
+      get pageGroups(){ const g={'this':[],'last':[],'earlier':[]}; this.pageItems.forEach((it)=>g[it.b].push(it)); return [['this','This Month'],['last','Last Month'],['earlier','Earlier']].filter(([k])=>g[k].length).map(([k,l])=>({label:l, items:g[k]})); },
+      get empty(){ return this.filtered.length===0; },
+      pages(){ const n=this.totalPages, c=this.page, win=7, o=[]; if(n<=win){ for(let p=1;p<=n;p++) o.push(p); return o; } const h=Math.floor(win/2); let lo=Math.max(1,c-h), hi=Math.min(n,c+h); if(c-h<1) hi=win; if(c+h>n) lo=n-win+1; if(lo>1){ o.push(1); if(lo>2) o.push('…'); } for(let p=lo;p<=hi;p++) o.push(p); if(hi<n){ if(hi<n-1) o.push('…'); o.push(n); } return o; },
+      setCat(c){ this.cat=c; this.page=1; this.scrollList(); },
+      go(p){ if(p==='…'||p<1||p>this.totalPages) return; this.page=p; this.scrollList(); },
+      scrollList(){ this.$nextTick(()=>{ const el=this.$refs.list; if(el){ const t=el.getBoundingClientRect().top+window.pageYOffset-130; window.scrollTo({top:Math.max(0,t),behavior:'smooth'}); } }); }
+    }`}
+  >
+    {/* Category filters */}
+    <div class="mb-2 flex flex-wrap gap-2">
+      <button type="button" class="fbtn" :class="cat==='all' ? 'fbtn-on' : 'fbtn-off'" @click="setCat('all')">
+        All
+      </button>
+      {
+        categories.map((c) => (
+          <button
+            type="button"
+            class="fbtn"
+            :class={`cat==='${c.category}' ? 'fbtn-on' : 'fbtn-off'`}
+            @click={`setCat('${c.category}')`}
+          >
+            {c.label}
+          </button>
+        ))
+      }
+    </div>
+
+    {/* Server-rendered page 1 (SEO / no-JS) — hidden once Alpine hydrates. */}
+    <div x-show="!ready">
+      {
+        ssrGroups.map((g) => (
+          <div>
+            <h3 class="group-heading mt-4">{g.label}</h3>
+            <div class="grid grid-cols-1 items-start gap-x-6 gap-y-3 md:grid-cols-2">
+              {g.items.map((item) => (
+                <a href={item.fullPath} class="news-list-item">
+                  <div class="flex items-stretch">
+                    {item.splash?.url && (
+                      <div class="news-thumb shrink-0">
+                        <CmsImage
+                          image={item.splash}
+                          alt={item.splash.alternativeText || 'News thumbnail'}
+                          class="h-[90px] w-[90px] bg-gray-100 object-contain"
+                        />
+                      </div>
+                    )}
+                    <div class="px-4 py-3">
+                      <div class="news-meta">
+                        {isNew(item.publicationDate, 5) && <span class="new-chip">NEW!</span>}
+                        <span class="news-category">{newsCategoryLabel(item.category).toUpperCase()}</span>
+                        <span class="news-date">&nbsp;|&nbsp;{formatNewsDate(item.publicationDate)}</span>
+                      </div>
+                      <h4 class="news-title mt-1">{item.title}</h4>
+                      {item.summary && <p class="news-summary mt-1">{truncateWords(item.summary, 25)}</p>}
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    {/* Interactive list (Alpine x-for) — shown after hydrate. */}
+    <div x-show="ready" x-cloak x-ref="list">
+      <template x-for="g in pageGroups" :key="g.label">
+        <div>
+          <h3 class="group-heading mt-4" x-text="g.label"></h3>
+          <div class="grid grid-cols-1 items-start gap-x-6 gap-y-3 md:grid-cols-2">
+            <template x-for="it in g.items" :key="it.p">
+              <a :href="it.p" class="news-list-item">
+                <div class="flex items-stretch">
+                  <template x-if="it.img">
+                    <div class="news-thumb shrink-0">
+                      <img
+                        :src="it.img"
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        width="90"
+                        height="90"
+                        class="h-[90px] w-[90px] bg-gray-100 object-contain"
+                      />
+                    </div>
+                  </template>
+                  <div class="px-4 py-3">
+                    <div class="news-meta">
+                      <template x-if="it.n"><span class="new-chip">NEW!</span></template>
+                      <span class="news-category" x-text="it.cl"></span>
+                      <span class="news-date" x-text="' | ' + it.d"></span>
+                    </div>
+                    <h4 class="news-title mt-1" x-text="it.t"></h4>
+                    <template x-if="it.s"><p class="news-summary mt-1" x-text="it.s"></p></template>
+                  </div>
+                </div>
+              </a>
+            </template>
+          </div>
+        </div>
+      </template>
+
+      <p class="py-8 text-center text-gray-500" x-show="empty" x-cloak>
+        No news items found for this category.
+      </p>
+    </div>
+
+    {/* Pagination */}
+    <div class="mt-4 mb-8 flex justify-center" x-show="ready && totalPages > 1" x-cloak>
+      <nav class="flex items-center gap-1" aria-label="News pages">
+        <template x-for="(p, idx) in pages()" :key="idx">
+          <span>
+            <button
+              type="button"
+              x-show="p !== '…'"
+              class="pg"
+              :class="p===page ? 'pg-on' : 'pg-off'"
+              :aria-current="p===page ? 'page' : null"
+              @click="go(p)"
+              x-text="p"
+            ></button>
+            <span x-show="p === '…'" class="px-2 text-gray-500">…</span>
+          </span>
+        </template>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  .news-listing .page-heading {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111;
+  }
+  .news-listing .featured-card {
+    display: block;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    text-decoration: none;
+    transition: box-shadow 0.2s;
+  }
+  .news-listing .featured-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  .news-listing .featured-badge {
+    background-color: #0d4474;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 4px 12px;
+    text-transform: uppercase;
+  }
+  .news-listing .featured-title {
+    font-size: 1.5rem;
+    line-height: 1.8rem;
+    color: #111;
+  }
+  .news-listing .featured-summary {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #333;
+  }
+  .news-listing .featured-category {
+    font-weight: 700;
+    font-size: 12px;
+    color: #555;
+  }
+  .news-listing .featured-date {
+    font-size: 12px;
+    color: #555;
+  }
+  .news-listing .read-btn {
+    background-color: #0d4474;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    padding: 6px 14px;
+    text-transform: uppercase;
+  }
+  .news-listing .chip {
+    display: inline-block;
+    border: 1px solid #bbb;
+    color: #555;
+    font-size: 11px;
+    padding: 1px 8px;
+    border-radius: 12px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+  }
+  .news-listing .group-heading {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    padding-bottom: 0.5rem;
+  }
+  .news-listing .news-list-item {
+    display: block;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    text-decoration: none;
+    transition:
+      box-shadow 0.2s,
+      background-color 0.2s;
+  }
+  .news-listing .news-list-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    background-color: #fafafa;
+  }
+  .news-listing .news-thumb {
+    border-right: 1px solid #eee;
+  }
+  .news-listing .news-meta {
+    font-size: 12px;
+  }
+  .news-listing .news-category {
+    font-weight: 700;
+    color: #555;
+  }
+  .news-listing .news-date {
+    color: #555;
+  }
+  .news-listing .news-title {
+    font-size: 1rem;
+    line-height: 1.35rem;
+    color: #111;
+  }
+  .news-listing .news-summary {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: #555;
+  }
+  .news-listing .new-chip {
+    display: inline-block;
+    background-color: #0d4474;
+    color: #fff !important;
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 1;
+    padding: 3px 6px;
+    margin-right: 8px;
+    border-radius: 2px;
+    vertical-align: middle;
+  }
+  .news-listing .fbtn {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 4px;
+    border: 1px solid #0d4474;
+    cursor: pointer;
+    line-height: 1.4;
+  }
+  .news-listing .fbtn-off {
+    background-color: #fff;
+    color: #0d4474;
+  }
+  .news-listing .fbtn-on {
+    background-color: #0d4474;
+    color: #fff;
+  }
+  .news-listing .pg {
+    min-width: 34px;
+    height: 34px;
+    border-radius: 9999px;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    cursor: pointer;
+  }
+  .news-listing .pg-off {
+    background-color: #fff;
+    color: #333;
+  }
+  .news-listing .pg-off:hover {
+    background-color: #f0f0f0;
+  }
+  .news-listing .pg-on {
+    background-color: #0d4474;
+    color: #fff;
+  }
+</style>

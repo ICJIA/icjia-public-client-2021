@@ -9,7 +9,11 @@ import "./server-dom"; // ensure global DOMParser (linkedom) is installed
 // @ts-expect-error — gql-client.js is plain JS (ported verbatim)
 import { runQuery } from "./gql-client.js";
 import { renderToHtml } from "./markdown.js";
-import { GET_SINGLE_POST_QUERY, GET_ALL_NEWS_QUERY } from "../graphql/news.js";
+import {
+  GET_SINGLE_POST_QUERY,
+  GET_ALL_NEWS_QUERY,
+  GET_ALL_PRESS_QUERY,
+} from "../graphql/news.js";
 // @ts-expect-error — GET_HOME from plain-JS graphql module
 import { GET_HOME } from "../graphql/home.js";
 
@@ -25,6 +29,60 @@ const NEWS_LABELS: Record<string, string> = {
 };
 export function newsCategoryLabel(cat?: string): string {
   return (cat && NEWS_LABELS[cat]) || "News";
+}
+
+// config.maps.news — order + labels for the /news/ category filter buttons.
+export const NEWS_CATEGORIES: Array<{ category: string; label: string }> = [
+  { category: "news", label: "News" },
+  { category: "pressRelease", label: "Press Release" },
+  { category: "outreach", label: "Community Outreach" },
+  { category: "mediaAdvisory", label: "Media Advisory" },
+];
+
+// Month-grouping for the /news/ list (legacy groups by This Month / Last Month
+// / Earlier). Computed in America/Chicago so it matches the displayed dates.
+// SSR NOTE: "now" is request time; under the frozen-clock VR run a record within
+// ~1 day of a month boundary could bucket differently than prod (a VR-tune item).
+function chicagoMonthIndex(d: Date): number | null {
+  try {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Chicago",
+      year: "numeric",
+      month: "numeric",
+    }).formatToParts(d);
+    const y = Number(parts.find((p) => p.type === "year")?.value);
+    const m = Number(parts.find((p) => p.type === "month")?.value);
+    if (!y || !m) return null;
+    return y * 12 + (m - 1);
+  } catch {
+    return null;
+  }
+}
+export type MonthBucket = "this" | "last" | "earlier";
+export function monthBucket(iso?: string): MonthBucket {
+  if (!iso) return "earlier";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "earlier";
+  const a = chicagoMonthIndex(d);
+  const now = chicagoMonthIndex(new Date());
+  if (a == null || now == null) return "earlier";
+  const diff = now - a;
+  if (diff <= 0) return "this";
+  if (diff === 1) return "last";
+  return "earlier";
+}
+export const BUCKET_LABELS: Record<MonthBucket, string> = {
+  this: "This Month",
+  last: "Last Month",
+  earlier: "Earlier",
+};
+
+// Legacy News.vue truncate(): first `max` words, append "..." when truncated.
+export function truncateWords(str?: string, max = 25): string {
+  if (!str) return "";
+  const arr = str.trim().split(/\s+/);
+  const out = arr.slice(0, max).join(" ");
+  return arr.length > max ? out + "..." : out;
 }
 
 // Funding category → label (HomeTabbed.getCategory).
@@ -151,14 +209,68 @@ export interface NewsListItem {
   category?: string;
   published_at?: string;
   dateOverride?: string;
-  tags?: Array<{ title: string; slug: string }>;
+  /** dateOverride || published_at (legacy getPublicationDate). */
+  publicationDate?: string;
+  fullPath?: string;
+  bucket?: MonthBucket;
+  /** flattened tag titles (legacy getUnifiedTags). */
+  tags?: string[];
   splash?: StrapiImage | null;
+}
+
+/**
+ * Shape raw Strapi posts for a news listing the way News.vue does: flatten
+ * tags to title strings, derive publicationDate (dateOverride || published_at)
+ * + month bucket, set fullPath, sort newest-first.
+ */
+function shapeNewsList(posts: any[]): NewsListItem[] {
+  return (posts ?? [])
+    .map((e: any) => {
+      const publicationDate =
+        e.dateOverride && e.dateOverride.length ? e.dateOverride : e.published_at;
+      return {
+        ...e,
+        tags: Array.isArray(e.tags) ? e.tags.map((t: any) => t.title) : [],
+        publicationDate,
+        fullPath: `/news/${e.slug}/`,
+        bucket: monthBucket(publicationDate),
+      } as NewsListItem;
+    })
+    .sort((a, b) =>
+      String(b.publicationDate || "").localeCompare(String(a.publicationDate || "")),
+    );
 }
 
 /** Fetch all news posts (newest first), live, for the /news/ listing. */
 export async function getAllNews(): Promise<NewsListItem[]> {
   const { data } = await runQuery(GET_ALL_NEWS_QUERY, {}, "no-cache");
-  return (data?.posts ?? []) as NewsListItem[];
+  return shapeNewsList(data?.posts ?? []);
+}
+
+/** Fetch press releases + media advisories (newest first), for /news/press/. */
+export async function getAllPress(): Promise<NewsListItem[]> {
+  const { data } = await runQuery(GET_ALL_PRESS_QUERY, {}, "no-cache");
+  return shapeNewsList(data?.posts ?? []);
+}
+
+/**
+ * Exact port of the legacy `format` Vue filter: full month name + zero-padded
+ * day + year ("May 05, 2026"). The legacy filter ran in the browser and added
+ * abs(tz-offset) to pin the UTC calendar date; reading UTC components here is
+ * the tz-independent server equivalent (so it matches regardless of where it
+ * runs). Use for news/press dates so they match prod to the day.
+ */
+const MONTH_NAMES = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+export function formatNewsDate(d?: string): string {
+  if (!d) return "";
+  const t = new Date(d);
+  if (Number.isNaN(t.getTime())) return "";
+  const day = t.getUTCDate();
+  const pad = day < 10 ? "0" + day : String(day);
+  return `${MONTH_NAMES[t.getUTCMonth()]} ${pad}, ${t.getUTCFullYear()}`;
 }
 
 /** Format an ISO date in America/Chicago (matches the legacy site's tz). */

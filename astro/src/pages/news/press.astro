@@ -1,0 +1,38 @@
+---
+// /news/press/ — live-data SSR. Press releases + media advisories as a card
+// grid (parity with the legacy NewsPress.vue: heading + 3-col NewsCards). Cards
+// link to /news/<slug>/ (press items render through the normal article page).
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NewsCard from '../../components/NewsCard.astro';
+import { getAllPress } from '../../lib/data';
+import { setCache } from '../../lib/cache';
+
+const posts = await getAllPress();
+setCache(Astro.response, 'news');
+---
+
+<BaseLayout
+  title="Press Releases — ICJIA"
+  description="Press releases and media advisories from the Illinois Criminal Justice Information Authority."
+>
+  <div class="markdown-body mx-auto mb-12 max-w-6xl px-4 py-8 md:px-6">
+    <h1 class="page-heading mb-8">Press Releases</h1>
+    {
+      posts.length === 0 ? (
+        <p>No press releases at this time.</p>
+      ) : (
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+          {posts.map((item) => <NewsCard item={item} />)}
+        </div>
+      )
+    }
+  </div>
+
+  <style>
+    .page-heading {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #111;
+    }
+  </style>
+</BaseLayout>

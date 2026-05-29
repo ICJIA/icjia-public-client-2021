@@ -3,6 +3,52 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.14.0] — 2026-05-29 — /news/ parity rebuild (featured + filters + month-grouping + pagination) + /news/press/
+
+### Lighthouse — deploy CONFIRMED (mobile, branch-deploy home)
+- All four **100**: accessibility **100**, performance **100**, best-practices **100**,
+  SEO **100** — verified on the live deploy after the [0.13.0] build went out.
+  Closes both gaps from the report (a11y 96→100, best-practices 96→100); perf 98→100.
+
+### Added — `/news/` now at functional parity with the legacy `News.vue`
+- Was a simplified card grid; now: **featured card** (most-recent post), **category
+  filter buttons** (All + categories present), **month-grouped list** (This Month /
+  Last Month / Earlier), **pagination** (15/page).
+- Rendering model: featured + page 1 are **server-rendered** (real HTML so
+  SiteImprove/axe/Google + no-JS see content/links); Alpine then drives
+  filter/paginate/group via **`x-for`**, keeping only the current page in the DOM
+  (~15 items, like prod) — **552 DOM elements** vs 2374 for a full-archive render.
+  - NOTE: per-item `x-show` across the full archive was tried first and is **not
+    reliably reactive at this scale** (state updates but the DOM goes stale after
+    the first change); `x-for` is the correct primitive.
+- Client-list thumbnails pre-optimized server-side via `getImage()` → same-origin
+  (no Thumbor, no third-party cookie).
+
+### Added — `/news/press/` (press releases + media advisories)
+- Simple `NewsCard` grid (parity with `NewsPress.vue`), via `getAllPress()`
+  (`GET_ALL_PRESS_QUERY`).
+
+### Changed — data layer (`data.ts`)
+- `formatNewsDate()` — exact port of the legacy `format` filter (full month +
+  **zero-padded day**, UTC-component read). Switched `NewsCard` to it; the prior
+  Intl/Chicago formatter dropped the zero-pad and could be a day off for
+  midnight-UTC dates.
+- Added `shapeNewsList()` (publicationDate, unified tags, month bucket, fullPath,
+  newest-first), `getAllPress()`, `NEWS_CATEGORIES`, `monthBucket()`,
+  `truncateWords()`, `BUCKET_LABELS`.
+
+### Verified (localhost, real browser)
+- Filter (All/News/Press), reset, pagination (page 2 ≠ page 1; last page partial =
+  7 of 187), category switch — all correct via `x-for`; SSR page-1 hides after
+  hydrate. **0** Thumbor refs, **0** cross-origin `<img>`, 174 same-origin
+  `/_image` URLs. `/news/press/` dates zero-padded ("March 01, 2024").
+
+### Pending / VR-tune
+- Exact Vuetify spacing + `v-pagination` ellipsis styling vs prod (VR pass).
+- Month-bucket + NEW!-chip use request-time "now" (SSR); a record within ~1 day of
+  a month / 5-day boundary could differ from prod under the frozen-clock VR.
+- Article-body inline CMS images (carried from 0.13.0).
+
 ## [0.13.0] — 2026-05-29 — Lighthouse fixes: Astro image optimization (no Thumbor) + target-size
 
 ### Lighthouse baseline (mobile, branch deploy home)

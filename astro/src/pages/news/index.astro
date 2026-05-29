@@ -1,10 +1,8 @@
 ---
-// News listing — live-data SSR. Lists all news posts (newest first) as cards
-// linking to the article pages. Tailwind grid (1 / 2 / 3 cols at the Vuetify
-// breakpoints). Pixel-tuning vs prod (card layout, category labels, pagination)
-// is the VR follow-up.
+// /news/ — live-data SSR. Parity with the legacy News.vue (featured + category
+// filters + month-grouped + paginated); all logic lives in NewsListing.astro.
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import NewsCard from '../../components/NewsCard.astro';
+import NewsListing from '../../components/NewsListing.astro';
 import { getAllNews } from '../../lib/data';
 import { setCache } from '../../lib/cache';
 
@@ -13,18 +11,15 @@ setCache(Astro.response, 'news');
 ---
 
 <BaseLayout
-  title="News — ICJIA"
+  title="News & Information — ICJIA"
   description="News, announcements, and updates from the Illinois Criminal Justice Information Authority."
 >
   <div class="mx-auto max-w-6xl px-4 py-8 md:px-6">
-    <h1 class="mb-6 text-3xl font-bold">News</h1>
     {
       posts.length === 0 ? (
         <p>No news at this time.</p>
       ) : (
-        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {posts.map((item) => <NewsCard item={item} />)}
-        </div>
+        <NewsListing items={posts} />
       )
     }
   </div>
