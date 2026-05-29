@@ -1,0 +1,72 @@
+---
+// Section header bar — ported from WidgetBar.vue. White bar, top border,
+// uppercase 26px/900 title, right-side "MENU" dropdown (Alpine) or single link.
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  title: string;
+  mobileTitle?: string;
+  menuItems?: Array<{ label: string; url: string; type?: string }>;
+}
+const { title, mobileTitle, menuItems = [] } = Astro.props;
+---
+
+<div
+  class="flex items-center border-t border-[#ccc] bg-white px-4 py-2"
+  x-data="{ open: false }"
+  x-on:keydown.escape="open = false"
+>
+  <h2 class="m-0 text-[26px] font-black uppercase leading-none">
+    {
+      mobileTitle ? (
+        <>
+          <span class="md:hidden">{mobileTitle}</span>
+          <span class="hidden md:inline">{title}</span>
+        </>
+      ) : (
+        title
+      )
+    }
+  </h2>
+  <div class="flex-1"></div>
+  {
+    menuItems.length > 1 ? (
+      <div class="relative" x-on:click.outside="open = false">
+        <button
+          type="button"
+          class="inline-flex items-center text-base font-black uppercase"
+          x-on:click="open = !open"
+          x-bind:aria-expanded="open ? 'true' : 'false'"
+          aria-haspopup="true"
+        >
+          MENU
+          <Icon name="mdi:dots-vertical" class="ml-1 text-[20px]" aria-hidden="true" />
+        </button>
+        <div
+          x-show="open"
+          x-cloak
+          class="absolute right-0 top-full z-40 min-w-[180px] border border-gray-200 bg-white py-1 shadow-lg"
+          role="menu"
+        >
+          <ul>
+            {menuItems.map((m) => (
+              <li>
+                <a
+                  href={m.url}
+                  role="menuitem"
+                  class="block px-4 py-2 text-sm !font-normal !text-black no-underline hover:bg-gray-100"
+                >
+                  {m.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    ) : menuItems.length === 1 ? (
+      <a href={menuItems[0].url} class="text-base font-black uppercase !text-black no-underline">
+        {menuItems[0].label} &raquo;
+      </a>
+    ) : null
+  }
+</div>

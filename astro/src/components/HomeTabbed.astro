@@ -1,0 +1,158 @@
+---
+// Home tabbed widget — ported from HomeTabbed.vue. Three tabs (Funding /
+// Meetings / Employment), each a list of clickable cards. Expiry / new /
+// cancelled flags are computed server-side (SSR). Tabs are an ARIA tablist
+// driven by Alpine.
+import {
+  fundingCategoryLabel,
+  formatDate,
+  formatDateShort,
+  isExpired,
+  isNew,
+} from '../lib/data';
+
+interface Props {
+  grants?: any[];
+  meetings?: any[];
+  employment?: any[];
+}
+const { grants = [], meetings = [], employment = [] } = Astro.props;
+const tabs = ['Funding', 'Meetings', 'Employment'];
+---
+
+<div x-data="{ tab: 0 }">
+  <div role="tablist" aria-label="Funding, meetings, employment" class="mt-2 flex">
+    {
+      tabs.map((t, i) => (
+        <button
+          type="button"
+          role="tab"
+          id={`home-tab-${i}`}
+          class="home-tab grow border border-transparent py-3 text-[22px]"
+          x-bind:aria-selected={`tab === ${i} ? 'true' : 'false'`}
+          x-bind:class={`tab === ${i} ? 'home-tab--active' : ''`}
+          x-on:click={`tab = ${i}`}
+        >
+          {t}
+        </button>
+      ))
+    }
+  </div>
+
+  {/* Funding */}
+  <div role="tabpanel" aria-labelledby="home-tab-0" x-show="tab === 0" class="bg-white pt-[15px]">
+    {
+      grants.map((g, i) => (
+        <a
+          href={g.fullPath}
+          class:list={["card", "hover", "block", "px-8", "py-3", "no-underline", { "rule-top": i > 0 }]}
+        >
+          <p class="text-[0.9em] !font-normal !text-black">
+            <span class="font-bold">{fundingCategoryLabel(g.category)}</span>
+            {isExpired(g.end) ? (
+              <> | <span class="chip-flag chip-expired">Expired</span></>
+            ) : (
+              <> | {formatDateShort(g.start)} to {formatDateShort(g.end)}</>
+            )}
+          </p>
+          <h2 class="mt-2 text-[1.1em] !text-black">{g.title}</h2>
+          <p class="mt-2 text-[0.9em] !font-normal !text-black">{g.summary}</p>
+        </a>
+      ))
+    }
+  </div>
+
+  {/* Meetings */}
+  <div role="tabpanel" aria-labelledby="home-tab-1" x-show="tab === 1" x-cloak class="bg-white pt-[15px]">
+    {
+      meetings.map((m, i) => (
+        <a
+          href={m.fullPath}
+          class:list={["card", "hover", "block", "px-8", "py-8", "no-underline", { "rule-top": i > 0 }]}
+        >
+          <p class="text-[0.9em] !font-normal !text-black">
+            <span class="font-bold">MEETING</span> | {formatDate(m.start)}
+            {m.isCancelled && (
+              <> | <span class="chip-flag chip-cancelled">CANCELLED</span></>
+            )}
+          </p>
+          <h2 class:list={["mt-2", "text-[1.1em]", "!text-black", { "line-through": m.isCancelled }]}>
+            {m.title}
+          </h2>
+          <p class="mt-2 text-[0.9em] !font-normal !text-black">
+            {m.isCancelled ? "This meeting is cancelled" : m.summary}
+          </p>
+        </a>
+      ))
+    }
+  </div>
+
+  {/* Employment */}
+  <div role="tabpanel" aria-labelledby="home-tab-2" x-show="tab === 2" x-cloak class="bg-white pt-[15px]">
+    {
+      employment.length > 0 ? (
+        employment.map((j, i) => (
+          <a
+            href={j.fullPath}
+            class:list={["card", "hover", "block", "px-8", "py-8", "no-underline", { "rule-top": i > 0 }]}
+          >
+            <p class="text-sm !font-normal !text-black">
+              <span class="font-bold">Employment Opportunity</span>
+              {isExpired(j.end) ? (
+                <> | <span class="chip-flag chip-expired">Expired</span></>
+              ) : (
+                <> | Accepting applications through {formatDate(j.end)}</>
+              )}
+            </p>
+            <h2 class="mt-2 text-[1.1em] !text-black">
+              {isNew(j.published_at, 7) && <span class="chip-flag chip-new mr-2">NEW!</span>}
+              {j.title}
+            </h2>
+            <p class="mt-2 text-[0.9em] !font-normal !text-black">{j.summary}</p>
+          </a>
+        ))
+      ) : (
+        <div class="flex h-[200px] items-center justify-center px-8 text-center">
+          <h2 class="text-[1.1em]">There are no current employment opportunities</h2>
+        </div>
+      )
+    }
+  </div>
+</div>
+
+<style>
+  .home-tab {
+    font-weight: 400;
+    color: #000;
+    letter-spacing: 0.005rem;
+  }
+  .home-tab--active {
+    font-weight: 900;
+    background: #e8e8e8;
+    color: #000;
+    border: 1px solid #ccc;
+  }
+  .rule-top {
+    border-top: 1px solid #ddd;
+  }
+  .chip-flag {
+    display: inline-block;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.7em;
+    padding: 1px 8px;
+    border-radius: 4px;
+    vertical-align: middle;
+  }
+  .chip-expired {
+    background: #ad2e2e;
+  }
+  .chip-cancelled {
+    background: #c62828;
+  }
+  .chip-new {
+    background: #0d4474;
+    font-weight: 400;
+    font-size: 0.75em;
+  }
+</style>

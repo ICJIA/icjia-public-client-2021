@@ -1,0 +1,52 @@
+---
+// Home news card — ported from HomeCardNews.vue. Clickable card: image left
+// (md), category | date + title (+ "NEW!") + truncated summary right. Top rule
+// between cards (index > 0).
+import { newsCategoryLabel, formatDate, isNew, homeNewsImage } from '../lib/data';
+
+interface Props {
+  item: any;
+  index?: number;
+}
+const { item, index = 0 } = Astro.props;
+
+const img = homeNewsImage(item.splash);
+const date = formatDate(item.publicationDate);
+const cat = newsCategoryLabel(item.category).toUpperCase();
+const fresh = isNew(item.publicationDate);
+
+const words = String(item.summary || "").trim().split(/\s+/);
+const summary = words.slice(0, 30).join(" ") + (words.length > 30 ? "..." : "");
+---
+
+<a
+  href={item.fullPath}
+  class:list={["card", "hover", "block", "no-underline", { "rule-top": index > 0 }]}
+>
+  <div class="grid grid-cols-1 gap-4 p-4 md:grid-cols-12">
+    <div class="md:col-span-4">
+      <img
+        src={img || "/icjia-half-splash-thumb-v2.jpg"}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        class="max-h-[200px] w-full object-contain"
+      />
+    </div>
+    <div class="md:col-span-8">
+      <p class="text-sm !font-normal !text-black">
+        <span class="font-bold">{cat}</span> | {date}
+      </p>
+      <h2 class="mt-1 text-[18px] font-bold leading-7 !text-black">
+        {fresh && <span class="chip mr-2 align-middle">NEW!</span>}{item.title}
+      </h2>
+      <p class="mt-2 text-sm !font-normal !text-black">{summary}</p>
+    </div>
+  </div>
+</a>
+
+<style>
+  .rule-top {
+    border-top: 1px solid #e8e8e8;
+  }
+</style>

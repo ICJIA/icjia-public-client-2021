@@ -10,9 +10,72 @@ import "./server-dom"; // ensure global DOMParser (linkedom) is installed
 import { runQuery } from "./gql-client.js";
 import { renderToHtml } from "./markdown.js";
 import { GET_SINGLE_POST_QUERY, GET_ALL_NEWS_QUERY } from "../graphql/news.js";
+// @ts-expect-error — GET_HOME from plain-JS graphql module
+import { GET_HOME } from "../graphql/home.js";
 
 // Strapi (agency) host — splash URLs come back as /uploads/... relative paths.
 const STRAPI_BASE = "https://agency.icjia-api.cloud";
+
+// News category → display label (config.maps.news).
+const NEWS_LABELS: Record<string, string> = {
+  news: "News",
+  pressRelease: "Press Release",
+  outreach: "Community Outreach",
+  mediaAdvisory: "Media Advisory",
+};
+export function newsCategoryLabel(cat?: string): string {
+  return (cat && NEWS_LABELS[cat]) || "News";
+}
+
+// Funding category → label (HomeTabbed.getCategory).
+export function fundingCategoryLabel(cat?: string): string {
+  if (cat === "nofo") return "Notice of Funding Opportunity";
+  if (cat === "rfi") return "Request for Information";
+  return "";
+}
+
+const DAYS_TO_SHOW_NEW = 5;
+
+/** Within the "NEW!" window (days since published). */
+export function isNew(iso?: string, days = DAYS_TO_SHOW_NEW): boolean {
+  if (!iso) return false;
+  const then = new Date(iso).getTime();
+  if (Number.isNaN(then)) return false;
+  // FROZEN-CLOCK NOTE: under SSR this uses request time; VR freezes the clock.
+  return (Date.now() - then) / 86_400_000 <= days;
+}
+
+/** Expired = now is past end-of-(end-date) (legacy adds one day to `end`). */
+export function isExpired(end?: string): boolean {
+  if (!end) return false;
+  const exp = new Date(end);
+  if (Number.isNaN(exp.getTime())) return false;
+  exp.setDate(exp.getDate() + 1);
+  return Date.now() > exp.getTime();
+}
+
+/** Short date (dateFormatAlt): "Jan 5, 2026", America/Chicago. */
+export function formatDateShort(iso?: string): string {
+  if (!iso) return "";
+  try {
+    return new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Chicago",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    }).format(new Date(iso));
+  } catch {
+    return "";
+  }
+}
+
+/** Home news card image — Strapi `small` (or thumbnail) format, absolute. */
+export function homeNewsImage(splash?: StrapiImage | null): string | null {
+  if (!splash) return null;
+  const f = (splash.formats || {}) as Record<string, { url?: string }>;
+  const url = f.small?.url || f.thumbnail?.url || splash.url;
+  return url ? strapiUrl(url) : null;
+}
 
 export interface StrapiImage {
   caption?: string;
@@ -92,4 +155,42 @@ export function formatDate(iso?: string): string {
 export function strapiUrl(url?: string | null): string | null {
   if (!url) return null;
   return url.startsWith("http") ? url : STRAPI_BASE + url;
+}
+
+export interface HomeData {
+  news: any[];
+  meetings: any[];
+  funding: any[];
+  employment: any[];
+  boxes: any[];
+}
+
+/** Fetch + shape the home page data, live. Mirrors Home.vue's result(). */
+export async function getHome(): Promise<HomeData> {
+  const { data } = await runQuery(
+    GET_HOME,
+    { postLimit: 15, meetingLimit: 5, fundingLimit: 5, employmentLimit: 3 },
+    "no-cache",
+  );
+  const pub = (e: any) => e.dateOverride || e.published_at;
+  const news = (data?.posts ?? [])
+    .map((e: any) => ({ ...e, fullPath: `/news/${e.slug}/`, publicationDate: pub(e) }))
+    .sort((a: any, b: any) =>
+      String(b.publicationDate || "").localeCompare(String(a.publicationDate || "")),
+    )
+    .slice(0, 5);
+  const meetings = (data?.meetings ?? []).map((e: any) => ({
+    ...e,
+    fullPath: `/news/meetings/${e.slug}/`,
+  }));
+  const funding = (data?.grants ?? []).map((e: any) => ({
+    ...e,
+    fullPath: `/grants/funding/${e.slug}/`,
+  }));
+  const employment = (data?.jobs ?? []).map((e: any) => ({
+    ...e,
+    fullPath: `/about/employment/${e.slug}/`,
+  }));
+  const boxes = data?.home?.clickThroughBoxes ?? [];
+  return { news, meetings, funding, employment, boxes };
 }

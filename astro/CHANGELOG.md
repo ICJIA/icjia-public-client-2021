@@ -3,6 +3,27 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.10.0] — 2026-05-29 — Phase 3: home News & Information (live)
+
+### Added
+- `getHome()` data fetcher (`GET_HOME` → news/meetings/funding/employment/boxes,
+  shaped like `Home.vue`) + home helpers (`newsCategoryLabel`,
+  `fundingCategoryLabel`, `isNew`, `isExpired`, `formatDateShort`,
+  `homeNewsImage`).
+- Home **News & Information** 2-col section: `WidgetBar` ("NEWS & INFORMATION" +
+  MENU dropdown), `HomeCardNews` (image-left news cards: category | date,
+  title + "NEW!", summary), `HomeTabbed` (Alpine tabs Funding/Meetings/
+  Employment with expiry/new/cancelled flags computed server-side). Wired into
+  the home. News-card fallback image copied to `public/`.
+
+### Verified
+- Home renders splash + live News & Information (5 news cards + funding/meeting/
+  employment tabs) under the chrome (HTTP 200, no errors, real live titles).
+
+### Pending (VR pass)
+- Pixel-tune the News & Information section vs prod; then click-through boxes +
+  Research strip.
+
 ## [0.9.0] — 2026-05-29 — Phase 3: home hero (splash)
 
 ### Added

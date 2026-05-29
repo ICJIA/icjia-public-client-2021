@@ -1,6 +1,22 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HomeSplash from '../components/HomeSplash.astro';
+import WidgetBar from '../components/WidgetBar.astro';
+import HomeCardNews from '../components/HomeCardNews.astro';
+import HomeTabbed from '../components/HomeTabbed.astro';
+import { getHome } from '../lib/data';
+import { setCache } from '../lib/cache';
+
+const home = await getHome();
+setCache(Astro.response, 'home');
+
+const newsMenuItems = [
+  { label: 'News', url: '/news/' },
+  { label: 'Meetings', url: '/news/meetings/' },
+  { label: 'Funding', url: '/grants/funding/' },
+  { label: 'Employment', url: '/about/employment/' },
+  { label: 'Events', url: '/news/events/' },
+];
 ---
 
 <BaseLayout
@@ -8,6 +24,22 @@ import HomeSplash from '../components/HomeSplash.astro';
   description="The Illinois Criminal Justice Information Authority (ICJIA) is a state agency dedicated to improving the administration of criminal justice in Illinois."
 >
   <HomeSplash />
-  {/* Building next, fed by getHome(): News & Information (HomeNews + tabbed
-      funding/employment/meetings), click-through boxes, and Research. */}
+
+  <div class="bg-white" style="margin-top: -20px; position: relative; z-index: 1">
+    <WidgetBar title="News & Information" mobileTitle="News" menuItems={newsMenuItems} />
+    <div class="grid grid-cols-1 md:grid-cols-2">
+      <div class="pt-[15px] md:border-r md:border-[#e8e8e8]">
+        {home.news.map((item, i) => <HomeCardNews item={item} index={i} />)}
+      </div>
+      <div>
+        <HomeTabbed
+          grants={home.funding}
+          meetings={home.meetings}
+          employment={home.employment}
+        />
+      </div>
+    </div>
+  </div>
+
+  {/* Click-through boxes + Research strip build next. */}
 </BaseLayout>
