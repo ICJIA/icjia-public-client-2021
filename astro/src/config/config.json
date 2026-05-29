@@ -1,0 +1,233 @@
+{
+    "publicPath": "",
+    "namespace": "icjia-",
+    "netlifyURL": "https://agency.icjia.cloud",
+    "api": {
+        "base": "https://agency.icjia-api.cloud",
+        "baseGraphQL": "https://agency.icjia-api.cloud/graphql",
+        "baseClient": "https://icjia.illinois.gov",
+        "forgetPassword": "/auth/forgot-password",
+        "resetPassword": "/auth/reset-password",
+        "resetPasswordCallback": "/reset",
+        "posts": "/posts",
+        "login": "/auth/local",
+        "timeout": 15000,
+        "register": "/auth/local/register"
+    },
+    "daysToShowNew": 5,
+    "daysToShowNewResearch": 10,
+    "archiveDate": "January 1, 2021",
+    "home": {
+        "eventLimit": 3,
+        "postLimit": 5,
+        "fundingLimit": 5,
+        "meetingLimit": 5,
+        "employmentLimit": 3
+    },
+    "image": {
+        "server": "https://image.icjia.cloud",
+        "thumbHeight": 100,
+        "thumbWidth": 0,
+        "splashHeight": 400,
+        "splashWidth": 0
+    },
+    "timezone": "America/Chicago",
+    "underConstruction": false,
+    "events": {
+        "conference": {
+            "color": "blue"
+        },
+        "external": {
+            "color": "indigo"
+        },
+        "general": {
+            "color": "deep-purple"
+        },
+        "holiday": {
+            "color": "teal"
+        },
+        "meeting": {
+            "color": "cyan"
+        },
+        "party": {
+            "color": "orange"
+        },
+        "seminar": {
+            "color": "green"
+        },
+        "summit": {
+            "color": "red"
+        },
+        "training": {
+            "color": "blue-grey"
+        },
+        "webinar": {
+            "color": "light-blue"
+        }
+    },
+    "hoursToShowUpdated": 1,
+    "maps": {
+        "policies": [
+            {
+                "category": "requiredForms",
+                "label": "Required Forms",
+                "text": "ICJIA Required Forms."
+            }
+        ],
+        "meetings": [
+            {
+                "category": "board",
+                "label": "Authority Board",
+                "text": "ICJIA Board meetings are held at the offices of ICJIA, 300 West Adams Street, 2nd Floor, Large Conference Room, Chicago, Illinois, 60606."
+            },
+            {
+                "category": "budget",
+                "label": "Budget Committee",
+                "text": "Budget Committee meetings are held at the offices of ICJIA, 300 West Adams Street, 2nd Floor, Large Conference Room, Chicago, Illinois, 60606."
+            },
+            {
+                "category": "irb",
+                "label": "Institutional Review Board",
+                "text": "IRB meetings are held at the offices of ICJIA, 300 West Adams Street, 2nd Floor, Large Conference Room, Chicago, Illinois, 60606."
+            },
+            {
+                "category": "special",
+                "label": "Special"
+            }
+        ],
+        "news": [
+            {
+                "category": "news",
+                "label": "News",
+                "text": ""
+            },
+            {
+                "category": "pressRelease",
+                "label": "Press Release",
+                "text": ""
+            },
+            {
+                "category": "outreach",
+                "label": "Community Outreach",
+                "text": ""
+            },
+            {
+                "category": "mediaAdvisory",
+                "label": "Media Advisory",
+                "text": ""
+            }
+        ],
+        "employment": [
+            {
+                "category": "contract",
+                "label": "Contract",
+                "text": ""
+            },
+            {
+                "category": "fullTime",
+                "label": "Full Time",
+                "text": ""
+            },
+            {
+                "category": "internship",
+                "label": "Internship",
+                "text": ""
+            },
+            {
+                "category": "partTime",
+                "label": "Part Time",
+                "text": ""
+            }
+        ]
+    },
+    "hub": {
+        "homeArticles": 3,
+        "homeApps": 3,
+        "homeDatasets": 3,
+        "splashArticles": 5,
+        "splashApps": 3,
+        "splashDatasets": 3
+    },
+    "search": {
+        "site": {
+            "isCaseSensitive": false,
+            "includeScore": false,
+            "shouldSort": true,
+            "includeMatches": false,
+            "findAllMatches": true,
+            "minMatchCharLength": 2,
+            "location": 0,
+            "threshold": 0.25,
+            "distance": 200,
+            "useExtendedSearch": false,
+            "ignoreLocation": false,
+            "ignoreFieldNorm": false,
+            "keys": [
+                {
+                    "name": "title",
+                    "weight": 1
+                },
+                {
+                    "name": "searchMeta",
+                    "weight": 1
+                },
+                {
+                    "name": "altTitle",
+                    "weight": 1
+                },
+                {
+                    "name": "date",
+                    "weight": 2
+                },
+                {
+                    "name": "fullName",
+                    "weight": 1
+                },
+                {
+                    "name": "contentType",
+                    "weight": 2
+                },
+                {
+                    "name": "authors.title",
+                    "weight": 1
+                },
+                {
+                    "name": "authors.description",
+                    "weight": 1
+                },
+                {
+                    "name": "tags",
+                    "weight": 1
+                },
+                {
+                    "name": "position",
+                    "weight": 2
+                },
+                {
+                    "name": "tagsAlt.title",
+                    "weight": 1
+                },
+                {
+                    "name": "categories",
+                    "weight": 2
+                },
+                {
+                    "name": "category",
+                    "weight": 2
+                },
+                {
+                    "name": "summary",
+                    "weight": 2
+                },
+                {
+                    "name": "abstract",
+                    "weight": 2
+                },
+                {
+                    "name": "unit.title",
+                    "weight": 2
+                }
+            ]
+        }
+    }
+}

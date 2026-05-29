@@ -1,0 +1,16 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`contentSanitizer — linkedom output ground truth (inspect snapshot) > matches snapshot of every fixture's server-side output 1`] = `
+{
+  "emptyContainers": "<p>Real paragraph.</p>",
+  "focusablePre": "<pre tabindex="0">const x = 1;
+const y = 2;</pre>",
+  "headerlessTable": "<table><tbody><tr><th id="cmstbl#-h0" scope="row">Program</th><td headers="cmstbl#-h0">Status</td></tr><tr><th id="cmstbl#-h1" scope="row">R3</th><td headers="cmstbl#-h1">Open</td></tr></tbody></table>",
+  "imageNoAlt": "<p>See chart:</p><p><img alt="chart" src="/uploads/chart.png" width="600"></p>",
+  "invalidListChild": "<ul><li><div>stray</div></li><li>item one</li><li>item two</li></ul>",
+  "linkWrappingImage": "<a aria-label="thumb" href="/uploads/report.pdf"><img alt="thumb" src="/uploads/thumb.png"></a>",
+  "misspellingHtml": "<p>activities in Illinois for the Independent review.</p>",
+  "simpleTableWithTh": "<table><thead><tr><th id="cmstbl#-h0" scope="col">Year</th><th id="cmstbl#-h1" scope="col">Arrests</th></tr></thead><tbody><tr><td headers="cmstbl#-h0">2020</td><td headers="cmstbl#-h1">1,234</td></tr><tr><td headers="cmstbl#-h0">2021</td><td headers="cmstbl#-h1">1,400</td></tr></tbody></table>",
+  "whiteText": "<p>Hard to read on a white background.</p>",
+}
+`;

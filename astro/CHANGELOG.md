@@ -3,6 +3,28 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.2.0] — 2026-05-29 — Phase 0 data layer + SSR parity gate (GO ✓)
+
+### Added
+- Ported the framework-agnostic data layer near-verbatim into `src/lib`:
+  `gql-client.js` (import paths fixed), `contentSanitizer.js` (1,277 lines, the
+  SiteImprove/a11y content pipeline), `brokenLinks.js`, and `src/config/config.json`.
+- `src/lib/server-dom.ts`: a `DOMParser` shim backed by linkedom's `parseHTML`
+  (with an explicit `<body>` wrapper, since linkedom's raw
+  `DOMParser.parseFromString` does not auto-wrap fragments the way a browser does).
+- `src/lib/contentSanitizer.parity.test.ts` + Vitest config: the SSR go/no-go
+  gate. Compares the linkedom-backed shim against jsdom (browser-faithful
+  reference) on realistic CMS fixtures.
+
+### Verified (the migration's #1 risk, retired)
+- **All 15 tests pass.** The 1,277-line sanitizer runs correctly **server-side**;
+  output is semantically identical to jsdom across every DOM-based plugin
+  (table `scope`/`headers`, img `alt`, contrast strip, empty-container removal,
+  list-validity, focusable `<pre>`, image-link labels, misspellings).
+- Confirms live-data SSR is viable: the content pipeline produces fully
+  sanitized HTML in the server response (so SiteImprove/axe/Google see real
+  content), no client-side rendering required.
+
 ## [0.1.0] — 2026-05-29 — Phase 0 scaffold
 
 ### Added
