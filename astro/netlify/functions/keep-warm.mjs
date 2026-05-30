@@ -1,41 +1,131 @@
-// Keep-warm scheduled function — pings the highest-entry SSR routes on a schedule
-// so the (single, shared) Astro SSR lambda + the Netlify Durable Cache stay warm.
-// A real visitor landing on home/research then hits a warm function (~150ms TTFB)
-// instead of paying a cold start (~1s).
+// Keep-warm scheduled function — pings the highest-entry SSR routes so the
+// (single, shared) Astro SSR lambda + the Netlify Durable Cache stay warm. A
+// real visitor landing on home/research then hits a warm function (~150ms TTFB)
+// instead of a cold start (~1s). Cadence + routes are configurable in
+// ../keep-warm.config.mjs.
 //
-// Cadence + route list are CONFIGURABLE — edit ../keep-warm.config.mjs.
-// Crawlers/SEO unaffected: this just exercises the same SSR routes a user would.
+// ── SAFETY MODEL (defense-in-depth — this could be costly if it ran away) ─────
+// THREAT: anything that causes this to invoke the SSR function far more than the
+// intended ~6 pings / 5 min — whether an attacker triggering it in a loop, a
+// platform misconfiguration exposing it to HTTP, or a bug. Each layer below caps
+// the blast radius INDEPENDENTLY, so no single failure can run up the bill.
+//
+//   L1 INVOCATION SOURCE — schedule() functions are scheduler-triggered and not
+//      published at a public HTTP URL. We do NOT trust that alone: if an HTTP
+//      event ever reaches us, we ACCEPT ONLY a genuine scheduled invocation
+//      (event.httpMethod == null / source 'aws.events') and 403 anything else.
+//   L2 DURABLE RATE-GUARD — a Netlify Blobs timestamp gates execution to at most
+//      once per MIN_INTERVAL_MS. Even if invoked 1000×/hour, all but ~1/cooldown
+//      short-circuit BEFORE any fetch. Survives across invocations (not in-memory).
+//   L3 BOUNDED FAN-OUT — ROUTES is hard-sliced to MAX_ROUTES and de-duped, so a
+//      misconfigured config can't fan out to hundreds of URLs.
+//   L4 SAME-ORIGIN ALLOWLIST — only ever fetches this deploy's own origin; a
+//      poisoned base/route can't turn this into an SSRF/outbound amplifier.
+//   L5 HARD TIMEOUT + NO RETRY — each ping has an AbortController deadline and
+//      never retries, so a slow/hanging route can't pile up wall-clock cost.
+//   L6 GLOBAL KILL SWITCH — env KEEP_WARM_DISABLED=1 disables it instantly
+//      without a redeploy (set in the Netlify UI).
 import { schedule } from "@netlify/functions";
+import { getStore } from "@netlify/blobs";
 import { SCHEDULE, ROUTES } from "../keep-warm.config.mjs";
 
-export const handler = schedule(SCHEDULE, async () => {
-  // The deploy's own origin (Netlify sets URL at runtime); fall back to prod.
-  const base =
-    process.env.URL ||
-    process.env.DEPLOY_PRIME_URL ||
-    "https://icjia.illinois.gov";
+// Hard ceilings — independent of the config, so config edits can't breach them.
+const MAX_ROUTES = 12; // L3: absolute cap on fan-out per run
+const MIN_INTERVAL_MS = 4 * 60 * 1000; // L2: ≥4 min between real runs (under the */5 cron)
+const PER_PING_TIMEOUT_MS = 8000; // L5: per-route deadline
+const GUARD_STORE = "keep-warm";
+const GUARD_KEY = "last-run";
+
+// L4: only this exact origin may be fetched.
+function selfOrigin() {
+  const u = process.env.URL || process.env.DEPLOY_PRIME_URL;
+  if (!u) return "https://icjia.illinois.gov";
+  try {
+    return new URL(u).origin;
+  } catch {
+    return "https://icjia.illinois.gov";
+  }
+}
+
+// L3: de-dupe + cap + keep only same-origin absolute paths ("/...").
+function safeRoutes() {
+  const seen = new Set();
+  const out = [];
+  for (const r of Array.isArray(ROUTES) ? ROUTES : []) {
+    if (typeof r !== "string" || r[0] !== "/" || r.startsWith("//")) continue; // reject "//evil.com", full URLs
+    if (seen.has(r)) continue;
+    seen.add(r);
+    out.push(r);
+    if (out.length >= MAX_ROUTES) break;
+  }
+  return out;
+}
+
+async function handler(event) {
+  // L6: kill switch (no redeploy needed).
+  if (process.env.KEEP_WARM_DISABLED === "1") {
+    return { statusCode: 200, body: "disabled" };
+  }
+
+  // L1: accept ONLY a genuine scheduled invocation. A scheduled trigger has no
+  // real HTTP method (or source aws.events). Any actual HTTP request → 403.
+  const method = event && event.httpMethod;
+  const isScheduled =
+    !method || (event && event.source === "aws.events") || event?.headers?.["x-nf-event"] === "schedule";
+  if (method && !isScheduled) {
+    return { statusCode: 403, body: "forbidden" };
+  }
+
+  // L2: durable rate-guard. Bail if a real run happened < MIN_INTERVAL_MS ago.
+  let store = null;
+  try {
+    store = getStore(GUARD_STORE);
+    const last = Number((await store.get(GUARD_KEY)) || 0);
+    const now = Date.now();
+    if (last && now - last < MIN_INTERVAL_MS) {
+      return { statusCode: 429, body: "throttled" };
+    }
+    // Claim the slot BEFORE doing work (so concurrent invocations don't both run).
+    await store.set(GUARD_KEY, String(now));
+  } catch {
+    // Blobs unavailable: degrade safely — the scheduler already paces us at */5,
+    // and L1/L3/L4/L5 still cap the blast radius. Continue without the guard.
+  }
+
+  const origin = selfOrigin();
+  const routes = safeRoutes();
 
   const results = await Promise.allSettled(
-    ROUTES.map(async (path) => {
+    routes.map(async (path) => {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), PER_PING_TIMEOUT_MS); // L5
       const t0 = Date.now();
-      const res = await fetch(base + path, {
-        headers: { "user-agent": "icjia-keep-warm" },
-        redirect: "manual",
-      });
-      // Drain the body so the SSR render fully completes (truly warms the fn).
-      await res.arrayBuffer().catch(() => {});
-      return { path, status: res.status, ms: Date.now() - t0 };
+      try {
+        const res = await fetch(origin + path, {
+          method: "GET",
+          headers: { "user-agent": "icjia-keep-warm" },
+          redirect: "manual", // never follow a redirect to another host
+          signal: ctrl.signal,
+        });
+        await res.arrayBuffer().catch(() => {}); // drain → SSR render completes
+        return { path, status: res.status, ms: Date.now() - t0 };
+      } finally {
+        clearTimeout(timer);
+      }
     }),
   );
 
   console.log(
     "keep-warm",
-    base,
+    origin,
     JSON.stringify(
       results.map((r) =>
-        r.status === "fulfilled" ? r.value : { error: String(r.reason) },
+        r.status === "fulfilled" ? r.value : { error: String(r.reason).slice(0, 80) },
       ),
     ),
   );
-  return { statusCode: 200 };
-});
+  return { statusCode: 200, body: "ok" };
+}
+
+export { handler };
+export default schedule(SCHEDULE, handler);

@@ -23,6 +23,25 @@ Multi-agent review (7 section reviewers + synthesis) found NO P0s; working the P
 - Restores parity with the legacy NProgress + addresses the deferred pre-first-byte gap
   (which an in-page overlay can't cover) at the source — frequency of cold starts.
 
+### Hardened — keep-warm defense-in-depth (cost-safety; red/blue-team audited)
+- The ping could be costly if it ran away, so 6 INDEPENDENT safety layers cap the blast
+  radius regardless of trigger volume or platform misbehavior:
+  - **L1 invocation source:** `schedule()` is scheduler-triggered (not a public HTTP URL);
+    we additionally 403 any real HTTP request that reaches the handler.
+  - **L2 durable rate-guard:** a Netlify Blobs `last-run` timestamp short-circuits any run
+    < 4 min after the previous one (claims the slot BEFORE pinging) — collapses a flood to
+    ~15 real runs/hour.
+  - **L3 bounded fan-out:** routes de-duped + hard-capped at MAX_ROUTES=12 (a poisoned
+    config can't fan out to hundreds).
+  - **L4 same-origin allowlist:** only ever fetches this deploy's own origin; rejects full
+    URLs / `//host` (no SSRF / outbound amplification).
+  - **L5 per-ping AbortController timeout (8s) + no retry.**
+  - **L6 env kill switch** `KEEP_WARM_DISABLED=1` (instant disable, no redeploy).
+- **Adversarial audit** (`netlify/__tests__/keep-warm.redteam.mjs`, 10 scenarios, all pass):
+  1000× invocation flood → still only 6 pings; HTTP GET/POST → 403/0 pings; 500-route
+  config → capped at 12; injection (`//evil.com`, `https://…`) → rejected, only same-origin
+  contacted; kill switch → 0 pings; **1 req/sec for 1 hour (3,600 invocations) → ≤90 pings**.
+
 ### Added — navigation progress bar (cold-start perceived-speed)
 - Top progress bar (`#nav-progress`, navy) that starts the instant an internal link is
   clicked and creeps toward 90% while the next page's SSR/cold-start response is awaited,
