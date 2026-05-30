@@ -19,9 +19,11 @@
 // ENV (GitHub Actions secrets):
 //   NETLIFY_AUTH_TOKEN   personal access token (user settings → applications)
 //   NETLIFY_TEAM_SLUG    team/account slug (the "random-gibberish" account name)
-//   RESEND_API_KEY       Resend API key
+//   MAILGUN_API_KEY      Mailgun private API key
+//   MAILGUN_DOMAIN       Mailgun sending domain (e.g. mg.icjia.illinois.gov)
+//   MAILGUN_REGION       "us" (default) | "eu"  — picks api.mailgun.net vs api.eu.mailgun.net
 //   ALERT_EMAIL_TO       recipient
-//   ALERT_EMAIL_FROM     verified Resend sender (e.g. monitor@yourdomain)
+//   ALERT_EMAIL_FROM     sender (optional; defaults to "ICJIA Monitor <monitor@MAILGUN_DOMAIN>")
 //   ALERT_MODE           "digest-and-alerts" (default) | "alerts-only"
 //   WARN_PCT / CRIT_PCT  thresholds (default 70 / 90)
 
@@ -169,24 +171,43 @@ function buildEmail(metrics) {
 }
 
 async function sendEmail({ subject, text }) {
-  const key = process.env.RESEND_API_KEY;
+  const key = process.env.MAILGUN_API_KEY;
+  const domain = process.env.MAILGUN_DOMAIN; // e.g. mg.icjia.illinois.gov
   const to = process.env.ALERT_EMAIL_TO;
-  const from = process.env.ALERT_EMAIL_FROM;
-  if (!key || !to || !from) {
-    console.log("Email not configured (RESEND_API_KEY/ALERT_EMAIL_TO/ALERT_EMAIL_FROM) — printing instead:\n");
+  const from =
+    process.env.ALERT_EMAIL_FROM || (domain ? `ICJIA Monitor <monitor@${domain}>` : "");
+  // MAILGUN_REGION: "eu" → EU API host; anything else (default) → US.
+  const base =
+    (process.env.MAILGUN_REGION || "us").toLowerCase() === "eu"
+      ? "https://api.eu.mailgun.net"
+      : "https://api.mailgun.net";
+
+  if (!key || !domain || !to || !from) {
+    console.log(
+      "Email not configured (MAILGUN_API_KEY/MAILGUN_DOMAIN/ALERT_EMAIL_TO[/ALERT_EMAIL_FROM]) — printing instead:\n",
+    );
     console.log(subject + "\n\n" + text);
     return;
   }
-  const res = await fetch("https://api.resend.com/emails", {
+
+  // Mailgun messages API: multipart/form-data POST to /v3/{domain}/messages,
+  // HTTP basic auth with username "api" and the API key as the password.
+  const form = new FormData();
+  form.set("from", from);
+  form.set("to", to);
+  form.set("subject", subject);
+  form.set("text", text);
+
+  const res = await fetch(`${base}/v3/${domain}/messages`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from, to, subject, text }),
+    headers: { Authorization: "Basic " + Buffer.from(`api:${key}`).toString("base64") },
+    body: form,
   });
   if (!res.ok) {
     const b = await res.text().catch(() => "");
-    throw new Error(`Resend → ${res.status} ${b.slice(0, 160)}`);
+    throw new Error(`Mailgun → ${res.status} ${b.slice(0, 160)}`);
   }
-  console.log("Email sent:", subject);
+  console.log("Email sent via Mailgun:", subject);
 }
 
 async function main() {
