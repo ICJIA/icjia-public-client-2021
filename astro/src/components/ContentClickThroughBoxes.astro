@@ -61,7 +61,6 @@ const isExternal = (url?: string) => !!url && /^https?:\/\//.test(url);
             target={isExternal(box.url) ? '_blank' : undefined}
             rel={isExternal(box.url) ? 'noopener noreferrer' : undefined}
             class="ctb-box"
-            aria-label={box.title}
           >
             {isNew(box.datePosted) && <span class="ctb-new">NEW!</span>}
             <Icon name={mdiName(box.icon)} class="ctb-icon" aria-hidden="true" />

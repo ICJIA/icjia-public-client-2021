@@ -42,6 +42,23 @@ Multi-agent review (7 section reviewers + synthesis) found NO P0s; working the P
   config → capped at 12; injection (`//evil.com`, `https://…`) → rejected, only same-origin
   contacted; kill switch → 0 pings; **1 req/sec for 1 hour (3,600 invocations) → ≤90 pings**.
 
+### Fixed — label-in-name a11y (WCAG 2.5.3) on CMS links + clickthrough boxes
+- Lighthouse a11y flagged `label-content-name-mismatch` (Serious) on two element classes:
+  - **ClickThroughBoxes** (`a.ctb-box`) carried `aria-label={title}`, overriding the card's
+    visible text (title + teaser) → removed the redundant aria-label so the visible text is
+    the accessible name.
+  - **CMS-body links** with an authored `aria-label` that doesn't contain the visible text
+    (e.g. dicra's legal citations: visible "730 ILCS 210/3-5(e)" but aria-label "…3-5(b)(2)").
+    Ported the legacy `fixLabelInName` a11y patcher into the server markdown pipeline
+    (`markdown.js`) — strips an aria-label when it neither contains nor is contained by the
+    visible text. Runs **last** (after contentSanitizer's own `<a>` pass, which would
+    otherwise re-introduce it).
+- Sanitizer parity suite 15/15; axe AA 0 violations on dicra.
+- NOTE (deferred, needs VR sign-off): dicra's CMS body authors two in-body `<h1>`s ("# " in
+  markdown → multiple-H1, a heading-hierarchy best-practice nit, NOT a scored a11y failure —
+  Lighthouse a11y stays 100). Only 1 of 33 pages does this; demoting in-body h1→h2 would
+  change heading sizes vs prod, so it's left for a deliberate content/VR pass.
+
 ### Added — central config `astro/icjia.config.mjs` + keep-warm kill switch
 - **Single source of truth** for the Astro app's tunables: `site` constants (prod origin +
   Strapi/hub hosts), `keepWarm` ({enabled, routes}), `cacheTTL` (per content type), `monitor`

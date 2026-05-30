@@ -184,6 +184,29 @@ const fixImageLinks = function (html) {
   return changed ? doc.body.innerHTML : html;
 };
 
+// Port of the legacy a11y `fixLabelInName` (src/a11y/index.js), as a build-time
+// content fixer. CMS authors sometimes give a link an aria-label that does NOT
+// contain its visible text (e.g. visible "730 ILCS 210/3-5(e)" but aria-label
+// "...3-5(b)(2)" — a copy-paste slip), which fails WCAG 2.5.3 (label-in-name).
+// When a link has substantial visible text AND an aria-label that neither
+// contains nor is contained by it, drop the aria-label so the visible text is
+// the single accessible name (the legacy runtime did exactly this).
+const fixLabelInName = function (html) {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  let changed = false;
+  doc.querySelectorAll("a[aria-label], [role='link'][aria-label]").forEach((el) => {
+    const visible = (el.textContent || "").trim().replace(/\s+/g, " ").toLowerCase();
+    const label = (el.getAttribute("aria-label") || "").trim().replace(/\s+/g, " ").toLowerCase();
+    if (visible.length > 3 && label.length > 0) {
+      if (!label.includes(visible) && !visible.includes(label)) {
+        el.removeAttribute("aria-label");
+        changed = true;
+      }
+    }
+  });
+  return changed ? doc.body.innerHTML : html;
+};
+
 const renderToHtml = function (markdown) {
   const raw = md.render(markdown || "");
   const sanitized = DOMPurify.sanitize(raw, {
@@ -207,7 +230,10 @@ const renderToHtml = function (markdown) {
       "frameborder",
     ],
   });
-  return sanitizeContent(fixImageLinks(fixTableHeaders(sanitized)));
+  // fixLabelInName runs LAST: contentSanitizer has its own <a> pass that can set
+  // aria-labels, so stripping mismatched ones must happen after it (otherwise the
+  // sanitizer re-introduces the mismatch). Order matters here.
+  return fixLabelInName(sanitizeContent(fixImageLinks(fixTableHeaders(sanitized))));
 };
 
 const parseHeadings = function (markdown) {
