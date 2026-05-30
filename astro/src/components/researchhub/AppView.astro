@@ -30,9 +30,13 @@ const hasContributors = contributors.length > 0;
 const hasRelated = app.related.length > 0;
 const categoriesStr = app.categories.join(', ');
 
-const imageJson = app.image
-  ? JSON.stringify({ src: app.image }).replace(/</g, '\\u003c')
-  : null;
+// Prefer the extracted same-origin file (renders directly); base64 island only as
+// a fallback for a brand-new app not yet in a build.
+const appImgFile = app.imagePath || null;
+const imageJson =
+  !appImgFile && app.image
+    ? JSON.stringify({ src: app.image }).replace(/</g, '\\u003c')
+    : null;
 ---
 
 <div class="markdown-body mx-auto max-w-5xl px-4 pb-12 md:px-6">
@@ -40,15 +44,21 @@ const imageJson = app.image
     <h1 style="border:0">{app.title}</h1>
 
     <div class="mt-2 grid grid-cols-1 gap-6 md:grid-cols-3">
-      {/* base64 image via island + lazy <img> */}
+      {/* extracted file rendered directly (common case) */}
+      {appImgFile && (
+        <div class="md:col-span-1">
+          <img src={appImgFile} alt="" loading="lazy" decoding="async" class="app-img" />
+        </div>
+      )}
+      {/* fallback: new app not yet extracted → base64 island (getElementById init) */}
       {
         imageJson && (
           <div
             class="md:col-span-1"
-            x-data={`{ src: '' }`}
-            x-init={`src = JSON.parse(this.$el.querySelector('[data-app-img]').textContent).src`}
+            x-data="{ src: '' }"
+            x-init="src = JSON.parse(document.getElementById('app-img-json').textContent).src"
           >
-            <script type="application/json" data-app-img set:html={imageJson} is:inline />
+            <script type="application/json" id="app-img-json" set:html={imageJson} is:inline />
             <img :src="src" alt="" loading="lazy" decoding="async" class="app-img" />
           </div>
         )

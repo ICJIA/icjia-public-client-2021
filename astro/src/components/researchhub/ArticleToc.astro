@@ -20,9 +20,13 @@ const headingsJson = JSON.stringify(headings).replace(/</g, '\\u003c');
     <div
       id="article-toc"
       x-data={`{
-        headings: JSON.parse(this.$el.querySelector('[data-toc-json]').textContent),
+        headings: [],
         active: '',
         init(){
+          try {
+            const el = document.getElementById('article-toc-json');
+            this.headings = el ? JSON.parse(el.textContent) : [];
+          } catch (e) { this.headings = []; }
           if (this.headings.length) this.active = this.headings[0].id;
           const els = this.headings
             .map((h) => document.getElementById(h.id))
@@ -42,7 +46,7 @@ const headingsJson = JSON.stringify(headings).replace(/</g, '\\u003c');
         }
       }`}
     >
-      <script type="application/json" data-toc-json set:html={headingsJson} is:inline />
+      <script type="application/json" id="article-toc-json" set:html={headingsJson} is:inline />
 
       <p class="font-oswald mb-2" style="font-weight:700;font-size:1.17em">
         TABLE OF CONTENTS
