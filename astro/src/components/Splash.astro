@@ -23,7 +23,7 @@ const captionText = caption ?? splash?.caption;
 {
   splash?.url && (
     <div>
-      <CmsImage image={splash} alt={altText} loading="eager" class="splash-img" />
+      <CmsImage image={splash} alt={altText} loading="eager" class="splash-img" hero />
       {captionText && <div class="splash-caption">{captionText}</div>}
     </div>
   )

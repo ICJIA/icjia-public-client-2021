@@ -188,6 +188,37 @@ export function pickStrapiImage(splash?: StrapiImage | null): StrapiImagePick | 
   return null;
 }
 
+/**
+ * Like pickStrapiImage but prefers LARGER formats — for full-width hero/splash
+ * images (a card-sized `small`≈500px upscaled into a full column is flagged
+ * low-res by Lighthouse's image-size-responsive). Prefers large (≈1000px) →
+ * medium → original → small, so the optimizer downscales from a big-enough source.
+ */
+export function pickStrapiHero(splash?: StrapiImage | null): StrapiImagePick | null {
+  if (!splash) return null;
+  const f = (splash.formats || {}) as Record<
+    string,
+    { url?: string; width?: number; height?: number }
+  >;
+  for (const c of [f.large, f.medium]) {
+    if (c?.url && c.width && c.height) {
+      const u = strapiUrl(c.url);
+      if (u) return { url: u, width: c.width, height: c.height };
+    }
+  }
+  // original (often the biggest) before falling back to the small card format.
+  if (splash.url && splash.width && splash.height) {
+    const u = strapiUrl(splash.url);
+    if (u) return { url: u, width: splash.width, height: splash.height };
+  }
+  const s = f.small;
+  if (s?.url && s.width && s.height) {
+    const u = strapiUrl(s.url);
+    if (u) return { url: u, width: s.width, height: s.height };
+  }
+  return null;
+}
+
 export interface NewsPost {
   id: string;
   title: string;
