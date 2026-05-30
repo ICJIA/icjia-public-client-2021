@@ -11,13 +11,17 @@ import '@fontsource/oswald/600.css';
 import '@fontsource/oswald/700.css';
 import '../styles/global.css';
 import SiteHeader from '../components/SiteHeader.astro';
+import SiteContextBar from '../components/SiteContextBar.astro';
+import SiteDisclaimer from '../components/SiteDisclaimer.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 
 interface Props {
   title?: string;
   description?: string;
+  /** 3rd breadcrumb segment in the context bar (page/item title). */
+  contextTitle?: string;
 }
-const { title = 'ICJIA', description = '' } = Astro.props;
+const { title = 'ICJIA', description = '', contextTitle } = Astro.props;
 ---
 
 <!doctype html>
@@ -36,7 +40,9 @@ const { title = 'ICJIA', description = '' } = Astro.props;
         bottom of the viewport on short pages (sticky-footer layout). The fixed
         header is out of flow, so pt-[90px] clears it. */}
     <main id="main-content" class="flex-1 pt-[90px]">
+      <SiteContextBar contextTitle={contextTitle} />
       <slot />
+      <SiteDisclaimer />
     </main>
     <SiteFooter />
   </body>

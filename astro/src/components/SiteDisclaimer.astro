@@ -1,0 +1,58 @@
+---
+// Per-path disclaimer banner — port of Disclaimer.vue. Shown at the bottom of the
+// page content (above the footer) when the current path matches a disclaimers.json
+// pathPrefix. Notably a legally-required "PUBLIC MEETING NOTICE" (ADA) on
+// /news/meetings/ and a federal-funding notice on /researchhub/.
+import disclaimers from '../config/disclaimers.json';
+
+const pathname = Astro.url.pathname;
+const full = pathname.endsWith('/') ? pathname : pathname + '/';
+const match = (disclaimers as Array<{ pathPrefix: string | null; label: string; body: string }>).find(
+  (d) => d.pathPrefix && full.includes(d.pathPrefix),
+);
+---
+
+{
+  match && (
+    <aside class="disclaimer" aria-label={match.label}>
+      <div class="disclaimer-inner">
+        <h2>{match.label}</h2>
+        <p>{match.body}</p>
+      </div>
+    </aside>
+  )
+}
+
+<style>
+  .disclaimer {
+    background: #1e3a52;
+    border-top: 1px solid #aaa;
+    color: #fff;
+  }
+  .disclaimer-inner {
+    max-width: 1152px;
+    margin: 0 auto;
+    padding: 1.25rem 1rem;
+  }
+  .disclaimer h2 {
+    font-size: 20px;
+    font-weight: 900;
+    color: #fff;
+    margin: 0;
+  }
+  .disclaimer p {
+    font-size: 13px;
+    color: #fff;
+    margin-top: 0.5rem;
+    line-height: 1.5;
+  }
+  .disclaimer a {
+    color: #fff;
+    font-weight: bold;
+    text-decoration: underline;
+  }
+  .disclaimer a:hover {
+    color: #bbb;
+    text-decoration: none;
+  }
+</style>

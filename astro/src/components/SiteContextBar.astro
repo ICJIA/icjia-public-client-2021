@@ -1,0 +1,184 @@
+---
+// Context bar — port of AppNavContext.vue. The thin bar directly below the main
+// nav, shown on every page EXCEPT home (matches prod). Two tiers, both driven by
+// config/contextMenus.json, keyed on the FIRST path segment of the current URL:
+//   1. navy breadcrumb:  ICJIA » {section label} » {contextTitle}
+//   2. grey section tabs: the section's items[] as nav links
+// `contextTitle` (the 3rd breadcrumb segment) is the per-page title — passed via
+// BaseLayout (legacy emitted it through the EventBus "context-label").
+import contextMenus from '../config/contextMenus.json';
+
+interface Props {
+  contextTitle?: string;
+}
+const { contextTitle } = Astro.props;
+
+const pathname = Astro.url.pathname;
+const norm = (p: string) => (p.endsWith('/') ? p : p + '/');
+const seg = pathname.split('/').filter(Boolean)[0];
+const prefix = seg ? `/${seg}/` : null;
+const menu = prefix
+  ? (contextMenus as any[]).find((m) => m.location === 'top' && m.pathPrefix === prefix)
+  : null;
+
+// Active tab = the item whose path is the LONGEST prefix of the current URL, so
+// detail pages (e.g. /news/meetings/<slug>/) keep their section tab active.
+let activePath: string | null = null;
+if (menu) {
+  const here = norm(pathname);
+  let best = -1;
+  for (const it of menu.items as Array<{ path: string }>) {
+    const p = norm(it.path);
+    if ((here === p || here.startsWith(p)) && p.length > best) {
+      best = p.length;
+      activePath = p;
+    }
+  }
+}
+---
+
+{
+  menu && (
+    <div class="ctxbar">
+      <nav class="ctx-crumb" aria-label="Breadcrumb">
+        <div class="ctx-wrap">
+          <a href="/" class="ctx-strong">ICJIA</a>
+          <span class="ctx-sep" aria-hidden="true">&nbsp;&raquo;&nbsp;</span>
+          <a href={menu.defaultPath} class="ctx-strong">
+            <span class="ctx-label-full">{menu.label}</span>
+            <span class="ctx-label-short">{menu.shortLabel}</span>
+          </a>
+          {contextTitle && (
+            <span class="ctx-title" title={contextTitle}>
+              <span class="ctx-sep" aria-hidden="true">&nbsp;&raquo;&nbsp;</span>
+              {contextTitle}
+            </span>
+          )}
+        </div>
+      </nav>
+
+      <nav class="ctx-tabs" aria-label="Section navigation">
+        <ul>
+          {menu.items.map((item: any) => (
+            <li>
+              <a
+                href={item.path}
+                class:list={['ctx-tab', { 'ctx-tab-active': norm(item.path) === activePath }]}
+                aria-current={norm(item.path) === activePath ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  )
+}
+
+<style>
+  .ctx-crumb {
+    background: #0a3a60;
+    color: #fff;
+    font-size: 15px;
+    min-height: 35px;
+    display: flex;
+    align-items: center;
+  }
+  .ctx-wrap {
+    width: 100%;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow: hidden;
+  }
+  /* mobile: center; md+ : left-aligned (matches prod text-center/text-left split) */
+  @media (max-width: 959.98px) {
+    .ctx-wrap {
+      justify-content: center;
+    }
+  }
+  .ctx-crumb a {
+    color: #fff;
+    text-decoration: none;
+  }
+  .ctx-crumb a:hover {
+    text-decoration: underline;
+  }
+  .ctx-strong {
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .ctx-title {
+    font-weight: 300;
+    display: inline-block;
+    max-width: 60ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: bottom;
+  }
+  /* label full ≥960px, shortLabel below (Vuetify md edge) */
+  .ctx-label-short {
+    display: inline;
+  }
+  .ctx-label-full {
+    display: none;
+  }
+  @media (min-width: 960px) {
+    .ctx-label-short {
+      display: none;
+    }
+    .ctx-label-full {
+      display: inline;
+    }
+  }
+  /* contextTitle hidden below md (matches prod hidden-sm-and-down) */
+  .ctx-title {
+    display: none;
+  }
+  @media (min-width: 960px) {
+    .ctx-title {
+      display: inline-block;
+    }
+  }
+
+  .ctx-tabs {
+    background: #eee;
+    min-height: 35px;
+  }
+  .ctx-tabs ul {
+    list-style: none;
+    margin: 0;
+    padding: 0 12px;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .ctx-tab {
+    display: inline-flex;
+    align-items: center;
+    height: 35px;
+    padding: 0 16px;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #444;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+  }
+  .ctx-tab:hover {
+    color: #000;
+  }
+  .ctx-tab-active {
+    color: #000;
+    border-bottom-color: #000;
+    font-weight: 700;
+  }
+</style>

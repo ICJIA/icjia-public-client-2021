@@ -83,7 +83,7 @@ if (meeting.attachments.length) {
 const jsonldStr = JSON.stringify(jsonld).replace(/</g, '\\u003c');
 ---
 
-<BaseLayout title={meeting.title} description={meeting.summary}>
+<BaseLayout title={meeting.title} description={meeting.summary} contextTitle={meeting.title}>
   <div class="meetings mx-auto max-w-4xl px-4 py-8 md:px-6">
     <div class="page-heading">
       <h1>ICJIA Meetings</h1>

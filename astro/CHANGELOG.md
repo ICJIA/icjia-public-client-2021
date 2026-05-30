@@ -3,7 +3,64 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.16.0] — 2026-05-29 — Site chrome: context bar + per-path disclaimers (were missing on ALL pages)
+
+### Added — context bar (`SiteContextBar.astro`, port of `AppNavContext.vue`)
+- The thin bar below the main nav, on **every page except home** (matches prod).
+  Two tiers from `config/contextMenus.json`, keyed on the first path segment:
+  navy breadcrumb (**ICJIA » {section label} » {contextTitle}**) + grey section
+  tabs. Active tab = longest path-prefix of the URL (so detail pages keep their
+  section tab lit). `label` ≥960px / `shortLabel` below; `contextTitle` ≥960px.
+- Wired in `BaseLayout` with a `contextTitle` prop; set on meetings (listing
+  "Meetings" / single = title) + news articles (= title). Home renders no bar.
+
+### Added — per-path disclaimers (`SiteDisclaimer.astro`, port of `Disclaimer.vue`)
+- Dark banner at the bottom of content, matched by `config/disclaimers.json`
+  `pathPrefix`. Restores the legally-required **"PUBLIC MEETING NOTICE" (ADA) on
+  `/news/meetings/`** (+ single meetings) and the federal-funding notice on
+  `/researchhub/` — both were absent.
+
+### Config audit (answering "what in src/config isn't used yet")
+- Ported + wired `contextMenus.json` (was copied but unused) + `disclaimers.json`
+  (was not ported). `menus.json` already used (nav). **`config.json` underused:**
+  `maps`/`daysToShowNew`/`archiveDate`/`timezone` are currently hardcoded in
+  `data.ts`, and `events`/`hub`/`search`/`home`/`image` keys await their sections
+  — flagged to read from config (single source of truth) as those land.
+
+### Verified (localhost + build + axe)
+- `astro build` clean. Bar element present on `/news/` + `/news/meetings/`, **0 on
+  home**; disclaimer only on `/news/meetings/*`. "Meetings" tab `aria-current=page`.
+  **axe AA 0 violations** with the new chrome.
+
+### Pending / VR-tune
+- Tabs are center-aligned + horizontal-scroll on overflow (no scroll-arrows yet);
+  exact Vuetify v-tabs slider/spacing vs prod is a VR pass.
+- "Translate this site" button (showTranslation) omitted — the Google-Translate
+  modal isn't ported yet.
+- The **bottom** context bar (`location:"bottom"` Footer quick-links above the
+  footer) is a separate element — not yet added; confirm if wanted.
+
 ## [0.15.0] — 2026-05-29 — /news/meetings/ parity (data table + by-date/by-category + single meeting)
+
+### Lighthouse — deploy CONFIRMED (mobile, branch-deploy, warm edge)
+- `/news/meetings/` (listing): **A11y 100 · Perf 97 · BP 100 · SEO 100**.
+- `/news/meetings/[slug]` (single): **A11y 100 · Perf 99 · BP 100 · SEO 100**.
+
+### Infrastructure — Netlify Durable Cache now actually serves (SYSTEMIC, all routes)
+- **Root cause found:** a plain `Cache-Control: s-maxage` is **bypassed** by Netlify's
+  CDN for SSR/function responses (`cache-status: … fwd=bypass` on every route) — so
+  **no SSR route was ever edge-cached.** `/news/` only passed because its Strapi fetch
+  is fast (1.7s); meetings exposed it (3.3s backend → ~5s TTFB → perf 91).
+- **Fix (`cache.ts`):** also set **`Netlify-CDN-Cache-Control`** (`+durable`) for the
+  CDN, and `Cache-Control: max-age=0, must-revalidate` for the browser. Warm-hit TTFB
+  dropped **~5s → ~0.15s**; meetings perf **91 → 97-99**. Speeds **every** SSR route.
+
+### Parity deviation (FLAGGED) — schedules-banner link text
+- Lighthouse SEO `link-text` blocklists "click here" by **visible** text (an
+  `aria-label` can't satisfy it, and a descriptive one trips WCAG 2.5.3 label-in-name).
+  Changed the banner link "click here" → **"view the schedule"** to reach SEO 100 +
+  IITAA descriptive-link best practice. One-line revert if you want "click here" back
+  (accepting SEO 91 on meetings routes).
 
 ### Added — `/news/meetings/` at functional parity with `MeetingsAll.vue`
 - **By date / By category** toggle (Alpine). "By date" = one table of all **285**
@@ -69,7 +126,8 @@ This is the live-data SSR migration tracked on the `feat/astro-migration` branch
 - Search matches the **visible** text (title + category label + formatted date);
   the legacy Vuetify default searched raw field values — intentional UX-parity
   superset, noted for VR.
-- Deploy Lighthouse gate (mobile a11y/perf/BP/SEO) — pending this push.
+- Render-blocking ~600-870ms (font/global CSS, chrome-wide) is the lever from
+  perf 97 → 98+; a Phase-1 tuning item, not meetings-specific.
 
 ## [0.14.0] — 2026-05-29 — /news/ parity rebuild (featured + filters + month-grouping + pagination) + /news/press/
 
