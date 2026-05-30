@@ -1,0 +1,129 @@
+---
+// /forms/grant-status/ — ports the legacy Forms/GrantStatus.vue. STATIC (prerendered)
+// shell: no live data; the form is client-side Alpine that POSTs on submit to BOTH
+// backends the legacy form used: agency.icjia-api.cloud/forms (stores the record) +
+// mail.icjia.cloud/internet/grant-status (sends the email; its {msg} is the success
+// text). Values are tag-stripped before sending (legacy used DOMPurify + tag-strip;
+// the net effect is strip-all-tags). Per the renderStrategy manifest, /forms/* is static.
+export const prerender = true;
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/forms.css';
+
+const xdata = `{
+  subjects: ['Contract status/updates','Payment status/updates','Documentation submission/request questions','General program/grant questions','Request for Technical Assistance'],
+  form: { subject:'', number:'', firstName:'', lastName:'', email:'', phone:'', comment:'' },
+  touched: {}, submitting: false, done: false, successMessage: '', axiosError: '',
+  touch(f){ this.touched = Object.assign({}, this.touched, { [f]: true }); },
+  clearFail(){ this.axiosError = ''; },
+  validEmail(v){ return /^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(v); },
+  msg(f){
+    const v = String(this.form[f] || '').trim();
+    if (f === 'email'){ if (!v) return 'E-mail is required'; return this.validEmail(v) ? '' : 'Must be valid e-mail'; }
+    if (v) return '';
+    return { subject:'Type of request is required', number:'Grant number is required.', firstName:'First Name is required.', lastName:'Last Name is required.', phone:'Phone number is required', comment:'Comment is required' }[f] || 'Required';
+  },
+  err(f){ return this.touched[f] ? this.msg(f) : ''; },
+  get anyError(){ return Object.keys(this.form).some((f) => this.touched[f] && this.msg(f)); },
+  get valid(){ return Object.keys(this.form).every((f) => !this.msg(f)); },
+  async submit(){
+    this.touched = Object.fromEntries(Object.keys(this.form).map((k) => [k, true]));
+    this.axiosError = '';
+    if (!this.valid) return;
+    this.submitting = true;
+    const strip = (s) => String(s || '').replace(/<[^>]*>/g, '');
+    const payload = {
+      site: 'ICJIA Public (https://icjia.illinois.gov/forms/grant-status)',
+      type: 'Grant Status Request',
+      subject: this.form.subject,
+      number: strip(this.form.number), firstName: strip(this.form.firstName), lastName: strip(this.form.lastName),
+      email: strip(this.form.email), phone: strip(this.form.phone), comment: strip(this.form.comment),
+    };
+    try {
+      const { type, ...formBody } = payload;
+      await fetch('https://agency.icjia-api.cloud/forms', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ type, form: formBody }) });
+    } catch (e) {}
+    try {
+      const res = await fetch('https://mail.icjia.cloud/internet/grant-status', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json().catch(() => ({}));
+      this.successMessage = data.msg || 'Your grant status request has been sent.';
+      this.done = true;
+    } catch (e) { this.axiosError = String(e && e.message ? e.message : e); }
+    this.submitting = false;
+  },
+  clear(){ this.form = { subject:'', number:'', firstName:'', lastName:'', email:'', phone:'', comment:'' }; this.touched = {}; this.axiosError = ''; this.done = false; this.successMessage = ''; this.submitting = false; },
+}`;
+---
+
+<BaseLayout
+  title="Grant Status Request"
+  description="Request the status of an ICJIA grant — contract or payment updates, documentation questions, general program/grant questions, or technical assistance."
+  contextTitle="Grant Status Request"
+>
+  <div class="page-form markdown-body mx-auto max-w-[1185px] px-4 py-8">
+    <div class="form-card" x-data={xdata}>
+      <h1 class="form-title">Grant Status Request</h1>
+
+      <form @submit.prevent="submit" novalidate x-show="!done">
+        <div class="field" :class="err('subject') && 'has-error'">
+          <select x-model="form.subject" @change="touch('subject')" @blur="touch('subject')" aria-label="Select Type of Request">
+            <option value="" disabled hidden></option>
+            <template x-for="s in subjects" :key="s"><option :value="s" x-text="s"></option></template>
+          </select>
+          <label>Select Type of Request</label>
+          <div class="field-error" x-text="err('subject')"></div>
+        </div>
+
+        <div class="field" :class="err('number') && 'has-error'">
+          <input type="text" x-model="form.number" placeholder=" " @input="clearFail()" @blur="touch('number')" aria-label="Grant Number" />
+          <label>Grant Number</label>
+          <div class="field-error" x-text="err('number')"></div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-x-6 md:grid-cols-2">
+          <div class="field" :class="err('firstName') && 'has-error'">
+            <input type="text" x-model="form.firstName" placeholder=" " @input="clearFail()" @blur="touch('firstName')" aria-label="First Name" />
+            <label>First Name</label>
+            <div class="field-error" x-text="err('firstName')"></div>
+          </div>
+          <div class="field" :class="err('lastName') && 'has-error'">
+            <input type="text" x-model="form.lastName" placeholder=" " @input="clearFail()" @blur="touch('lastName')" aria-label="Last Name" />
+            <label>Last Name</label>
+            <div class="field-error" x-text="err('lastName')"></div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-x-6 md:grid-cols-2">
+          <div class="field" :class="err('email') && 'has-error'">
+            <input type="email" x-model="form.email" placeholder=" " @input="clearFail()" @blur="touch('email')" aria-label="Email" />
+            <label>E-mail</label>
+            <div class="field-error" x-text="err('email')"></div>
+          </div>
+          <div class="field" :class="err('phone') && 'has-error'">
+            <input type="text" x-model="form.phone" placeholder=" " @input="clearFail()" @blur="touch('phone')" aria-label="Phone" />
+            <label>Phone number</label>
+            <div class="field-error" x-text="err('phone')"></div>
+          </div>
+        </div>
+
+        <div class="field field--area" :class="err('comment') && 'has-error'">
+          <textarea x-model="form.comment" placeholder=" " rows="10" @click="clearFail()" @blur="touch('comment')" aria-label="Request"></textarea>
+          <label>Please provide as much detail as possible about your grant status request.</label>
+          <div class="field-error" x-text="err('comment')"></div>
+        </div>
+
+        <div class="mt-4 text-center">
+          <button type="submit" class="btn btn-submit" :disabled="submitting">submit</button>
+          <button type="button" class="btn btn-clear" @click="clear()">clear</button>
+          <span class="form-spin" x-show="submitting" x-cloak></span>
+        </div>
+        <div class="form-haserrors" x-show="anyError" x-cloak>The form has errors.</div>
+        <div class="form-fail" x-show="axiosError" x-cloak>
+          <b>ERROR: GRANT STATUS REQUEST NOT SENT</b><br /><br /><span x-text="axiosError"></span>
+        </div>
+      </form>
+
+      <div class="form-success" x-show="done" x-cloak x-text="successMessage"></div>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,121 @@
+---
+// /forms/lap-request/ — ports the legacy Forms/LapRequest.vue (Language Access /
+// Limited-English-Proficiency request). STATIC (prerendered) shell; the form is
+// client-side Alpine that POSTs on submit to agency.icjia-api.cloud/forms (stores the
+// record) + mail.icjia.cloud/internet/lap (sends the email; its {msg} is the success
+// text). Values are tag-stripped before sending. Per the renderStrategy manifest,
+// /forms/* is static.
+export const prerender = true;
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/forms.css';
+
+const xdata = `{
+  form: { name:'', email:'', phone:'', language:'', comment:'' },
+  touched: {}, submitting: false, done: false, successMessage: '', axiosError: '',
+  touch(f){ this.touched = Object.assign({}, this.touched, { [f]: true }); },
+  clearFail(){ this.axiosError = ''; },
+  validEmail(v){ return /^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(v); },
+  msg(f){
+    const v = String(this.form[f] || '').trim();
+    if (f === 'email'){ if (!v) return 'E-mail is required'; return this.validEmail(v) ? '' : 'Must be valid e-mail'; }
+    if (v) return '';
+    return { name:'Name is required.', phone:'Phone number is required', language:'Language is required.', comment:'Comment is required' }[f] || 'Required';
+  },
+  err(f){ return this.touched[f] ? this.msg(f) : ''; },
+  get anyError(){ return Object.keys(this.form).some((f) => this.touched[f] && this.msg(f)); },
+  get valid(){ return Object.keys(this.form).every((f) => !this.msg(f)); },
+  async submit(){
+    this.touched = Object.fromEntries(Object.keys(this.form).map((k) => [k, true]));
+    this.axiosError = '';
+    if (!this.valid) return;
+    this.submitting = true;
+    const strip = (s) => String(s || '').replace(/<[^>]*>/g, '');
+    const payload = {
+      site: 'ICJIA Public (https://icjia.illinois.gov)',
+      type: 'Language Access Plan Request',
+      name: strip(this.form.name), email: strip(this.form.email), phone: strip(this.form.phone),
+      language: strip(this.form.language), comment: strip(this.form.comment),
+    };
+    try {
+      const { type, ...formBody } = payload;
+      await fetch('https://agency.icjia-api.cloud/forms', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ type, form: formBody }) });
+    } catch (e) {}
+    try {
+      const res = await fetch('https://mail.icjia.cloud/internet/lap', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json().catch(() => ({}));
+      this.successMessage = data.msg || 'Your language access request has been sent.';
+      this.done = true;
+    } catch (e) { this.axiosError = String(e && e.message ? e.message : e); }
+    this.submitting = false;
+  },
+  clear(){ this.form = { name:'', email:'', phone:'', language:'', comment:'' }; this.touched = {}; this.axiosError = ''; this.done = false; this.successMessage = ''; this.submitting = false; },
+}`;
+---
+
+<BaseLayout
+  title="Language Access Request"
+  description="Request free language assistance from ICJIA — qualified interpreters and translated documents for individuals whose primary language is not English."
+  contextTitle="Language Access Request"
+>
+  <div class="page-form markdown-body mx-auto max-w-[1185px] px-4 py-8">
+    <div class="form-card" x-data={xdata}>
+      <h1 class="form-title">Language Access Request</h1>
+
+      <form @submit.prevent="submit" novalidate x-show="!done">
+        <p class="form-intro">
+          ICJIA would like to ensure that it provides Limited English Proficiency (LEP) individuals with
+          meaningful and universal access to ICJIA services, programs, and activities by all persons, including
+          those who self-identify as an LEP individual or have a preference for information and materials in a
+          language other than English. To support its goals of being inclusive and accessible to all, ICJIA
+          provides free language assistance services to individuals whose primary language is not English.
+          Language assistance services include providing qualified interpreters and translating documents to
+          ease access to important information about ICJIA programs, benefits, and activities.
+        </p>
+
+        <div class="field" :class="err('name') && 'has-error'">
+          <input type="text" x-model="form.name" placeholder=" " @input="clearFail()" @blur="touch('name')" aria-label="Name" />
+          <label>Name</label>
+          <div class="field-error" x-text="err('name')"></div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-x-6 md:grid-cols-2">
+          <div class="field" :class="err('email') && 'has-error'">
+            <input type="email" x-model="form.email" placeholder=" " @input="clearFail()" @blur="touch('email')" aria-label="Email" />
+            <label>E-mail</label>
+            <div class="field-error" x-text="err('email')"></div>
+          </div>
+          <div class="field" :class="err('phone') && 'has-error'">
+            <input type="text" x-model="form.phone" placeholder=" " @input="clearFail()" @blur="touch('phone')" aria-label="Phone" />
+            <label>Phone number</label>
+            <div class="field-error" x-text="err('phone')"></div>
+          </div>
+        </div>
+
+        <div class="field" :class="err('language') && 'has-error'">
+          <input type="text" x-model="form.language" placeholder=" " @input="clearFail()" @blur="touch('language')" aria-label="Requested Language" />
+          <label>Requested Language</label>
+          <div class="field-error" x-text="err('language')"></div>
+        </div>
+
+        <div class="field field--area" :class="err('comment') && 'has-error'">
+          <textarea x-model="form.comment" placeholder=" " rows="10" @click="clearFail()" @blur="touch('comment')" aria-label="Request"></textarea>
+          <label>Please provide as much detail as possible about your language access request.</label>
+          <div class="field-error" x-text="err('comment')"></div>
+        </div>
+
+        <div class="mt-4 text-center">
+          <button type="submit" class="btn btn-submit" :disabled="submitting">submit</button>
+          <button type="button" class="btn btn-clear" @click="clear()">clear</button>
+          <span class="form-spin" x-show="submitting" x-cloak></span>
+        </div>
+        <div class="form-haserrors" x-show="anyError" x-cloak>The form has errors.</div>
+        <div class="form-fail" x-show="axiosError" x-cloak>
+          <b>SUPPORT REQUEST NOT SENT</b><br /><br /><span x-text="axiosError"></span>
+        </div>
+      </form>
+
+      <div class="form-success" x-show="done" x-cloak x-text="successMessage"></div>
+    </div>
+  </div>
+</BaseLayout>

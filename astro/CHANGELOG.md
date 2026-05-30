@@ -3,6 +3,31 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.33.0] — 2026-05-30 — Forms section (Grant Status + Language Access) — closes the /forms/ 404
+
+Ports the legacy `Forms/GrantStatus.vue` + `Forms/LapRequest.vue`. `/forms/grant-status/`
+and `/forms/lap-request/` (linked from the footer + home splash) were 404 — the section
+was never migrated.
+
+- Two **prerendered** pages (static shells per the renderStrategy manifest — no live
+  data; only the submit is dynamic). Inline-Alpine forms (the app convention): required +
+  email validation with per-field messages, a "The form has errors." summary, submit/clear,
+  a loading spinner, and success/error states.
+- On submit, mirrors prod's TWO backend calls: `POST agency.icjia-api.cloud/forms`
+  (`{type, form}`, stores the record) + `POST mail.icjia.cloud/internet/{grant-status|lap}`
+  (sends the email; its `{msg}` is the success text). Values are tag-stripped first.
+- Styling matches prod (measured off the live Vuetify render): elevated white card,
+  floating-label underlined fields, filled textarea, blue `#0D47A1` submit + grey clear,
+  2-col rows at `md`. Shared `src/styles/forms.css`.
+- CSP (`_headers`): added `https://mail.icjia.cloud` to `connect-src` + `form-action`.
+- Fixed two obvious prod typos: the stray "." after the form, and "Lanaguage" → "Language".
+
+Verified in-browser: both forms render + the Alpine validation gates correctly (submit-empty
+→ all field errors, zero network calls). Live submission NOT exercised (it emails ICJIA
+staff + writes a real record); the POST wiring mirrors the legacy verbatim. Follow-up: no
+section context bar yet (prod's `/forms/` bar is a quirky aggregate — menu choice is a
+product call).
+
 ## [0.32.0] — 2026-05-30 — Phase A (part 2): meetings query trim (light list + lazy detail)
 
 Cuts the `/news/meetings/` cold-render cost (was the heaviest SSR route, ~3.3s): the
