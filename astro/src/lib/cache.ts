@@ -43,8 +43,18 @@ const TTL: Record<Kind, [number, number]> = {
 
 export function setCache(response: Response, kind: Kind): void {
   const [s, swr] = TTL[kind];
+  // Netlify's CDN + Durable Cache honor THIS header for SSR/function responses;
+  // a plain `Cache-Control: s-maxage` is bypassed (observed `cache-status:
+  // "Netlify Durable"; fwd=bypass` on every SSR route — so nothing was edge-
+  // cached, and slow-Strapi routes ate the full backend latency on every hit).
+  // `durable` keeps one cached copy shared across regions + deploys, so a single
+  // populate warms everywhere and the cold/SWR-revalidate path is rare. This is
+  // what makes warm hits edge-fast (≈100-200ms TTFB) → mobile perf 98+.
   response.headers.set(
-    "Cache-Control",
-    `public, s-maxage=${s}, stale-while-revalidate=${swr}`,
+    "Netlify-CDN-Cache-Control",
+    `public, s-maxage=${s}, stale-while-revalidate=${swr}, durable`,
   );
+  // Browser: always revalidate (cheap against the warm CDN) so users never hold
+  // stale HTML — keeps content "live" while the CDN absorbs the load.
+  response.headers.set("Cache-Control", "public, max-age=0, must-revalidate");
 }
