@@ -90,6 +90,13 @@ keep-warm kill switch `KEEP_WARM_DISABLED=1` (set in the Netlify UI).
 - Cadence: edit the `cron` in the workflow.
 - Email: **Mailgun** (US/EU region via `MAILGUN_REGION`).
 
+## On-demand report (anytime, from your phone)
+
+You don't have to wait for the weekly digest — the same email, same format, on demand:
+**GitHub → Actions → "Netlify usage monitor" → Run workflow.** Works from the GitHub
+mobile app. Email arrives in ~30s. (No separate webhook URL — that would be a spammable
+credential; the workflow's built-in manual trigger is the safe equivalent.)
+
 ## No-email fallback
 
 If the Resend secrets are absent, the script **prints** the report to the Actions log instead

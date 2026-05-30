@@ -59,6 +59,17 @@ Multi-agent review (7 section reviewers + synthesis) found NO P0s; working the P
   Lighthouse a11y stays 100). Only 1 of 33 pages does this; demoting in-body h1→h2 would
   change heading sizes vs prod, so it's left for a deliberate content/VR pass.
 
+### Added — nightly full rebuild (search index / images / sitemap freshness)
+- `netlify/functions/nightly-rebuild.mjs` — scheduled fn (cron `0 5 * * *` UTC ≈ midnight
+  Central) POSTs a Netlify build hook → full rebuild with no code push: re-extracts hub
+  images (new articles/apps get their files), regenerates search index/sitemap/RSS as wired.
+- Setup (one-time): create a Netlify build hook + set `NETLIFY_BUILD_HOOK_URL` env var (see
+  docs/nightly-rebuild.md). Kill switch: `NIGHTLY_REBUILD_DISABLED=1` or disable the fn in
+  the UI. ~30 builds/mo — trivial vs the 25,000-min Pro quota. No-ops without the hook.
+- On-demand usage report: documented that the existing usage-monitor workflow's manual
+  "Run workflow" trigger gives the same email anytime (from the GitHub mobile app) — no
+  spammable webhook URL needed.
+
 ### Added — subtle cross-document view transitions (softer page navigation)
 - Native CSS `@view-transition { navigation: auto }` (global.css) — a **very subtle 120ms
   opacity crossfade** between real page navigations, so the site feels softer/less jumpy.
