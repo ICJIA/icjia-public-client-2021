@@ -17,7 +17,7 @@ import {
 // @ts-expect-error — GET_HOME from plain-JS graphql module
 import { GET_HOME } from "../graphql/home.js";
 import {
-  GET_ALL_MEETINGS_QUERY,
+  GET_MEETINGS_LIST_QUERY,
   GET_SINGLE_MEETING_QUERY,
 } from "../graphql/meetings.js";
 import {
@@ -586,11 +586,46 @@ function shapeMeeting(m: any): MeetingItem {
   };
 }
 
-/** All meetings (start desc), live, for /news/meetings/. */
+// Light shape for the LIST/TABLE view: every field the table, search, sort, and
+// SSR baseline need — but NONE of the heavy detail (body markdown, full attachments,
+// relations). attCount is kept (the row shows it); the rest of the detail is fetched
+// lazily per-row on expand via /news/meetings/[slug].json.
+function shapeMeetingLight(m: any): MeetingItem {
+  const cat = m.category ?? "";
+  const catLabel = meetingCategoryLabel(cat);
+  const altDate = dateFormatAlt(m.start);
+  return {
+    id: String(m.id),
+    slug: m.slug,
+    title: m.title,
+    fullPath: `/news/meetings/${m.slug}/`,
+    isCancelled: !!m.isCancelled,
+    category: cat,
+    catLabel,
+    start: m.start,
+    end: m.end,
+    summary: m.summary,
+    altDate,
+    startMs: m.start ? new Date(m.start).getTime() : 0,
+    dateLine: meetingDateLine(m.start, m.end),
+    bodyHtml: "", // lazy — see [slug].json
+    tags: [], // lazy
+    attachments: [], // lazy
+    attCount: Array.isArray(m.attachments) ? m.attachments.length : 0,
+    external: [], // lazy
+    related: [], // lazy
+    haystack: [m.title, catLabel, altDate, m.isCancelled ? "cancelled" : ""]
+      .join(" ")
+      .toLowerCase(),
+  };
+}
+
+/** All meetings (start desc), live, for /news/meetings/ — LIGHT (list) shape; the
+ *  table lazy-loads each row's detail on expand via /news/meetings/[slug].json. */
 export async function getAllMeetings(): Promise<MeetingItem[]> {
-  const { data } = await runQuery(GET_ALL_MEETINGS_QUERY, {}, "no-cache");
+  const { data } = await runQuery(GET_MEETINGS_LIST_QUERY, {}, "no-cache");
   return (data?.meetings ?? [])
-    .map(shapeMeeting)
+    .map(shapeMeetingLight)
     .sort((a: MeetingItem, b: MeetingItem) => b.startMs - a.startMs);
 }
 

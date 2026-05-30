@@ -3,6 +3,25 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.32.0] — 2026-05-30 — Phase A (part 2): meetings query trim (light list + lazy detail)
+
+Cuts the `/news/meetings/` cold-render cost (was the heaviest SSR route, ~3.3s): the
+bulk query no longer fetches body + all relation populates for ~285 records, and no
+markdown is rendered server-side at list time.
+
+- `GET_ALL_MEETINGS_QUERY` → `GET_MEETINGS_LIST_QUERY` (light): drops body, posts,
+  events, tags, external; attachments reduced to `{ id }` (for the row's count chip).
+  New `shapeMeetingLight` shapes only the fields the table/search/sort/SSR-baseline use.
+- New endpoint `GET /api/meeting.json?slug=` returns the detail fields (body,
+  attachments, related, external, tags) for ONE meeting, edge-cached at the meetings
+  TTL. The table lazy-loads it on first row-expand (cached per row; loading + error-
+  fallback states). Full search/sort/pagination/category over all 285 meetings is
+  unchanged (the light list still ships once in the data island).
+- Static path + `?slug=` (mirrors `/api/home-research.json`) because a dynamic
+  `[slug].json` route 404s under `trailingSlash: 'always'` unless called with a
+  trailing slash. Verified end-to-end in a browser: page renders light, expand → a
+  single `/api/meeting.json` fetch → body + attachments render.
+
 ## [0.31.0] — 2026-05-30 — Phase A (part 1): data-driven keep-warm + render-strategy manifest
 
 Render-strategy work, scoped from a live design discussion (live vs static split).

@@ -23,7 +23,7 @@ const catLiteral = category ? JSON.stringify(category) : 'null';
 const xdata = `{
   cat: ${catLiteral},
   all: [], search: '', sortKey: 'date', sortDir: 'desc',
-  page: 1, perPage: 25, expanded: null, ready: false,
+  page: 1, perPage: 25, expanded: null, details: {}, loadingId: null, ready: false,
   init(){
     try {
       const data = JSON.parse(document.getElementById('meetings-data').textContent);
@@ -47,7 +47,9 @@ const xdata = `{
   get rangeText(){ if (!this.count) return '0–0 of 0'; const s = this.perPage === -1 ? 1 : (this.page - 1) * this.perPage + 1; const e = this.perPage === -1 ? this.count : Math.min(this.count, this.page * this.perPage); return s + '–' + e + ' of ' + this.count; },
   setSort(k){ if (this.sortKey === k) this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc'; else { this.sortKey = k; this.sortDir = k === 'date' ? 'desc' : 'asc'; } this.page = 1; },
   ariaSort(k){ return this.sortKey === k ? (this.sortDir === 'asc' ? 'ascending' : 'descending') : null; },
-  toggle(id){ this.expanded = this.expanded === id ? null : id; },
+  toggle(it){ const id = it.id; this.expanded = this.expanded === id ? null : id; if (this.expanded === id) this.loadDetail(it); },
+  det(id){ return this.details[id] || null; },
+  async loadDetail(it){ if (this.details[it.id]) return; this.loadingId = it.id; let d = null; try { const r = await fetch('/api/meeting.json?slug=' + encodeURIComponent(it.slug)); if (r.ok) d = await r.json(); } catch (e) {} if (!d) d = { bodyHtml: '', tags: [], attachments: [], related: [], external: [], error: true }; this.details = Object.assign({}, this.details, { [it.id]: d }); this.loadingId = null; },
   track(url){ try { if (typeof window.plausible === 'function') { window.plausible('file_download', { props: { url } }); window.plausible('Outbound Link: Click', { props: { url } }); } } catch (e) {} }
 }`;
 ---
@@ -103,7 +105,7 @@ const xdata = `{
       </thead>
       <template x-for="(it, idx) in pageItems" :key="it.id">
         <tbody>
-          <tr class="mrow" :class="idx % 2 ? 'mrow-alt' : ''" @click="toggle(it.id)">
+          <tr class="mrow" :class="idx % 2 ? 'mrow-alt' : ''" @click="toggle(it)">
             <td class="cell-date" x-text="it.altDate"></td>
             <td class="cell-cat" x-text="it.catLabel"></td>
             <td class="cell-title" :class="it.isCancelled ? 'cancelled' : ''" x-text="it.title"></td>
@@ -115,7 +117,7 @@ const xdata = `{
               <button
                 type="button"
                 class="row-caret-btn"
-                @click.stop="toggle(it.id)"
+                @click.stop="toggle(it)"
                 :aria-expanded="expanded === it.id ? 'true' : 'false'"
                 :aria-label="(expanded === it.id ? 'Collapse' : 'Expand') + ' details for ' + it.title"
               >
@@ -139,56 +141,66 @@ const xdata = `{
                     <span class="meeting-cat">&nbsp;|&nbsp;<span x-text="it.catLabel"></span></span>
                   </div>
                 </template>
-                <template x-if="!it.isCancelled">
-                  <div class="mt-5 px-3" x-html="it.bodyHtml"></div>
+                <template x-if="!det(it.id)">
+                  <div class="mt-5 px-3 text-sm text-gray-500">Loading details…</div>
                 </template>
-                <template x-if="it.isCancelled">
-                  <div class="mt-5 px-3">This meeting is cancelled.</div>
+                <template x-if="det(it.id) && det(it.id).error">
+                  <div class="mt-5 px-3 text-sm text-gray-600">Couldn't load details — <a :href="it.fullPath">open the meeting page</a>.</div>
                 </template>
-                <div class="mt-5 mb-5">
-                  <template x-if="it.tags.length">
-                    <div class="mt-2">
-                      <template x-for="t in it.tags" :key="t"><span class="chip" x-text="t"></span></template>
+                <template x-if="det(it.id) && !det(it.id).error">
+                  <div>
+                    <template x-if="!it.isCancelled">
+                      <div class="mt-5 px-3" x-html="det(it.id).bodyHtml"></div>
+                    </template>
+                    <template x-if="it.isCancelled">
+                      <div class="mt-5 px-3">This meeting is cancelled.</div>
+                    </template>
+                    <div class="mt-5 mb-5">
+                      <template x-if="det(it.id).tags.length">
+                        <div class="mt-2">
+                          <template x-for="t in det(it.id).tags" :key="t"><span class="chip" x-text="t"></span></template>
+                        </div>
+                      </template>
+                      <template x-if="det(it.id).attachments.length">
+                        <div class="mt-8">
+                          <h3 class="sub-heading">Attachments</h3>
+                          <table class="att-table">
+                            <thead><tr><th>Filename</th><th>Last Updated</th><th>Size</th></tr></thead>
+                            <tbody>
+                              <template x-for="a in det(it.id).attachments" :key="a.url">
+                                <tr>
+                                  <td><a class="attachment" :href="a.url" target="_blank" rel="noopener noreferrer" @click.stop="track(a.url)" x-text="a.name"></a></td>
+                                  <td class="att-updated" x-text="a.updatedAlt"></td>
+                                  <td class="att-size" x-text="a.niceSize"></td>
+                                </tr>
+                              </template>
+                            </tbody>
+                          </table>
+                        </div>
+                      </template>
+                      <template x-if="det(it.id).related.length">
+                        <div class="mt-5">
+                          <h3 class="sub-heading">Related Web Content</h3>
+                          <ul class="meeting-list">
+                            <template x-for="r in det(it.id).related" :key="r.fullPath">
+                              <li class="related-link"><a :href="r.fullPath" x-text="r.displayTitle"></a></li>
+                            </template>
+                          </ul>
+                        </div>
+                      </template>
+                      <template x-if="det(it.id).external.length">
+                        <div class="mt-4">
+                          <h3 class="sub-heading">External Links</h3>
+                          <ul class="meeting-list">
+                            <template x-for="e in det(it.id).external" :key="e.url">
+                              <li class="attachment-link"><a :href="e.url" target="_blank" rel="noopener noreferrer" :title="e.url"><span x-text="e.title"></span><span class="sr-only"> (opens in new tab)</span></a></li>
+                            </template>
+                          </ul>
+                        </div>
+                      </template>
                     </div>
-                  </template>
-                  <template x-if="it.attachments.length">
-                    <div class="mt-8">
-                      <h3 class="sub-heading">Attachments</h3>
-                      <table class="att-table">
-                        <thead><tr><th>Filename</th><th>Last Updated</th><th>Size</th></tr></thead>
-                        <tbody>
-                          <template x-for="a in it.attachments" :key="a.url">
-                            <tr>
-                              <td><a class="attachment" :href="a.url" target="_blank" rel="noopener noreferrer" @click.stop="track(a.url)" x-text="a.name"></a></td>
-                              <td class="att-updated" x-text="a.updatedAlt"></td>
-                              <td class="att-size" x-text="a.niceSize"></td>
-                            </tr>
-                          </template>
-                        </tbody>
-                      </table>
-                    </div>
-                  </template>
-                  <template x-if="it.related.length">
-                    <div class="mt-5">
-                      <h3 class="sub-heading">Related Web Content</h3>
-                      <ul class="meeting-list">
-                        <template x-for="r in it.related" :key="r.fullPath">
-                          <li class="related-link"><a :href="r.fullPath" x-text="r.displayTitle"></a></li>
-                        </template>
-                      </ul>
-                    </div>
-                  </template>
-                  <template x-if="it.external.length">
-                    <div class="mt-4">
-                      <h3 class="sub-heading">External Links</h3>
-                      <ul class="meeting-list">
-                        <template x-for="e in it.external" :key="e.url">
-                          <li class="attachment-link"><a :href="e.url" target="_blank" rel="noopener noreferrer" :title="e.url"><span x-text="e.title"></span><span class="sr-only"> (opens in new tab)</span></a></li>
-                        </template>
-                      </ul>
-                    </div>
-                  </template>
-                </div>
+                  </div>
+                </template>
               </div>
               </td>
             </tr>
