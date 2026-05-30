@@ -3,6 +3,32 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.18.0] — 2026-05-29 — /grants/funding/ parity (NOFO list + Current/Expired toggle + single) + reusable data helpers
+
+### Added — `/grants/funding/` (FundingAll.vue parity)
+- CMS "funding" intro (title + body via new `getPage(slug)`) + **Current/Expired toggle**
+  (Alpine; Current = `end + 1 day >= now`) + grant cards (NOFO label, green Deadline /
+  red Expired chip, title link, date range, summary, tags, attachments, "Read full
+  NOFO »") + the legacy-GATA note. Alpine `x-for` over a JSON island (only the active
+  tab in the DOM); SSR baseline = current cards. 1 current / 105 expired today.
+- `/grants/funding/[slug]` (FundingSingle.vue): expired banner, NOFO header, body,
+  attachments, related, tags + JSON-LD **GovernmentService**. 404 on bad slug.
+- Context bar auto-resolves to the **FSGU** section with "Funding Opportunities" active.
+
+### Changed — reusable data helpers (`data.ts`, for all remaining sections)
+- `shapeAttachments()` (absolute url + niceBytes + dateFormatAlt, name-sorted),
+  `buildRelated()` (the legacy RelatedList across all relation kinds), `getPage(slug)`
+  (CMS page intro/body — reusable for About/Units/generic CMS pages). New graphql:
+  `grants.js` (funding) + `page.js`. `getFunding()` / `getGrant(slug)`.
+
+### Verified (localhost + build + axe)
+- Build clean; toggle Current(1)↔Expired(105) works, chips correct; single page +
+  JSON-LD + expired banner; **axe AA 0 violations**.
+
+### Pending / VR-tune
+- Expired tab renders all 105 cards (matches legacy show-all) — heavy DOM only when
+  that tab is opened; could paginate in the perf pass.
+
 ## [0.17.0] — 2026-05-29 — Loading overlay + inline CSS (kill the blank-screen wait)
 
 ### Added — branded loading overlay (`BaseLayout`)

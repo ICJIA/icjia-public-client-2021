@@ -20,6 +20,11 @@ import {
   GET_ALL_MEETINGS_QUERY,
   GET_SINGLE_MEETING_QUERY,
 } from "../graphql/meetings.js";
+import {
+  GET_ALL_FUNDING_QUERY,
+  GET_SINGLE_FUNDING_QUERY,
+} from "../graphql/grants.js";
+import { GET_SINGLE_PAGE_QUERY } from "../graphql/page.js";
 
 // Strapi (agency) host — splash URLs come back as /uploads/... relative paths.
 const STRAPI_BASE = "https://agency.icjia-api.cloud";
@@ -490,6 +495,168 @@ export async function getMeeting(slug: string): Promise<MeetingItem | null> {
   const { data } = await runQuery(GET_SINGLE_MEETING_QUERY, { slug }, "no-cache");
   const m = data?.meetings?.[0];
   return m ? shapeMeeting(m) : null;
+}
+
+// ── Shared content helpers (reused across sections) ───────────────
+export interface AttachmentItem {
+  name: string;
+  url: string;
+  ext: string;
+  niceSize: string;
+  updatedAlt: string;
+}
+/** Shape Strapi attachments like the legacy AttachmentList: absolute url, niceBytes
+ *  size, dateFormatAlt updated, sorted by name asc. */
+export function shapeAttachments(arr?: any[]): AttachmentItem[] {
+  return (Array.isArray(arr) ? [...arr] : [])
+    .sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")))
+    .map((a) => ({
+      name: a.name,
+      url: strapiUrl(a.url) || a.url,
+      ext: (a.ext || "").replace(/^\./, "").toLowerCase(),
+      niceSize: niceBytes(a.size),
+      updatedAlt: dateFormatAlt(a.updated_at),
+    }));
+}
+
+export interface RelatedItem {
+  displayTitle: string;
+  fullPath: string;
+}
+/** Build the legacy RelatedList: "[Type]: title" linking to each type's route,
+ *  sorted by displayTitle. Handles all relation kinds a record may carry. */
+export function buildRelated(content: any): RelatedItem[] {
+  const out: RelatedItem[] = [];
+  const push = (arr: any, type: string, base: string) => {
+    if (Array.isArray(arr))
+      arr.forEach((e: any) =>
+        out.push({ displayTitle: `[${type}]: ${e.title}`, fullPath: `${base}${e.slug}/` }),
+      );
+  };
+  push(content?.events, "Event", "/events/");
+  push(content?.meetings, "Meeting", "/news/meetings/");
+  push(content?.posts, "News", "/news/");
+  push(content?.grants, "Funding", "/grants/funding/");
+  push(content?.programs, "Program", "/grants/programs/");
+  push(content?.biographies, "Biography", "/about/biographies/");
+  return out.sort((a, b) => a.displayTitle.localeCompare(b.displayTitle));
+}
+
+// ── CMS page (section intros + generic CMS pages) ─────────────────
+export interface CmsPage {
+  title: string;
+  hideTitle: boolean;
+  summary?: string;
+  /** body markdown rendered + sanitized server-side. */
+  safeBodyHtml: string;
+  showTOC?: boolean;
+  attachments: AttachmentItem[];
+  tags: string[];
+  published_at?: string;
+}
+/** Fetch a CMS "page" by slug (live) + render its body. null when none matches. */
+export async function getPage(slug: string): Promise<CmsPage | null> {
+  const { data } = await runQuery(GET_SINGLE_PAGE_QUERY, { slug }, "no-cache");
+  const p = data?.pages?.[0];
+  if (!p) return null;
+  return {
+    title: p.title,
+    hideTitle: !!p.hideTitle,
+    summary: p.summary,
+    safeBodyHtml: p.body ? renderToHtml(p.body) : "",
+    showTOC: p.showTOC,
+    attachments: shapeAttachments(p.attachments),
+    tags: Array.isArray(p.tags) ? p.tags.map((t: any) => t.title) : [],
+    published_at: p.published_at,
+  };
+}
+
+// ── Funding (/grants/funding/) ────────────────────────────────────
+export interface FundingListItem {
+  id: string;
+  slug: string;
+  title: string;
+  fullPath: string;
+  category: string;
+  /** uppercase label, e.g. "NOTICE OF FUNDING OPPORTUNITY". */
+  catLabel: string;
+  summaryHtml: string;
+  /** "May 05, 2026 to June 06, 2026" (legacy `format`). */
+  dateRange: string;
+  /** dateFormatAlt(end) — for the Deadline/Expired chip. */
+  deadlineAlt: string;
+  isExpired: boolean;
+  endMs: number;
+  attachments: AttachmentItem[];
+  tags: string[];
+}
+function shapeFundingListItem(g: any): FundingListItem {
+  const catLabel =
+    fundingCategoryLabel(g.category).toUpperCase() || String(g.category || "").toUpperCase();
+  return {
+    id: String(g.id),
+    slug: g.slug,
+    title: g.title,
+    fullPath: `/grants/funding/${g.slug}/`,
+    category: g.category ?? "",
+    catLabel,
+    summaryHtml: g.summary ? renderToHtml(g.summary) : "",
+    dateRange: g.start && g.end ? `${formatNewsDate(g.start)} to ${formatNewsDate(g.end)}` : "",
+    deadlineAlt: dateFormatAlt(g.end),
+    isExpired: isExpired(g.end),
+    endMs: g.end ? new Date(g.end).getTime() : 0,
+    attachments: shapeAttachments(g.attachments),
+    tags: Array.isArray(g.tags) ? g.tags.map((t: any) => t.title) : [],
+  };
+}
+/** All funding opportunities (end desc), live, for /grants/funding/. */
+export async function getFunding(): Promise<FundingListItem[]> {
+  const { data } = await runQuery(GET_ALL_FUNDING_QUERY, {}, "no-cache");
+  return (data?.grants ?? [])
+    .map(shapeFundingListItem)
+    .sort((a: FundingListItem, b: FundingListItem) => b.endMs - a.endMs);
+}
+
+export interface GrantDetail {
+  id: string;
+  slug: string;
+  title: string;
+  category: string;
+  catLabel: string;
+  bodyHtml: string;
+  summary?: string;
+  start?: string;
+  end?: string;
+  published_at?: string;
+  isExpired: boolean;
+  /** formatNewsDate(end) — for the "Expired on …" banner. */
+  endFormatted: string;
+  attachments: AttachmentItem[];
+  related: RelatedItem[];
+  tags: string[];
+}
+/** A single grant by slug, live; null when none matches (404). */
+export async function getGrant(slug: string): Promise<GrantDetail | null> {
+  const { data } = await runQuery(GET_SINGLE_FUNDING_QUERY, { slug }, "no-cache");
+  const g = data?.grants?.[0];
+  if (!g) return null;
+  return {
+    id: String(g.id),
+    slug: g.slug,
+    title: g.title,
+    category: g.category ?? "",
+    catLabel: fundingCategoryLabel(g.category).toUpperCase(),
+    bodyHtml: g.body ? renderToHtml(g.body) : "",
+    summary: g.summary,
+    start: g.start,
+    end: g.end,
+    published_at: g.published_at,
+    isExpired: isExpired(g.end),
+    endFormatted: formatNewsDate(g.end),
+    attachments: shapeAttachments(g.attachments),
+    related: buildRelated(g),
+    tags: Array.isArray(g.tags) ? g.tags.map((t: any) => t.title) : [],
+  };
 }
 
 /**

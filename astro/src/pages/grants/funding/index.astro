@@ -1,0 +1,21 @@
+---
+// /grants/funding/ — live-data SSR. Parity with FundingAll.vue: CMS "funding"
+// intro + Current/Expired toggle + grant cards. Logic in FundingListing.astro.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import FundingListing from '../../../components/FundingListing.astro';
+import { getFunding, getPage } from '../../../lib/data';
+import { setCache } from '../../../lib/cache';
+
+const [items, page] = await Promise.all([getFunding(), getPage('funding')]);
+setCache(Astro.response, 'grants');
+---
+
+<BaseLayout
+  title="Funding Opportunities — ICJIA"
+  description="Current and past funding opportunities (NOFOs) from the Illinois Criminal Justice Information Authority."
+  contextTitle={page?.title || 'Funding Opportunities'}
+>
+  <div class="mx-auto max-w-5xl px-4 py-8 md:px-6">
+    <FundingListing page={page} items={items} />
+  </div>
+</BaseLayout>

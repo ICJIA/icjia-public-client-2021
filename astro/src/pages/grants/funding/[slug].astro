@@ -1,0 +1,148 @@
+---
+// /grants/funding/[slug] — live-data SSR single grant. Parity with FundingSingle.vue:
+// expired banner, NOFO header, title, body, attachments, related, tags + JSON-LD
+// GovernmentService.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getGrant } from '../../../lib/data';
+import { setCache } from '../../../lib/cache';
+import '../../../styles/funding.css';
+
+const { slug } = Astro.params;
+const grant = slug ? await getGrant(slug) : null;
+
+if (!grant) {
+  return new Response('Not found', { status: 404 });
+}
+
+setCache(Astro.response, 'grants');
+
+// JSON-LD GovernmentService — port of FundingSingle.metaInfo.
+const STRAPI_BASE = 'https://agency.icjia-api.cloud';
+const EXT_TO_MIME: Record<string, string> = {
+  pdf: 'application/pdf',
+  doc: 'application/msword',
+  docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  xls: 'application/vnd.ms-excel',
+  xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  csv: 'text/csv',
+  txt: 'text/plain',
+  zip: 'application/zip',
+};
+const normalizeUrl = (u?: string): string | null => {
+  if (typeof u !== 'string' || !u) return null;
+  const t = u.trim();
+  if (/^https?:\/\//.test(t)) return t;
+  if (t.startsWith('/')) return `${STRAPI_BASE}${t}`;
+  return null;
+};
+const jsonld: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'GovernmentService',
+  name: grant.title,
+  serviceType: 'Grant funding opportunity',
+  provider: {
+    '@type': 'GovernmentOrganization',
+    name: 'Illinois Criminal Justice Information Authority',
+    alternateName: 'ICJIA',
+    url: 'https://icjia.illinois.gov',
+  },
+  areaServed: { '@type': 'State', name: 'Illinois' },
+  url: `https://icjia.illinois.gov/grants/funding/${grant.slug}`,
+  inLanguage: 'en-US',
+};
+if (grant.summary) jsonld.description = grant.summary;
+if (grant.published_at) jsonld.datePosted = grant.published_at;
+if (grant.end) jsonld.validThrough = grant.end;
+if (grant.start && grant.end) {
+  jsonld.hoursAvailable = {
+    '@type': 'OpeningHoursSpecification',
+    validFrom: grant.start,
+    validThrough: grant.end,
+  };
+}
+if (grant.attachments.length) {
+  const normalized = grant.attachments
+    .map((a) => {
+      const contentUrl = normalizeUrl(a.url);
+      if (!contentUrl || !a.name) return null;
+      return {
+        '@type': 'MediaObject',
+        name: a.name,
+        contentUrl,
+        ...(a.ext ? { encodingFormat: EXT_TO_MIME[a.ext] || a.ext } : {}),
+      };
+    })
+    .filter(Boolean);
+  if (normalized.length) jsonld.associatedMedia = normalized;
+}
+const jsonldStr = JSON.stringify(jsonld).replace(/</g, '\\u003c');
+---
+
+<BaseLayout title={grant.title} description={grant.summary} contextTitle={grant.title}>
+  {grant.isExpired && (
+    <div class="funding">
+      <div class="expired-banner">This Funding Opportunity Expired on {grant.endFormatted}</div>
+    </div>
+  )}
+  <div class="funding markdown-body mx-auto max-w-4xl px-4 py-8 md:px-6">
+    {grant.category === 'nofo' && <div class="nofo-header">Notice of Funding Opportunity</div>}
+    <h1 class="mt-1">{grant.title}</h1>
+    {grant.bodyHtml && <div set:html={grant.bodyHtml} />}
+
+    <div class="my-5">
+      {
+        grant.attachments.length > 0 && (
+          <div class="mt-4">
+            <h2 class="sub-heading">Attachments</h2>
+            <table class="att-table">
+              <thead>
+                <tr>
+                  <th>Filename</th>
+                  <th>Size</th>
+                </tr>
+              </thead>
+              <tbody>
+                {grant.attachments.map((a) => (
+                  <tr>
+                    <td>
+                      <a class="attachment" href={a.url} target="_blank" rel="noopener noreferrer">
+                        {a.name}
+                      </a>
+                    </td>
+                    <td>{a.niceSize}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )
+      }
+
+      {
+        grant.related.length > 0 && (
+          <div class="mt-5">
+            <h2 class="sub-heading">Related Web Content</h2>
+            <ul class="meeting-list">
+              {grant.related.map((r) => (
+                <li>
+                  <a href={r.fullPath}>{r.displayTitle}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+
+      {
+        grant.tags.length > 0 && (
+          <div class="mt-4">
+            {grant.tags.map((t) => (
+              <span class="chip">{t}</span>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
+  <script type="application/ld+json" set:html={jsonldStr} />
+</BaseLayout>
