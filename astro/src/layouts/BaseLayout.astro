@@ -173,7 +173,7 @@ const ogImg = new URL(ogImage ?? siteConfig.ogImage, Astro.url.origin).href;
         position: fixed;
         top: 0;
         left: 0;
-        height: 3px;
+        height: 4px;
         width: 0;
         background: #1565c0;
         z-index: 100000;
@@ -181,7 +181,7 @@ const ogImg = new URL(ogImage ?? siteConfig.ogImage, Astro.url.origin).href;
         transition:
           width 0.2s ease,
           opacity 0.2s ease;
-        box-shadow: 0 0 8px rgba(21, 101, 192, 0.5);
+        box-shadow: 0 0 10px rgba(21, 101, 192, 0.65);
       }
       #nav-progress.on {
         opacity: 1;

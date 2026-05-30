@@ -3,6 +3,12 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.30.1] — 2026-05-30 — Nav progress bar: thicker + more visible
+
+`#nav-progress` height 3px → 4px and the glow strengthened (box-shadow blur 8→10px,
+opacity 0.5→0.65). Purely cosmetic — the bar's behavior (a simulated NProgress-style
+indicator covering the next page's SSR/cold-start wait) is unchanged.
+
 ## [0.30.0] — 2026-05-30 — Dev-only a11y lint (eslint-plugin-astro)
 
 Added `eslint` (9) + `eslint-plugin-astro` + `eslint-plugin-jsx-a11y` + `@typescript-eslint/parser`
