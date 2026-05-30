@@ -1,0 +1,10 @@
+---
+// /publications/<slug>/ — 301 to the canonical /about/publications/<slug>/.
+// The draft previously served an empty 200 here (no page existed at this path);
+// legacy only redirected the bare /publications/ and had no /publications/:slug
+// route (it would 404). Redirecting the slug is strictly better — it preserves
+// any old deep links and removes the empty-200. Mirrors the /publications/ index
+// redirect (runtime 301, since the shared astro.config isn't edited per-section).
+const { slug } = Astro.params;
+return Astro.redirect(`/about/publications/${slug}/`, 301);
+---
