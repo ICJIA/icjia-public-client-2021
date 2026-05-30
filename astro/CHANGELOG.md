@@ -3,6 +3,29 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.24.0] — 2026-05-30 — Phase 4d: site search (/search + Fuse Web Worker)
+
+### Added — /search/ (the last major functional gap)
+- `pages/search.astro` — prerendered static shell + an interactive search island. The
+  chrome already linked here (top-nav magnifier + footer "Search" + the 404 form);
+  `/search/` 404'd until now.
+- Fuse.js runs OFF the main thread in `/searchWorker.js` (copied with `/fuse.min.js`
+  from the legacy app into `astro/public/`): it loads the prebuilt `/searchIndex.json`
+  (2386 records, regenerated each build), builds Fuse with the legacy
+  `config.search.site` options VERBATIM (same keys/weights/threshold → prod ranking),
+  and answers request-id'd queries so out-of-order responses can't clobber a newer one.
+- **Island pattern (matches this app's convention + dodges two traps):** the worker
+  client is a parse-time `is:inline` script on `window.__icjiaSearch` — kept OFF the
+  Alpine reactive object so the Worker isn't Proxy-wrapped (a proxied `postMessage`
+  throws "Illegal invocation"); the UI is plain inline `x-data` (this app exposes no
+  `window.Alpine` / uses no `Alpine.data()` registrations). Results render with
+  `x-text` (the index is raw CMS strings → XSS-safe, no `x-html`).
+- `?q=` is read on load + kept in sync (replaceState, shareable/bookmarkable);
+  debounced input; `role="search"` + `aria-live` result count; `noindex` (a query-
+  result page isn't durable content).
+- Verified live (dev): `?q=research` → 351 results (first: ARTICLE "Research & Analysis
+  Update, Winter 2025"); no-match → 0 + graceful message; clear → results + `?q=` cleared.
+
 ## [0.23.0] — 2026-05-30 — Grants parity: Funded Programs (list+detail) + grants CMS catch-all
 
 The branch deploy 404'd for ~70 real prod pages under /grants/. Built the missing routes,

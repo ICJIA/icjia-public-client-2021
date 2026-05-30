@@ -1,0 +1,315 @@
+---
+// /search/ — site search. Prerendered static shell (no CMS data) + an Alpine island
+// that drives Fuse.js OFF the main thread via /searchWorker.js (loads the prebuilt
+// /searchIndex.json, builds Fuse, answers per-keystroke queries). Ports the legacy
+// Search.vue behavior to a dedicated route (the chrome's top-nav icon + footer link
+// + the 404 form all hand off here via /search/?q=…).
+//
+// Island pattern (checklist trap-avoidance): the search logic is a BUNDLED <script>
+// that registers Alpine.data('icjiaSearch', …) on alpine:init — NOT an inline x-data
+// with a dynamic import(). Result fields are rendered with x-text (NOT x-html): the
+// index is built from raw CMS strings, so x-text keeps it XSS-safe.
+//
+// noindex: a search UI / query-result page isn't durable content (checklist rule).
+export const prerender = true;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig } from '../lib/seo';
+
+// Fuse options = the legacy config.search.site (src/config/config.json) verbatim, so
+// ranking/keys/threshold match prod exactly. Passed to the worker at INIT.
+const fuseOptions = {
+  isCaseSensitive: false,
+  includeScore: false,
+  shouldSort: true,
+  includeMatches: false,
+  findAllMatches: true,
+  minMatchCharLength: 2,
+  location: 0,
+  threshold: 0.25,
+  distance: 200,
+  useExtendedSearch: false,
+  ignoreLocation: false,
+  ignoreFieldNorm: false,
+  keys: [
+    { name: 'title', weight: 1 },
+    { name: 'searchMeta', weight: 1 },
+    { name: 'altTitle', weight: 1 },
+    { name: 'date', weight: 2 },
+    { name: 'fullName', weight: 1 },
+    { name: 'contentType', weight: 2 },
+    { name: 'authors.title', weight: 1 },
+    { name: 'authors.description', weight: 1 },
+    { name: 'tags', weight: 1 },
+    { name: 'position', weight: 2 },
+    { name: 'tagsAlt.title', weight: 1 },
+    { name: 'categories', weight: 2 },
+    { name: 'category', weight: 2 },
+    { name: 'summary', weight: 2 },
+    { name: 'abstract', weight: 2 },
+    { name: 'unit.title', weight: 2 },
+  ],
+};
+---
+
+<BaseLayout
+  title="Search"
+  description="Search the Illinois Criminal Justice Information Authority (ICJIA) — news, public meetings, funding, publications, research articles, datasets, and staff."
+  contextTitle="Search"
+  noindex
+>
+  <div
+    class="search-page mx-auto max-w-3xl px-4 py-8 md:px-6"
+    x-data={`{
+      query: '',
+      results: [],
+      ready: false,
+      error: false,
+      seq: 0,
+      init() {
+        const c = window.__icjiaSearch;
+        const q = new URLSearchParams(location.search).get('q');
+        if (q) this.query = q;
+        if (!c) { this.error = true; this.ready = true; return; }
+        c.onReady(() => {
+          this.error = c.error;
+          this.ready = true;
+          if (this.query.trim()) this.run();
+        });
+      },
+      async run() {
+        const q = (this.query || '').trim();
+        const u = new URL(location.href);
+        if (q) u.searchParams.set('q', q); else u.searchParams.delete('q');
+        history.replaceState({}, '', u);
+        if (!q || !this.ready || this.error) { this.results = []; return; }
+        const seq = ++this.seq;
+        const r = await window.__icjiaSearch.search(q);
+        if (seq !== this.seq) return;
+        this.results = r;
+      },
+      snippet(item) {
+        const raw = (item.abstract || item.summary || '').replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim();
+        if (!raw) return '';
+        const w = raw.split(' ');
+        return w.length > 50 ? w.slice(0, 50).join(' ') + '…' : raw;
+      }
+    }`}
+  >
+    <h1 class="search-h1">Search ICJIA</h1>
+
+    <form role="search" class="search-form" @submit.prevent="run()">
+      <label for="search-q" class="sr-only">Search ICJIA</label>
+      <input
+        id="search-q"
+        type="search"
+        name="q"
+        x-model="query"
+        x-ref="input"
+        @input.debounce.200ms="run()"
+        placeholder="Search ICJIA&hellip;"
+        autocomplete="off"
+        class="search-input"
+      />
+      <button type="submit" class="search-btn">Search</button>
+    </form>
+
+    {/* status line — polite live region so screen readers hear the result count */}
+    <p class="search-status" aria-live="polite" x-cloak>
+      <span x-show="!ready && !error">Loading search&hellip;</span>
+      <span x-show="error" class="search-error">Search is temporarily unavailable. Please try again later.</span>
+      <span x-show="ready && query.trim() && results.length" x-text="`${results.length} result${results.length === 1 ? '' : 's'} for “${query.trim()}”`"></span>
+      <span x-show="ready && query.trim() && !results.length && !error">No results for &ldquo;<span x-text="query.trim()"></span>&rdquo;.</span>
+    </p>
+
+    <ul class="search-results" x-show="results.length" x-cloak>
+      <template x-for="r in results" :key="r.item.fullPath">
+        <li class="search-result">
+          <a :href="r.item.fullPath" class="search-result-link">
+            <span class="search-result-type" x-text="(r.item.contentType || '').toUpperCase()" x-show="r.item.contentType"></span>
+            <span class="search-result-title" x-text="r.item.title"></span>
+            <span class="search-result-summary" x-text="snippet(r.item)" x-show="snippet(r.item)"></span>
+          </a>
+        </li>
+      </template>
+    </ul>
+  </div>
+
+  {/* Worker client — a parse-time is:inline script (runs BEFORE the deferred Alpine
+      module), so window.__icjiaSearch exists by the time the inline x-data init()
+      runs. The Web Worker (searchClient protocol) loads the 2.7 MB index + builds
+      Fuse OFF the main thread; request-id'd messages keep out-of-order responses
+      from clobbering a newer query. The worker lives in THIS script's scope (never
+      on the Alpine reactive object) so it isn't Proxy-wrapped (postMessage would
+      throw "Illegal invocation" on a proxied Worker). Index load kicks off
+      immediately, in parallel with Alpine boot. */}
+  <script is:inline define:vars={{ fuseOptions }}>
+    (function () {
+      var worker = null,
+        ready = false,
+        error = false,
+        reqId = 1;
+      var pending = new Map();
+      var readyCbs = [];
+      function flushReady() {
+        ready = true;
+        readyCbs.forEach(function (f) {
+          f();
+        });
+        readyCbs.length = 0;
+      }
+      try {
+        if (typeof Worker !== 'function') throw new Error('no Worker');
+        worker = new Worker('/searchWorker.js');
+        worker.addEventListener('message', function (e) {
+          var m = e.data || {};
+          if (m.type === 'READY') {
+            flushReady();
+          } else if (m.type === 'RESULTS') {
+            var slot = pending.get(m.id);
+            if (slot) {
+              pending.delete(m.id);
+              slot(m.results || []);
+            }
+          } else if (m.type === 'ERROR') {
+            error = true;
+            flushReady();
+          }
+        });
+        worker.addEventListener('error', function () {
+          error = true;
+          flushReady();
+        });
+        worker.postMessage({ type: 'INIT', fuseOptions: fuseOptions, indexUrl: '/searchIndex.json' });
+      } catch (e) {
+        error = true;
+        ready = true;
+      }
+      window.__icjiaSearch = {
+        onReady: function (cb) {
+          if (ready) cb();
+          else readyCbs.push(cb);
+        },
+        get error() {
+          return error;
+        },
+        search: function (q) {
+          if (!worker || error) return Promise.resolve([]);
+          return new Promise(function (resolve) {
+            var id = reqId++;
+            pending.set(id, resolve);
+            worker.postMessage({ type: 'SEARCH', id: id, query: q });
+          });
+        },
+      };
+    })();
+  </script>
+
+  <style>
+    [x-cloak] {
+      display: none !important;
+    }
+    .search-h1 {
+      font-family: 'Oswald', system-ui, sans-serif;
+      font-weight: 600;
+      font-size: clamp(26px, 4vw, 34px);
+      color: #0a3a60;
+      margin: 0 0 18px;
+    }
+    .search-form {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .search-input {
+      flex: 1;
+      height: 48px;
+      padding: 0 16px;
+      font-size: 16px;
+      color: #222;
+      background: #fff;
+      border: 2px solid #cfd8e3;
+      border-radius: 4px;
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: #1565c0;
+      box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.2);
+    }
+    .search-btn {
+      height: 48px;
+      padding: 0 24px;
+      font-weight: 700;
+      font-size: 16px;
+      color: #fff;
+      background: #1565c0;
+      border: 2px solid #1565c0;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .search-btn:hover {
+      background: #0a3a60;
+      border-color: #0a3a60;
+    }
+    .search-status {
+      min-height: 1.5em;
+      margin: 4px 0 20px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #555;
+    }
+    .search-error {
+      color: #b00020;
+    }
+    .search-results {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .search-result {
+      margin: 0 0 14px;
+    }
+    .search-result-link {
+      display: block;
+      padding: 14px 18px;
+      background: #fff;
+      border: 1px solid #e3e8ee;
+      border-left: 4px solid #1565c0;
+      border-radius: 4px;
+      text-decoration: none;
+      transition:
+        background 0.15s ease,
+        box-shadow 0.15s ease;
+    }
+    .search-result-link:hover {
+      background: #f6f8fa;
+      box-shadow: 0 3px 12px rgba(10, 58, 96, 0.1);
+    }
+    .search-result-type {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #1565c0;
+      margin-bottom: 4px;
+    }
+    .search-result-title {
+      display: block;
+      font-size: 17px;
+      font-weight: 700;
+      color: #0a3a60;
+      margin-bottom: 4px;
+    }
+    .search-result-summary {
+      display: block;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #444;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .search-result-link {
+        transition: none;
+      }
+    }
+  </style>
+</BaseLayout>
