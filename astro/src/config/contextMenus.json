@@ -147,7 +147,7 @@
             },
             {
                 "label": "Press",
-                "path": "/press/"
+                "path": "/news/press/"
             }
         ]
     },
@@ -182,7 +182,7 @@
             },
             {
                 "label": "Press",
-                "path": "/press/"
+                "path": "/news/press/"
             }
         ]
     },
@@ -217,7 +217,7 @@
             },
             {
                 "label": "Press",
-                "path": "/press/"
+                "path": "/news/press/"
             }
         ]
     },
@@ -361,7 +361,7 @@
             },
             {
                 "label": "Press",
-                "path": "/press/"
+                "path": "/news/press/"
             },
             {
                 "label": "Research",
