@@ -1465,7 +1465,7 @@ export async function getAllPublications(): Promise<PublicationListItem[]> {
     // already carries the searchable summary text and `fullPath` already encodes
     // the slug. So drop `slug` and replace the per-row `summary` with a ≤25-word
     // preview (the expand shows a preview; the detail page shows the full text).
-    // This roughly halves the island without changing search/sort/expand parity.
+    // This cuts the island ~40% without changing search/sort/expand parity.
     .map(({ slug, ...item }) => ({
       ...item,
       summary: truncateWords(item.summary, 25),

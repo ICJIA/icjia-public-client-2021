@@ -7,6 +7,18 @@ This is the live-data SSR migration tracked on the `feat/astro-migration` branch
 
 Multi-agent review (7 section reviewers + synthesis) found NO P0s; working the P1 list.
 
+### Perf (the two sub-95 routes → fixed)
+- **`/researchhub/apps/` (was perf 62):** the ~1.67MB of base64 app images was shipped in
+  the JSON island. Moved to a lazy-loaded endpoint (`/api/hub-app-images.json`, edge-cached
+  'hub'); island carries only a `hasImg` flag + slug; cards render a 1px placeholder
+  (width/height set → no CLS) and an IntersectionObserver + MutationObserver swap in the
+  real image as cards near view. HTML **1.67MB → 205KB**. Articles/datasets untouched.
+- **`/about/publications/` (was perf 88):** the 1108-row island shipped each row's full
+  `summary` AND a `haystack` (a 2nd copy) + a dead `slug`. Island rows now carry a 25-word
+  `summary` preview (full summary stays on the detail page) and drop `slug`; **full-text
+  search across all 1108 rows preserved** (the lowercased `haystack` is intact). Island
+  **1.43MB → 826KB**.
+
 ### Fixed
 - **Biography cards now link to the detail page** (`BiographyCard.astro`) — the name
   is wrapped in `<a href="/about/biographies/{slug}/">` (name only, not the whole card,

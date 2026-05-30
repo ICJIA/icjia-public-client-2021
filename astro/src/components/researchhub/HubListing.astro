@@ -53,10 +53,17 @@ const {
 
 const total = items.length;
 
-// Island rows: keep only what the card binds (and the base64 app image as `img`).
+// Island rows: keep only what the card binds. For apps the base64 `image` is a
+// 50–670KB data-URI; inlining it here is what bloated /researchhub/apps/ to
+// ~1.67MB and tanked FCP (base64 in HTML downloads with the document, so lazy
+// loading can't help). So we DO NOT carry base64 in the island — apps ship a
+// `hasImg` flag + their `slug`, and the image is fetched after load from
+// /api/hub-app-images.json (see the apps-only <script> below). articles/datasets
+// have no list image, so they're unaffected.
+const isApps = kind === 'apps';
 const rows = items.map((it) => {
   const authors = (it as ResearchArticleListItem).authors || '';
-  const img = (it as ResearchAppListItem).image || null;
+  const hasImg = isApps && !!(it as ResearchAppListItem).image;
   const contributors = (it as ResearchAppListItem).contributors || null;
   return {
     p: it.fullPath,
@@ -67,7 +74,9 @@ const rows = items.map((it) => {
     au: authors,
     cats: it.categories,
     tags: it.tags,
-    img, // base64 (apps) | null
+    img: null, // base64 never inlined; apps lazy-load via slug → endpoint
+    hasImg, // apps with an image (drives the lazy <img> placeholder)
+    slug: it.slug, // apps lazy-load key into /api/hub-app-images.json
     contrib: contributors,
   };
 });
@@ -173,8 +182,17 @@ const baseline = paginate ? items.slice(0, perPage) : items;
             <template x-if="it.n"><span class="hub-new">NEW!</span></template>
             <template x-if="it.t"><h2 class="hc-title" x-text="it.t"></h2></template>
             <template x-if="it.au"><div class="hc-authors" x-text="it.au"></div></template>
-            <template x-if="it.img">
-              <img class="hc-img" :src="it.img" alt="" loading="lazy" decoding="async" />
+            <template x-if="it.hasImg">
+              <img
+                class="hc-img"
+                src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                :data-hub-img="it.slug"
+                alt=""
+                width="400"
+                height="250"
+                loading="lazy"
+                decoding="async"
+              />
             </template>
             <template x-if="it.te"><div class="hc-teaser" x-text="it.te"></div></template>
 
@@ -235,3 +253,51 @@ const baseline = paginate ? items.slice(0, perPage) : items;
     </div>
   </div>
 </div>
+
+{
+  /* Apps-only: fetch the base64 image map once (kept OUT of the initial HTML),
+     then lazy-set each card <img> as it nears the viewport. The x-for renders
+     images after Alpine hydrates and grows them on "Load more", so we watch the
+     subtree with a MutationObserver and feed new placeholders to one shared
+     IntersectionObserver. Scoped to apps; articles/datasets render no such img. */
+  kind === 'apps' && (
+    <script is:inline>
+      {`(() => {
+        const root = document.currentScript.previousElementSibling;
+        if (!root) return;
+        let map = null, pending = [];
+        const apply = (img) => {
+          const slug = img.getAttribute('data-hub-img');
+          if (!slug) return;
+          const src = map[slug];
+          if (src) img.src = src;
+          img.removeAttribute('data-hub-img');
+        };
+        const io = new IntersectionObserver((entries, obs) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            obs.unobserve(e.target);
+            if (map) apply(e.target); else pending.push(e.target);
+          }
+        }, { rootMargin: '300px' });
+        const observe = (el) => {
+          el.querySelectorAll('img[data-hub-img]').forEach((img) => io.observe(img));
+        };
+        fetch('/api/hub-app-images.json')
+          .then((r) => (r.ok ? r.json() : {}))
+          .then((d) => { map = d || {}; pending.forEach(apply); pending = []; })
+          .catch(() => { map = {}; pending = []; });
+        observe(root);
+        new MutationObserver((muts) => {
+          for (const m of muts) {
+            m.addedNodes.forEach((n) => {
+              if (n.nodeType !== 1) return;
+              if (n.matches && n.matches('img[data-hub-img]')) io.observe(n);
+              else if (n.querySelectorAll) observe(n);
+            });
+          }
+        }).observe(root, { childList: true, subtree: true });
+      })();`}
+    </script>
+  )
+}
