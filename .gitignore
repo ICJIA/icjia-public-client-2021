@@ -83,4 +83,10 @@ test-results/
 repomix-output.xml
 
 # Generated publication exports (regenerate via: npm run export:publications)
-scripts/output/
+scripts/output/chrome-screenshot-*.png
+*-screenshot-*.png
+lighthouse-*.html
+*.json.json.gz
+test_*.mjs
+
+# agent / tooling scratch (screenshots, lighthouse reports, probe scripts)
