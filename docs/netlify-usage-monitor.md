@@ -11,16 +11,21 @@ meter it watches).
 ## ⚠️ Honest limitation (read this first)
 
 **Netlify has no officially documented usage API.** Verified 2026-05-30:
-- **Bandwidth IS queryable** via an *undocumented* endpoint
-  `GET /api/v1/accounts/<team_slug>/bandwidth` → `{ used, included, additional,
-  period_start_date, period_end_date }` (bytes; limits are GiB = 2³⁰).
-- **Build minutes ARE queryable** (confirmed live 2026-05-30) via
-  `GET /api/v1/<team_slug>/builds/status` → `{ minutes: { current, included_minutes,
-  included_minutes_with_packs, period_end_date, … } }`. Note the **bare-slug** path
-  (`/<slug>/builds/status`); the `/accounts/<slug>/builds/status` form 404s.
-- **Function invocations are NOT exposed** by the API. The monitor reports it **honestly as
-  "unavailable"** (rather than inventing a number) and points to the dashboard
-  (**Billing → Account usage insights**). The monitor's email says exactly this.
+**The richest source is `GET /api/v1/accounts/<team_slug>`** — its `capabilities` object
+carries `{ included, used }` for **function invocations** (`functions`), **edge functions**
+(`edge_functions`), **function compute** (`functions_gb_hour`), **bandwidth**, **build
+minutes**, and more — all in one call (confirmed live 2026-05-30). The monitor reads from it
+primarily and enriches two metrics from dedicated endpoints:
+- `GET /api/v1/accounts/<slug>/bandwidth` → `{ used, included, additional, period_end_date }`
+  (bytes; GiB = 2³⁰) — adds overage packs + exact reset date.
+- `GET /api/v1/<slug>/builds/status` → `{ minutes: { current, previous, included_minutes,
+  included_minutes_with_packs, period_end_date } }` — adds the **previous period** total for
+  trend context. (Bare-slug path; the `/accounts/<slug>/builds/status` form 404s.)
+
+So **function invocations ARE available** — an earlier note here was wrong; corrected after a
+live probe. (`used` reads 0 until the SSR function serves production traffic post-cutover.)
+These are undocumented endpoints — if Netlify changes them the monitor reports the metric as
+"unavailable" (fail-loud), never a fabricated number.
 
 Because it depends on an undocumented endpoint, an API failure is treated as **🚨 CRITICAL**
 (emails you to check manually) — a broken monitor is never allowed to look healthy.
@@ -29,9 +34,16 @@ Because it depends on an undocumented endpoint, an API failure is treated as **�
 
 Per metric: `✅` (<70%), `⚠️` (≥70%), `🚨` (≥90% or API error), `❓` (not exposed by the API).
 - **Bandwidth** — used / included (GiB) + % + period reset date.
-- **Build minutes** — used / included (e.g. 419 / 25,000 on Pro) + % + period reset.
-- **Function invocations** — `❓ unavailable` (with a note: keep-warm worst case ≈52K/mo,
-  Pro includes 125K).
+Each available metric also shows a **linear end-of-period projection** (extrapolated from
+usage so far this period — rough early on) so you can spot a trend before it bites:
+- **Function invocations** — used / 125,000 (Pro). *The metric to watch post-cutover.*
+- **Edge function invocations** — used / 2,000,000.
+- **Function compute** — GB-hr used / 1,000.
+- **Bandwidth** — GiB used / 1,024 (1 TB Pro).
+- **Build minutes** — used / 25,000, plus the **previous period** total for trend.
+
+The email also includes direct **click-through links** to the Netlify dashboard
+(usage / billing / functions).
 
 ## Two places config lives (this matters)
 
