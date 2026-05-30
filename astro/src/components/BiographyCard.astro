@@ -34,9 +34,19 @@ const { item, showName = true, color = '#fff' } = Astro.props;
       <div class="bio-body markdown-body">
         {
           showName && (
-            /* PARITY FLAG: plain text — was a search trigger (search unported) */
+            /* The name links to the bio detail page (so listing cards aren't a
+               dead-end). NOTE: only the name is the link — the card body's
+               rendered markdown can contain its own <a>, so wrapping the whole
+               card would create invalid nested anchors. Legacy made the name a
+               search trigger (search unported); detail→search affordance TBD. */
             <h2 id={item.slug ? `bio-${item.slug}` : undefined} class="author-name">
-              {item.fullNameWithSuffix}
+              {item.slug ? (
+                <a href={`/about/biographies/${item.slug}/`} class="bio-name-link">
+                  {item.fullNameWithSuffix}
+                </a>
+              ) : (
+                item.fullNameWithSuffix
+              )}
             </h2>
           )
         }

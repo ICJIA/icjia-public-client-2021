@@ -20,8 +20,18 @@ interface Props {
   description?: string;
   /** 3rd breadcrumb segment in the context bar (page/item title). */
   contextTitle?: string;
+  /** Canonical URL. Defaults to the current page's own URL; alias routes
+   *  (e.g. /news/events/ → /events/) pass the canonical target so duplicate
+   *  content consolidates to one URL. */
+  canonical?: string;
 }
-const { title = 'ICJIA', description = '', contextTitle } = Astro.props;
+const { title = 'ICJIA', description = '', contextTitle, canonical } = Astro.props;
+// Production origin (not the branch-deploy host) so canonicals point at the live
+// site regardless of which deploy renders them.
+const SITE = 'https://icjia.illinois.gov';
+const canonicalHref = canonical
+  ? new URL(canonical, SITE).href
+  : new URL(Astro.url.pathname, SITE).href;
 ---
 
 <!doctype html>
@@ -30,6 +40,7 @@ const { title = 'ICJIA', description = '', contextTitle } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="canonical" href={canonicalHref} />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     {/* Loading overlay — critical CSS inlined so it paints with the HTML (no

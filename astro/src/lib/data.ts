@@ -347,9 +347,24 @@ function ordinal(n: number): string {
   return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
 
-/** Legacy `dateFormatAlt` filter: dayjs "MMM DD, YYYY" (Chicago) → "May 14, 2026". */
+const MONTH_ABBR = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+/** Legacy `dateFormatAlt` filter: dayjs "MMM DD, YYYY" (Chicago) → "May 14, 2026".
+ *  Date-only values ("YYYY-MM-DD", e.g. a publication's publicationDate) have no
+ *  time/zone, so converting them through a Chicago tz shift moves them a day
+ *  earlier (midnight-UTC → previous-evening Chicago). For those, read the literal
+ *  calendar parts (no shift); only timestamped values get the Chicago conversion. */
 export function dateFormatAlt(iso?: string): string {
   if (!iso) return "";
+  const dateOnly = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if (dateOnly) {
+    const [, y, m, d] = dateOnly;
+    const mi = Number(m) - 1;
+    // dayjs "MMM DD, YYYY" → zero-padded day, matching the timestamped branch.
+    return MONTH_ABBR[mi] ? `${MONTH_ABBR[mi]} ${d}, ${y}` : "";
+  }
   const p = chicagoParts(iso);
   return p.month ? `${p.month} ${p.day}, ${p.year}` : "";
 }
@@ -1347,7 +1362,9 @@ const PUB_PAGE_SIZE = 500;
 export interface PublicationListItem {
   id: string;
   title: string;
-  slug: string;
+  /** present on the single-row shape; omitted from the listing island (dead there — fullPath is precomputed). */
+  slug?: string;
+  /** FULL summary on the single-row shape; TRUNCATED (≤25 words) on the listing island to keep the data island small — the listing expand shows a preview, the full text lives on the detail page. Search still matches the full summary via `haystack`. */
   summary?: string;
   pubType?: string;
   /** publicationDate (the archive's own field — NOT published_at). */
@@ -1441,6 +1458,18 @@ export async function getAllPublications(): Promise<PublicationListItem[]> {
   const clean = deepSanitize(uniqById(rows));
   return (clean as any[])
     .map(shapePublication)
+    // ISLAND TRIM (perf): the listing ships ALL ~1108 rows as one JSON island so
+    // the client can search/sort the whole archive. shapePublication keeps the
+    // FULL summary (for the full-text `haystack`, matching legacy customFilter)
+    // and `slug`; both are redundant in the island once shaped — `haystack`
+    // already carries the searchable summary text and `fullPath` already encodes
+    // the slug. So drop `slug` and replace the per-row `summary` with a ≤25-word
+    // preview (the expand shows a preview; the detail page shows the full text).
+    // This roughly halves the island without changing search/sort/expand parity.
+    .map(({ slug, ...item }) => ({
+      ...item,
+      summary: truncateWords(item.summary, 25),
+    }))
     .sort((a, b) =>
       String(b.publicationDate || "").localeCompare(String(a.publicationDate || "")),
     );

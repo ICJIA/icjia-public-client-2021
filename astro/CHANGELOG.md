@@ -3,6 +3,25 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.20.0] — 2026-05-30 — Refinement pass 1: parity fixes from the review synthesis
+
+Multi-agent review (7 section reviewers + synthesis) found NO P0s; working the P1 list.
+
+### Fixed
+- **Biography cards now link to the detail page** (`BiographyCard.astro`) — the name
+  is wrapped in `<a href="/about/biographies/{slug}/">` (name only, not the whole card,
+  to avoid nesting anchors inside the bio body's own links). Resolves the top P1 across
+  THREE sections (biographies, about-staff, units staff) — listings were navigational
+  dead-ends. Detail page (showName=false) still doesn't self-link.
+- **`dateFormatAlt` date-only TZ bug** (`data.ts`) — a bare `YYYY-MM-DD` (e.g. a
+  publication's publicationDate) was shifted Chicago-ward and rendered **one day early**
+  (May 22 → "May 21"). Now reads literal calendar parts for date-only values; timestamped
+  values keep the Chicago conversion. Shared helper → also corrects meetings/grants/jobs
+  date chips. Unit-tested.
+- **Sitewide canonical tags** (`BaseLayout.astro`) — every page now emits
+  `<link rel="canonical">` (defaults to its own URL at the prod origin). Alias routes pass
+  the canonical target: `/news/events/` → `/events/` (publications alias to follow).
+
 ## [0.19.0] — 2026-05-29 — Complete DRAFT build-out of the 7 remaining sections (multi-agent workflow)
 
 Built via staged workflows (scout → synthesize → foundation → components → 7 sections;
