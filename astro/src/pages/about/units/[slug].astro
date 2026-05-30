@@ -17,8 +17,15 @@
 // legacy metaInfo.title = unit.title). contextTitle = unit.title.
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import UnitCard from '../../../components/UnitCard.astro';
-import { getUnit, getBiographiesByUnit } from '../../../lib/data';
-import { setCache } from '../../../lib/cache';
+import { getUnit, getBiographiesByUnit, getAllUnits } from '../../../lib/data';
+
+// Prerendered (renderStrategy: units) — one static page per unit slug, refreshed on
+// the nightly/manual rebuild.
+export const prerender = true;
+export async function getStaticPaths() {
+  const units = await getAllUnits();
+  return units.filter((u) => u.slug).map((u) => ({ params: { slug: u.slug } }));
+}
 
 const { slug } = Astro.params;
 
@@ -26,8 +33,6 @@ const unit = slug ? await getUnit(slug) : null;
 if (!unit) return new Response('Not found', { status: 404 });
 
 const staff = unit.shortName ? await getBiographiesByUnit(unit.shortName) : [];
-
-setCache(Astro.response, 'bios');
 ---
 
 <BaseLayout title={unit.title} description={unit.title} contextTitle={unit.title}>

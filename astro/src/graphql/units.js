@@ -22,4 +22,13 @@ const GET_SINGLE_UNIT_QUERY = gql`
   }
 `;
 
-export { GET_SINGLE_UNIT_QUERY };
+// All unit slugs — for prerendering /about/units/[slug] (getStaticPaths enumeration).
+const GET_ALL_UNITS_QUERY = gql`
+  query units {
+    units {
+      slug
+    }
+  }
+`;
+
+export { GET_SINGLE_UNIT_QUERY, GET_ALL_UNITS_QUERY };

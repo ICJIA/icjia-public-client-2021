@@ -3,6 +3,17 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.35.0] — 2026-05-30 — Phase B (part 2a): prerender biographies + units
+
+The dynamic `[slug]` routes with clean enumeration flip SSR → prerendered via
+`getStaticPaths`: `/about/biographies/[slug]` (109 bios, enumerated via `getAllBiographies`)
+and `/about/units/[slug]` (10 units; added `getAllUnits` + `GET_ALL_UNITS_QUERY`). Each
+adds `prerender=true` + `getStaticPaths` and drops `setCache`; the frontmatter re-fetches
+each record's full detail at build. Verified: 109 + 10 static pages built with full content.
+
+Build cost: ~120 extra build-time Strapi queries (one per bio/unit) — fine for the
+infrequent build; content refreshed on the nightly/manual rebuild.
+
 ## [0.34.0] — 2026-05-30 — Phase B (part 1): prerender stable leaf pages
 
 First Phase-B increment — the low-risk static leaf pages (per the `renderStrategy`

@@ -7,9 +7,17 @@
 // <title> is the bare fullName (legacy metaInfo.title; matches news/[slug] precedent).
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import BiographyCard from '../../../components/BiographyCard.astro';
-import { getBiography } from '../../../lib/data';
-import { setCache } from '../../../lib/cache';
+import { getBiography, getAllBiographies } from '../../../lib/data';
 import { buildPersonJsonLd } from '../../../lib/seo';
+
+// Prerendered (renderStrategy: about/biographies) — one static page per bio slug,
+// refreshed on the nightly/manual rebuild. getStaticPaths enumerates the slugs; the
+// frontmatter below re-fetches each bio's full detail at build.
+export const prerender = true;
+export async function getStaticPaths() {
+  const bios = await getAllBiographies();
+  return bios.filter((b) => b.slug).map((b) => ({ params: { slug: b.slug } }));
+}
 
 const { slug } = Astro.params;
 const item = slug ? await getBiography(slug) : null;
@@ -17,8 +25,6 @@ const item = slug ? await getBiography(slug) : null;
 if (!item) {
   return new Response('Not found', { status: 404 });
 }
-
-setCache(Astro.response, 'bios');
 
 // Meta description: name + role (+ unit) — concise, plain text (no body HTML).
 const metaDescription = [

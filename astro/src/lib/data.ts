@@ -44,7 +44,7 @@ import {
   GET_ALL_BIOGRAPHIES_QUERY,
   GET_BIOGRAPHIES_BY_UNIT_QUERY,
 } from "../graphql/biographies.js";
-import { GET_SINGLE_UNIT_QUERY } from "../graphql/units.js";
+import { GET_SINGLE_UNIT_QUERY, GET_ALL_UNITS_QUERY } from "../graphql/units.js";
 
 // Strapi (agency) host — splash URLs come back as /uploads/... relative paths.
 const STRAPI_BASE = "https://agency.icjia-api.cloud";
@@ -1867,4 +1867,12 @@ export async function getUnit(slug: string): Promise<UnitDetail | null> {
     summaryHtml: u.summary ? renderToHtml(u.summary) : "",
     bodyHtml: u.body ? renderToHtml(u.body) : "",
   };
+}
+
+/** All unit slugs, for prerendering /about/units/[slug] (build-time enumeration). */
+export async function getAllUnits(): Promise<Array<{ slug: string }>> {
+  const { data } = await runQuery(GET_ALL_UNITS_QUERY, {}, "no-cache");
+  return (data?.units ?? [])
+    .filter((u: any) => u && u.slug)
+    .map((u: any) => ({ slug: u.slug }));
 }
