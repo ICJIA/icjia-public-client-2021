@@ -90,3 +90,4 @@ lighthouse-*.html
 test_*.mjs
 
 # agent / tooling scratch (screenshots, lighthouse reports, probe scripts)
+scripts/output/

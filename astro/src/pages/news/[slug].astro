@@ -1,13 +1,19 @@
 ---
-// Live-data SSR news article.
-// Fetches the post from Strapi server-side per request, renders + sanitizes the
-// body server-side, and emits complete HTML. No client-side data fetch, no
-// spinner, no hydration. Freshness governed by the per-route CDN cache.
+// Live-data SSR news article detail. Fetches the post from Strapi server-side
+// per request, renders + sanitizes the body server-side, and emits complete HTML.
+// No client-side data fetch, no spinner. Freshness governed by the per-route CDN cache.
 //
-// Phase 0 spike: proves the end-to-end live-data SSR pipeline. Pixel-perfect
-// chrome/typography arrives in Phase 1/3 (this uses the .markdown-body class
-// the legacy site uses, but the full continuity CSS lands later).
+// Layout mirrors legacy NewsSingle.vue (the authoritative layout) + the sibling
+// Astro detail pages (grants/funding/[slug], about/[slug] via BasePage):
+//   1. Splash (full-bleed hero) unless hideSplash.
+//   2. Two-col grid (body md:8 + TOC md:4) WHEN showTOC && toc.length, else single col.
+//        body col: date/category header → h1 → body → tag chips
+//                  → AttachmentList → RelatedList.
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import Splash from "../../components/Splash.astro";
+import PageToc from "../../components/PageToc.astro";
+import AttachmentList from "../../components/AttachmentList.astro";
+import RelatedList from "../../components/RelatedList.astro";
 import { getNewsPost, strapiUrl } from "../../lib/data";
 import { setCache } from "../../lib/cache";
 import { buildArticleJsonLd } from "../../lib/seo";
@@ -31,13 +37,79 @@ const jsonLd = buildArticleJsonLd({
   dateModified: post.updated_at,
   image: strapiUrl(post.splash?.url) ?? undefined,
 });
+
+const showToc = !!post.showTOC && post.toc.length > 0;
+const showSplash = !!post.splash && !post.hideSplash;
 ---
 
 <BaseLayout title={post.title} description={post.summary} contextTitle={post.title} jsonLd={jsonLd}>
-  <article class="markdown-body mx-auto max-w-3xl p-8 md:p-12">
-    <h1>{post.title}</h1>
-    {post.summary && <p class="text-lg text-gray-700">{post.summary}</p>}
-    {/* safeBodyHtml = markdown-it → DOMPurify → fixTableHeaders → fixImageLinks → contentSanitizer, all server-side */}
-    <div set:html={post.safeBodyHtml} />
-  </article>
+  <div class="news-item markdown-body mx-auto max-w-[1185px] px-3 py-8">
+    {/* 1. Splash — full-bleed hero above the grid (unless hideSplash). Legacy
+        NewsSingle passes only :splash, so alt comes from Splash's own precedence
+        (alternativeText → default), not the title. */}
+    {showSplash && <Splash splash={post.splash} />}
+
+    {/* 2. Body + optional TOC — prod metrics (1280px): body 790 / TOC 270 / gap 109.
+         The legacy -15px nudge only when there's no splash (else it pulls the
+         sticky TOC up into the splash). */}
+    <div class:list={[{ '-mt-[15px]': !showSplash }, { 'md:flex md:items-start md:gap-[109px]': showToc }]}>
+      <div class:list={[{ 'md:min-w-0 md:flex-1': showToc }]}>
+        {/* date/category header (legacy: "CATEGORY | publicationDate"). */}
+        <div class="news-meta">
+          <span class="category">{post.catLabel.toUpperCase()}</span>
+          {post.publicationDate && <> | {post.publicationDate}</>}
+        </div>
+
+        <h1 class="news-title">{post.title}</h1>
+
+        {/* safeBodyHtml = markdown-it → DOMPurify → fixTableHeaders → fixImageLinks → contentSanitizer, all server-side */}
+        <div set:html={post.safeBodyHtml} />
+
+        {
+          post.tags.length > 0 && (
+            <div class="mt-6">
+              {post.tags.map((tag) => (
+                <span class="chip">{tag}</span>
+              ))}
+            </div>
+          )
+        }
+
+        <div class="mt-12">
+          {/* NewsSingle passes hideUpdated → drop the "Last Updated" column. */}
+          <AttachmentList items={post.attachments} label={post.attachmentLabel} hideUpdated />
+          <div class="mt-10">
+            <RelatedList items={post.related} />
+          </div>
+        </div>
+      </div>
+
+      {
+        showToc && (
+          <aside class="mt-8 md:mt-0 md:w-[270px] md:shrink-0">
+            <PageToc items={post.toc} />
+          </aside>
+        )
+      }
+    </div>
+  </div>
 </BaseLayout>
+
+<style is:global>
+  /* No-JS / deep-link fallback: native anchor jumps land below the fixed 90px
+     app bar (the PageToc click handler does a smooth offset scroll when JS is on). */
+  .news-item.markdown-body :is(h1, h2, h3, h4)[id] {
+    scroll-margin-top: 96px;
+  }
+  /* Legacy NewsSingle date/category header (font-weight 900, 16px category). */
+  .news-item .news-meta {
+    font-weight: 900;
+  }
+  .news-item .news-meta .category {
+    font-size: 16px;
+  }
+  /* Legacy NewsSingle.vue gave the h1 a 15px top margin under the header. */
+  .news-item .news-title {
+    margin-top: 15px;
+  }
+</style>

@@ -21,6 +21,7 @@ import ArticleToc from './ArticleToc.astro';
 import InfoBlock from './InfoBlock.astro';
 import MarkerExternal from './MarkerExternal.astro';
 import type { ResearchArticleDetail } from '../../lib/research';
+import { serializeJsonLd } from '../../lib/seo';
 import '../../styles/article-view.css';
 import '../../styles/researchhub.css';
 
@@ -58,6 +59,14 @@ const jsonLd: Record<string, unknown> = {
 };
 if (article.dateLabel) jsonLd.datePublished = article.date;
 if (article.authors) jsonLd.author = article.authors;
+
+// citation is now sanitized HTML (research.ts → renderToHtml/DOMPurify). The DOI,
+// however, is raw hub text spliced into an href + link text below; the legacy bound
+// it via Vue (:href / {{ }}), which escapes. Mirror that by HTML-escaping the DOI so
+// it can't break out of the attribute/markup when concatenated for set:html.
+const escapeHtml = (s: string) =>
+  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+const doiSafe = article.doi ? escapeHtml(article.doi) : null;
 ---
 
 <div id="article-view">
@@ -191,8 +200,8 @@ if (article.authors) jsonLd.author = article.authors;
             <InfoBlock
               title="Suggested citation"
               html={
-                article.doi
-                  ? `${article.citation} <a href="${article.doi}" target="_blank" rel="noreferrer">${article.doi}</a>`
+                doiSafe
+                  ? `${article.citation} <a href="${doiSafe}" target="_blank" rel="noreferrer">${doiSafe}</a>`
                   : article.citation
               }
             />
@@ -206,7 +215,7 @@ if (article.authors) jsonLd.author = article.authors;
   </div>
 </div>
 
-<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+<script type="application/ld+json" set:html={serializeJsonLd(jsonLd)} is:inline />
 
 <style>
   /* Responsive splash hero heights (legacy xs240 / sm360 / md+650). */

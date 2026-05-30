@@ -1,0 +1,53 @@
+---
+// Shared "Related Web Content" list — ports legacy RelatedList.vue.
+// Renders the buildRelated() items ("[Type]: title" → each type's route) under
+// an uppercase sub-heading. Markup/classes mirror the grant/event single pages
+// (sub-heading + a plain <ul> of links); styling is self-contained so any
+// section can drop it in. Renders nothing when there are no related items
+// (mirrors v-if="relatedList").
+import type { RelatedItem } from '../lib/data';
+
+interface Props {
+  items: RelatedItem[];
+  /** heading text (legacy default "Related Web Content"). */
+  title?: string;
+}
+const { items, title = 'Related Web Content' } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <div class="related-list">
+      {title && <h3 class="sub-heading">{title}</h3>}
+      <ul class="related-link-list">
+        {items.map((r) => (
+          <li>
+            <a href={r.fullPath}>{r.displayTitle}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+<style>
+  /* Matches the legacy RelatedList.vue header (700, uppercase, bottom rule) +
+     the .related-link 14px list (consistent with the grant/event single pages). */
+  .related-list .sub-heading {
+    font-weight: 700;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 8px;
+    text-transform: uppercase;
+    font-size: inherit;
+    margin: 0 0 0.75rem;
+  }
+  .related-list .related-link-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .related-list .related-link-list li {
+    margin-top: 0.5rem;
+    font-size: 14px;
+  }
+</style>

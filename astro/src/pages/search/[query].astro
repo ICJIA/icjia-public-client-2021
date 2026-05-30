@@ -1,25 +1,35 @@
 ---
-// /search/ — site search. Prerendered static shell (no CMS data) + an Alpine island
-// that drives Fuse.js OFF the main thread via /searchWorker.js (loads the prebuilt
-// /searchIndex.json, builds Fuse, answers per-keystroke queries). Ports the legacy
-// Search.vue behavior to a dedicated route (the chrome's top-nav icon + footer link
-// + the 404 form all hand off here via /search/?q=…).
+// /search/<query>/ — deep-link target for site search. SAME static shell + Alpine
+// island as /search/ (search.astro), the ONLY difference being that the initial
+// query is seeded from the decoded path param so a link like /search/violence/ runs
+// that search on load. This is the target legacy served at /search/:query (router
+// name "Search2") for every tag / author / unit deep-link emitted across the site
+// (Hub ArticleView author links, SearchCard tag/author/unit clicks → goToSearch).
 //
-// Island pattern (checklist trap-avoidance): the search logic is a BUNDLED <script>
-// that registers Alpine.data('icjiaSearch', …) on alpine:init — NOT an inline x-data
-// with a dynamic import(). Result fields are rendered with x-text (NOT x-html): the
-// index is built from raw CMS strings, so x-text keeps it XSS-safe.
+// On-demand SSR (prerender = false), NOT prerendered: a prerendered dynamic route
+// requires getStaticPaths and can only emit a finite, enumerated set of paths — but
+// search queries are unbounded (any tag/author/free-text string). Per the Astro docs
+// (routing.mdx: "For on-demand rendered routes, params can be any value matching the
+// path segments"), only an on-demand route makes Astro.params.query carry an
+// arbitrary value, which is exactly what a deep link needs. This matches every other
+// dynamic [slug] route in this app (all on-demand SSR, none use getStaticPaths). The
+// shell does NO Strapi fetch, so the SSR cost is just rendering this static markup.
+//
+// Island pattern (checklist trap-avoidance): the search logic is an inline x-data
+// object; the worker client is a BUNDLED is:inline <script>. Result fields are
+// rendered with x-text (NOT x-html): the index is built from raw CMS strings, so
+// x-text keeps it XSS-safe.
 //
 // noindex: a search UI / query-result page isn't durable content (checklist rule).
-export const prerender = true;
+export const prerender = false;
 
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { siteConfig } from '../lib/seo';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 
-// Initial query seed. On /search/ there is none (the query comes from ?q= or
-// the input); the deep-link route /search/<query>/ overrides this with the
-// decoded path param so a tag/author link runs that search on load.
-const initialQuery = '';
+// Initial query seed — the decoded path param. decodeURIComponent so multi-word /
+// punctuated deep-links (e.g. /search/domestic%20violence/) restore correctly. The
+// inline init() uses this first, then falls back to ?q= (kept identical to
+// search.astro so the two islands don't drift).
+const initialQuery = decodeURIComponent(Astro.params.query ?? '');
 
 // Fuse options = the legacy config.search.site (src/config/config.json) verbatim, so
 // ranking/keys/threshold match prod exactly. Passed to the worker at INIT.

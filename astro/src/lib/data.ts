@@ -231,28 +231,66 @@ export interface NewsPost {
   safeBodyHtml: string;
   showTOC?: boolean;
   category?: string;
+  /** newsCategoryLabel(category) — the uppercase kicker in the date/category header. */
+  catLabel: string;
   published_at?: string;
   updated_at?: string;
   dateOverride?: string;
+  /** dateOverride || published_at, formatted "May 05, 2026" (legacy `format`). */
+  publicationDate: string;
   hideSplash?: boolean;
   splash?: StrapiImage | null;
-  attachments?: Array<Record<string, unknown>>;
-  tags?: Array<{ title: string; slug: string }>;
-  [key: string]: unknown;
+  /** AttachmentList heading; "" when none set (legacy passed "" → default "Attachments"). */
+  attachmentLabel: string;
+  /** shaped like the grant/page attachment tables (absolute url, niceBytes, dateFormatAlt). */
+  attachments: AttachmentItem[];
+  /** "[Type]: title" related links (posts/meetings/grants/programs/events/biographies). */
+  related: RelatedItem[];
+  /** flattened tag titles → chips (legacy getUnifiedTags). */
+  tags: string[];
+  /** h2 anchors for the showTOC sidebar (legacy Toc). */
+  toc: TocItem[];
 }
 
 /**
  * Fetch a single news post by slug, live, and render its body server-side.
  * Returns null when no post matches (page should 404).
+ *
+ * Shapes the related arrays, attachments, tags, and the on-page TOC the same way
+ * the grant/page detail loaders do (buildRelated/shapeAttachments/buildToc), so
+ * NewsSingle.vue's full layout — splash, date/category header, body, attachments,
+ * related, tags, showTOC sidebar — renders server-side with no client fetch.
  */
 export async function getNewsPost(slug: string): Promise<NewsPost | null> {
   const { data } = await runQuery(GET_SINGLE_POST_QUERY, { slug }, "no-cache");
   const post = data?.posts?.[0];
   if (!post) return null;
+  const safeBodyHtml = post.body ? renderToHtml(post.body) : "";
+  // legacy getPublicationDate: dateOverride (when non-empty) else published_at.
+  const publicationISO =
+    post.dateOverride && post.dateOverride.length ? post.dateOverride : post.published_at;
   return {
-    ...post,
-    safeBodyHtml: post.body ? renderToHtml(post.body) : "",
-  } as NewsPost;
+    id: String(post.id),
+    title: post.title,
+    slug: post.slug,
+    summary: post.summary,
+    body: post.body,
+    safeBodyHtml,
+    showTOC: post.showTOC,
+    category: post.category,
+    catLabel: newsCategoryLabel(post.category),
+    published_at: post.published_at,
+    updated_at: post.updated_at,
+    dateOverride: post.dateOverride,
+    publicationDate: formatNewsDate(publicationISO),
+    hideSplash: post.hideSplash,
+    splash: (post.splash as StrapiImage) || null,
+    attachmentLabel: post.attachmentLabel || "",
+    attachments: shapeAttachments(post.attachments),
+    related: buildRelated(post),
+    tags: Array.isArray(post.tags) ? post.tags.map((t: any) => t.title) : [],
+    toc: buildToc(safeBodyHtml),
+  };
 }
 
 export interface NewsListItem {

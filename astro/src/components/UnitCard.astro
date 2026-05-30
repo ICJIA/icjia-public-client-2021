@@ -1,0 +1,94 @@
+---
+// Single-unit card — ports legacy UnitCard.vue as used by UnitsSingle.vue
+// (/about/units/:slug) with showActions=false + the unit forced show:true.
+//
+// Legacy render (UnitCard.vue):
+//   <v-card class="px-4 py-8 markdown-body">
+//     <h2>{title}</h2>
+//     body html  (or "No description available." when empty)
+//     actions: "Read more »" link when unit.url  (the "{shortName} Staff"
+//              toggle is v-if="showActions" → hidden here)
+//     <v-divider> + a column of <BiographyCard color="#fdfdfd"> staff
+//       (the expansion is v-show="item.show", and UnitsSingle forces show:true,
+//        so the staff list is ALWAYS open on the single-unit page).
+//
+// Fully static / server-rendered: no toggle, no client JS. Staff are passed in
+// pre-sorted (getBiographiesByUnit re-sorts sortModifier asc, matching legacy).
+import BiographyCard from './BiographyCard.astro';
+import type { UnitDetail, Biography } from '../lib/data';
+
+interface Props {
+  unit: UnitDetail;
+  staff: Biography[];
+}
+const { unit, staff } = Astro.props;
+---
+
+<div class="unit-card markdown-body">
+  <h2>{unit.title}</h2>
+
+  {
+    unit.bodyHtml ? (
+      <div set:html={unit.bodyHtml} />
+    ) : (
+      <p>No description available.</p>
+    )
+  }
+
+  {
+    unit.url && (
+      <div class="unit-actions">
+        <a href={unit.url} class="unit">
+          Read more&nbsp;&raquo;
+        </a>
+      </div>
+    )
+  }
+
+  {
+    staff.length > 0 && (
+      <>
+        <hr class="unit-divider" />
+        <div class="unit-staff-list">
+          {staff.map((item) => (
+            <div class="markdown-body">
+              <BiographyCard item={item} color="#fdfdfd" />
+            </div>
+          ))}
+        </div>
+      </>
+    )
+  }
+</div>
+
+<style>
+  /* Mirror legacy UnitCard.vue v-card.px-4.py-8 (Vuetify 4px spacing scale:
+     px-4 = 16px horizontal, py-8 = 32px vertical) on a white card. */
+  .unit-card {
+    background-color: #fff;
+    padding: 32px 16px;
+  }
+  .unit-card h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 1rem;
+  }
+  /* Legacy `a.unit { font-weight: bold }` (UnitsSingle.vue scoped style). */
+  .unit-actions {
+    margin-top: 1rem;
+  }
+  .unit-actions a.unit {
+    font-weight: bold;
+  }
+  .unit-divider {
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    margin: 1.5rem 0;
+  }
+  /* Legacy staff column: each BiographyCard in its own block (px-2 mb-3). */
+  .unit-staff-list > * {
+    padding: 0 8px;
+    margin-bottom: 12px;
+  }
+</style>

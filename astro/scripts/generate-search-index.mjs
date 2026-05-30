@@ -176,11 +176,33 @@ async function fetchJobs() {
   }));
 }
 
+// SECURITY (data leak): staff paste live WebEx join credentials (meeting/webinar
+// number, access code, PASSWORD/passcode, and the j.php?MTID= one-click join link)
+// into a few meeting summaries. Shipping those in the public searchIndex.json — and
+// in the search-result snippet that renders `summary` — leaks credentials to anyone
+// for a meeting that may not have occurred. Strip ONLY the credential-bearing lines
+// (line-by-line, so benign "Location: Via Webex …" text is preserved). The live
+// meeting detail page sources its summary from Strapi, not this index, so this scrub
+// only affects the public index/search snippet.
+const MEETING_CREDENTIAL_LINE =
+  /(meeting|webinar)\s*(id|number)\s*:|access\s*code\s*:|pass(word|code)\s*:|https?:\/\/\S*webex\.com\/\S*j\.php/i;
+function scrubMeetingCredentials(summary) {
+  if (!summary || typeof summary !== "string") return summary;
+  if (!MEETING_CREDENTIAL_LINE.test(summary)) return summary;
+  return summary
+    .split(/\r?\n/)
+    .filter((line) => !MEETING_CREDENTIAL_LINE.test(line))
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 async function fetchMeetings() {
   const q = `query { meetings { id title slug start end isCancelled summary category published_at tags { title id slug } } }`;
   const meetings = unifyTags((await postGraphQL(AGENCY, q)).meetings || []);
   return meetings.map((e) => ({
     ...e,
+    summary: scrubMeetingCredentials(e.summary),
     fullPath: `/news/meetings/${e.slug}/`,
     altTitle: e.title?.toLowerCase(),
     imagePath: null,

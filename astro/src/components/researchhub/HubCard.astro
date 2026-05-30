@@ -31,6 +31,8 @@ interface Props {
   /** datasets render no image and show the "Updated" label. */
   showUpdated?: boolean;
   updatedText?: string;
+  /** LCP hint: first-row apps cards pass true → eager + fetchpriority=high. */
+  priority?: boolean;
 }
 const {
   item,
@@ -38,6 +40,7 @@ const {
   allowImage = true,
   showUpdated = false,
   updatedText = 'Updated',
+  priority = false,
 } = Astro.props;
 
 const authors = (item as ResearchArticleListItem).authors;
@@ -67,7 +70,14 @@ const imagePath = (item as ResearchArticleListItem).imagePath;
   {
     showImage && (
       /* base64 data-URI, lazy (bounded usage only — strips/3 cards) */
-      <img class="hc-img" src={image!} alt="" loading="lazy" decoding="async" />
+      <img
+        class="hc-img"
+        src={image!}
+        alt=""
+        loading={priority ? 'eager' : 'lazy'}
+        fetchpriority={priority ? 'high' : undefined}
+        decoding="async"
+      />
     )
   }
 
@@ -80,7 +90,8 @@ const imagePath = (item as ResearchArticleListItem).imagePath;
         alt=""
         width="400"
         height="250"
-        loading="lazy"
+        loading={priority ? 'eager' : 'lazy'}
+        fetchpriority={priority ? 'high' : undefined}
         decoding="async"
         onerror="this.style.display='none'"
       />

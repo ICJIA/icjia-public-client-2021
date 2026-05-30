@@ -344,6 +344,7 @@
   z-index: 2;
 }
 .researchhub .hc-dot {
+  position: relative;
   width: 12px;
   height: 12px;
   border-radius: 9999px;
@@ -351,6 +352,16 @@
   background: transparent;
   cursor: pointer;
   padding: 0;
+}
+/* WCAG 2.5.8: 24x24 hit area without changing the 12px visible dot. */
+.researchhub .hc-dot::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  transform: translate(-50%, -50%);
 }
 .researchhub .hc-dot[aria-current="true"] {
   background: #fff;

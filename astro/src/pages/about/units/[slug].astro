@@ -1,0 +1,47 @@
+---
+// /about/units/<slug>/ — single ICJIA unit. Ports legacy UnitsSingle.vue
+// (src/views/About/UnitsSingle.vue + the /about/units/:slug route).
+//
+// Legacy render: <div style="border:1px solid #ccc"> wrapping a UnitCard with
+// showActions=false and the unit forced show:true — i.e. the unit's title (h2),
+// body html, an optional "Read more »" link (unit.url), and the unit's staff
+// (BiographyCards). A visually-hidden <h1 class="sr-only">{unit.title}</h1>
+// supplies the page's single h1 (the card heading is an h2, matching legacy).
+//
+// Staff: legacy UnitCard.vue queried biographies by unit.shortName and sorted
+// sortModifier asc — getBiographiesByUnit does both. Units with no staff (or no
+// shortName) simply render the card without a staff list.
+//
+// 404 when getUnit() returns null (legacy pushed to /404 on empty result).
+// <title> = unit.title (BARE chunk → BaseLayout makes "ICJIA | <unit>", matching
+// legacy metaInfo.title = unit.title). contextTitle = unit.title.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import UnitCard from '../../../components/UnitCard.astro';
+import { getUnit, getBiographiesByUnit } from '../../../lib/data';
+import { setCache } from '../../../lib/cache';
+
+const { slug } = Astro.params;
+
+const unit = slug ? await getUnit(slug) : null;
+if (!unit) return new Response('Not found', { status: 404 });
+
+const staff = unit.shortName ? await getBiographiesByUnit(unit.shortName) : [];
+
+setCache(Astro.response, 'bios');
+---
+
+<BaseLayout title={unit.title} description={unit.title} contextTitle={unit.title}>
+  <div class="markdown-body mx-auto max-w-5xl px-4 py-8 md:px-6">
+    <div class="unit-single-frame">
+      <h1 class="sr-only">{unit.title}</h1>
+      <UnitCard unit={unit} staff={staff} />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  /* Legacy UnitsSingle.vue wrapped the card in a 1px #ccc border. */
+  .unit-single-frame {
+    border: 1px solid #ccc;
+  }
+</style>

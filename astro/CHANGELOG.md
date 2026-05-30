@@ -3,6 +3,43 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.28.0] — 2026-05-30 — Phase 5 remediation (audit + parity) + deploy fix
+
+### Fixed — deploy 500 (revert the runtime half of the 0.27.0 dep bump)
+- The 0.27.0 dep bump **built locally + passed all tests but 500'd the deployed Netlify SSR
+  function on every route** (local `astro dev` rendered fine — a bundling/runtime mismatch, the
+  classic "untraced transitive dep in the lambda", jsdom 29 the suspect). **Reverted the RUNTIME
+  deps** to the known-good versions that deployed cleanly: `jsdom` 29→25, `markdown-it` 14→12 +
+  plugins (anchor 9→8, attrs 5→4, footnote 4→3, link-attributes 4→3, implicit-figures 0.12→0.10),
+  `@types/markdown-it`→12. Kept the dev-only updates (`typescript` 6, `@types/node` 25) + the
+  `lodash-es` removal (they don't touch the function bundle). **Bonus:** markdown-it back to 12
+  restores exact prod-render parity. Lesson logged: a clean local build ≠ a working deploy —
+  smoke-test the deployed function, not just `astro build`.
+
+### Fixed — security (red/blue audit, all verified real)
+- **XSS:** ResearchHub article `abstract` + `citation` were rendered via `set:html` straight from
+  the CMS, bypassing DOMPurify — now routed through `renderToHtml` (same channel as the body).
+  The citation's `doi` splice is HTML-escaped. **JSON-LD:** `ArticleView` emitted
+  `set:html={JSON.stringify(jsonLd)}` raw → switched to `serializeJsonLd` (escapes `<`, blocks a
+  `</script>` breakout from a malicious title).
+- **Credential leak:** two meeting `summary` fields held LIVE WebEx join credentials (a Meeting
+  ID + join link, and a webinar number + password) that were indexed into the public
+  `searchIndex.json` (a Fuse key + rendered in result snippets). `generate-search-index.mjs` now
+  scrubs credential patterns from meeting summaries before indexing — verified 0 occurrences in
+  the rebuilt index — while preserving the 187 benign "Via Webex" location mentions.
+
+### Fixed — content/feature parity (parity review)
+- **News detail** was barebones (h1 + summary + body only). Restored full parity: splash hero,
+  date/category header, attachments, tag chips, related content (new shared `RelatedList.astro`),
+  and the `showTOC` two-column layout — all data was already fetched; `getNewsPost` now shapes it
+  (mirrors the grant/page loaders + legacy `NewsSingle.vue`).
+- **`/about/units/[slug]`** (was 404) — built the unit landing route + `UnitCard.astro`.
+- **`/search/[query]`** (was 404) — deep-link/tag-search route reusing the search island (seeds the
+  query from the path param). Added a content-type **filter** (chips + `?filter=`) to `/search/`.
+- **Staff directory** `<title>` now uses the CMS title (`ICJIA Staff`) instead of a hardcoded string.
+- Carousel indicator dots given a 24×24 hit area (WCAG 2.5.8); `HubCard` gained an opt-in
+  `priority` prop for apps-grid LCP (wiring the callers is a tracked follow-up).
+
 ## [0.27.0] — 2026-05-30 — Dependency refresh (pnpm): remove unused, update to latest
 
 - **Removed unused:** `lodash-es` + `@types/lodash-es` (zero imports — only comments referenced "lodash parity").

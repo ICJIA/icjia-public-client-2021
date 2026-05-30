@@ -349,7 +349,10 @@ export async function getArticle(slug: string): Promise<ResearchArticleDetail | 
     title: a.title,
     slug: a.slug,
     fullPath: `/researchhub/articles/${a.slug}/`,
-    abstract: a.abstract,
+    // abstract + citation are rendered with set:html on the detail page, so they
+    // MUST be sanitized like bodyHtml below (raw hub HTML otherwise = stored XSS).
+    // renderToHtml runs DOMPurify (markdown.js) — same channel the body uses.
+    abstract: a.abstract ? renderToHtml(a.abstract) : a.abstract,
     authors: joinAuthors(a.authors),
     date: a.date,
     dateLabel: formatResearchDate(a.date),
@@ -357,7 +360,7 @@ export async function getArticle(slug: string): Promise<ResearchArticleDetail | 
     categories: categoriesArray(a.categories),
     tags: Array.isArray(a.tags) ? a.tags : [],
     external: a.external,
-    citation: a.citation,
+    citation: a.citation ? renderToHtml(a.citation) : a.citation,
     doi: a.doi,
     funding: a.funding,
     // Hero: prefer the extracted full-size splash file; base64 only for new posts.
