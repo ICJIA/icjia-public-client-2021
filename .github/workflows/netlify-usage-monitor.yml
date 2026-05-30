@@ -1,0 +1,38 @@
+name: Netlify usage monitor
+
+# Weekly cost-drift check: queries Netlify usage and emails a digest + alerts.
+# Runs on GitHub's free CI minutes (NOT on Netlify, so it doesn't add to the
+# function-invocation meter it's watching). Manual run available any time.
+on:
+  schedule:
+    - cron: "0 13 * * 1" # Mondays 13:00 UTC (~7–8am Central)
+  workflow_dispatch: {} # run on demand from the Actions tab
+
+# Least privilege: this job reads usage + emails; it touches nothing in the repo.
+permissions:
+  contents: read
+
+concurrency:
+  group: netlify-usage-monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run usage monitor
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_TEAM_SLUG: ${{ secrets.NETLIFY_TEAM_SLUG }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          ALERT_EMAIL_TO: ${{ secrets.ALERT_EMAIL_TO }}
+          ALERT_EMAIL_FROM: ${{ secrets.ALERT_EMAIL_FROM }}
+          ALERT_MODE: "digest-and-alerts"
+          WARN_PCT: "70"
+          CRIT_PCT: "90"
+        run: node scripts/netlify-usage-monitor.mjs
