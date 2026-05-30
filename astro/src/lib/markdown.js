@@ -184,6 +184,62 @@ const fixImageLinks = function (html) {
   return changed ? doc.body.innerHTML : html;
 };
 
+// CMS link-text fixer (Lighthouse SEO "link-text" / WCAG 2.4.4): CMS authors write
+// non-descriptive links — "click here", "read more", a bare "here" pointing at a PDF.
+// Give them a descriptive ACCESSIBLE NAME derived from the href, PREFIXED with the
+// visible text so it (a) survives fixLabelInName (which keeps labels that contain the
+// visible text) and (b) has no WCAG 2.5.3 label-in-name mismatch. Visible text is
+// UNCHANGED (prod parity); only the accessible name improves → the link-text audit
+// passes. Bare-URL link text is left alone (Lighthouse doesn't flag it).
+const GENERIC_LINK_TEXT = new Set([
+  "click here", "click this", "click", "go", "here", "this", "this page", "start",
+  "right here", "more", "learn more", "learn", "read more", "read", "read on",
+  "see more", "see", "details", "link", "this link", "download", "view", "view more",
+  "continue", "more info", "more information", "info",
+]);
+const deriveLinkContext = function (href) {
+  let u;
+  try {
+    u = new URL(href, "https://icjia.illinois.gov");
+  } catch (e) {
+    return null;
+  }
+  let seg = (u.pathname.split("/").filter(Boolean).pop() || "").trim();
+  try {
+    seg = decodeURIComponent(seg);
+  } catch (e) {
+    /* keep raw */
+  }
+  const extM = seg.match(/\.([a-z0-9]{2,5})$/i);
+  let base = extM ? seg.slice(0, -extM[0].length) : seg;
+  // strip a trailing Strapi upload hash (…-240808T19411840) then tidy separators
+  base = base.replace(/[-_]\d{6,}t?\d*$/i, "").replace(/_+/g, " ").replace(/\s+/g, " ").trim();
+  if (!base) base = u.hostname.replace(/^www\./, "");
+  if (!base) return null;
+  return extM ? `${base} (${extM[1].toUpperCase()})` : base;
+};
+const fixCmsLinkText = function (html) {
+  if (!html || html.indexOf("<a") === -1) return html;
+  let doc;
+  try {
+    doc = new DOMParser().parseFromString(html, "text/html");
+  } catch (e) {
+    return html;
+  }
+  let changed = false;
+  doc.querySelectorAll("a[href]").forEach((a) => {
+    if (a.getAttribute("aria-label")) return; // already labeled — leave it
+    const text = (a.textContent || "").replace(/\s+/g, " ").trim();
+    const norm = text.toLowerCase().replace(/[\s.!?:;»›—–|>-]+$/g, "").trim();
+    if (!norm || !GENERIC_LINK_TEXT.has(norm)) return;
+    const ctx = deriveLinkContext(a.getAttribute("href") || "");
+    if (!ctx) return;
+    a.setAttribute("aria-label", `${text} — ${ctx}`);
+    changed = true;
+  });
+  return changed ? doc.body.innerHTML : html;
+};
+
 // Port of the legacy a11y `fixLabelInName` (src/a11y/index.js), as a build-time
 // content fixer. CMS authors sometimes give a link an aria-label that does NOT
 // contain its visible text (e.g. visible "730 ILCS 210/3-5(e)" but aria-label
@@ -233,7 +289,10 @@ const renderToHtml = function (markdown) {
   // fixLabelInName runs LAST: contentSanitizer has its own <a> pass that can set
   // aria-labels, so stripping mismatched ones must happen after it (otherwise the
   // sanitizer re-introduces the mismatch). Order matters here.
-  return fixLabelInName(sanitizeContent(fixImageLinks(fixTableHeaders(sanitized))));
+  // fixCmsLinkText before fixLabelInName: the former adds visible-text-prefixed
+  // aria-labels to generic links; the latter then validates them (and strips any
+  // genuinely mismatched ones). Order matters.
+  return fixLabelInName(fixCmsLinkText(sanitizeContent(fixImageLinks(fixTableHeaders(sanitized)))));
 };
 
 const parseHeadings = function (markdown) {

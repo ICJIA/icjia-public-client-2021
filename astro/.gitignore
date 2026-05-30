@@ -23,3 +23,7 @@ public/hub-images-manifest.json
 # prebuild content artifacts (regenerated each build by generate-search-index.mjs)
 public/searchIndex.json
 public/sitemap.xml
+
+# agent/scratch probe files at the astro root (real tests are vitest *.test.ts)
+test_*.mjs
+/*.test.mjs

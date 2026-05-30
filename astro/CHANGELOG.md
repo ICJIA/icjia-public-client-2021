@@ -3,6 +3,23 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.26.0] — 2026-05-30 — Fix Lighthouse SEO link-text on CMS bodies (grants + site-wide)
+
+A one-off Lighthouse on `/grants/programs/` flagged SEO 92 — `link-text: 2 links found`
+(both a bare "here" → a JAG PDF, authored in the program bodies). Lighthouse flags
+generic link phrases ("here"/"click here"/"read more"), NOT bare URLs.
+
+- **`fixCmsLinkText` pass** added to the markdown render pipeline (`src/lib/markdown.js`,
+  before `fixLabelInName`): for any `<a>` whose visible text is a generic phrase, set a
+  descriptive `aria-label` DERIVED from the href (file → decoded filename + ext, Strapi
+  upload-hash stripped; page → humanized slug), **PREFIXED with the visible text** so it
+  (a) survives `fixLabelInName` (keeps labels that contain the visible text) and (b) has
+  no WCAG 2.5.3 label-in-name mismatch. **Visible text is never changed** (prod parity);
+  only the accessible name improves → the link-text audit passes. Bare-URL link text is
+  left alone (not flagged). Fixes CMS bodies SITE-WIDE, not just grants.
+- `src/lib/markdown.test.ts` added (5 cases) guarding the fixer; the sanitizer parity
+  suite still passes 15/15 (pipeline intact).
+
 ## [0.25.0] — 2026-05-30 — OG image SVG source + derived PNG; README banner; checklist lessons
 
 - `scripts/generate-og-image.mjs` now emits BOTH `public/icjia-og.svg` (editable vector
