@@ -1,0 +1,115 @@
+---
+// Static (server-rendered) meeting card for the single-meeting page. Mirrors the
+// legacy MeetingCard.vue: cancelled banner, title (links to itself), date line +
+// category, body, tags, attachments table, related + external links. The table's
+// inline expand renders the same structure via Alpine (in MeetingTable.astro).
+import '../styles/meetings.css';
+import type { MeetingItem } from '../lib/data';
+
+interface Props {
+  item: MeetingItem;
+}
+const { item } = Astro.props;
+---
+
+<div>
+  {item.isCancelled && <div class="cancel-banner">THIS MEETING IS CANCELLED</div>}
+
+  <div class="meeting-card markdown-body reduce-90">
+    <h2 class:list={['meeting-title', { cancelled: item.isCancelled }]}>
+      <a href={item.fullPath}>{item.title}</a>
+    </h2>
+
+    {
+      !item.isCancelled && (
+        <div>
+          <span class="meeting-date">{item.dateLine}</span>
+          <span class="meeting-cat">&nbsp;|&nbsp;{item.catLabel}</span>
+        </div>
+      )
+    }
+
+    {
+      !item.isCancelled ? (
+        item.bodyHtml && <div class="mt-5 px-3" set:html={item.bodyHtml} />
+      ) : (
+        <div class="mt-5 px-3">This meeting is cancelled.</div>
+      )
+    }
+
+    <div class="mt-5 mb-5">
+      {
+        item.tags.length > 0 && (
+          <div class="mt-2">
+            {item.tags.map((t) => (
+              <span class="chip">{t}</span>
+            ))}
+          </div>
+        )
+      }
+
+      {
+        item.attachments.length > 0 && (
+          <div class="mt-8">
+            <h3 class="sub-heading">Attachments</h3>
+            <table class="att-table">
+              <thead>
+                <tr>
+                  <th>Filename</th>
+                  <th>Last Updated</th>
+                  <th>Size</th>
+                </tr>
+              </thead>
+              <tbody>
+                {item.attachments.map((a) => (
+                  <tr>
+                    <td>
+                      <a class="attachment" href={a.url} target="_blank" rel="noopener noreferrer">
+                        {a.name}
+                      </a>
+                    </td>
+                    <td class="att-updated">{a.updatedAlt}</td>
+                    <td class="att-size">{a.niceSize}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )
+      }
+
+      {
+        item.related.length > 0 && (
+          <div class="mt-5">
+            <h3 class="sub-heading">Related Web Content</h3>
+            <ul class="meeting-list">
+              {item.related.map((r) => (
+                <li class="related-link">
+                  <a href={r.fullPath}>{r.displayTitle}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+
+      {
+        item.external.length > 0 && (
+          <div class="mt-4">
+            <h3 class="sub-heading">External Links</h3>
+            <ul class="meeting-list">
+              {item.external.map((e) => (
+                <li class="attachment-link">
+                  <a href={e.url} target="_blank" rel="noopener noreferrer" title={e.url}>
+                    {e.title}
+                    <span class="sr-only"> (opens in new tab)</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</div>

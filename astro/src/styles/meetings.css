@@ -1,0 +1,366 @@
+/* Meetings section — shared styles for the /news/meetings/ table+card and the
+ * single-meeting page. Scoped under `.meetings` so they don't leak. Values
+ * approximate the legacy Vuetify v-data-table + MeetingCard look; exact spacing
+ * is a VR-tune follow-up. */
+
+.meetings .page-heading h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 0.75rem;
+}
+
+/* By date / By category toggle (legacy v-btn-toggle) */
+.meetings .vtoggle {
+  display: inline-flex;
+  border: 1px solid #cfcfcf;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+.meetings .vtoggle button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 8px 14px;
+  background: #fff;
+  color: #0a3a60;
+  cursor: pointer;
+  line-height: 1.2;
+}
+.meetings .vtoggle button + button {
+  border-left: 1px solid #cfcfcf;
+}
+.meetings .vtoggle button[aria-pressed="true"] {
+  background: #e0e0e0;
+  color: #222;
+}
+
+/* Purple "meeting schedules" banner */
+.meetings .sched-banner {
+  background: #eee;
+  padding: 1.25rem;
+  text-align: center;
+  font-size: 0.95rem;
+}
+.meetings .sched-chip {
+  display: inline-block;
+  color: #fff;
+  background: purple;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 12px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.meetings .sched-banner a {
+  font-weight: 700;
+}
+
+/* Data table */
+.meetings .mtable {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #eee;
+  background: #fff;
+}
+.meetings .mtable thead th {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.6);
+  text-align: left;
+  padding: 0 16px;
+  height: 48px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.meetings .mtable th.col-center,
+.meetings .mtable td.col-center {
+  text-align: center;
+}
+.meetings .mtable th button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.meetings .mtable th .caret {
+  opacity: 0;
+  font-size: 14px;
+  line-height: 1;
+}
+.meetings .mtable th[aria-sort] .caret {
+  opacity: 1;
+}
+.meetings .mtable td {
+  font-size: 14px;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  vertical-align: middle;
+}
+.meetings .mrow {
+  cursor: pointer;
+}
+.meetings .mrow:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+.meetings .mrow-alt {
+  background: rgba(0, 0, 0, 0.02);
+}
+.meetings .cell-date {
+  width: 110px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #222;
+}
+.meetings .cell-cat {
+  font-size: 14px;
+  font-weight: 700;
+  color: #222;
+}
+.meetings .cell-title.cancelled {
+  text-decoration: line-through;
+}
+.meetings .cancelled-chip {
+  display: inline-block;
+  /* #b71c1c (matches the cancel banner): white text clears WCAG AA, where the
+     legacy bright-red chip did not. */
+  background: #b71c1c;
+  color: #fff;
+  font-weight: 400;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+.meetings .att-chip {
+  display: inline-block;
+  background: #e0e0e0;
+  color: #222;
+  font-size: 11px;
+  font-weight: 900;
+  min-width: 22px;
+  text-align: center;
+  padding: 2px 6px;
+  border-radius: 12px;
+}
+.meetings .row-caret-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 24px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.meetings .row-caret {
+  transition: transform 0.2s;
+  color: #777;
+}
+.meetings .row-caret.open {
+  transform: rotate(180deg);
+}
+
+/* Search field */
+.meetings .msearch {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.42);
+  padding: 8px 0;
+  font-size: 16px;
+  background: transparent;
+}
+.meetings .msearch:focus {
+  outline: none;
+  border-bottom: 2px solid #1565c0;
+}
+.meetings .msearch-label {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+/* Footer (rows-per-page + range + prev/next) */
+.meetings .mfooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 24px;
+  padding: 10px 16px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.6);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+.meetings .mfooter select {
+  font-size: 13px;
+  padding: 2px 4px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.meetings .mfooter .pg-arrow {
+  font-size: 20px;
+  line-height: 1;
+  padding: 2px 8px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.54);
+}
+.meetings .mfooter .pg-arrow:disabled {
+  color: rgba(0, 0, 0, 0.26);
+  cursor: default;
+}
+
+/* Expanded / single-page card */
+.meetings .meeting-card {
+  background: #fff;
+  padding: 1.25rem;
+}
+.meetings .reduce-90 {
+  font-size: 90%;
+}
+.meetings .cancel-banner {
+  text-align: center;
+  background: #b71c1c;
+  color: #fff;
+  padding: 6px 0;
+}
+.meetings .meeting-title {
+  cursor: pointer;
+}
+.meetings .meeting-title a {
+  color: inherit;
+  font-weight: inherit;
+  text-decoration: none;
+}
+.meetings .meeting-title:hover a {
+  text-decoration: underline;
+}
+.meetings .meeting-title.cancelled a {
+  text-decoration: line-through;
+}
+.meetings .meeting-date {
+  font-size: 14px;
+  font-weight: 400;
+}
+.meetings .meeting-cat {
+  font-weight: 400;
+}
+
+/* Sub-section headings (Attachments / External Links / Related) */
+.meetings .sub-heading {
+  font-weight: 900;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 8px;
+  text-transform: uppercase;
+  font-size: inherit;
+  margin: 0 0 0.5rem;
+}
+.meetings .att-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.meetings .att-table th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.6);
+  padding: 6px 12px 6px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+.meetings .att-table td {
+  padding: 6px 12px 6px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  vertical-align: top;
+}
+.meetings .att-size {
+  font-size: 12px;
+  white-space: nowrap;
+}
+.meetings .att-updated {
+  font-size: 14px;
+  font-weight: 700;
+  color: #222;
+  white-space: nowrap;
+}
+.meetings .attachment {
+  font-weight: 900;
+  color: #0a3a60;
+  text-decoration: underline;
+}
+.meetings .attachment:hover {
+  color: #000;
+  text-decoration: none;
+}
+.meetings .related-link,
+.meetings .attachment-link {
+  font-size: 14px;
+}
+.meetings ul.meeting-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.meetings ul.meeting-list li {
+  margin-top: 0.5rem;
+}
+
+/* Tag chips (match the news listing chip) */
+.meetings .chip {
+  display: inline-block;
+  border: 1px solid #bbb;
+  color: #555;
+  font-size: 11px;
+  padding: 1px 8px;
+  border-radius: 12px;
+  margin-right: 4px;
+  margin-bottom: 4px;
+}
+
+/* "View all meetings »" link (single page) */
+.meetings .view-all {
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: #0a3a60;
+}
+
+/* TOC sidebar (By category view) */
+.meetings .toc {
+  border-left: 2px solid #e0e0e0;
+  padding-left: 1rem;
+}
+.meetings .toc-heading {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #555;
+  margin: 0 0 0.5rem;
+}
+.meetings .toc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.meetings .toc li {
+  margin-bottom: 0.4rem;
+}
+.meetings .toc a {
+  font-size: 0.9rem;
+  color: #0a3a60;
+}
+
+/* Archive note */
+.meetings .archive-note {
+  font-size: 12px;
+  text-align: left;
+  margin-bottom: 75px;
+}

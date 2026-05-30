@@ -3,6 +3,74 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.15.0] — 2026-05-29 — /news/meetings/ parity (data table + by-date/by-category + single meeting)
+
+### Added — `/news/meetings/` at functional parity with `MeetingsAll.vue`
+- **By date / By category** toggle (Alpine). "By date" = one table of all **285**
+  meetings; "By category" = a table per category (Authority Board / Budget
+  Committee / Institutional Review Board / Special) + a TOC sidebar (md+). Purple
+  "meeting schedules" banner + the December-2020 ICJIA Document Archive note.
+- **MeetingTable** (parity with `MeetingTable.vue` / `v-data-table`): search,
+  sortable columns (default date desc, `aria-sort`), rows-per-page
+  (25/50/100/250/all), and single-row **expand → MeetingCard**. Driven by Alpine
+  **`x-for`** over a SHARED `#meetings-data` island (the 285 meetings ship once);
+  only the current page (≤ perPage rows) is ever in the live DOM.
+  - Expand card is **`x-if`-gated** (mounts on open, unmounts on collapse) so
+    collapsed rows stay cheap — initial DOM **906 nodes**.
+  - "By category" is **lazy-mounted** via `<template x-if>` → `MeetingsCategoryView`
+    (Astro renders the component into the inert template; Alpine clones +
+    initializes on first switch), keeping the 4 category tables out of the initial
+    DOM (would otherwise be ~2000 nodes).
+    - GOTCHA recorded: Astro does **not** evaluate `.map` *closures* placed
+      directly inside a native `<template>` (throws `c is not defined`) — a child
+      component does work. Hence the extraction.
+- Expand/MeetingCard: cancelled banner + line-through title, date line + category,
+  body (server-rendered + sanitized), tag chips, attachments table
+  (Filename/Last Updated/Size), Related Web Content, External Links.
+
+### Added — `/news/meetings/[slug]` (single meeting, `MeetingsSingle.vue`)
+- SSR card + "View all meetings »" + JSON-LD **Event** (eventStatus, organizer,
+  start/end, `location` from external, `associatedMedia` from attachments).
+  Unknown slug → 404.
+
+### Changed — data layer (`data.ts`, `graphql/meetings.js`)
+- `getAllMeetings()` / `getMeeting(slug)` (+ `GET_ALL_MEETINGS_QUERY` /
+  `GET_SINGLE_MEETING_QUERY` ported).
+- `shapeMeeting()` — flattens tags, sorts attachments name-asc, builds the related
+  list from posts+events, **pre-renders the body** (so the table expands with no
+  client fetch), computes the search haystack.
+- Chicago-tz date helpers (legacy dayjs default tz) via `Intl … formatToParts`
+  (DST-safe, byte-exact): `dateFormatAlt` ("May 14, 2026"), `meetingDateLine`
+  ("Thursday May 14, 2026, 10:00 AM - 12:00 PM" / multi-day "May 14th - May 16th").
+  `MEETING_CATEGORIES`, `meetingCategoryLabel`, `slugifyHeading`, `niceBytes`.
+
+### Accessibility (axe AA — localhost, 0 violations)
+- Row expand is a real **`<button>`** (caret) with `aria-expanded` + label
+  (keyboard-operable); fixed an `aria-conditional-attr` violation caused by
+  `aria-expanded` on the `<tr>`.
+- CANCELLED chip recolored `#f00` → **`#b71c1c`** (white text clears AA; the
+  legacy bright-red did not).
+
+### Verified (localhost, real browser + build)
+- Alpine 3.15: sort (`aria-sort` toggles), search, pagination, expand via button
+  (both views), lazy category mount → 4 interactive tables, SSR baseline, **906**
+  initial DOM nodes, **0** console errors. `astro build` compiles clean. Single
+  page + JSON-LD + 404 confirmed.
+
+### Known upstream bug — replicated for parity (FLAGGED for your call)
+- `niceBytes` units table is `["B","MB","MB",…]` (no "KB"), so attachment sizes in
+  the 1 KB–1 MB range render labeled "**MB**" (e.g. a 488 KB file → "488 MB").
+  Ported **verbatim** so sizes match production (the VR gate would flag a "fix").
+  One-char correction (`units[1]="KB"`) available if you want it fixed.
+
+### Pending / VR-tune
+- Exact Vuetify `v-data-table` spacing/typography, `v-btn-toggle` look, the two mdi
+  toggle icons (used inline-SVG approximations), TOC sidebar position vs prod.
+- Search matches the **visible** text (title + category label + formatted date);
+  the legacy Vuetify default searched raw field values — intentional UX-parity
+  superset, noted for VR.
+- Deploy Lighthouse gate (mobile a11y/perf/BP/SEO) — pending this push.
+
 ## [0.14.0] — 2026-05-29 — /news/ parity rebuild (featured + filters + month-grouping + pagination) + /news/press/
 
 ### Lighthouse — deploy CONFIRMED (mobile, branch-deploy home)

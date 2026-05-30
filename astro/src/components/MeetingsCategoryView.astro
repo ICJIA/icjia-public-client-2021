@@ -1,0 +1,41 @@
+---
+// "By category" view, extracted so its closure-dependent .map expressions are
+// compiled in a normal component (NOT directly inside the native <template x-if>
+// in MeetingsListing — Astro doesn't evaluate such closures inside <template>).
+// Lazy-mounted by that x-if so the 4 category tables stay out of the initial DOM.
+import MeetingTable from './MeetingTable.astro';
+import { slugifyHeading } from '../lib/data';
+
+interface Props {
+  cats: Array<{ category: string; label: string; text?: string }>;
+}
+const { cats } = Astro.props;
+---
+
+<div class="md:grid md:grid-cols-3 md:gap-8">
+  <div class="md:col-span-2">
+    <div class="sched-banner mb-8">
+      <span class="sched-chip">NEW!</span>
+      For ICJIA meeting schedules, please <a href="/about/meeting-schedules/">click here</a>&nbsp;&raquo;
+    </div>
+    {
+      cats.map((c) => (
+        <div class="mb-10">
+          <MeetingTable category={c.category} heading={c.label} text={c.text} />
+        </div>
+      ))
+    }
+  </div>
+  <nav class="toc hidden md:block" aria-label="Meeting categories">
+    <h2 class="toc-heading">Meetings</h2>
+    <ul>
+      {
+        cats.map((c) => (
+          <li>
+            <a href={`#${slugifyHeading(c.label)}`}>{c.label}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</div>

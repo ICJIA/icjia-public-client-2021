@@ -1,0 +1,77 @@
+---
+// /news/meetings/ — live-data SSR, parity with the legacy MeetingsAll.vue:
+//   • "By date" (one table, all meetings) / "By category" (a table per category
+//     + a TOC sidebar) toggle
+//   • purple "meeting schedules" banner
+//   • the December-2020 archive note
+// Renders the SHARED #meetings-data island once; every MeetingTable (the all
+// table + the per-category tables) reads + filters it client-side, so the 285
+// meetings ship in the response exactly once. The "By date" view is rendered
+// directly (with an SSR baseline for no-JS/crawlers); the "By category" view is
+// mounted on demand via x-if so the initial DOM stays small.
+import MeetingTable from './MeetingTable.astro';
+import MeetingsCategoryView from './MeetingsCategoryView.astro';
+import { MEETING_CATEGORIES, type MeetingItem } from '../lib/data';
+import '../styles/meetings.css';
+
+interface Props {
+  meetings: MeetingItem[];
+}
+const { meetings } = Astro.props;
+
+// JSON-in-HTML: neutralize "<" so the data island can't break out of the script.
+const listJson = JSON.stringify(meetings).replace(/</g, '\\u003c');
+const baseline = meetings.slice(0, 25);
+
+// Only categories that actually have meetings (all four do today; guard anyway).
+const present = new Set(meetings.map((m) => m.category));
+const cats = MEETING_CATEGORIES.filter((c) => present.has(c.category));
+---
+
+<div class="meetings" x-data="{ view: 'all' }">
+  <div class="page-heading mb-6">
+    <h1>ICJIA Meetings</h1>
+    <div class="vtoggle mt-3" role="group" aria-label="Meetings view">
+      <button type="button" @click="view = 'all'" :aria-pressed="view === 'all'">
+        By date
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"
+          ><path
+            d="M19 19H5V8h14m0-5h-1V1h-2v2H8V1H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Z"
+          ></path></svg
+        >
+      </button>
+      <button type="button" @click="view = 'category'" :aria-pressed="view === 'category'">
+        By category
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"
+          ><path
+            d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5Z"
+          ></path></svg
+        >
+      </button>
+    </div>
+  </div>
+
+  <script type="application/json" id="meetings-data" set:html={listJson}></script>
+
+  {/* By date */}
+  <div x-show="view === 'all'">
+    <div class="sched-banner mb-8">
+      <span class="sched-chip">NEW!</span>
+      For ICJIA meeting schedules, please <a href="/about/meeting-schedules/">click here</a>&nbsp;&raquo;
+    </div>
+    <MeetingTable baseline={baseline} />
+  </div>
+
+  {/* By category — lazy-mounted on first switch (keeps the 4 category tables out
+      of the initial DOM). The closure-dependent .map lives in MeetingsCategoryView
+      (a normal component), since Astro doesn't evaluate such closures placed
+      directly inside a native <template>. */}
+  <template x-if="view === 'category'">
+    <MeetingsCategoryView cats={cats} />
+  </template>
+
+  <div class="archive-note">
+    Meeting materials prior to December, 2020 are available in the
+    <a href="https://archive.icjia.cloud">ICJIA Document Archive</a>.
+  </div>
+</div>

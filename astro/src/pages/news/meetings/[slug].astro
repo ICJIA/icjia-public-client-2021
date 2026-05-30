@@ -1,0 +1,97 @@
+---
+// /news/meetings/[slug] — live-data SSR single meeting. Parity with the legacy
+// MeetingsSingle.vue: "ICJIA Meetings" heading, the full MeetingCard, a "View all
+// meetings »" link, and the JSON-LD Event (ported from metaInfo).
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import MeetingCard from '../../../components/MeetingCard.astro';
+import { getMeeting } from '../../../lib/data';
+import { setCache } from '../../../lib/cache';
+
+const { slug } = Astro.params;
+const meeting = slug ? await getMeeting(slug) : null;
+
+if (!meeting) {
+  return new Response('Not found', { status: 404 });
+}
+
+setCache(Astro.response, 'meetings');
+
+// JSON-LD Event — faithful port of MeetingsSingle.metaInfo.
+const STRAPI_BASE = 'https://agency.icjia-api.cloud';
+const EXT_TO_MIME: Record<string, string> = {
+  pdf: 'application/pdf',
+  doc: 'application/msword',
+  docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  xls: 'application/vnd.ms-excel',
+  xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  csv: 'text/csv',
+  txt: 'text/plain',
+  zip: 'application/zip',
+};
+const normalizeUrl = (u?: string): string | null => {
+  if (typeof u !== 'string' || !u) return null;
+  const t = u.trim();
+  if (/^https?:\/\//.test(t)) return t;
+  if (t.startsWith('/')) return `${STRAPI_BASE}${t}`;
+  return null;
+};
+const jsonld: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Event',
+  name: meeting.title,
+  url: `https://icjia.illinois.gov/news/meetings/${meeting.slug}`,
+  inLanguage: 'en-US',
+  eventStatus: meeting.isCancelled
+    ? 'https://schema.org/EventCancelled'
+    : 'https://schema.org/EventScheduled',
+  eventAttendanceMode: 'https://schema.org/MixedEventAttendanceMode',
+  organizer: {
+    '@type': 'GovernmentOrganization',
+    name: 'Illinois Criminal Justice Information Authority',
+    alternateName: 'ICJIA',
+    url: 'https://icjia.illinois.gov',
+  },
+};
+if (meeting.start) jsonld.startDate = meeting.start;
+if (meeting.end) jsonld.endDate = meeting.end;
+if (meeting.summary) jsonld.description = meeting.summary;
+if (meeting.external.length) {
+  const first = meeting.external.find((e) => normalizeUrl(e.url));
+  if (first) {
+    jsonld.location = {
+      '@type': 'VirtualLocation',
+      url: normalizeUrl(first.url),
+      ...(first.title ? { name: first.title } : {}),
+    };
+  }
+}
+if (meeting.attachments.length) {
+  const normalized = meeting.attachments
+    .map((a) => {
+      const contentUrl = normalizeUrl(a.url);
+      if (!contentUrl || !a.name) return null;
+      return {
+        '@type': 'MediaObject',
+        name: a.name,
+        contentUrl,
+        ...(a.ext ? { encodingFormat: EXT_TO_MIME[a.ext] || a.ext } : {}),
+      };
+    })
+    .filter(Boolean);
+  if (normalized.length) jsonld.associatedMedia = normalized;
+}
+const jsonldStr = JSON.stringify(jsonld).replace(/</g, '\\u003c');
+---
+
+<BaseLayout title={meeting.title} description={meeting.summary}>
+  <div class="meetings mx-auto max-w-4xl px-4 py-8 md:px-6">
+    <div class="page-heading">
+      <h1>ICJIA Meetings</h1>
+    </div>
+    <MeetingCard item={meeting} />
+    <div class="mt-5 text-right">
+      <a class="view-all" href="/news/meetings/">View all meetings&nbsp;&raquo;</a>
+    </div>
+  </div>
+  <script type="application/ld+json" set:html={jsonldStr} />
+</BaseLayout>

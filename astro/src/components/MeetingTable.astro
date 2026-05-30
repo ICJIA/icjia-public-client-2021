@@ -1,0 +1,248 @@
+---
+// Meetings data table — parity with the legacy MeetingTable.vue (v-data-table):
+// search, sortable columns (default date desc), rows-per-page (25/50/100/250/all),
+// and single-row expand → MeetingCard. Driven by Alpine x-for (the reliable list
+// primitive — see project_astro_alpine_lists) over the SHARED #meetings-data
+// island the listing page renders once; only the current page (≤ perPage rows)
+// is ever in the DOM. An optional `category` filters client-side; an optional
+// `baseline` (server-rendered first page) provides the no-JS / crawler view.
+import { slugifyHeading, type MeetingItem } from '../lib/data';
+
+interface Props {
+  category?: string | null;
+  heading?: string;
+  text?: string;
+  baseline?: MeetingItem[];
+}
+const { category = null, heading, text, baseline } = Astro.props;
+
+const headingId = heading ? slugifyHeading(heading) : undefined;
+const searchId = `msearch-${category || 'all'}`;
+const catLiteral = category ? JSON.stringify(category) : 'null';
+
+const xdata = `{
+  cat: ${catLiteral},
+  all: [], search: '', sortKey: 'date', sortDir: 'desc',
+  page: 1, perPage: 25, expanded: null, ready: false,
+  init(){
+    try {
+      const data = JSON.parse(document.getElementById('meetings-data').textContent);
+      this.all = this.cat ? data.filter((m) => m.category === this.cat) : data;
+    } catch (e) { this.all = []; }
+    this.ready = true;
+  },
+  get searched(){ const q = this.search.trim().toLowerCase(); return q ? this.all.filter((m) => m.haystack.includes(q)) : this.all; },
+  get sorted(){ const a = [...this.searched], d = this.sortDir === 'asc' ? 1 : -1, k = this.sortKey;
+    a.sort((x, y) => { let r = 0;
+      if (k === 'date') r = x.startMs - y.startMs;
+      else if (k === 'category') r = x.catLabel.localeCompare(y.catLabel);
+      else if (k === 'title') r = x.title.toLowerCase().localeCompare(y.title.toLowerCase());
+      else if (k === 'status') r = (x.isCancelled ? 1 : 0) - (y.isCancelled ? 1 : 0);
+      else if (k === 'att') r = x.attCount - y.attCount;
+      return r * d; });
+    return a; },
+  get count(){ return this.sorted.length; },
+  get totalPages(){ return this.perPage === -1 ? 1 : Math.max(1, Math.ceil(this.count / this.perPage)); },
+  get pageItems(){ if (this.perPage === -1) return this.sorted; const s = (this.page - 1) * this.perPage; return this.sorted.slice(s, s + this.perPage); },
+  get rangeText(){ if (!this.count) return '0–0 of 0'; const s = this.perPage === -1 ? 1 : (this.page - 1) * this.perPage + 1; const e = this.perPage === -1 ? this.count : Math.min(this.count, this.page * this.perPage); return s + '–' + e + ' of ' + this.count; },
+  setSort(k){ if (this.sortKey === k) this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc'; else { this.sortKey = k; this.sortDir = k === 'date' ? 'desc' : 'asc'; } this.page = 1; },
+  ariaSort(k){ return this.sortKey === k ? (this.sortDir === 'asc' ? 'ascending' : 'descending') : null; },
+  toggle(id){ this.expanded = this.expanded === id ? null : id; },
+  track(url){ try { if (typeof window.plausible === 'function') { window.plausible('file_download', { props: { url } }); window.plausible('Outbound Link: Click', { props: { url } }); } } catch (e) {} }
+}`;
+---
+
+<div x-data={xdata}>
+  {heading && <h2 id={headingId} class="mt-0 mb-1 text-xl font-bold">{heading}</h2>}
+  {text && <p class="mb-4 px-1 text-sm">{text}</p>}
+
+  {/* Interactive (JS) view */}
+  <div x-show="ready" x-cloak>
+    <div class="px-4 pt-4 pb-1">
+      <label class="msearch-label" for={searchId}>Search</label>
+      <input
+        id={searchId}
+        type="text"
+        class="msearch"
+        x-model="search"
+        @input="page = 1"
+        aria-label="Search meetings"
+      />
+    </div>
+
+    <table class="mtable">
+      <thead>
+        <tr>
+          <th class="cell-date" :aria-sort="ariaSort('date')">
+            <button type="button" @click="setSort('date')">
+              Meeting Date <span class="caret" x-text="sortKey==='date' && sortDir==='asc' ? '▲' : '▼'"></span>
+            </button>
+          </th>
+          <th :aria-sort="ariaSort('category')">
+            <button type="button" @click="setSort('category')">
+              Category <span class="caret" x-text="sortKey==='category' && sortDir==='asc' ? '▲' : '▼'"></span>
+            </button>
+          </th>
+          <th :aria-sort="ariaSort('title')">
+            <button type="button" @click="setSort('title')">
+              Title <span class="caret" x-text="sortKey==='title' && sortDir==='asc' ? '▲' : '▼'"></span>
+            </button>
+          </th>
+          <th class="col-center" :aria-sort="ariaSort('status')">
+            <button type="button" @click="setSort('status')">
+              Status <span class="caret" x-text="sortKey==='status' && sortDir==='asc' ? '▲' : '▼'"></span>
+            </button>
+          </th>
+          <th class="col-center" :aria-sort="ariaSort('att')">
+            <button type="button" @click="setSort('att')">
+              Attachments <span class="caret" x-text="sortKey==='att' && sortDir==='asc' ? '▲' : '▼'"></span>
+            </button>
+          </th>
+          <th><span class="sr-only">Expand</span></th>
+        </tr>
+      </thead>
+      <template x-for="(it, idx) in pageItems" :key="it.id">
+        <tbody>
+          <tr class="mrow" :class="idx % 2 ? 'mrow-alt' : ''" @click="toggle(it.id)">
+            <td class="cell-date" x-text="it.altDate"></td>
+            <td class="cell-cat" x-text="it.catLabel"></td>
+            <td class="cell-title" :class="it.isCancelled ? 'cancelled' : ''" x-text="it.title"></td>
+            <td class="col-center">
+              <template x-if="it.isCancelled"><span class="cancelled-chip">CANCELLED</span></template>
+            </td>
+            <td class="col-center"><span class="att-chip" x-text="it.attCount"></span></td>
+            <td class="col-center">
+              <button
+                type="button"
+                class="row-caret-btn"
+                @click.stop="toggle(it.id)"
+                :aria-expanded="expanded === it.id ? 'true' : 'false'"
+                :aria-label="(expanded === it.id ? 'Collapse' : 'Expand') + ' details for ' + it.title"
+              >
+                <span class="row-caret" :class="expanded === it.id ? 'open' : ''">▾</span>
+              </button>
+            </td>
+          </tr>
+          <template x-if="expanded === it.id">
+            <tr>
+              <td colspan="6">
+                <div class="meeting-card markdown-body reduce-90">
+                <template x-if="it.isCancelled">
+                  <div class="cancel-banner">THIS MEETING IS CANCELLED</div>
+                </template>
+                <h2 class="meeting-title" :class="it.isCancelled ? 'cancelled' : ''">
+                  <a :href="it.fullPath" x-text="it.title"></a>
+                </h2>
+                <template x-if="!it.isCancelled">
+                  <div>
+                    <span class="meeting-date" x-text="it.dateLine"></span>
+                    <span class="meeting-cat">&nbsp;|&nbsp;<span x-text="it.catLabel"></span></span>
+                  </div>
+                </template>
+                <template x-if="!it.isCancelled">
+                  <div class="mt-5 px-3" x-html="it.bodyHtml"></div>
+                </template>
+                <template x-if="it.isCancelled">
+                  <div class="mt-5 px-3">This meeting is cancelled.</div>
+                </template>
+                <div class="mt-5 mb-5">
+                  <template x-if="it.tags.length">
+                    <div class="mt-2">
+                      <template x-for="t in it.tags" :key="t"><span class="chip" x-text="t"></span></template>
+                    </div>
+                  </template>
+                  <template x-if="it.attachments.length">
+                    <div class="mt-8">
+                      <h3 class="sub-heading">Attachments</h3>
+                      <table class="att-table">
+                        <thead><tr><th>Filename</th><th>Last Updated</th><th>Size</th></tr></thead>
+                        <tbody>
+                          <template x-for="a in it.attachments" :key="a.url">
+                            <tr>
+                              <td><a class="attachment" :href="a.url" target="_blank" rel="noopener noreferrer" @click.stop="track(a.url)" x-text="a.name"></a></td>
+                              <td class="att-updated" x-text="a.updatedAlt"></td>
+                              <td class="att-size" x-text="a.niceSize"></td>
+                            </tr>
+                          </template>
+                        </tbody>
+                      </table>
+                    </div>
+                  </template>
+                  <template x-if="it.related.length">
+                    <div class="mt-5">
+                      <h3 class="sub-heading">Related Web Content</h3>
+                      <ul class="meeting-list">
+                        <template x-for="r in it.related" :key="r.fullPath">
+                          <li class="related-link"><a :href="r.fullPath" x-text="r.displayTitle"></a></li>
+                        </template>
+                      </ul>
+                    </div>
+                  </template>
+                  <template x-if="it.external.length">
+                    <div class="mt-4">
+                      <h3 class="sub-heading">External Links</h3>
+                      <ul class="meeting-list">
+                        <template x-for="e in it.external" :key="e.url">
+                          <li class="attachment-link"><a :href="e.url" target="_blank" rel="noopener noreferrer" :title="e.url"><span x-text="e.title"></span><span class="sr-only"> (opens in new tab)</span></a></li>
+                        </template>
+                      </ul>
+                    </div>
+                  </template>
+                </div>
+              </div>
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </template>
+    </table>
+
+    <div class="mfooter">
+      <span>Rows per page:</span>
+      <select x-model.number="perPage" @change="page = 1" aria-label="Rows per page">
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="250">250</option>
+        <option value="-1">All</option>
+      </select>
+      <span x-text="rangeText"></span>
+      <button class="pg-arrow" type="button" @click="if (page > 1) page--" :disabled="page <= 1" aria-label="Previous page">‹</button>
+      <button class="pg-arrow" type="button" @click="if (page < totalPages) page++" :disabled="page >= totalPages" aria-label="Next page">›</button>
+    </div>
+  </div>
+
+  {/* SSR baseline (no-JS / crawlers) — only the all-meetings table provides one. */}
+  {
+    baseline && (
+      <div x-show="!ready">
+        <table class="mtable">
+          <thead>
+            <tr>
+              <th class="cell-date">Meeting Date</th>
+              <th>Category</th>
+              <th>Title</th>
+              <th class="col-center">Status</th>
+              <th class="col-center">Attachments</th>
+            </tr>
+          </thead>
+          <tbody>
+            {baseline.map((it, idx) => (
+              <tr class:list={{ 'mrow-alt': idx % 2 === 1 }}>
+                <td class="cell-date">{it.altDate}</td>
+                <td class="cell-cat">{it.catLabel}</td>
+                <td class:list={['cell-title', { cancelled: it.isCancelled }]}>
+                  <a href={it.fullPath}>{it.title}</a>
+                </td>
+                <td class="col-center">{it.isCancelled && <span class="cancelled-chip">CANCELLED</span>}</td>
+                <td class="col-center">
+                  <span class="att-chip">{it.attCount}</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+</div>

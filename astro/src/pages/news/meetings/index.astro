@@ -1,0 +1,27 @@
+---
+// /news/meetings/ — live-data SSR. Parity with the legacy MeetingsAll.vue (by
+// date / by category toggle, schedules banner, archive note); all logic lives in
+// MeetingsListing.astro + MeetingTable.astro.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import MeetingsListing from '../../../components/MeetingsListing.astro';
+import { getAllMeetings } from '../../../lib/data';
+import { setCache } from '../../../lib/cache';
+
+const meetings = await getAllMeetings();
+setCache(Astro.response, 'meetings');
+---
+
+<BaseLayout
+  title="ICJIA Meetings — ICJIA"
+  description="Meeting agendas, minutes, and materials for the Illinois Criminal Justice Information Authority's board, budget committee, and other meetings."
+>
+  <div class="mx-auto max-w-6xl px-4 py-8 md:px-6">
+    {
+      meetings.length === 0 ? (
+        <p>No meetings at this time.</p>
+      ) : (
+        <MeetingsListing meetings={meetings} />
+      )
+    }
+  </div>
+</BaseLayout>

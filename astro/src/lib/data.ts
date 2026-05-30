@@ -16,6 +16,10 @@ import {
 } from "../graphql/news.js";
 // @ts-expect-error — GET_HOME from plain-JS graphql module
 import { GET_HOME } from "../graphql/home.js";
+import {
+  GET_ALL_MEETINGS_QUERY,
+  GET_SINGLE_MEETING_QUERY,
+} from "../graphql/meetings.js";
 
 // Strapi (agency) host — splash URLs come back as /uploads/... relative paths.
 const STRAPI_BASE = "https://agency.icjia-api.cloud";
@@ -251,6 +255,241 @@ export async function getAllNews(): Promise<NewsListItem[]> {
 export async function getAllPress(): Promise<NewsListItem[]> {
   const { data } = await runQuery(GET_ALL_PRESS_QUERY, {}, "no-cache");
   return shapeNewsList(data?.posts ?? []);
+}
+
+// ── Meetings (/news/meetings/) ────────────────────────────────────
+// config.maps.meetings — category order + labels (+ schedule text shown above
+// each table in the "By category" view). 'special' is the catch-all bucket.
+export const MEETING_CATEGORIES: Array<{
+  category: string;
+  label: string;
+  text?: string;
+}> = [
+  {
+    category: "board",
+    label: "Authority Board",
+    text: "ICJIA Board meetings are held at the offices of ICJIA, 300 West Adams Street, 2nd Floor, Large Conference Room, Chicago, Illinois, 60606.",
+  },
+  {
+    category: "budget",
+    label: "Budget Committee",
+    text: "Budget Committee meetings are held at the offices of ICJIA, 300 West Adams Street, 2nd Floor, Large Conference Room, Chicago, Illinois, 60606.",
+  },
+  {
+    category: "irb",
+    label: "Institutional Review Board",
+    text: "IRB meetings are held at the offices of ICJIA, 300 West Adams Street, 2nd Floor, Large Conference Room, Chicago, Illinois, 60606.",
+  },
+  { category: "special", label: "Special" },
+];
+const MEETING_LABELS: Record<string, string> = Object.fromEntries(
+  MEETING_CATEGORIES.map((c) => [c.category, c.label]),
+);
+/** Meeting category → label (legacy MeetingCard.displayCategory). */
+export function meetingCategoryLabel(cat?: string): string {
+  return (cat && MEETING_LABELS[cat]) || "Special";
+}
+
+/** slugify a heading the way the legacy `slug` pkg does (for TOC anchors). */
+export function slugifyHeading(s: string): string {
+  return s
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+// Chicago-local date/time parts (the legacy dayjs default tz is America/Chicago,
+// so all meeting dates/times render in Chicago time). formatToParts is DST-aware
+// and lets us compose the exact legacy format strings with our own padding.
+function chicagoParts(iso: string) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Chicago",
+    weekday: "long",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).formatToParts(new Date(iso));
+  const g = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
+  return {
+    weekday: g("weekday"),
+    month: g("month"),
+    day: g("day"),
+    year: g("year"),
+    hour: g("hour"),
+    minute: g("minute"),
+    dayPeriod: g("dayPeriod").toUpperCase().replace(/\./g, ""),
+  };
+}
+function ordinal(n: number): string {
+  const s = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+/** Legacy `dateFormatAlt` filter: dayjs "MMM DD, YYYY" (Chicago) → "May 14, 2026". */
+export function dateFormatAlt(iso?: string): string {
+  if (!iso) return "";
+  const p = chicagoParts(iso);
+  return p.month ? `${p.month} ${p.day}, ${p.year}` : "";
+}
+
+/**
+ * Legacy MeetingCard.displayDate(start, end): a multi-day meeting (> 1 day)
+ * renders "MMM Do - MMM Do" ("May 14th - May 16th"); a same-day meeting renders
+ * "dddd MMM DD, YYYY, hh:mm A - hh:mm A" ("Thursday May 14, 2026, 10:00 AM - 12:00 PM").
+ */
+export function meetingDateLine(start?: string, end?: string): string {
+  if (!start) return "";
+  const s = new Date(start);
+  const e = end ? new Date(end) : null;
+  if (e && (e.getTime() - s.getTime()) / 86_400_000 > 1) {
+    const a = chicagoParts(start);
+    const b = chicagoParts(end as string);
+    return `${a.month} ${ordinal(parseInt(a.day, 10))} - ${b.month} ${ordinal(parseInt(b.day, 10))}`;
+  }
+  const p = chicagoParts(start);
+  const t = (iso: string) => {
+    const q = chicagoParts(iso);
+    return `${q.hour.padStart(2, "0")}:${q.minute} ${q.dayPeriod}`;
+  };
+  const startStr = `${p.weekday} ${p.month} ${p.day}, ${p.year}, ${t(start)}`;
+  return end ? `${startStr} - ${t(end)}` : startStr;
+}
+
+// Faithful port of the legacy AttachmentList.niceBytes — INCLUDING its known
+// upstream label quirk: the units table is ["B","MB","MB",…] (no "KB"), so files
+// in the 1 KB–1 MB range render labeled "MB" (e.g. a 488 KB file → "488 MB").
+// Replicated verbatim so sizes match production exactly (the VR gate would flag
+// any "fix"). FLAGGED to the user as a pre-existing bug to correct separately.
+const NICE_UNITS = ["B", "MB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+export function niceBytes(x?: number): string {
+  let l = 0;
+  let n = typeof x === "number" ? x : parseInt(String(x ?? 0), 10) || 0;
+  while (n >= 1024 && ++l) n = n / 1024;
+  return n.toFixed(n < 10 && l > 0 ? 1 : 0) + " " + NICE_UNITS[l];
+}
+
+export interface MeetingAttachmentItem {
+  name: string;
+  url: string;
+  ext: string;
+  niceSize: string;
+  updatedAlt: string;
+}
+export interface MeetingRelatedItem {
+  displayTitle: string;
+  fullPath: string;
+}
+export interface MeetingExternalItem {
+  title: string;
+  url: string;
+}
+export interface MeetingItem {
+  id: string;
+  slug: string;
+  title: string;
+  fullPath: string;
+  isCancelled: boolean;
+  category: string;
+  catLabel: string;
+  /** raw ISO start/end + summary — kept for the single page's JSON-LD Event. */
+  start?: string;
+  end?: string;
+  summary?: string;
+  /** "May 14, 2026" — table date column + a search/sort proxy. */
+  altDate: string;
+  startMs: number;
+  /** "Thursday May 14, 2026, 10:00 AM - 12:00 PM" (or multi-day range). */
+  dateLine: string;
+  /** body markdown rendered + sanitized server-side (empty when cancelled). */
+  bodyHtml: string;
+  tags: string[];
+  attachments: MeetingAttachmentItem[];
+  attCount: number;
+  external: MeetingExternalItem[];
+  related: MeetingRelatedItem[];
+  /** lowercased search haystack (title + category + date + status). */
+  haystack: string;
+}
+
+// Shape one raw Strapi meeting the way the legacy card/table do: flatten tags,
+// sort attachments by name asc (AttachmentList.mounted), build the related list
+// from posts+events (the only relations the meetings query returns), and
+// pre-render the body so the table can expand a card with NO client fetch.
+function shapeMeeting(m: any): MeetingItem {
+  const cat = m.category ?? "";
+  const catLabel = meetingCategoryLabel(cat);
+  const tags = Array.isArray(m.tags) ? m.tags.map((t: any) => t.title) : [];
+  const attachments: MeetingAttachmentItem[] = (
+    Array.isArray(m.attachments) ? [...m.attachments] : []
+  )
+    .sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")))
+    .map((a: any) => ({
+      name: a.name,
+      url: strapiUrl(a.url) || a.url,
+      ext: (a.ext || "").replace(/^\./, "").toLowerCase(),
+      niceSize: niceBytes(a.size),
+      updatedAlt: dateFormatAlt(a.updated_at),
+    }));
+  const related: MeetingRelatedItem[] = [];
+  if (Array.isArray(m.events))
+    m.events.forEach((e: any) =>
+      related.push({ displayTitle: `[Event]: ${e.title}`, fullPath: `/events/${e.slug}/` }),
+    );
+  if (Array.isArray(m.posts))
+    m.posts.forEach((e: any) =>
+      related.push({ displayTitle: `[News]: ${e.title}`, fullPath: `/news/${e.slug}/` }),
+    );
+  related.sort((a, b) => a.displayTitle.localeCompare(b.displayTitle));
+  const external: MeetingExternalItem[] = Array.isArray(m.external)
+    ? m.external
+        .filter((e: any) => e && e.url)
+        .map((e: any) => ({ title: e.title || e.url, url: e.url }))
+    : [];
+  const altDate = dateFormatAlt(m.start);
+  return {
+    id: String(m.id),
+    slug: m.slug,
+    title: m.title,
+    fullPath: `/news/meetings/${m.slug}/`,
+    isCancelled: !!m.isCancelled,
+    category: cat,
+    catLabel,
+    start: m.start,
+    end: m.end,
+    summary: m.summary,
+    altDate,
+    startMs: m.start ? new Date(m.start).getTime() : 0,
+    dateLine: meetingDateLine(m.start, m.end),
+    bodyHtml: !m.isCancelled && m.body ? renderToHtml(m.body) : "",
+    tags,
+    attachments,
+    attCount: attachments.length,
+    external,
+    related,
+    haystack: [m.title, catLabel, altDate, m.isCancelled ? "cancelled" : ""]
+      .join(" ")
+      .toLowerCase(),
+  };
+}
+
+/** All meetings (start desc), live, for /news/meetings/. */
+export async function getAllMeetings(): Promise<MeetingItem[]> {
+  const { data } = await runQuery(GET_ALL_MEETINGS_QUERY, {}, "no-cache");
+  return (data?.meetings ?? [])
+    .map(shapeMeeting)
+    .sort((a: MeetingItem, b: MeetingItem) => b.startMs - a.startMs);
+}
+
+/** A single meeting by slug, live; null when none matches (page 404s). */
+export async function getMeeting(slug: string): Promise<MeetingItem | null> {
+  const { data } = await runQuery(GET_SINGLE_MEETING_QUERY, { slug }, "no-cache");
+  const m = data?.meetings?.[0];
+  return m ? shapeMeeting(m) : null;
 }
 
 /**
