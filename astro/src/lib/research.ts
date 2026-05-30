@@ -166,7 +166,9 @@ export async function getHomeResearch(): Promise<HomeResearchData> {
     isNew: isNewResearch(a.date),
     authors: joinAuthors(a.authors),
     teaser: truncateBySentence(a.abstract, 2),
-    img: hubImagePath(String(a.id), "thumbnail") || hubImagePath(String(a.id), "splash") || a.splash || null,
+    // Card image is ~370×250 (object-fit:cover), so the 300×300 thumbnail is too
+    // small (soft). Use full-size splash (1297×734); thumbnail/base64 only fall back.
+    img: hubImagePath(String(a.id), "splash") || hubImagePath(String(a.id), "thumbnail") || a.splash || null,
   }));
 
   const apps: ResearchCard[] = (app?.apps ?? []).map((a: any) => ({
@@ -536,9 +538,12 @@ export async function getHubBannerArticles(limit = 5): Promise<HubBannerArticle[
   );
   return (data?.articles ?? []).map((a: any) => {
     const id = String(a.id);
-    // Prefer the stored thumbnail (the carousel used the lighter thumbnail), then
-    // stored splash; only fall back to base64 when neither was extracted (new post).
-    const imgPath = hubImagePath(id, "thumbnail") || hubImagePath(id, "splash");
+    // The carousel is a 650px hero, so use the FULL-SIZE splash (1297×734, ~77KB
+    // as an extracted file) — the thumbnail (300×300) looked pixelated stretched
+    // to 650px. The base64-weight concern that once justified the thumbnail is
+    // moot now these are real lazy-loaded files. Fall back to thumbnail only if no
+    // splash was extracted, then base64 for brand-new posts.
+    const imgPath = hubImagePath(id, "splash") || hubImagePath(id, "thumbnail");
     return {
       id,
       title: a.title,
