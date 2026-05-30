@@ -13,15 +13,15 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import BasePage from '../../components/BasePage.astro';
 import { getPage } from '../../lib/data';
-import { setCache } from '../../lib/cache';
+
+// Prerendered (renderStrategy: static) — fetched at build, refreshed on the nightly/manual rebuild.
+export const prerender = true;
 
 const page = await getPage('about-the-authority');
 
 if (!page) {
   return new Response('Not found', { status: 404 });
 }
-
-setCache(Astro.response, 'page');
 ---
 
 <BaseLayout

@@ -8,15 +8,15 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import BiographyCard from '../../../components/BiographyCard.astro';
 import { getAllBiographies, getPage } from '../../../lib/data';
-import { setCache } from '../../../lib/cache';
+
+// Prerendered (renderStrategy: static) — fetched at build, refreshed on the nightly/manual rebuild.
+export const prerender = true;
 
 const [bios, page] = await Promise.all([
   getAllBiographies(),
   getPage('composition-and-membership'),
 ]);
 const board = bios.filter((b) => b.affiliation === 'board');
-
-setCache(Astro.response, 'bios');
 
 const pageTitle = page?.title || 'Composition & Membership';
 ---

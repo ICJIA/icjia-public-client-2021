@@ -6,10 +6,11 @@
 // legacy /grants/policies redirects here (see public/_redirects).
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getRulesRegsPolicies } from '../../lib/data';
-import { setCache } from '../../lib/cache';
+
+// Prerendered (renderStrategy: static) — fetched at build, refreshed on the nightly/manual rebuild.
+export const prerender = true;
 
 const { rules, regulations, policies } = await getRulesRegsPolicies();
-setCache(Astro.response, 'page');
 ---
 
 <BaseLayout

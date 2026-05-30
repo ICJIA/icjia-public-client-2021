@@ -3,6 +3,21 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.34.0] — 2026-05-30 — Phase B (part 1): prerender stable leaf pages
+
+First Phase-B increment — the low-risk static leaf pages (per the `renderStrategy`
+manifest) flip SSR → **prerendered** (built once, refreshed on the nightly/manual
+rebuild): `/about/`, `/about/icjia-staff/`, `/about/composition-and-membership/`,
+`/grants/rules-regs-policies/`. Each adds `export const prerender = true` and drops its
+now-meaningless `setCache()` (no-op on static routes); data is fetched at BUILD time.
+Verified: all four prerender to static HTML with full content + the context bar.
+
+Deliberately kept LIVE (SSR): employment/jobs, publications, grants funding + programs,
+fsgu-home/staff (they change, embed live data, or aren't in the static manifest).
+Phase B-2 (next): the dynamic `[slug]` routes — biographies, units, `about/[slug]`,
+`grants/[slug]` — via `getStaticPaths` (needs new enumeration queries: `getAllUnits`,
+all-pages-by-category).
+
 ## [0.33.1] — 2026-05-30 — Forms context bar (sensible per-form section nav)
 
 Resolves the [0.33.0] follow-up. `SiteContextBar` gains a small `SECTION_OVERRIDE` map for
