@@ -33,19 +33,35 @@
  * Phase 1: fonts + brand colors + Vuetify-aligned breakpoints. Component-level
  * tokens (elevation, exact type scale) are added as chrome is built + VR'd.
  */
-/* Native cross-document view transitions — a VERY subtle crossfade between real
- * page navigations. Pure CSS: NO ClientRouter / SPA / JS, so every page is still
- * a fresh load and all Alpine interactivity (nav, lists, overlay, progress bar)
- * works exactly as-is. Browsers without support just navigate normally (no-op).
- * Kept fast (120ms) + opacity-only so it softens the jump without feeling slow;
- * disabled entirely under reduced-motion. */
+/* Native cross-document view transitions — a noticeable-but-tasteful fade + slide
+ * between real page navigations. Pure CSS: NO ClientRouter / SPA / JS, so every
+ * page is still a fresh load and all Alpine interactivity (nav, lists, overlay,
+ * progress bar) works exactly as-is. Browsers without support navigate normally.
+ * The outgoing page fades out; the incoming page fades in while sliding up a few
+ * px — perceptible (~320ms) without feeling slow. Disabled under reduced-motion. */
 @view-transition {
   navigation: auto;
 }
-::view-transition-old(root),
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes vt-fade-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+::view-transition-old(root) {
+  animation: vt-fade-out 160ms ease both;
+}
 ::view-transition-new(root) {
-  animation-duration: 120ms;
-  animation-timing-function: ease;
+  animation: vt-fade-slide-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root),
