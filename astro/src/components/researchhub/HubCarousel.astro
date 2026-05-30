@@ -45,18 +45,21 @@ const first = articles[0] ?? null;
       role="region"
       aria-label="Latest research articles slideshow"
       x-data={`{
-        slides: JSON.parse(this.$el.querySelector('[data-carousel-json]').textContent),
-        i: 0, ready: false, timer: null,
+        slides: [], i: 0, ready: false, timer: null,
         init(){
-          this.ready = true;
+          try {
+            const el = document.getElementById('hub-carousel-data');
+            this.slides = el ? JSON.parse(el.textContent) : [];
+          } catch (e) { this.slides = []; }
+          this.ready = this.slides.length > 0;
           if (this.slides.length > 1) this.timer = setInterval(() => this.next(), 6000);
         },
-        next(){ this.i = (this.i + 1) % this.slides.length; },
+        next(){ if (this.slides.length) this.i = (this.i + 1) % this.slides.length; },
         goto(n){ this.i = n; if (this.timer){ clearInterval(this.timer); this.timer = setInterval(() => this.next(), 6000); } },
         destroy(){ if (this.timer) clearInterval(this.timer); }
       }`}
     >
-      <script type="application/json" data-carousel-json set:html={json} is:inline />
+      <script type="application/json" id="hub-carousel-data" set:html={json} is:inline />
 
       {/* Static first-slide baseline (no-JS / SEO): text only, no base64. */}
       {first && (
