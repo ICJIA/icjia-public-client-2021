@@ -3,6 +3,26 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.27.0] — 2026-05-30 — Dependency refresh (pnpm): remove unused, update to latest
+
+- **Removed unused:** `lodash-es` + `@types/lodash-es` (zero imports — only comments referenced "lodash parity").
+- **Updated to latest:** `markdown-it` 12→14 + plugins (anchor 8→9, attrs 4→5, footnote 3→4,
+  link-attributes 3→4, implicit-figures 0.10→0.12), `jsdom` 25→29, `typescript` 5.9→6.0,
+  `@types/node` 22→25, `@types/markdown-it` 12→14.
+- **markdown-it 12→14 is parity-sensitive** (prod renders with v12) — gated on the sanitizer
+  parity suite, which **passed 15/15** (byte-identical render+sanitize output for all fixtures),
+  plus the link-text suite 5/5 and a clean `astro build`. Kept v14 (gate green).
+- **vite** held at **7.3.3** (ships transitively via Astro 6.4.2, which pins `vite: ^7.3.2`).
+  **Vite 8.0 is out but NOT adopted:** the latest Astro (6.4.2) does not yet depend on vite 8,
+  and v8 is a major bundler swap (esbuild/Rollup → Rolldown, lightningcss now required,
+  rollupOptions→rolldownOptions, HMR/target breaking changes). Forcing it via a pnpm override
+  would run Astro on an untested vite major (build-output + plugin-compat risk) for ~zero gain
+  (its headline is faster builds; ours is already ~5s and infrequent). Adopt vite 8 when an
+  Astro release depends on it (then `pnpm update astro` pulls it in, tested) — do not override.
+- Framework deps (Astro, Tailwind 4, Alpine, the @astrojs adapters, astro-seo, sharp, dompurify)
+  were already at latest. `node_modules` regenerated cleanly (`rm -rf node_modules && pnpm install`;
+  `.npmrc` node-linker=hoisted preserved for the Netlify SSR function).
+
 ## [0.26.0] — 2026-05-30 — Fix Lighthouse SEO link-text on CMS bodies (grants + site-wide)
 
 A one-off Lighthouse on `/grants/programs/` flagged SEO 92 — `link-text: 2 links found`
