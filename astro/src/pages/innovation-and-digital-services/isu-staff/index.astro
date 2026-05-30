@@ -24,7 +24,7 @@ if (!unit || bios.length === 0) return new Response(null, { status: 404 });
 setCache(Astro.response, 'bios');
 ---
 
-<BaseLayout title={`${HEADING} — ICJIA`} description={HEADING} contextTitle="Staff">
+<BaseLayout title={HEADING} description={HEADING} contextTitle="Staff">
   <div class="mx-auto max-w-5xl px-4 py-8 md:px-6">
     <UnitStaffListing heading={HEADING} introHtml={unit.summaryHtml} bios={bios} />
   </div>

@@ -10,6 +10,8 @@ import '@fontsource/oswald/500.css';
 import '@fontsource/oswald/600.css';
 import '@fontsource/oswald/700.css';
 import '../styles/global.css';
+import { SEO } from 'astro-seo';
+import { siteConfig, buildTitle, truncateDescription, buildHomeJsonLd } from '../lib/seo';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteContextBar from '../components/SiteContextBar.astro';
 import SiteDisclaimer from '../components/SiteDisclaimer.astro';
@@ -24,14 +26,26 @@ interface Props {
    *  (e.g. /news/events/ → /events/) pass the canonical target so duplicate
    *  content consolidates to one URL. */
   canonical?: string;
+  /** Per-page OG image override (defaults to the site OG image). */
+  ogImage?: string;
+  /** Home page only — emits the WebSite + GovernmentOrganization JSON-LD. */
+  isHome?: boolean;
+  /** Keep the page out of the search index (404, error/maintenance pages).
+   *  Followable (no nofollow) — links from a 404 should still be crawled. */
+  noindex?: boolean;
 }
-const { title = 'ICJIA', description = '', contextTitle, canonical } = Astro.props;
+const { title = 'ICJIA', description = '', contextTitle, canonical, ogImage, isHome = false, noindex = false } = Astro.props;
 // Production origin (not the branch-deploy host) so canonicals point at the live
 // site regardless of which deploy renders them.
-const SITE = 'https://icjia.illinois.gov';
+const SITE = siteConfig.siteOrigin;
 const canonicalHref = canonical
   ? new URL(canonical, SITE).href
   : new URL(Astro.url.pathname, SITE).href;
+// Final title/description/og — `title` is a BARE chunk; buildTitle wraps it as
+// "ICJIA | <chunk>" (prod convention) and clamps to 60 chars.
+const fullTitle = buildTitle(title);
+const metaDesc = truncateDescription(description);
+const ogImg = ogImage ?? siteConfig.ogImage;
 ---
 
 <!doctype html>
@@ -40,9 +54,23 @@ const canonicalHref = canonical
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="canonical" href={canonicalHref} />
-    <title>{title}</title>
-    {description && <meta name="description" content={description} />}
+    {/* astro-seo: title (+ clamp), description, canonical (prod origin, trailing
+        slash), Open Graph + Twitter card — values match approved prod. */}
+    <SEO
+      title={fullTitle}
+      description={metaDesc}
+      canonical={canonicalHref}
+      noindex={noindex}
+      openGraph={{
+        basic: { title: fullTitle, type: 'website', image: ogImg, url: canonicalHref },
+        optional: { description: metaDesc, siteName: siteConfig.siteName },
+      }}
+      twitter={{ card: 'summary_large_image', title: fullTitle, description: metaDesc, image: ogImg }}
+      extend={{
+        meta: [{ name: 'google-site-verification', content: siteConfig.googleSiteVerification }],
+      }}
+    />
+    {isHome && <script type="application/ld+json" is:inline set:html={buildHomeJsonLd()} />}
     {/* Plausible analytics (self-hosted) — ported verbatim from the legacy prod
         snippet. The `file-downloads.outbound-links` script variant tracks
         pageviews + file downloads + outbound link clicks, and exposes

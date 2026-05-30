@@ -19,9 +19,14 @@ if (!job) {
 }
 
 setCache(Astro.response, 'jobs');
+
+// Meta description: plain-text job summary (tags stripped), with a generic fallback.
+const metaDescription =
+  (job.summaryHtml || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() ||
+  `Employment opportunity at the Illinois Criminal Justice Information Authority (ICJIA): ${job.title}.`;
 ---
 
-<BaseLayout title={job.title} contextTitle="Employment at ICJIA">
+<BaseLayout title={job.title} description={metaDescription} contextTitle="Employment at ICJIA">
   <div class="employment markdown-body mx-auto max-w-4xl px-4 py-8 md:px-6">
     <h1 class="sr-only">{job.title}</h1>
     <JobCard item={job} summaryOnly={false} />

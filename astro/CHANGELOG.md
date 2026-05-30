@@ -3,6 +3,57 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.21.0] — 2026-05-30 — Phase 4c: SEO (astro-seo), sitemap/search-index, robots, llms, stylish 404
+
+### Added — `astro-seo` `<SEO>` integration (`src/lib/seo.ts` + BaseLayout)
+- Adopted the **`astro-seo`** module — BaseLayout now renders one `<SEO>` (title, meta
+  description, canonical, Open Graph, Twitter summary-large-image card) replacing the
+  hand-rolled head tags. Values come from `src/lib/seo.ts` (`siteConfig`), seeded with the
+  **management-approved prod values** (og:image `icjia-half-splash-thumb-v2.jpg`,
+  google-site-verification token, description) so canonicals/OG match prod exactly.
+- **Home-only JSON-LD** (`isHome`): `WebSite` (+ `SearchAction` → `/search/?q=`) +
+  `GovernmentOrganization`, mirroring the prod homepage `@graph`.
+- **`noindex?` prop** on BaseLayout → `<SEO noindex>` (followable; default off). First
+  consumer is the 404.
+
+### Changed — page `<title>` convention now matches prod: `ICJIA | <chunk>`
+- Ported the legacy `src/App.vue` `titleTemplate` convention exactly: **brand first**,
+  `buildTitle(chunk)` → `ICJIA | <chunk>` (bare `ICJIA` when no chunk), **untruncated**
+  (prod never truncates; a clipped title drops SEO keywords and Lighthouse SEO doesn't
+  score length). Fixed a **double-suffix bug**: pages had baked-in `— ICJIA` /
+  `— ResearchHub — ICJIA` suffixes that would have rendered `… — ICJIA | ICJIA`. Every
+  page now passes a BARE chunk.
+- **Descriptive list/landing titles** (user-approved invisible-meta deviation from prod's
+  generic titles — see `project_astro_seo_titles`): `/researchhub/` → Research Hub,
+  `/news/` → News & Information, `/news/meetings/` → Public Meetings, `/about/icjia-staff/`
+  → Staff Directory, etc. Detail pages keep `ICJIA | <content title>`.
+- Added meta `description` to the 4 pages that lacked one (bio detail, job detail, staff
+  directory, composition & membership).
+
+### Added — combined prebuild content generator (`scripts/generate-search-index.mjs`)
+- ONE self-contained prebuild fetch (ports `generators/searchIndexAndSitemap.js` + the 12
+  `generateIndex*.js`) emits BOTH **`public/searchIndex.json`** (the Fuse index, 2386
+  records / 2.7 MB) and **`public/sitemap.xml`** (2387 trailing-slash URLs, prod origin) —
+  same enumeration, one fetch (splitting would double-fetch ~12 Strapi endpoints).
+- **SEC-12/13 staff-name purification preserved**: `searchMeta` is purged of the staff
+  roster (+ EXTRAS blocklist incl. former/external names) before write; biographies (the
+  public roster) are deliberately exempt. Verified 0 staff names leak into non-bio
+  `searchMeta`.
+- **Robust:** per-type `Promise.allSettled` (a failed type degrades, doesn't fail the
+  build); total Strapi outage keeps the last-known-good files and exits 0. Wired into
+  `prebuild` after `generate-hub-images`.
+
+### Added — `robots.txt`, `llms.txt`, stylish `404`
+- `public/robots.txt` (no leading underscore — avoids the Astro `public/_robots.txt` trap)
+  with a `Sitemap:` line + explicit AI-crawler allows. `public/llms.txt` (AI-readiness
+  site summary).
+- `public/sitemap.xml` is written directly (not via `@astrojs/sitemap`, which emits
+  `sitemap-0.xml`) so `/sitemap.xml` resolves natively — no Netlify two-rewrite needed.
+- **`src/pages/404.astro`** — checklist "Standard 404" pattern: prerendered, `noindex`,
+  on-brand hero (aria-hidden `404` numeral + announced `<h1>`), a GET `/search/` hand-off
+  form, a quick-link card grid mirroring legacy 404.vue's destinations, and the legacy
+  `plausible("404", { path })` event.
+
 ## [0.20.0] — 2026-05-30 — Refinement pass 1: parity fixes from the review synthesis
 
 Multi-agent review (7 section reviewers + synthesis) found NO P0s; working the P1 list.

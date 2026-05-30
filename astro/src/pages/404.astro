@@ -1,0 +1,215 @@
+---
+// Standard ICJIA 404 — stylish, on-brand, per the conversion checklist's canonical
+// "Standard 404 page" pattern: BaseLayout + hero band (aria-hidden decorative
+// numeral + announced <h1>) + a GET /search/ hand-off form + a quick-link card grid
+// mirroring the legacy 404's destinations + a help line. noindex (followable).
+//
+// Prerendered (static): Netlify serves this for any unmatched route with a 404
+// status — no function invocation per miss, and the (build-time) path is /404 so
+// the per-section SiteContextBar correctly renders nothing.
+//
+// Parity with legacy src/views/404.vue: same destination set + the Plausible "404"
+// custom event (path prop) fired on load.
+export const prerender = true;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Quick links mirror legacy 404.vue (Home + the seven section destinations).
+// /search is intentionally NOT a card — the search form already sits in the hero.
+const links = [
+  { label: 'ICJIA Home', href: '/' },
+  { label: 'Funding Opportunities', href: '/grants/funding/' },
+  { label: 'Research Hub', href: '/researchhub/' },
+  { label: 'Public Meetings', href: '/news/meetings/' },
+  { label: 'News & Press', href: '/news/press/' },
+  { label: 'Employment', href: '/about/employment/' },
+  { label: 'Innovation & Digital Services', href: '/innovation-and-digital-services/' },
+  { label: 'Contact ICJIA', href: '/about/contact/' },
+];
+---
+
+<BaseLayout title="Page Not Found" description="The page you requested could not be found." noindex>
+  <section class="nf">
+    <div class="nf-inner">
+      <div class="nf-num" aria-hidden="true">404</div>
+      <h1 class="nf-head">We couldn&rsquo;t find that page</h1>
+      <p class="nf-sub">
+        The page may have moved, been renamed, or no longer exists. Try a search,
+        or pick up one of the links below.
+      </p>
+
+      <form method="get" action="/search/" role="search" class="nf-search">
+        <label for="nf-q" class="sr-only">Search ICJIA</label>
+        <input
+          id="nf-q"
+          type="search"
+          name="q"
+          placeholder="Search ICJIA&hellip;"
+          autocomplete="off"
+          class="nf-search-input"
+        />
+        <button type="submit" class="nf-search-btn">Search</button>
+      </form>
+
+      <nav class="nf-grid" aria-label="Helpful links">
+        {
+          links.map((l) => (
+            <a href={l.href} class="nf-card">
+              <span class="nf-card-label">{l.label}</span>
+              <span class="nf-card-arrow" aria-hidden="true">&rsaquo;</span>
+            </a>
+          ))
+        }
+      </nav>
+
+      <p class="nf-help">
+        Still stuck? <a href="/about/contact/">Contact ICJIA</a> and we&rsquo;ll help you find it.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+{/* Parity: legacy 404.vue fired a Plausible "404" event with the requested path. */}
+<script is:inline>
+  if (typeof window !== 'undefined' && typeof window.plausible === 'function') {
+    window.plausible('404', { props: { path: location.pathname } });
+  }
+</script>
+
+<style>
+  .nf {
+    background: #fff;
+    padding: 56px 20px 72px;
+  }
+  .nf-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  /* Decorative numeral — Oswald, navy→primary gradient. aria-hidden; the <h1>
+     carries the announcement. */
+  .nf-num {
+    font-family: 'Oswald', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: clamp(96px, 22vw, 180px);
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    background: linear-gradient(120deg, #0a3a60 0%, #1565c0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin: 0;
+  }
+  .nf-head {
+    font-family: 'Oswald', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: clamp(28px, 5vw, 40px);
+    color: #0a3a60;
+    margin: 8px 0 12px;
+  }
+  .nf-sub {
+    font-size: 17px;
+    line-height: 1.6;
+    color: #444;
+    max-width: 56ch;
+    margin: 0 auto 28px;
+  }
+
+  .nf-search {
+    display: flex;
+    gap: 8px;
+    max-width: 520px;
+    margin: 0 auto 40px;
+  }
+  .nf-search-input {
+    flex: 1;
+    height: 48px;
+    padding: 0 16px;
+    font-size: 16px;
+    color: #222;
+    background: #fff;
+    border: 2px solid #cfd8e3;
+    border-radius: 4px;
+  }
+  .nf-search-input:focus {
+    outline: none;
+    border-color: #1565c0;
+    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.2);
+  }
+  .nf-search-btn {
+    height: 48px;
+    padding: 0 24px;
+    font-weight: 700;
+    font-size: 16px;
+    color: #fff;
+    background: #1565c0;
+    border: 2px solid #1565c0;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .nf-search-btn:hover {
+    background: #0a3a60;
+    border-color: #0a3a60;
+  }
+
+  .nf-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    text-align: left;
+  }
+  @media (min-width: 600px) {
+    .nf-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .nf-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 56px;
+    padding: 12px 18px;
+    background: #f6f8fa;
+    border: 1px solid #e3e8ee;
+    border-left: 4px solid #1565c0;
+    border-radius: 4px;
+    color: #0a3a60;
+    font-weight: 700;
+    font-size: 16px;
+    text-decoration: none;
+    transition:
+      background 0.15s ease,
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+  .nf-card:hover {
+    background: #eef3f9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(10, 58, 96, 0.12);
+  }
+  .nf-card-arrow {
+    font-size: 28px;
+    line-height: 1;
+    color: #1565c0;
+  }
+
+  .nf-help {
+    margin: 36px 0 0;
+    font-size: 15px;
+    color: #555;
+  }
+  .nf-help a {
+    color: #1565c0;
+    font-weight: 700;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nf-card {
+      transition: none;
+    }
+    .nf-card:hover {
+      transform: none;
+    }
+  }
+</style>

@@ -28,7 +28,7 @@ setCache(Astro.response, 'hub');
 ---
 
 <BaseLayout
-  title={`${article.title} — ResearchHub — ICJIA`}
+  title={article.title}
   description={article.abstract ? article.abstract.replace(/<[^>]+>/g, '').slice(0, 200) : undefined}
   contextTitle={article.title}
 >

@@ -52,7 +52,7 @@ setCache(Astro.response, 'page');
 ---
 
 <BaseLayout
-  title={page.title ? `${page.title} — ICJIA` : 'ICJIA'}
+  title={page.title || 'ICJIA'}
   description={page.summary}
   contextTitle={page.title}
 >

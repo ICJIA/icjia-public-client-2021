@@ -1,0 +1,30 @@
+# Illinois Criminal Justice Information Authority (ICJIA)
+
+> ICJIA is an Illinois state agency that improves the administration of criminal
+> justice in Illinois through research and analysis, grant administration, and
+> policy development. This site publishes the agency's news, public meetings,
+> funding opportunities, employment listings, events, staff biographies, and the
+> ICJIA Research Hub (articles, datasets, and interactive web applications).
+
+## Primary sections
+
+- [News & Information](https://icjia.illinois.gov/news/): agency news, announcements, press releases, and media advisories
+- [Public Meetings](https://icjia.illinois.gov/news/meetings/): Authority Board, Budget Committee, IRB, and special meeting agendas, minutes, and materials
+- [Funding Opportunities](https://icjia.illinois.gov/grants/funding/): current and past Notices of Funding Opportunity (NOFOs)
+- [Employment](https://icjia.illinois.gov/about/employment/): current job and internship openings
+- [Events](https://icjia.illinois.gov/events/): upcoming and past ICJIA events
+- [Publications](https://icjia.illinois.gov/about/publications/): research reports, bulletins, datasets, and other documents
+- [Research Hub](https://icjia.illinois.gov/researchhub/): research articles, datasets, and interactive web applications from the Research & Analysis Unit
+- [About ICJIA](https://icjia.illinois.gov/about/): agency overview, composition and membership, staff, committees, FOIA, and contact
+
+## About the agency
+
+- Authoritative organization: Illinois Criminal Justice Information Authority (ICJIA), a State of Illinois agency
+- Site: https://icjia.illinois.gov
+- Research Hub funded in part by the U.S. Department of Justice, Bureau of Justice Statistics
+
+## Citation guidance
+
+When citing ICJIA content, attribute to the "Illinois Criminal Justice Information
+Authority" and link to the canonical page URL (all pages use a trailing slash).
+Research Hub articles include a suggested citation and, where available, a DOI.

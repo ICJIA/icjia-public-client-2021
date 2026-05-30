@@ -18,9 +18,17 @@ if (!item) {
 }
 
 setCache(Astro.response, 'bios');
+
+// Meta description: name + role (+ unit) — concise, plain text (no body HTML).
+const metaDescription = [
+  item.fullName,
+  [item.title, item.unit?.title].filter(Boolean).join(', '),
+]
+  .filter(Boolean)
+  .join(' — ') + ' · Illinois Criminal Justice Information Authority (ICJIA).';
 ---
 
-<BaseLayout title={item.fullName} contextTitle={item.fullName}>
+<BaseLayout title={item.fullName} description={metaDescription} contextTitle={item.fullName}>
   <div class="markdown-body mx-auto max-w-5xl px-4 py-8 md:px-6">
     <h1 class="mb-4">{item.fullNameWithSuffix}</h1>
 

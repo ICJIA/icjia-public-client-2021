@@ -18,7 +18,11 @@ setCache(Astro.response, 'bios');
 const pageTitle = page?.title || 'ICJIA Staff';
 ---
 
-<BaseLayout title={`${pageTitle} — ICJIA`} contextTitle={pageTitle}>
+<BaseLayout
+  title="Staff Directory"
+  description={page?.summary || 'Directory of staff at the Illinois Criminal Justice Information Authority (ICJIA).'}
+  contextTitle={pageTitle}
+>
   <div class="markdown-body mx-auto max-w-5xl px-4 py-8 md:px-6">
     {page?.titleHtml && <h1 set:html={page.titleHtml} />}
     {page?.safeBodyHtml && <div class="mb-8" set:html={page.safeBodyHtml} />}
