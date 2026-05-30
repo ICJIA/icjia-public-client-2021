@@ -32,8 +32,78 @@ const { title = 'ICJIA', description = '', contextTitle } = Astro.props;
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
+    {/* Loading overlay — critical CSS inlined so it paints with the HTML (no
+        render-blocking round-trip). A delayed reveal (0.2s) means fast loads
+        never flash it; slow loads / cold lambdas show the branded screen the
+        instant the response paints. Hidden on DOMContentLoaded + a failsafe. */}
+    <style is:inline>
+      #app-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        background: #fff;
+        opacity: 0;
+        animation: ldrise 0s linear 0.2s forwards;
+      }
+      #app-loader img {
+        width: 90px;
+        height: auto;
+      }
+      #app-loader .ld-spin {
+        width: 30px;
+        height: 30px;
+        border: 3px solid #dcdcdc;
+        border-top-color: #0a3a60;
+        border-radius: 50%;
+        animation: ldspin 0.8s linear infinite;
+      }
+      #app-loader .ld-txt {
+        font: 700 13px/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #0a3a60;
+      }
+      @keyframes ldspin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes ldrise {
+        to {
+          opacity: 1;
+        }
+      }
+      html.app-loaded #app-loader {
+        animation: none;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #app-loader .ld-spin {
+          animation-duration: 1.6s;
+        }
+      }
+    </style>
+    <noscript>
+      <style>
+        #app-loader {
+          display: none;
+        }
+      </style>
+    </noscript>
   </head>
   <body class="flex min-h-screen flex-col">
+    <div id="app-loader" role="status" aria-label="Loading">
+      <img src="/icjia-logo.png" alt="" width="90" height="70" />
+      <div class="ld-spin" aria-hidden="true"></div>
+      <div class="ld-txt">Loading</div>
+    </div>
     <a class="skiplink" href="#main-content">Skip to main content</a>
     <SiteHeader />
     {/* flex-1 makes main fill remaining height so the footer sticks to the
@@ -45,5 +115,18 @@ const { title = 'ICJIA', description = '', contextTitle } = Astro.props;
       <SiteDisclaimer />
     </main>
     <SiteFooter />
+    <script is:inline>
+      (function () {
+        var d = document;
+        function done() {
+          d.documentElement.classList.add('app-loaded');
+          var l = d.getElementById('app-loader');
+          if (l) setTimeout(function () { l.remove(); }, 400);
+        }
+        if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', done);
+        else done();
+        setTimeout(done, 10000); // failsafe — never trap content behind the overlay
+      })();
+    </script>
   </body>
 </html>

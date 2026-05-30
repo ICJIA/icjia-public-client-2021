@@ -25,7 +25,13 @@ export default defineConfig({
   output: 'server',
   adapter: isDevServer ? node({ mode: 'standalone' }) : netlify(),
   trailingSlash: 'always',
-  build: { inlineStylesheets: 'auto' },
+  // Inline ALL CSS (not just small sheets): the SSR head was emitting external
+  // render-blocking <link>s (cache.css + per-page css) that delayed first paint
+  // ~860ms after the HTML arrived — a blank gap on top of any cold-lambda TTFB.
+  // Inlined CSS parses with the HTML (no extra round-trips), so first paint and
+  // the loading overlay appear as soon as the response paints. The HTML is
+  // edge-cached (Durable Cache), so the per-page inline cost is paid once.
+  build: { inlineStylesheets: 'always' },
   // Astro image optimization for live CMS images (astro:assets — Sharp in dev,
   // Netlify Image CDN on deploy; the Netlify adapter auto-allowlists these hosts
   // for remote_images). NO Thumbor: CMS images are compressed by Astro only and

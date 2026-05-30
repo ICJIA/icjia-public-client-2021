@@ -3,6 +3,29 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.17.0] — 2026-05-29 — Loading overlay + inline CSS (kill the blank-screen wait)
+
+### Added — branded loading overlay (`BaseLayout`)
+- Full-screen centered ICJIA logo + spinner + "Loading", shown the instant the
+  response paints (critical CSS inlined via `is:inline`, no render-blocking
+  round-trip). **Delayed 0.2s reveal** → fast/warm loads never flash it; slow loads
+  show the branded screen. Hidden on `DOMContentLoaded` (+ 10s failsafe, `remove()`);
+  `<noscript>` hides it so no-JS users aren't trapped. `role="status"`, reduced-motion aware.
+
+### Changed — `inlineStylesheets: 'always'` (astro.config)
+- The SSR head was emitting **two external render-blocking stylesheets**
+  (`cache.css` + per-page css) → ~860ms blank gap after the HTML arrived (on top of
+  any cold-lambda TTFB). Now all CSS inlines with the HTML → **0 css files in
+  `dist/_astro/`**, first paint as soon as the response paints. HTML is edge-cached,
+  so the per-page inline cost is paid once.
+
+### Honest limitation (told the user)
+- Neither covers the **pre-first-byte** window while a cold serverless lambda boots
+  — the browser has no HTML yet, so no in-page overlay can show there. That's what
+  the **Netlify Durable Cache** (0.15.0) mitigates: warm hits ≈150ms TTFB. The
+  overlay covers the post-HTML paint/hydration window; offered View Transitions for
+  in-site nav loading if wanted.
+
 ## [0.16.0] — 2026-05-29 — Site chrome: context bar + per-path disclaimers (were missing on ALL pages)
 
 ### Added — context bar (`SiteContextBar.astro`, port of `AppNavContext.vue`)
