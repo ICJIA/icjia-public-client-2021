@@ -1,3 +1,5 @@
+![ICJIA — Illinois Criminal Justice Information Authority](astro/public/icjia-og.png)
+
 # ICJIA Public Client 2021
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/e6614e77-00b4-4772-8034-a3b9c9c9986d/deploy-status)](https://app.netlify.com/sites/icjia-public/deploys) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

@@ -1,14 +1,18 @@
 // One-time branded Open Graph image generator (1200×630, the social-share standard).
 // Per the conversion checklist's "OG image build pipeline" (SVG → PNG via Sharp, with
-// font-family="sans-serif" so librsvg actually renders the text). This is a STATIC
-// brand asset — run once, commit the PNG; it does NOT regenerate per build (unlike the
-// content-derived searchIndex/sitemap). Re-run with `pnpm og-image` if the brand changes.
+// font-family="sans-serif" so librsvg actually renders the text). Emits TWO files: the
+// editable vector SOURCE (icjia-og.svg) and the rasterized icjia-og.png DERIVED from it
+// — the .png is what og:image/twitter:image use (social scrapers don't render SVG; PNG
+// is the SEO-safe format). Both are STATIC brand assets (committed; not per-build).
+// Re-run with `pnpm og-image` after editing the SVG below.
 //
-//   pnpm og-image   →   public/icjia-og.png  (1200×630)
+//   pnpm og-image   →   public/icjia-og.svg (source) + public/icjia-og.png (1200×630, derived)
 import sharp from "sharp";
+import { writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
-const OUT = fileURLToPath(new URL("../public/icjia-og.png", import.meta.url));
+const OUT_PNG = fileURLToPath(new URL("../public/icjia-og.png", import.meta.url));
+const OUT_SVG = fileURLToPath(new URL("../public/icjia-og.svg", import.meta.url));
 
 // Navy → deep-navy gradient (site primary #0a3a60), the ICJIA wordmark + full agency
 // name in white, a #1565c0 accent rule, and the canonical host. All text (no raster
@@ -29,6 +33,10 @@ const svg = `<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http:/
   <text x="104" y="556" font-family="sans-serif" font-size="30" font-weight="400" fill="#9fc3e8">icjia.illinois.gov</text>
 </svg>`;
 
-await sharp(Buffer.from(svg)).png().toFile(OUT);
-const meta = await sharp(OUT).metadata();
-console.log(`[og-image] wrote public/icjia-og.png (${meta.width}×${meta.height}, ${meta.format})`);
+// 1) write the vector source, 2) rasterize the PNG FROM that same SVG.
+await writeFile(OUT_SVG, svg);
+await sharp(Buffer.from(svg)).png().toFile(OUT_PNG);
+const meta = await sharp(OUT_PNG).metadata();
+console.log(
+  `[og-image] wrote public/icjia-og.svg (source) + public/icjia-og.png (${meta.width}×${meta.height}, derived)`,
+);

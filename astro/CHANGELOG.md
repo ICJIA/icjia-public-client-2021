@@ -3,6 +3,19 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.25.0] — 2026-05-30 — OG image SVG source + derived PNG; README banner; checklist lessons
+
+- `scripts/generate-og-image.mjs` now emits BOTH `public/icjia-og.svg` (editable vector
+  source) and `public/icjia-og.png` (1200×630, rasterized FROM that SVG via Sharp). og:image
+  still points at the PNG (social scrapers don't render SVG); the SVG is the source to edit.
+- Root `README.md`: the new OG image added as the banner at the top.
+- `docs/astro-conversion-checklist-v7.0.md`: added a live-appended "Phase 4–5 running lessons"
+  log (#11–20: title convention, per-type JSON-LD + the Event-builder regression, og:image
+  origin resolution, the combined search-index/sitemap generator, the app's inline-x-data /
+  no-window.Alpine convention + worker-off-the-reactive-object rule, /search-as-a-page,
+  the missing-grants-collection + relation-parity trap, cutover pre-checks, and the
+  red/blue + parity-review workflow patterns). To be extended through the rest of the migration.
+
 ## [0.24.0] — 2026-05-30 — Phase 4d: site search (/search + Fuse Web Worker)
 
 ### Added — /search/ (the last major functional gap)
