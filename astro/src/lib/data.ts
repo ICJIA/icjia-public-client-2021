@@ -23,6 +23,8 @@ import {
 import {
   GET_ALL_FUNDING_QUERY,
   GET_SINGLE_FUNDING_QUERY,
+  GET_ALL_PROGRAMS_QUERY,
+  GET_SINGLE_PROGRAM_QUERY,
 } from "../graphql/grants.js";
 import { GET_SINGLE_PAGE_QUERY } from "../graphql/page.js";
 import {
@@ -780,6 +782,89 @@ export async function getGrant(slug: string): Promise<GrantDetail | null> {
     attachments: shapeAttachments(g.attachments),
     related: buildRelated(g),
     tags: Array.isArray(g.tags) ? g.tags.map((t: any) => t.title) : [],
+  };
+}
+
+// ── Funded Programs (/grants/programs/) ───────────────────────────
+// Mirrors funding above. Programs carry status ('current'|'archived') +
+// category ('federal'|'state'). The legacy BaseCardExpandable kicker for a
+// program (contentType 'program', category != 'nofo') is "{CATEGORY} PROGRAM"
+// (uppercase) — e.g. "FEDERAL PROGRAM". A status chip shows ONLY when archived.
+export interface ProgramListItem {
+  id: string;
+  slug: string;
+  title: string;
+  fullPath: string;
+  status: string;
+  category: string;
+  /** uppercase kicker, e.g. "FEDERAL PROGRAM" (legacy BaseCardExpandable). */
+  catLabel: string;
+  /** ProgramsAll uses BaseCardExpandable WITHOUT summaryOnly → renders body. */
+  bodyHtml: string;
+  summary?: string;
+  published_at?: string;
+  attachments: AttachmentItem[];
+  tags: string[];
+}
+function shapeProgramListItem(p: any): ProgramListItem {
+  return {
+    id: String(p.id),
+    slug: p.slug,
+    title: p.title,
+    fullPath: `/grants/programs/${p.slug}/`,
+    status: p.status ?? "",
+    category: p.category ?? "",
+    catLabel: `${String(p.category || "").toUpperCase()} PROGRAM`,
+    bodyHtml: p.body ? renderToHtml(p.body) : "",
+    summary: p.summary,
+    published_at: p.published_at,
+    attachments: shapeAttachments(p.attachments),
+    tags: Array.isArray(p.tags) ? p.tags.map((t: any) => t.title) : [],
+  };
+}
+/** All funded programs (title asc — legacy _.orderBy title), live, for /grants/programs/. */
+export async function getAllPrograms(): Promise<ProgramListItem[]> {
+  const { data } = await runQuery(GET_ALL_PROGRAMS_QUERY, {}, "no-cache");
+  return (data?.programs ?? [])
+    .map(shapeProgramListItem)
+    .sort((a: ProgramListItem, b: ProgramListItem) =>
+      a.title.localeCompare(b.title),
+    );
+}
+
+export interface ProgramDetail {
+  id: string;
+  slug: string;
+  title: string;
+  status: string;
+  category: string;
+  catLabel: string;
+  bodyHtml: string;
+  summary?: string;
+  published_at?: string;
+  attachments: AttachmentItem[];
+  /** related News + Funding (Program type exposes only posts + grants). */
+  related: RelatedItem[];
+  tags: string[];
+}
+/** A single program by slug, live; null when none matches (404). */
+export async function getProgram(slug: string): Promise<ProgramDetail | null> {
+  const { data } = await runQuery(GET_SINGLE_PROGRAM_QUERY, { slug }, "no-cache");
+  const p = data?.programs?.[0];
+  if (!p) return null;
+  return {
+    id: String(p.id),
+    slug: p.slug,
+    title: p.title,
+    status: p.status ?? "",
+    category: p.category ?? "",
+    catLabel: `${String(p.category || "").toUpperCase()} PROGRAM`,
+    bodyHtml: p.body ? renderToHtml(p.body) : "",
+    summary: p.summary,
+    published_at: p.published_at,
+    attachments: shapeAttachments(p.attachments),
+    related: buildRelated(p),
+    tags: Array.isArray(p.tags) ? p.tags.map((t: any) => t.title) : [],
   };
 }
 

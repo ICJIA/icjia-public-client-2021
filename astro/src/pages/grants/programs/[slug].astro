@@ -1,0 +1,135 @@
+---
+// /grants/programs/[slug] — live-data SSR single program. Parity with
+// ProgramsSingle.vue: title, body, attachments, related, tags + JSON-LD
+// GovernmentService. Same markup/classes as funding/[slug] (so CSS matches prod).
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getProgram } from '../../../lib/data';
+import { setCache } from '../../../lib/cache';
+import '../../../styles/funding.css';
+
+const { slug } = Astro.params;
+const program = slug ? await getProgram(slug) : null;
+
+if (!program) {
+  return new Response('Not found', { status: 404 });
+}
+
+setCache(Astro.response, 'grants');
+
+// JSON-LD GovernmentService — mirrors funding/[slug] (provider ICJIA, areaServed
+// Illinois). Programs have no start/end, so no validThrough/hoursAvailable.
+const STRAPI_BASE = 'https://agency.icjia-api.cloud';
+const EXT_TO_MIME: Record<string, string> = {
+  pdf: 'application/pdf',
+  doc: 'application/msword',
+  docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  xls: 'application/vnd.ms-excel',
+  xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  csv: 'text/csv',
+  txt: 'text/plain',
+  zip: 'application/zip',
+};
+const normalizeUrl = (u?: string): string | null => {
+  if (typeof u !== 'string' || !u) return null;
+  const t = u.trim();
+  if (/^https?:\/\//.test(t)) return t;
+  if (t.startsWith('/')) return `${STRAPI_BASE}${t}`;
+  return null;
+};
+const jsonld: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'GovernmentService',
+  name: program.title,
+  serviceType: 'Grant program',
+  provider: {
+    '@type': 'GovernmentOrganization',
+    name: 'Illinois Criminal Justice Information Authority',
+    alternateName: 'ICJIA',
+    url: 'https://icjia.illinois.gov',
+  },
+  areaServed: { '@type': 'State', name: 'Illinois' },
+  url: `https://icjia.illinois.gov/grants/programs/${program.slug}`,
+  inLanguage: 'en-US',
+};
+if (program.summary) jsonld.description = program.summary;
+if (program.published_at) jsonld.datePosted = program.published_at;
+if (program.attachments.length) {
+  const normalized = program.attachments
+    .map((a) => {
+      const contentUrl = normalizeUrl(a.url);
+      if (!contentUrl || !a.name) return null;
+      return {
+        '@type': 'MediaObject',
+        name: a.name,
+        contentUrl,
+        ...(a.ext ? { encodingFormat: EXT_TO_MIME[a.ext] || a.ext } : {}),
+      };
+    })
+    .filter(Boolean);
+  if (normalized.length) jsonld.associatedMedia = normalized;
+}
+const jsonldStr = JSON.stringify(jsonld).replace(/</g, '\\u003c');
+---
+
+<BaseLayout title={program.title} description={program.summary} contextTitle={program.title}>
+  <div class="funding markdown-body mx-auto max-w-4xl px-4 py-8 md:px-6">
+    <h1 class="mt-1">{program.title}</h1>
+    {program.bodyHtml && <div set:html={program.bodyHtml} />}
+
+    <div class="my-5">
+      {
+        program.attachments.length > 0 && (
+          <div class="mt-4">
+            <h2 class="sub-heading">Attachments</h2>
+            <table class="att-table">
+              <thead>
+                <tr>
+                  <th>Filename</th>
+                  <th>Size</th>
+                </tr>
+              </thead>
+              <tbody>
+                {program.attachments.map((a) => (
+                  <tr>
+                    <td>
+                      <a class="attachment" href={a.url} target="_blank" rel="noopener noreferrer">
+                        {a.name}
+                      </a>
+                    </td>
+                    <td>{a.niceSize}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )
+      }
+
+      {
+        program.related.length > 0 && (
+          <div class="mt-5">
+            <h2 class="sub-heading">Related Web Content</h2>
+            <ul class="meeting-list">
+              {program.related.map((r) => (
+                <li>
+                  <a href={r.fullPath}>{r.displayTitle}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+
+      {
+        program.tags.length > 0 && (
+          <div class="mt-4">
+            {program.tags.map((t) => (
+              <span class="chip">{t}</span>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
+  <script type="application/ld+json" set:html={jsonldStr} />
+</BaseLayout>

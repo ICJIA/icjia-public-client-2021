@@ -1,0 +1,21 @@
+---
+// /grants/programs/ — live-data SSR. Parity with ProgramsAll.vue: static intro
+// + Category/Status toggles + program cards. Logic in ProgramsListing.astro.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ProgramsListing from '../../../components/ProgramsListing.astro';
+import { getAllPrograms } from '../../../lib/data';
+import { setCache } from '../../../lib/cache';
+
+const programs = await getAllPrograms();
+setCache(Astro.response, 'grants');
+---
+
+<BaseLayout
+  title="Funded Programs"
+  description="Federal and state grant programs administered by the Illinois Criminal Justice Information Authority."
+  contextTitle="Funded Programs"
+>
+  <div class="mx-auto max-w-5xl px-4 py-8 md:px-6">
+    <ProgramsListing items={programs} />
+  </div>
+</BaseLayout>

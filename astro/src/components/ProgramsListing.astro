@@ -1,0 +1,160 @@
+---
+// /grants/programs/ — live-data SSR, parity with ProgramsAll.vue: a fixed intro
+// (title + paragraph) + TWO toggle groups (Category: All/Federal/State, Status:
+// Current/Archived; defaults All + Current) + the filtered program list. Each
+// program renders as the legacy BaseCardExpandable (NO summaryOnly → full body):
+// "{CATEGORY} PROGRAM" kicker, an "archived" chip ONLY when archived, title link,
+// body, tags, attachments. Alpine x-for over a JSON island (only the active
+// filter in the DOM); SSR baseline = All + Current (no-JS / SEO / instant paint).
+// Reuses funding.css (.funding scope: vtoggle/fcard/nofo-label/chip/attachment/
+// sub-heading/f-empty) so layout + CSS match prod.
+import '../styles/funding.css';
+import type { ProgramListItem } from '../lib/data';
+
+interface Props {
+  items: ProgramListItem[];
+}
+const { items } = Astro.props;
+
+// SSR baseline = the default filter (category All + status Current).
+const baseline = items.filter((p) => p.status === 'current');
+const listJson = JSON.stringify(items).replace(/</g, '\\u003c');
+---
+
+<div class="funding markdown-body">
+  <div class="page-heading mb-6">
+    <h1 id="icjia-grant-programs">Funded Programs</h1>
+    <p class="mb-8">
+      ICJIA administers a variety of federal grant programs. Most federal awards to states may be
+      spent over a three-year period. Federal funds disbursed during the fiscal year may differ from
+      the total designated to each program.
+    </p>
+  </div>
+
+  <div
+    x-data={`{
+      all: JSON.parse(document.getElementById('programs-data').textContent),
+      category: 'all', status: 'current', ready: false,
+      init(){ this.ready = true; },
+      get list(){ return this.all.filter((p) => (this.category === 'all' || p.category === this.category) && p.status === this.status); },
+      get empty(){ return this.list.length === 0; }
+    }`}
+  >
+    <div class="mb-8 flex flex-wrap items-center gap-x-8 gap-y-4">
+      <div class="vtoggle" role="group" aria-label="Program category">
+        <button type="button" @click="category = 'all'" :aria-pressed="category === 'all'">All Programs</button>
+        <button type="button" @click="category = 'federal'" :aria-pressed="category === 'federal'">Federal</button>
+        <button type="button" @click="category = 'state'" :aria-pressed="category === 'state'">State</button>
+      </div>
+      <div class="vtoggle" role="group" aria-label="Program status">
+        <button type="button" @click="status = 'current'" :aria-pressed="status === 'current'">Current</button>
+        <button type="button" @click="status = 'archived'" :aria-pressed="status === 'archived'">Archived</button>
+      </div>
+    </div>
+
+    <script type="application/json" id="programs-data" set:html={listJson}></script>
+
+    {/* SSR baseline (no-JS / SEO): All + Current */}
+    <div x-show="!ready">
+      {
+        baseline.length === 0 ? (
+          <div class="f-empty">
+            <h3>No programs found.</h3>
+          </div>
+        ) : (
+          baseline.map((p) => (
+            <div class="fcard">
+              <div class="mb-6 flex items-start justify-between gap-4">
+                <span class="nofo-label">{p.catLabel}</span>
+                {p.status === 'archived' && <span class="p-chip-archived">archived</span>}
+              </div>
+              <h2>
+                <a href={p.fullPath}>{p.title}</a>
+              </h2>
+              {p.bodyHtml && <div class="pt-2 pl-3" set:html={p.bodyHtml} />}
+              {p.tags.length > 0 && (
+                <div class="mt-3">
+                  {p.tags.map((t) => (
+                    <span class="chip">{t}</span>
+                  ))}
+                </div>
+              )}
+              {p.attachments.length > 0 && (
+                <div class="mt-4">
+                  <h3 class="sub-heading">Attachments</h3>
+                  <ul class="m-0 list-none p-0">
+                    {p.attachments.map((a) => (
+                      <li class="mt-1">
+                        <a class="attachment" href={a.url} target="_blank" rel="noopener noreferrer">
+                          {a.name}
+                        </a>{' '}
+                        <span class="text-xs text-gray-500">({a.niceSize})</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          ))
+        )
+      }
+    </div>
+
+    {/* Interactive (Alpine x-for over the active filter) */}
+    <div x-show="ready" x-cloak>
+      <template x-if="empty">
+        <div class="f-empty">
+          <h3>No programs found.</h3>
+        </div>
+      </template>
+
+      <template x-for="p in list" :key="p.id">
+        <div class="fcard">
+          <div class="mb-6 flex items-start justify-between gap-4">
+            <span class="nofo-label" x-text="p.catLabel"></span>
+            <template x-if="p.status === 'archived'">
+              <span class="p-chip-archived">archived</span>
+            </template>
+          </div>
+          <h2><a :href="p.fullPath" x-text="p.title"></a></h2>
+          <template x-if="p.bodyHtml">
+            <div class="pt-2 pl-3" x-html="p.bodyHtml"></div>
+          </template>
+          <template x-if="p.tags.length">
+            <div class="mt-3">
+              <template x-for="t in p.tags" :key="t"><span class="chip" x-text="t"></span></template>
+            </div>
+          </template>
+          <template x-if="p.attachments.length">
+            <div class="mt-4">
+              <h3 class="sub-heading">Attachments</h3>
+              <ul class="m-0 list-none p-0">
+                <template x-for="a in p.attachments" :key="a.url">
+                  <li class="mt-1">
+                    <a class="attachment" :href="a.url" target="_blank" rel="noopener noreferrer" x-text="a.name"></a>
+                    <span class="text-xs text-gray-500">(<span x-text="a.niceSize"></span>)</span>
+                  </li>
+                </template>
+              </ul>
+            </div>
+          </template>
+        </div>
+      </template>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  /* Legacy BaseCardExpandable archived chip: black pill, white text. */
+  .funding .p-chip-archived {
+    display: inline-block;
+    background: #000;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 4px;
+    text-transform: capitalize;
+    white-space: nowrap;
+  }
+</style>

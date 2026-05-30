@@ -3,6 +3,32 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.23.0] — 2026-05-30 — Grants parity: Funded Programs (list+detail) + grants CMS catch-all
+
+The branch deploy 404'd for ~70 real prod pages under /grants/. Built the missing routes,
+mirroring the existing funding pattern + the about/[slug] catch-all (so layout/CSS match prod).
+
+### Added — /grants/programs/ (Funded Programs) + /grants/programs/<slug>/ (65 details)
+- `graphql/grants.js`: ported `GET_ALL_PROGRAMS_QUERY` + `GET_SINGLE_PROGRAM_QUERY` from legacy.
+- `lib/data.ts`: `getAllPrograms()` (title asc) + `getProgram(slug)` mirroring getFunding/getGrant
+  (bodyHtml via renderToHtml, shaped attachments, related, flattened tags). Live data: 65
+  programs, status current|archived, category federal|state.
+- `components/ProgramsListing.astro`: ports ProgramsAll.vue — `<h1 id="icjia-grant-programs">Funded
+  Programs</h1>` + intro + TWO toggle groups (Category All/Federal/State × Status Current/Archived,
+  default All+Current), SSR current-baseline + Alpine x-for via an id'd JSON island (not the
+  this.$el antipattern), reusing funding.css card/chip/attachment classes.
+- `pages/grants/programs/index.astro` + `[slug].astro` mirror the funding pages' markup/classes;
+  detail emits GovernmentService JSON-LD.
+- **Parity fix:** dropped the `grants` relation a build agent had added to the single query —
+  legacy queries POSTS only, so "Related Web Content" is News-only on prod (no Funding links).
+
+### Added — /grants/<slug>/ CMS-page catch-all
+- `pages/grants/[slug].astro` mirrors `about/[slug].astro` (BasePage renderer) with a RESERVED
+  denylist (funding, programs, fsgu-home, fsgu-staff). Resolves the 404s for /grants/training/,
+  /grants/technical-assistance/, /grants/required-forms/, /grants/funded-programs-map/.
+- `/grants/fsgu-home/` remains an intentional 404 — no CMS page with that slug exists; legacy
+  404s there too (verified). Unchanged.
+
 ## [0.22.0] — 2026-05-30 — Phase 4c SEO completion: per-type JSON-LD + 1200×630 OG image
 
 Closes the metapeek findings from the 0.21.0 deploy (home A/92, detail B/86 — detail
