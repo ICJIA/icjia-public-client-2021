@@ -3,6 +3,17 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.29.1] — 2026-05-30 — Grants: Required Forms page (the other blank dedicated view)
+
+Same class as 0.29.0, found in a proactive sweep: `/grants/required-forms/` rendered blank
+because the `required-forms` CMS page has an empty body — the legacy `RequiredFormsAll.vue`
+fetches the dedicated **`requiredForms` collection** (21 downloadable forms). Built
+`pages/grants/required-forms.astro` (a searchable table — title → attachment download, type,
+updated date; SSR baseline + Alpine client-side filter) + `getRequiredForms()` (verified via
+vitest: 21 forms) + `graphql/required-forms.js`; RESERVED-listed the slug. Sweep result: the
+other grants catch-all pages (training, technical-assistance, funded-programs-map) have real
+body content and render correctly — required-forms was the last blank grants page.
+
 ## [0.29.0] — 2026-05-30 — Grants: Rules/Regulations/Policies page (fixes blank /grants/policies/)
 
 `/grants/policies/` rendered blank: the grants build had missed the legacy DEDICATED view

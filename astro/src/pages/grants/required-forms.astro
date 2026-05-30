@@ -1,0 +1,139 @@
+---
+// /grants/required-forms/ — live-data SSR, ports the legacy dedicated view
+// RequiredFormsAll.vue (the `requiredForms` collection, NOT the generic CMS page —
+// the `required-forms` page has an empty body). A table of downloadable forms with
+// an Alpine client-side filter (mirrors the legacy v-data-table search). SSR renders
+// all rows as the no-JS / SEO baseline; Alpine filters once hydrated.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getRequiredForms } from '../../lib/data';
+import { setCache } from '../../lib/cache';
+
+const forms = await getRequiredForms();
+const listJson = JSON.stringify(forms).replace(/</g, '\\u003c');
+setCache(Astro.response, 'page');
+---
+
+<BaseLayout
+  title="Required Forms"
+  description="Required grant-administration forms from the Illinois Criminal Justice Information Authority (ICJIA)."
+  contextTitle="Required Forms"
+>
+  <div class="markdown-body mx-auto max-w-5xl px-4 py-8 md:px-6">
+    <div class="page-heading mb-6">
+      <h1>Required Forms</h1>
+    </div>
+
+    <div
+      x-data={`{
+        all: JSON.parse(document.getElementById('rf-data').textContent),
+        q: '',
+        ready: false,
+        init() { this.ready = true; },
+        get list() {
+          const q = this.q.trim().toLowerCase();
+          return q ? this.all.filter((f) => f.title.toLowerCase().includes(q)) : this.all;
+        }
+      }`}
+    >
+      <label for="rf-q" class="sr-only">Filter required forms</label>
+      <input
+        id="rf-q"
+        type="search"
+        x-model="q"
+        placeholder="Filter forms&hellip;"
+        autocomplete="off"
+        class="rf-search"
+      />
+      <script type="application/json" id="rf-data" set:html={listJson}></script>
+
+      <table class="rf-table">
+        <thead>
+          <tr>
+            <th scope="col">Form</th>
+            <th scope="col" class="rf-type">Type</th>
+            <th scope="col" class="rf-date">Updated</th>
+          </tr>
+        </thead>
+        {/* SSR baseline (no-JS / SEO): all rows */}
+        <tbody x-show="!ready">
+          {
+            forms.map((f) => (
+              <tr>
+                <td>
+                  <a href={f.href} target="_blank" rel="noopener noreferrer">{f.title}</a>
+                </td>
+                <td class="rf-type">{f.ext}</td>
+                <td class="rf-date">{f.updatedAlt}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+        {/* Interactive (Alpine filter) */}
+        <tbody x-show="ready" x-cloak>
+          <template x-for="f in list" :key="f.href">
+            <tr>
+              <td>
+                <a :href="f.href" target="_blank" rel="noopener noreferrer" x-text="f.title" />
+              </td>
+              <td class="rf-type" x-text="f.ext" />
+              <td class="rf-date" x-text="f.updatedAlt" />
+            </tr>
+          </template>
+        </tbody>
+      </table>
+      <p x-show="ready && !list.length" x-cloak class="rf-empty">No forms match your filter.</p>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  [x-cloak] {
+    display: none !important;
+  }
+  .rf-search {
+    width: 100%;
+    max-width: 360px;
+    height: 42px;
+    padding: 0 14px;
+    margin-bottom: 18px;
+    font-size: 15px;
+    border: 2px solid #cfd8e3;
+    border-radius: 4px;
+  }
+  .rf-search:focus {
+    outline: none;
+    border-color: #1565c0;
+    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.2);
+  }
+  .rf-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    border: 1px solid #eee;
+    background: #fff;
+  }
+  .rf-table th {
+    text-align: left;
+    background: #f6f8fa;
+    padding: 10px 12px;
+    border-bottom: 2px solid #e3e8ee;
+    font-weight: 700;
+  }
+  .rf-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+  }
+  .rf-type {
+    white-space: nowrap;
+    color: #555;
+  }
+  .rf-date {
+    white-space: nowrap;
+    color: #555;
+  }
+  .rf-empty {
+    margin-top: 16px;
+    color: #555;
+  }
+</style>

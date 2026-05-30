@@ -32,6 +32,7 @@ import {
   GET_ALL_POLICIES_QUERY,
   GET_ALL_REGULATIONS_QUERY,
 } from "../graphql/rules-regs-policies.js";
+import { GET_ALL_REQUIRED_FORMS_QUERY } from "../graphql/required-forms.js";
 import {
   GET_ALL_JOBS_QUERY,
   GET_SINGLE_JOB_QUERY,
@@ -826,6 +827,33 @@ export async function getRulesRegsPolicies(): Promise<RulesRegsPolicies> {
     })
     .sort(byTitle);
   return { rules, regulations, policies };
+}
+
+// ── Required Forms (/grants/required-forms/) ──────────────────────────────────
+// The `requiredForms` collection (dedicated view; the `required-forms` page itself
+// has an empty body). Each row links to its first attachment for download.
+export interface RequiredFormRow {
+  title: string;
+  /** first attachment's absolute download URL (or '#' if none). */
+  href: string;
+  /** uppercased extension for a small file-type hint (e.g. "PDF", "DOCX"). */
+  ext: string;
+  /** "Updated {date}" alt-formatted date. */
+  updatedAlt: string;
+}
+export async function getRequiredForms(): Promise<RequiredFormRow[]> {
+  const { data } = await runQuery(GET_ALL_REQUIRED_FORMS_QUERY, {}, "no-cache");
+  return (data?.requiredForms ?? [])
+    .map((f: any) => {
+      const att = Array.isArray(f.attachments) ? f.attachments[0] : null;
+      return {
+        title: (f.title || "").trim(),
+        href: (att && strapiUrl(att.url)) || "#",
+        ext: att ? (att.ext || "").replace(/^\./, "").toUpperCase() : "",
+        updatedAlt: dateFormatAlt(f.updated_at),
+      };
+    })
+    .sort((a: RequiredFormRow, b: RequiredFormRow) => a.title.localeCompare(b.title));
 }
 
 export interface GrantDetail {
