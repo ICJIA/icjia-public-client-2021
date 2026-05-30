@@ -14,7 +14,11 @@
 // ported. Server fetches stay fetchPolicy:"no-cache" so the edge is the single
 // intentional cache layer.
 //
-// TTLs are tuned per content type by editorial cadence (see migration plan).
+// TTLs are tuned per content type by editorial cadence; they live in the single
+// source of truth at astro/icjia.config.mjs (see that file). [s-maxage, swr] secs.
+// @ts-expect-error — icjia.config.mjs is plain JS (shared by the raw Netlify fn).
+import { cacheTTL } from "../../icjia.config.mjs";
+
 type Kind =
   | "home"
   | "news"
@@ -27,19 +31,7 @@ type Kind =
   | "page"
   | "hub";
 
-// [s-maxage, stale-while-revalidate] in seconds.
-const TTL: Record<Kind, [number, number]> = {
-  home: [60, 300],
-  news: [60, 300],
-  meetings: [120, 600],
-  grants: [120, 600],
-  events: [120, 600],
-  jobs: [300, 900],
-  publications: [300, 1800],
-  bios: [600, 3600],
-  page: [600, 3600],
-  hub: [120, 600],
-};
+const TTL = cacheTTL as Record<Kind, [number, number]>;
 
 export function setCache(response: Response, kind: Kind): void {
   const [s, swr] = TTL[kind];

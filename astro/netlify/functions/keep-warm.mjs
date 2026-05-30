@@ -2,7 +2,7 @@
 // (single, shared) Astro SSR lambda + the Netlify Durable Cache stay warm. A
 // real visitor landing on home/research then hits a warm function (~150ms TTFB)
 // instead of a cold start (~1s). Cadence + routes are configurable in
-// ../keep-warm.config.mjs.
+// astro/icjia.config.mjs.
 //
 // ── SAFETY MODEL (defense-in-depth — this could be costly if it ran away) ─────
 // THREAT: anything that causes this to invoke the SSR function far more than the
@@ -23,16 +23,20 @@
 //      poisoned base/route can't turn this into an SSRF/outbound amplifier.
 //   L5 HARD TIMEOUT + NO RETRY — each ping has an AbortController deadline and
 //      never retries, so a slow/hanging route can't pile up wall-clock cost.
-//   L6 GLOBAL KILL SWITCH — env KEEP_WARM_DISABLED=1 disables it instantly
-//      without a redeploy (set in the Netlify UI).
+//   L6 GLOBAL KILL SWITCHES — keepWarm.enabled:false in icjia.config.mjs (commit
+//      → ~1min deploy) OR env KEEP_WARM_DISABLED=1 in the Netlify UI (no redeploy)
+//      OR disable the scheduled function in the Netlify UI (instant).
 import { schedule } from "@netlify/functions";
 import { getStore } from "@netlify/blobs";
-import { ROUTES } from "../keep-warm.config.mjs";
+import { keepWarm } from "../../icjia.config.mjs";
+
+const ROUTES = keepWarm.routes;
 
 // CRON SCHEDULE — must be a STRING LITERAL right here. Netlify's function bundler
 // statically parses the schedule() call at build time, so the cron CANNOT come
 // from an imported variable (that fails the build with "schedule imported but
-// unused"). To change cadence, edit this literal. (ROUTES stays in the config.)
+// unused"). To change cadence, edit this literal. (Routes + the enabled kill
+// switch live in astro/icjia.config.mjs.)
 const CRON = "*/5 * * * *"; // every 5 minutes
 
 // Hard ceilings — independent of the config, so config edits can't breach them.
@@ -68,8 +72,11 @@ function safeRoutes() {
 }
 
 async function runKeepWarm(event) {
-  // L6: kill switch (no redeploy needed).
-  if (process.env.KEEP_WARM_DISABLED === "1") {
+  // KILL SWITCHES (two independent levels):
+  //   • config flag — keepWarm.enabled:false in icjia.config.mjs (commit → ~1min deploy)
+  //   • env var     — KEEP_WARM_DISABLED=1 in the Netlify UI (no commit/redeploy)
+  // (A third, instant level: disable the scheduled function in the Netlify UI.)
+  if (keepWarm.enabled === false || process.env.KEEP_WARM_DISABLED === "1") {
     return { statusCode: 200, body: "disabled" };
   }
 

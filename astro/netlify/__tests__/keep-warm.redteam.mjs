@@ -33,8 +33,9 @@ async function fakeFetch(url) {
   return { status:200, arrayBuffer: async()=>new ArrayBuffer(0) };
 }
 let HOSTS = new Set();
-async function handler(event, env, store, ROUTES) {
-  if (env.KEEP_WARM_DISABLED==="1") return {statusCode:200, body:"disabled"};
+async function handler(event, env, store, ROUTES, cfgEnabled=true) {
+  // mirrors keep-warm.mjs: config flag OR env var disables (two kill switches)
+  if (cfgEnabled===false || env.KEEP_WARM_DISABLED==="1") return {statusCode:200, body:"disabled"};
   const method=event&&event.httpMethod;
   const isScheduled=!method||(event&&event.source==="aws.events")||event?.headers?.["x-nf-event"]==="schedule";
   if (method && !isScheduled) return {statusCode:403, body:"forbidden"};
@@ -88,10 +89,13 @@ PINGS=0; HOSTS=new Set();
 await handler({}, {URL:"https://feat-astro-migration--icjia-public.netlify.app"}, makeStore(), GOOD);
 check("S6 fetches only the deploy origin", HOSTS.size===1 && [...HOSTS][0].endsWith("netlify.app"), `(hosts=${[...HOSTS].join(",")})`);
 
-// SCENARIO 7 (L6) — kill switch
+// SCENARIO 7 (L6) — kill switches (env var + config flag, two independent levels)
 PINGS=0;
 const r7=await handler({}, {...ENV, KEEP_WARM_DISABLED:"1"}, makeStore(), GOOD);
-check("S7 kill switch disables all pings", PINGS===0 && r7.body==="disabled", `(pings=${PINGS})`);
+check("S7a env kill switch disables all pings", PINGS===0 && r7.body==="disabled", `(pings=${PINGS})`);
+PINGS=0;
+const r7b=await handler({}, ENV, makeStore(), GOOD, /*cfgEnabled*/false);
+check("S7b config flag (keepWarm.enabled:false) disables all pings", PINGS===0 && r7b.body==="disabled", `(pings=${PINGS})`);
 
 // SCENARIO 8 (L2 worst-case math) — sustained attack for 1 HOUR at 1 req/sec
 PINGS=0; const s8=makeStore(); let realNow=Date.now();

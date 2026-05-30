@@ -42,6 +42,20 @@ Multi-agent review (7 section reviewers + synthesis) found NO P0s; working the P
   config → capped at 12; injection (`//evil.com`, `https://…`) → rejected, only same-origin
   contacted; kill switch → 0 pings; **1 req/sec for 1 hour (3,600 invocations) → ≤90 pings**.
 
+### Added — central config `astro/icjia.config.mjs` + keep-warm kill switch
+- **Single source of truth** for the Astro app's tunables: `site` constants (prod origin +
+  Strapi/hub hosts), `keepWarm` ({enabled, routes}), `cacheTTL` (per content type), `monitor`
+  thresholds. `cache.ts` + the keep-warm function now import from it.
+- **`.mjs` (not `.ts`) on purpose** — the raw Netlify keep-warm function runs uncompiled and
+  can't import `.ts`; JSDoc gives types without a build step. Lives in `astro/` (inside the
+  deploy base dir) so the function bundler includes it (a repo-root file would be above
+  `base="astro"` and may not bundle). The keep-warm CRON stays a literal in the function
+  (Netlify bundler requirement) — the one thing that can't centralize.
+- **Keep-warm kill switch (3 independent levels):** `keepWarm.enabled:false` in the config
+  (commit → ~1min deploy) · env `KEEP_WARM_DISABLED=1` in the Netlify UI (no redeploy) ·
+  disable the scheduled function in the Netlify UI (instant). Red-team audit now 11/11
+  (added the config-flag kill-switch scenario). Removed the old `netlify/keep-warm.config.mjs`.
+
 ### Fixed — keep-warm deploy failure + CMS-page TOC/splash polish
 - **Netlify build failure:** the bundler statically parses the `schedule()` call, so the
   cron must be a **string literal in the function** + the export must be
