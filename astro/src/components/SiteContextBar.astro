@@ -17,9 +17,18 @@ const pathname = Astro.url.pathname;
 const norm = (p: string) => (p.endsWith('/') ? p : p + '/');
 const seg = pathname.split('/').filter(Boolean)[0];
 const prefix = seg ? `/${seg}/` : null;
-const menu = prefix
-  ? (contextMenus as any[]).find((m) => m.location === 'top' && m.pathPrefix === prefix)
-  : null;
+// Section-less pages that belong to a section's context bar (their URL lives OUTSIDE
+// that section's path prefix). /forms/* is the case today: grant-status is owned by the
+// Grants section (and is one of its tabs → auto-highlights); lap-request shows the About
+// bar. Add a mapping here if another off-prefix page needs a section bar.
+const SECTION_OVERRIDE: Record<string, string> = {
+  '/forms/grant-status/': '/grants/',
+  '/forms/lap-request/': '/about/',
+};
+const top = (contextMenus as any[]).filter((m) => m.location === 'top');
+const matchedPrefix = prefix && top.some((m) => m.pathPrefix === prefix) ? prefix : null;
+const effectivePrefix = matchedPrefix || SECTION_OVERRIDE[norm(pathname)] || null;
+const menu = effectivePrefix ? top.find((m) => m.pathPrefix === effectivePrefix) : null;
 
 // Active tab = the item whose path is the LONGEST prefix of the current URL, so
 // detail pages (e.g. /news/meetings/<slug>/) keep their section tab active.

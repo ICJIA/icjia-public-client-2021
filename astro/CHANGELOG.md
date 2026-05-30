@@ -3,6 +3,14 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.33.1] — 2026-05-30 — Forms context bar (sensible per-form section nav)
+
+Resolves the [0.33.0] follow-up. `SiteContextBar` gains a small `SECTION_OVERRIDE` map for
+section-less pages: `/forms/grant-status/` shows the **Grants** section bar (it's already a
+grants tab → auto-highlights; breadcrumb "ICJIA » Federal and State Grants Unit » Grant
+Status Request"); `/forms/lap-request/` shows the **About** section bar ("ICJIA » ICJIA
+Overview » Language Access Request"). Verified in the prerendered HTML.
+
 ## [0.33.0] — 2026-05-30 — Forms section (Grant Status + Language Access) — closes the /forms/ 404
 
 Ports the legacy `Forms/GrantStatus.vue` + `Forms/LapRequest.vue`. `/forms/grant-status/`
