@@ -14,11 +14,13 @@ meter it watches).
 - **Bandwidth IS queryable** via an *undocumented* endpoint
   `GET /api/v1/accounts/<team_slug>/bandwidth` → `{ used, included, additional,
   period_start_date, period_end_date }` (bytes; limits are GiB = 2³⁰).
-- **Build minutes + function invocations are NOT reliably exposed** by the API. Netlify
-  support's own guidance is "inspect the network calls the dashboard UI makes." The
-  monitor probes the sibling paths and reports them **honestly as "unavailable"** rather
-  than inventing a number — for those, glance at the dashboard (**Billing → Account usage
-  insights**). The monitor's email says exactly this.
+- **Build minutes ARE queryable** (confirmed live 2026-05-30) via
+  `GET /api/v1/<team_slug>/builds/status` → `{ minutes: { current, included_minutes,
+  included_minutes_with_packs, period_end_date, … } }`. Note the **bare-slug** path
+  (`/<slug>/builds/status`); the `/accounts/<slug>/builds/status` form 404s.
+- **Function invocations are NOT exposed** by the API. The monitor reports it **honestly as
+  "unavailable"** (rather than inventing a number) and points to the dashboard
+  (**Billing → Account usage insights**). The monitor's email says exactly this.
 
 Because it depends on an undocumented endpoint, an API failure is treated as **🚨 CRITICAL**
 (emails you to check manually) — a broken monitor is never allowed to look healthy.
@@ -27,7 +29,7 @@ Because it depends on an undocumented endpoint, an API failure is treated as **�
 
 Per metric: `✅` (<70%), `⚠️` (≥70%), `🚨` (≥90% or API error), `❓` (not exposed by the API).
 - **Bandwidth** — used / included (GiB) + % + period reset date.
-- **Build minutes** — if the API exposes it on your plan; else `❓ unavailable`.
+- **Build minutes** — used / included (e.g. 419 / 25,000 on Pro) + % + period reset.
 - **Function invocations** — `❓ unavailable` (with a note: keep-warm worst case ≈52K/mo,
   Pro includes 125K).
 

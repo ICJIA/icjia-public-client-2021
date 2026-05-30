@@ -92,19 +92,35 @@ async function collect() {
 
   // 2) Build minutes — try the (undocumented, often-absent) sibling path; do NOT
   //    fabricate if it 404s. Report availability honestly.
-  for (const [label, path] of [
-    ["Build minutes", `/accounts/${SLUG}/builds/status`],
-    ["Build minutes", `/${SLUG}/builds/status`],
-  ]) {
+  // Verified live shape (GET /<slug>/builds/status):
+  //   { minutes: { current, previous, included_minutes, included_minutes_with_packs,
+  //                period_start_date, period_end_date } }
+  // (the /accounts/<slug>/builds/status form 404s — use the bare-slug path.)
+  for (const path of [`/${SLUG}/builds/status`, `/accounts/${SLUG}/builds/status`]) {
     try {
       const d = await nf(path);
-      const used = d.minutes_used ?? d.used ?? null;
-      const included = d.included_minutes ?? d.included ?? null;
+      const m = d.minutes || {};
+      const used = m.current ?? d.minutes_used ?? null;
+      const included = m.included_minutes_with_packs ?? m.included_minutes ?? null;
       if (used != null && included != null) {
         const p = pct(used, included);
-        out.push({ label, available: true, detail: `${used} of ${included} min`, p, badge: badge(p), note: "" });
+        out.push({
+          label: "Build minutes",
+          available: true,
+          detail: `${used} of ${included} min`,
+          p,
+          badge: badge(p),
+          note: m.period_end_date ? `period resets ${String(m.period_end_date).slice(0, 10)}` : "",
+        });
       } else {
-        out.push({ label, available: true, detail: JSON.stringify(d).slice(0, 100), p: 0, badge: "ℹ️", note: "shape differs — review fields" });
+        out.push({
+          label: "Build minutes",
+          available: true,
+          detail: JSON.stringify(d).slice(0, 100),
+          p: 0,
+          badge: "ℹ️",
+          note: "shape differs — review fields",
+        });
       }
       break;
     } catch {
