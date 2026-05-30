@@ -19,6 +19,27 @@
  * Phase 1: fonts + brand colors + Vuetify-aligned breakpoints. Component-level
  * tokens (elevation, exact type scale) are added as chrome is built + VR'd.
  */
+/* Native cross-document view transitions — a VERY subtle crossfade between real
+ * page navigations. Pure CSS: NO ClientRouter / SPA / JS, so every page is still
+ * a fresh load and all Alpine interactivity (nav, lists, overlay, progress bar)
+ * works exactly as-is. Browsers without support just navigate normally (no-op).
+ * Kept fast (120ms) + opacity-only so it softens the jump without feeling slow;
+ * disabled entirely under reduced-motion. */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 120ms;
+  animation-timing-function: ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+
 @theme inline {
   /* Brand (Vuetify themes.light.primary) + navy header surface. */
   --color-primary: #1565c0;

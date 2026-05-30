@@ -59,6 +59,19 @@ Multi-agent review (7 section reviewers + synthesis) found NO P0s; working the P
   Lighthouse a11y stays 100). Only 1 of 33 pages does this; demoting in-body h1→h2 would
   change heading sizes vs prod, so it's left for a deliberate content/VR pass.
 
+### Added — subtle cross-document view transitions (softer page navigation)
+- Native CSS `@view-transition { navigation: auto }` (global.css) — a **very subtle 120ms
+  opacity crossfade** between real page navigations, so the site feels softer/less jumpy.
+- **Deliberately NOT `<ClientRouter/>`** (Astro's SPA transitions): this site is entirely
+  Alpine-driven (nav, context bar, x-for lists, loading overlay, nav progress bar), and
+  ClientRouter would require Alpine to re-init on every DOM swap + `data-astro-rerun` on all
+  inline scripts — high risk to the verified interactivity. The CSS-only cross-document
+  approach keeps every page a **fresh load** (no SPA, no JS), so all interactivity works
+  exactly as-is; browsers without support just navigate normally (graceful no-op).
+- `prefers-reduced-motion` disables it. Verified in-browser: transition registered, Alpine
+  re-initializes cleanly on the destination (meetings 285 rows, table ready), chrome
+  (loader + progress bar) coexists, 0 real console errors.
+
 ### Fixed — keep-warm now actually keeps the EDGE warm (SWR ≫ ping interval)
 - Verified the keep-warm scheduled fn IS registered on the branch deploy
   (`function_schedules: [{cron:"*/5 * * * *", name:"keep-warm"}]`). BUT the warmed
