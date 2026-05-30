@@ -8,8 +8,10 @@
 // sidebar, and clickthrough boxes — all via the shared BasePage.astro renderer.
 // contextTitle = page.title (legacy BasePage emits the CMS title).
 //
-// EXCLUDED slugs (own dedicated, non-BasePage views; other migration agents):
-//   - funding, programs, fsgu-home, fsgu-staff
+// EXCLUDED slugs (own dedicated, non-BasePage views) + 'policies' (an about-category
+// CMS page with an empty body that must NOT render here — /grants/policies/ 301s to
+// rules-regs-policies via _redirects; this is the belt to that suspenders):
+//   - funding, programs, fsgu-home, fsgu-staff, rules-regs-policies, policies
 // In Astro, dedicated route files win over [slug]; this denylist is the belt to
 // that suspenders, so we never render another section's data through BasePage.
 //
@@ -26,6 +28,8 @@ const RESERVED = new Set([
   'programs',
   'fsgu-home',
   'fsgu-staff',
+  'rules-regs-policies',
+  'policies',
 ]);
 
 const { slug } = Astro.params;

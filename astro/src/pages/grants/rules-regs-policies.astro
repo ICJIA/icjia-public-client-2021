@@ -1,0 +1,128 @@
+---
+// /grants/rules-regs-policies/ — live-data SSR, ports the legacy dedicated view
+// RulesRegsPoliciesAll.vue (NOT a generic CMS page). Three distinct Strapi
+// collections rendered as three tables: Rules (title → citationURL + citation),
+// Regulations (title → url + url), Policies (title → attachment + Download). The
+// legacy /grants/policies redirects here (see public/_redirects).
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getRulesRegsPolicies } from '../../lib/data';
+import { setCache } from '../../lib/cache';
+
+const { rules, regulations, policies } = await getRulesRegsPolicies();
+setCache(Astro.response, 'page');
+---
+
+<BaseLayout
+  title="Rules, Regulations, and Policies"
+  description="ICJIA administrative rules, federal regulations, and agency policies."
+  contextTitle="Rules"
+>
+  <div class="markdown-body mx-auto max-w-5xl px-4 py-8 md:px-6">
+    <div class="page-heading mb-10">
+      <h1>Rules, Regulations, and Policies</h1>
+    </div>
+
+    <section class="rrp mb-10">
+      <h2 class="rrp-head">Rules</h2>
+      <table class="rrp-table">
+        <tbody>
+          {
+            rules.map((r) => (
+              <tr>
+                <td>
+                  <a href={r.href} target="_blank" rel="noopener noreferrer">{r.title}</a>
+                </td>
+                <td>{r.meta}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </section>
+
+    <section class="rrp mb-10">
+      <h2 class="rrp-head">Regulations</h2>
+      <table class="rrp-table">
+        <tbody>
+          {
+            regulations.map((r) => (
+              <tr>
+                <td>
+                  <a href={r.href} target="_blank" rel="noopener noreferrer">{r.title}</a>
+                </td>
+                <td>
+                  <a href={r.href} target="_blank" rel="noopener noreferrer">{r.meta}</a>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </section>
+
+    <section class="rrp mb-10">
+      <h2 class="rrp-head">Policies</h2>
+      <table class="rrp-table">
+        <tbody>
+          {
+            policies.map((p) => (
+              <tr>
+                <td>
+                  <a href={p.href} target="_blank" rel="noopener noreferrer">{p.title}</a>
+                </td>
+                <td class="rrp-dl">
+                  {p.download && (
+                    <a
+                      class="rrp-download"
+                      href={p.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Download ${p.title} (opens in new tab)`}
+                    >
+                      Download
+                    </a>
+                  )}
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  /* Navy section header — ports the legacy inline #0d4474 banner heading. */
+  .rrp-head {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 8px 8px;
+    background: #0d4474;
+    color: #fff;
+    font-weight: 900;
+    font-size: 26px;
+  }
+  .rrp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .rrp-table td {
+    padding: 8px 8px;
+    border-bottom: 1px solid #e8e8e8;
+    vertical-align: top;
+  }
+  .rrp-dl {
+    text-align: center;
+    white-space: nowrap;
+  }
+  .rrp-download {
+    font-weight: 700;
+    color: #1565c0;
+  }
+  .rrp-table tr:last-child td {
+    border-bottom: none;
+  }
+</style>

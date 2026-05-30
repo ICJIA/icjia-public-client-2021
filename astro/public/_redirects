@@ -30,6 +30,10 @@
 
 # Grants landing (legacy /grants → funding)
 /grants                        /grants/funding/                                301
+# Legacy /grants/policies → the Rules, Regulations & Policies page (PoliciesAll2 in
+# the legacy router). The target page now exists (grants/rules-regs-policies.astro).
+/grants/policies/              /grants/rules-regs-policies/                    301
+/grants/policies               /grants/rules-regs-policies/                    301
 
 # External apps / sites (legacy window.location.href redirects to other hosts)
 /spac/                         https://spac.illinois.gov/                      301
@@ -39,6 +43,7 @@
 /adultredeploy/                https://icjia.illinois.gov/adultredeploy/       301
 /ifvcc/                        https://icjia.illinois.gov/ifvcc/               301
 
-# NOTE: /grants/rules-regs-policies/, /grants/training/, /ta/, /gata/:slug→/grants/:slug
-# are intentionally NOT added yet — their Astro target pages don't exist (would 301→404).
-# Add when those grants sub-pages are built (Phase 5 / future).
+# NOTE: /grants/rules-regs-policies/ is now BUILT (the dedicated rules+regs+policies
+# view) and /grants/policies/ redirects to it (above). /grants/training/ and the other
+# grants CMS pages render via the grants/[slug] catch-all. Still deferred: /ta/ and
+# /gata/:slug→/grants/:slug (add if/when those targets are confirmed).

@@ -3,6 +3,23 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.29.0] — 2026-05-30 — Grants: Rules/Regulations/Policies page (fixes blank /grants/policies/)
+
+`/grants/policies/` rendered blank: the grants build had missed the legacy DEDICATED view
+`RulesRegsPoliciesAll.vue` — which is backed by THREE distinct Strapi collections
+(`rules`, `policies`, `regulations`), NOT the generic `pages` collection — and the generic
+`/grants/[slug]` catch-all was wrongly rendering the empty `about`-category `policies` page there.
+
+- Built `pages/grants/rules-regs-policies.astro` (three tables — Rules → citation/citationURL,
+  Regulations → url, Policies → attachment Download) + `getRulesRegsPolicies()` (fetches the 3
+  collections with `Promise.allSettled`, title-sorted, resilient) + `graphql/rules-regs-policies.js`.
+- Added the legacy **301 `/grants/policies` → `/grants/rules-regs-policies`** (`_redirects`) and
+  added `rules-regs-policies` + `policies` to the `grants/[slug]` RESERVED denylist.
+- Known follow-up: the generic catch-alls still resolve any slug via `getPage(slug)` regardless of
+  the page's category (a page can render at a non-canonical `/section/<slug>/`). Systemic
+  category-enforcement is deferred (`getPage` doesn't return `category` yet) — low impact, but
+  logged.
+
 ## [0.28.0] — 2026-05-30 — Phase 5 remediation (audit + parity) + deploy fix
 
 ### Fixed — deploy 500 (revert the runtime half of the 0.27.0 dep bump)

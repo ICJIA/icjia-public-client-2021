@@ -28,6 +28,11 @@ import {
 } from "../graphql/grants.js";
 import { GET_SINGLE_PAGE_QUERY } from "../graphql/page.js";
 import {
+  GET_ALL_RULES_QUERY,
+  GET_ALL_POLICIES_QUERY,
+  GET_ALL_REGULATIONS_QUERY,
+} from "../graphql/rules-regs-policies.js";
+import {
   GET_ALL_JOBS_QUERY,
   GET_SINGLE_JOB_QUERY,
 } from "../graphql/employment.js";
@@ -779,6 +784,48 @@ export async function getFunding(): Promise<FundingListItem[]> {
   return (data?.grants ?? [])
     .map(shapeFundingListItem)
     .sort((a: FundingListItem, b: FundingListItem) => b.endMs - a.endMs);
+}
+
+// ── Rules, Regulations & Policies (/grants/rules-regs-policies/) ──────────────
+// Three distinct Strapi collections (NOT the generic `pages`), each a flat table
+// row, sorted by title (legacy _.orderBy title asc). Resilient: a failed
+// collection degrades to an empty table rather than failing the page.
+export interface RrpRow {
+  title: string;
+  /** link target — citationURL (rules), url (regulations), or attachment file (policies). */
+  href: string;
+  /** secondary cell text — citation (rules) / url (regulations); empty for policies. */
+  meta: string;
+  /** policies render a Download button instead of the meta cell. */
+  download: boolean;
+}
+export interface RulesRegsPolicies {
+  rules: RrpRow[];
+  regulations: RrpRow[];
+  policies: RrpRow[];
+}
+export async function getRulesRegsPolicies(): Promise<RulesRegsPolicies> {
+  const [rulesR, polR, regR] = await Promise.allSettled([
+    runQuery(GET_ALL_RULES_QUERY, {}, "no-cache"),
+    runQuery(GET_ALL_POLICIES_QUERY, {}, "no-cache"),
+    runQuery(GET_ALL_REGULATIONS_QUERY, {}, "no-cache"),
+  ]);
+  const d = (r: PromiseSettledResult<any>) => (r.status === "fulfilled" ? r.value?.data : null);
+  const byTitle = (a: RrpRow, b: RrpRow) => a.title.localeCompare(b.title);
+  const rules: RrpRow[] = (d(rulesR)?.rules ?? [])
+    .map((x: any) => ({ title: x.title, href: x.citationURL || "#", meta: x.citation || "", download: false }))
+    .sort(byTitle);
+  const regulations: RrpRow[] = (d(regR)?.regulations ?? [])
+    .map((x: any) => ({ title: x.title, href: x.url || "#", meta: x.url || "", download: false }))
+    .sort(byTitle);
+  const policies: RrpRow[] = (d(polR)?.policies ?? [])
+    .map((x: any) => {
+      const att = Array.isArray(x.attachments) ? x.attachments[0] : null;
+      const url = att ? strapiUrl(att.url) : null;
+      return { title: x.title, href: url || "#", meta: "", download: !!url };
+    })
+    .sort(byTitle);
+  return { rules, regulations, policies };
 }
 
 export interface GrantDetail {
