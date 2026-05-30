@@ -122,6 +122,11 @@
   base = "astro"
   command = "pnpm build"
   publish = "dist"
+  # User functions (relative to base=astro). The @astrojs/netlify adapter emits
+  # its SSR function internally to .netlify/v1/functions; this dir is for our own
+  # functions (keep-warm.mjs — a scheduled ping that keeps the SSR lambda + edge
+  # cache warm for the highest-entry routes). The two coexist.
+  functions = "netlify/functions"
 
 [context."feat/astro-migration".environment]
   NODE_VERSION = "22"

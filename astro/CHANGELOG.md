@@ -7,6 +7,22 @@ This is the live-data SSR migration tracked on the `feat/astro-migration` branch
 
 Multi-agent review (7 section reviewers + synthesis) found NO P0s; working the P1 list.
 
+### Added — keep-warm scheduled function (cold-start prevention)
+- `netlify/functions/keep-warm.mjs` — a Netlify scheduled function (every 5 min) that
+  pings the highest-entry SSR routes so the (single, shared) Astro SSR lambda + the edge
+  Durable Cache stay warm → real visitors land on a warm function (~150ms) not a cold
+  start (~1s). **Configurable** via `netlify/keep-warm.config.mjs` (SCHEDULE + ROUTES).
+- **Routes chosen from Plausible (verified, 30d = 14.1K sessions):** ResearchHub is the
+  entry page for ~56% of sessions, the homepage ~21% — together **~77% of all entries**.
+  So the warm list is `/` + the `/researchhub/*` family (landing, articles, datasets,
+  apps, hub-overview).
+- **Cost:** all SSR routes share ONE function, so warmth needs *frequency*, not breadth.
+  ~8,640 cron fires/mo × 6 routes ≈ ~52K invocations/mo worst case (cache hits past TTL
+  don't re-invoke) — comfortable under Netlify Pro's 125K included. Raise SCHEDULE or trim
+  ROUTES in the config to cut further. Scoped to the branch context; production untouched.
+- Restores parity with the legacy NProgress + addresses the deferred pre-first-byte gap
+  (which an in-page overlay can't cover) at the source — frequency of cold starts.
+
 ### Added — navigation progress bar (cold-start perceived-speed)
 - Top progress bar (`#nav-progress`, navy) that starts the instant an internal link is
   clicked and creeps toward 90% while the next page's SSR/cold-start response is awaited,
