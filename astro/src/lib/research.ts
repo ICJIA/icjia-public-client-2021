@@ -282,6 +282,8 @@ export interface ResearchArticleDetail {
   tags: string[];
   external?: string;
   citation?: string;
+  /** DOI URL appended to the citation InfoBlock (legacy article.doi). */
+  doi?: string;
   funding?: string;
   /** base64 data-URI (emit in a JSON island / lazy <img>, NOT inline SSR). */
   splash?: string | null;
@@ -317,6 +319,7 @@ export async function getArticle(slug: string): Promise<ResearchArticleDetail | 
     tags: Array.isArray(a.tags) ? a.tags : [],
     external: a.external,
     citation: a.citation,
+    doi: a.doi,
     funding: a.funding,
     splash: a.splash || null,
     thumbnail: a.thumbnail || null,

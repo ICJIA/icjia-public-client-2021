@@ -178,13 +178,21 @@ if (article.authors) jsonLd.author = article.authors;
         }
         {
           article.citation && (
-            /* citation is HTML in the legacy (v-html) */
-            <InfoBlock title="Suggested citation" html={article.citation} />
+            /* citation is HTML (v-html in legacy); append the DOI link when present,
+               matching legacy ArticleView.vue (a[href=doi] target=_blank rel=noreferrer). */
+            <InfoBlock
+              title="Suggested citation"
+              html={
+                article.doi
+                  ? `${article.citation} <a href="${article.doi}" target="_blank" rel="noreferrer">${article.doi}</a>`
+                  : article.citation
+              }
+            />
           )
         }
         {/* FLAG: "About the author(s)" + "Related contents" InfoBlocks omitted —
             research.ts ResearchArticleDetail provides neither author descriptions
-            nor related apps/datasets (foundation file, not editable here). */}
+            nor related apps/datasets. (DOI link now restored on the citation block.) */}
       </div>
     </div>
   </div>

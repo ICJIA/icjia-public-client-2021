@@ -116,6 +116,7 @@ const GET_HUB_SINGLE_ARTICLE_QUERY = (slug) => ignoredGqlTag`
       splash
       thumbnail
       citation
+      doi
       funding
     }
   }
