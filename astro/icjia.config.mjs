@@ -31,19 +31,66 @@ export const site = {
  * KILL SWITCH: set `enabled: false`, commit → ~1 min auto-deploy stops the pings.
  *   (Faster options: env var KEEP_WARM_DISABLED=1 in the Netlify UI = no commit;
  *    or disable the scheduled function in the Netlify UI = instant, no deploy.)
- * Routes: the highest-entry SSR routes (Plausible: homepage ~21% + /researchhub/*
- * ~56% = ~77% of entries). All SSR routes share ONE function, so warmth needs
- * frequency (the CRON in keep-warm.mjs), not breadth.
+ * Routes (Plausible entry data, 30d): home (top entry by far, ~2.6K) + the
+ * /researchhub/* family dominate entries; we ALSO warm the live list/landing
+ * pages editors and grant-seekers hit — /news/, /news/meetings/, /grants/funding/.
+ * DETAIL pages (individual articles/news/meetings/NOFOs) are intentionally left
+ * COLD — a one-time ~1s render is fine ("folks can wait"). All SSR routes share
+ * ONE function, so warmth needs frequency (the CRON in keep-warm.mjs), not breadth.
  */
 export const keepWarm = {
   enabled: true,
   routes: [
-    "/", // homepage — ~21% of all entries
-    "/researchhub/", // research hub landing (the /researchhub/* family ~56% of entries)
+    "/", // homepage — top entry by far (~2.6K entry visitors/30d)
+    "/researchhub/", // hub landing — the /researchhub/* family dominates entries
     "/researchhub/articles/",
     "/researchhub/datasets/",
     "/researchhub/apps/",
     "/researchhub/hub-overview/",
+    "/news/", // COMMs-facing news list — warmed so editors never hit a cold render post-publish (workflow-critical; raw entry traffic is modest ~81/30d)
+    "/news/meetings/", // meetings list (the 25 most recent) — the section's one important page
+    "/grants/funding/", // live NOFO landing — ~178 entry / 1.3K PV per 30d (outranks /news/)
+  ],
+};
+
+/**
+ * Canonical render-strategy manifest — the single source of truth for which
+ * sections are LIVE (SSR, fresh per request) vs STATIC (prerendered at build,
+ * refreshed by the nightly cron + manual build hook). This documents INTENT; the
+ * actual switch is each route's `export const prerender` literal, which Astro
+ * reads statically at build (it cannot be driven from this object at runtime).
+ * Keep them in sync — a route's flag should match its section's bucket here.
+ *
+ * Rule of thumb: when in doubt, LIVE. A wrongly-static page serves stale content
+ * (editors complain "the site is broken"); a wrongly-live page only costs a bit
+ * of perf. Prerendering a section ALSO removes it from keep-warm entirely —
+ * static files never cold-start, so the warm list only ever needs LIVE landings.
+ *
+ * STATUS — Phase A: only code routes are static (search shell + 404; robots/llms/
+ * sitemap are generated static files in public/). Phase B wires the `static`
+ * sections below to `prerender = true` + getStaticPaths.
+ */
+export const renderStrategy = {
+  // SSR, live at view time (edge-cached; keep-warmed where high-traffic):
+  live: [
+    "/", // home
+    "/news", // + /news/[slug] news items
+    "/news/meetings", // + /news/meetings/[slug] meeting details
+    "/researchhub", // entire hub — changes constantly
+    "/events",
+    "/grants/funding", // NOFOs — must be live
+    "/search/[query]", // search results
+  ],
+  // Prerendered: stable content; a new/changed page appears on the NEXT build:
+  static: [
+    "/about", // about pages
+    "/about/biographies", // staff / bios
+    "/grants/training",
+    "/grants/rules-regs-policies",
+    "/forms", // grant-status + lap-request shells (no live data)
+    "/units",
+    "/search", // search shell (already static)
+    "/404", // (already static)
   ],
 };
 
@@ -61,9 +108,9 @@ export const cacheTTL = {
   // revalidating request; SWR (not s-maxage) is what holds the warm copy. This is
   // why warmed routes get ~150ms TTFB while staying live-enough (≤5 min via pings).
   home: [60, 3600], // warmed — SWR ≫ 300s ping so it never goes cold
-  news: [60, 300],
-  meetings: [120, 600],
-  grants: [120, 600],
+  news: [60, 1800], // warmed (/news/) — SWR bumped ≫ 300s ping (was 300 = the ping interval, too tight)
+  meetings: [120, 1800], // warmed (/news/meetings/) — SWR ≫ 300s ping
+  grants: [120, 1800], // warmed (/grants/funding/) — SWR ≫ 300s ping
   events: [120, 600],
   jobs: [300, 900],
   publications: [300, 1800],
@@ -82,4 +129,4 @@ export const monitor = {
   critPct: 90,
 };
 
-export default { site, keepWarm, cacheTTL, monitor };
+export default { site, keepWarm, renderStrategy, cacheTTL, monitor };

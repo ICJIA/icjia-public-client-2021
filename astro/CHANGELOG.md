@@ -3,6 +3,22 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.31.0] — 2026-05-30 — Phase A (part 1): data-driven keep-warm + render-strategy manifest
+
+Render-strategy work, scoped from a live design discussion (live vs static split).
+Most Phase-A infra already existed (keep-warm.mjs, nightly-rebuild.mjs, 404 + search
+prerendered); this adds the tuning + the canonical manifest.
+
+- **keep-warm**: added `/news/`, `/news/meetings/`, and `/grants/funding/` to
+  `keepWarm.routes` (now 9, ≤ MAX_ROUTES 12), grounded in Plausible entry-page data
+  (30d: home ~2.6K, /grants/funding/ ~178, /news/ ~81). List/landing pages are
+  warmed; detail pages (articles/news/meetings/NOFOs) are intentionally left cold.
+- **cacheTTL**: bumped SWR for the newly-warmed kinds so the edge copy never expires
+  between 5-min pings — news 300→1800, meetings 600→1800, grants 600→1800 (s-maxage
+  unchanged, so content is still fresh within ~1–2 min).
+- **renderStrategy manifest** (`icjia.config.mjs`): the canonical LIVE-vs-STATIC
+  section list. Documents intent; Phase B wires `prerender`/`getStaticPaths` to it.
+
 ## [0.30.2] — 2026-05-30 — Featured news card image fills the card edge-to-edge
 
 `NewsListing` featured card image `object-contain` → `object-cover`: the image now
