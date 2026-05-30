@@ -108,8 +108,32 @@ const canonicalHref = canonical
         }
       </style>
     </noscript>
+    <style is:inline>
+      /* Top navigation progress bar — shown on the CURRENT page the instant an
+         internal link is clicked, so the cold-start/SSR wait for the next page
+         is covered by visible motion (the browser stays on this page until the
+         next response's first byte). Restores the legacy NProgress behavior. */
+      #nav-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        width: 0;
+        background: #1565c0;
+        z-index: 100000;
+        opacity: 0;
+        transition:
+          width 0.2s ease,
+          opacity 0.2s ease;
+        box-shadow: 0 0 8px rgba(21, 101, 192, 0.5);
+      }
+      #nav-progress.on {
+        opacity: 1;
+      }
+    </style>
   </head>
   <body class="flex min-h-screen flex-col">
+    <div id="nav-progress" aria-hidden="true"></div>
     <div id="app-loader" role="status" aria-label="Loading">
       <img src="/icjia-logo.png" alt="" width="90" height="70" />
       <div class="ld-spin" aria-hidden="true"></div>
@@ -137,6 +161,48 @@ const canonicalHref = canonical
         if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', done);
         else done();
         setTimeout(done, 10000); // failsafe — never trap content behind the overlay
+      })();
+    </script>
+    <script is:inline>
+      /* Navigation progress bar: start on an internal-link click (covers the
+         next page's cold-start/SSR wait), creep toward 90% while we wait, then
+         the browser swaps in the new document. */
+      (function () {
+        var bar = document.getElementById('nav-progress');
+        if (!bar) return;
+        var timer = null;
+        function start() {
+          if (timer) return; // already navigating
+          var p = 8;
+          bar.classList.add('on');
+          bar.style.width = p + '%';
+          timer = setInterval(function () {
+            p += (90 - p) * 0.12; // ease toward 90%, never reach it until load
+            bar.style.width = p.toFixed(1) + '%';
+          }, 200);
+        }
+        function reset() {
+          if (timer) { clearInterval(timer); timer = null; }
+          bar.classList.remove('on');
+          bar.style.width = '0';
+        }
+        document.addEventListener('click', function (e) {
+          if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+          var a = e.target && e.target.closest ? e.target.closest('a') : null;
+          if (!a) return;
+          var href = a.getAttribute('href');
+          if (!href || href.charAt(0) === '#') return;
+          if (a.target && a.target !== '_self') return;
+          if (a.hasAttribute('download')) return;
+          var url;
+          try { url = new URL(a.href, location.href); } catch (_e) { return; }
+          if (url.origin !== location.origin) return; // external → browser handles it
+          if (url.pathname === location.pathname && url.search === location.search) return; // same page / hash
+          start();
+        }, true);
+        // bfcache restore (back/forward) → page is shown again, clear any bar.
+        window.addEventListener('pageshow', reset);
+        window.addEventListener('pagehide', reset);
       })();
     </script>
   </body>

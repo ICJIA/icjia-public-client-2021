@@ -7,6 +7,15 @@ This is the live-data SSR migration tracked on the `feat/astro-migration` branch
 
 Multi-agent review (7 section reviewers + synthesis) found NO P0s; working the P1 list.
 
+### Added — navigation progress bar (cold-start perceived-speed)
+- Top progress bar (`#nav-progress`, navy) that starts the instant an internal link is
+  clicked and creeps toward 90% while the next page's SSR/cold-start response is awaited,
+  then the new document swaps in. Covers the ~1s cold-lambda wait with visible motion on
+  the page the user is leaving; restores the legacy NProgress behavior. Correctly skips
+  external links, new-tab/modified clicks, downloads, hash-only, and same-page links;
+  resets on bfcache restore. (The pre-first-byte window of a true cold start can't show an
+  in-page indicator — no HTML yet — but this + the Durable Cache cover the navigation case.)
+
 ### Perf (the two sub-95 routes → fixed)
 - **`/researchhub/apps/` (was perf 62):** the ~1.67MB of base64 app images was shipped in
   the JSON island. Moved to a lazy-loaded endpoint (`/api/hub-app-images.json`, edge-cached
