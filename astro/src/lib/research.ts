@@ -17,6 +17,27 @@
 // @ts-expect-error — gql-client.js is plain JS (ported verbatim)
 import { runQuery } from "./gql-client.js";
 import { renderToHtml } from "./markdown.js";
+
+// Build-time hub-image manifest: the set of "<id>-<attr>" keys that have a real
+// extracted file under /hub-images/ (written by scripts/generate-hub-images.mjs
+// at prebuild). Loaded once. If a record's image IS stored, cards reference the
+// same-origin file (fast, cached, no base64 in the response); if NOT (e.g. an
+// article published AFTER the last build), the data layer keeps the base64 so the
+// card still shows an image — "only fetch/use base64 if not stored", live-safe.
+// Import is static + optional: missing manifest (first build) → empty set.
+let HUB_IMG_MANIFEST: Record<string, string> = {};
+try {
+  const m = await import("../../public/hub-images-manifest.json", { with: { type: "json" } });
+  HUB_IMG_MANIFEST = (m.default as Record<string, string>) || {};
+} catch {
+  HUB_IMG_MANIFEST = {};
+}
+/** Stored same-origin path for a hub image if extracted at build, else null.
+ *  Uses the manifest's exact filename (correct extension — jpeg/png vary). */
+export function hubImagePath(id: string, attr: "splash" | "thumbnail" | "image"): string | null {
+  const file = HUB_IMG_MANIFEST[`${id}-${attr}`];
+  return file ? `/hub-images/${file}` : null;
+}
 import {
   GET_ARTICLE_COUNT_QUERY,
   GET_ARTICLE_GROUP_QUERY,
@@ -107,8 +128,8 @@ async function hubQuery(query: string, variables?: any): Promise<any | null> {
 
 // Home-strip queries (limit 3 each), ported from src/services/ResearchHub.js.
 // Only the fields the card renders are selected (keeps the JSON lean).
-const ARTICLES_Q = `{ articles(sort: "date:desc", limit: 3, where: { status: "published", hideFromBanner_ne: true }) { title slug splash abstract authors date } }`;
-const APPS_Q = `{ apps(sort: "date:desc", limit: 3, where: { status: "published" }) { title slug image description date } }`;
+const ARTICLES_Q = `{ articles(sort: "date:desc", limit: 3, where: { status: "published", hideFromBanner_ne: true }) { id title slug splash abstract authors date } }`;
+const APPS_Q = `{ apps(sort: "date:desc", limit: 3, where: { status: "published" }) { id title slug image description date } }`;
 const DATASETS_Q = `{ datasets(sort: "date:desc", limit: 3, where: { status: "published" }) { title slug description date } }`;
 
 export interface ResearchCard {
@@ -135,6 +156,9 @@ export async function getHomeResearch(): Promise<HomeResearchData> {
     hubQuery(DATASETS_Q),
   ]);
 
+  // img: prefer the build-time-extracted same-origin file (no base64 in the
+  // response → big payload/latency win); fall back to the live base64 ONLY when
+  // the record wasn't in the last build (a new post) — "use base64 if not stored".
   const articles: ResearchCard[] = (art?.articles ?? []).map((a: any) => ({
     title: a.title,
     fullPath: `/researchhub/articles/${a.slug}/`,
@@ -142,7 +166,7 @@ export async function getHomeResearch(): Promise<HomeResearchData> {
     isNew: isNewResearch(a.date),
     authors: joinAuthors(a.authors),
     teaser: truncateBySentence(a.abstract, 2),
-    img: a.splash || null,
+    img: hubImagePath(String(a.id), "thumbnail") || hubImagePath(String(a.id), "splash") || a.splash || null,
   }));
 
   const apps: ResearchCard[] = (app?.apps ?? []).map((a: any) => ({
@@ -151,7 +175,7 @@ export async function getHomeResearch(): Promise<HomeResearchData> {
     dateLabel: formatResearchDate(a.date),
     isNew: isNewResearch(a.date),
     teaser: truncateBySentence(a.description, 2),
-    img: a.image || null,
+    img: hubImagePath(String(a.id), "image") || a.image || null,
   }));
 
   const datasets: ResearchCard[] = (ds?.datasets ?? []).map((d: any) => ({
@@ -253,7 +277,12 @@ function shapeArticleListItem(a: any): ResearchArticleListItem {
     isNew: isNewResearch(a.date),
     categories: categoriesArray(a.categories),
     tags: Array.isArray(a.tags) ? a.tags : [],
-    imagePath: `https://icjia.illinois.gov/images/${String(a.id)}-splash.jpeg`,
+    // Prefer the build-time-extracted same-origin file; if this article wasn't in
+    // the last build (new post) fall back to the prod convention URL. Both hide on
+    // error (not every article has an image). Same-origin is faster + cutover-safe.
+    imagePath:
+      hubImagePath(String(a.id), "splash") ||
+      `https://icjia.illinois.gov/images/${String(a.id)}-splash.jpeg`,
   };
 }
 
@@ -423,11 +452,14 @@ export interface ResearchAppListItem {
   isNew: boolean;
   categories: string[];
   tags: string[];
-  /** base64 data-URI (emit in a JSON island / lazy <img>, NOT inline SSR). */
+  /** Same-origin extracted file path when stored at build (preferred). */
+  imagePath?: string | null;
+  /** base64 data-URI fallback (only when imagePath is null — new post). */
   image?: string | null;
   contributors?: any;
 }
 function shapeAppListItem(a: any): ResearchAppListItem {
+  const imagePath = hubImagePath(String(a.id), "image");
   return {
     id: String(a.id),
     title: a.title,
@@ -440,7 +472,9 @@ function shapeAppListItem(a: any): ResearchAppListItem {
     isNew: isNewResearch(a.date),
     categories: categoriesArray(a.categories),
     tags: Array.isArray(a.tags) ? a.tags : [],
-    image: a.image || null,
+    imagePath: imagePath || null,
+    // Drop heavy base64 when we have a file path (keeps the island tiny).
+    image: imagePath ? null : a.image || null,
     contributors: a.contributors,
   };
 }
@@ -485,7 +519,10 @@ export interface HubBannerArticle {
   authors: string;
   date?: string;
   dateLabel: string;
-  /** base64 data-URI (emit in a JSON island / lazy <img>, NOT inline SSR). */
+  /** Same-origin extracted file path when stored at build (preferred — tiny URL,
+   *  cached, no base64 in the island). Null for records added after the last build. */
+  imgPath?: string | null;
+  /** base64 data-URI fallback (only used when imgPath is null — new post). */
   splash?: string | null;
   thumbnail?: string | null;
 }
@@ -497,16 +534,24 @@ export async function getHubBannerArticles(limit = 5): Promise<HubBannerArticle[
     "no-cache",
     HUB_GRAPHQL,
   );
-  return (data?.articles ?? []).map((a: any) => ({
-    id: String(a.id),
-    title: a.title,
-    slug: a.slug,
-    fullPath: `/researchhub/articles/${a.slug}/`,
-    abstract: a.abstract,
-    authors: joinAuthors(a.authors),
-    date: a.date,
-    dateLabel: formatResearchDate(a.date),
-    splash: a.splash || null,
-    thumbnail: a.thumbnail || null,
-  }));
+  return (data?.articles ?? []).map((a: any) => {
+    const id = String(a.id);
+    // Prefer the stored thumbnail (the carousel used the lighter thumbnail), then
+    // stored splash; only fall back to base64 when neither was extracted (new post).
+    const imgPath = hubImagePath(id, "thumbnail") || hubImagePath(id, "splash");
+    return {
+      id,
+      title: a.title,
+      slug: a.slug,
+      fullPath: `/researchhub/articles/${a.slug}/`,
+      abstract: a.abstract,
+      authors: joinAuthors(a.authors),
+      date: a.date,
+      dateLabel: formatResearchDate(a.date),
+      imgPath: imgPath || null,
+      // Drop the heavy base64 when we have a file path (keeps the island tiny).
+      splash: imgPath ? null : a.splash || null,
+      thumbnail: imgPath ? null : a.thumbnail || null,
+    };
+  });
 }

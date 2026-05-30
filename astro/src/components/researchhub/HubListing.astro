@@ -61,14 +61,17 @@ const total = items.length;
 // /api/hub-app-images.json (see the apps-only <script> below). articles/datasets
 // have no list image, so they're unaffected.
 const isApps = kind === 'apps';
-const isArticles = kind === 'articles';
 const rows = items.map((it) => {
   const authors = (it as ResearchArticleListItem).authors || '';
-  const hasImg = isApps && !!(it as ResearchAppListItem).image;
   const contributors = (it as ResearchAppListItem).contributors || null;
-  // Articles carry a same-origin (prod) convention thumbnail URL — cheap to put
-  // in the island directly (NOT base64, unlike apps), shown with hide-on-error.
-  const imagePath = isArticles ? (it as ResearchArticleListItem).imagePath : null;
+  // Prefer the build-time-extracted same-origin file path (articles + apps both
+  // expose imagePath now). Only apps that were NOT extracted (new post) still need
+  // the base64 lazy-load via slug → /api/hub-app-images.json (hasImg flag).
+  const ip =
+    (it as ResearchArticleListItem).imagePath ||
+    (it as ResearchAppListItem).imagePath ||
+    null;
+  const hasImg = isApps && !ip && !!(it as ResearchAppListItem).image; // base64 fallback only
   return {
     p: it.fullPath,
     t: it.title,
@@ -78,10 +81,9 @@ const rows = items.map((it) => {
     au: authors,
     cats: it.categories,
     tags: it.tags,
-    img: null, // base64 never inlined; apps lazy-load via slug → endpoint
-    hasImg, // apps with an image (drives the lazy <img> placeholder)
-    ip: imagePath, // articles: /images/<id>-splash.jpeg (hide on error)
-    slug: it.slug, // apps lazy-load key into /api/hub-app-images.json
+    ip, // extracted file path (articles + apps); hide on error
+    hasImg, // not-stored apps only → base64 lazy-load placeholder
+    slug: it.slug,
     contrib: contributors,
   };
 });

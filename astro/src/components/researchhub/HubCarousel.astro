@@ -23,13 +23,16 @@ interface Props {
 }
 const { articles } = Astro.props;
 
-// Island rows: only what a slide binds (lighter `thumbnail` for the bg image).
+// Island rows: only what a slide binds. Prefer the build-time-extracted file path
+// (imgPath — a tiny same-origin URL); fall back to base64 thumbnail/splash only for
+// records added after the last build. (When the new ResearchHub serves real image
+// URLs instead of base64, imgPath/the field carry through unchanged.)
 const rows = articles.map((a) => ({
   p: a.fullPath,
   t: a.title,
   d: a.dateLabel,
   au: a.authors || '',
-  img: a.thumbnail || a.splash || null,
+  img: a.imgPath || a.thumbnail || a.splash || null,
 }));
 const json = JSON.stringify(rows).replace(/</g, '\\u003c');
 const first = articles[0] ?? null;

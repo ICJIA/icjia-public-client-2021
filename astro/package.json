@@ -12,8 +12,10 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
+    "prebuild": "node scripts/generate-hub-images.mjs",
     "build": "astro build",
     "preview": "astro preview",
+    "hub-images": "node scripts/generate-hub-images.mjs",
     "astro": "astro",
     "test": "vitest run",
     "test:watch": "vitest",
