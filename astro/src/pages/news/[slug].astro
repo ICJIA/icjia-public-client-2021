@@ -8,8 +8,9 @@
 // chrome/typography arrives in Phase 1/3 (this uses the .markdown-body class
 // the legacy site uses, but the full continuity CSS lands later).
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getNewsPost } from "../../lib/data";
+import { getNewsPost, strapiUrl } from "../../lib/data";
 import { setCache } from "../../lib/cache";
+import { buildArticleJsonLd } from "../../lib/seo";
 
 const { slug } = Astro.params;
 const post = slug ? await getNewsPost(slug) : null;
@@ -20,9 +21,19 @@ if (!post) {
 
 // Live, but edge-cached for 60s with background revalidation.
 setCache(Astro.response, "news");
+
+const jsonLd = buildArticleJsonLd({
+  type: "NewsArticle",
+  path: Astro.url.pathname,
+  headline: post.title,
+  description: post.summary,
+  datePublished: post.dateOverride ?? post.published_at,
+  dateModified: post.updated_at,
+  image: strapiUrl(post.splash?.url) ?? undefined,
+});
 ---
 
-<BaseLayout title={post.title} description={post.summary} contextTitle={post.title}>
+<BaseLayout title={post.title} description={post.summary} contextTitle={post.title} jsonLd={jsonLd}>
   <article class="markdown-body mx-auto max-w-3xl p-8 md:p-12">
     <h1>{post.title}</h1>
     {post.summary && <p class="text-lg text-gray-700">{post.summary}</p>}

@@ -10,8 +10,12 @@ export const siteConfig = {
   /** EXACT prod meta description (110 chars; 80–160 budget). */
   defaultDescription:
     "ICJIA is an Illinois state agency improving criminal justice through research, grants, and policy development.",
-  /** EXACT prod og:image (do not invent a new one). */
-  ogImage: "https://icjia.illinois.gov/icjia-half-splash-thumb-v2.jpg",
+  /** Branded 1200×630 OG image — `public/icjia-og.png` (built by
+   *  scripts/generate-og-image.mjs). A SITE-RELATIVE path on purpose: BaseLayout
+   *  resolves it against the CURRENT deploy origin (not the pinned prod origin used
+   *  for canonical), so it resolves on the branch preview AND post-cutover prod — an
+   *  og:image only needs to point at wherever the image is actually hosted. */
+  ogImage: "/icjia-og.png",
   /** EXACT prod google-site-verification token. */
   googleSiteVerification: "ztA1vSFu3a9Kfu-KCtYP5kNpFTDvbQ4hNfpY2A8ca7Q",
 } as const;
@@ -51,13 +55,44 @@ export function truncateDescription(desc?: string, max = 160): string {
   return cut + "…";
 }
 
+// ── JSON-LD (structured data) ────────────────────────────────────────────────
+// Builders return PLAIN OBJECTS; BaseLayout serializes via serializeJsonLd() into a
+// <script type="application/ld+json">. All URLs use the canonical (prod) origin since
+// structured data describes the canonical resource. Detail-page JSON-LD (NewsArticle,
+// Event, JobPosting, Person, …) gives Google rich-result eligibility + satisfies the
+// AI-readiness checks (structured data + authorship + freshness) metapeek probes.
+
+type JsonLd = Record<string, any>;
+
+/** The agency, reused as publisher / author-of-record / organizer across types. */
+const ORG: JsonLd = {
+  "@type": "GovernmentOrganization",
+  name: siteConfig.siteName,
+  alternateName: siteConfig.siteShortName,
+  url: siteConfig.siteOrigin + "/",
+};
+const ORG_WITH_LOGO: JsonLd = {
+  ...ORG,
+  logo: { "@type": "ImageObject", url: siteConfig.siteOrigin + "/icjia-logo.png" },
+};
+
+/** Resolve a site-relative path to a canonical (prod-origin) absolute URL. */
+const absUrl = (path: string) => new URL(path, siteConfig.siteOrigin).href;
+/** Strip tags + collapse whitespace; undefined when empty (so the key is omitted). */
+const plain = (s?: string) =>
+  (s || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() || undefined;
+
+/** Serialize a JSON-LD object (or array) for set:html, escaping `<` to stay XSS-safe. */
+export function serializeJsonLd(obj: JsonLd | JsonLd[]): string {
+  return JSON.stringify(obj).replace(/</g, "\\u003c");
+}
+
 /**
- * Home-only JSON-LD: WebSite (+ SearchAction → /search/?q=) + GovernmentOrganization,
- * matching the prod homepage block. Emitted ONLY when isHome (guarded in BaseLayout)
- * so it never duplicates on interior pages.
+ * Home JSON-LD: WebSite (+ SearchAction → /search/?q=) + GovernmentOrganization,
+ * matching the prod homepage @graph.
  */
-export function buildHomeJsonLd(): string {
-  const ld = {
+export function buildHomeJsonLd(): JsonLd {
+  return {
     "@context": "https://schema.org",
     "@graph": [
       {
@@ -71,17 +106,178 @@ export function buildHomeJsonLd(): string {
           "query-input": "required name=search_term_string",
         },
       },
-      {
-        "@type": "GovernmentOrganization",
-        name: siteConfig.siteName,
-        alternateName: siteConfig.siteShortName,
-        url: siteConfig.siteOrigin + "/",
-        logo: {
-          "@type": "ImageObject",
-          url: siteConfig.ogImage,
-        },
-      },
+      { ...ORG_WITH_LOGO },
     ],
   };
-  return JSON.stringify(ld).replace(/</g, "\\u003c");
+}
+
+/** Article-family (NewsArticle / Article / ScholarlyArticle / Report). */
+export function buildArticleJsonLd(o: {
+  type?: "NewsArticle" | "Article" | "ScholarlyArticle" | "Report";
+  path: string;
+  headline: string;
+  description?: string;
+  datePublished?: string;
+  dateModified?: string;
+  authors?: string[];
+  image?: string;
+}): JsonLd {
+  const ld: JsonLd = {
+    "@context": "https://schema.org",
+    "@type": o.type || "Article",
+    headline: o.headline,
+    url: absUrl(o.path),
+    mainEntityOfPage: { "@type": "WebPage", "@id": absUrl(o.path) },
+    publisher: ORG_WITH_LOGO,
+    author:
+      o.authors && o.authors.length
+        ? o.authors.map((n) => ({ "@type": "Person", name: n }))
+        : ORG,
+  };
+  const d = plain(o.description);
+  if (d) ld.description = d;
+  if (o.datePublished) ld.datePublished = o.datePublished;
+  ld.dateModified = o.dateModified || o.datePublished || undefined;
+  if (o.image) ld.image = o.image;
+  return ld;
+}
+
+/**
+ * Event (events) / governmental Event (meetings). Faithful to the legacy structured
+ * data: Mixed attendance mode (ICJIA events/meetings commonly offer in-person + online)
+ * + inLanguage en-US + the agency as organizer. A `virtualLocation` (the meeting's
+ * external link) and `attachments` (agenda/minutes PDFs → associatedMedia) are emitted
+ * only when supplied — NO forced physical address (the legacy emitted none, and
+ * asserting Offline/Chicago for a virtual meeting would be wrong).
+ */
+export function buildEventJsonLd(o: {
+  path: string;
+  name: string;
+  description?: string;
+  startDate?: string;
+  endDate?: string;
+  cancelled?: boolean;
+  inLanguage?: string;
+  /** the meeting's external (often virtual) location link */
+  virtualLocation?: { url: string; name?: string };
+  /** downloadable agenda/minutes/materials → schema.org associatedMedia */
+  attachments?: Array<{ name?: string; url: string; encodingFormat?: string }>;
+}): JsonLd {
+  const ld: JsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: o.name,
+    url: absUrl(o.path),
+    inLanguage: o.inLanguage || "en-US",
+    eventStatus: o.cancelled
+      ? "https://schema.org/EventCancelled"
+      : "https://schema.org/EventScheduled",
+    eventAttendanceMode: "https://schema.org/MixedEventAttendanceMode",
+    organizer: ORG,
+  };
+  const d = plain(o.description);
+  if (d) ld.description = d;
+  if (o.startDate) ld.startDate = o.startDate;
+  if (o.endDate) ld.endDate = o.endDate;
+  if (o.virtualLocation?.url) {
+    ld.location = {
+      "@type": "VirtualLocation",
+      url: o.virtualLocation.url,
+      ...(o.virtualLocation.name ? { name: o.virtualLocation.name } : {}),
+    };
+  }
+  const media = (o.attachments || [])
+    .filter((a) => a.url && a.name)
+    .map((a) => ({
+      "@type": "MediaObject",
+      name: a.name,
+      contentUrl: a.url,
+      ...(a.encodingFormat ? { encodingFormat: a.encodingFormat } : {}),
+    }));
+  if (media.length) ld.associatedMedia = media;
+  return ld;
+}
+
+/** JobPosting (employment). */
+export function buildJobPostingJsonLd(o: {
+  path: string;
+  title: string;
+  description?: string;
+  datePosted?: string;
+  validThrough?: string;
+}): JsonLd {
+  const ld: JsonLd = {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    title: o.title,
+    url: absUrl(o.path),
+    hiringOrganization: ORG_WITH_LOGO,
+    jobLocation: {
+      "@type": "Place",
+      address: { "@type": "PostalAddress", addressLocality: "Chicago", addressRegion: "IL", addressCountry: "US" },
+    },
+  };
+  ld.description = plain(o.description) || o.title;
+  if (o.datePosted) ld.datePosted = o.datePosted;
+  if (o.validThrough) ld.validThrough = o.validThrough;
+  return ld;
+}
+
+/** Person (biographies). */
+export function buildPersonJsonLd(o: {
+  path: string;
+  name: string;
+  jobTitle?: string;
+  unit?: string;
+}): JsonLd {
+  const ld: JsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: o.name,
+    url: absUrl(o.path),
+    worksFor: o.unit ? { "@type": "Organization", name: o.unit, parentOrganization: ORG } : ORG,
+  };
+  if (o.jobTitle) ld.jobTitle = o.jobTitle;
+  return ld;
+}
+
+/** Dataset (research datasets). */
+export function buildDatasetJsonLd(o: {
+  path: string;
+  name: string;
+  description?: string;
+}): JsonLd {
+  const ld: JsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: o.name,
+    url: absUrl(o.path),
+    creator: ORG,
+    includedInDataCatalog: { "@type": "DataCatalog", name: "ICJIA ResearchHub" },
+  };
+  const d = plain(o.description);
+  if (d) ld.description = d;
+  return ld;
+}
+
+/** WebApplication (research web apps). */
+export function buildAppJsonLd(o: {
+  path: string;
+  name: string;
+  description?: string;
+  appUrl?: string;
+}): JsonLd {
+  const ld: JsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: o.name,
+    url: o.appUrl || absUrl(o.path),
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    publisher: ORG_WITH_LOGO,
+  };
+  const d = plain(o.description);
+  if (d) ld.description = d;
+  return ld;
 }

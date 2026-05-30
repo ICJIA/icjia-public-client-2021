@@ -25,6 +25,9 @@ if (!article) {
   return new Response('Article not found', { status: 404 });
 }
 setCache(Astro.response, 'hub');
+// NOTE: the ScholarlyArticle JSON-LD (with real author names) is emitted by the
+// <ArticleView> component itself — do NOT add a page-level block here (it would
+// duplicate). See src/components/researchhub/ArticleView.astro.
 ---
 
 <BaseLayout

@@ -3,6 +3,36 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.22.0] — 2026-05-30 — Phase 4c SEO completion: per-type JSON-LD + 1200×630 OG image
+
+Closes the metapeek findings from the 0.21.0 deploy (home A/92, detail B/86 — detail
+pages were AI-readiness "not-ready": no structured data, no authorship, no freshness).
+
+### Added — per-type JSON-LD on every detail page (via a unified `jsonLd` BaseLayout prop)
+- seo.ts builders: `buildArticleJsonLd` (NewsArticle/ScholarlyArticle/Report), `buildEventJsonLd`,
+  `buildJobPostingJsonLd`, `buildPersonJsonLd`, `buildDatasetJsonLd`, `buildAppJsonLd` +
+  `serializeJsonLd`. BaseLayout's `isHome` flag replaced by a general `jsonLd?` prop
+  (object or array → one `<script type="application/ld+json">` each).
+- Wired: news → NewsArticle, research articles → ScholarlyArticle (the existing
+  `<ArticleView>` block, with real author names — page-level dup removed), publications →
+  Report, events + meetings → Event, employment → JobPosting, biographies → Person,
+  datasets → Dataset, apps → WebApplication. All emit `publisher`/`author` + dates →
+  detail pages now satisfy structured-data + authorship + freshness.
+- **Event JSON-LD fixed (regression caught in review):** `buildEventJsonLd` keeps the
+  legacy-faithful shape — `MixedEventAttendanceMode` + `inLanguage: en-US` + ICJIA
+  organizer, NO forced physical address (asserting Offline/Chicago for a virtual meeting
+  is wrong). Meetings restore their rich data: the external link → `VirtualLocation`,
+  attachments (agenda/minutes) → `associatedMedia` MediaObjects with MIME types.
+
+### Added — branded 1200×630 Open Graph image
+- `scripts/generate-og-image.mjs` (one-time, `pnpm og-image`) renders `public/icjia-og.png`
+  (navy gradient + ICJIA wordmark + agency name + host) via Sharp. Replaces the 600×347
+  prod thumbnail (below the 1200×630 social-share standard).
+- og:image is now a site-relative path resolved against the CURRENT deploy origin in
+  BaseLayout (resolves on the branch preview AND post-cutover prod); canonical stays
+  pinned to prod. Twitter `summary_large_image` dedup fixed (removed a duplicate
+  `twitter:image` that astro-seo already emits).
+
 ## [0.21.0] — 2026-05-30 — Phase 4c: SEO (astro-seo), sitemap/search-index, robots, llms, stylish 404
 
 ### Added — `astro-seo` `<SEO>` integration (`src/lib/seo.ts` + BaseLayout)

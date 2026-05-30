@@ -10,6 +10,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import JobCard from '../../../components/JobCard.astro';
 import { getJob } from '../../../lib/data';
 import { setCache } from '../../../lib/cache';
+import { buildJobPostingJsonLd } from '../../../lib/seo';
 
 const { slug } = Astro.params;
 const job = slug ? await getJob(slug) : null;
@@ -24,9 +25,17 @@ setCache(Astro.response, 'jobs');
 const metaDescription =
   (job.summaryHtml || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() ||
   `Employment opportunity at the Illinois Criminal Justice Information Authority (ICJIA): ${job.title}.`;
+
+const jsonLd = buildJobPostingJsonLd({
+  path: Astro.url.pathname,
+  title: job.title,
+  description: job.summaryHtml,
+  datePosted: job.start,
+  validThrough: job.end,
+});
 ---
 
-<BaseLayout title={job.title} description={metaDescription} contextTitle="Employment at ICJIA">
+<BaseLayout title={job.title} description={metaDescription} contextTitle="Employment at ICJIA" jsonLd={jsonLd}>
   <div class="employment markdown-body mx-auto max-w-4xl px-4 py-8 md:px-6">
     <h1 class="sr-only">{job.title}</h1>
     <JobCard item={job} summaryOnly={false} />

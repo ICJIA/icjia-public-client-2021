@@ -8,6 +8,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import EventCard from '../../components/EventCard.astro';
 import { getEvent } from '../../lib/data';
 import { setCache } from '../../lib/cache';
+import { buildEventJsonLd } from '../../lib/seo';
 
 const { slug } = Astro.params;
 const event = slug ? await getEvent(slug) : null;
@@ -18,30 +19,16 @@ if (!event) {
 
 setCache(Astro.response, 'events');
 
-// JSON-LD Event — mirrors the meetings/[slug] pattern (faithful to the legacy
-// site's structured-data approach for date-bound content).
-const jsonld: Record<string, unknown> = {
-  '@context': 'https://schema.org',
-  '@type': 'Event',
+const jsonLd = buildEventJsonLd({
+  path: Astro.url.pathname,
   name: event.name,
-  url: `https://icjia.illinois.gov/events/${event.slug}`,
-  inLanguage: 'en-US',
-  eventStatus: 'https://schema.org/EventScheduled',
-  eventAttendanceMode: 'https://schema.org/MixedEventAttendanceMode',
-  organizer: {
-    '@type': 'GovernmentOrganization',
-    name: 'Illinois Criminal Justice Information Authority',
-    alternateName: 'ICJIA',
-    url: 'https://icjia.illinois.gov',
-  },
-};
-if (event.start) jsonld.startDate = event.start;
-if (event.end) jsonld.endDate = event.end;
-if (event.summary) jsonld.description = event.summary;
-const jsonldStr = JSON.stringify(jsonld).replace(/</g, '\\u003c');
+  description: event.summary,
+  startDate: event.start,
+  endDate: event.end,
+});
 ---
 
-<BaseLayout title={event.name} description={event.summary} contextTitle={event.name}>
+<BaseLayout title={event.name} description={event.summary} contextTitle={event.name} jsonLd={jsonLd}>
   <div class="events mx-auto max-w-4xl px-4 py-8 md:px-6">
     <div class="markdown-body">
       <h1>ICJIA Events</h1>
@@ -61,5 +48,4 @@ const jsonldStr = JSON.stringify(jsonld).replace(/</g, '\\u003c');
       <a class="view-all" href="/events/">View all events&nbsp;&raquo;</a>
     </div>
   </div>
-  <script type="application/ld+json" set:html={jsonldStr} />
 </BaseLayout>

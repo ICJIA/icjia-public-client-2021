@@ -10,6 +10,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import AppView from '../../../components/researchhub/AppView.astro';
 import { getApp } from '../../../lib/research';
 import { setCache } from '../../../lib/cache';
+import { buildAppJsonLd } from '../../../lib/seo';
 
 const { slug } = Astro.params;
 const app = slug ? await getApp(slug) : null;
@@ -17,12 +18,20 @@ if (!app) {
   return new Response('App not found', { status: 404 });
 }
 setCache(Astro.response, 'hub');
+
+const jsonLd = buildAppJsonLd({
+  path: Astro.url.pathname,
+  name: app.title,
+  description: app.description,
+  appUrl: app.url,
+});
 ---
 
 <BaseLayout
   title={app.title}
   description={app.description ? app.description.slice(0, 200) : undefined}
   contextTitle={app.title}
+  jsonLd={jsonLd}
 >
   <div class="pt-4">
     <AppView app={app} />

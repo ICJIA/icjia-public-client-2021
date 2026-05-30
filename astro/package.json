@@ -20,7 +20,8 @@
     "astro": "astro",
     "test": "vitest run",
     "test:watch": "vitest",
-    "vr": "node scripts/vr/run.mjs"
+    "vr": "node scripts/vr/run.mjs",
+    "og-image": "node scripts/generate-og-image.mjs"
   },
   "dependencies": {
     "@astrojs/alpinejs": "^0.5.0",

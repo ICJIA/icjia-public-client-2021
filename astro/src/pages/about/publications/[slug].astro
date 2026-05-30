@@ -8,6 +8,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PublicationCard from '../../../components/PublicationCard.astro';
 import { getPublication } from '../../../lib/data';
 import { setCache } from '../../../lib/cache';
+import { buildArticleJsonLd } from '../../../lib/seo';
 import '../../../styles/publications.css';
 
 const { slug } = Astro.params;
@@ -18,12 +19,21 @@ if (!publication) {
 }
 
 setCache(Astro.response, 'publications');
+
+const jsonLd = buildArticleJsonLd({
+  type: 'Report',
+  path: Astro.url.pathname,
+  headline: publication.title,
+  description: publication.summary,
+  datePublished: publication.publicationDate,
+});
 ---
 
 <BaseLayout
   title={publication.title}
   description={publication.summary}
   contextTitle={publication.title}
+  jsonLd={jsonLd}
 >
   <div class="publications markdown-body mx-auto max-w-4xl px-4 py-8 md:px-6">
     <h1 class="sr-only">{publication.title}</h1>

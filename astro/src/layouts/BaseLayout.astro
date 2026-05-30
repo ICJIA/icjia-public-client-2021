@@ -11,7 +11,7 @@ import '@fontsource/oswald/600.css';
 import '@fontsource/oswald/700.css';
 import '../styles/global.css';
 import { SEO } from 'astro-seo';
-import { siteConfig, buildTitle, truncateDescription, buildHomeJsonLd } from '../lib/seo';
+import { siteConfig, buildTitle, truncateDescription, serializeJsonLd } from '../lib/seo';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteContextBar from '../components/SiteContextBar.astro';
 import SiteDisclaimer from '../components/SiteDisclaimer.astro';
@@ -28,13 +28,15 @@ interface Props {
   canonical?: string;
   /** Per-page OG image override (defaults to the site OG image). */
   ogImage?: string;
-  /** Home page only — emits the WebSite + GovernmentOrganization JSON-LD. */
-  isHome?: boolean;
+  /** JSON-LD structured data — one object or several. Built via the seo.ts
+   *  builders (home WebSite+Org, NewsArticle, Event, JobPosting, Person, …).
+   *  Each is emitted as its own <script type="application/ld+json">. */
+  jsonLd?: Record<string, any> | Record<string, any>[];
   /** Keep the page out of the search index (404, error/maintenance pages).
    *  Followable (no nofollow) — links from a 404 should still be crawled. */
   noindex?: boolean;
 }
-const { title = 'ICJIA', description = '', contextTitle, canonical, ogImage, isHome = false, noindex = false } = Astro.props;
+const { title = 'ICJIA', description = '', contextTitle, canonical, ogImage, jsonLd, noindex = false } = Astro.props;
 // Production origin (not the branch-deploy host) so canonicals point at the live
 // site regardless of which deploy renders them.
 const SITE = siteConfig.siteOrigin;
@@ -45,7 +47,11 @@ const canonicalHref = canonical
 // "ICJIA | <chunk>" (prod convention) and clamps to 60 chars.
 const fullTitle = buildTitle(title);
 const metaDesc = truncateDescription(description);
-const ogImg = ogImage ?? siteConfig.ogImage;
+// og:image → absolute against the CURRENT deploy origin (branch preview or prod),
+// so it always resolves. A per-page `ogImage` may be an absolute URL (e.g. a Strapi
+// splash) — new URL() leaves an absolute input untouched and resolves a site-relative
+// path (the branded default) against the origin.
+const ogImg = new URL(ogImage ?? siteConfig.ogImage, Astro.url.origin).href;
 ---
 
 <!doctype html>
@@ -70,7 +76,10 @@ const ogImg = ogImage ?? siteConfig.ogImage;
         meta: [{ name: 'google-site-verification', content: siteConfig.googleSiteVerification }],
       }}
     />
-    {isHome && <script type="application/ld+json" is:inline set:html={buildHomeJsonLd()} />}
+    {jsonLd &&
+      (Array.isArray(jsonLd) ? jsonLd : [jsonLd]).map((obj) => (
+        <script type="application/ld+json" is:inline set:html={serializeJsonLd(obj)} />
+      ))}
     {/* Plausible analytics (self-hosted) — ported verbatim from the legacy prod
         snippet. The `file-downloads.outbound-links` script variant tracks
         pageviews + file downloads + outbound link clicks, and exposes
