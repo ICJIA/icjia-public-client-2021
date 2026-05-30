@@ -41,10 +41,13 @@ while ((m = h2re.exec(article.bodyHtml)) !== null) {
 
 const hasDownloads = !!article.mainFileUrl || !!article.extraFileUrl;
 
-// base64 splash via island (lazy swap) — keeps SSR HTML lean.
-const splashJson = article.splash
-  ? JSON.stringify({ src: article.splash }).replace(/</g, '\\u003c')
-  : null;
+// Hero source: prefer the extracted same-origin file (renders directly, no island);
+// only fall back to a base64 island for a brand-new post not yet in a build.
+const heroFile = article.imgPath || null;
+const splashJson =
+  !heroFile && article.splash
+    ? JSON.stringify({ src: article.splash }).replace(/</g, '\\u003c')
+    : null;
 
 // JSON-LD ScholarlyArticle (legacy emitted this for articles).
 const jsonLd: Record<string, unknown> = {
@@ -58,15 +61,20 @@ if (article.authors) jsonLd.author = article.authors;
 ---
 
 <div id="article-view">
-  {/* Splash hero — base64 served via island + lazy <img>. */}
+  {/* Splash hero. Common case: extracted same-origin file rendered directly. */}
+  {
+    heroFile && (
+      <div class="article-splash">
+        <img src={heroFile} alt="" loading="eager" decoding="async" class="article-splash-img" />
+      </div>
+    )
+  }
+  {/* Fallback: brand-new post not yet extracted → base64 via a small island (read
+      with getElementById in init, NOT this.$el — the latter fails at x-data time). */}
   {
     splashJson && (
-      <div
-        class="article-splash"
-        x-data={`{ src: '' }`}
-        x-init={`src = JSON.parse(this.$el.querySelector('[data-splash-json]').textContent).src`}
-      >
-        <script type="application/json" data-splash-json set:html={splashJson} is:inline />
+      <div class="article-splash" x-data="{ src: '' }" x-init="src = JSON.parse(document.getElementById('article-splash-json').textContent).src">
+        <script type="application/json" id="article-splash-json" set:html={splashJson} is:inline />
         <img :src="src" alt="" loading="eager" decoding="async" class="article-splash-img" />
       </div>
     )

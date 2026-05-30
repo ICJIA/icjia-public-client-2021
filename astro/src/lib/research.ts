@@ -321,7 +321,10 @@ export interface ResearchArticleDetail {
   /** DOI URL appended to the citation InfoBlock (legacy article.doi). */
   doi?: string;
   funding?: string;
-  /** base64 data-URI (emit in a JSON island / lazy <img>, NOT inline SSR). */
+  /** Same-origin extracted hero file (full-size splash) when stored at build —
+   *  preferred; the detail hero renders this directly (no base64 island). */
+  imgPath?: string | null;
+  /** base64 data-URI fallback (only when imgPath is null — new post). */
   splash?: string | null;
   thumbnail?: string | null;
   /** body markdown rendered + sanitized server-side (images appended as refs). */
@@ -357,7 +360,9 @@ export async function getArticle(slug: string): Promise<ResearchArticleDetail | 
     citation: a.citation,
     doi: a.doi,
     funding: a.funding,
-    splash: a.splash || null,
+    // Hero: prefer the extracted full-size splash file; base64 only for new posts.
+    imgPath: hubImagePath(String(a.id), "splash") || null,
+    splash: hubImagePath(String(a.id), "splash") ? null : a.splash || null,
     thumbnail: a.thumbnail || null,
     bodyHtml: md ? renderToHtml(md) : "",
     mainFileType: a.mainfiletype,

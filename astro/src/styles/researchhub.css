@@ -292,7 +292,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.7);
+  /* NO overlay tint / gradient — the image shows exactly as-is (per request). The
+     caption text stays legible via its own text-shadow (see .hc-title/.hc-date). */
+  background: transparent;
   padding: 0 1.5rem;
   text-align: center;
 }
@@ -304,6 +306,7 @@
   font-weight: 300;
   color: #fff;
   margin-bottom: 0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.8);
 }
 .researchhub .hc-overlay .hc-title {
   color: #fff;
@@ -312,6 +315,7 @@
   margin: 0;
   font-family: "Oswald", sans-serif;
   padding: 0;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9), 0 0 3px rgba(0, 0, 0, 0.85);
 }
 @media (min-width: 960px) {
   .researchhub .hc-overlay .hc-title {
@@ -322,6 +326,7 @@
   color: #fff;
   font-size: 14px;
   margin-top: 0.5rem;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.8);
 }
 .researchhub .hc-overlay .hub-new {
   background: #0d4474;

@@ -7,7 +7,8 @@
   font-size: 20px;
 }
 .page-toc .toc-heading {
-  margin: 0 0 1rem -3px;
+  /* align the heading with the indented item text (matches the divider padding) */
+  margin: 0 0 1rem 1rem;
   font-weight: 700;
   font-size: inherit;
   cursor: pointer;
@@ -17,6 +18,8 @@
 }
 .page-toc .toc-divider {
   border-left: 1px solid #ccc;
+  /* breathing room between the vertical line and the headings */
+  padding-left: 1rem;
 }
 .page-toc ul.toc-list {
   list-style: none;
@@ -24,13 +27,13 @@
   padding: 0;
 }
 .page-toc ul.toc-list li {
-  margin-bottom: 3px;
+  margin-bottom: 6px;
 }
 .page-toc ul.toc-list li a {
   display: block;
   color: #000;
   text-decoration: none;
-  padding: 2px 5px;
+  padding: 3px 5px;
   margin-left: -1px;
   font-size: 14px;
   line-height: 1.4;
