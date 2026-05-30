@@ -27,7 +27,13 @@
 //      without a redeploy (set in the Netlify UI).
 import { schedule } from "@netlify/functions";
 import { getStore } from "@netlify/blobs";
-import { SCHEDULE, ROUTES } from "../keep-warm.config.mjs";
+import { ROUTES } from "../keep-warm.config.mjs";
+
+// CRON SCHEDULE — must be a STRING LITERAL right here. Netlify's function bundler
+// statically parses the schedule() call at build time, so the cron CANNOT come
+// from an imported variable (that fails the build with "schedule imported but
+// unused"). To change cadence, edit this literal. (ROUTES stays in the config.)
+const CRON = "*/5 * * * *"; // every 5 minutes
 
 // Hard ceilings — independent of the config, so config edits can't breach them.
 const MAX_ROUTES = 12; // L3: absolute cap on fan-out per run
@@ -61,7 +67,7 @@ function safeRoutes() {
   return out;
 }
 
-async function handler(event) {
+async function runKeepWarm(event) {
   // L6: kill switch (no redeploy needed).
   if (process.env.KEEP_WARM_DISABLED === "1") {
     return { statusCode: 200, body: "disabled" };
@@ -127,5 +133,6 @@ async function handler(event) {
   return { statusCode: 200, body: "ok" };
 }
 
-export { handler };
-export default schedule(SCHEDULE, handler);
+// schedule() with a LITERAL cron as the direct export — the shape Netlify's
+// bundler statically recognizes as a scheduled function.
+export const handler = schedule(CRON, runKeepWarm);

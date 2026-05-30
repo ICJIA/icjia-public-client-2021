@@ -8,7 +8,7 @@
 import "./server-dom"; // ensure global DOMParser (linkedom) is installed
 // @ts-expect-error — gql-client.js is plain JS (ported verbatim)
 import { runQuery, deepSanitize } from "./gql-client.js";
-import { renderToHtml, parseHeadings } from "./markdown.js";
+import { renderToHtml, renderInline, parseHeadings } from "./markdown.js";
 import {
   GET_SINGLE_POST_QUERY,
   GET_ALL_NEWS_QUERY,
@@ -637,7 +637,10 @@ export async function getPage(slug: string): Promise<CmsPage | null> {
   const safeBodyHtml = p.body ? renderToHtml(p.body) : "";
   return {
     title: p.title,
-    titleHtml: p.title ? renderToHtml(p.title) : "",
+    // INLINE render (no <p> wrapper) — titleHtml goes inside an <h1>, so a block
+    // render produced invalid <h1><p>…</p></h1>. renderInline keeps any emphasis/
+    // links the legacy v-html=render(title) allowed, without the paragraph.
+    titleHtml: p.title ? renderInline(p.title) : "",
     hideTitle: !!p.hideTitle,
     summary: p.summary,
     safeBodyHtml,

@@ -43,9 +43,10 @@ const showToc = !!page.showTOC && page.toc.length > 0;
   {/* 1. Splash (renders nothing when page.splash is null) */}
   <Splash splash={page.splash} />
 
-  {/* 2. Body + optional TOC. -mt-[15px] = legacy v-container margin-top:-15px. */}
+  {/* 2. Body + optional TOC: 9 cols content / 3 cols TOC (legacy md=3 split).
+       -mt-[15px] = legacy v-container margin-top:-15px. */}
   <div class:list={['-mt-[15px]', { 'grid grid-cols-1 gap-6 md:grid-cols-12': showToc }]}>
-    <div class:list={[{ 'md:col-span-8': showToc }]}>
+    <div class:list={[{ 'md:col-span-9': showToc }]}>
       {!page.hideTitle && <h1 set:html={page.titleHtml} />}
 
       <div set:html={page.safeBodyHtml} />
@@ -69,7 +70,7 @@ const showToc = !!page.showTOC && page.toc.length > 0;
 
     {
       showToc && (
-        <aside class="md:col-span-4">
+        <aside class="md:col-span-3">
           <PageToc items={page.toc} />
         </aside>
       )
@@ -79,3 +80,14 @@ const showToc = !!page.showTOC && page.toc.length > 0;
   {/* 3. Full-width "For more information" click-through boxes. */}
   <ContentClickThroughBoxes boxes={page.clickthrough} />
 </div>
+
+<style is:global>
+  /* No-JS / deep-link fallback: when an in-page anchor is jumped to natively
+     (JS off, or a hard load with #hash), offset the target below the fixed 90px
+     app bar so the heading isn't hidden under it. The PageToc click handler does
+     a smooth, offset scroll when JS is on; this guarantees correct landing either
+     way. Scoped to CMS-body headings (the anchor targets). */
+  .markdown-body :is(h1, h2, h3, h4)[id] {
+    scroll-margin-top: 96px;
+  }
+</style>

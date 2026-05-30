@@ -42,6 +42,26 @@ Multi-agent review (7 section reviewers + synthesis) found NO P0s; working the P
   config → capped at 12; injection (`//evil.com`, `https://…`) → rejected, only same-origin
   contacted; kill switch → 0 pings; **1 req/sec for 1 hour (3,600 invocations) → ≤90 pings**.
 
+### Fixed — keep-warm deploy failure + CMS-page TOC/splash polish
+- **Netlify build failure:** the bundler statically parses the `schedule()` call, so the
+  cron must be a **string literal in the function** + the export must be
+  `export const handler = schedule(CRON, fn)`. Our `export default schedule(SCHEDULE, …)`
+  with an *imported* cron failed ("schedule imported but unused"). Moved `CRON` into the
+  function as a literal; ROUTES still imported from the config.
+- **CMS page TOC layout (all `showTOC` pages):** content/TOC split corrected to **9 / 3**
+  columns (was 8 / 4 — and the 8+4 vs new 9+3 aside mismatch left a broken grid).
+- **TOC scrolling:** clicking a TOC entry now **smooth-scrolls with a 96px offset** for the
+  fixed app bar (was a native jump that tucked the heading under the navbar); deep-links
+  (`#hash` on load) re-scroll with the same offset; `scroll-margin-top: 96px` on body
+  headings is the no-JS fallback. (TOC entries are the page's `h2[id]`s, as before.)
+- **CMS page `<h1>` malformed markup:** `getPage().titleHtml` now uses an **inline** markdown
+  render (`renderInline`) so the title no longer emits `<h1><p>…</p></h1>` (block-in-heading).
+- **Splash hero fills the column:** replaced `max-height: 50vw` (which capped the image short
+  on the narrower content column — the DICRA "too short" bug) with a real `aspect-ratio: 2/1`
+  full-width box + `object-fit: cover`, matching prod's `v-img aspect-ratio="2"`.
+- Note: `/about/icjia-values/` was flagged for an "empty TOC" in review, but it has
+  `showTOC: false` in Strapi — correctly renders no TOC. Only its `<h1>` needed fixing.
+
 ### Added — navigation progress bar (cold-start perceived-speed)
 - Top progress bar (`#nav-progress`, navy) that starts the instant an internal link is
   clicked and creeps toward 90% while the next page's SSR/cold-start response is awaited,

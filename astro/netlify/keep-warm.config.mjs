@@ -13,8 +13,10 @@
 //   Netlify Pro includes 125K — comfortable headroom. To cut cost: raise the
 //   interval (e.g. "*/10 * * * *") or trim ROUTES.
 
-// Cron schedule (UTC). Every 5 minutes. (Raise the interval to cut invocations.)
-export const SCHEDULE = "*/5 * * * *";
+// NOTE: the cron CADENCE lives in functions/keep-warm.mjs (const CRON) — Netlify's
+// bundler requires the schedule() cron to be a string literal in the function file,
+// so it can't be imported from here. Edit CRON there to change frequency. This file
+// owns the ROUTE LIST (which the function does import).
 
 /** Routes to keep warm. Use trailing-slash canonical forms (trailingSlash:'always'
  *  → a no-slash URL 301s at the edge; warm the form the SSR fn actually renders).

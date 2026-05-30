@@ -31,6 +31,21 @@ const ids = JSON.stringify(tocItems.map((i) => i.id)).replace(/</g, '\\u003c');
       aria-label="On this page"
       x-data={`{
         active: '',
+        // OFFSET = fixed app-bar height (90px) + a little breathing room, so a
+        // heading scrolled-to lands just below the bar (legacy Toc.vue used
+        // goTo('#id',{offset:88})). Used by both the smooth-scroll + the spy band.
+        offset: 96,
+        // Smooth-scroll to a heading with the navbar offset, then update the hash
+        // (without the browser's default instant jump). Wired on each link's @click.
+        go(id, e){
+          if(e) e.preventDefault();
+          const el = document.getElementById(id);
+          if(!el) return;
+          const top = el.getBoundingClientRect().top + window.pageYOffset - this.offset;
+          window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+          history.replaceState(null, '', '#' + id);
+          this.active = id;
+        },
         init(){
           const self = this;
           const ids = JSON.parse(this.$el.dataset.ids || '[]');
@@ -38,15 +53,21 @@ const ids = JSON.stringify(tocItems.map((i) => i.id)).replace(/</g, '\\u003c');
             .map((id)=>document.getElementById(id))
             .filter(Boolean);
           if(!targets.length) return;
-          // Active heading = the last one whose top has scrolled past a line
-          // ~130px below the viewport top (mirrors legacy Toc.vue's scroll spy).
+          // Active heading = the last one whose top has scrolled past a line just
+          // below the fixed bar (mirrors legacy Toc.vue's scroll spy).
           const recompute = ()=>{
             let above = '';
             for(const t of targets){
-              if(t.getBoundingClientRect().top < 130) above = t.id; else break;
+              if(t.getBoundingClientRect().top < self.offset + 40) above = t.id; else break;
             }
             self.active = above || targets[0].id;
           };
+          // Deep-link: if the URL already has a #hash for one of our headings,
+          // re-scroll with the offset (native jump would tuck it under the bar).
+          const hash = decodeURIComponent(location.hash.slice(1));
+          if(hash && ids.includes(hash)){
+            requestAnimationFrame(()=>self.go(hash));
+          }
           // IntersectionObserver = cheap "a heading crossed the band" trigger;
           // a rAF-throttled scroll listener guarantees we track every position
           // (IO callbacks coalesce and can skip fast/programmatic scrolls).
@@ -71,7 +92,11 @@ const ids = JSON.stringify(tocItems.map((i) => i.id)).replace(/</g, '\\u003c');
         <ul class="toc-list">
           {tocItems.map((item) => (
             <li>
-              <a href={`#${item.id}`} :class={`active==='${item.id}' ? 'toc-active' : ''`}>
+              <a
+                href={`#${item.id}`}
+                @click={`go('${item.id}', $event)`}
+                :class={`active==='${item.id}' ? 'toc-active' : ''`}
+              >
                 {item.text}
               </a>
             </li>

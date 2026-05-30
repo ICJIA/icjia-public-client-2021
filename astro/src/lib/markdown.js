@@ -216,4 +216,17 @@ const parseHeadings = function (markdown) {
     .querySelectorAll("h2");
 };
 
-export { renderToHtml, parseHeadings };
+// Inline render (no block <p> wrapper) — for short single-line fields like a CMS
+// page title that go inside an <h1>. md.renderInline parses inline markdown
+// (emphasis, links, code) without wrapping in a paragraph, then we sanitize with
+// the same allowlist so a title can't smuggle markup. Avoids the invalid
+// <h1><p>…</p></h1> nesting that the block renderer produced.
+const renderInline = function (markdown) {
+  const raw = md.renderInline(markdown || "");
+  const sanitized = DOMPurify.sanitize(raw, {
+    ADD_ATTR: ["target", "id", "class", "aria-label", "aria-hidden", "role"],
+  });
+  return sanitizeContent(sanitized);
+};
+
+export { renderToHtml, renderInline, parseHeadings };

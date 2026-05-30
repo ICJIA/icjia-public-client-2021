@@ -30,14 +30,18 @@ const captionText = caption ?? splash?.caption;
 }
 
 <style>
-  /* Centered, contained, ~2:1 hero (matches legacy v-img contain aspect-ratio=2). */
+  /* Hero that FILLS the column at a fixed 2:1 box — matches prod's v-img
+     aspect-ratio="2" + width:100%. The previous `max-height: 50vw` capped the
+     image short on the narrower content column (the "too short" bug); a real
+     aspect-ratio box makes it fill the column width and derive its height. */
   .splash-img {
     display: block;
     margin: 0 auto 1.25rem;
     width: 100%;
     height: auto;
-    max-height: 50vw; /* ~2:1 of a full-width column; image stays "contain" */
-    object-fit: contain;
+    aspect-ratio: 2 / 1;
+    object-fit: cover; /* fill the 2:1 banner edge-to-edge (no letterboxing) */
+    object-position: center;
   }
   /* Legacy .splash-caption (Splash.vue). */
   .splash-caption {
