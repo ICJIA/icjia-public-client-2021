@@ -1,0 +1,22 @@
+# Security headers for the Astro SSR app (checklist §11, modern pattern).
+# Branch-isolated: ships in astro/dist. NOTE: until cutover, the root netlify.toml
+# global [[headers]] OVERRIDES this file on the branch deploy (Netlify precedence:
+# global toml headers win over the _headers file), so `curl -I` on the branch
+# shows the LEGACY CSP — that's expected. This becomes active when the legacy
+# [[headers]] block is removed at cutover. CSP is REPORT-ONLY here (no report
+# endpoint yet); promote to enforce (rename the header) once monitoring is in place.
+#
+# CSP tuned to the actual Astro stack (decided with the owner): NO assets.adobedtm
+# (no Adobe DTM here) and NO Google Fonts hosts (fonts self-hosted via @fontsource).
+# 'unsafe-inline'+'unsafe-eval' are required by Alpine + inline handlers (a strict
+# hash-only policy is a trap for this stack — see checklist §11).
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 0
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  Permissions-Policy: accelerometer=(), autoplay=(), camera=(), display-capture=(), encrypted-media=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), usb=(), web-share=(), xr-spatial-tracking=(), interest-cohort=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: cross-origin
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.icjia.cloud; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; connect-src 'self' https://agency.icjia-api.cloud https://researchhub.icjia-api.cloud https://plausible.icjia.cloud; worker-src 'self'; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com https://public.tableau.com https://docs.google.com https://forms.office.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'

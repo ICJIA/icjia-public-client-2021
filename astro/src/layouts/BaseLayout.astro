@@ -43,6 +43,25 @@ const canonicalHref = canonical
     <link rel="canonical" href={canonicalHref} />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
+    {/* Plausible analytics (self-hosted) — ported verbatim from the legacy prod
+        snippet. The `file-downloads.outbound-links` script variant tracks
+        pageviews + file downloads + outbound link clicks, and exposes
+        window.plausible(...) for the custom events the meeting/publication/
+        attachment components fire (file_download, "Outbound Link: Click"). The
+        queue stub buffers those calls until the deferred script loads. CSP
+        allows plausible.icjia.cloud in script-src + connect-src (see _headers). */}
+    <script
+      is:inline
+      defer
+      data-domain="icjia.illinois.gov"
+      src="https://plausible.icjia.cloud/js/script.file-downloads.outbound-links.js"></script>
+    <script is:inline>
+      window.plausible =
+        window.plausible ||
+        function () {
+          (window.plausible.q = window.plausible.q || []).push(arguments);
+        };
+    </script>
     {/* Loading overlay — critical CSS inlined so it paints with the HTML (no
         render-blocking round-trip). A delayed reveal (0.2s) means fast loads
         never flash it; slow loads / cold lambdas show the branded screen the

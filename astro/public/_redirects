@@ -23,3 +23,22 @@
 
 # Legacy GATA subtree → research hub (catch-all last so specific rules win)
 /gata/*                        /researchhub/                                   301
+
+# Innovation & Digital Services (legacy IDSOverview — collapses old IS paths)
+/information-systems           /innovation-and-digital-services/               301
+/information-systems/*         /innovation-and-digital-services/               301
+
+# Grants landing (legacy /grants → funding)
+/grants                        /grants/funding/                                301
+
+# External apps / sites (legacy window.location.href redirects to other hosts)
+/spac/                         https://spac.illinois.gov/                      301
+/archive/                      https://archive.icjia.cloud/                    301
+/intranet/                     https://intranet.icjia.cloud/                   301
+/i2i/                          https://i2i.illinois.gov/                       301
+/adultredeploy/                https://icjia.illinois.gov/adultredeploy/       301
+/ifvcc/                        https://icjia.illinois.gov/ifvcc/               301
+
+# NOTE: /grants/rules-regs-policies/, /grants/training/, /ta/, /gata/:slug→/grants/:slug
+# are intentionally NOT added yet — their Astro target pages don't exist (would 301→404).
+# Add when those grants sub-pages are built (Phase 5 / future).
