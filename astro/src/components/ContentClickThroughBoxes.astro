@@ -1,0 +1,152 @@
+---
+// "For more information" click-through boxes — ported from the legacy
+// ClickthroughBoxes.vue (DISTINCT from HomeClickThroughBoxes.astro, which is the
+// navy home-page row). This is the WHITE-card variant used on About/units/hub
+// landing pages: a "For more information" heading over a 3-per-row grid of
+// white cards with a 70px icon, a bottom-bordered title, a teaser, and an
+// optional "NEW!" badge.
+//
+// Data comes from getPage().clickthrough (CmsClickthrough[]): teaser markdown is
+// already rendered + sanitized server-side as `teaserHtml`, so we set:html it.
+//
+// NOTE: GET_SINGLE_PAGE_QUERY omits `datePosted`, so the NEW! badge only appears
+// on landings whose query supplies it; otherwise it is gracefully hidden.
+//
+// NOTE (icon parity): legacy CMS `icon` values were rendered by Vuetify's
+// Material Icons fallback; some are Material names, not MDI. Common ones are
+// mapped to close MDI equivalents below (the legacy fallback glyph was `dns`).
+// If exact glyph parity is later needed, extend ICON_MAP.
+import { Icon } from 'astro-icon/components';
+import { isNew, type CmsClickthrough } from '../lib/data';
+
+interface Props {
+  boxes?: CmsClickthrough[];
+}
+const { boxes = [] } = Astro.props;
+
+const ICON_MAP: Record<string, string> = {
+  dns: 'dns',
+  people: 'account-group',
+  'pending-actions': 'clipboard-text-clock',
+  'account-balance': 'bank',
+  // Underscore Material-Icon names present in live CMS clickthrough data
+  // (e.g. about/dicra, about/foia). These have NO 1:1 entry in
+  // @iconify-json/mdi, so astro-icon's <Icon> THROWS at SSR and blanks the
+  // whole page — map each to a valid MDI glyph (legacy Vuetify fell back to a
+  // glyph rather than crashing). Verified to exist in @iconify-json/mdi.
+  data_thresholding: 'chart-box',
+  file_download: 'file-download',
+  contact_mail: 'contact-mail',
+  article: 'file-document',
+  info: 'information',
+  group: 'account-group',
+};
+function mdiName(raw?: string): string {
+  const n = String(raw || '').replace(/^mdi-/, '');
+  // Unmapped underscore names (Material Icons style) become hyphenated so they
+  // can resolve in mdi (e.g. `foo_bar` -> `foo-bar`); truly empty -> `dns`.
+  return 'mdi:' + (ICON_MAP[n] || n.replace(/_/g, '-') || 'dns');
+}
+const isExternal = (url?: string) => !!url && /^https?:\/\//.test(url);
+---
+
+{
+  boxes.length > 0 && (
+    <div class="ctb">
+      <h2 id="for-more-information">For more information</h2>
+      <div class="ctb-grid">
+        {boxes.map((box) => (
+          <a
+            href={box.url || '#'}
+            target={isExternal(box.url) ? '_blank' : undefined}
+            rel={isExternal(box.url) ? 'noopener noreferrer' : undefined}
+            class="ctb-box"
+            aria-label={box.title}
+          >
+            {isNew(box.datePosted) && <span class="ctb-new">NEW!</span>}
+            <Icon name={mdiName(box.icon)} class="ctb-icon" aria-hidden="true" />
+            <h3 class="ctb-title">{box.title}</h3>
+            {box.teaserHtml && (
+              <div class="ctb-teaser" set:html={box.teaserHtml} />
+            )}
+          </a>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+<style>
+  .ctb {
+    margin-top: 1rem;
+  }
+  .ctb > h2 {
+    margin-bottom: 1rem;
+  }
+  .ctb-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  /* 3-per-row (legacy flex-item-3); collapses to full width on small screens. */
+  .ctb-box {
+    flex: 1 1 100%;
+    position: relative;
+    display: block;
+    border: 1px solid #ddd;
+    background: #fff;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+      0 1px 3px 0 rgba(0, 0, 0, 0.12);
+    transition: box-shadow 0.2s ease;
+  }
+  @media (min-width: 768px) {
+    .ctb-box {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+  }
+  .ctb-box:hover,
+  .ctb-box:focus-visible {
+    box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 5px 8px 0 rgba(0, 0, 0, 0.14),
+      0 1px 14px 0 rgba(0, 0, 0, 0.12);
+  }
+  .ctb-icon {
+    display: inline-block;
+    font-size: 70px;
+    width: 70px;
+    height: 70px;
+    color: #0e4471;
+  }
+  .ctb-title {
+    margin-top: 0.75rem;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #aaa;
+    font-size: 30px;
+    color: #000;
+    text-align: center;
+  }
+  .ctb-teaser {
+    margin-top: 0.5rem;
+    padding: 0 0.5rem;
+    font-size: 14px;
+    text-align: center;
+  }
+  .ctb-new {
+    position: absolute;
+    top: -14px;
+    left: -14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    width: 48px;
+    border-radius: 9999px;
+    background: #1565c0;
+    color: #fff !important;
+    font-size: 12px;
+    font-weight: 700;
+  }
+</style>

@@ -1,0 +1,226 @@
+---
+// Single-article detail (#article-view). Ports legacy Hub/ArticleView.vue:
+//   • base64 splash hero (heights 240/360/650) — emitted via a tiny JSON island
+//     + lazy <img> (NEVER inlined into SSR HTML, per the base64 rule);
+//   • md+ two-col: a sticky TOC (h2 headings) + download buttons | #article-content;
+//   • categories (uppercase) + | + tags (chips) row; MarkerExternal when external;
+//   • h1 title; raw .article-abstract (set:html); authors + | + date + | print;
+//   • serif .article-body (set:html of the markdown pipeline output);
+//   • Funding / Suggested-citation InfoBlocks;
+//   • JSON-LD ScholarlyArticle.
+// #article-view / #article-toc styles are in article-view.css.
+//
+// PARITY FLAGS:
+//  - search unported: categories + tags + author names are NON-INTERACTIVE.
+//  - The foundation ResearchArticleDetail (research.ts getArticle) joins authors
+//    to ONE string and does NOT return author descriptions, related apps/datasets,
+//    or doi. So the legacy "About the author(s)" + "Related contents" InfoBlocks
+//    and the citation DOI link are OMITTED here pending a research.ts field add.
+//    (Funding + Suggested-citation render fully.)  <!-- FLAG: see note above -->
+import ArticleToc from './ArticleToc.astro';
+import InfoBlock from './InfoBlock.astro';
+import MarkerExternal from './MarkerExternal.astro';
+import type { ResearchArticleDetail } from '../../lib/research';
+import '../../styles/article-view.css';
+import '../../styles/researchhub.css';
+
+interface Props {
+  article: ResearchArticleDetail;
+}
+const { article } = Astro.props;
+
+// TOC: pull <h2 id="...">text</h2> from the rendered body (same ids the
+// markdown-it-anchor slugify produced). Strip any inner tags from the label.
+const headings: Array<{ id: string; text: string }> = [];
+const h2re = /<h2[^>]*\sid="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g;
+let m: RegExpExecArray | null;
+while ((m = h2re.exec(article.bodyHtml)) !== null) {
+  const text = m[2].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+  if (text) headings.push({ id: m[1], text });
+}
+
+const hasDownloads = !!article.mainFileUrl || !!article.extraFileUrl;
+
+// base64 splash via island (lazy swap) — keeps SSR HTML lean.
+const splashJson = article.splash
+  ? JSON.stringify({ src: article.splash }).replace(/</g, '\\u003c')
+  : null;
+
+// JSON-LD ScholarlyArticle (legacy emitted this for articles).
+const jsonLd: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'ScholarlyArticle',
+  headline: article.title,
+  url: `https://icjia.illinois.gov${article.fullPath}`,
+};
+if (article.dateLabel) jsonLd.datePublished = article.date;
+if (article.authors) jsonLd.author = article.authors;
+---
+
+<div id="article-view">
+  {/* Splash hero — base64 served via island + lazy <img>. */}
+  {
+    splashJson && (
+      <div
+        class="article-splash"
+        x-data={`{ src: '' }`}
+        x-init={`src = JSON.parse(this.$el.querySelector('[data-splash-json]').textContent).src`}
+      >
+        <script type="application/json" data-splash-json set:html={splashJson} is:inline />
+        <img :src="src" alt="" loading="eager" decoding="async" class="article-splash-img" />
+      </div>
+    )
+  }
+
+  <div class="article-grid mx-auto max-w-6xl px-4 md:px-6">
+    {/* TOC + downloads — md+ sidebar, sticky. */}
+    {
+      (headings.length > 0 || hasDownloads) && (
+        <aside class="article-toc-col">
+          <div class="article-toc-sticky-wrap">
+            <ArticleToc headings={headings} />
+            <div class="mt-6 flex flex-col items-start gap-2">
+              {article.mainFileUrl && (
+                <a
+                  class="article-download detail-btn"
+                  href={article.mainFileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Download ${article.mainFileType || 'article'}`}
+                >
+                  <span>{article.mainFileType || 'Download'}</span>
+                  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7 7-7Z"></path></svg>
+                </a>
+              )}
+              {article.extraFileUrl && (
+                <a
+                  class="article-download detail-btn"
+                  href={article.extraFileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Download appendix"
+                >
+                  <span>appendix</span>
+                  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7 7-7Z"></path></svg>
+                </a>
+              )}
+            </div>
+          </div>
+        </aside>
+      )
+    }
+
+    <div id="article-content" class="article-content pt-6">
+      {/* categories + | + tags */}
+      <div class="mb-2">
+        {
+          article.categories.length > 0 && (
+            <span>
+              {/* PARITY FLAG: non-link text (search unported) */}
+              {article.categories.map((c) => (
+                <span class="category mr-1" style="font-size:14px;font-weight:900">
+                  {c}
+                </span>
+              ))}
+            </span>
+          )
+        }
+        {
+          article.tags.length > 0 && (
+            <span>
+              <span class="mx-2">|</span>
+              {/* PARITY FLAG: non-link pills (search unported) */}
+              {article.tags.map((t) => (
+                <span class="chip">{t}</span>
+              ))}
+            </span>
+          )
+        }
+      </div>
+
+      {article.external && <MarkerExternal />}
+
+      <h1 class="article-title">{article.title}</h1>
+
+      {article.abstract && <div class="article-abstract my-6 px-5 py-5" set:html={article.abstract} />}
+
+      <div class="font-oswald mb-4 text-uppercase" style="text-transform:uppercase">
+        {/* PARITY FLAG: author name(s) were search links (search unported) */}
+        {article.authors && <span>{article.authors}</span>}
+        {
+          article.dateLabel && (
+            <span>
+              <span class="mx-2">|</span>
+              {article.dateLabel}
+            </span>
+          )
+        }
+        <span class="mx-2">|</span>
+        <button
+          type="button"
+          class="article-print"
+          aria-label="Print article"
+          onclick="(function(){var w=window.open('','');if(!w)return;var d=w.document;Array.from(document.querySelectorAll('link[rel=stylesheet],style')).forEach(function(e){d.head.appendChild(e.cloneNode(true))});var v=d.createElement('div');v.id='article-view';var c=document.getElementById('article-content');if(c)v.appendChild(c.cloneNode(true));d.body.appendChild(v);w.focus();w.print();})()"
+        >
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor"><path d="M18 3H6v4h12m1 5a1 1 0 0 1-1-1 1 1 0 0 1 1-1 1 1 0 0 1 1 1 1 1 0 0 1-1 1m-3 7H8v-5h8m3-6H5a3 3 0 0 0-3 3v6h4v4h12v-4h4v-6a3 3 0 0 0-3-3Z"></path></svg>
+        </button>
+      </div>
+
+      <hr />
+
+      <div class="article-body" set:html={article.bodyHtml} />
+
+      <div class="my-12">
+        {
+          article.funding && (
+            <InfoBlock title="Funding acknowledgment">{article.funding}</InfoBlock>
+          )
+        }
+        {
+          article.citation && (
+            /* citation is HTML in the legacy (v-html) */
+            <InfoBlock title="Suggested citation" html={article.citation} />
+          )
+        }
+        {/* FLAG: "About the author(s)" + "Related contents" InfoBlocks omitted —
+            research.ts ResearchArticleDetail provides neither author descriptions
+            nor related apps/datasets (foundation file, not editable here). */}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+
+<style>
+  /* Responsive splash hero heights (legacy xs240 / sm360 / md+650). */
+  .article-splash-img {
+    display: block;
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    background: #f3f4f6;
+  }
+  @media (min-width: 600px) {
+    .article-splash-img { height: 360px; }
+  }
+  @media (min-width: 960px) {
+    .article-splash-img { height: 650px; }
+  }
+  /* md+ two-col: sticky TOC + body. Single column below 960px (TOC hidden). */
+  .article-toc-col { display: none; }
+  @media (min-width: 960px) {
+    .article-grid {
+      display: grid;
+      grid-template-columns: 275px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    .article-toc-col { display: block; }
+    .article-toc-sticky-wrap {
+      position: sticky;
+      top: 70px;
+      padding-top: 1rem;
+    }
+  }
+</style>

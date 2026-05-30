@@ -1,0 +1,41 @@
+---
+// /about/composition-and-membership/ — live-data SSR board directory.
+// Ports legacy src/views/About/CompositionAndMembership.vue: CMS page
+// "composition-and-membership" (title + body) followed by every biography with
+// affiliation === "board", re-sorted by sortModifier asc (legacy
+// _.orderBy(content,["sortModifier"],["asc"])), each rendered as a
+// <BiographyCard>. Static list. <title> from the CMS page (legacy metaInfo.title).
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import BiographyCard from '../../../components/BiographyCard.astro';
+import { getAllBiographies, getPage } from '../../../lib/data';
+import { setCache } from '../../../lib/cache';
+
+const [bios, page] = await Promise.all([
+  getAllBiographies(),
+  getPage('composition-and-membership'),
+]);
+const board = bios.filter((b) => b.affiliation === 'board');
+
+setCache(Astro.response, 'bios');
+
+const pageTitle = page?.title || 'Composition & Membership';
+---
+
+<BaseLayout title={`${pageTitle} — ICJIA`} contextTitle={pageTitle}>
+  <div class="markdown-body mx-auto max-w-5xl px-4 py-8 md:px-6">
+    {page?.titleHtml && <h1 set:html={page.titleHtml} />}
+    {page?.safeBodyHtml && <div class="mb-8" set:html={page.safeBodyHtml} />}
+
+    {
+      board.length === 0 ? (
+        <p>No board members listed at this time.</p>
+      ) : (
+        board.map((item) => (
+          <div class="markdown-body mb-4">
+            <BiographyCard item={item} />
+          </div>
+        ))
+      )
+    }
+  </div>
+</BaseLayout>

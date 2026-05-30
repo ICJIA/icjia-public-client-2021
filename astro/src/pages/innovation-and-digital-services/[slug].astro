@@ -1,0 +1,26 @@
+---
+// /innovation-and-digital-services/:slug — IDS sub-page catch-all. Ports the
+// legacy IDSBasepage route (/innovation-and-digital-services/:slug -> BasePage.vue):
+// a generic CMS page by slug (e.g. /innovation-and-digital-services/drone/),
+// rendered by the shared BasePage. 404 when the slug has no page.
+//
+// Astro resolves the dedicated /infonet/ and /isu-staff/ index routes ahead of
+// this dynamic segment, so this only handles the remaining sub-pages.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BasePage from '../../components/BasePage.astro';
+import { getPage } from '../../lib/data';
+import { setCache } from '../../lib/cache';
+
+const { slug } = Astro.params;
+const page = slug ? await getPage(slug) : null;
+if (!page) return new Response(null, { status: 404 });
+setCache(Astro.response, 'page');
+---
+
+<BaseLayout
+  title={`${page.title} — ICJIA`}
+  description={page.summary || page.title}
+  contextTitle={page.title}
+>
+  <BasePage page={page} />
+</BaseLayout>

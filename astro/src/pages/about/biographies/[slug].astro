@@ -1,0 +1,34 @@
+---
+// /about/biographies/[slug] — live-data SSR single biography.
+// Ports legacy src/views/About/StaffAndBoardSingle.vue:
+//   h1 = fullName (+ ", suffix" when present) → <BiographyCard showName={false} />.
+// The single query filters by slug only, so all 109 bios (staff/board/external)
+// resolve here regardless of affiliation. Empty array => 404 (legacy router.push('/404')).
+// <title> is the bare fullName (legacy metaInfo.title; matches news/[slug] precedent).
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import BiographyCard from '../../../components/BiographyCard.astro';
+import { getBiography } from '../../../lib/data';
+import { setCache } from '../../../lib/cache';
+
+const { slug } = Astro.params;
+const item = slug ? await getBiography(slug) : null;
+
+if (!item) {
+  return new Response('Not found', { status: 404 });
+}
+
+setCache(Astro.response, 'bios');
+---
+
+<BaseLayout title={item.fullName} contextTitle={item.fullName}>
+  <div class="markdown-body mx-auto max-w-5xl px-4 py-8 md:px-6">
+    <h1 class="mb-4">{item.fullNameWithSuffix}</h1>
+
+    <BiographyCard item={item} showName={false} />
+
+    {/* PARITY FLAG (search unported): legacy rendered a "Related Web Content"
+        StaticSearch block here (Fuse.js over the global site index, current bio
+        filtered out). The Astro app has no global search index / /search route
+        yet, so this block is OMITTED. Restore it when the Search section lands. */}
+  </div>
+</BaseLayout>

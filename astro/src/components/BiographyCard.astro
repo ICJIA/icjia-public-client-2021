@@ -1,0 +1,53 @@
+---
+// Static (server-rendered) biography card. Ports legacy BiographyCard.vue:
+// bordered card, 125px square headshot avatar (only when item.headshot, hidden
+// on small screens via bios.css), name heading, bold "unit.title | title"
+// subtitle, rendered bio body. Shared by the biographies list/detail + unit
+// staff lists + about staff pages.
+//
+// PARITY FLAG (search unported): legacy made the name an interactive element
+// that called goToSearch(fullName). Search is not yet ported, so the name is
+// rendered as PLAIN NON-LINK TEXT (no tooltip, no click handler). Restore the
+// search affordance when search lands.
+import '../styles/bios.css';
+import CmsImage from './CmsImage.astro';
+import type { Biography } from '../lib/data';
+
+interface Props {
+  item: Biography;
+  showName?: boolean;
+  color?: string;
+}
+const { item, showName = true, color = '#fff' } = Astro.props;
+---
+
+<div>
+  <div class="bio-card" style={`background-color:${color}`}>
+    <div class="bio-row">
+      {
+        item.headshot && (
+          <div class="bio-avatar">
+            <CmsImage image={item.headshot} alt={`${item.fullName} headshot`} loading="lazy" />
+          </div>
+        )
+      }
+      <div class="bio-body markdown-body">
+        {
+          showName && (
+            /* PARITY FLAG: plain text — was a search trigger (search unported) */
+            <h2 id={item.slug ? `bio-${item.slug}` : undefined} class="author-name">
+              {item.fullNameWithSuffix}
+            </h2>
+          )
+        }
+
+        <div class="bio-subtitle">
+          {item.unit?.title && <span class="bio-unit">{item.unit.title}&nbsp;|&nbsp;</span>}
+          {item.title && <span class="bio-role">{item.title}</span>}
+        </div>
+
+        {item.bodyHtml && <div class="bio-text" set:html={item.bodyHtml} />}
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+---
+// /about/employment/[slug] — live-data SSR single job. Parity with EmploymentSingle.vue:
+// a visually-hidden H1 (job title) + the full JobCard (summaryOnly=false) wrapped in
+// a centered container. 404 Response when the slug isn't found.
+//
+// A11y structure preserved from legacy: one sr-only <h1> + the JobCard <h2> title
+// (here non-linking, since on its own page the title links to itself in the list only).
+// context-label = "Employment at ICJIA" (legacy EmploymentSingle EventBus emit).
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import JobCard from '../../../components/JobCard.astro';
+import { getJob } from '../../../lib/data';
+import { setCache } from '../../../lib/cache';
+
+const { slug } = Astro.params;
+const job = slug ? await getJob(slug) : null;
+
+if (!job) {
+  return new Response('Not found', { status: 404 });
+}
+
+setCache(Astro.response, 'jobs');
+---
+
+<BaseLayout title={job.title} contextTitle="Employment at ICJIA">
+  <div class="employment markdown-body mx-auto max-w-4xl px-4 py-8 md:px-6">
+    <h1 class="sr-only">{job.title}</h1>
+    <JobCard item={job} summaryOnly={false} />
+  </div>
+</BaseLayout>

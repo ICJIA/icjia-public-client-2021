@@ -1,0 +1,35 @@
+---
+// /grants/fsgu-home/ — FSGU unit home. Ports GrantsHome.vue (FSGUHome route;
+// legacy /grants/fsgu-home/ redirects here). CMS page (slug 'fsgu-home') body +
+// an embedded Current/Expired NOFO toggle. Logic lives in FsguHome.astro.
+// contextTitle "Home" (legacy EventBus context-label "Home").
+//
+// PARITY FLAG — ORPHANED LEGACY ROUTE / MISSING CMS PAGE (verified 2026-05-29
+// against the live agency GraphQL): there is NO CMS `pages` record with slug
+// 'fsgu-home' (the only grants-area page is slug 'funding'); and in the legacy
+// router the redirect target `name: "FSGUHome"` is never registered, while the
+// /grants/:slug catch-all (FSGUPage -> BasePage.vue) would resolve 'fsgu-home'
+// to the same absent page. So legacy effectively 404s here too. We mirror that
+// EXACTLY: getPage('fsgu-home') returns null -> 404. The FsguHome component is
+// built and ready; this route will render the full FSGU home + funding toggle
+// the moment a 'fsgu-home' page is published (or the slug is corrected). FLAG
+// for content/stakeholder decision — do not fabricate a page.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import FsguHome from '../../../components/FsguHome.astro';
+import { getPage, getFunding } from '../../../lib/data';
+import { setCache } from '../../../lib/cache';
+
+const [page, grants] = await Promise.all([getPage('fsgu-home'), getFunding()]);
+if (!page) return new Response(null, { status: 404 });
+setCache(Astro.response, 'grants');
+---
+
+<BaseLayout
+  title={`${page.title} — ICJIA`}
+  description="Federal and State Grants Unit home — current ICJIA funding opportunities (NOFOs)."
+  contextTitle="Home"
+>
+  <div class="mx-auto max-w-5xl px-4 py-8 md:px-6">
+    <FsguHome page={page} grants={grants} />
+  </div>
+</BaseLayout>

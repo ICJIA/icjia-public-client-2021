@@ -1,0 +1,248 @@
+---
+// Publications data table — parity with the legacy PublicationsAll.vue
+// (v-data-table): search, sortable Date/Title/Type columns (default
+// publicationDate desc; Article + File NOT sortable), rows-per-page
+// [100,150,200,250,500] default 150 (NO "All" option, unlike MeetingTable),
+// and single-row expand → PublicationCard. Cloned from the proven
+// MeetingTable.astro: driven by Alpine x-for (the reliable list primitive — see
+// project_astro_alpine_lists) over the #publications-data island the listing
+// page renders once; only the current page (≤ perPage rows) is ever in the DOM.
+// `baseline` (server-rendered first 150) is the no-JS / crawler / SiteImprove view.
+//
+// Plausible (verbatim legacy event names, NOT meetings' file_download):
+//   Web Article → publicationList_article_view {url: articleURL}
+//   Download PDF → publicationList_file_download {url: fileURL}
+import type { PublicationListItem } from '../lib/data';
+
+interface Props {
+  baseline?: PublicationListItem[];
+}
+const { baseline } = Astro.props;
+
+const xdata = `{
+  all: [], search: '', sortKey: 'date', sortDir: 'desc',
+  page: 1, perPage: 150, expanded: null, ready: false,
+  init(){
+    try { this.all = JSON.parse(document.getElementById('publications-data').textContent); }
+    catch (e) { this.all = []; }
+    this.ready = true;
+  },
+  get searched(){ const q = this.search.trim().toLowerCase(); return q ? this.all.filter((p) => p.haystack.includes(q)) : this.all; },
+  get sorted(){ const a = [...this.searched], d = this.sortDir === 'asc' ? 1 : -1, k = this.sortKey;
+    a.sort((x, y) => { let r = 0;
+      if (k === 'date') r = String(x.publicationDate || '').localeCompare(String(y.publicationDate || ''));
+      else if (k === 'title') r = x.title.toLowerCase().localeCompare(y.title.toLowerCase());
+      else if (k === 'type') r = x.typeLabel.localeCompare(y.typeLabel);
+      return r * d; });
+    return a; },
+  get count(){ return this.sorted.length; },
+  get totalPages(){ return Math.max(1, Math.ceil(this.count / this.perPage)); },
+  get pageItems(){ const s = (this.page - 1) * this.perPage; return this.sorted.slice(s, s + this.perPage); },
+  get rangeText(){ if (!this.count) return '0–0 of 0'; const s = (this.page - 1) * this.perPage + 1; const e = Math.min(this.count, this.page * this.perPage); return s + '–' + e + ' of ' + this.count; },
+  setSort(k){ if (this.sortKey === k) this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc'; else { this.sortKey = k; this.sortDir = k === 'date' ? 'desc' : 'asc'; } this.page = 1; },
+  ariaSort(k){ return this.sortKey === k ? (this.sortDir === 'asc' ? 'ascending' : 'descending') : null; },
+  toggle(id){ this.expanded = this.expanded === id ? null : id; },
+  trackArticle(url){ try { if (typeof window.plausible === 'function') window.plausible('publicationList_article_view', { props: { url } }); } catch (e) {} },
+  trackDownload(url){ try { if (typeof window.plausible === 'function') window.plausible('publicationList_file_download', { props: { url } }); } catch (e) {} }
+}`;
+---
+
+<div x-data={xdata}>
+  {/* Interactive (JS) view */}
+  <div x-show="ready" x-cloak>
+    <div class="px-4 pt-4 pb-1">
+      <label class="psearch-label" for="psearch">Search</label>
+      <input
+        id="psearch"
+        type="text"
+        class="psearch"
+        x-model="search"
+        @input="page = 1"
+        aria-label="Search publications"
+      />
+    </div>
+
+    <table class="ptable">
+      <thead>
+        <tr>
+          <th class="cell-date" :aria-sort="ariaSort('date')">
+            <button type="button" @click="setSort('date')">
+              Date <span class="caret" x-text="sortKey==='date' && sortDir==='asc' ? '▲' : '▼'"></span>
+            </button>
+          </th>
+          <th :aria-sort="ariaSort('title')">
+            <button type="button" @click="setSort('title')">
+              Title <span class="caret" x-text="sortKey==='title' && sortDir==='asc' ? '▲' : '▼'"></span>
+            </button>
+          </th>
+          <th :aria-sort="ariaSort('type')">
+            <button type="button" @click="setSort('type')">
+              Type <span class="caret" x-text="sortKey==='type' && sortDir==='asc' ? '▲' : '▼'"></span>
+            </button>
+          </th>
+          <th class="col-center">Article</th>
+          <th class="col-center">File</th>
+          <th><span class="sr-only">Expand</span></th>
+        </tr>
+      </thead>
+      <template x-for="(it, idx) in pageItems" :key="it.id">
+        <tbody>
+          <tr class="prow" :class="idx % 2 ? 'prow-alt' : ''" @click="toggle(it.id)">
+            <td class="cell-date" x-text="it.dateAlt"></td>
+            <td class="cell-title">
+              <template x-if="it.isNew"><span class="new-chip">NEW!</span></template>
+              <span x-text="it.title"></span>
+            </td>
+            <td x-text="it.typeLabel"></td>
+            <td class="col-center">
+              <template x-if="it.localArticlePath">
+                <a
+                  class="pbtn"
+                  :href="it.localArticlePath"
+                  @click.stop="trackArticle(it.articleURL)"
+                >Web Article</a>
+              </template>
+            </td>
+            <td class="col-center">
+              <template x-if="it.fileURL && it.pubType !== 'application'">
+                <a
+                  class="pbtn"
+                  :href="it.fileURL"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  @click.stop="trackDownload(it.fileURL)"
+                >Download PDF</a>
+              </template>
+              <template x-if="it.fileURL && it.pubType === 'application'">
+                <a
+                  class="pbtn"
+                  :href="it.fileURL"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  @click.stop="trackDownload(it.fileURL)"
+                >Open Application</a>
+              </template>
+            </td>
+            <td class="col-center">
+              <button
+                type="button"
+                class="row-caret-btn"
+                @click.stop="toggle(it.id)"
+                :aria-expanded="expanded === it.id ? 'true' : 'false'"
+                :aria-label="(expanded === it.id ? 'Collapse' : 'Expand') + ' details for ' + it.title"
+              >
+                <span class="row-caret" :class="expanded === it.id ? 'open' : ''">▾</span>
+              </button>
+            </td>
+          </tr>
+          <template x-if="expanded === it.id">
+            <tr>
+              <td colspan="6">
+                <div class="pub-card markdown-body">
+                  <template x-if="it.publicationDate">
+                    <span class="pub-card-date mb-5 px-3 block" x-text="it.dateAlt"></span>
+                  </template>
+                  <h2 class="pub-card-title mt-2 mb-3 px-3">
+                    <a :href="it.fullPath" x-text="it.title"></a>
+                  </h2>
+                  <template x-if="it.summary">
+                    <div class="pub-card-summary px-3" x-text="it.summary"></div>
+                  </template>
+                  <template x-if="!it.summary">
+                    <div class="pub-card-summary px-3">No summary available</div>
+                  </template>
+                  <template x-if="it.localArticlePath || it.fileURL">
+                    <ul class="pub-links mt-5 ml-2">
+                      <template x-if="it.localArticlePath">
+                        <li class="mt-2">
+                          <span class="link-label">Article&nbsp;</span><br />
+                          <a :href="it.localArticlePath" @click.stop="trackArticle(it.articleURL)" x-text="it.articleURL"></a>
+                        </li>
+                      </template>
+                      <template x-if="it.fileURL">
+                        <li class="mt-2">
+                          <span class="link-label">Download&nbsp;</span><br />
+                          <a :href="it.fileURL" target="_blank" rel="noopener noreferrer" @click.stop="trackDownload(it.fileURL)" x-text="it.title"></a>
+                          &nbsp;<span class="file-chip" x-text="it.fileType"></span>
+                        </li>
+                      </template>
+                    </ul>
+                  </template>
+                  <template x-if="it.tags.length">
+                    <div class="py-2 px-3">
+                      <template x-for="t in it.tags" :key="t"><span class="chip mt-1" x-text="t"></span></template>
+                    </div>
+                  </template>
+                  <div class="pub-card-archive text-center mt-10 px-3 py-3">
+                    Individual publications, as well as old meeting agendas, minutes, and materials,
+                    are always available for download from the ICJIA Document Archive:
+                    <a href="https://archive.icjia.cloud" target="_blank" rel="noopener noreferrer">https://archive.icjia.cloud</a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </template>
+    </table>
+
+    <div class="pfooter">
+      <span>Rows per page:</span>
+      <select x-model.number="perPage" @change="page = 1" aria-label="Rows per page">
+        <option value="100">100</option>
+        <option value="150">150</option>
+        <option value="200">200</option>
+        <option value="250">250</option>
+        <option value="500">500</option>
+      </select>
+      <span x-text="rangeText"></span>
+      <button class="pg-arrow" type="button" @click="if (page > 1) page--" :disabled="page <= 1" aria-label="Previous page">‹</button>
+      <button class="pg-arrow" type="button" @click="if (page < totalPages) page++" :disabled="page >= totalPages" aria-label="Next page">›</button>
+    </div>
+  </div>
+
+  {/* SSR baseline (no-JS / crawlers / SiteImprove) — first 150 shaped rows. */}
+  {
+    baseline && (
+      <div x-show="!ready">
+        <table class="ptable">
+          <thead>
+            <tr>
+              <th class="cell-date">Date</th>
+              <th>Title</th>
+              <th>Type</th>
+              <th class="col-center">Article</th>
+              <th class="col-center">File</th>
+            </tr>
+          </thead>
+          <tbody>
+            {baseline.map((it, idx) => (
+              <tr class:list={['prow', { 'prow-alt': idx % 2 === 1 }]}>
+                <td class="cell-date">{it.dateAlt}</td>
+                <td class="cell-title">
+                  {it.isNew && <span class="new-chip">NEW!</span>}
+                  {it.title}
+                </td>
+                <td>{it.typeLabel}</td>
+                <td class="col-center">
+                  {it.localArticlePath && (
+                    <a class="pbtn" href={it.localArticlePath}>
+                      Web Article
+                    </a>
+                  )}
+                </td>
+                <td class="col-center">
+                  {it.fileURL && (
+                    <a class="pbtn" href={it.fileURL} target="_blank" rel="noopener noreferrer">
+                      {it.pubType === 'application' ? 'Open Application' : 'Download PDF'}
+                    </a>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+</div>

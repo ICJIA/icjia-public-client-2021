@@ -1,0 +1,30 @@
+---
+// /about/employment/ — live-data SSR. Parity with EmploymentAll.vue: CMS "employment"
+// page title + a Current/Expired toggle over the jobs list + a static Internship
+// section. All toggle/list/intro logic lives in EmploymentListing.astro.
+//
+// Legacy 404s when the CMS "employment" page is missing (router push /404); mirror
+// that with a 404 Response. context-label = page.title (legacy EventBus emit).
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import EmploymentListing from '../../../components/EmploymentListing.astro';
+import { getAllJobs, getPage } from '../../../lib/data';
+import { setCache } from '../../../lib/cache';
+
+const [items, page] = await Promise.all([getAllJobs(), getPage('employment')]);
+
+if (!page) {
+  return new Response('Not found', { status: 404 });
+}
+
+setCache(Astro.response, 'jobs');
+---
+
+<BaseLayout
+  title="Employment — ICJIA"
+  description="Current and past employment and internship opportunities at the Illinois Criminal Justice Information Authority."
+  contextTitle={page.title}
+>
+  <div class="mx-auto max-w-5xl px-4 py-8 md:px-6">
+    <EmploymentListing page={page} items={items} />
+  </div>
+</BaseLayout>

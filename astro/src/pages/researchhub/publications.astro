@@ -1,0 +1,13 @@
+---
+// /researchhub/publications/ — per the section spec this is an ALIAS of the
+// About "PublicationsAll" listing (NOT a hub query): the legacy mounted the same
+// PublicationsAll.vue here and at /about/publications. The publications LISTING
+// component is owned by the About/Publications section and is not yet ported to
+// Astro, so — matching the legacy /publications redirect, which sends users to
+// /about/publications/ — this route 301-redirects to the canonical listing.
+//
+// FLAG: when the About owner builds the shared PublicationsListing component,
+// replace this redirect with an SSR render of getAllPublications() + that
+// component (the data fetcher getAllPublications already exists in lib/data.ts).
+return Astro.redirect('/about/publications/', 301);
+---

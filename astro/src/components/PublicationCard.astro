@@ -1,0 +1,91 @@
+---
+// Static (server-rendered) publication card. Mirrors the legacy
+// PublicationCard.vue: date (dateFormatAlt), uppercase bold title linking to
+// itself, summary or "No summary available", Article (localArticlePath) +
+// Download (fileURL, file-type chip) links, tag chips, and the longer archive
+// note box. Used standalone on the detail route AND inside the table's expand
+// row (PublicationTable renders the same structure via Alpine).
+//
+// Plausible (verbatim legacy event names): publicationList_article_view (Article)
+// and publicationList_file_download (Download). Wired as inline @click handlers
+// so the card stays a pure server component with no per-card script.
+//
+// applicationURL / datasetURL are dead on all 1108 records and the legacy card
+// never rendered them — intentionally omitted.
+import '../styles/publications.css';
+import type { PublicationListItem } from '../lib/data';
+
+interface Props {
+  item: PublicationListItem;
+}
+const { item } = Astro.props;
+---
+
+<div class="pub-card markdown-body">
+  {item.publicationDate && <span class="pub-card-date mb-5 px-3 block">{item.dateAlt}</span>}
+
+  <h2 class="pub-card-title mt-2 mb-3 px-3">
+    <a href={item.fullPath}>{item.title}</a>
+  </h2>
+
+  {
+    item.summary ? (
+      <div class="pub-card-summary px-3">{item.summary}</div>
+    ) : (
+      <div class="pub-card-summary px-3">No summary available</div>
+    )
+  }
+
+  {
+    (item.localArticlePath || item.fileURL) && (
+      <ul class="pub-links mt-5 ml-2">
+        {item.localArticlePath && (
+          <li class="mt-2">
+            <span class="link-label">Article&nbsp;</span>
+            <br />
+            <a
+              href={item.localArticlePath}
+              onclick={`try{window.plausible&&window.plausible('publicationList_article_view',{props:{url:${JSON.stringify(item.articleURL ?? '')}}})}catch(e){}`}
+            >
+              {item.articleURL}
+            </a>
+          </li>
+        )}
+
+        {item.fileURL && (
+          <li class="mt-2">
+            <span class="link-label">Download&nbsp;</span>
+            <br />
+            <a
+              href={item.fileURL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onclick={`try{window.plausible&&window.plausible('publicationList_file_download',{props:{url:${JSON.stringify(item.fileURL)}}})}catch(e){}`}
+            >
+              {item.title}
+            </a>
+            &nbsp;<span class="file-chip">{item.fileType}</span>
+          </li>
+        )}
+      </ul>
+    )
+  }
+
+  {
+    item.tags.length > 0 && (
+      <div class="py-2 px-3">
+        {item.tags.map((tag) => (
+          <span class="chip mt-1">{tag}</span>
+        ))}
+      </div>
+    )
+  }
+
+  <div class="pub-card-archive text-center mt-10 px-3 py-3">
+    Individual publications, as well as old meeting agendas, minutes, and materials, are always
+    available for download from the ICJIA Document Archive:
+    <a href="https://archive.icjia.cloud" target="_blank" rel="noopener noreferrer"
+      >https://archive.icjia.cloud</a
+    >
+  </div>
+</div>

@@ -1,0 +1,41 @@
+---
+// /about/publications/ + /news/publications/ listing — live-data SSR, parity
+// with the legacy PublicationsAll.vue: "ICJIA Publications" heading, the
+// v-data-table (PublicationTable), and the bottom archive note. Shared by BOTH
+// routes (legacy maps them to the SAME view) so they can't diverge.
+//
+// Renders the #publications-data island ONCE (the full ~1108-row archive, real
+// JSON); PublicationTable reads + filters it client-side via Alpine x-for, so
+// the archive ships in the response exactly once and only the current page
+// (≤150 rows) is ever in the DOM. The SSR baseline (first 150 shaped rows) is
+// the no-JS / crawler / SiteImprove view.
+import PublicationTable from './PublicationTable.astro';
+import type { PublicationListItem } from '../lib/data';
+import '../styles/publications.css';
+
+interface Props {
+  publications: PublicationListItem[];
+}
+const { publications } = Astro.props;
+
+// JSON-in-HTML: neutralize "<" so the data island can't break out of the script.
+const listJson = JSON.stringify(publications).replace(/</g, '\\u003c');
+const baseline = publications.slice(0, 150);
+---
+
+<div class="publications markdown-body pb-12">
+  <div class="page-heading">
+    <h1>ICJIA Publications</h1>
+  </div>
+
+  <script type="application/json" id="publications-data" set:html={listJson}></script>
+
+  <PublicationTable baseline={baseline} />
+
+  <div class="list-archive-note mt-5">
+    Individual publications are also available for download from the ICJIA Document Archive:
+    <a href="https://archive.icjia.cloud" target="_blank" rel="noopener noreferrer"
+      >https://archive.icjia.cloud</a
+    >
+  </div>
+</div>

@@ -1,0 +1,17 @@
+---
+// Calendar sub-view — DRAFT placeholder.
+//
+// DEVIATION (signed off in the migration brief): the legacy EventsAll.vue renders
+// a full Vuetify <v-calendar> month/week/day grid (Today/prev/next, colored event
+// chips by source, click→popover). There is no Alpine/Tailwind month-grid
+// primitive in this app yet and none of the proven list patterns cover one, so
+// this draft ships the LIST view fully and renders a placeholder for the calendar
+// toggle. List is the DEFAULT view (the legacy default was "calendar"). A real
+// month grid is a follow-up — see the events spec, option (a).
+import '../styles/events.css';
+---
+
+<div class="cal-placeholder">
+  <div class="cal-title">Calendar view — coming soon</div>
+  <p>The interactive event calendar is being rebuilt. Use the <strong>List View</strong> for now.</p>
+</div>

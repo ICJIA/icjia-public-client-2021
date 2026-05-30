@@ -1,0 +1,29 @@
+---
+// /news/publications/ — identical listing to /about/publications/. Legacy maps
+// this route to the SAME PublicationsAll.vue (no heading/content variant), so
+// this is a thin page rendering the shared PublicationsListing component. Both
+// render the full archive (REST via getAllPublications).
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PublicationsListing from '../../../components/PublicationsListing.astro';
+import { getAllPublications } from '../../../lib/data';
+import { setCache } from '../../../lib/cache';
+
+const publications = await getAllPublications();
+setCache(Astro.response, 'publications');
+---
+
+<BaseLayout
+  title="Publications — ICJIA"
+  description="Research reports, bulletins, datasets, and other publications from the Illinois Criminal Justice Information Authority."
+  contextTitle="Publications"
+>
+  <div class="mx-auto max-w-6xl px-4 py-8 md:px-6">
+    {
+      publications.length === 0 ? (
+        <p>No publications at this time.</p>
+      ) : (
+        <PublicationsListing publications={publications} />
+      )
+    }
+  </div>
+</BaseLayout>

@@ -1,0 +1,33 @@
+---
+// SHAPE A — "unit staff page" body. Ports the identical GrantsStaff.vue /
+// ISUStaff.vue (and HubStaff.vue, not owned here) templates:
+//   h1 (HARDCODED per-page literal, NOT unit.title)
+//   → unit intro html (unit.summary for FSGU/ISU; unit.body for R&A)
+//   → a column of BiographyCard, pre-sorted by sortModifier asc in the page.
+// Fully static / server-rendered. No filter, search, or toggle.
+//
+// PARITY FLAG (search unported): legacy made each staff name a search trigger
+// (goToSearch). BiographyCard already renders the name as plain text; nothing to
+// restore here until search lands.
+import '../styles/units.css';
+import BiographyCard from './BiographyCard.astro';
+import type { Biography } from '../lib/data';
+
+interface Props {
+  heading: string;
+  /** unit.summaryHtml (FSGU/ISU) or unit.bodyHtml (R&A), pre-rendered. */
+  introHtml?: string;
+  bios: Biography[];
+}
+const { heading, introHtml = '', bios } = Astro.props;
+---
+
+<div class="units-page markdown-body">
+  <h1>{heading}</h1>
+
+  {introHtml && <div set:html={introHtml} />}
+
+  <div class="staff-list">
+    {bios.map((item) => <BiographyCard item={item} />)}
+  </div>
+</div>

@@ -1,0 +1,16 @@
+---
+// Ports legacy Hub/BasePropDisplay.vue: a "label: value" row used across the
+// dataset/app detail prop lists and HubCard. The label is small + bold; the
+// value comes from the default <slot/>. `dense` tightens line-height (legacy
+// used it on the long Description row).
+interface Props {
+  name?: string;
+  dense?: boolean;
+}
+const { name = '', dense = false } = Astro.props;
+---
+
+<div class:list={['prop-row font-lato', { dense }]}>
+  {name && <span class="prop-name">{name}</span>}
+  <span class="prop-val"><slot /></span>
+</div>

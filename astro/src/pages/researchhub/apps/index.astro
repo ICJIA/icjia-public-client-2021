@@ -1,0 +1,29 @@
+---
+// /researchhub/apps/ — all published web apps, live (HUB Strapi). Parity with
+// AppsAll.vue: grid/list ?view toggle, NO pagination (render all), base64 image
+// (served via the JSON island as a lazy <img>, never inlined into bulk SSR HTML).
+// Heading is "Web Applications", count noun is "web apps".
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import HubListing from '../../../components/researchhub/HubListing.astro';
+import { getAllApps } from '../../../lib/research';
+import { setCache } from '../../../lib/cache';
+
+const apps = await getAllApps();
+setCache(Astro.response, 'hub');
+---
+
+<BaseLayout
+  title="Web Applications — ResearchHub — ICJIA"
+  description="Interactive criminal justice web applications from the Illinois Criminal Justice Information Authority."
+  contextTitle="Web Applications"
+>
+  <div class="mx-auto max-w-6xl px-4 py-8 md:px-6">
+    {
+      apps.length === 0 ? (
+        <p>No web applications at this time.</p>
+      ) : (
+        <HubListing kind="apps" heading="Web Applications" noun="web apps" items={apps} showUpdated />
+      )
+    }
+  </div>
+</BaseLayout>

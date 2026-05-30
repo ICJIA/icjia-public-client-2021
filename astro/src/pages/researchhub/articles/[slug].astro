@@ -1,0 +1,38 @@
+---
+// /researchhub/articles/[slug] — single article (live, HUB Strapi). getArticle
+// returns null when no published article matches → 404. Context bar shows the
+// article title.
+//
+// ⚠️ BLOCKING FOUNDATION DEFECT (research.ts + graphql/hub.js — not editable here):
+//   getArticle/getDataset/getApp pass the slug as a GraphQL VARIABLE inside
+//   `where:{ slug: $slug }`, but this Strapi v3 hub SILENTLY IGNORES that and
+//   returns ALL records — so the fetcher yields articles[0] (always the same
+//   article) for EVERY slug, and 404s only when the hub flakes. Verified by raw
+//   curl: `where:{slug:$slug}` (var) → 261 rows; inline literal → 1 row; bogus
+//   inline → []. FIX (foundation owner): bind the filter as a JSON variable —
+//     query($where: JSON){ articles(where:$where){…} }
+//     variables: { where: { status:"published", slug } }   // proven good→1, bogus→0
+//   (Equivalently interpolate a sanitized slug literal into the query string.)
+//   This page's logic is correct and will work unchanged once the fetcher does.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ArticleView from '../../../components/researchhub/ArticleView.astro';
+import { getArticle } from '../../../lib/research';
+import { setCache } from '../../../lib/cache';
+
+const { slug } = Astro.params;
+const article = slug ? await getArticle(slug) : null;
+if (!article) {
+  return new Response('Article not found', { status: 404 });
+}
+setCache(Astro.response, 'hub');
+---
+
+<BaseLayout
+  title={`${article.title} — ResearchHub — ICJIA`}
+  description={article.abstract ? article.abstract.replace(/<[^>]+>/g, '').slice(0, 200) : undefined}
+  contextTitle={article.title}
+>
+  <div class="pt-2 pb-12">
+    <ArticleView article={article} />
+  </div>
+</BaseLayout>

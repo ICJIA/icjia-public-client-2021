@@ -1,0 +1,160 @@
+---
+// /events/ (and /news/events/) listing — live-data SSR, parity with the legacy
+// EventsAll.vue + EventToggle.vue:
+//   • "ICJIA Events" heading
+//   • a List / Calendar view toggle and an "Upcoming and ongoing events only"
+//     checkbox (default CHECKED)
+//   • LIST view = the proven Alpine x-for + SSR-page-1 baseline pattern over the
+//     events-only feed (getEventsCalendarData().eventsList); each row is a green
+//     EventCard linking to /events/{slug}/
+//   • CALENDAR view = a placeholder (see EventsCalendar.astro)
+//
+// DEVIATIONS from legacy (signed off in the migration brief):
+//   1. Default view is LIST (legacy default was "calendar"); the calendar is a
+//      coming-soon placeholder for this draft.
+//   2. The events-only list filters by !hideFromList then the upcoming boundary
+//      (filterUpcoming). The richer calendar feed (events+meetings+grants+jobs +
+//      OPEN/DEADLINE point-events) is built in the data layer (calendarFeed) and
+//      will feed the real month grid when it lands.
+//   3. List rows render the event SUMMARY as plain text (not the rendered
+//      details||summary markdown the single page shows) — the data layer doesn't
+//      pre-render a body for list items, and the default upcoming filter yields
+//      an EMPTY events list on prod today, so this is low-risk. VR-tune follow-up.
+import EventCard from './EventCard.astro';
+import EventsCalendar from './EventsCalendar.astro';
+import { filterUpcoming, type EventListItem } from '../lib/data';
+import '../styles/events.css';
+
+interface Props {
+  events: EventListItem[];
+}
+const { events } = Astro.props;
+
+// Client list data (consumed by Alpine x-for). Keep keys short; rangeLine is
+// pre-computed server-side (Chicago getRange wording).
+const listData = events.map((e) => ({
+  p: e.fullPath,
+  n: e.name,
+  c: e.category ?? '',
+  r: e.rangeLine,
+  s: e.summary ?? '',
+  t: e.tags ?? [],
+  end: e.end ?? '',
+}));
+// JSON-in-HTML: neutralize "<" so the data island can't break out of the script.
+const listJson = JSON.stringify(listData).replace(/</g, '\\u003c');
+
+// Server-rendered baseline (SEO / no-JS) = the DEFAULT view (List) with the
+// DEFAULT filter (upcomingOnly=true). On prod this is empty today (all 6 events
+// are from 2021) — parity reproduces that.
+const ssrUpcoming = filterUpcoming(events);
+---
+
+<div
+  class="events"
+  x-data={`{
+    all: JSON.parse(document.getElementById('events-data').textContent),
+    view: 'list', upcomingOnly: true, ready: false,
+    init(){ this.ready = true; },
+    get shown(){
+      if(!this.upcomingOnly) return this.all;
+      const now = new Date();
+      return this.all.filter((it)=>{ if(!it.end) return false; const exp = new Date(it.end); exp.setHours(24,0,0,0); return exp >= now; });
+    },
+    get empty(){ return this.shown.length === 0; }
+  }`}
+>
+  <div class="page-heading text-center">
+    <h1>ICJIA Events</h1>
+
+    <div class="vtoggle mt-3" role="group" aria-label="Events view">
+      <button type="button" @click="view = 'list'" :aria-pressed="view === 'list'">
+        List View
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"
+          ><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5Z"
+          ></path></svg
+        >
+      </button>
+      <button type="button" @click="view = 'calendar'" :aria-pressed="view === 'calendar'">
+        Calendar View
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"
+          ><path d="M19 19H5V8h14m0-5h-1V1h-2v2H8V1H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Z"
+          ></path></svg
+        >
+      </button>
+    </div>
+
+    <div class="upcoming-toggle">
+      <input type="checkbox" id="showHideUpcoming" x-model="upcomingOnly" />
+      <label for="showHideUpcoming">Upcoming and ongoing events only</label>
+    </div>
+  </div>
+
+  <script type="application/json" id="events-data" set:html={listJson}></script>
+
+  {/* LIST view */}
+  <div x-show="view === 'list'" class="mt-8">
+    {/* SSR baseline (SEO / no-JS) — the default upcoming-filtered list. Hidden
+        once Alpine hydrates. */}
+    <div x-show="!ready">
+      {
+        ssrUpcoming.length === 0 ? (
+          <p class="events-empty">There are no upcoming events at this time.</p>
+        ) : (
+          ssrUpcoming.map((e) => (
+            <div class="mb-8">
+              <EventCard
+                name={e.name}
+                category={e.category}
+                rangeLine={e.rangeLine}
+                summary={e.summary}
+                tags={e.tags}
+                clickable={true}
+                fullPath={e.fullPath}
+              />
+            </div>
+          ))
+        )
+      }
+    </div>
+
+    {/* Interactive list (Alpine x-for) — shown after hydrate. Card markup is
+        inlined here (Astro won't evaluate the EventCard component's closures
+        inside a native <template>). */}
+    <div x-show="ready" x-cloak>
+      <template x-for="ev in shown" :key="ev.p">
+        <div class="mb-8">
+          <a :href="ev.p" class="event-card markdown-body">
+            <div class="event-toolbar">
+              <span class="event-toolbar-title" x-html="ev.n"></span>
+            </div>
+            <div class="event-meta">
+              <span class="event-cat" x-text="(ev.c ? ev.c.toUpperCase() + ' ' : '') + 'EVENT'"></span>
+              <template x-if="ev.r"><span class="event-range" x-text="' | ' + ev.r"></span></template>
+            </div>
+            <template x-if="ev.s">
+              <div class="event-body"><p x-text="ev.s"></p></div>
+            </template>
+            <template x-if="ev.t && ev.t.length">
+              <div class="event-tags">
+                <template x-for="tg in ev.t" :key="tg">
+                  <span class="chip" x-text="tg"></span>
+                </template>
+              </div>
+            </template>
+          </a>
+        </div>
+      </template>
+
+      <p class="events-empty" x-show="empty" x-cloak>There are no upcoming events at this time.</p>
+    </div>
+  </div>
+
+  {/* CALENDAR view — lazy-mounted placeholder (see EventsCalendar.astro). The
+      child component lives outside the native <template> per the .map caveat. */}
+  <template x-if="view === 'calendar'">
+    <div class="mt-8">
+      <EventsCalendar />
+    </div>
+  </template>
+</div>

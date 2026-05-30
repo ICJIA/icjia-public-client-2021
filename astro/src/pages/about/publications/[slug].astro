@@ -1,0 +1,35 @@
+---
+// /about/publications/[slug] — live-data SSR single publication. Parity with the
+// legacy PublicationsSingle.vue: an sr-only h1 (the title), the standalone
+// PublicationCard, and a "View all publications »" link. Sourced via GraphQL
+// singlePub(where:{slug}) (one row — GraphQL is fine here, unlike the list);
+// getPublication returns null when the slug is unknown → 404 (legacy pushed /404).
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PublicationCard from '../../../components/PublicationCard.astro';
+import { getPublication } from '../../../lib/data';
+import { setCache } from '../../../lib/cache';
+import '../../../styles/publications.css';
+
+const { slug } = Astro.params;
+const publication = slug ? await getPublication(slug) : null;
+
+if (!publication) {
+  return new Response('Not found', { status: 404 });
+}
+
+setCache(Astro.response, 'publications');
+---
+
+<BaseLayout
+  title={publication.title}
+  description={publication.summary}
+  contextTitle={publication.title}
+>
+  <div class="publications markdown-body mx-auto max-w-4xl px-4 py-8 md:px-6">
+    <h1 class="sr-only">{publication.title}</h1>
+    <PublicationCard item={publication} />
+    <div class="mt-5 text-right">
+      <a class="view-all" href="/about/publications/">View all publications&nbsp;&raquo;</a>
+    </div>
+  </div>
+</BaseLayout>

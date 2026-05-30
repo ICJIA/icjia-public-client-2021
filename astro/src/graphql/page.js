@@ -18,6 +18,7 @@ const GET_SINGLE_PAGE_QUERY = gql`
       showTOC
       body
       published_at
+      attachmentLabel
       attachments {
         updated_at
         created_at
@@ -29,6 +30,22 @@ const GET_SINGLE_PAGE_QUERY = gql`
       tags {
         title
         slug
+      }
+      clickthrough {
+        title
+        teaser
+        icon
+        url
+        datePosted
+      }
+      splash {
+        name
+        caption
+        alternativeText
+        url
+        width
+        height
+        formats
       }
     }
   }

@@ -1,0 +1,99 @@
+---
+// /researchhub/ — Hub Home landing. Ports HubHome.vue:
+//   • CMS intro from the AGENCY Strapi page slug "hub-home" (title + body);
+//   • "Latest Articles" carousel (5 banner articles, base64 splash via island);
+//   • "Latest Web Applications" (3 HubCards, base64 image lazy);
+//   • "Latest Datasets" (3 text-only HubCards, "Final date reflected in dataset");
+//   • ClickthroughBoxes (white variant) from page.clickthrough.
+// Each strip has an "All …" link to its list. Context bar label "Research Hub".
+//
+// Strips reuse getAllApps()/getAllDatasets() (date-desc) sliced to 3 — same shape
+// HubCard wants. The carousel uses getHubBannerArticles(5). base64 images are
+// bounded here (5 + 3) and served lazily, never inlined into bulk SSR HTML.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HubCarousel from '../../components/researchhub/HubCarousel.astro';
+import HubCard from '../../components/researchhub/HubCard.astro';
+import ContentClickThroughBoxes from '../../components/ContentClickThroughBoxes.astro';
+import { getPage } from '../../lib/data';
+import { getHubBannerArticles, getAllApps, getAllDatasets } from '../../lib/research';
+import { setCache } from '../../lib/cache';
+import '../../styles/researchhub.css';
+
+const [page, banner, allApps, allDatasets] = await Promise.all([
+  getPage('hub-home'),
+  getHubBannerArticles(5),
+  getAllApps(),
+  getAllDatasets(),
+]);
+const apps = allApps.slice(0, 3);
+const datasets = allDatasets.slice(0, 3);
+
+setCache(Astro.response, 'hub');
+---
+
+<BaseLayout
+  title="ResearchHub — ICJIA"
+  description="ICJIA ResearchHub: research articles, public datasets, and interactive web applications on criminal justice in Illinois."
+  contextTitle="Research Hub"
+>
+  <div class="researchhub markdown-body pb-12">
+    <div class="mx-auto max-w-6xl px-4 md:px-6">
+      {/* CMS intro (title + body) */}
+      {
+        page && (
+          <div class="mb-8 mt-8">
+            {page.titleHtml && <h1 set:html={page.titleHtml} />}
+            {page.safeBodyHtml && <div set:html={page.safeBodyHtml} />}
+          </div>
+        )
+      }
+
+      {/* Latest Articles */}
+      <div class="strip-head">
+        <h2>Latest Articles</h2>
+        <a class="strip-all" href="/researchhub/articles/">All articles&nbsp;&raquo;</a>
+      </div>
+    </div>
+
+    {banner.length > 0 && <HubCarousel articles={banner} />}
+
+    <div class="mx-auto max-w-6xl px-4 md:px-6">
+      {/* Latest Web Applications */}
+      <div class="strip-head">
+        <h2>Latest Web Applications</h2>
+        <a class="strip-all" href="/researchhub/apps/">All web apps&nbsp;&raquo;</a>
+      </div>
+      {
+        apps.length > 0 && (
+          <div class="grid grid-cols-1 gap-2 md:grid-cols-3">
+            {/* allowImage=false: app `image` is a 50–670KB base64 data-URI; per
+                the migration rule we never inline base64 in SSR HTML. The strip
+                renders text cards (the full /researchhub/apps/ list shows images
+                lazily via its JSON island). */}
+            {apps.map((a) => (
+              <HubCard item={a} orientation="grid" showUpdated allowImage={false} />
+            ))}
+          </div>
+        )
+      }
+
+      {/* Latest Datasets */}
+      <div class="strip-head">
+        <h2>Latest Datasets</h2>
+        <a class="strip-all" href="/researchhub/datasets/">All datasets&nbsp;&raquo;</a>
+      </div>
+      {
+        datasets.length > 0 && (
+          <div class="grid grid-cols-1 gap-2 md:grid-cols-3">
+            {datasets.map((d) => (
+              <HubCard item={d} orientation="grid" showUpdated updatedText="Final date reflected in dataset" />
+            ))}
+          </div>
+        )
+      }
+
+      {/* For more information — white click-through boxes from the CMS page. */}
+      {page?.clickthrough && <ContentClickThroughBoxes boxes={page.clickthrough} />}
+    </div>
+  </div>
+</BaseLayout>

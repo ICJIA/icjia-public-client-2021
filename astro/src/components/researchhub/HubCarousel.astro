@@ -1,0 +1,98 @@
+---
+// Hub-home "Latest Articles" slideshow. Ports the legacy v-carousel in
+// HubHome.vue: a 650px (responsive) stage of banner articles, each a full-bleed
+// base64 splash with a dark overlay carrying NEW! chip + date + title +
+// authors, linking to the article. Vuetify's auto-cycling carousel is
+// reimplemented with lightweight Alpine (auto-advance every 6s + clickable dots).
+//
+// base64 images are carried in the JSON island and bound lazily as the active
+// slide's <img> — NEVER inlined into SSR HTML. A static first-slide baseline
+// (real link + text, no image) renders for no-JS / SEO; Alpine enhances it.
+//
+// PERF: the legacy used the full 650px `splash` (these run 48–674KB each; 5 of
+// them ≈ 2.3MB). Inlining that — even in an island — sinks the hub-home payload,
+// the exact problem the migration's base64 rule guards against. So the island
+// carries the much smaller `thumbnail` (≈7–43KB each, ~85KB total) and only
+// falls back to `splash` when a record has no thumbnail. <!-- FLAG: thumbnail
+// (not full splash) for carousel weight; revisit if hero sharpness regresses. -->
+import type { HubBannerArticle } from '../../lib/research';
+import '../../styles/researchhub.css';
+
+interface Props {
+  articles: HubBannerArticle[];
+}
+const { articles } = Astro.props;
+
+// Island rows: only what a slide binds (lighter `thumbnail` for the bg image).
+const rows = articles.map((a) => ({
+  p: a.fullPath,
+  t: a.title,
+  d: a.dateLabel,
+  au: a.authors || '',
+  img: a.thumbnail || a.splash || null,
+}));
+const json = JSON.stringify(rows).replace(/</g, '\\u003c');
+const first = articles[0] ?? null;
+---
+
+{
+  articles.length > 0 && (
+    <div
+      class="hub-carousel"
+      role="region"
+      aria-label="Latest research articles slideshow"
+      x-data={`{
+        slides: JSON.parse(this.$el.querySelector('[data-carousel-json]').textContent),
+        i: 0, ready: false, timer: null,
+        init(){
+          this.ready = true;
+          if (this.slides.length > 1) this.timer = setInterval(() => this.next(), 6000);
+        },
+        next(){ this.i = (this.i + 1) % this.slides.length; },
+        goto(n){ this.i = n; if (this.timer){ clearInterval(this.timer); this.timer = setInterval(() => this.next(), 6000); } },
+        destroy(){ if (this.timer) clearInterval(this.timer); }
+      }`}
+    >
+      <script type="application/json" data-carousel-json set:html={json} is:inline />
+
+      {/* Static first-slide baseline (no-JS / SEO): text only, no base64. */}
+      {first && (
+        <a class="hc-slide" href={first.fullPath} x-show="!ready">
+          <div class="hc-overlay">
+            <div class="hc-overlay-inner">
+              {first.dateLabel && <p class="hc-date">{first.dateLabel}</p>}
+              <p class="hc-title" role="heading" aria-level="2">{first.title}</p>
+              {first.authors && <div class="hc-authors">{first.authors}</div>}
+            </div>
+          </div>
+        </a>
+      )}
+
+      {/* Enhanced active slide (Alpine) — base64 image bound lazily. */}
+      <a class="hc-slide" :href="slides[i].p" x-show="ready" x-cloak>
+        <template x-if="slides[i].img">
+          <img :src="slides[i].img" alt="" loading="lazy" decoding="async" />
+        </template>
+        <div class="hc-overlay">
+          <div class="hc-overlay-inner">
+            <template x-if="slides[i].d"><p class="hc-date" x-text="slides[i].d"></p></template>
+            <p class="hc-title" role="heading" aria-level="2" x-text="slides[i].t"></p>
+            <template x-if="slides[i].au"><div class="hc-authors" x-text="slides[i].au"></div></template>
+          </div>
+        </div>
+      </a>
+
+      <div class="hc-dots" x-show="ready && slides.length > 1" x-cloak>
+        <template x-for="(s, n) in slides" :key="n">
+          <button
+            type="button"
+            class="hc-dot"
+            :aria-current="n === i ? 'true' : 'false'"
+            :aria-label="'Go to slide ' + (n + 1)"
+            @click.prevent="goto(n)"
+          ></button>
+        </template>
+      </div>
+    </div>
+  )
+}

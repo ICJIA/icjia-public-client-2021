@@ -1,0 +1,129 @@
+---
+// Static (server-rendered) job card — ports the legacy JobCard.vue. Used by BOTH:
+//   • the single-job page (summaryOnly=false → body + tags + attachments table +
+//     external links + "Related ICJIA Content" News list; title links to itself), and
+//   • as the visual reference for the /about/employment/ list cards (the list's
+//     interactive x-for inlines this same markup in EmploymentListing.astro, because
+//     Astro won't evaluate .map closures inside a native <template>).
+//
+// Card head mirrors JobCard.vue: "{CAT} EMPLOYMENT" kicker, an "Accepting
+// applications through {end}" inline (non-expired + dates), a red "Expired: {end}"
+// chip (expired), the title h2, then "Posted {start}". summaryOnly adds the
+// "Click for full job listing" hint (legacy isClickable && summaryOnly).
+//
+// Attachments/related markup copies MeetingCard.astro (att-table, sub-heading,
+// meeting-list) for parity; classes are scoped under `.employment` via employment.css.
+import '../styles/employment.css';
+import type { JobListItem, JobDetail } from '../lib/data';
+
+interface Props {
+  item: JobListItem | JobDetail;
+  /** true → list card (summary + hint, no body/attachments/relations). */
+  summaryOnly?: boolean;
+}
+const { item, summaryOnly = false } = Astro.props;
+const detail = item as JobDetail;
+const isDetail = !summaryOnly;
+---
+
+<div class="job-card markdown-body">
+  <div class="job-head">
+    <span class="job-kicker">{item.catLabel}</span>
+    {item.acceptingLine && <span class="job-accepting">&nbsp;|&nbsp;{item.acceptingLine}</span>}
+    <span class="job-spacer"></span>
+    {item.expired && <span class="job-chip-expired">{item.expiredChip}</span>}
+  </div>
+
+  <h2 class="job-title">
+    {summaryOnly ? <a href={item.fullPath}>{item.title}</a> : item.title}
+  </h2>
+
+  {item.postedLine && <span class="job-posted">{item.postedLine}</span>}
+
+  {
+    summaryOnly
+      ? item.summaryHtml && <div class="job-body pt-3 pl-3" set:html={item.summaryHtml} />
+      : detail.bodyHtml && <div class="job-body pt-3 pl-3" set:html={detail.bodyHtml} />
+  }
+
+  {
+    isDetail && (
+      <div class="ml-2">
+        {detail.tags.length > 0 && (
+          <div class="mt-2 mb-5">
+            {detail.tags.map((t) => (
+              <span class="chip">{t}</span>
+            ))}
+          </div>
+        )}
+
+        {detail.attachments.length > 0 && (
+          <div class="mt-8">
+            <h3 class="sub-heading">Attachments</h3>
+            <table class="att-table">
+              <thead>
+                <tr>
+                  <th>Filename</th>
+                  <th>Last Updated</th>
+                  <th>Size</th>
+                </tr>
+              </thead>
+              <tbody>
+                {detail.attachments.map((a) => (
+                  <tr>
+                    <td>
+                      <a class="attachment" href={a.url} target="_blank" rel="noopener noreferrer">
+                        {a.name}
+                        <span class="sr-only"> (opens in new tab)</span>
+                      </a>
+                    </td>
+                    <td class="att-updated">{a.updatedAlt}</td>
+                    <td class="att-size">{a.niceSize}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {detail.external.length > 0 && (
+          <div class="mt-8">
+            <h3 class="sub-heading">External Links</h3>
+            <ul class="meeting-list">
+              {detail.external.map((e) => (
+                <li class="attachment-link">
+                  <a href={e.url} target="_blank" rel="noopener noreferrer" title={e.url}>
+                    {e.title}
+                    <span class="sr-only"> (opens in new tab)</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {detail.related.length > 0 && (
+          <div class="mt-8 related-box">
+            <h3 class="sub-heading">Related ICJIA Content</h3>
+            <ul class="meeting-list">
+              {detail.related.map((r) => (
+                <li class="related-link">
+                  <a href={r.fullPath}>{r.displayTitle}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  {
+    summaryOnly && (
+      <div class="click-hint" aria-hidden="true">
+        <span>Click for full job listing</span>
+        <span class="click-hint-arrow">&rarr;</span>
+      </div>
+    )
+  }
+</div>

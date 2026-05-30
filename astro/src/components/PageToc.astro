@@ -1,0 +1,83 @@
+---
+// PageToc — sticky sidebar table of contents (ports legacy Toc.vue).
+// Renders the on-page h2 anchors (from getPage().toc) as a sticky nav with an
+// uppercased heading + anchor links (href="#id"). md+ only (hidden below md,
+// matching the legacy two-column layout where the TOC only shows on wide views).
+//
+// Scroll-spy: wired in the Alpine init() (the project has no @alpinejs/intersect
+// plugin, so this uses a native IntersectionObserver plus a rAF-throttled scroll
+// listener). It tracks which heading is at the top of the viewport and adds
+// `toc-active` to the matching link — the modern equivalent of Toc.vue's
+// offsetTop/onscroll "visible" logic.
+import type { TocItem } from '../lib/data';
+import '../styles/page-toc.css';
+
+interface Props {
+  items: TocItem[];
+  heading?: string;
+}
+const { items, heading = 'Contents' } = Astro.props;
+const headingUpper = heading.toUpperCase();
+
+// Only emit the TOC when there is something to link to (mirrors v-if="toc.length").
+const tocItems = items.filter((i) => i.id && i.text);
+const ids = JSON.stringify(tocItems.map((i) => i.id)).replace(/</g, '\\u003c');
+---
+
+{
+  tocItems.length > 0 && (
+    <nav
+      class="page-toc hidden md:block"
+      aria-label="On this page"
+      x-data={`{
+        active: '',
+        init(){
+          const self = this;
+          const ids = JSON.parse(this.$el.dataset.ids || '[]');
+          const targets = ids
+            .map((id)=>document.getElementById(id))
+            .filter(Boolean);
+          if(!targets.length) return;
+          // Active heading = the last one whose top has scrolled past a line
+          // ~130px below the viewport top (mirrors legacy Toc.vue's scroll spy).
+          const recompute = ()=>{
+            let above = '';
+            for(const t of targets){
+              if(t.getBoundingClientRect().top < 130) above = t.id; else break;
+            }
+            self.active = above || targets[0].id;
+          };
+          // IntersectionObserver = cheap "a heading crossed the band" trigger;
+          // a rAF-throttled scroll listener guarantees we track every position
+          // (IO callbacks coalesce and can skip fast/programmatic scrolls).
+          let ticking = false;
+          const onScroll = ()=>{
+            if(ticking) return; ticking = true;
+            requestAnimationFrame(()=>{ recompute(); ticking = false; });
+          };
+          const io = new IntersectionObserver(()=>recompute(), {
+            rootMargin: '-130px 0px -70% 0px', threshold: 0,
+          });
+          targets.forEach((t)=>io.observe(t));
+          window.addEventListener('scroll', onScroll, { passive: true });
+          window.addEventListener('resize', onScroll, { passive: true });
+          recompute();
+        }
+      }`}
+      data-ids={ids}
+    >
+      <h3 class="toc-heading">{headingUpper}</h3>
+      <div class="toc-divider">
+        <ul class="toc-list">
+          {tocItems.map((item) => (
+            <li>
+              <a href={`#${item.id}`} :class={`active==='${item.id}' ? 'toc-active' : ''`}>
+                {item.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </nav>
+  )
+}

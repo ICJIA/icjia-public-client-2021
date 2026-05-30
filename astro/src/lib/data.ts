@@ -7,8 +7,8 @@
 // governed by the per-route CDN cache (see cache.ts).
 import "./server-dom"; // ensure global DOMParser (linkedom) is installed
 // @ts-expect-error — gql-client.js is plain JS (ported verbatim)
-import { runQuery } from "./gql-client.js";
-import { renderToHtml } from "./markdown.js";
+import { runQuery, deepSanitize } from "./gql-client.js";
+import { renderToHtml, parseHeadings } from "./markdown.js";
 import {
   GET_SINGLE_POST_QUERY,
   GET_ALL_NEWS_QUERY,
@@ -25,6 +25,18 @@ import {
   GET_SINGLE_FUNDING_QUERY,
 } from "../graphql/grants.js";
 import { GET_SINGLE_PAGE_QUERY } from "../graphql/page.js";
+import {
+  GET_ALL_JOBS_QUERY,
+  GET_SINGLE_JOB_QUERY,
+} from "../graphql/employment.js";
+import { GET_EVENTS, GET_SINGLE_EVENT_QUERY } from "../graphql/events.js";
+import { GET_SINGLE_PUBLICATION_QUERY } from "../graphql/publications.js";
+import {
+  GET_SINGLE_BIOGRAPHY_QUERY,
+  GET_ALL_BIOGRAPHIES_QUERY,
+  GET_BIOGRAPHIES_BY_UNIT_QUERY,
+} from "../graphql/biographies.js";
+import { GET_SINGLE_UNIT_QUERY } from "../graphql/units.js";
 
 // Strapi (agency) host — splash URLs come back as /uploads/... relative paths.
 const STRAPI_BASE = "https://agency.icjia-api.cloud";
@@ -543,29 +555,92 @@ export function buildRelated(content: any): RelatedItem[] {
 }
 
 // ── CMS page (section intros + generic CMS pages) ─────────────────
+export interface TocItem {
+  /** anchor id (markdown-it-anchor slug) — scroll target is `#${id}`. */
+  id: string;
+  /** heading text. */
+  text: string;
+}
+export interface CmsClickthrough {
+  title?: string;
+  teaser?: string;
+  /** teaser markdown rendered + sanitized server-side. */
+  teaserHtml: string;
+  icon?: string;
+  url?: string;
+  datePosted?: string;
+}
 export interface CmsPage {
   title: string;
+  /** title rendered as inline markdown (a title may contain markdown). */
+  titleHtml: string;
   hideTitle: boolean;
   summary?: string;
   /** body markdown rendered + sanitized server-side. */
   safeBodyHtml: string;
   showTOC?: boolean;
+  /** AttachmentList heading; "" → "Attachments" (legacy default). */
+  attachmentLabel: string;
   attachments: AttachmentItem[];
+  /** clickthrough boxes (About/units/hub landings), teaser pre-rendered. */
+  clickthrough: CmsClickthrough[];
+  /** splash image passthrough for CmsImage (null when absent). */
+  splash: StrapiImage | null;
+  /** h2 anchors for an on-page TOC (legacy Toc: h2[id] not under #disclaimer). */
+  toc: TocItem[];
   tags: string[];
   published_at?: string;
 }
+
+/**
+ * Build the legacy Toc list from rendered body HTML: every <h2> that is NOT
+ * inside #disclaimer, in document order, as {id (anchor slug already injected
+ * by markdown-it-anchor), text}. Mirrors Toc.vue's setToc()/closest("#disclaimer")
+ * filter; the anchor scroll target is `#${id}`.
+ */
+function buildToc(html: string): TocItem[] {
+  if (!html) return [];
+  try {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return Array.from(doc.querySelectorAll("h2"))
+      .filter((h2: any) => !h2.closest("#disclaimer"))
+      .map((h2: any) => ({
+        id: h2.getAttribute("id") || "",
+        text: (h2.textContent || "").trim(),
+      }))
+      .filter((t: TocItem) => t.text.length > 0);
+  } catch {
+    return [];
+  }
+}
+
 /** Fetch a CMS "page" by slug (live) + render its body. null when none matches. */
 export async function getPage(slug: string): Promise<CmsPage | null> {
   const { data } = await runQuery(GET_SINGLE_PAGE_QUERY, { slug }, "no-cache");
   const p = data?.pages?.[0];
   if (!p) return null;
+  const safeBodyHtml = p.body ? renderToHtml(p.body) : "";
   return {
     title: p.title,
+    titleHtml: p.title ? renderToHtml(p.title) : "",
     hideTitle: !!p.hideTitle,
     summary: p.summary,
-    safeBodyHtml: p.body ? renderToHtml(p.body) : "",
+    safeBodyHtml,
     showTOC: p.showTOC,
+    attachmentLabel: p.attachmentLabel || "Attachments",
     attachments: shapeAttachments(p.attachments),
+    clickthrough: Array.isArray(p.clickthrough)
+      ? p.clickthrough.map((c: any) => ({
+          title: c.title,
+          teaser: c.teaser,
+          teaserHtml: c.teaser ? renderToHtml(c.teaser) : "",
+          icon: c.icon,
+          url: c.url,
+          datePosted: c.datePosted,
+        }))
+      : [],
+    splash: (p.splash as StrapiImage) || null,
+    toc: buildToc(safeBodyHtml),
     tags: Array.isArray(p.tags) ? p.tags.map((t: any) => t.title) : [],
     published_at: p.published_at,
   };
@@ -736,4 +811,764 @@ export async function getHome(): Promise<HomeData> {
   }));
   const boxes = data?.home?.clickThroughBoxes ?? [];
   return { news, meetings, funding, employment, boxes };
+}
+
+// ── Employment (/about/employment/) ───────────────────────────────
+// config.maps.employment — category → label. Fallback "Undefined" (legacy
+// getProperCategory). Card kicker = employmentCategoryLabel(cat).toUpperCase()
+// + " EMPLOYMENT" (legacy JobCard).
+const EMPLOYMENT_LABELS: Record<string, string> = {
+  contract: "Contract",
+  fullTime: "Full Time",
+  internship: "Internship",
+  partTime: "Part Time",
+};
+export function employmentCategoryLabel(cat?: string): string {
+  return (cat && EMPLOYMENT_LABELS[cat]) || "Undefined";
+}
+
+export interface JobListItem {
+  id: string;
+  slug: string;
+  title: string;
+  fullPath: string;
+  category: string;
+  /** "{CAT} EMPLOYMENT" — uppercase label + " EMPLOYMENT" (legacy kicker). */
+  catLabel: string;
+  summaryHtml: string;
+  /** "Posted {date}" source date (legacy `format(start)`). */
+  postedLine: string;
+  start?: string;
+  end?: string;
+  expired: boolean;
+  /** "Accepting applications through {date}" — only when not expired + dates. */
+  acceptingLine: string;
+  /** "Expired: {dateFormatAlt(end)}" — the expired chip. */
+  expiredChip: string;
+  endMs: number;
+  tags: string[];
+}
+// Shape a raw Strapi job the way JobCard does: uppercase category + " EMPLOYMENT"
+// kicker, "Posted {format(start)}" line, accepting/expired states keyed off
+// isExpired(end) (legacy `addOneDayToDate(end) >/< now`). endMs kept so a client
+// island can re-filter/sort without a refetch (server already sorts end:desc).
+function shapeJobList(j: any): JobListItem {
+  const catLabel = `${employmentCategoryLabel(j.category).toUpperCase()} EMPLOYMENT`;
+  const expired = isExpired(j.end);
+  return {
+    id: String(j.id),
+    slug: j.slug,
+    title: j.title,
+    fullPath: `/about/employment/${j.slug}/`,
+    category: j.category ?? "",
+    catLabel,
+    summaryHtml: j.summary ? renderToHtml(j.summary) : "",
+    postedLine: j.start ? `Posted ${formatNewsDate(j.start)}` : "",
+    start: j.start,
+    end: j.end,
+    expired,
+    acceptingLine:
+      !expired && j.start && j.end
+        ? `Accepting applications through ${formatNewsDate(j.end)}`
+        : "",
+    expiredChip: expired ? `Expired: ${dateFormatAlt(j.end)}` : "",
+    endMs: j.end ? new Date(j.end).getTime() : 0,
+    tags: Array.isArray(j.tags) ? j.tags.map((t: any) => t.title) : [],
+  };
+}
+
+/** All jobs (end desc — server-sorted), live, for /about/employment/. */
+export async function getAllJobs(): Promise<JobListItem[]> {
+  const { data } = await runQuery(GET_ALL_JOBS_QUERY, {}, "no-cache");
+  return (data?.jobs ?? []).map(shapeJobList);
+}
+
+export interface JobDetail extends JobListItem {
+  bodyHtml: string;
+  attachments: AttachmentItem[];
+  external: MeetingExternalItem[];
+  /** related News only — "Related ICJIA Content" heading (legacy JobCard). */
+  related: RelatedItem[];
+  published_at?: string;
+}
+/** A single job by slug, live; null when none matches (page 404s). */
+export async function getJob(slug: string): Promise<JobDetail | null> {
+  const { data } = await runQuery(GET_SINGLE_JOB_QUERY, { slug }, "no-cache");
+  const j = data?.jobs?.[0];
+  if (!j) return null;
+  const base = shapeJobList(j);
+  const external: MeetingExternalItem[] = Array.isArray(j.external)
+    ? j.external
+        .filter((e: any) => e && e.url)
+        .map((e: any) => ({ title: e.title || e.url, url: e.url }))
+    : [];
+  // JobCard wires RelatedList off the job's relations; the single query returns
+  // only `posts`, so related is News-only (heading "Related ICJIA Content").
+  const related: RelatedItem[] = (Array.isArray(j.posts) ? j.posts : [])
+    .map((p: any) => ({
+      displayTitle: `[News]: ${p.title}`,
+      fullPath: `/news/${p.slug}/`,
+    }))
+    .sort((a: RelatedItem, b: RelatedItem) =>
+      a.displayTitle.localeCompare(b.displayTitle),
+    );
+  return {
+    ...base,
+    bodyHtml: j.body ? renderToHtml(j.body) : "",
+    attachments: shapeAttachments(j.attachments),
+    external,
+    related,
+    published_at: j.published_at,
+  };
+}
+
+// ── Events (/events/) ─────────────────────────────────────────────
+// Chicago-tz parts with FULL month name + numeric pieces, for the legacy
+// EventsAll.getRange() format strings. (chicagoParts above uses short months;
+// events need full + h:mm a, so a dedicated extractor.)
+function chicagoEventParts(iso: string) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Chicago",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).formatToParts(new Date(iso));
+  const g = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
+  return {
+    month: g("month"),
+    day: g("day"),
+    year: g("year"),
+    hour: g("hour"),
+    minute: g("minute"),
+    dayPeriod: g("dayPeriod").toLowerCase().replace(/\./g, ""),
+  };
+}
+// Chicago-local calendar-day difference (legacy dayjs diff in days, both tz'd).
+function chicagoDayDiff(start: string, end: string): number {
+  const dayMs = 86_400_000;
+  const toChicagoMidnight = (iso: string): number => {
+    const p = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Chicago",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).formatToParts(new Date(iso));
+    const g = (t: string) => Number(p.find((x) => x.type === t)?.value);
+    return Date.UTC(g("year"), g("month") - 1, g("day"));
+  };
+  return Math.floor((toChicagoMidnight(end) - toChicagoMidnight(start)) / dayMs);
+}
+function isMultiDay(start?: string, end?: string): boolean {
+  if (!start || !end) return false;
+  return chicagoDayDiff(start, end) > 0;
+}
+
+/**
+ * Legacy EventsAll.getRange(start, end, timed) — PLAIN-TEXT form (the legacy
+ * wrapped the date in <span style='font-weight:400'>; here it's the text the
+ * section renders, styled in the component). America/Chicago, three branches:
+ *   timed + same day  → "h:mm a to h:mm a | MMMM DD, YYYY"
+ *   !timed + same day → "All Day | MMMM DD, YYYY"
+ *   multi-day         → "MMMM D through MMMM D, YYYY"
+ * (Differs from meetingDateLine — DO NOT reuse.)
+ */
+export function eventRangeLine(
+  start?: string,
+  end?: string,
+  timed?: boolean,
+): string {
+  if (!start || !end) return "";
+  const s = chicagoEventParts(start);
+  const e = chicagoEventParts(end);
+  const days = chicagoDayDiff(start, end);
+  const time = (p: ReturnType<typeof chicagoEventParts>) =>
+    `${p.hour}:${p.minute} ${p.dayPeriod}`;
+  const padDay = (d: string) => (d.length < 2 ? "0" + d : d);
+  if (days === 0 && timed) {
+    return `${time(s)} to ${time(e)} | ${s.month} ${padDay(s.day)}, ${s.year}`;
+  }
+  if (days === 0 && !timed) {
+    return `All Day | ${s.month} ${padDay(s.day)}, ${s.year}`;
+  }
+  return `${s.month} ${s.day} through ${e.month} ${e.day}, ${e.year}`;
+}
+
+export type EventColor = "green" | "blue" | "indigo" | "purple";
+export interface CalendarItem {
+  id?: string;
+  name: string;
+  slug: string;
+  fullPath: string;
+  contentType: "event" | "meeting" | "funding" | "employment";
+  category?: string;
+  summary?: string;
+  details?: string;
+  start?: string;
+  end?: string;
+  timed: boolean;
+  color: EventColor;
+  hideFromList: boolean;
+  hideFromCalendar: boolean;
+  /** raw start in ms (sort key — legacy orderBy start asc). */
+  startMs: number;
+  tags: string[];
+}
+export interface EventListItem {
+  id: string;
+  name: string;
+  slug: string;
+  fullPath: string;
+  category?: string;
+  summary?: string;
+  start?: string;
+  end?: string;
+  timed: boolean;
+  /** legacy getRange line (Chicago). */
+  rangeLine: string;
+  startMs: number;
+  tags: string[];
+}
+export interface EventsAggregate {
+  /** events only (hideFromList=false), legacy list view source. */
+  eventsList: EventListItem[];
+  /** full calendar feed: events+meetings+grants(+open/deadline)+jobs(+open/deadline). */
+  calendarFeed: CalendarItem[];
+}
+
+const tags = (x: any): string[] =>
+  Array.isArray(x?.tags) ? x.tags.map((t: any) => t.title) : [];
+const ms = (iso?: string): number => (iso ? new Date(iso).getTime() : 0);
+
+// Build the calendar feed exactly as EventsAll.result() does: per-type color +
+// fullPath + hideFrom* flags, derived `timed` for meetings/grants/jobs, then the
+// synthetic grant/job OPEN + DEADLINE point-events. Sorted start asc.
+function buildCalendarFeed(data: any): CalendarItem[] {
+  const out: CalendarItem[] = [];
+  const events = Array.isArray(data?.events) ? data.events : [];
+  const meetings = Array.isArray(data?.meetings) ? data.meetings : [];
+  const grants = Array.isArray(data?.grants) ? data.grants : [];
+  const jobs = Array.isArray(data?.jobs) ? data.jobs : [];
+
+  for (const e of events)
+    out.push({
+      id: String(e.id),
+      name: e.name,
+      slug: e.slug,
+      fullPath: `/events/${e.slug}/`,
+      contentType: "event",
+      category: e.category,
+      summary: e.summary,
+      details: e.details,
+      start: e.start,
+      end: e.end,
+      timed: !!e.timed,
+      color: "green",
+      hideFromList: false,
+      hideFromCalendar: false,
+      startMs: ms(e.start),
+      tags: tags(e),
+    });
+  for (const m of meetings)
+    out.push({
+      id: String(m.id),
+      name: m.name, // aliased title in GET_EVENTS
+      slug: m.slug,
+      fullPath: `/news/meetings/${m.slug}/`,
+      contentType: "meeting",
+      category: m.category,
+      summary: m.summary,
+      start: m.start,
+      end: m.end,
+      timed: !isMultiDay(m.start, m.end),
+      color: "blue",
+      hideFromList: false,
+      hideFromCalendar: false,
+      startMs: ms(m.start),
+      tags: tags(m),
+    });
+  for (const g of grants) {
+    const fullPath = `/grants/funding/${g.slug}/`;
+    out.push({
+      id: String(g.id),
+      name: g.name, // aliased title in GET_EVENTS
+      slug: g.slug,
+      fullPath,
+      contentType: "funding",
+      category: g.category,
+      summary: g.summary,
+      start: g.start,
+      end: g.end,
+      timed: !isMultiDay(g.start, g.end),
+      color: "indigo",
+      hideFromList: false,
+      hideFromCalendar: true,
+      startMs: ms(g.start),
+      tags: tags(g),
+    });
+    out.push({
+      name: `OPEN: ${g.name}`,
+      slug: g.slug,
+      fullPath,
+      contentType: "funding",
+      category: g.category,
+      summary: g.summary,
+      start: g.start,
+      end: g.start,
+      timed: false,
+      color: "indigo",
+      hideFromList: true,
+      hideFromCalendar: false,
+      startMs: ms(g.start),
+      tags: [],
+    });
+    out.push({
+      name: `DEADLINE: ${g.name}`,
+      slug: g.slug,
+      fullPath,
+      contentType: "funding",
+      category: g.category,
+      summary: g.summary,
+      start: g.end,
+      end: g.end,
+      timed: false,
+      color: "indigo",
+      hideFromList: true,
+      hideFromCalendar: false,
+      startMs: ms(g.end),
+      tags: [],
+    });
+  }
+  for (const j of jobs) {
+    const fullPath = `/about/employment/${j.slug}/`;
+    out.push({
+      id: String(j.id),
+      name: j.title,
+      slug: j.slug,
+      fullPath,
+      contentType: "employment",
+      category: j.category,
+      summary: j.summary,
+      start: j.start,
+      end: j.end,
+      timed: !isMultiDay(j.start, j.end),
+      color: "purple",
+      hideFromList: false,
+      hideFromCalendar: true,
+      startMs: ms(j.start),
+      tags: tags(j),
+    });
+    out.push({
+      name: `OPEN: ${j.title}`,
+      slug: j.slug,
+      fullPath,
+      contentType: "employment",
+      category: j.category,
+      summary: j.summary,
+      start: j.start,
+      end: j.start,
+      timed: false,
+      color: "purple",
+      hideFromList: true,
+      hideFromCalendar: false,
+      startMs: ms(j.start),
+      tags: [],
+    });
+    out.push({
+      name: `DEADLINE: ${j.title}`,
+      slug: j.slug,
+      fullPath,
+      contentType: "employment",
+      category: j.category,
+      summary: j.summary,
+      start: j.end,
+      end: j.end,
+      timed: false,
+      color: "purple",
+      hideFromList: true,
+      hideFromCalendar: false,
+      startMs: ms(j.end),
+      tags: [],
+    });
+  }
+  return out.sort((a, b) => a.startMs - b.startMs);
+}
+
+function shapeEventListItem(e: any): EventListItem {
+  return {
+    id: String(e.id),
+    name: e.name,
+    slug: e.slug,
+    fullPath: `/events/${e.slug}/`,
+    category: e.category,
+    summary: e.summary,
+    start: e.start,
+    end: e.end,
+    timed: !!e.timed,
+    rangeLine: eventRangeLine(e.start, e.end, !!e.timed),
+    startMs: ms(e.start),
+    tags: tags(e),
+  };
+}
+
+/**
+ * Events list + calendar aggregate, live. The single GET_EVENTS returns
+ * events+meetings+grants+jobs; eventsList is events-only (start asc), and
+ * calendarFeed is the full feed (incl. synthetic OPEN/DEADLINE point-events).
+ * UPCOMING filter (default true in the legacy) is a CLIENT concern (a toggle);
+ * see filterUpcoming() for the exact legacy boundary if a section pre-filters.
+ */
+export async function getEventsCalendarData(): Promise<EventsAggregate> {
+  const { data } = await runQuery(GET_EVENTS, {}, "no-cache");
+  const eventsList = (data?.events ?? [])
+    .map(shapeEventListItem)
+    .sort((a: EventListItem, b: EventListItem) => a.startMs - b.startMs);
+  return { eventsList, calendarFeed: buildCalendarFeed(data) };
+}
+/** Alias — some callers want just the aggregate. */
+export const getEvents = getEventsCalendarData;
+
+/**
+ * Legacy EventsAll upcoming filter: keep items whose end-date, advanced to the
+ * NEXT midnight (`setHours(24,0,0,0)`), is still >= now — i.e. anything ending
+ * today or later. Ported verbatim from EventsAll.filterDisplay(). Exposed so a
+ * section can pre-filter server-side (the legacy default is upcomingOnly=true).
+ */
+export function filterUpcoming<T extends { end?: string }>(items: T[]): T[] {
+  const now = new Date();
+  return items.filter((it) => {
+    if (!it.end) return false;
+    const exp = new Date(it.end);
+    exp.setHours(24, 0, 0, 0);
+    return exp >= now;
+  });
+}
+
+export interface EventDetail {
+  id: string;
+  name: string;
+  slug: string;
+  fullPath: string;
+  category?: string;
+  summary?: string;
+  start?: string;
+  end?: string;
+  timed: boolean;
+  rangeLine: string;
+  bodyHtml: string;
+  /** related News + Meetings, "Related" heading (legacy EventsSingle). */
+  related: RelatedItem[];
+  tags: string[];
+  published_at?: string;
+}
+/** A single event by slug, live; null when none matches (page 404s). */
+export async function getEvent(slug: string): Promise<EventDetail | null> {
+  const { data } = await runQuery(GET_SINGLE_EVENT_QUERY, { slug }, "no-cache");
+  const e = data?.events?.[0];
+  if (!e) return null;
+  // EventsSingle renders the body from details||summary.
+  const bodySource = e.details || e.summary || "";
+  return {
+    id: String(e.id),
+    name: e.name,
+    slug: e.slug,
+    fullPath: `/events/${e.slug}/`,
+    category: e.category,
+    summary: e.summary,
+    start: e.start,
+    end: e.end,
+    timed: !!e.timed,
+    rangeLine: eventRangeLine(e.start, e.end, !!e.timed),
+    bodyHtml: bodySource ? renderToHtml(bodySource) : "",
+    related: buildRelated(e),
+    tags: tags(e),
+    published_at: e.published_at,
+  };
+}
+
+// ── Publications (/about/publications/) ───────────────────────────
+// Verbatim port of src/lib/utils.js getPublicationType — 19-case switch,
+// default "General". (NOT a config map; NOT fundingCategoryLabel.)
+export function publicationTypeLabel(type?: string): string {
+  switch (type) {
+    case "researchReport":
+      return "Research Report";
+    case "researchBulletin":
+      return "Research Bulletin";
+    case "researchAtAGlance":
+      return "Research At A Glance";
+    case "trendsAndIssuesUpdate":
+      return "Trends and Issues Update";
+    case "motorVehicleTheftPublications":
+      return "Motor Vehicle Theft Publication";
+    case "barj":
+      return "BARJ";
+    case "compiler":
+      return "Compiler";
+    case "dataset":
+      return "Dataset";
+    case "getTheFacts":
+      return "GET THE FACTS";
+    case "programEvaluationSummary":
+      return "Program Evaluation Summary";
+    case "megProfiles":
+      return "MEG Profiles";
+    case "annualReport":
+      return "Annual Report";
+    case "article":
+      return "Article";
+    case "report":
+      return "Report";
+    case "evaluation":
+      return "Evaluation";
+    case "toolkit":
+      return "Toolkit";
+    case "onGoodAuthority":
+      return "On Good Authority";
+    case "application":
+      return "Application";
+    default:
+      return "General";
+  }
+}
+
+// Legacy PublicationCard.getFileType: last path segment's extension, uppercased.
+export function getFileType(url?: string): string {
+  if (!url) return "";
+  return url.split(/[#?]/)[0].split(".").pop()!.trim().toUpperCase();
+}
+
+const PUB_BASE = "https://agency.icjia-api.cloud";
+const PUB_CLIENT = "https://icjia.illinois.gov";
+const PUB_PAGE_SIZE = 500;
+
+export interface PublicationListItem {
+  id: string;
+  title: string;
+  slug: string;
+  summary?: string;
+  pubType?: string;
+  /** publicationDate (the archive's own field — NOT published_at). */
+  publicationDate?: string;
+  tags: string[];
+  fileURL?: string;
+  articleURL?: string;
+  fullPath: string;
+  /** path-only when articleURL is an icjia.illinois.gov link, else null. */
+  localArticlePath: string | null;
+  /** getPublicationType(pubType). */
+  typeLabel: string;
+  /** dateFormatAlt(publicationDate). */
+  dateAlt: string;
+  isNew: boolean;
+  /** getFileType(fileURL) — the card's file-type chip. */
+  fileType: string;
+  /** lowercase search haystack (title + summary + type + tags). */
+  haystack: string;
+}
+
+function shapePublication(p: any): PublicationListItem {
+  const tagsArr: string[] = Array.isArray(p.tags)
+    ? p.tags.map((t: any) => (typeof t === "string" ? t : t?.title)).filter(Boolean)
+    : [];
+  const localArticlePath =
+    p.articleURL && p.articleURL.includes(PUB_CLIENT)
+      ? p.articleURL.replace(PUB_CLIENT, "")
+      : null;
+  const typeLabel = publicationTypeLabel(p.pubType);
+  return {
+    id: String(p.id),
+    title: p.title,
+    slug: p.slug,
+    summary: p.summary,
+    pubType: p.pubType,
+    publicationDate: p.publicationDate,
+    tags: tagsArr,
+    fileURL: p.fileURL,
+    articleURL: p.articleURL,
+    fullPath: `/about/publications/${p.slug}/`,
+    localArticlePath,
+    typeLabel,
+    dateAlt: dateFormatAlt(p.publicationDate),
+    isNew: isNew(p.publicationDate, DAYS_TO_SHOW_NEW),
+    fileType: getFileType(p.fileURL),
+    haystack: [p.title, p.summary, typeLabel, tagsArr.join(" ")]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase(),
+  };
+}
+
+// uniqBy id (lodash parity) — first occurrence wins.
+function uniqById<T extends { id: string | number }>(arr: T[]): T[] {
+  const seen = new Set<string>();
+  const out: T[] = [];
+  for (const item of arr) {
+    const k = String(item.id);
+    if (!seen.has(k)) {
+      seen.add(k);
+      out.push(item);
+    }
+  }
+  return out;
+}
+
+/**
+ * All publications, live, for /about/publications/ — REST PAGER (NOT GraphQL).
+ * Verbatim port of PublicationsAll.fetchPublications(): GET /publications/count,
+ * then ceil(count/500) slices of GET /publications?_limit=500&_start=<n>;
+ * uniqBy id; run every row through deepSanitize (the SiteImprove filter — the
+ * legacy ran the raw axios payload through it); shape; sort publicationDate desc.
+ * GraphQL is deliberately NOT used: limit:990 silently clips the ~1108-row
+ * archive and limit:2000 errors.
+ */
+export async function getAllPublications(): Promise<PublicationListItem[]> {
+  const countRes = await fetch(`${PUB_BASE}/publications/count`);
+  if (!countRes.ok) throw new Error(`publications/count HTTP ${countRes.status}`);
+  const count = Number(await countRes.json());
+  const iterations = Math.ceil(count / PUB_PAGE_SIZE);
+  let rows: any[] = [];
+  for (let i = 0; i < iterations; i++) {
+    const start = i * PUB_PAGE_SIZE;
+    const res = await fetch(
+      `${PUB_BASE}/publications?_limit=${PUB_PAGE_SIZE}&_start=${start}`,
+    );
+    if (!res.ok) throw new Error(`publications slice HTTP ${res.status}`);
+    rows = rows.concat(await res.json());
+  }
+  const clean = deepSanitize(uniqById(rows));
+  return (clean as any[])
+    .map(shapePublication)
+    .sort((a, b) =>
+      String(b.publicationDate || "").localeCompare(String(a.publicationDate || "")),
+    );
+}
+
+/** A single publication by slug, live (GraphQL is fine here — one row). null → 404. */
+export async function getPublication(slug: string): Promise<PublicationListItem | null> {
+  const { data } = await runQuery(GET_SINGLE_PUBLICATION_QUERY, { slug }, "no-cache");
+  const p = data?.publications?.[0];
+  if (!p) return null;
+  // Legacy PublicationsSingle ad-hoc fileURL capitalization fixups.
+  if (p.fileURL) {
+    p.fileURL = p.fileURL
+      .replace("/Compiler/", "/compiler/")
+      .replace("/OGA/", "/oga/")
+      .replace("/researchreports/", "/ResearchReports/");
+  }
+  return shapePublication(p);
+}
+
+// ── Biographies (/about/biographies/ + staff lists) ───────────────
+// SHARED by: biographies/[slug], about icjia-staff + composition-and-membership,
+// and the unit staff lists (FSGU/ISU/R&A). Body is the `bio` field (aliased
+// `body` in the queries). Headshot → pickStrapiImage (NO Thumbor; CmsImage);
+// 75/109 records have no headshot, so callers gate on headshot != null.
+export interface Biography {
+  id: string;
+  slug: string;
+  fullName: string;
+  suffix?: string;
+  /** "{fullName}, {suffix}" when a suffix exists, else fullName. */
+  fullNameWithSuffix: string;
+  title?: string;
+  unit: { title?: string; shortName?: string; slug?: string; url?: string } | null;
+  affiliation?: string;
+  sortModifier?: string;
+  /** card subtitle pieces: "{unitTitle} | {role}" (both optional, legacy BiographyCard). */
+  subtitleParts: { unitTitle?: string; role?: string };
+  headshot: StrapiImagePick | null;
+  /** bio markdown rendered + sanitized server-side. */
+  bodyHtml: string;
+}
+
+function shapeBiography(b: any): Biography {
+  const fullName = b.fullName || "";
+  const suffix = b.suffix || undefined;
+  const unit = b.unit
+    ? {
+        title: b.unit.title,
+        shortName: b.unit.shortName,
+        slug: b.unit.slug,
+        url: b.unit.url,
+      }
+    : null;
+  return {
+    id: String(b.id ?? b.slug),
+    slug: b.slug,
+    fullName,
+    suffix,
+    fullNameWithSuffix: suffix ? `${fullName}, ${suffix}` : fullName,
+    title: b.title,
+    unit,
+    affiliation: b.affiliation,
+    sortModifier: b.sortModifier,
+    subtitleParts: { unitTitle: unit?.title, role: b.title },
+    headshot: pickStrapiImage(b.headshot),
+    bodyHtml: b.body ? renderToHtml(b.body) : "",
+  };
+}
+
+// lodash _.orderBy(list, ["sortModifier"], ["asc"]) — sortModifier is a string;
+// replicate the default ascending string comparison the legacy lists used.
+function bySortModifier(a: Biography, b: Biography): number {
+  return String(a.sortModifier ?? "").localeCompare(String(b.sortModifier ?? ""));
+}
+
+/** A single biography by slug, live; null when none matches (page 404s). */
+export async function getBiography(slug: string): Promise<Biography | null> {
+  const { data } = await runQuery(GET_SINGLE_BIOGRAPHY_QUERY, { slug }, "no-cache");
+  const b = data?.biographies?.[0];
+  return b ? shapeBiography(b) : null;
+}
+
+/** All biographies, live, re-sorted by sortModifier asc (legacy Staff.vue). */
+export async function getAllBiographies(): Promise<Biography[]> {
+  const { data } = await runQuery(GET_ALL_BIOGRAPHIES_QUERY, {}, "no-cache");
+  return (data?.biographies ?? []).map(shapeBiography).sort(bySortModifier);
+}
+
+/**
+ * Biographies for one unit (by unit.shortName, e.g. "FSGU"/"ISU"/"RA"), live.
+ * The query sorts lastName:asc but the legacy unit-staff views OVERRIDE that
+ * with sortModifier asc — replicated here.
+ */
+export async function getBiographiesByUnit(shortName: string): Promise<Biography[]> {
+  const { data } = await runQuery(
+    GET_BIOGRAPHIES_BY_UNIT_QUERY,
+    { shortName },
+    "no-cache",
+  );
+  return (data?.biographies ?? []).map(shapeBiography).sort(bySortModifier);
+}
+
+// ── Units (/about/units/) ─────────────────────────────────────────
+// UnitsSingle + the unit staff pages. FSGU/ISU render summaryHtml; R&A renders
+// bodyHtml; UnitsSingle renders bodyHtml + title + url. Staff come from
+// getBiographiesByUnit(shortName) (above).
+export interface UnitDetail {
+  id: string;
+  slug: string;
+  title: string;
+  shortName?: string;
+  url?: string;
+  summaryHtml: string;
+  bodyHtml: string;
+}
+/** A single unit by slug, live; null when none matches (page 404s). */
+export async function getUnit(slug: string): Promise<UnitDetail | null> {
+  const { data } = await runQuery(GET_SINGLE_UNIT_QUERY, { slug }, "no-cache");
+  const u = data?.units?.[0];
+  if (!u) return null;
+  return {
+    id: String(u.id),
+    slug: u.slug,
+    title: u.title,
+    shortName: u.shortName,
+    url: u.url,
+    summaryHtml: u.summary ? renderToHtml(u.summary) : "",
+    bodyHtml: u.body ? renderToHtml(u.body) : "",
+  };
 }

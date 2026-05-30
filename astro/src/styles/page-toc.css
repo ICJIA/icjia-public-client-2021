@@ -1,0 +1,45 @@
+/* PageToc (legacy Toc.vue) — sticky sidebar TOC. Scoped .page-toc.
+   Draft styling ported from Toc.vue (sticky top, divider rule, active = brand
+   blue + bold). Pixel-tune later. md+ only (visibility handled inline). */
+.page-toc {
+  position: sticky;
+  top: 185px;
+  font-size: 20px;
+}
+.page-toc .toc-heading {
+  margin: 0 0 1rem -3px;
+  font-weight: 700;
+  font-size: inherit;
+  cursor: pointer;
+}
+.page-toc .toc-heading:hover {
+  color: #0d4474;
+}
+.page-toc .toc-divider {
+  border-left: 1px solid #ccc;
+}
+.page-toc ul.toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.page-toc ul.toc-list li {
+  margin-bottom: 3px;
+}
+.page-toc ul.toc-list li a {
+  display: block;
+  color: #000;
+  text-decoration: none;
+  padding: 2px 5px;
+  margin-left: -1px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.page-toc ul.toc-list li a:hover {
+  color: #000;
+  background: #eee;
+}
+.page-toc ul.toc-list li a.toc-active {
+  color: #0d4474;
+  font-weight: 700;
+}

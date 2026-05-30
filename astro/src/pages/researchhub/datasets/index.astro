@@ -1,0 +1,35 @@
+---
+// /researchhub/datasets/ — all published datasets, live (HUB Strapi). Parity
+// with DatasetsAll.vue: grid/list ?view toggle, NO pagination (render all),
+// text-only cards with the "Final date reflected in dataset" updated label.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import HubListing from '../../../components/researchhub/HubListing.astro';
+import { getAllDatasets } from '../../../lib/research';
+import { setCache } from '../../../lib/cache';
+
+const datasets = await getAllDatasets();
+setCache(Astro.response, 'hub');
+---
+
+<BaseLayout
+  title="Datasets — ResearchHub — ICJIA"
+  description="Public criminal justice datasets published by the Illinois Criminal Justice Information Authority."
+  contextTitle="Datasets"
+>
+  <div class="mx-auto max-w-6xl px-4 py-8 md:px-6">
+    {
+      datasets.length === 0 ? (
+        <p>No datasets at this time.</p>
+      ) : (
+        <HubListing
+          kind="datasets"
+          heading="Datasets"
+          noun="datasets"
+          items={datasets}
+          showUpdated
+          updatedText="Final date reflected in dataset"
+        />
+      )
+    }
+  </div>
+</BaseLayout>

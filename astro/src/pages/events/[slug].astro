@@ -1,0 +1,65 @@
+---
+// /events/{slug} — live-data SSR single event. Parity with the legacy
+// EventsSingle.vue: "ICJIA Events" heading, one static (non-clickable) EventCard,
+// a "View all events »" link, and a JSON-LD Event (mirrors meetings/[slug]).
+// NOTE: there is NO /news/events/{slug} route (legacy single route is /events/:slug
+// only). 404 when the slug is not found.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EventCard from '../../components/EventCard.astro';
+import { getEvent } from '../../lib/data';
+import { setCache } from '../../lib/cache';
+
+const { slug } = Astro.params;
+const event = slug ? await getEvent(slug) : null;
+
+if (!event) {
+  return new Response('Not found', { status: 404 });
+}
+
+setCache(Astro.response, 'events');
+
+// JSON-LD Event — mirrors the meetings/[slug] pattern (faithful to the legacy
+// site's structured-data approach for date-bound content).
+const jsonld: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Event',
+  name: event.name,
+  url: `https://icjia.illinois.gov/events/${event.slug}`,
+  inLanguage: 'en-US',
+  eventStatus: 'https://schema.org/EventScheduled',
+  eventAttendanceMode: 'https://schema.org/MixedEventAttendanceMode',
+  organizer: {
+    '@type': 'GovernmentOrganization',
+    name: 'Illinois Criminal Justice Information Authority',
+    alternateName: 'ICJIA',
+    url: 'https://icjia.illinois.gov',
+  },
+};
+if (event.start) jsonld.startDate = event.start;
+if (event.end) jsonld.endDate = event.end;
+if (event.summary) jsonld.description = event.summary;
+const jsonldStr = JSON.stringify(jsonld).replace(/</g, '\\u003c');
+---
+
+<BaseLayout title={event.name} description={event.summary} contextTitle={event.name}>
+  <div class="events mx-auto max-w-4xl px-4 py-8 md:px-6">
+    <div class="markdown-body">
+      <h1>ICJIA Events</h1>
+    </div>
+    <div class="mt-8">
+      <EventCard
+        name={event.name}
+        category={event.category}
+        rangeLine={event.rangeLine}
+        bodyHtml={event.bodyHtml}
+        tags={event.tags}
+        related={event.related}
+        clickable={false}
+      />
+    </div>
+    <div class="mt-5 text-right">
+      <a class="view-all" href="/events/">View all events&nbsp;&raquo;</a>
+    </div>
+  </div>
+  <script type="application/ld+json" set:html={jsonldStr} />
+</BaseLayout>

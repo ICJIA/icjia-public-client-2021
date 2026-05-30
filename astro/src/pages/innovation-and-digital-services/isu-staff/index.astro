@@ -1,0 +1,31 @@
+---
+// /innovation-and-digital-services/isu-staff/ — Information Systems Unit Staff.
+// Ports ISUStaff.vue: hardcoded H1 + unit.summary (slug
+// 'innovation-and-digital-services') + biographies where unit.shortName='IDS'
+// (getBiographiesByUnit re-sorts sortModifier asc, matching legacy). contextTitle
+// "Staff". 404 if unit or bios are empty.
+//
+// PARITY DEVIATION (corrected to live data): legacy ISUStaff.vue queried
+// shortName "ISU", but the live CMS unit's shortName is "IDS" (unit was renamed
+// Information Systems Unit -> Innovation and Digital Services). "ISU" returns 0
+// bios against current data, so we query "IDS" (8 bios). H1 kept as the legacy
+// literal "Information Systems Unit Staff" pending a content decision.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import UnitStaffListing from '../../../components/UnitStaffListing.astro';
+import { getUnit, getBiographiesByUnit } from '../../../lib/data';
+import { setCache } from '../../../lib/cache';
+
+const HEADING = 'Information Systems Unit Staff';
+const [unit, bios] = await Promise.all([
+  getUnit('innovation-and-digital-services'),
+  getBiographiesByUnit('IDS'),
+]);
+if (!unit || bios.length === 0) return new Response(null, { status: 404 });
+setCache(Astro.response, 'bios');
+---
+
+<BaseLayout title={`${HEADING} — ICJIA`} description={HEADING} contextTitle="Staff">
+  <div class="mx-auto max-w-5xl px-4 py-8 md:px-6">
+    <UnitStaffListing heading={HEADING} introHtml={unit.summaryHtml} bios={bios} />
+  </div>
+</BaseLayout>

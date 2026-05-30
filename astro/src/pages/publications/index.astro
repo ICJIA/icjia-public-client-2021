@@ -1,0 +1,7 @@
+---
+// /publications/ — legacy redirect to /about/publications/ (parity with
+// src/router/redirects). Preserves old inbound links. Implemented as a runtime
+// 301 (output: 'server') rather than an astro.config `redirects` entry, since
+// the shared astro.config is owned by the foundation and not edited per-section.
+return Astro.redirect('/about/publications/', 301);
+---

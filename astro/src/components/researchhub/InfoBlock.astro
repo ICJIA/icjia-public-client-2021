@@ -1,0 +1,21 @@
+---
+// Ports legacy Hub/BaseInfoBlock.vue: a titled grey .info-block panel
+// (Funding acknowledgment / Suggested citation / Related contents / About the
+// authors). `.info-block` + `.info-block-title` styles are already in
+// article-view.css. `large` toggles the legacy `small` modifier off (default
+// here matches the detail-view usage where ArticleView passed :large="true").
+//
+// Body is provided via the default <slot/>. When `html` is passed it is set
+// directly (citation HTML uses v-html in the legacy); otherwise the slot wins.
+interface Props {
+  title: string;
+  large?: boolean;
+  html?: string;
+}
+const { title, large = true, html } = Astro.props;
+---
+
+<div class:list={['info-block', { small: !large }]}>
+  <div class="info-block-title">{title}</div>
+  {html != null ? <div set:html={html} /> : <slot />}
+</div>

@@ -1,0 +1,44 @@
+---
+// /researchhub/hub-staff/ — Research & Analysis staff. Ports HubStaff.vue:
+//   heading "Research & Analysis Staff", the unit body (from the R&A unit), then
+//   a column of BiographyCards. Live; staff come from getBiographiesByUnit, the
+//   intro from getUnit (both AGENCY Strapi).
+//
+// NOTE: the unit shortName is "R&A" (27 bios) — verified live; the unit slug is
+// "research-and-analysis-unit". (The task brief said "RA", which returns 0 bios;
+// "R&A" is the correct ground-truth value.)
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BiographyCard from '../../components/BiographyCard.astro';
+import { getBiographiesByUnit, getUnit } from '../../lib/data';
+import { setCache } from '../../lib/cache';
+
+const [staff, unit] = await Promise.all([
+  getBiographiesByUnit('R&A'),
+  getUnit('research-and-analysis-unit'),
+]);
+setCache(Astro.response, 'bios');
+---
+
+<BaseLayout
+  title="Research & Analysis Staff — ResearchHub — ICJIA"
+  description="Meet the Research & Analysis unit staff at the Illinois Criminal Justice Information Authority."
+  contextTitle="Research & Analysis Staff"
+>
+  <div class="markdown-body mx-auto max-w-5xl px-4 py-8 md:px-6">
+    <h1>Research &amp; Analysis Staff</h1>
+
+    {unit?.bodyHtml && <div class="-mt-2 mb-8" set:html={unit.bodyHtml} />}
+
+    {
+      staff.length === 0 ? (
+        <p>Staff information is unavailable at this time.</p>
+      ) : (
+        <div class="flex flex-col gap-4">
+          {staff.map((b) => (
+            <BiographyCard item={b} />
+          ))}
+        </div>
+      )
+    }
+  </div>
+</BaseLayout>

@@ -1,0 +1,352 @@
+/* ResearchHub section styles — own file (do NOT edit shared CSS). Mirrors the
+   legacy Hub views (HubCard.vue, ArticlesAll/DatasetsAll/AppsAll, HubHome,
+   AppView/DatasetView markers + prop displays). Layout uses Tailwind utilities
+   in the markup; this file carries only the section-specific look (cards,
+   chips, toggle, carousel, markers) that Tailwind utilities don't express.
+   #article-view / #article-toc / #dataset-view / .info-block live in the
+   already-ported article-view.css and are NOT redefined here. */
+
+/* ── list page heading + "Showing N of M" + view toggle ───────────────── */
+.researchhub .page-heading h1 {
+  font-family: "Oswald", sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+}
+.researchhub .showing-count {
+  font-weight: 900;
+  font-size: 12px;
+  color: #333;
+}
+.researchhub .vtoggle {
+  display: inline-flex;
+  border: 1px solid #0d4474;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.researchhub .vtoggle button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 5px 14px;
+  background: #fff;
+  color: #0d4474;
+  cursor: pointer;
+  line-height: 1.4;
+}
+.researchhub .vtoggle button + button {
+  border-left: 1px solid #0d4474;
+}
+.researchhub .vtoggle button[aria-pressed="true"] {
+  background: #0d4474;
+  color: #fff;
+}
+
+/* ── HubCard (article|dataset|app) ────────────────────────────────────── */
+/* Legacy v-card: elevation 2, 1px outline, generous padding, grid min-h 400. */
+.researchhub .hub-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  background: #fff;
+  padding: 2rem 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+  transition: box-shadow 0.2s ease;
+}
+.researchhub .hub-card:hover,
+.researchhub .hub-card:focus-visible {
+  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 5px 8px 0 rgba(0, 0, 0, 0.14),
+    0 1px 14px 0 rgba(0, 0, 0, 0.12);
+}
+.researchhub .hub-card--grid {
+  min-height: 400px;
+}
+.researchhub .hub-card .hc-date {
+  font-family: "Lato", sans-serif;
+  font-size: 0.85rem;
+  color: #333;
+  padding: 0 0.75rem;
+}
+.researchhub .hub-card .hc-title {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.4rem;
+  line-height: 1.6rem;
+  font-weight: 500;
+  color: #111;
+  padding: 0 0.75rem;
+  margin: 0.25rem 0 0.5rem;
+}
+.researchhub .hub-card .hc-authors {
+  font-weight: 700;
+  color: #000;
+  font-size: 12px;
+  padding: 0 0.75rem;
+  margin-bottom: 0.5rem;
+}
+.researchhub .hub-card .hc-img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border: 1px solid #fafafa;
+  margin-bottom: 1rem;
+  background: #f3f4f6;
+}
+.researchhub .hub-card .hc-teaser {
+  color: #111;
+  font-size: 0.95rem;
+  padding: 0 0.75rem;
+  margin-bottom: 0.5rem;
+}
+.researchhub .hub-card .hc-props {
+  padding: 0 0.75rem;
+}
+
+/* NEW! chip — legacy v-chip label small, black text on light grey. */
+.researchhub .hub-new {
+  display: inline-block;
+  background: #e0e0e0;
+  color: #000;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1;
+  padding: 5px 8px;
+  border-radius: 4px;
+  margin: 0 0.75rem 0.75rem;
+}
+
+/* prop rows (BasePropDisplay) + tag chips (BasePropChip) */
+.researchhub .prop-row {
+  font-family: "Lato", sans-serif;
+  margin-top: 0.25rem;
+}
+.researchhub .prop-row.dense {
+  line-height: 1.2;
+}
+.researchhub .prop-name {
+  font-size: 0.8em;
+  font-weight: 700;
+  padding-right: 0.5rem;
+}
+.researchhub .prop-val {
+  font-size: 0.8em;
+}
+/* PARITY FLAG (search unported): legacy category/tag were search triggers.
+   Rendered as non-interactive text/pills here. */
+.researchhub .category {
+  font-size: 12px;
+  color: #0e4471;
+}
+.researchhub .chip {
+  display: inline-block;
+  border: 1px solid #bbb;
+  color: #555;
+  font-size: 11px;
+  padding: 1px 8px;
+  border-radius: 12px;
+  margin-right: 4px;
+  margin-bottom: 4px;
+}
+
+/* ── grid / list containers (Tailwind grid in markup; these are fallbacks) ── */
+.researchhub .hub-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+@media (min-width: 768px) {
+  .researchhub .hub-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.researchhub .hub-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+
+/* ── Load more button ─────────────────────────────────────────────────── */
+.researchhub .load-more {
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 20px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: #fff;
+  color: #111;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14);
+}
+.researchhub .load-more:hover {
+  background: #f5f5f5;
+}
+
+/* ── detail-view shared bits ──────────────────────────────────────────── */
+.researchhub .detail-card {
+  background: #fafafa;
+  border: 1px solid #ddd;
+  padding: 2.5rem 1.25rem;
+}
+.researchhub .marker-external,
+.researchhub .marker-project {
+  color: #0e4471;
+  font-family: "Lato", sans-serif;
+}
+.researchhub .marker-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 0.5rem;
+}
+.researchhub .marker-row svg {
+  width: 16px;
+  height: 16px;
+}
+.researchhub .detail-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 22px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: #fff;
+  color: #111;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14);
+  text-decoration: none;
+}
+.researchhub .detail-btn:hover {
+  background: #f5f5f5;
+}
+
+/* ── hub-home strips + carousel ───────────────────────────────────────── */
+.researchhub .strip-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.5rem;
+  margin: 2rem 0 1rem;
+}
+.researchhub .strip-head h2 {
+  font-family: "Oswald", sans-serif;
+  font-size: 28px;
+  font-weight: 900;
+  margin: 0;
+}
+.researchhub .strip-all {
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  padding: 4px 12px;
+  color: #0d4474;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.researchhub .strip-all:hover {
+  background: #f5f5f5;
+}
+
+/* Carousel: a 650px (240/360 responsive) stage; slides are full-bleed splash
+   with a dark overlay + centered title/authors/date. Lightweight Alpine
+   advances the active index; CSS handles the visual swap. */
+.researchhub .hub-carousel {
+  position: relative;
+  height: 240px;
+  background: #1a1a1a;
+  overflow: hidden;
+}
+@media (min-width: 600px) {
+  .researchhub .hub-carousel {
+    height: 360px;
+  }
+}
+@media (min-width: 960px) {
+  .researchhub .hub-carousel {
+    height: 650px;
+  }
+}
+.researchhub .hc-slide {
+  position: absolute;
+  inset: 0;
+  display: block;
+  text-decoration: none;
+}
+.researchhub .hc-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.researchhub .hc-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 0 1.5rem;
+  text-align: center;
+}
+.researchhub .hc-overlay-inner {
+  max-width: 850px;
+}
+.researchhub .hc-overlay .hc-date {
+  font-size: 18px;
+  font-weight: 300;
+  color: #fff;
+  margin-bottom: 0;
+}
+.researchhub .hc-overlay .hc-title {
+  color: #fff;
+  font-weight: 900;
+  font-size: 28px;
+  margin: 0;
+  font-family: "Oswald", sans-serif;
+  padding: 0;
+}
+@media (min-width: 960px) {
+  .researchhub .hc-overlay .hc-title {
+    font-size: 36px;
+  }
+}
+.researchhub .hc-overlay .hc-authors {
+  color: #fff;
+  font-size: 14px;
+  margin-top: 0.5rem;
+}
+.researchhub .hc-overlay .hub-new {
+  background: #0d4474;
+  color: #fff;
+  margin: 0 0 0.5rem;
+}
+.researchhub .hc-dots {
+  position: absolute;
+  bottom: 12px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  z-index: 2;
+}
+.researchhub .hc-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  border: 1px solid #fff;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+.researchhub .hc-dot[aria-current="true"] {
+  background: #fff;
+}

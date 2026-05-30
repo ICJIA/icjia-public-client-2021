@@ -1,0 +1,6 @@
+---
+// Legacy redirect parity: /researchhub/hub-home/ → /researchhub/ (the hub home).
+// The legacy router mapped "/researchhub/hub-home/" to the hubHome route; we
+// preserve it as a 301 so old bookmarks/links keep working.
+return Astro.redirect('/researchhub/', 301);
+---

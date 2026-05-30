@@ -1,0 +1,22 @@
+---
+// /innovation-and-digital-services/ — IDS overview. Ports ISUHome.vue: a plain
+// CMS page (slug 'innovation-and-digital-services-home', title+body+showTOC+
+// clickthrough), rendered by the shared BasePage. contextTitle "Home" (legacy
+// EventBus context-label "Home").
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BasePage from '../../components/BasePage.astro';
+import { getPage } from '../../lib/data';
+import { setCache } from '../../lib/cache';
+
+const page = await getPage('innovation-and-digital-services-home');
+if (!page) return new Response(null, { status: 404 });
+setCache(Astro.response, 'page');
+---
+
+<BaseLayout
+  title={`${page.title} — ICJIA`}
+  description={page.summary || page.title}
+  contextTitle="Home"
+>
+  <BasePage page={page} />
+</BaseLayout>

@@ -1,0 +1,49 @@
+---
+// Top hero image for CMS pages (news posts, publications, etc.) that carry a
+// splash. Ports legacy Splash.vue: a centered, contained image at ~2:1 aspect
+// ratio with an optional 12px caption beneath it. Image optimization is handled
+// entirely by CmsImage/pickStrapiImage (astro:assets, same-origin) — NO Thumbor.
+// Renders nothing when the record has no usable splash image.
+import CmsImage from './CmsImage.astro';
+import type { StrapiImage } from '../lib/data';
+
+interface Props {
+  splash?: StrapiImage | null;
+  alt?: string;
+  caption?: string;
+}
+const { splash, alt, caption } = Astro.props;
+
+// Legacy alt precedence: explicit prop -> Strapi alternativeText -> default.
+const altText = alt ?? splash?.alternativeText ?? 'ICJIA Internet news item image';
+// Caption defaults from the image record (legacy bound :caption to splash.caption).
+const captionText = caption ?? splash?.caption;
+---
+
+{
+  splash?.url && (
+    <div>
+      <CmsImage image={splash} alt={altText} loading="eager" class="splash-img" />
+      {captionText && <div class="splash-caption">{captionText}</div>}
+    </div>
+  )
+}
+
+<style>
+  /* Centered, contained, ~2:1 hero (matches legacy v-img contain aspect-ratio=2). */
+  .splash-img {
+    display: block;
+    margin: 0 auto 1.25rem;
+    width: 100%;
+    height: auto;
+    max-height: 50vw; /* ~2:1 of a full-width column; image stays "contain" */
+    object-fit: contain;
+  }
+  /* Legacy .splash-caption (Splash.vue). */
+  .splash-caption {
+    font-size: 12px;
+    margin-top: -15px;
+    margin-bottom: 25px;
+    color: #222;
+  }
+</style>

@@ -1,0 +1,30 @@
+---
+// /researchhub/datasets/[slug] — single dataset (live, HUB Strapi). getDataset
+// returns null when no published dataset matches → 404. Context bar = title.
+//
+// ⚠️ Same BLOCKING FOUNDATION DEFECT as articles/[slug].astro (see its header):
+// the hub ignores `where:{slug:$slug}` as a variable and returns ALL datasets,
+// so getDataset yields datasets[0] for every slug. Fix is in research.ts/hub.js
+// (bind `where` as a JSON variable). This page's logic is correct as written.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import DatasetView from '../../../components/researchhub/DatasetView.astro';
+import { getDataset } from '../../../lib/research';
+import { setCache } from '../../../lib/cache';
+
+const { slug } = Astro.params;
+const dataset = slug ? await getDataset(slug) : null;
+if (!dataset) {
+  return new Response('Dataset not found', { status: 404 });
+}
+setCache(Astro.response, 'hub');
+---
+
+<BaseLayout
+  title={`${dataset.title} — ResearchHub — ICJIA`}
+  description={dataset.description ? dataset.description.slice(0, 200) : undefined}
+  contextTitle={dataset.title}
+>
+  <div class="pt-4">
+    <DatasetView dataset={dataset} />
+  </div>
+</BaseLayout>

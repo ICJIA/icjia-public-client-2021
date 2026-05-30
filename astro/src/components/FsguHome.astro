@@ -1,0 +1,173 @@
+---
+// FSGU unit home (/grants/fsgu-home/) — ports GrantsHome.vue. The only complex
+// page in the units section. Live-data SSR:
+//   CMS page (slug 'fsgu-home') title + body
+//   → h2#current-funding-opportunities "ICJIA Funding Opportunities"
+//   → Current/Expired NOFO toggle + grant cards (REUSES the Funding section's
+//     shaping: getFunding() -> FundingListItem[] w/ isExpired, and the exact
+//     FundingListing.astro card markup/classes via funding.css)
+//   → centered legacy-GATA note
+//   → ContentClickThroughBoxes (page.clickthrough)
+//
+// Toggle = the proven Alpine pattern (JSON island + SSR Current baseline shown
+// via x-show="!ready" + x-for over the active tab; only the active tab in DOM).
+// Cards are summaryOnly with a "Read full NOFO »" link to /grants/funding/{slug}/
+// (legacy BaseCardExpandable summaryOnly/showReadMore) — no in-card expand.
+//
+// PARITY NOTES vs the standalone /grants/funding/ (FundingListing.astro):
+// - toggle labels are "Current Funding" / "Expired" (legacy v-btn-toggle text).
+// - the section is introduced by an h2 "ICJIA Funding Opportunities" (NOT the
+//   page title), matching GrantsHome.vue.
+// - tags are intentionally NOT shown on FSGU-home cards: BaseCardExpandable with
+//   summaryOnly renders no tag chips, and GrantsHome passes no tags block.
+import '../styles/funding.css';
+import '../styles/units.css';
+import ContentClickThroughBoxes from './ContentClickThroughBoxes.astro';
+import type { CmsPage, FundingListItem } from '../lib/data';
+
+interface Props {
+  page: CmsPage;
+  grants: FundingListItem[];
+}
+const { page, grants } = Astro.props;
+
+// Legacy: allGrants = orderBy(grants,'end','desc'); getFunding() returns that
+// order already. Current = NOT isExpired (data.ts +1-day logic matches legacy).
+const current = grants.filter((g) => !g.isExpired);
+const listJson = JSON.stringify(grants).replace(/</g, '\\u003c');
+const CJ =
+  'https://visitor.r20.constantcontact.com/manage/optin?v=001MqUcqqvjwLCJXlLMSWbTe3zHHmEQgFeBuHvBcJWTbwgrxFbDSGx4HSUPpI6DJWMUPgbljtLxffqIcGFTgCnr-auak88ybvRxpoJlTMGPtZs%3D';
+---
+
+<div class="units-page funding markdown-body">
+  <h1 set:html={page.titleHtml} />
+  <div set:html={page.safeBodyHtml} />
+
+  <h2 id="current-funding-opportunities" class="funding-embed-heading">ICJIA Funding Opportunities</h2>
+
+  <div
+    x-data={`{
+      all: JSON.parse(document.getElementById('fsgu-funding-data').textContent),
+      tab: 'current', ready: false,
+      init(){ this.ready = true; },
+      get list(){ return this.all.filter((g) => this.tab === 'expired' ? g.isExpired : !g.isExpired); },
+      get empty(){ return this.list.length === 0; }
+    }`}
+  >
+    <div class="funding-toggle-wrap">
+      <div class="vtoggle" role="group" aria-label="Funding status">
+        <button type="button" @click="tab = 'current'" :aria-pressed="tab === 'current'">Current Funding</button>
+        <button type="button" @click="tab = 'expired'" :aria-pressed="tab === 'expired'">Expired</button>
+      </div>
+    </div>
+
+    <script type="application/json" id="fsgu-funding-data" set:html={listJson}></script>
+
+    {/* SSR baseline (no-JS / SEO): the current opportunities */}
+    <div x-show="!ready">
+      {
+        current.length === 0 ? (
+          <div class="f-empty">
+            <h3>No current funding opportunities.</h3>
+            <p>
+              Please check back soon or subscribe to the{' '}
+              <a href={CJ} target="_blank" rel="noopener noreferrer">CJ Dispatch</a> for the latest
+              ICJIA news and information.
+            </p>
+          </div>
+        ) : (
+          current.map((g) => (
+            <div class="fcard">
+              <div class="mb-6 flex items-start justify-between gap-4">
+                <span class="nofo-label">{g.catLabel}</span>
+                <span class="f-chip f-chip-green">Deadline: {g.deadlineAlt}</span>
+              </div>
+              <h2>
+                <a href={g.fullPath}>{g.title}</a>
+              </h2>
+              {g.dateRange && <div class="f-dates">{g.dateRange}</div>}
+              {g.summaryHtml && <div class="pt-2 pl-3" set:html={g.summaryHtml} />}
+              {g.attachments.length > 0 && (
+                <div class="mt-4">
+                  <h3 class="sub-heading">Attachments</h3>
+                  <ul class="m-0 list-none p-0">
+                    {g.attachments.map((a) => (
+                      <li class="mt-1">
+                        <a class="attachment" href={a.url} target="_blank" rel="noopener noreferrer">
+                          {a.name}
+                        </a>{' '}
+                        <span class="text-xs text-gray-500">({a.niceSize})</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <div class="mt-5">
+                <a class="read-nofo" href={g.fullPath}>Read full NOFO&nbsp;&raquo;</a>
+              </div>
+            </div>
+          ))
+        )
+      }
+    </div>
+
+    {/* Interactive (Alpine x-for over the active tab) */}
+    <div x-show="ready" x-cloak>
+      <template x-if="empty">
+        <div class="f-empty">
+          <h3 x-text="tab === 'expired' ? 'No expired funding opportunities.' : 'No current funding opportunities.'"></h3>
+          <p>
+            Please check back soon or subscribe to the
+            <a href={CJ} target="_blank" rel="noopener noreferrer">CJ Dispatch</a> for the latest
+            ICJIA news and information.
+          </p>
+        </div>
+      </template>
+
+      <template x-for="g in list" :key="g.id">
+        <div class="fcard">
+          <div class="mb-6 flex items-start justify-between gap-4">
+            <span class="nofo-label" x-text="g.catLabel"></span>
+            <span
+              class="f-chip"
+              :class="g.isExpired ? 'f-chip-red' : 'f-chip-green'"
+              x-text="(g.isExpired ? 'Expired: ' : 'Deadline: ') + g.deadlineAlt"
+            ></span>
+          </div>
+          <h2><a :href="g.fullPath" x-text="g.title"></a></h2>
+          <template x-if="g.dateRange">
+            <div class="f-dates" x-text="g.dateRange"></div>
+          </template>
+          <template x-if="g.summaryHtml">
+            <div class="pt-2 pl-3" x-html="g.summaryHtml"></div>
+          </template>
+          <template x-if="g.attachments.length">
+            <div class="mt-4">
+              <h3 class="sub-heading">Attachments</h3>
+              <ul class="m-0 list-none p-0">
+                <template x-for="a in g.attachments" :key="a.url">
+                  <li class="mt-1">
+                    <a class="attachment" :href="a.url" target="_blank" rel="noopener noreferrer" x-text="a.name"></a>
+                    <span class="text-xs text-gray-500">(<span x-text="a.niceSize"></span>)</span>
+                  </li>
+                </template>
+              </ul>
+            </div>
+          </template>
+          <div class="mt-5">
+            <a class="read-nofo" :href="g.fullPath">Read full NOFO&nbsp;&raquo;</a>
+          </div>
+        </div>
+      </template>
+    </div>
+  </div>
+
+  <div class="gata-note">
+    For funding opportunities prior to 2019, please visit ICJIA's legacy GATA site:{' '}
+    <a href="https://legacy-grants.icjia.cloud/grants" target="_blank" rel="noopener noreferrer"
+      >https://legacy-grants.icjia.cloud/grants</a
+    >
+  </div>
+
+  <ContentClickThroughBoxes boxes={page.clickthrough} />
+</div>

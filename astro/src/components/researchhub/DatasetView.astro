@@ -1,0 +1,192 @@
+---
+// Single-dataset detail (#dataset-view). Ports legacy Hub/DatasetView.vue:
+//   • fafafa card, h1 title, MarkerExternal (external) / MarkerProject (project);
+//   • "About this dataset" prop list: Final-date / Sources / Categories / Tags /
+//     Time period / Unit / Description / Notes;
+//   • Variables HTML table (md+ only) — cols name/type/definition/values with a
+//     capitalized header row (legacy arr2table);
+//   • Funding / Suggested-citation / Related-contents InfoBlocks;
+//   • "Download here" button (data file).
+// #dataset-view .variables-table + .info-block styles are in article-view.css.
+//
+// PARITY FLAGS (search unported): categories + tags are non-interactive.
+//   Legacy format() joined categories to ONE capitalized string ("Corrections,
+//   Law Enforcement"); research.ts gives an uppercased array, rendered comma-
+//   joined here (visually equivalent).  Sources link only when url is truthy and
+//   not the literal "undefined" (research.ts already filters those out).
+import InfoBlock from './InfoBlock.astro';
+import PropDisplay from './PropDisplay.astro';
+import MarkerExternal from './MarkerExternal.astro';
+import MarkerProject from './MarkerProject.astro';
+import type { ResearchDatasetDetail } from '../../lib/research';
+import '../../styles/article-view.css';
+import '../../styles/researchhub.css';
+
+interface Props {
+  dataset: ResearchDatasetDetail;
+}
+const { dataset } = Astro.props;
+
+// Time period: legacy formatted {yearmin,yearmax,yeartype} -> "min-max (type)".
+function fmtTimeperiod(tp: any): string {
+  if (!tp) return '';
+  if (typeof tp === 'string') return tp;
+  const { yearmin, yearmax, yeartype } = tp;
+  if (yearmin == null && yearmax == null) return '';
+  return `${yearmin}-${yearmax} (${yeartype})`;
+}
+const timeperiod = fmtTimeperiod(dataset.timeperiod);
+
+const sources = Array.isArray(dataset.sources) ? dataset.sources : [];
+const notes = Array.isArray(dataset.notes) ? dataset.notes : [];
+
+// Variables HTML table (legacy arr2table): cols name/type/definition/values,
+// header row capitalized. Rendered md+ only via CSS (hidden-sm-and-down).
+const COLS = ['name', 'type', 'definition', 'values'] as const;
+const vars = Array.isArray(dataset.variables) ? dataset.variables : [];
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+const hasRelated = dataset.related.length > 0;
+const categoriesStr = dataset.categories.join(', ');
+---
+
+<div id="dataset-view" class="markdown-body mx-auto max-w-5xl px-4 pb-10 md:px-6">
+  <div class="detail-card">
+    <h1>{dataset.title}</h1>
+
+    {dataset.external ? <MarkerExternal /> : dataset.project && <MarkerProject />}
+
+    <h2 class="mt-4 mb-4" style="font-weight:300">About this dataset</h2>
+
+    {
+      dataset.dateLabel && (
+        <PropDisplay name="Final date reflected in dataset">{dataset.dateLabel}</PropDisplay>
+      )
+    }
+
+    {
+      sources.length > 0 && (
+        <PropDisplay name="Sources">
+          {sources.map((s: any, i: number) => (
+            <span>
+              {i > 0 && <span>{i + 1 < sources.length ? ', ' : ' and '}</span>}
+              {s.url ? (
+                <a href={s.url} target="_blank" rel="noopener noreferrer">
+                  {s.title}
+                </a>
+              ) : (
+                s.title
+              )}
+            </span>
+          ))}
+        </PropDisplay>
+      )
+    }
+
+    {
+      dataset.categories.length > 0 && (
+        <PropDisplay name="Categories">
+          {/* PARITY FLAG: non-link text (search unported) */}
+          <span class="category" style="font-size:14px">{categoriesStr}</span>
+        </PropDisplay>
+      )
+    }
+
+    {
+      dataset.tags.length > 0 && (
+        <PropDisplay name="Tags">
+          {/* PARITY FLAG: non-link pills (search unported) */}
+          {dataset.tags.map((t) => (
+            <span class="chip">{t}</span>
+          ))}
+        </PropDisplay>
+      )
+    }
+
+    {timeperiod && <PropDisplay name="Time period">{timeperiod}</PropDisplay>}
+
+    {
+      dataset.description && (
+        <PropDisplay name="Description" dense>
+          {dataset.description}
+        </PropDisplay>
+      )
+    }
+
+    {
+      notes.length > 0 && (
+        <PropDisplay name="Notes">
+          <ul>
+            {notes.map((n: string) => (
+              <li>{n}</li>
+            ))}
+          </ul>
+        </PropDisplay>
+      )
+    }
+
+    {
+      vars.length > 0 && (
+        <div class="variables-md-only py-6">
+          <h2 class="mt-4 mb-4" style="font-weight:300">Variables</h2>
+          <div class="variables-table font-lato small">
+            <table>
+              <thead>
+                <tr>
+                  {COLS.map((c) => (
+                    <th>{cap(c)}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {vars.map((row: any) => (
+                  <tr>
+                    {COLS.map((c) => (
+                      <td>{row[c] ?? ''}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )
+    }
+
+    {dataset.funding && <InfoBlock title="Funding acknowledgment">{dataset.funding}</InfoBlock>}
+
+    {dataset.citation && <InfoBlock title="Suggested citation" html={dataset.citation} />}
+
+    {
+      hasRelated && (
+        <InfoBlock title="Related contents">
+          <ul class="font-lato">
+            {dataset.related.map((r) => (
+              <li>
+                <a href={r.fullPath}>{r.displayTitle}</a>
+              </li>
+            ))}
+          </ul>
+        </InfoBlock>
+      )
+    }
+
+    {
+      dataset.dataFileUrl && (
+        <div class="mt-6 text-center">
+          <a class="detail-btn" href={dataset.dataFileUrl} target="_blank" rel="noopener noreferrer">
+            Download here
+          </a>
+        </div>
+      )
+    }
+  </div>
+</div>
+
+<style>
+  /* Variables table is md+ only (legacy hidden-sm-and-down). */
+  .variables-md-only { display: none; }
+  @media (min-width: 960px) {
+    .variables-md-only { display: block; }
+  }
+</style>

@@ -1,0 +1,28 @@
+---
+// /researchhub/articles/ — all published articles, live (HUB Strapi). Parity
+// with the legacy ArticlesAll.vue: grid/list ?view toggle + "Load more" (42/page)
+// over a JSON island, SSR page-1 baseline. All shaping is done in research.ts.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import HubListing from '../../../components/researchhub/HubListing.astro';
+import { getAllArticles } from '../../../lib/research';
+import { setCache } from '../../../lib/cache';
+
+const articles = await getAllArticles();
+setCache(Astro.response, 'hub');
+---
+
+<BaseLayout
+  title="Articles — ResearchHub — ICJIA"
+  description="Research articles published by the Illinois Criminal Justice Information Authority."
+  contextTitle="Articles"
+>
+  <div class="mx-auto max-w-6xl px-4 py-8 md:px-6">
+    {
+      articles.length === 0 ? (
+        <p>No articles at this time.</p>
+      ) : (
+        <HubListing kind="articles" heading="Articles" noun="articles" items={articles} paginate perPage={42} />
+      )
+    }
+  </div>
+</BaseLayout>

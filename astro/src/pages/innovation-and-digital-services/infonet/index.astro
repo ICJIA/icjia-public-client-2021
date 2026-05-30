@@ -1,0 +1,43 @@
+---
+// /innovation-and-digital-services/infonet/ — Ports Infonet.vue. CMS page (slug
+// 'infonet'): optional Splash + h1 + body + a hardcoded centered "Visit the new
+// InfoNet website" callout + ContentClickThroughBoxes. Composed directly (not via
+// BasePage) because the callout is injected between the body and the clickthrough
+// row, and Infonet shows NO TOC / NO attachments (both commented out in legacy).
+// contextTitle = page.title (legacy EventBus context-label = content.title).
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Splash from '../../../components/Splash.astro';
+import ContentClickThroughBoxes from '../../../components/ContentClickThroughBoxes.astro';
+import '../../../styles/units.css';
+import '../../../styles/github-markdown.css';
+import { getPage } from '../../../lib/data';
+import { setCache } from '../../../lib/cache';
+
+const page = await getPage('infonet');
+if (!page) return new Response(null, { status: 404 });
+setCache(Astro.response, 'page');
+---
+
+<BaseLayout
+  title={`${page.title} — ICJIA`}
+  description={page.summary || page.title}
+  contextTitle={page.title}
+>
+  <div class="units-page markdown-body mx-auto max-w-5xl px-4 py-8 md:px-6">
+    <Splash splash={page.splash} />
+
+    <div class="-mt-[15px]">
+      {!page.hideTitle && <h1 set:html={page.titleHtml} />}
+      <div set:html={page.safeBodyHtml} />
+
+      <div class="infonet-callout">
+        Visit the new InfoNet website for more information:{' '}
+        <a href="https://infonet.icjia.illinois.gov" target="_blank" rel="noopener noreferrer"
+          >https://infonet.icjia.illinois.gov</a
+        >
+      </div>
+    </div>
+
+    <ContentClickThroughBoxes boxes={page.clickthrough} />
+  </div>
+</BaseLayout>

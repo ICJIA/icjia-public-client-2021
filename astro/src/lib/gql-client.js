@@ -44,8 +44,10 @@ export function gql(strings, ...values) {
 }
 
 // Recursively sanitize every string in a response body. Moved verbatim
-// from src/vue-apollo.js — this was the sanitizeLink afterware.
-function deepSanitize(obj) {
+// from src/vue-apollo.js — this was the sanitizeLink afterware. Exported
+// so non-GraphQL fetchers (the publications REST pager) can run their
+// payloads through the same SiteImprove filter.
+export function deepSanitize(obj) {
   if (typeof obj === "string") return sanitizeText(obj);
   if (Array.isArray(obj)) return obj.map(deepSanitize);
   if (obj && typeof obj === "object") {

@@ -1,0 +1,209 @@
+/* Employment (/about/employment/) — draft styling (pixel-tune later). Scoped under
+ * `.employment` (page wrapper, both list + detail) and `.job-card`. Mirrors the
+ * legacy EmploymentAll / JobCard look; att-table/chip/sub-heading markup is copied
+ * from MeetingCard for parity. */
+
+.employment h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111;
+}
+.employment h2#current-icjia-opportunities,
+.employment h2#internship-opportunities {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111;
+  margin-top: 2.5rem;
+}
+
+/* Current / Expired toggle (legacy v-btn-toggle) */
+.employment .vtoggle {
+  display: inline-flex;
+  border: 1px solid #cfcfcf;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+.employment .vtoggle button {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 18px;
+  background: #fff;
+  color: #0a3a60;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.employment .vtoggle button + button {
+  border-left: 1px solid #cfcfcf;
+}
+.employment .vtoggle button[aria-pressed="true"] {
+  background: #e0e0e0;
+  color: #222;
+}
+
+/* Job card (list summary + single detail) */
+.job-card {
+  border: 1px solid #ddd;
+  background: #fff;
+  padding: 2rem 1.25rem 1.5rem;
+}
+.job-card .job-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+  font-weight: 900;
+}
+.job-card .job-kicker {
+  font-size: 14px;
+  color: #222;
+}
+.job-card .job-accepting {
+  font-size: 14px;
+  font-weight: 900;
+  color: #222;
+}
+.job-card .job-spacer {
+  flex: 1 1 auto;
+}
+.job-card .job-chip-expired {
+  display: inline-block;
+  background: #aa2525;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 4px;
+  text-transform: none;
+  white-space: nowrap;
+}
+.job-card .job-title {
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 900;
+  font-size: 22px;
+}
+.job-card .job-title a {
+  color: #111;
+  text-decoration: none;
+}
+.job-card .job-title a:hover {
+  text-decoration: underline;
+}
+.job-card .job-posted {
+  display: inline-block;
+  margin-top: 0.25rem;
+  color: #222;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+/* "Click for full job listing" hint — list cards only (legacy isClickable &&
+   summaryOnly): italic, right-aligned, turns blue on hover. */
+.job-card .click-hint {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: 0.5rem 0.75rem 0.25rem 0;
+  font-size: 13px;
+  font-style: italic;
+  font-weight: 600;
+  color: #222;
+}
+.job-card .click-hint-arrow {
+  font-size: 16px;
+  line-height: 1;
+}
+.job-card:hover .click-hint {
+  color: #0d47a1;
+}
+
+/* Empty state (grey card) */
+.employment .job-empty {
+  background: #f5f5f5;
+  text-align: center;
+  padding: 3rem 2.5rem;
+  margin-top: 2.5rem;
+}
+
+/* Internship section */
+.employment .internships ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+}
+
+/* Sub-section headings + attachments table + chips + related/external lists —
+   copied from meetings.css for parity. Scoped to .employment and .job-card. */
+.employment .sub-heading,
+.job-card .sub-heading {
+  font-weight: 900;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 8px;
+  text-transform: uppercase;
+  font-size: inherit;
+  margin: 0 0 0.5rem;
+}
+.job-card .att-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.job-card .att-table th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.6);
+  padding: 6px 12px 6px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+.job-card .att-table td {
+  padding: 6px 12px 6px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  vertical-align: top;
+}
+.job-card .att-size {
+  font-size: 12px;
+  white-space: nowrap;
+}
+.job-card .att-updated {
+  font-size: 14px;
+  font-weight: 700;
+  color: #222;
+  white-space: nowrap;
+}
+.job-card .attachment {
+  font-weight: 900;
+  color: #0a3a60;
+  text-decoration: underline;
+}
+.job-card .attachment:hover {
+  color: #000;
+  text-decoration: none;
+}
+.job-card ul.meeting-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.job-card ul.meeting-list li {
+  margin-top: 0.5rem;
+  font-size: 14px;
+}
+.job-card .related-box {
+  background: #f5f5f5;
+  padding: 0.75rem;
+}
+.employment .chip,
+.job-card .chip {
+  display: inline-block;
+  border: 1px solid #bbb;
+  color: #555;
+  font-size: 11px;
+  padding: 1px 8px;
+  border-radius: 12px;
+  margin-right: 4px;
+  margin-bottom: 4px;
+}

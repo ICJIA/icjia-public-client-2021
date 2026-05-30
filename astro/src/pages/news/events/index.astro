@@ -1,0 +1,24 @@
+---
+// /news/events/ — DUPLICATE of /events/ (the legacy news router maps
+// /news/events/ to the SAME EventsAll.vue; both return 200 on prod). Thin
+// re-render of the same EventsListing. NOTE: the context bar here resolves to
+// the "News & Information" menu (seg "news") with /news/events/ as the active
+// tab — that's intended prod parity (only /events/ shows the Events menu).
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import EventsListing from '../../../components/EventsListing.astro';
+import { getEventsCalendarData } from '../../../lib/data';
+import { setCache } from '../../../lib/cache';
+
+const { eventsList } = await getEventsCalendarData();
+setCache(Astro.response, 'events');
+---
+
+<BaseLayout
+  title="ICJIA Events — ICJIA"
+  description="Upcoming events, meetings, and funding deadlines for the Illinois Criminal Justice Information Authority."
+  contextTitle="Events"
+>
+  <div class="mx-auto max-w-4xl px-4 py-8 md:px-6">
+    <EventsListing events={eventsList} />
+  </div>
+</BaseLayout>

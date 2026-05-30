@@ -14,7 +14,22 @@
 // fold). The same-origin endpoint keeps the initial HTML lean, avoids a browser
 // CORS dependency on the hub, and is edge-cacheable.
 
+// @ts-expect-error — gql-client.js is plain JS (ported verbatim)
+import { runQuery } from "./gql-client.js";
+import { renderToHtml } from "./markdown.js";
+import {
+  GET_ARTICLE_COUNT_QUERY,
+  GET_ARTICLE_GROUP_QUERY,
+  GET_ALL_DATASETS_QUERY,
+  GET_ALL_APPS_QUERY,
+  GET_HUB_SINGLE_ARTICLE_QUERY,
+  GET_HUB_SINGLE_DATASET_QUERY,
+  GET_HUB_SINGLE_APP_QUERY,
+  GET_HUB_HOME_BANNER_ARTICLES,
+} from "../graphql/hub.js";
+
 const HUB_GRAPHQL = "https://researchhub.icjia-api.cloud/graphql";
+const HUB_UPLOADS = "https://researchhub.icjia-api.cloud/uploads";
 const TIMEOUT_MS = 8000;
 const DAYS_TO_SHOW_NEW_RESEARCH = 10; // config.json maps.daysToShowNewResearch
 
@@ -70,14 +85,14 @@ function isNewResearch(date?: string): boolean {
 
 // ── hub fetch (plain fetch, no deepSanitize — matches ResearchHub.js) ────────
 
-async function hubQuery(query: string): Promise<any | null> {
+async function hubQuery(query: string, variables?: any): Promise<any | null> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
     const res = await fetch(HUB_GRAPHQL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query }),
+      body: JSON.stringify(variables ? { query, variables } : { query }),
       signal: controller.signal,
     });
     if (!res.ok) return null;
@@ -149,4 +164,341 @@ export async function getHomeResearch(): Promise<HomeResearchData> {
   }));
 
   return { articles, apps, datasets };
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// ResearchHub LIST + DETAIL data layer (/researchhub/{articles,datasets,apps})
+//
+// FIDELITY (matches the legacy Vue hub views, NOT the home strip above):
+//   - LISTS + COUNT + BANNER go through gql-client runQuery(...,HUB_GRAPHQL),
+//     which applies deepSanitize — exactly what Apollo's sanitizeLink did for
+//     the legacy ArticlesAll/DatasetsAll/AppsAll views (they passed
+//     context:{uri: <hub>}). Parameterized $slug/$limit queries from
+//     ../graphql/hub.js.
+//   - DETAIL goes through the raw hubQuery() (NO deepSanitize) and renders the
+//     body via markdown.js renderToHtml — which already runs contentSanitizer.
+//     The legacy single views (ArticlesSingle etc.) used a raw axios POST +
+//     renderToHtml, so deepSanitize must NOT also run (no double-sanitize).
+//
+// base64 IMAGES: splash/thumbnail/image come back as data-URI strings. They are
+// returned AS DATA (img/splash/thumbnail) — section agents emit them in a JSON
+// island or a lazy <img>, NOT inlined into SSR HTML (keeps the response lean).
+// ════════════════════════════════════════════════════════════════════════════
+
+/** first `max` words, "..." appended when truncated (data.ts truncateWords parity). */
+function truncateWordsLocal(str?: string, max = 30): string {
+  if (!str) return "";
+  const arr = str.trim().split(/\s+/);
+  const out = arr.slice(0, max).join(" ");
+  return arr.length > max ? out + "..." : out;
+}
+
+const upper = (s: any): string => String(s ?? "").toUpperCase();
+// article.categories is a raw array → uppercase each; dataset/app.categories is
+// a comma/format string in the legacy cards → split + join uppercased.
+function categoriesArray(cats: any): string[] {
+  if (Array.isArray(cats)) return cats.map(upper).filter(Boolean);
+  if (typeof cats === "string")
+    return cats
+      .split(",")
+      .map((c) => c.trim())
+      .filter(Boolean)
+      .map(upper);
+  return [];
+}
+// hub download URL: https://researchhub.icjia-api.cloud/uploads/{hash}{ext}
+function hubFileUrl(file: any): string | null {
+  if (!file || !file.hash) return null;
+  return `${HUB_UPLOADS}/${file.hash}${file.ext || ""}`;
+}
+function hubRelated(arr: any, type: string, base: string) {
+  if (!Array.isArray(arr)) return [];
+  return arr
+    .filter((e) => e && e.slug)
+    .map((e) => ({ displayTitle: `[${type}]: ${e.title}`, fullPath: `${base}${e.slug}/` }))
+    .sort((a, b) => a.displayTitle.localeCompare(b.displayTitle));
+}
+
+// ── Articles ────────────────────────────────────────────────────────────────
+export interface ResearchArticleListItem {
+  id: string;
+  title: string;
+  slug: string;
+  fullPath: string;
+  abstract?: string;
+  /** 30-word grid teaser. */
+  teaser: string;
+  authors: string;
+  date?: string;
+  dateLabel: string;
+  isNew: boolean;
+  categories: string[];
+  tags: string[];
+}
+function shapeArticleListItem(a: any): ResearchArticleListItem {
+  return {
+    id: String(a.id),
+    title: a.title,
+    slug: a.slug,
+    fullPath: `/researchhub/articles/${a.slug}/`,
+    abstract: a.abstract,
+    teaser: truncateWordsLocal(a.abstract, 30),
+    authors: joinAuthors(a.authors),
+    date: a.date,
+    dateLabel: formatResearchDate(a.date),
+    isNew: isNewResearch(a.date),
+    categories: categoriesArray(a.categories),
+    tags: Array.isArray(a.tags) ? a.tags : [],
+  };
+}
+
+/** All published articles (date desc), live, for /researchhub/articles/ (client Load-more). */
+export async function getAllArticles(): Promise<ResearchArticleListItem[]> {
+  const countRes = await runQuery(GET_ARTICLE_COUNT_QUERY, {}, "no-cache", HUB_GRAPHQL);
+  const count = Number(
+    countRes?.data?.articlesConnection?.aggregate?.count ?? 0,
+  );
+  if (!count) return [];
+  const { data } = await runQuery(
+    GET_ARTICLE_GROUP_QUERY,
+    { articleLimit: count, start: 0 },
+    "no-cache",
+    HUB_GRAPHQL,
+  );
+  return (data?.articles ?? []).map(shapeArticleListItem);
+}
+
+export interface ResearchArticleDetail {
+  id: string;
+  title: string;
+  slug: string;
+  fullPath: string;
+  abstract?: string;
+  authors: string;
+  date?: string;
+  dateLabel: string;
+  isNew: boolean;
+  categories: string[];
+  tags: string[];
+  external?: string;
+  citation?: string;
+  funding?: string;
+  /** base64 data-URI (emit in a JSON island / lazy <img>, NOT inline SSR). */
+  splash?: string | null;
+  thumbnail?: string | null;
+  /** body markdown rendered + sanitized server-side (images appended as refs). */
+  bodyHtml: string;
+  mainFileType?: string;
+  mainFileUrl: string | null;
+  extraFileUrl: string | null;
+}
+/** A single article by slug, live; null when none matches (page 404s). */
+export async function getArticle(slug: string): Promise<ResearchArticleDetail | null> {
+  const data = await hubQuery(GET_HUB_SINGLE_ARTICLE_QUERY(slug));
+  const a = data?.articles?.[0];
+  if (!a) return null;
+  // legacy addImages(): append each image as a markdown reference-link def so
+  // body references resolve, then render (markdown.js sanitizes).
+  let md = a.markdown || "";
+  if (Array.isArray(a.images) && a.images.length) {
+    md += a.images.map((i: any) => `\n\n[${i.title}]: ${i.src}`).join("\n");
+  }
+  return {
+    id: String(a.id),
+    title: a.title,
+    slug: a.slug,
+    fullPath: `/researchhub/articles/${a.slug}/`,
+    abstract: a.abstract,
+    authors: joinAuthors(a.authors),
+    date: a.date,
+    dateLabel: formatResearchDate(a.date),
+    isNew: isNewResearch(a.date),
+    categories: categoriesArray(a.categories),
+    tags: Array.isArray(a.tags) ? a.tags : [],
+    external: a.external,
+    citation: a.citation,
+    funding: a.funding,
+    splash: a.splash || null,
+    thumbnail: a.thumbnail || null,
+    bodyHtml: md ? renderToHtml(md) : "",
+    mainFileType: a.mainfiletype,
+    mainFileUrl: hubFileUrl(a.mainfile),
+    extraFileUrl: hubFileUrl(a.extrafile),
+  };
+}
+
+// ── Datasets ──────────────────────────────────────────────────────────────
+export interface ResearchDatasetListItem {
+  id: string;
+  title: string;
+  slug: string;
+  fullPath: string;
+  description?: string;
+  teaser: string;
+  date?: string;
+  dateLabel: string;
+  isNew: boolean;
+  categories: string[];
+  tags: string[];
+  project?: string;
+}
+function shapeDatasetListItem(d: any): ResearchDatasetListItem {
+  return {
+    id: String(d.id),
+    title: d.title,
+    slug: d.slug,
+    fullPath: `/researchhub/datasets/${d.slug}/`,
+    description: d.description,
+    teaser: truncateBySentence(d.description, 2),
+    date: d.date,
+    dateLabel: formatResearchDate(d.date),
+    isNew: isNewResearch(d.date),
+    categories: categoriesArray(d.categories),
+    tags: Array.isArray(d.tags) ? d.tags : [],
+    project: d.project,
+  };
+}
+/** All published datasets (date desc), live, for /researchhub/datasets/. */
+export async function getAllDatasets(): Promise<ResearchDatasetListItem[]> {
+  const { data } = await runQuery(GET_ALL_DATASETS_QUERY, {}, "no-cache", HUB_GRAPHQL);
+  return (data?.datasets ?? []).map(shapeDatasetListItem);
+}
+
+export interface ResearchDatasetDetail extends ResearchDatasetListItem {
+  external?: string;
+  timeperiod?: string;
+  /** sources with url !== "undefined" (legacy filter). */
+  sources: any[];
+  notes?: string;
+  /** variables table rows (raw passthrough). */
+  variables?: any;
+  funding?: string;
+  citation?: string;
+  dataFileUrl: string | null;
+  related: Array<{ displayTitle: string; fullPath: string }>;
+}
+/** A single dataset by slug, live; null when none matches (page 404s). */
+export async function getDataset(slug: string): Promise<ResearchDatasetDetail | null> {
+  const data = await hubQuery(GET_HUB_SINGLE_DATASET_QUERY(slug));
+  const d = data?.datasets?.[0];
+  if (!d) return null;
+  const sources = Array.isArray(d.sources)
+    ? d.sources.filter((s: any) => s && s.url !== "undefined")
+    : [];
+  return {
+    ...shapeDatasetListItem(d),
+    external: d.external,
+    timeperiod: d.timeperiod,
+    sources,
+    notes: d.notes,
+    variables: d.variables,
+    funding: d.funding,
+    citation: d.citation,
+    dataFileUrl: hubFileUrl(d.datafile),
+    related: [
+      ...hubRelated(d.apps, "App", "/researchhub/apps/"),
+      ...hubRelated(d.articles, "Article", "/researchhub/articles/"),
+    ],
+  };
+}
+
+// ── Apps ──────────────────────────────────────────────────────────────────
+export interface ResearchAppListItem {
+  id: string;
+  title: string;
+  slug: string;
+  fullPath: string;
+  description?: string;
+  teaser: string;
+  date?: string;
+  dateLabel: string;
+  isNew: boolean;
+  categories: string[];
+  tags: string[];
+  /** base64 data-URI (emit in a JSON island / lazy <img>, NOT inline SSR). */
+  image?: string | null;
+  contributors?: any;
+}
+function shapeAppListItem(a: any): ResearchAppListItem {
+  return {
+    id: String(a.id),
+    title: a.title,
+    slug: a.slug,
+    fullPath: `/researchhub/apps/${a.slug}/`,
+    description: a.description,
+    teaser: truncateBySentence(a.description, 2),
+    date: a.date,
+    dateLabel: formatResearchDate(a.date),
+    isNew: isNewResearch(a.date),
+    categories: categoriesArray(a.categories),
+    tags: Array.isArray(a.tags) ? a.tags : [],
+    image: a.image || null,
+    contributors: a.contributors,
+  };
+}
+/** All published apps (date desc), live, for /researchhub/apps/. */
+export async function getAllApps(): Promise<ResearchAppListItem[]> {
+  const { data } = await runQuery(GET_ALL_APPS_QUERY, {}, "no-cache", HUB_GRAPHQL);
+  return (data?.apps ?? []).map(shapeAppListItem);
+}
+
+export interface ResearchAppDetail extends ResearchAppListItem {
+  external?: string;
+  url?: string;
+  funding?: string;
+  citation?: string;
+  related: Array<{ displayTitle: string; fullPath: string }>;
+}
+/** A single app by slug, live; null when none matches (page 404s). */
+export async function getApp(slug: string): Promise<ResearchAppDetail | null> {
+  const data = await hubQuery(GET_HUB_SINGLE_APP_QUERY(slug));
+  const a = data?.apps?.[0];
+  if (!a) return null;
+  return {
+    ...shapeAppListItem(a),
+    external: a.external,
+    url: a.url,
+    funding: a.funding,
+    citation: a.citation,
+    related: [
+      ...hubRelated(a.datasets, "Dataset", "/researchhub/datasets/"),
+      ...hubRelated(a.articles, "Article", "/researchhub/articles/"),
+    ],
+  };
+}
+
+// ── Hub home banner ─────────────────────────────────────────────────────────
+export interface HubBannerArticle {
+  id: string;
+  title: string;
+  slug: string;
+  fullPath: string;
+  abstract?: string;
+  authors: string;
+  date?: string;
+  dateLabel: string;
+  /** base64 data-URI (emit in a JSON island / lazy <img>, NOT inline SSR). */
+  splash?: string | null;
+  thumbnail?: string | null;
+}
+/** Hub-home carousel: latest `limit` published, hideFromBanner != true. */
+export async function getHubBannerArticles(limit = 5): Promise<HubBannerArticle[]> {
+  const { data } = await runQuery(
+    GET_HUB_HOME_BANNER_ARTICLES,
+    { limit },
+    "no-cache",
+    HUB_GRAPHQL,
+  );
+  return (data?.articles ?? []).map((a: any) => ({
+    id: String(a.id),
+    title: a.title,
+    slug: a.slug,
+    fullPath: `/researchhub/articles/${a.slug}/`,
+    abstract: a.abstract,
+    authors: joinAuthors(a.authors),
+    date: a.date,
+    dateLabel: formatResearchDate(a.date),
+    splash: a.splash || null,
+    thumbnail: a.thumbnail || null,
+  }));
 }

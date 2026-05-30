@@ -1,0 +1,68 @@
+---
+// Ports legacy Hub/ArticleToc.vue: a "TABLE OF CONTENTS" list of the article's
+// <h2> headings, shown on md+ (Vuetify >=960px) beside the body. Vuetify's
+// goTo + IntersectionObserver scroll-spy is reimplemented with plain Alpine:
+//   • smooth-scroll to the heading (offset 80px) on click;
+//   • IntersectionObserver marks the active heading (toc-item-active) as the
+//     reader scrolls (rootMargin tuned so the heading nearest the top wins).
+// Stickiness itself is handled by CSS position:sticky in the ArticleView column
+// (simpler than the legacy fixed-position math). #article-toc styles live in
+// article-view.css.
+interface Props {
+  headings: Array<{ id: string; text: string }>;
+}
+const { headings } = Astro.props;
+const headingsJson = JSON.stringify(headings).replace(/</g, '\\u003c');
+---
+
+{
+  headings.length > 0 && (
+    <div
+      id="article-toc"
+      x-data={`{
+        headings: JSON.parse(this.$el.querySelector('[data-toc-json]').textContent),
+        active: '',
+        init(){
+          if (this.headings.length) this.active = this.headings[0].id;
+          const els = this.headings
+            .map((h) => document.getElementById(h.id))
+            .filter(Boolean);
+          if (!('IntersectionObserver' in window) || !els.length) return;
+          const obs = new IntersectionObserver((entries) => {
+            entries.forEach((e) => { if (e.isIntersecting) this.active = e.target.id; });
+          }, { rootMargin: '0px 0px -75% 0px', threshold: 0 });
+          els.forEach((el) => obs.observe(el));
+        },
+        go(id){
+          const el = document.getElementById(id);
+          if (!el) return;
+          const t = el.getBoundingClientRect().top + window.pageYOffset - 80;
+          window.scrollTo({ top: Math.max(0, t), behavior: 'smooth' });
+          this.active = id;
+        }
+      }`}
+    >
+      <script type="application/json" data-toc-json set:html={headingsJson} is:inline />
+
+      <p class="font-oswald mb-2" style="font-weight:700;font-size:1.17em">
+        TABLE OF CONTENTS
+      </p>
+      <hr />
+      <ul class="m-0 list-none p-0">
+        {headings.map((h) => (
+          <li>
+            <a
+              href={`#${h.id}`}
+              class="toc-item font-lato hover block py-1 pl-6"
+              style="font-size:14px;cursor:pointer"
+              :class={`active === '${h.id}' ? 'toc-item-active' : ''`}
+              @click.prevent={`go('${h.id}')`}
+            >
+              {h.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}

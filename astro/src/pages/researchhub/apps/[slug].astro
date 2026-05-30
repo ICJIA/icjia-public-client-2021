@@ -1,0 +1,30 @@
+---
+// /researchhub/apps/[slug] — single web app (live, HUB Strapi). getApp returns
+// null when no published app matches → 404. Context bar = app title.
+//
+// ⚠️ Same BLOCKING FOUNDATION DEFECT as articles/[slug].astro (see its header):
+// the hub ignores `where:{slug:$slug}` as a variable and returns ALL apps, so
+// getApp yields apps[0] for every slug. Fix is in research.ts/hub.js (bind
+// `where` as a JSON variable). This page's logic is correct as written.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import AppView from '../../../components/researchhub/AppView.astro';
+import { getApp } from '../../../lib/research';
+import { setCache } from '../../../lib/cache';
+
+const { slug } = Astro.params;
+const app = slug ? await getApp(slug) : null;
+if (!app) {
+  return new Response('App not found', { status: 404 });
+}
+setCache(Astro.response, 'hub');
+---
+
+<BaseLayout
+  title={`${app.title} — ResearchHub — ICJIA`}
+  description={app.description ? app.description.slice(0, 200) : undefined}
+  contextTitle={app.title}
+>
+  <div class="pt-4">
+    <AppView app={app} />
+  </div>
+</BaseLayout>

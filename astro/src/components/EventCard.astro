@@ -1,0 +1,90 @@
+---
+// Static (server-rendered) event card. Mirrors the legacy EventCard.vue default
+// (contentType "event") branch: green toolbar header (name as HTML — may contain
+// entities), a meta line ("{CATEGORY} EVENT | {range}" via the legacy getRange
+// wording), the body (details||summary, rendered markdown), tag chips, and — on
+// the single-event page only — the "Related" list ([News]:/[Meeting]: links).
+//
+// Used in two places:
+//   • events-only LIST rows  → clickable={true},  bodyHtml omitted (summary text)
+//   • single-event page      → clickable={false}, bodyHtml + related supplied
+import '../styles/events.css';
+
+interface Props {
+  /** event name (may contain HTML entities → rendered via set:html). */
+  name: string;
+  /** raw category slug (uppercased before " EVENT"). */
+  category?: string;
+  /** legacy getRange line (Chicago); pre-computed in the data layer. */
+  rangeLine: string;
+  /** pre-rendered + sanitized body (single page). */
+  bodyHtml?: string;
+  /** fallback body when bodyHtml is absent (list rows): plain summary text. */
+  summary?: string;
+  /** flattened tag titles → chips. */
+  tags?: string[];
+  /** Related News/Meetings (single page only). */
+  related?: Array<{ displayTitle: string; fullPath: string }>;
+  /** wrap the whole card in a link to the event (list rows). */
+  clickable?: boolean;
+  /** target when clickable. */
+  fullPath?: string;
+}
+const {
+  name,
+  category,
+  rangeLine,
+  bodyHtml,
+  summary,
+  tags = [],
+  related = [],
+  clickable = false,
+  fullPath,
+} = Astro.props;
+
+const Tag = clickable ? 'a' : 'div';
+const tagProps = clickable ? { href: fullPath, class: 'event-card markdown-body' } : { class: 'event-card markdown-body' };
+const catLabel = `${(category ?? '').toUpperCase()}${category ? ' ' : ''}EVENT`;
+---
+
+<Tag {...tagProps}>
+  <div class="event-toolbar">
+    <span class="event-toolbar-title" set:html={name}></span>
+  </div>
+
+  <div class="event-meta">
+    <span class="event-cat">{catLabel}</span>
+    {rangeLine && <span class="event-range">&nbsp;|&nbsp;{rangeLine}</span>}
+  </div>
+
+  {bodyHtml ? (
+    <div class="event-body" set:html={bodyHtml} />
+  ) : (
+    summary && <div class="event-body"><p>{summary}</p></div>
+  )}
+
+  {
+    tags.length > 0 && (
+      <div class="event-tags">
+        {tags.map((t) => (
+          <span class="chip">{t}</span>
+        ))}
+      </div>
+    )
+  }
+
+  {
+    related.length > 0 && (
+      <div class="related">
+        <h3 class="sub-heading">Related</h3>
+        <ul class="event-list">
+          {related.map((r) => (
+            <li>
+              <a href={r.fullPath}>{r.displayTitle}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+</Tag>

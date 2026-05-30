@@ -1,0 +1,151 @@
+---
+// Single-app detail. Ports legacy Hub/AppView.vue:
+//   • fafafa card, h1 title;
+//   • md+ two-col: base64 image (left) | prop list (right);
+//   • MarkerExternal when external;
+//   • prop list: Updated / Contributors ([{title,url}] links, else "ICJIA R&A
+//     staff") / Categories / Tags / Description;
+//   • Funding / Suggested-citation / Related-contents InfoBlocks;
+//   • "Launch the App" button → window.open(app.url).
+// .info-block styles are in article-view.css.
+//
+// base64 image: emitted via a tiny JSON island + lazy <img> (NEVER inlined into
+// SSR HTML, per the base64 rule).
+//
+// PARITY FLAGS (search unported): categories + tags are non-interactive.
+import InfoBlock from './InfoBlock.astro';
+import PropDisplay from './PropDisplay.astro';
+import MarkerExternal from './MarkerExternal.astro';
+import type { ResearchAppDetail } from '../../lib/research';
+import '../../styles/article-view.css';
+import '../../styles/researchhub.css';
+
+interface Props {
+  app: ResearchAppDetail;
+}
+const { app } = Astro.props;
+
+const contributors = (app.contributors as Array<{ title?: string; url?: string }> | undefined) || [];
+const hasContributors = contributors.length > 0;
+const hasRelated = app.related.length > 0;
+const categoriesStr = app.categories.join(', ');
+
+const imageJson = app.image
+  ? JSON.stringify({ src: app.image }).replace(/</g, '\\u003c')
+  : null;
+---
+
+<div class="markdown-body mx-auto max-w-5xl px-4 pb-12 md:px-6">
+  <div class="detail-card">
+    <h1 style="border:0">{app.title}</h1>
+
+    <div class="mt-2 grid grid-cols-1 gap-6 md:grid-cols-3">
+      {/* base64 image via island + lazy <img> */}
+      {
+        imageJson && (
+          <div
+            class="md:col-span-1"
+            x-data={`{ src: '' }`}
+            x-init={`src = JSON.parse(this.$el.querySelector('[data-app-img]').textContent).src`}
+          >
+            <script type="application/json" data-app-img set:html={imageJson} is:inline />
+            <img :src="src" alt="" loading="lazy" decoding="async" class="app-img" />
+          </div>
+        )
+      }
+
+      <div class:list={[imageJson ? 'md:col-span-2' : 'md:col-span-3']}>
+        {app.external && <MarkerExternal />}
+
+        {app.dateLabel && <PropDisplay name="Updated">{app.dateLabel}</PropDisplay>}
+
+        <PropDisplay name="Contributors">
+          {
+            hasContributors ? (
+              contributors.map((c, i) => (
+                <span>
+                  {i > 0 && <span>{i + 1 < contributors.length ? ', ' : ' and '}</span>}
+                  {c.url ? (
+                    <a href={c.url} target="_blank" rel="noopener noreferrer">
+                      {c.title}
+                    </a>
+                  ) : (
+                    c.title
+                  )}
+                </span>
+              ))
+            ) : (
+              'ICJIA R&A staff'
+            )
+          }
+        </PropDisplay>
+
+        {
+          app.categories.length > 0 && (
+            <PropDisplay name="Categories">
+              {/* PARITY FLAG: non-link text (search unported) */}
+              <span class="category">{categoriesStr}</span>
+            </PropDisplay>
+          )
+        }
+
+        {
+          app.tags.length > 0 && (
+            <PropDisplay name="Tags">
+              {/* PARITY FLAG: non-link pills (search unported) */}
+              {app.tags.map((t) => (
+                <span class="chip">{t}</span>
+              ))}
+            </PropDisplay>
+          )
+        }
+
+        {app.description && <PropDisplay name="Description">{app.description}</PropDisplay>}
+
+        {app.funding && <InfoBlock title="Funding acknowledgment" large={false}>{app.funding}</InfoBlock>}
+
+        {app.citation && <InfoBlock title="Suggested citation" large={false} html={app.citation} />}
+
+        {
+          hasRelated && (
+            <InfoBlock title="Related contents" large={false}>
+              <ul class="font-lato">
+                {app.related.map((r) => (
+                  <li>
+                    <a href={r.fullPath}>{r.displayTitle}</a>
+                  </li>
+                ))}
+              </ul>
+            </InfoBlock>
+          )
+        }
+      </div>
+    </div>
+
+    {
+      app.url && (
+        <div class="mt-6 text-center">
+          <button
+            type="button"
+            class="detail-btn"
+            style="font-size:16px;padding:14px 28px"
+            onclick={`window.open(${JSON.stringify(app.url)})`}
+          >
+            Launch the App
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7Z"></path></svg>
+          </button>
+        </div>
+      )
+    }
+  </div>
+</div>
+
+<style>
+  .app-img {
+    width: 100%;
+    min-height: 350px;
+    object-fit: cover;
+    border: 1px solid #eee;
+    background: #f3f4f6;
+  }
+</style>

@@ -1,0 +1,14 @@
+---
+// Ports legacy Hub/MarkerProject.vue: a small "project-specific dataset" marker
+// (poll-box icon + caption). Rendered above the prop list on dataset detail
+// views when the record has a `project` but no `external`.
+---
+
+<div class="marker-row marker-project font-lato">
+  <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"
+    ><path
+      d="M17 17H7V7h10m0-2H7a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-2 4h-2v6h2V9m-4 2H9v4h2v-4Z"
+    ></path></svg
+  >
+  <span class="small">This is a project-specific dataset</span>
+</div>

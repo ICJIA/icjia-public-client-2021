@@ -1,0 +1,33 @@
+---
+// /about/ — About overview / landing. Ports legacy AboutHome.vue.
+//
+// AboutHome.vue fetches GET_SINGLE_PAGE_QUERY with the FIXED slug
+// "about-the-authority" (NOT "about") and renders the generic BasePage layout
+// (title + body + showTOC sidebar + clickthrough boxes). It also emits a fixed
+// "About" context-label (EventBus "context-label" -> "About"), so we pass
+// contextTitle="About" here rather than the CMS page title.
+//
+// Static, fully server-rendered via getPage() + BasePage.astro (same renderer as
+// the /about/[slug] catch-all). 404 if the CMS page is missing (matches legacy
+// AboutHome's router.push("/404") on empty pages[]).
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BasePage from '../../components/BasePage.astro';
+import { getPage } from '../../lib/data';
+import { setCache } from '../../lib/cache';
+
+const page = await getPage('about-the-authority');
+
+if (!page) {
+  return new Response('Not found', { status: 404 });
+}
+
+setCache(Astro.response, 'page');
+---
+
+<BaseLayout
+  title={page.title ? `${page.title} — ICJIA` : 'ICJIA'}
+  description={page.summary}
+  contextTitle="About"
+>
+  <BasePage page={page} />
+</BaseLayout>

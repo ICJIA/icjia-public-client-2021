@@ -1,0 +1,237 @@
+---
+// Generic ResearchHub list-page body (articles | datasets | apps). Mirrors the
+// proven NewsListing/MeetingsListing model:
+//   • a single JSON data island holds every item (so the list ships once);
+//   • an SSR page-1 (articles) / full (datasets, apps) baseline renders REAL
+//     HTML cards (SEO / no-JS / crawler), hidden once Alpine hydrates (x-show);
+//   • Alpine x-for then owns the live grid/list — toggled by ?view=list
+//     (bookmarkable via history.replaceState) — keeping only what's shown in DOM.
+//   • articles get a "Load more" button (grow `shown` by PER_PAGE) like prod;
+//     datasets/apps render all (no pagination).
+//
+// base64 app images: carried in the island as `img` and bound on the Alpine
+// card as a lazy <img>; the SSR baseline cards are text-only (allowImage=false)
+// so we never inline a wall of base64 in the server HTML.
+//
+// PARITY FLAGS (search unported): category + tag are non-interactive here.
+import HubCard from './HubCard.astro';
+import type {
+  ResearchArticleListItem,
+  ResearchDatasetListItem,
+  ResearchAppListItem,
+} from '../../lib/research';
+import '../../styles/researchhub.css';
+
+type HubItem = ResearchArticleListItem | ResearchDatasetListItem | ResearchAppListItem;
+
+interface Props {
+  kind: 'articles' | 'datasets' | 'apps';
+  heading: string;
+  /** noun for "Showing N of M {noun}". */
+  noun: string;
+  items: HubItem[];
+  /** articles use Load-more; datasets/apps render all. */
+  paginate?: boolean;
+  perPage?: number;
+  /** datasets render the "Updated" label, no image. */
+  showUpdated?: boolean;
+  updatedText?: string;
+  /** ?view default-grid initial view (read on the server for the baseline). */
+  initialView?: 'grid' | 'list';
+}
+const {
+  kind,
+  heading,
+  noun,
+  items,
+  paginate = false,
+  perPage = 42,
+  showUpdated = false,
+  updatedText = 'Updated',
+  initialView = 'grid',
+} = Astro.props;
+
+const total = items.length;
+
+// Island rows: keep only what the card binds (and the base64 app image as `img`).
+const rows = items.map((it) => {
+  const authors = (it as ResearchArticleListItem).authors || '';
+  const img = (it as ResearchAppListItem).image || null;
+  const contributors = (it as ResearchAppListItem).contributors || null;
+  return {
+    p: it.fullPath,
+    t: it.title,
+    d: it.dateLabel,
+    n: it.isNew,
+    te: it.teaser || '',
+    au: authors,
+    cats: it.categories,
+    tags: it.tags,
+    img, // base64 (apps) | null
+    contrib: contributors,
+  };
+});
+// JSON-in-HTML: neutralize "<" so the island can't break out of the <script>.
+const listJson = JSON.stringify(rows).replace(/</g, '\\u003c');
+const islandId = `hub-${kind}-data`;
+
+// SSR baseline = page 1 (articles) or all (datasets/apps).
+const baseline = paginate ? items.slice(0, perPage) : items;
+---
+
+<div class="researchhub">
+  <div class="page-heading mb-6">
+    <h1>{heading}</h1>
+  </div>
+
+  <script type="application/json" id={islandId} set:html={listJson} is:inline />
+
+  <div
+    x-data={`{
+      all: JSON.parse(document.getElementById('${islandId}').textContent),
+      view: '${initialView}', shown: ${perPage}, perPage: ${perPage},
+      paginate: ${paginate}, ready: false,
+      init(){
+        const p = new URLSearchParams(location.search).get('view');
+        if (p === 'list' || p === 'grid') this.view = p;
+        this.ready = true;
+      },
+      setView(v){
+        this.view = v;
+        const u = new URL(location.href);
+        if (v === 'grid') u.searchParams.delete('view'); else u.searchParams.set('view', v);
+        history.replaceState(null, '', u);
+      },
+      get visible(){ return this.paginate ? this.all.slice(0, this.shown) : this.all; },
+      get hasMore(){ return this.paginate && this.shown < this.all.length; },
+      get shownCount(){ return Math.min(this.shown, this.all.length); },
+      loadMore(){ this.shown += this.perPage; }
+    }`}
+  >
+    {/* "Showing N of M" + grid/list toggle */}
+    <div class="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+      <div class="showing-count">
+        {
+          paginate ? (
+            <span x-text={`(shownCount >= ${total} ? 'Showing all ${total} ${noun}' : 'Showing ' + shownCount + ' of ${total} ${noun}')`}>
+              Showing {Math.min(perPage, total)} of {total} {noun}
+            </span>
+          ) : (
+            <span>Showing all {total} {noun}</span>
+          )
+        }
+      </div>
+      <div class="vtoggle" role="group" aria-label={`${heading} view`}>
+        <button type="button" @click="setView('list')" :aria-pressed="view === 'list'">
+          List
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"
+            ><path
+              d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5Z"
+            ></path></svg
+          >
+        </button>
+        <button type="button" @click="setView('grid')" :aria-pressed="view === 'grid'">
+          Grid
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"
+            ><path d="M3 11h8V3H3m2 2h4v4H5m8-2h8V3h-8m2 2h4v4h-4m-6 8h8v-8h-8m2 2h4v4h-4m-8 2h8v-8H3m2 2h4v4H5Z"></path></svg
+          >
+        </button>
+      </div>
+    </div>
+
+    {/* SSR baseline (SEO / no-JS) — hidden once Alpine hydrates. */}
+    <div x-show="!ready">
+      <div
+        class:list={[
+          initialView === 'list'
+            ? 'grid grid-cols-1 gap-2'
+            : 'grid grid-cols-1 gap-2 md:grid-cols-3',
+        ]}
+      >
+        {
+          baseline.map((it) => (
+            <HubCard
+              item={it}
+              orientation={initialView}
+              allowImage={false}
+              showUpdated={showUpdated}
+              updatedText={updatedText}
+            />
+          ))
+        }
+      </div>
+    </div>
+
+    {/* Interactive grid/list (Alpine x-for) — shown after hydrate. */}
+    <div x-show="ready" x-cloak>
+      <div :class="view === 'list' ? 'grid grid-cols-1 gap-2' : 'grid grid-cols-1 gap-2 md:grid-cols-3'">
+        <template x-for="it in visible" :key="it.p">
+          <a :href="it.p" class="hub-card" :class="view === 'grid' ? 'hub-card--grid' : 'hub-card--list'">
+            <template x-if={`!${showUpdated} && it.d`}>
+              <div class="hc-date" x-text="it.d"></div>
+            </template>
+            <template x-if="it.n"><span class="hub-new">NEW!</span></template>
+            <template x-if="it.t"><h2 class="hc-title" x-text="it.t"></h2></template>
+            <template x-if="it.au"><div class="hc-authors" x-text="it.au"></div></template>
+            <template x-if="it.img">
+              <img class="hc-img" :src="it.img" alt="" loading="lazy" decoding="async" />
+            </template>
+            <template x-if="it.te"><div class="hc-teaser" x-text="it.te"></div></template>
+
+            <div class="hc-props">
+              <template x-if="it.contrib && it.contrib.length">
+                <div class="prop-row font-lato">
+                  <span class="prop-name">Contributors</span>
+                  <span class="prop-val">
+                    <template x-for="(c, i) in it.contrib" :key="i">
+                      <span>
+                        <template x-if="i > 0"><span x-text="i + 1 < it.contrib.length ? ', ' : ' and '"></span></template>
+                        <template x-if="c.url"><a :href="c.url" target="_blank" rel="noopener noreferrer" x-text="c.title"></a></template>
+                        <template x-if="!c.url"><span x-text="c.title"></span></template>
+                      </span>
+                    </template>
+                  </span>
+                </div>
+              </template>
+
+              <template x-if={`${showUpdated} && it.d`}>
+                <div class="prop-row font-lato">
+                  <span class="prop-name">{updatedText}</span>
+                  <span class="prop-val" x-text="it.d"></span>
+                </div>
+              </template>
+
+              <template x-if="it.cats.length">
+                <div class="prop-row font-lato">
+                  <span class="prop-name">Categories</span>
+                  <span class="prop-val">
+                    {/* PARITY FLAG: non-link text (search unported) */}
+                    <template x-for="c in it.cats" :key="c"><span class="category mr-1" x-text="c"></span></template>
+                  </span>
+                </div>
+              </template>
+
+              <template x-if="it.tags.length">
+                <div class="prop-row font-lato">
+                  {/* PARITY FLAG: non-link pills (search unported) */}
+                  <template x-for="t in it.tags" :key="t"><span class="chip" x-text="t"></span></template>
+                </div>
+              </template>
+            </div>
+          </a>
+        </template>
+      </div>
+
+      {
+        paginate && (
+          <div class="mt-8 text-center" x-show="hasMore" x-cloak>
+            <button type="button" class="load-more" @click="loadMore()">
+              Load more
+            </button>
+            <div class="showing-count mt-2" x-text={`'Showing ' + shownCount + ' of ${total} ${noun}'`} />
+          </div>
+        )
+      }
+    </div>
+  </div>
+</div>

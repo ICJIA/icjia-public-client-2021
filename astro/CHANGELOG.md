@@ -3,6 +3,48 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.19.0] — 2026-05-29 — Complete DRAFT build-out of the 7 remaining sections (multi-agent workflow)
+
+Built via staged workflows (scout → synthesize → foundation → components → 7 sections;
+~30 agents, ~1.9M agent tokens). FUNCTIONAL DRAFT — pixel-perfection is the next pass.
+
+### Foundation (central, single-owner — builds clean)
+- 6 GraphQL modules (employment, events, publications, biographies, units, hub) +
+  `page.js` extended (clickthrough/splash/attachmentLabel/showTOC, additive — shipped
+  grants intro preserved) + `deepSanitize` exported from gql-client.
+- `data.ts` fetchers/shapers for all sections; `research.ts` 2nd-Strapi (researchhub)
+  hub client (lists via runQuery+deepSanitize, details via raw hubQuery — no double-sanitize).
+- Publications LIST via **REST pager** (1108 rows; GraphQL silently truncates at 990).
+
+### Shared components
+- `AttachmentList`, `Splash`, `PageToc` (scroll-spy), `ContentClickThroughBoxes` (white
+  variant), `BiographyCard`, `BasePage` (generic CMS-page renderer: splash + body + TOC +
+  attachments + clickthrough).
+
+### Sections (40 routes; each self-verified on the dev server)
+- **Employment** `/about/employment/` (+[slug]) — Current/Expired toggle, 219 jobs, internships.
+- **About** `/about/` + `/about/[slug]` catch-all via BasePage (reserved-slug denylist).
+- **Biographies** `/about/biographies/[slug]` + `/about/icjia-staff/` (79) + `/about/composition-and-membership/` (21).
+- **Units** FSGU staff, IDS landing/infonet/isu-staff + `/innovation-and-digital-services/[slug]`.
+- **Publications** `/about/publications/` + `/news/publications/` (+[slug]) — MeetingTable-clone
+  table over 1108 REST rows; `/publications/` 301.
+- **Events** `/events/` + `/news/events/` (+[slug]) — List view + JSON-LD; Calendar stubbed (see flags).
+- **ResearchHub** `/researchhub/` + articles/datasets/apps (list+detail) + hub-overview + hub-staff
+  (27) + redirects. Base64 hub images kept OUT of SSR HTML (landing 3.3MB→287KB).
+
+### Fixed
+- **Hub detail slug filter:** the researchhub Strapi v3 silently ignores `where` GraphQL
+  *variables* (every article/dataset/app detail returned item[0]). Inlined the slug
+  (escaped) in the 3 hub single queries — verified each slug now returns its own record.
+
+### Flags / draft deviations (for the pixel pass)
+- Search unported → tag chips are non-link spans; bio name→search + "Related Web Content" omitted.
+- Events default view = List (legacy default is the Vuetify calendar); Calendar toggle = placeholder.
+- `/grants/fsgu-home/` 404s — no CMS `fsgu-home` page exists upstream (faithful; FsguHome.astro
+  ready to render when published).
+- ResearchHub ArticleView omits "About authors"/"Related contents" InfoBlocks (search-dependent).
+- Per-section build/render verified on dev; full deploy Lighthouse/axe gate pending this push.
+
 ## [0.18.0] — 2026-05-29 — /grants/funding/ parity (NOFO list + Current/Expired toggle + single) + reusable data helpers
 
 ### Added — `/grants/funding/` (FundingAll.vue parity)

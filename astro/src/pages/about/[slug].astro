@@ -1,0 +1,60 @@
+---
+// /about/[slug]/ — generic CMS-page catch-all (ports legacy BasePage.vue, the
+// /about/:slug route in src/router/about/index.js). Covers icjia-values,
+// icjia-committees, dicra, foia, contact, covid-19, and any future single CMS
+// page: fetch GET_SINGLE_PAGE_QUERY by slug -> getPage(); 404 when no page.
+//
+// Renders optional Splash, h1, body HTML, tag chips, AttachmentList, showTOC
+// sidebar, and clickthrough boxes — all via the shared BasePage.astro renderer.
+// contextTitle = page.title (legacy BasePage emits the CMS title, unlike
+// AboutHome which forces "About").
+//
+// EXCLUDED slugs (own dedicated, non-BasePage views; other migration agents):
+//   - composition-and-membership, icjia-staff, biographies  (Bios/Staff scope:
+//       fetch GET_ALL_BIOGRAPHIES_QUERY/UNITS + BiographyCard, not a CMS page)
+//   - employment            (EmploymentAll.vue — own query/list view)
+//   - publications          (PublicationsAll.vue — own query/list view)
+//   - units                 (legacy only has /about/units/:slug; bare "units"
+//                             is not a CMS page)
+// In Astro, dedicated route files win over [slug]; this denylist is the belt to
+// that suspenders, so we never render another section's data through BasePage.
+//
+// NOTE (search unported): tag chips render as plain <span class="chip"> (in
+// BasePage.astro), not links to /search/:tag — the Search section is not built
+// yet. To be restored when Search lands.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BasePage from '../../components/BasePage.astro';
+import { getPage } from '../../lib/data';
+import { setCache } from '../../lib/cache';
+
+const RESERVED = new Set([
+  'composition-and-membership',
+  'icjia-staff',
+  'biographies',
+  'employment',
+  'publications',
+  'units',
+]);
+
+const { slug } = Astro.params;
+
+if (!slug || RESERVED.has(slug)) {
+  return new Response('Not found', { status: 404 });
+}
+
+const page = await getPage(slug);
+
+if (!page) {
+  return new Response('Not found', { status: 404 });
+}
+
+setCache(Astro.response, 'page');
+---
+
+<BaseLayout
+  title={page.title ? `${page.title} — ICJIA` : 'ICJIA'}
+  description={page.summary}
+  contextTitle={page.title}
+>
+  <BasePage page={page} />
+</BaseLayout>

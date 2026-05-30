@@ -1,0 +1,200 @@
+---
+// /about/employment/ — live-data SSR, parity with EmploymentAll.vue:
+//   • H1 from the CMS "employment" page title
+//   • a HARDCODED intro <p> (State-of-Illinois jobs2web link — NOT from the CMS;
+//     legacy `page.body` is commented out)
+//   • H2 "Employment Opportunities" + a Current/Expired toggle (the proven
+//     NewsListing Alpine pattern, simplified: no pagination/grouping)
+//   • job cards (summaryOnly) — SSR baseline renders the CURRENT jobs (no-JS/SEO);
+//     Alpine x-for re-renders the active tab, inlining the JobCard summaryOnly
+//     markup (Astro won't evaluate .map inside a native <template>, like NewsListing)
+//   • a HARDCODED Internship Opportunities section shown ONLY on Current (legacy
+//     v-if status==='current') — bound to the same Alpine `status`
+//
+// PARITY: list card summary is rendered MARKDOWN (legacy v-html render(summary)),
+// pre-rendered + sanitized server-side and shipped as HTML in the JSON island, so
+// `<` is escaped to < to prevent </script> breakout (NewsListing does this).
+//
+// TOC DEVIATION: legacy renders a TOC column when page.showTOC. No Toc Astro
+// component exists in the migration yet, so this renders single-column. FLAGGED.
+import '../styles/employment.css';
+import type { JobListItem, CmsPage } from '../lib/data';
+
+interface Props {
+  page: CmsPage | null;
+  items: JobListItem[];
+}
+const { page, items } = Astro.props;
+
+const current = items.filter((j) => !j.expired);
+
+// Client list data (consumed by Alpine x-for). summaryHtml is pre-rendered +
+// sanitized server-side; `s` carries markup → the island JSON must escape `<`.
+const listData = items.map((j) => ({
+  p: j.fullPath,
+  t: j.title,
+  cl: j.catLabel,
+  posted: j.postedLine,
+  accepting: j.acceptingLine,
+  expired: j.expired,
+  expiredChip: j.expiredChip,
+  s: j.summaryHtml,
+}));
+const listJson = JSON.stringify(listData).replace(/</g, '\\u003c');
+
+const CJ =
+  'https://visitor.r20.constantcontact.com/manage/optin?v=001MqUcqqvjwLCJXlLMSWbTe3zHHmEQgFeBuHvBcJWTbwgrxFbDSGx4HSUPpI6DJWMUPgbljtLxffqIcGFTgCnr-auak88ybvRxpoJlTMGPtZs%3D';
+const FLYER =
+  'https://agency.icjia-api.cloud/uploads/ICJIA_Research_Internship_Flyer_Updated_June_2022_bc5d48166b.pdf';
+---
+
+<div class="employment markdown-body">
+  {page && <h1 set:html={page.titleHtml} />}
+
+  <p>
+    Visit the
+    <a href="https://illinois.jobs2web.com/" target="_blank" rel="noopener noreferrer"
+      >State of Illinois web-based electronic hiring system</a
+    > for job opportunities in Illinois government. This system significantly expands access to state
+    employment while increasing transparency, accessibility, accountability, and consistency in the
+    state hiring process. The State provides job opportunities in a wide range of occupations and titles.
+    The website will guide you through the state employment process for the departments under the jurisdiction
+    of the Governor.
+  </p>
+
+  <h2 id="current-icjia-opportunities">Employment Opportunities</h2>
+
+  <div
+    x-data={`{
+      all: JSON.parse(document.getElementById('jobs-data').textContent),
+      status: 'current', ready: false,
+      init(){ this.ready = true; },
+      get filtered(){ return this.all.filter((j) => this.status === 'expired' ? j.expired : !j.expired); },
+      get empty(){ return this.filtered.length === 0; },
+      setStatus(s){ this.status = s; }
+    }`}
+  >
+    <div class="vtoggle mb-8" role="group" aria-label="Employment status">
+      <button type="button" @click="setStatus('current')" :aria-pressed="status === 'current'"
+        >Current</button
+      >
+      <button type="button" @click="setStatus('expired')" :aria-pressed="status === 'expired'"
+        >Expired</button
+      >
+    </div>
+
+    <script type="application/json" id="jobs-data" set:html={listJson}></script>
+
+    {/* SSR baseline (no-JS / SEO): the current jobs (toggle default = Current). */}
+    <div x-show="!ready">
+      {
+        current.length === 0 ? (
+          <div class="job-empty">
+            <h3>There are no current employment opportunities.</h3>
+            <p>
+              Please check back soon or subscribe to the{' '}
+              <a href={CJ} target="_blank" rel="noopener noreferrer">
+                CJ Dispatch
+              </a>{' '}
+              for the latest ICJIA news and information.
+            </p>
+          </div>
+        ) : (
+          current.map((j) => (
+            <div class="job-card markdown-body mb-6">
+              <div class="job-head">
+                <span class="job-kicker">{j.catLabel}</span>
+                {j.acceptingLine && (
+                  <span class="job-accepting">&nbsp;|&nbsp;{j.acceptingLine}</span>
+                )}
+                <span class="job-spacer" />
+                {j.expired && <span class="job-chip-expired">{j.expiredChip}</span>}
+              </div>
+              <h2 class="job-title">
+                <a href={j.fullPath}>{j.title}</a>
+              </h2>
+              {j.postedLine && <span class="job-posted">{j.postedLine}</span>}
+              {j.summaryHtml && <div class="job-body pt-3 pl-3" set:html={j.summaryHtml} />}
+              <div class="click-hint" aria-hidden="true">
+                <span>Click for full job listing</span>
+                <span class="click-hint-arrow">&rarr;</span>
+              </div>
+            </div>
+          ))
+        )
+      }
+    </div>
+
+    {/* Interactive (Alpine x-for over the active tab). */}
+    <div x-show="ready" x-cloak>
+      <template x-if="empty">
+        <div class="job-empty">
+          <h3
+            x-text="status === 'expired' ? 'There are no expired employment opportunities.' : 'There are no current employment opportunities.'"
+          ></h3>
+          <p>
+            Please check back soon or subscribe to the
+            <a href={CJ} target="_blank" rel="noopener noreferrer">CJ Dispatch</a> for the latest ICJIA
+            news and information.
+          </p>
+        </div>
+      </template>
+
+      <template x-for="j in filtered" :key="j.p">
+        <div class="job-card markdown-body mb-6">
+          <div class="job-head">
+            <span class="job-kicker" x-text="j.cl"></span>
+            <template x-if="j.accepting">
+              <span class="job-accepting" x-text="' | ' + j.accepting"></span>
+            </template>
+            <span class="job-spacer"></span>
+            <template x-if="j.expired">
+              <span class="job-chip-expired" x-text="j.expiredChip"></span>
+            </template>
+          </div>
+          <h2 class="job-title"><a :href="j.p" x-text="j.t"></a></h2>
+          <template x-if="j.posted">
+            <span class="job-posted" x-text="j.posted"></span>
+          </template>
+          <template x-if="j.s">
+            <div class="job-body pt-3 pl-3" x-html="j.s"></div>
+          </template>
+          <div class="click-hint" aria-hidden="true">
+            <span>Click for full job listing</span>
+            <span class="click-hint-arrow">&rarr;</span>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    {/* Internship Opportunities — ONLY on Current (legacy v-if status==='current').
+        Default status='current', so the SSR/no-JS baseline shows it. */}
+    <div
+      class="internships mt-12"
+      x-show="status === 'current'"
+      x-data="{}"
+    >
+      <h2 id="internship-opportunities">Internship Opportunities</h2>
+      <p>The following Authority internships are available to qualified applicants:</p>
+      <ul>
+        <li>Research internships</li>
+        <li>Graphic design internships (academic credit)</li>
+      </ul>
+      <p>
+        <a href={FLYER} target="_blank" rel="noopener noreferrer"
+          >Download the latest internship flyer &gt;&gt;</a
+        >
+      </p>
+      <p>For more information on research internships, contact:</p>
+      <div class="pl-5">
+        <p><strong>Jessica Reichert</strong></p>
+        <p>Research &amp; Evaluation Center Manager, Research &amp; Analysis Unit</p>
+        <p>Phone: 312-793-8550</p>
+        <p>
+          E-mail:
+          <a href="mailto:Jessica.Reichert@Illinois.gov">Jessica.Reichert@Illinois.gov</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

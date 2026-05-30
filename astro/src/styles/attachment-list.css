@@ -1,0 +1,49 @@
+/* AttachmentList.astro — generalized attachments table.
+   Markup/classes ported 1:1 from MeetingCard.astro's att-table, but scoped under
+   .attachment-list so this component is standalone in any section (the meetings
+   copies live under .meetings in meetings.css). */
+.attachment-list .sub-heading {
+  font-weight: 900;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 8px;
+  text-transform: uppercase;
+  font-size: inherit;
+  margin: 0 0 0.5rem;
+}
+.attachment-list .att-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.attachment-list .att-table th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.6);
+  padding: 6px 12px 6px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+.attachment-list .att-table td {
+  padding: 6px 12px 6px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  vertical-align: top;
+}
+.attachment-list .att-size {
+  font-size: 12px;
+  white-space: nowrap;
+}
+.attachment-list .att-updated {
+  font-size: 14px;
+  font-weight: 700;
+  color: #222;
+  white-space: nowrap;
+}
+.attachment-list .attachment {
+  font-weight: 900;
+  color: #0a3a60;
+  text-decoration: underline;
+}
+.attachment-list .attachment:hover {
+  color: #000;
+  text-decoration: none;
+}

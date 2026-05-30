@@ -1,0 +1,24 @@
+---
+// /grants/fsgu-staff/ — Federal and State Grants Unit Staff. Ports GrantsStaff.vue:
+// hardcoded H1 + unit.summary (slug 'federal-and-state-grants-unit') + biographies
+// where unit.shortName='FSGU' (getBiographiesByUnit already re-sorts sortModifier
+// asc to match legacy). contextTitle "Staff". 404 if unit or bios are empty.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import UnitStaffListing from '../../../components/UnitStaffListing.astro';
+import { getUnit, getBiographiesByUnit } from '../../../lib/data';
+import { setCache } from '../../../lib/cache';
+
+const HEADING = 'Federal and State Grants Unit Staff';
+const [unit, bios] = await Promise.all([
+  getUnit('federal-and-state-grants-unit'),
+  getBiographiesByUnit('FSGU'),
+]);
+if (!unit || bios.length === 0) return new Response(null, { status: 404 });
+setCache(Astro.response, 'bios');
+---
+
+<BaseLayout title={`${HEADING} — ICJIA`} description={HEADING} contextTitle="Staff">
+  <div class="mx-auto max-w-5xl px-4 py-8 md:px-6">
+    <UnitStaffListing heading={HEADING} introHtml={unit.summaryHtml} bios={bios} />
+  </div>
+</BaseLayout>

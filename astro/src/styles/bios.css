@@ -1,0 +1,58 @@
+/* Biographies — draft styling (pixel-tune later). Scoped .bio-card.
+   Ports legacy BiographyCard.vue: bordered v-card, 125px square headshot
+   (hidden on small screens), name heading, bold "unit | role" subtitle,
+   rendered bio body. */
+.bio-card {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  padding: 2rem 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.bio-card .bio-row {
+  display: flex;
+  flex-wrap: nowrap;
+}
+.bio-card .bio-avatar {
+  flex: 0 0 auto;
+  margin: 0.75rem;
+}
+.bio-card .bio-avatar img {
+  display: block;
+  width: 125px;
+  height: 125px;
+  object-fit: cover;
+}
+/* legacy v-avatar hidden-sm-and-down: hide headshot at/below 960px */
+@media (max-width: 960px) {
+  .bio-card .bio-avatar {
+    display: none;
+  }
+}
+.bio-card .bio-body {
+  min-width: 0;
+}
+.bio-card .author-name {
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 2rem;
+  color: #222;
+  margin: 0 0 0 0.75rem;
+}
+.bio-card .bio-subtitle {
+  margin: 0 0.75rem;
+  padding-top: 0.5rem;
+  color: #222;
+}
+.bio-card .bio-subtitle .bio-unit,
+.bio-card .bio-subtitle .bio-role {
+  font-weight: 700;
+}
+.bio-card .bio-subtitle .bio-role {
+  color: #222;
+}
+.bio-card .bio-text {
+  margin: 0.5rem 0.75rem 0;
+  text-align: left;
+  color: #000;
+}

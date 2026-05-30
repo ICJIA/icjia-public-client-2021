@@ -1,0 +1,130 @@
+---
+// Static (server-rendered) ResearchHub card. Ports legacy Hub/HubCard.vue for
+// articles | datasets | apps. The whole card is a link to item.fullPath.
+//
+// Layout (grid min-h 400 / list auto), top → bottom (legacy order):
+//   date (when !showUpdated) → NEW! chip → title h2 → authors (articles) →
+//   image (apps, when allowed) → truncated teaser → prop rows
+//   (Contributors / Updated / Categories / Tags).
+//
+// base64 IMAGES: app `image` is a 50–670KB data-URI. Per the migration rule we
+// NEVER inline base64 in bulk SSR HTML. So the SSR list baseline calls this with
+// allowImage=false (text card); the Alpine x-for list card (in HubListing) binds
+// the base64 from the JSON island as a lazy <img>. The hub-home strips render a
+// bounded 3 apps, so they pass allowImage (lazy <img>, below the fold) directly.
+//
+// PARITY FLAGS (search unported): categories + tags were search triggers in the
+// legacy; here they are non-interactive text/pills.
+import type {
+  ResearchArticleListItem,
+  ResearchDatasetListItem,
+  ResearchAppListItem,
+} from '../../lib/research';
+
+type HubItem = ResearchArticleListItem | ResearchDatasetListItem | ResearchAppListItem;
+
+interface Props {
+  item: HubItem;
+  orientation?: 'grid' | 'list';
+  /** apps pass false in the list baseline (base64 served via island instead). */
+  allowImage?: boolean;
+  /** datasets render no image and show the "Updated" label. */
+  showUpdated?: boolean;
+  updatedText?: string;
+}
+const {
+  item,
+  orientation = 'grid',
+  allowImage = true,
+  showUpdated = false,
+  updatedText = 'Updated',
+} = Astro.props;
+
+const authors = (item as ResearchArticleListItem).authors;
+const image = (item as ResearchAppListItem).image;
+const contributors = (item as ResearchAppListItem).contributors as
+  | Array<{ title?: string; url?: string }>
+  | undefined;
+const teaser = item.teaser; // grid = 30-word (articles) / 2-sentence; pre-shaped
+const showImage = allowImage && !!image;
+---
+
+<a
+  href={item.fullPath}
+  class:list={['hub-card', orientation === 'grid' ? 'hub-card--grid' : 'hub-card--list']}
+>
+  {!showUpdated && item.dateLabel && <div class="hc-date">{item.dateLabel}</div>}
+
+  {item.isNew && <span class="hub-new">NEW!</span>}
+
+  {item.title && <h2 class="hc-title">{item.title}</h2>}
+
+  {authors && <div class="hc-authors">{authors}</div>}
+
+  {
+    showImage && (
+      /* base64 data-URI, lazy (bounded usage only — strips/3 cards) */
+      <img class="hc-img" src={image!} alt="" loading="lazy" decoding="async" />
+    )
+  }
+
+  {teaser && <div class="hc-teaser">{teaser}</div>}
+
+  <div class="hc-props">
+    {
+      contributors && contributors.length > 0 && (
+        <div class="prop-row font-lato">
+          <span class="prop-name">Contributors</span>
+          <span class="prop-val">
+            {contributors.map((c, i) => (
+              <span>
+                {i > 0 && <span>{i + 1 < contributors.length ? ', ' : ' and '}</span>}
+                {c.url ? (
+                  <a href={c.url} target="_blank" rel="noopener noreferrer">
+                    {c.title}
+                  </a>
+                ) : (
+                  c.title
+                )}
+              </span>
+            ))}
+          </span>
+        </div>
+      )
+    }
+
+    {
+      showUpdated && item.dateLabel && (
+        <div class="prop-row font-lato">
+          <span class="prop-name">{updatedText}</span>
+          <span class="prop-val">{item.dateLabel}</span>
+        </div>
+      )
+    }
+
+    {
+      item.categories.length > 0 && (
+        <div class="prop-row font-lato">
+          <span class="prop-name">Categories</span>
+          <span class="prop-val">
+            {/* PARITY FLAG: non-link text (search unported) */}
+            {item.categories.map((c) => (
+              <span class="category mr-1">{c}</span>
+            ))}
+          </span>
+        </div>
+      )
+    }
+
+    {
+      item.tags.length > 0 && (
+        <div class="prop-row font-lato">
+          {/* PARITY FLAG: non-link pills (search unported) */}
+          {item.tags.map((t) => (
+            <span class="chip">{t}</span>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</a>

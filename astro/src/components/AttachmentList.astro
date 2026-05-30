@@ -1,0 +1,55 @@
+---
+// Generalized attachments table, ported from MeetingCard.astro's att-table so
+// every section (publications, funding, programs, jobs, …) renders attachments
+// with identical markup/classes. Static (server-rendered); the only JS is an
+// inline Plausible file_download track on click (same event/props as
+// MeetingTable.astro's track()), guarded so it's a no-op without Plausible.
+import '../styles/attachment-list.css';
+import type { AttachmentItem } from '../lib/data';
+
+interface Props {
+  items: AttachmentItem[];
+  /** Sub-heading above the table. */
+  label?: string;
+  /** Drop the "Last Updated" column (e.g. when updated dates are unavailable). */
+  hideUpdated?: boolean;
+}
+const { items, label = 'Attachments', hideUpdated = false } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <div class="attachment-list">
+      <h3 class="sub-heading">{label}</h3>
+      <table class="att-table">
+        <thead>
+          <tr>
+            <th>Filename</th>
+            {!hideUpdated && <th>Last Updated</th>}
+            <th>Size</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((a) => (
+            <tr>
+              <td>
+                <a
+                  class="attachment"
+                  href={a.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onclick={`try{if(typeof window.plausible==='function'){window.plausible('file_download',{props:{url:this.href}});window.plausible('Outbound Link: Click',{props:{url:this.href}})}}catch(e){}`}
+                >
+                  {a.name}
+                  <span class="sr-only"> (opens in new tab)</span>
+                </a>
+              </td>
+              {!hideUpdated && <td class="att-updated">{a.updatedAlt}</td>}
+              <td class="att-size">{a.niceSize}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}

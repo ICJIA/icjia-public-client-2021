@@ -1,0 +1,81 @@
+---
+// Generic CMS-page renderer — ports legacy BasePage.vue (src/views/BasePage.vue).
+// Reused by About / Units / Hub-overview landing pages (each fetches a CmsPage
+// via getPage() and hands it here). Static, fully server-rendered.
+//
+// Layout (mirrors BasePage.vue, top → bottom):
+//   1. Splash (full width) when page.splash.
+//   2. Two-col grid (body md:8 + PageToc md:4) WHEN page.showTOC && toc.length,
+//      else a single full-width column. The grid is nudged up 15px to match the
+//      legacy `v-container style="margin-top:-15px"`.
+//        body col: h1 (titleHtml, set:html; suppressed when hideTitle)
+//                  → div.markdown-body body (set:html safeBodyHtml)
+//                  → tag chips (plain spans) → AttachmentList.
+//   3. ContentClickThroughBoxes (full width) when page.clickthrough.
+//
+// Wraps everything in .markdown-body (legacy root class) inside a centered
+// max-width container, matching the sibling detail pages.
+//
+// PARITY NOTES:
+// - `summary` is part of CmsPage / Props but legacy BasePage.vue never renders it
+//   in the body, so it is intentionally NOT rendered here (passed through only).
+// - `hideUpdated`: legacy set this true ONLY for the `meeting-schedules` slug
+//   (to drop AttachmentList's "Last Updated" column). CmsPage carries no slug, so
+//   the quirk is exposed as an optional prop the consuming page can set.
+import '../styles/github-markdown.css';
+import Splash from './Splash.astro';
+import PageToc from './PageToc.astro';
+import AttachmentList from './AttachmentList.astro';
+import ContentClickThroughBoxes from './ContentClickThroughBoxes.astro';
+import type { CmsPage } from '../lib/data';
+
+interface Props {
+  page: CmsPage;
+  /** Legacy `meeting-schedules` quirk: hide AttachmentList's "Last Updated". */
+  hideUpdated?: boolean;
+}
+const { page, hideUpdated = false } = Astro.props;
+
+const showToc = !!page.showTOC && page.toc.length > 0;
+---
+
+<div class="markdown-body mx-auto max-w-5xl px-4 py-8 md:px-6">
+  {/* 1. Splash (renders nothing when page.splash is null) */}
+  <Splash splash={page.splash} />
+
+  {/* 2. Body + optional TOC. -mt-[15px] = legacy v-container margin-top:-15px. */}
+  <div class:list={['-mt-[15px]', { 'grid grid-cols-1 gap-6 md:grid-cols-12': showToc }]}>
+    <div class:list={[{ 'md:col-span-8': showToc }]}>
+      {!page.hideTitle && <h1 set:html={page.titleHtml} />}
+
+      <div set:html={page.safeBodyHtml} />
+
+      {
+        page.tags.length > 0 && (
+          <div class="mt-6">
+            {page.tags.map((tag) => (
+              <span class="chip">{tag}</span>
+            ))}
+          </div>
+        )
+      }
+
+      <AttachmentList
+        items={page.attachments}
+        label={page.attachmentLabel}
+        hideUpdated={hideUpdated}
+      />
+    </div>
+
+    {
+      showToc && (
+        <aside class="md:col-span-4">
+          <PageToc items={page.toc} />
+        </aside>
+      )
+    }
+  </div>
+
+  {/* 3. Full-width "For more information" click-through boxes. */}
+  <ContentClickThroughBoxes boxes={page.clickthrough} />
+</div>

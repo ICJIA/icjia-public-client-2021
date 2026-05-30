@@ -1,0 +1,43 @@
+---
+// /about/icjia-staff/ — live-data SSR ICJIA staff directory.
+// Ports legacy src/views/About/Staff.vue: CMS page "icjia-staff" (title + body
+// intro) followed by every biography with affiliation === "staff", re-sorted by
+// sortModifier asc (legacy _.orderBy(content,["sortModifier"],["asc"])), each
+// rendered as a <BiographyCard>. Static list (legacy had no client filtering on
+// the All-Staff view). <title> from the CMS page title (legacy metaInfo.title).
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import BiographyCard from '../../../components/BiographyCard.astro';
+import { getAllBiographies, getPage } from '../../../lib/data';
+import { setCache } from '../../../lib/cache';
+
+const [bios, page] = await Promise.all([getAllBiographies(), getPage('icjia-staff')]);
+const staff = bios.filter((b) => b.affiliation === 'staff');
+
+setCache(Astro.response, 'bios');
+
+const pageTitle = page?.title || 'ICJIA Staff';
+---
+
+<BaseLayout title={`${pageTitle} — ICJIA`} contextTitle={pageTitle}>
+  <div class="markdown-body mx-auto max-w-5xl px-4 py-8 md:px-6">
+    {page?.titleHtml && <h1 set:html={page.titleHtml} />}
+    {page?.safeBodyHtml && <div class="mb-8" set:html={page.safeBodyHtml} />}
+
+    {/* PARITY FLAG: legacy Staff.vue had an "All Staff" / "Staff By Unit" toggle.
+        The "Staff By Unit" view renders <UnitCard>s, which belong to the (as-yet
+        unbuilt) Units section. Only the default "All Staff" list is shipped here;
+        wire the by-unit toggle when the Units section + UnitCard land. */}
+
+    {
+      staff.length === 0 ? (
+        <p>No staff listed at this time.</p>
+      ) : (
+        staff.map((item) => (
+          <div class="markdown-body mb-4">
+            <BiographyCard item={item} />
+          </div>
+        ))
+      )
+    }
+  </div>
+</BaseLayout>
