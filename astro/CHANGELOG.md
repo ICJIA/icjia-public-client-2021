@@ -3,6 +3,13 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.30.2] — 2026-05-30 — Featured news card image fills the card edge-to-edge
+
+`NewsListing` featured card image `object-contain` → `object-cover`: the image now
+fills the full card/column width with no letterbox gutters (it was scaling to fit
+height, leaving white bars on the sides — the "stunted" look). Height stays clamped
+250–320px; small list thumbnails (90×90) are intentionally left `object-contain`.
+
 ## [0.30.1] — 2026-05-30 — Nav progress bar: thicker + more visible
 
 `#nav-progress` height 3px → 4px and the glow strengthened (box-shadow blur 8→10px,
