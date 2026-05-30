@@ -47,6 +47,9 @@ const contributors = (item as ResearchAppListItem).contributors as
   | undefined;
 const teaser = item.teaser; // grid = 30-word (articles) / 2-sentence; pre-shaped
 const showImage = allowImage && !!image;
+// Articles: a same-origin (prod) convention thumbnail URL — cheap, NOT base64, so
+// it renders even in the SSR baseline (unlike app base64). Hidden on load error.
+const imagePath = (item as ResearchArticleListItem).imagePath;
 ---
 
 <a
@@ -65,6 +68,22 @@ const showImage = allowImage && !!image;
     showImage && (
       /* base64 data-URI, lazy (bounded usage only — strips/3 cards) */
       <img class="hc-img" src={image!} alt="" loading="lazy" decoding="async" />
+    )
+  }
+
+  {
+    imagePath && (
+      /* article convention thumbnail (same-origin prod URL); hide on 404 */
+      <img
+        class="hc-img"
+        src={imagePath}
+        alt=""
+        width="400"
+        height="250"
+        loading="lazy"
+        decoding="async"
+        onerror="this.style.display='none'"
+      />
     )
   }
 

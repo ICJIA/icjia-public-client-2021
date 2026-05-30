@@ -61,10 +61,14 @@ const total = items.length;
 // /api/hub-app-images.json (see the apps-only <script> below). articles/datasets
 // have no list image, so they're unaffected.
 const isApps = kind === 'apps';
+const isArticles = kind === 'articles';
 const rows = items.map((it) => {
   const authors = (it as ResearchArticleListItem).authors || '';
   const hasImg = isApps && !!(it as ResearchAppListItem).image;
   const contributors = (it as ResearchAppListItem).contributors || null;
+  // Articles carry a same-origin (prod) convention thumbnail URL — cheap to put
+  // in the island directly (NOT base64, unlike apps), shown with hide-on-error.
+  const imagePath = isArticles ? (it as ResearchArticleListItem).imagePath : null;
   return {
     p: it.fullPath,
     t: it.title,
@@ -76,6 +80,7 @@ const rows = items.map((it) => {
     tags: it.tags,
     img: null, // base64 never inlined; apps lazy-load via slug → endpoint
     hasImg, // apps with an image (drives the lazy <img> placeholder)
+    ip: imagePath, // articles: /images/<id>-splash.jpeg (hide on error)
     slug: it.slug, // apps lazy-load key into /api/hub-app-images.json
     contrib: contributors,
   };
@@ -192,6 +197,20 @@ const baseline = paginate ? items.slice(0, perPage) : items;
                 height="250"
                 loading="lazy"
                 decoding="async"
+              />
+            </template>
+            {/* Articles: convention thumbnail /images/<id>-splash.jpeg; hide the
+                <img> if it 404s (not every article has one — legacy errorHandler). */}
+            <template x-if="it.ip">
+              <img
+                class="hc-img"
+                :src="it.ip"
+                alt=""
+                width="400"
+                height="250"
+                loading="lazy"
+                decoding="async"
+                @error="$el.style.display='none'"
               />
             </template>
             <template x-if="it.te"><div class="hc-teaser" x-text="it.te"></div></template>

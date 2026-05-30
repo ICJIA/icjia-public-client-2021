@@ -234,6 +234,10 @@ export interface ResearchArticleListItem {
   isNew: boolean;
   categories: string[];
   tags: string[];
+  /** Legacy ArticlesAll convention thumbnail: /images/<id>-splash.jpeg (served
+   *  from icjia.illinois.gov). Not every article has one — the card hides it on
+   *  load error (mirrors legacy errorHandler/imageOK). Same-origin in prod. */
+  imagePath: string;
 }
 function shapeArticleListItem(a: any): ResearchArticleListItem {
   return {
@@ -249,6 +253,7 @@ function shapeArticleListItem(a: any): ResearchArticleListItem {
     isNew: isNewResearch(a.date),
     categories: categoriesArray(a.categories),
     tags: Array.isArray(a.tags) ? a.tags : [],
+    imagePath: `https://icjia.illinois.gov/images/${String(a.id)}-splash.jpeg`,
   };
 }
 
