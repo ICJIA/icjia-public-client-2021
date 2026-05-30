@@ -52,7 +52,15 @@ export const keepWarm = {
  * Tuned by editorial cadence. Consumed by src/lib/cache.ts (setCache).
  */
 export const cacheTTL = {
-  home: [60, 300],
+  // [s-maxage, stale-while-revalidate] seconds.
+  // KEEP-WARM NOTE: for the warmed routes (home + the /researchhub/* family, kinds
+  // `home` + `hub`), SWR is set FAR above the 5-min (300s) keep-warm ping interval
+  // so the edge cache never fully expires between pings — each ping lands inside
+  // the stale window, serves instantly, and triggers a background refresh. Keeping
+  // s-maxage SMALL (60/120) means content is still fresh within ~1-2 min for the
+  // revalidating request; SWR (not s-maxage) is what holds the warm copy. This is
+  // why warmed routes get ~150ms TTFB while staying live-enough (≤5 min via pings).
+  home: [60, 3600], // warmed — SWR ≫ 300s ping so it never goes cold
   news: [60, 300],
   meetings: [120, 600],
   grants: [120, 600],
@@ -61,7 +69,7 @@ export const cacheTTL = {
   publications: [300, 1800],
   bios: [600, 3600],
   page: [600, 3600],
-  hub: [120, 600],
+  hub: [120, 3600], // warmed (/researchhub/*) — SWR ≫ 300s ping
 };
 
 /**

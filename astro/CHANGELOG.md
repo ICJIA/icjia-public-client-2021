@@ -59,6 +59,18 @@ Multi-agent review (7 section reviewers + synthesis) found NO P0s; working the P
   Lighthouse a11y stays 100). Only 1 of 33 pages does this; demoting in-body h1→h2 would
   change heading sizes vs prod, so it's left for a deliberate content/VR pass.
 
+### Fixed — keep-warm now actually keeps the EDGE warm (SWR ≫ ping interval)
+- Verified the keep-warm scheduled fn IS registered on the branch deploy
+  (`function_schedules: [{cron:"*/5 * * * *", name:"keep-warm"}]`). BUT the warmed
+  routes' cache life (home 60+300=360s, hub 120+600=720s) was barely above / near the
+  300s ping, so the Durable Cache kept fully expiring between pings (observed
+  `fwd=stale; ttl=negative`) — the lambda stayed warm but pages didn't.
+- Raised **SWR** (not s-maxage) far above the ping interval on the warmed kinds:
+  `home: [60, 3600]`, `hub: [120, 3600]`. SWR is what serves a warm copy instantly +
+  triggers background revalidation, so each 5-min ping lands inside a 1-hour stale
+  window → the edge never goes cold → ~150ms TTFB — while s-maxage stays small (60/120)
+  so the revalidated content is still fresh within 1-2 min. Non-warmed kinds unchanged.
+
 ### Added — central config `astro/icjia.config.mjs` + keep-warm kill switch
 - **Single source of truth** for the Astro app's tunables: `site` constants (prod origin +
   Strapi/hub hosts), `keepWarm` ({enabled, routes}), `cacheTTL` (per content type), `monitor`
