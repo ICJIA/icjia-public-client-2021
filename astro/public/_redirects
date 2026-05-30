@@ -1,0 +1,25 @@
+# Legacy inbound-link redirects — ports src/router/redirects/index.js.
+# Edge-level 301s (Netlify): faster than runtime Astro.redirect() and isolated to
+# the Astro deploy (ships in astro/dist). For OLD external/bookmarked links only —
+# no internal link points at these (those link directly to the target, so
+# SiteImprove never crawls a redirect). Each target is a real route (verified 200).
+#
+# NOTE: /publications/, /publications/*, /researchhub/hub-home/, and
+# /researchhub/publications/ are handled by runtime Astro.redirect() pages already
+# (they needed slug interpolation / component reuse); they are intentionally NOT
+# duplicated here.
+
+# Section/landing moves
+/press/                        /news/press/                                    301
+/dicra/                        /about/dicra/                                   301
+/foia/                         /about/foia/                                    301
+/rss/                          /about/rss/                                     301
+/drone/                        /innovation-and-digital-services/drone/         301
+/covid19/                      /about/covid-19/                                301
+
+# Renamed content
+/news/volunteers/              /news/join-our-volunteer-reviewer-pool/         301
+/gata/funding/2021-cbvip-sfy22/  /grants/funding/community-based-violence-intervention-and-prevention/  301
+
+# Legacy GATA subtree → research hub (catch-all last so specific rules win)
+/gata/*                        /researchhub/                                   301
