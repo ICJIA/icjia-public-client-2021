@@ -3,6 +3,21 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.30.0] — 2026-05-30 — Dev-only a11y lint (eslint-plugin-astro)
+
+Added `eslint` (9) + `eslint-plugin-astro` + `eslint-plugin-jsx-a11y` + `@typescript-eslint/parser`
+(dev-only — not in the SSR function bundle, no deploy impact) with a flat config (`eslint.config.mjs`)
+scoped to `.astro` templates, plus `pnpm lint` / `pnpm lint:fix`.
+
+- **NOT the primary a11y gate** — axe-core + Lighthouse (which see the rendered DOM) remain
+  authoritative and pass 100. This is a static, supplementary CI check.
+- **4 rules turned OFF** because they can't see this app's dynamic bindings and produced ONLY
+  false positives: `anchor-is-valid` / `anchor-has-content` (Alpine `:href` / `x-text`),
+  `heading-has-content` (`set:html` / `x-text` headings), `no-noninteractive-element-interactions`
+  (`<img onerror>` hide-on-404). Every other jsx-a11y rule stays an ERROR — so it still catches
+  genuinely STATIC violations (verified: a literal `<img>` with no `alt` fails on `alt-text`).
+- Result: `pnpm lint` is clean (0 problems) on the current codebase + fails on a new static a11y bug.
+
 ## [0.29.1] — 2026-05-30 — Grants: Required Forms page (the other blank dedicated view)
 
 Same class as 0.29.0, found in a proactive sweep: `/grants/required-forms/` rendered blank
