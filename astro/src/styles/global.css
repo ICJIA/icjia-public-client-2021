@@ -7,6 +7,20 @@
  *   legacy-globals.css  → links, focus, skiplink, sr utilities, card hover, …
  */
 @import "./github-markdown.css";
+
+/* Splash hero override — github-markdown.css's `.markdown-body img` sets
+ * box-sizing:content-box + max-width:100% (caps the hero at its intrinsic width).
+ * This loads AFTER it (and component-scoped styles don't reliably reach the
+ * CmsImage-rendered <img>), so the full-bleed splash banner fills its wrapper. */
+.markdown-body img.splash-img {
+  box-sizing: border-box;
+  max-width: none;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+  object-position: center;
+}
 @import "./article-view.css";
 /* legacy-globals into the `base` layer so Tailwind utilities (utilities layer,
  * which cascades later) can override element defaults like the global

@@ -39,16 +39,17 @@ const { page, hideUpdated = false } = Astro.props;
 const showToc = !!page.showTOC && page.toc.length > 0;
 ---
 
-<div class="markdown-body mx-auto max-w-5xl px-4 py-8 md:px-6">
+<div class="markdown-body mx-auto max-w-[1185px] px-3 py-8">
   {/* 1. Splash — FULL WIDTH above the grid (matches prod: splash spans the full
       container, with the H1/body/TOC all starting below it). */}
   <Splash splash={page.splash} />
 
-  {/* 2. Body + optional TOC: 9 cols content / 3 cols TOC (legacy md=3 split).
-       The legacy -15px nudge only applies WITHOUT a splash; with a splash it would
-       pull the grid (incl. the TOC) up into the splash → overlap. */}
-  <div class:list={[{ '-mt-[15px]': !page.splash }, { 'grid grid-cols-1 gap-6 md:grid-cols-12 md:gap-10': showToc }]}>
-    <div class:list={[{ 'md:col-span-9': showToc }]}>
+  {/* 2. Body + optional TOC — prod metrics (1280px): body 790 / TOC 270 / gap 109.
+       Flex with a fixed-basis TOC reproduces prod's proportions exactly at desktop
+       and degrades to a single column below md. The legacy -15px nudge only when
+       there's no splash (else it pulls the sticky TOC up into the splash). */}
+  <div class:list={[{ '-mt-[15px]': !page.splash }, { 'md:flex md:items-start md:gap-[109px]': showToc }]}>
+    <div class:list={[{ 'md:min-w-0 md:flex-1': showToc }]}>
       {!page.hideTitle && <h1 set:html={page.titleHtml} />}
 
       <div set:html={page.safeBodyHtml} />
@@ -72,7 +73,7 @@ const showToc = !!page.showTOC && page.toc.length > 0;
 
     {
       showToc && (
-        <aside class="md:col-span-3">
+        <aside class="mt-8 md:mt-0 md:w-[270px] md:shrink-0">
           <PageToc items={page.toc} />
         </aside>
       )

@@ -22,7 +22,7 @@ const captionText = caption ?? splash?.caption;
 
 {
   splash?.url && (
-    <div>
+    <div class="splash-bleed">
       <CmsImage image={splash} alt={altText} loading="eager" class="splash-img" hero />
       {captionText && <div class="splash-caption">{captionText}</div>}
     </div>
@@ -34,15 +34,19 @@ const captionText = caption ?? splash?.caption;
      aspect-ratio="2" + width:100%. The previous `max-height: 50vw` capped the
      image short on the narrower content column (the "too short" bug); a real
      aspect-ratio box makes it fill the column width and derive its height. */
-  .splash-img {
-    display: block;
-    margin: 0 auto 1.25rem;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 2 / 1;
-    object-fit: cover; /* fill the 2:1 banner edge-to-edge (no letterboxing) */
-    object-position: center;
+  /* Full-VIEWPORT bleed (matches prod: splash spans edge-to-edge, wider than the
+     1185 container). 100vw + the centering margin breaks out of the centered
+     container. Uses 100vw (not 100%); the body has no horizontal scrollbar of its
+     own here so 100vw == document width. */
+  .splash-bleed {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    margin-bottom: 1.25rem;
   }
+  /* .splash-img sizing lives in global.css (.markdown-body img.splash-img) so it
+     reliably overrides the vendored github-markdown img rule regardless of Astro
+     component scoping. Here we only keep layout that's safe to scope. */
   /* Legacy .splash-caption (Splash.vue). */
   .splash-caption {
     font-size: 12px;
