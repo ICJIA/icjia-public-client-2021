@@ -3,6 +3,29 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.3] — 2026-05-31 — fix(cutover): missing sub-site redirects (B2) + purge-webhook map gaps (B4)
+
+A 9-agent **cutover-readiness audit** (workflow) produced a prioritized punch-list; verdict NO-GO until
+B1–B4 (all small/localized). Fixed the two real code/config now-fixes (B1 + CSP-enforce are owner
+AT-CUTOVER steps, not code changes):
+- **B2 — 7 legacy sub-site redirects were MISSING** from `astro/public/_redirects` (404 on Astro, 301 on
+  prod): `/researchhub/docs`, `/cjreform2015`, `/r3`, `/ilheals`, `/calendar`, `/dvfr`, `/ariallsites2023`.
+  Mirrored verbatim from the root `public/_redirects` (default 301 to host root, no `:splat`).
+  `/researchhub/docs/*` placed in the external-301 group (edge rule → precedes the SSR `/researchhub`
+  catch-all).
+- **B4 — `purge-cache.mjs` MODEL_TAG/STATIC_MODELS gaps** left 3 LIVE-rendered models with no
+  purge-on-publish (silent no-op until s-maxage): added `program→grants`, `page→page`,
+  `publication→publications`, `requiredForm`/`required-form→page`, `home→home`; shrank `STATIC_MODELS` to
+  `{unit}` (page + publication render LIVE/SSR). Tags verified against `setCache()` in the routes;
+  multi-word model hyphenation is caught by the at-cutover test-publish (both spellings mapped).
+
+Audit VERIFIED-GOOD: live-data SSR + Durable cache (real HITs), sitemap/search parity-exact (2386=2386,
+security scrubbers intact), SEO production-ready, security headers well-tuned, scheduled-fn logic robust.
+PENDING (owner at-cutover): B1 `netlify.toml [build]` promotion, CSP enforce + per-prefix sub-app CSP
+exclusions (the `/*` enforced policy would break the 7 proxied sub-apps via intersection), env repointing
+(NETLIFY_BUILD_HOOK_URL → main, PURGE_SECRET). **B3** no-slash→slash 301 needs Astro middleware (the
+`_redirects` 301 approach loops on Netlify's slash-insensitive matching — tried + reverted earlier).
+
 ## [0.42.2] — 2026-05-31 — fix(astro): CMS-body headings → Lato (was Oswald); VR harness proven deterministic
 
 - **`legacy-globals.css`** — the global `h1..h6 { Oswald }` leaked into `.markdown-body`, so CMS

@@ -43,6 +43,19 @@
 /intranet/                     https://intranet.icjia.cloud/                   301
 /i2i/                          https://i2i.illinois.gov/                       301
 
+# Legacy sub-sites — 301 to other hosts (mirrored verbatim from the root
+# public/_redirects for cutover parity; legacy had no status = default 301, no
+# :splat = land on the host root). These were MISSING and 404'd on Astro.
+# `/researchhub/docs/*` is an EDGE rule so it is evaluated before the Astro SSR
+# `/researchhub/[slug]` catch-all — keep it here (above the proxied section).
+/researchhub/docs/*            https://researchhub-docs.netlify.app/           301
+/cjreform2015/*                https://cjreform2015.icjia.cloud/               301
+/r3/*                          https://r3.illinois.gov/                        301
+/ilheals/*                     https://ilheals.com/                            301
+/calendar/*                    https://calendar.icjia.cloud/                   301
+/dvfr/*                        https://dvfr.illinois.gov                       301
+/ariallsites2023/*             https://ariallsites2023.icjia.cloud             301
+
 # ── Proxied sub-sites ────────────────────────────────────────────────────────────
 # Separate Netlify sites that must KEEP the icjia.illinois.gov URL. Status `200!` is a
 # FORCE PROXY/REWRITE (not a redirect): the address bar stays icjia.illinois.gov/<app>/…

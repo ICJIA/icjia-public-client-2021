@@ -37,8 +37,17 @@ const MODEL_TAG = {
   biography: "bios", // staff / board / individual bios
   event: "events",
   funding: "grants", // NOFOs (/grants/funding/)
-  grant: "grants", // grant programs (/grants/programs/)
+  grant: "grants", // grant programs — legacy model name, kept alongside `program`
+  program: "grants", // grant programs (/grants/programs/, setCache 'grants') — actual Strapi model
   job: "jobs", // employment
+  // CMS `page` + `publication` render LIVE (SSR) on real routes, so a purge DOES
+  // apply — they were previously (wrongly) treated as static-only → publishes were
+  // a silent no-op until s-maxage. Tags match setCache() in src/lib + the pages.
+  page: "page", // innovation/*, researchhub/hub-overview, grants/required-forms, … (setCache 'page')
+  publication: "publications", // /about/publications/[slug] (setCache 'publications')
+  requiredForm: "page", // /grants/required-forms (setCache 'page')
+  "required-form": "page", // Strapi v3 may send the kebab UID — map both spellings
+  home: "home", // home singleton: banner/carousel (setCache 'home')
   // ResearchHub Strapi (researchhub.icjia-api.cloud) — all LIVE under `hub`:
   article: "hub",
   dataset: "hub",
@@ -46,8 +55,9 @@ const MODEL_TAG = {
 };
 
 // Prerendered sections — a purge does nothing (no SSR edge copy); they refresh on
-// the nightly rebuild (or now, if PURGE_TRIGGER_BUILD=1).
-const STATIC_MODELS = new Set(["page", "publication", "unit"]);
+// the nightly rebuild (or now, if PURGE_TRIGGER_BUILD=1). Only `unit` remains static
+// (pages render via prerendered routes); `page`/`publication` are LIVE (see MODEL_TAG).
+const STATIC_MODELS = new Set(["unit"]);
 
 export const handler = async (event) => {
   // 1) Auth — shared secret via header (preferred) or ?secret= query param.
