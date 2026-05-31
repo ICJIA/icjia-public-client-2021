@@ -3,6 +3,18 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.37.3] — 2026-05-31 — perf: /about/publications/ island trim (FCP/LCP)
+
+Measured bottleneck: the page shipped a ~1.1MB JSON island (1108 rows × a full-summary
+`haystack`) → 1.32MB doc → **FCP 2.8s / LCP 3.3s (perf 87)**. Dropped `haystack` from the
+island (`data.ts` getAllPublications map); `PublicationTable.init()` now rebuilds the search
+string client-side from the shipped display fields (title + 25-word preview + typeLabel + tags).
+Whole-archive client **search/sort/paginate stays instant**; `perPage:150` default kept (prod
+parity). **Trade-off:** search matches the preview + metadata, not the full abstract (minor
+search-DEPTH reduction; restore via a lazy haystack index if needed — preferred over
+server-side pagination, which would make every search/sort/page a network round-trip).
+Re-Lighthouse the deploy + confirm search still filters (client `_h`) to verify.
+
 ## [0.37.2] — 2026-05-31 — docs: curate the v7.0 migration checklist
 
 Added running lessons **#28** (two distinct perf levers for base64-CMS-image pages — island

@@ -25,9 +25,12 @@ const xdata = `{
   init(){
     try { this.all = JSON.parse(document.getElementById('publications-data').textContent); }
     catch (e) { this.all = []; }
+    // Search index built CLIENT-SIDE from the shipped display fields — the heavy
+    // full-summary 'haystack' is no longer in the island (it was the ~1.1MB FCP/LCP cost).
+    this.all.forEach((p) => { p._h = (p.title + ' ' + (p.summary || '') + ' ' + (p.typeLabel || '') + ' ' + (p.tags || []).join(' ')).toLowerCase(); });
     this.ready = true;
   },
-  get searched(){ const q = this.search.trim().toLowerCase(); return q ? this.all.filter((p) => p.haystack.includes(q)) : this.all; },
+  get searched(){ const q = this.search.trim().toLowerCase(); return q ? this.all.filter((p) => p._h.includes(q)) : this.all; },
   get sorted(){ const a = [...this.searched], d = this.sortDir === 'asc' ? 1 : -1, k = this.sortKey;
     a.sort((x, y) => { let r = 0;
       if (k === 'date') r = String(x.publicationDate || '').localeCompare(String(y.publicationDate || ''));

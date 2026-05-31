@@ -1734,15 +1734,17 @@ export async function getAllPublications(): Promise<PublicationListItem[]> {
   const clean = deepSanitize(uniqById(rows));
   return (clean as any[])
     .map(shapePublication)
-    // ISLAND TRIM (perf): the listing ships ALL ~1108 rows as one JSON island so
-    // the client can search/sort the whole archive. shapePublication keeps the
-    // FULL summary (for the full-text `haystack`, matching legacy customFilter)
-    // and `slug`; both are redundant in the island once shaped — `haystack`
-    // already carries the searchable summary text and `fullPath` already encodes
-    // the slug. So drop `slug` and replace the per-row `summary` with a ≤25-word
-    // preview (the expand shows a preview; the detail page shows the full text).
-    // This cuts the island ~40% without changing search/sort/expand parity.
-    .map(({ slug, ...item }) => ({
+    // ISLAND TRIM (perf — this was the page's FCP/LCP bottleneck): the listing ships
+    // ALL ~1108 rows as one JSON island for client search/sort. The dominant cost was
+    // the per-row `haystack` (title + FULL summary + type + tags) → ~1.1MB in the doc.
+    // DROP `haystack` + `slug` and replace the per-row `summary` with a ≤25-word preview;
+    // PublicationTable rebuilds the search string CLIENT-SIDE from the shipped display
+    // fields (title + preview + typeLabel + tags) in init(). Net: the island shrinks
+    // dramatically (doc was 1.32MB) with no extra bytes. TRADE-OFF: search now matches
+    // the 25-word preview + metadata, not the full abstract (a minor search-DEPTH
+    // reduction vs the legacy customFilter; to restore full-abstract search, lazy-fetch a
+    // haystack index instead of shipping it in the initial doc).
+    .map(({ slug, haystack, ...item }) => ({
       ...item,
       summary: truncateWords(item.summary, 25),
     }))
