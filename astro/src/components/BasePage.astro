@@ -44,7 +44,7 @@ const { page, hideUpdated = false, showSummary = false } = Astro.props;
 const showToc = !!page.showTOC && page.toc.length > 0;
 ---
 
-<div class="markdown-body mx-auto max-w-[1185px] px-3 py-8">
+<div class:list={['markdown-body mx-auto px-3 py-8', showToc ? 'max-w-[1185px]' : 'max-w-[900px] lg:max-w-[1185px]']}>
   {/* 1. Splash — FULL WIDTH above the grid (matches prod: splash spans the full
       container, with the H1/body/TOC all starting below it). */}
   <Splash splash={page.splash} />

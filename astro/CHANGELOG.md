@@ -3,6 +3,19 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.6] — 2026-05-31 — fix(parity): P3 no-TOC container md width (measured prod)
+
+Measured prod's body-column width: at **md-960** prod's Vuetify container caps at 900px (→876px content),
+but Astro's `max-w-[1185px]` doesn't cap until 1185 → full-viewport **936px** (60px too wide → reflow). At
+desktop both already match (1161). TOC pages (about) are within ±20 and a blanket cap would hurt them, so
+the cap is **no-TOC-only**:
+- **`news/[slug].astro`** + **`BasePage.astro`** (conditional on `!showToc`): `max-w-[1185px]` →
+  `max-w-[900px] lg:max-w-[1185px]`. news-article md **14.7→13.7%** (now in the font-floor band); applies to
+  every no-TOC CMS-detail page; TOC pages unchanged.
+- Note: irb's ~24% md/desktop residual is **NOT** the container (cap applied, barely moved) — a separate
+  diagnosis (summary render / body content), flagged for follow-up. board's missing-TOC + bio card-flex
+  (P3 sub-items) still pending.
+
 ## [0.42.5] — 2026-05-31 — fix(parity): irb summary (P7) + bio name color (P2) from VR-triage
 
 A 23-agent VR-triage workflow classified each template's diff-PNGs (font-floor vs real diffs) and ranked
