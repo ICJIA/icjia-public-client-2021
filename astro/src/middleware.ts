@@ -29,17 +29,26 @@ export const onRequest = defineMiddleware((context, next) => {
   const { request } = context;
   if (request.method !== 'GET' && request.method !== 'HEAD') return next();
 
-  const { pathname, search } = context.url;
+  const url = context.url;
+  const { pathname } = url;
   const lastSegment = pathname.slice(pathname.lastIndexOf('/') + 1);
   const skip =
     pathname === '/' ||
     pathname.endsWith('/') ||
+    pathname.startsWith('//') || // protocol-relative / malformed — never reflect into Location
     pathname.startsWith('/_') ||
     pathname.startsWith('/.netlify') ||
     lastSegment.includes('.'); // has a file extension → an asset/file, not a route
 
   if (!skip) {
-    return context.redirect(pathname + '/' + search, 301);
+    // Open-redirect-safe: clone the request URL (origin/host fixed) and only mutate
+    // the pathname, so the Location stays same-origin no matter what the path
+    // contained (a raw `pathname + '/'` would turn `//evil.com/x` into a
+    // protocol-relative Location → open redirect). The query string is preserved
+    // by the clone.
+    const target = new URL(url);
+    target.pathname = pathname + '/';
+    return context.redirect(target.toString(), 301);
   }
   return next();
 });

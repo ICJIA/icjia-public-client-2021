@@ -11,6 +11,9 @@ This is the live-data SSR migration tracked on the `feat/astro-migration` branch
   last segment), and `/_*` + `/.netlify` internals; preserves the query string. Chosen over a
   `_redirects` rule because Netlify's `_redirects` matching is slash-INSENSITIVE, so a `/news /news/ 301`
   rule also matches `/news/` and 301-LOOPS (tried + reverted in an earlier session).
+- **Open-redirect-safe** (commit security review): the `Location` is built by cloning the request URL and
+  mutating only `.pathname` (host is fixed by the origin), and `//`-prefixed paths are skipped — so a
+  crafted path like `//evil.com/x` can't be reflected into a protocol-relative `Location` (open redirect).
 - **Caveat (pending deploy-verify):** `astro dev`'s router 404s unmatched paths *before* middleware, so
   the no-slash redirect can't be smoke-tested in dev (confirmed: `[MW]` logs for `/news/` but not
   `/news`). The production SSR function runs the full pipeline (middleware before the 404 render, per
