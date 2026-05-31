@@ -3,6 +3,26 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.36.0] — 2026-05-30 — Phase B (part 2b): prerender the section catch-alls
+
+The `about/[slug]` + `grants/[slug]` CMS catch-alls flip SSR → prerendered via
+`getStaticPaths` (added `getAllPages` + `GET_ALL_PAGES_QUERY` enumerating slug+category).
+Each builds its section's `category` pages MINUS its existing `RESERVED` dedicated-route
+denylist, so no `getStaticPaths` path collides with a dedicated route (Astro fails the
+build loud on a duplicate — a useful guard):
+- `about/[slug]`: 13 about-category pages (contact, privacy, meeting-schedules, covid-19,
+  foia, icjia-values, icjia-committees, icjia-breakout-a/b/c, policies, rss, about-the-authority).
+- `grants/[slug]`: training, technical-assistance, funded-programs-map.
+Also FIXES the cross-category leak (lesson #23): only the canonical category set builds,
+so a non-'about' page can no longer render at `/about/<slug>/`.
+
+**getStaticPaths gotcha:** it runs in its OWN extracted prerender chunk and can't see the
+page module's top-level `RESERVED` const (threw `RESERVED is not defined` at build) — so
+the denylist is a local copy inside `getStaticPaths`, mirroring the body's `RESERVED`.
+
+SSR boundary verified intact: about/employment, grants/funding, grants/programs stay live.
+**Phase B complete** — every `renderStrategy` `static` section is now prerendered.
+
 ## [0.35.0] — 2026-05-30 — Phase B (part 2a): prerender biographies + units
 
 The dynamic `[slug]` routes with clean enumeration flip SSR → prerendered via

@@ -51,4 +51,15 @@ const GET_SINGLE_PAGE_QUERY = gql`
   }
 `;
 
-export { GET_SINGLE_PAGE_QUERY };
+// All page slugs + categories — for prerendering the section catch-alls
+// (about/[slug], grants/[slug]) via getStaticPaths (build-time enumeration).
+const GET_ALL_PAGES_QUERY = gql`
+  query pages {
+    pages {
+      slug
+      category
+    }
+  }
+`;
+
+export { GET_SINGLE_PAGE_QUERY, GET_ALL_PAGES_QUERY };

@@ -26,7 +26,7 @@ import {
   GET_ALL_PROGRAMS_QUERY,
   GET_SINGLE_PROGRAM_QUERY,
 } from "../graphql/grants.js";
-import { GET_SINGLE_PAGE_QUERY } from "../graphql/page.js";
+import { GET_SINGLE_PAGE_QUERY, GET_ALL_PAGES_QUERY } from "../graphql/page.js";
 import {
   GET_ALL_RULES_QUERY,
   GET_ALL_POLICIES_QUERY,
@@ -742,6 +742,15 @@ function buildToc(html: string): TocItem[] {
 }
 
 /** Fetch a CMS "page" by slug (live) + render its body. null when none matches. */
+/** All page slugs + categories — for prerendering the section catch-alls
+ *  (about/[slug], grants/[slug]) via getStaticPaths (build-time enumeration). */
+export async function getAllPages(): Promise<Array<{ slug: string; category: string }>> {
+  const { data } = await runQuery(GET_ALL_PAGES_QUERY, {}, "no-cache");
+  return (data?.pages ?? [])
+    .filter((p: any) => p && p.slug)
+    .map((p: any) => ({ slug: p.slug, category: p.category || "" }));
+}
+
 export async function getPage(slug: string): Promise<CmsPage | null> {
   const { data } = await runQuery(GET_SINGLE_PAGE_QUERY, { slug }, "no-cache");
   const p = data?.pages?.[0];

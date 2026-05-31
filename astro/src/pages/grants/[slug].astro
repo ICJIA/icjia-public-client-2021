@@ -20,8 +20,11 @@
 // yet. To be restored when Search lands.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import BasePage from '../../components/BasePage.astro';
-import { getPage } from '../../lib/data';
-import { setCache } from '../../lib/cache';
+import { getPage, getAllPages } from '../../lib/data';
+
+// Prerendered (renderStrategy: grants training etc.) — builds the grants-category CMS
+// pages minus the RESERVED dedicated-route slugs below. Refreshed on nightly/manual rebuild.
+export const prerender = true;
 
 const RESERVED = new Set([
   'funding',
@@ -32,6 +35,18 @@ const RESERVED = new Set([
   'policies',
   'required-forms',
 ]);
+
+export async function getStaticPaths() {
+  // Local copy of RESERVED — getStaticPaths runs in its own prerender chunk and
+  // cannot see the module-level RESERVED const below; keep the two in sync.
+  const reserved = new Set([
+    'funding', 'programs', 'fsgu-home', 'fsgu-staff', 'rules-regs-policies', 'policies', 'required-forms',
+  ]);
+  const pages = await getAllPages();
+  return pages
+    .filter((p) => p.category === 'grants' && p.slug && !reserved.has(p.slug))
+    .map((p) => ({ params: { slug: p.slug } }));
+}
 
 const { slug } = Astro.params;
 
@@ -44,8 +59,6 @@ const page = await getPage(slug);
 if (!page) {
   return new Response('Not found', { status: 404 });
 }
-
-setCache(Astro.response, 'page');
 ---
 
 <BaseLayout
