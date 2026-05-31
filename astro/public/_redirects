@@ -35,13 +35,29 @@
 /grants/policies/              /grants/rules-regs-policies/                    301
 /grants/policies               /grants/rules-regs-policies/                    301
 
-# External apps / sites (legacy window.location.href redirects to other hosts)
+# External apps / sites — 301 REDIRECTS to other hosts (legacy window.location.href).
+# The address bar CHANGES to the target. (Contrast with the proxied sub-sites below.)
 /spac/                         https://spac.illinois.gov/                      301
 /archive/                      https://archive.icjia.cloud/                    301
 /intranet/                     https://intranet.icjia.cloud/                   301
 /i2i/                          https://i2i.illinois.gov/                       301
-/adultredeploy/                https://icjia.illinois.gov/adultredeploy/       301
-/ifvcc/                        https://icjia.illinois.gov/ifvcc/               301
+
+# ── Proxied sub-sites ────────────────────────────────────────────────────────────
+# Separate Netlify sites that must KEEP the icjia.illinois.gov URL. Status `200!` is a
+# FORCE PROXY/REWRITE (not a redirect): the address bar stays icjia.illinois.gov/<app>/…
+# while Netlify serves the sub-site's content. `:splat` forwards the rest of the path.
+# Edge-level — evaluated BEFORE the Astro SSR function, and `!` forces precedence over
+# it, so SSR is unaffected. More specific paths MUST be listed first (docs before app).
+#
+#   ADD A NEW SUB-SITE HERE: one line, a UNIQUE prefix that is NOT an Astro route:
+#     /<prefix>/*   https://<their-netlify-site>/:splat   200!
+/adultredeploy/*               https://adultredeploy.netlify.app/:splat          200!
+/ifvcc/*                       https://ifvcc.netlify.app/:splat                   200!
+/arrestexplorer/docs/*         https://arrest-docs.netlify.app/:splat            200!
+/arrestexplorer/*              https://festive-meitner-0c6e7d.netlify.app/:splat  200!
+/mhcontinuum/*                 https://mhcontinuum.netlify.app/:splat            200!
+/sudcontinuum/*                https://sudcontinuum.netlify.app/:splat           200!
+/researchhub/studio/*          https://researchhub-studio-next.netlify.app/:splat 200!
 
 # NOTE: /grants/rules-regs-policies/ is now BUILT (the dedicated rules+regs+policies
 # view) and /grants/policies/ redirects to it (above). /grants/training/ and the other

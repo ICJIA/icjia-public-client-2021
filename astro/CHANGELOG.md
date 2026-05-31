@@ -3,6 +3,21 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.37.1] — 2026-05-31 — fix(redirects): restore proxied sub-site rewrites (cutover-critical)
+
+The legacy root `_redirects` proxies several SEPARATE Netlify sites UNDER icjia.illinois.gov
+paths via force-rewrites (status `200!`, URL unchanged): `/adultredeploy/*`, `/ifvcc/*`,
+`/arrestexplorer/*` (+ `/docs`), `/mhcontinuum/*`, `/sudcontinuum/*`, `/researchhub/studio/*`.
+The Astro `_redirects` had only broken placeholders (`/adultredeploy/ → itself 301`, no `/*`
+splat, no proxy) → those sub-apps would 301-loop / 404 at cutover. Restored all seven as `200!`
+proxy rewrites (`:splat` forwards the path), in a clearly-labeled extensible block ("ADD A NEW
+SUB-SITE HERE"). Edge-level + `!`-forced → evaluated before, and taking precedence over, the SSR
+function (verified: no `/*` function catch-all precedes them in `dist/_redirects`).
+
+**Verify post-deploy:** `curl -sI <deploy>/adultredeploy/` → 200 (sub-app content), not 301.
+**CSP note:** when promoting CSP to enforce, proxied sub-app pages receive icjia's `_headers` CSP
+— verify each sub-app works under it, or scope the strict CSP to exclude the proxied prefixes.
+
 ## [0.37.0] — 2026-05-30 — Perf: optimize hub images (WebP + per-use resize) — apps LCP
 
 `generate-hub-images.mjs` now Sharp-processes each extracted base64 image instead of writing
