@@ -3,6 +3,35 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.0] — 2026-05-31 — fix(astro): splash hero container-width + BasePage −15 nudge (VR header offset)
+
+Resolved the bulk of the VR vertical offset via a local `astro dev` + `measure-header.mjs` loop.
+**Correcting [0.41.1]'s root-cause:** the offset is NOT "entirely content-wrapper padding" — it is
+multi-causal and route-specific, because Astro **unifies several legacy Vue views (each with its own top
+spacing) into shared templates**. Measured per-route h1 offsets ranged from −1px (bio, already aligned) to
+**+71px** (splash articles). Scope (user-approved, "targeted high-value"): fix the high-value cases, accept
+≤~20px residual deltas on minor pages, gate via VR diff-PNGs (not the full-page %).
+
+- **`Splash.astro`** — the hero was a **100vw full-bleed** (1280×640 at desktop) on a *false* "prod is
+  edge-to-edge" premise. Prod's CMS splash is **container-width** (measured **1161×581**, 2:1, inside the
+  v-container). Removed the bleed → the hero is now plain block-width = the content column
+  (`max-w-[1185px] − px-3` = 1161px) → **1161×581, pixel-identical to prod**. news-article h1 **+71 → +12**.
+  Fixes every splash consumer (`news/[slug]`, infonet, `BasePage`).
+- **`BasePage.astro`** — prod `BasePage.vue` applies `<v-container style="margin-top:-15px">`
+  **unconditionally**, and it *works* there (the container isn't `.markdown-body`'s first child). In Astro the
+  `-mt-[15px]` was (a) wrongly gated on `!page.splash` and (b) a **no-op** regardless — the grid IS
+  `.markdown-body`'s first child, so github-markdown's `.markdown-body > :first-child { margin-top:0 !important }`
+  zeroed it. Reproduced prod's always-on nudge via `.bp-grid { margin-top:-15px !important }` (matching
+  importance + higher specificity). Result: about **+34→+19**, innovation **+14→−1**, irb **−5→−20**,
+  news **+12** — all within the ±20 band. (The unit page is a separate `unit-single-frame` template,
+  unaffected; already +19.)
+
+**VR gate note:** the full-page % does NOT drop with a sub-line-height residual offset (about stays ~11–15%)
+because pixelmatch flags every text row shifted more than one line-height. So at ±20px tolerance the % is
+unusable as a gate (as expected, per [0.41.1]). NEXT: add **h1-aligned diffing** to `run.mjs` (vertically align
+both captures to the h1 before diffing) so the accepted constant offset drops out and the diff-PNGs surface only
+real differences. `measure-header.mjs` gained an `MR_ASTRO` env override for the local (no-deploy) loop.
+
 ## [0.41.1] — 2026-05-31 — test(vr): crop-to-common-height + header-offset root-cause
 
 VR methodology refinement (the full-page %s were noise-dominated for cross-engine Vue/Vuetify vs Astro):

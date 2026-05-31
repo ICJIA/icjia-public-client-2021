@@ -34,14 +34,13 @@ const captionText = caption ?? splash?.caption;
      aspect-ratio="2" + width:100%. The previous `max-height: 50vw` capped the
      image short on the narrower content column (the "too short" bug); a real
      aspect-ratio box makes it fill the column width and derive its height. */
-  /* Full-VIEWPORT bleed (matches prod: splash spans edge-to-edge, wider than the
-     1185 container). 100vw + the centering margin breaks out of the centered
-     container. Uses 100vw (not 100%); the body has no horizontal scrollbar of its
-     own here so 100vw == document width. */
+  /* Prod's CMS splash is CONTAINER-width, NOT a full-viewport bleed: measured
+     ~1161px wide / ~581px tall (2:1) inside the v-container at a 1280 viewport. The
+     content column here (max-w-[1185px] − px-3) is also 1161px, so a plain
+     block-width splash matches prod's hero size exactly. (An earlier 100vw bleed
+     blew the hero up to 1280px → 640px tall — ~59px too tall — shoving the title and
+     all body content down ~71px on every splash page vs prod.) */
   .splash-bleed {
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
-    margin-right: calc(50% - 50vw);
     margin-bottom: 1.25rem;
   }
   /* .splash-img sizing lives in global.css (.markdown-body img.splash-img) so it

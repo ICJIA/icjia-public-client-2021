@@ -6,7 +6,7 @@ import { chromium } from "playwright";
 const ROUTE = process.env.MR_ROUTE || "/about/about-the-authority/";
 const SITES = [
   ["prod ", "https://icjia.illinois.gov"],
-  ["astro", "https://feat-astro-migration--icjia-public.netlify.app"],
+  ["astro", process.env.MR_ASTRO || "https://feat-astro-migration--icjia-public.netlify.app"],
 ];
 
 const browser = await chromium.launch();

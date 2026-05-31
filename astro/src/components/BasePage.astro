@@ -46,9 +46,13 @@ const showToc = !!page.showTOC && page.toc.length > 0;
 
   {/* 2. Body + optional TOC — prod metrics (1280px): body 790 / TOC 270 / gap 109.
        Flex with a fixed-basis TOC reproduces prod's proportions exactly at desktop
-       and degrades to a single column below md. The legacy -15px nudge only when
-       there's no splash (else it pulls the sticky TOC up into the splash). */}
-  <div class:list={[{ '-mt-[15px]': !page.splash }, { 'md:flex md:items-start md:gap-[109px]': showToc }]}>
+       and degrades to a single column below md. The `.bp-grid` -15px nudge (always
+       on, mirroring prod's unconditional `<v-container style="margin-top:-15px">`)
+       is applied via the style block below — a raw Tailwind `-mt-[15px]` here is a
+       no-op when there's no splash, because then this div is .markdown-body's first
+       child and github-markdown's `> :first-child { margin-top:0 !important }` zeros
+       it. */}
+  <div class:list={['bp-grid', { 'md:flex md:items-start md:gap-[109px]': showToc }]}>
     <div class:list={[{ 'md:min-w-0 md:flex-1': showToc }]}>
       {!page.hideTitle && <h1 set:html={page.titleHtml} />}
 
@@ -92,5 +96,15 @@ const showToc = !!page.showTOC && page.toc.length > 0;
      way. Scoped to CMS-body headings (the anchor targets). */
   .markdown-body :is(h1, h2, h3, h4)[id] {
     scroll-margin-top: 96px;
+  }
+
+  /* Reproduce prod BasePage.vue's always-on `v-container { margin-top: -15px }`
+     content nudge. When there's no splash, this grid is .markdown-body's first
+     child, so github-markdown's `> :first-child { margin-top: 0 !important }` would
+     kill a plain -mt utility; override it with matching importance + higher
+     specificity. Lands the title near prod (h1 ≈ 201px; prod 182 no-TOC / 202 TOC)
+     within cross-engine tolerance. */
+  .markdown-body > div.bp-grid {
+    margin-top: -15px !important;
   }
 </style>
