@@ -3,6 +3,20 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.37.6] — 2026-05-31 — build: IRB section (closes the 4 /irb/* cutover-404 blockers)
+
+Ports the legacy `/irb` section (`router/irb` + `IRBHome.vue` + `IRBMeetings.vue`):
+- `/irb/` — IRB Home (CMS page `irb-home` via BasePage), **prerendered**.
+- `/irb/[slug]` — **prerendered** irb-category CMS pages (`irb-members-and-staff`,
+  `irb-policies-and-procedures`, `irb-other-resources`, + `irb-home`) via getStaticPaths.
+- `/irb/irb-meetings/` — **live SSR**, meetings filtered to category `irb` (MeetingTable +
+  the lazy per-row detail).
+
+The `/irb/` context bar ("ICJIA Institutional Review Board", 6 tabs) **auto-renders** via
+`SiteContextBar` (its menu already exists in `contextMenus.json`). Verified: 5 static IRB pages
+prerender with content + the IRB context bar; `/irb/irb-meetings/` is SSR. **Resolves the
+verification workflow's 4 `/irb/*` 404 blockers**; the branch sitemap's `/irb/*` URLs now 200.
+
 ## [0.37.5] — 2026-05-31 — perf: publications lazy full-archive index (FCP/LCP → 95 target)
 
 The haystack trim ([0.37.3]) got publications 87→89, but the doc was still ~0.9MB (display rows

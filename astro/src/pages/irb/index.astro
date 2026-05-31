@@ -1,0 +1,21 @@
+---
+// /irb/ — ICJIA Institutional Review Board landing. Ports legacy IRBHome.vue, which
+// renders the CMS page "irb-home" (title + summary + body) via the standard BasePage.
+// Prerendered (renderStrategy: static — IRB content is stable, refreshed on build).
+// The /irb/ context bar auto-renders (contextMenus.json /irb/ menu, keyed on the first
+// path segment). /irb/irb-home/ ALSO renders this page (via the [slug] catch-all).
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BasePage from '../../components/BasePage.astro';
+import { getPage } from '../../lib/data';
+
+export const prerender = true;
+
+const page = await getPage('irb-home');
+if (!page) {
+  return new Response('Not found', { status: 404 });
+}
+---
+
+<BaseLayout title={page.title || 'ICJIA'} description={page.summary} contextTitle={page.title}>
+  <BasePage page={page} />
+</BaseLayout>

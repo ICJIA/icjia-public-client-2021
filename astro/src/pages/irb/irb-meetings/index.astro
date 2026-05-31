@@ -1,0 +1,41 @@
+---
+// /irb/irb-meetings/ — IRB meetings listing. Ports legacy IRBMeetings.vue
+// (GET_MEETINGS_BY_CATEGORY_QUERY category:"irb" → MeetingTable). LIVE SSR (meetings
+// change). Ships ONLY the irb meetings in the shared #meetings-data island; MeetingTable
+// reads it (search / sort / paginate + lazy per-row detail via /api/meeting.json). The
+// /irb/ context bar auto-renders (contextMenus.json /irb/ menu).
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import MeetingTable from '../../../components/MeetingTable.astro';
+import { getAllMeetings } from '../../../lib/data';
+import { setCache } from '../../../lib/cache';
+import '../../../styles/meetings.css';
+
+const meetings = (await getAllMeetings()).filter((m) => m.category === 'irb');
+setCache(Astro.response, 'meetings');
+
+// JSON-in-HTML: neutralize "<" so the data island can't break out of the script.
+const listJson = JSON.stringify(meetings).replace(/</g, '\\u003c');
+const baseline = meetings.slice(0, 25);
+---
+
+<BaseLayout
+  title="IRB Meetings"
+  description="Meetings of the ICJIA Institutional Review Board (IRB)."
+  contextTitle="Meetings"
+>
+  <div class="meetings mx-auto max-w-6xl px-4 py-8 md:px-6">
+    <div class="page-heading mb-6">
+      <h1>IRB Meetings</h1>
+    </div>
+    {
+      meetings.length === 0 ? (
+        <p>No IRB meetings at this time.</p>
+      ) : (
+        <>
+          <script type="application/json" id="meetings-data" set:html={listJson}></script>
+          <MeetingTable baseline={baseline} />
+        </>
+      )
+    }
+  </div>
+</BaseLayout>
