@@ -1092,14 +1092,15 @@ export async function getHome(): Promise<HomeData> {
     ...e,
     fullPath: `/news/meetings/${e.slug}/`,
   }));
-  const funding = (data?.grants ?? []).map((e: any) => ({
-    ...e,
-    fullPath: `/grants/funding/${e.slug}/`,
-  }));
-  const employment = (data?.jobs ?? []).map((e: any) => ({
-    ...e,
-    fullPath: `/about/employment/${e.slug}/`,
-  }));
+  // Parity: legacy Home.vue re-sorts the Funding + Employment tabs by END date desc
+  // AFTER the query (GET_HOME orders grants start:desc / jobs published_at:desc + limits);
+  // re-sort the limited set by end desc so the within-tab order matches prod.
+  const funding = (data?.grants ?? [])
+    .map((e: any) => ({ ...e, fullPath: `/grants/funding/${e.slug}/` }))
+    .sort((a: any, b: any) => String(b.end || "").localeCompare(String(a.end || "")));
+  const employment = (data?.jobs ?? [])
+    .map((e: any) => ({ ...e, fullPath: `/about/employment/${e.slug}/` }))
+    .sort((a: any, b: any) => String(b.end || "").localeCompare(String(a.end || "")));
   const boxes = data?.home?.clickThroughBoxes ?? [];
   return { news, meetings, funding, employment, boxes };
 }

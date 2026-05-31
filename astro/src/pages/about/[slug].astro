@@ -47,7 +47,10 @@ export async function getStaticPaths() {
   ]);
   const pages = await getAllPages();
   return pages
-    .filter((p) => p.category === 'about' && p.slug && !reserved.has(p.slug))
+    // DICRA is researchhub-category, but prod's About-menu context bar links it at
+    // /about/dicra/ ("Death in Custody Reporting"), so serve it here to keep the ported
+    // contextMenus.json faithful + that tab working (/researchhub/dicra/ 301s here).
+    .filter((p) => (p.category === 'about' || p.slug === 'dicra') && p.slug && !reserved.has(p.slug))
     .map((p) => ({ params: { slug: p.slug } }));
 }
 

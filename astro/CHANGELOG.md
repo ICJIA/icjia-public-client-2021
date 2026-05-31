@@ -3,6 +3,17 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.37.4] — 2026-05-31 — fix: restore DICRA route + home Funding/Employment sort (parity)
+
+- **DICRA** was 404 at both URLs (Phase B's `about/[slug]` category-filter dropped it — DICRA is
+  `researchhub`-category). Prod's About-menu context bar links it at `/about/dicra/`, so restored
+  it there (`about/[slug]` getStaticPaths now also includes the `dicra` slug) — keeps the ported
+  `contextMenus.json` faithful + that context-bar tab working. `/researchhub/dicra/` (prod sitemap
+  canonical) now 301s → `/about/dicra/`. (Branch sitemap reconcile to follow with the IRB build.)
+- **Home Funding + Employment tabs** now re-sort by **end-date desc** in `getHome()` (the GET_HOME
+  query orders grants `start:desc` / jobs `published_at:desc` + limits; the within-tab order now
+  matches legacy `Home.vue`).
+
 ## [0.37.3] — 2026-05-31 — perf: /about/publications/ island trim (FCP/LCP)
 
 Measured bottleneck: the page shipped a ~1.1MB JSON island (1108 rows × a full-summary

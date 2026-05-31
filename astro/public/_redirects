@@ -12,6 +12,7 @@
 # Section/landing moves
 /press/                        /news/press/                                    301
 /dicra/                        /about/dicra/                                   301
+/researchhub/dicra/            /about/dicra/                                   301
 /foia/                         /about/foia/                                    301
 /rss/                          /about/rss/                                     301
 /drone/                        /innovation-and-digital-services/drone/         301
