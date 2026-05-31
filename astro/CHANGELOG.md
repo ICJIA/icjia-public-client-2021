@@ -3,15 +3,20 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
-## [0.39.4] — 2026-05-31 — fix: no-slash → /slash 301s for SSR section landings (cutover readiness)
+## [0.39.4] — 2026-05-31 — chore: accept trailing-slash-canonical (no-slash SSR → 404); redirect attempt reverted
 
-`@astrojs/netlify` v7 routes the SSR function only at the trailing-slash path, so no-slash requests
-to live routes (`/news`, `/grants/funding`, `/researchhub`, …) 404'd *before* Astro's
-`trailingSlash:'always'` could redirect (the legacy SPA 200'd every path; static pages already
-resolve no-slash via the served file). Added explicit no-slash→`/slash` 301s for the main section
-landings in `public/_redirects` so inbound/hand-typed links canonicalize. Detail pages
-(`/news/<slug>`, …) rely on canonical trailing-slash links and aren't enumerated. (Global fix "B"
-wasn't viable — the adapter doesn't emit these and Netlify has no safe generic add-slash rule.)
+Investigated making no-slash SSR routes (`/news`, `/grants/funding`, `/researchhub`, …) redirect to
+their `/slash/` canonical (the legacy SPA 200'd every path; under SSR they 404). BOTH approaches
+proved unworkable on Netlify:
+- **B (global):** `@astrojs/netlify` v7 routes the SSR function only at the trailing-slash path and
+  doesn't emit no-slash redirects; Netlify has no safe generic add-slash rule.
+- **A (per-landing 301s):** **Netlify redirect matching is trailing-slash-INSENSITIVE** — a rule
+  `/news → /news/` ALSO matches `/news/`, redirecting the canonical URL to itself → a **301 loop**
+  (it broke `/news/` etc. on the branch; reverted here in the same session).
+
+So we accept **trailing-slash-canonical only**: `/news/` works; bare `/news` 404s. Low risk — every
+internal link, the sitemap, and canonical tags use trailing slashes; only external/hand-typed
+no-slash links are affected. (A Netlify Edge Function could add slashes later if it ever matters.)
 
 ## [0.39.3] — 2026-05-31 — fix: drop slug-less publications (sitemap self-404 /about/publications/null/)
 
