@@ -340,29 +340,33 @@
   right: 0;
   display: flex;
   justify-content: center;
-  gap: 8px;
+  gap: 0; /* the 24px targets sit flush; the 12px visible dots keep ~12px of breathing room */
   z-index: 2;
 }
 .researchhub .hc-dot {
+  /* WCAG 2.5.8: the BUTTON itself must be the 24×24 target — axe measures the element
+     box, so a pseudo-element overlay doesn't count. The visible 12px dot is drawn by
+     ::before, centered inside the transparent 24px hit area. */
   position: relative;
-  width: 12px;
-  height: 12px;
-  border-radius: 9999px;
-  border: 1px solid #fff;
+  width: 24px;
+  height: 24px;
+  border: 0;
   background: transparent;
   cursor: pointer;
   padding: 0;
 }
-/* WCAG 2.5.8: 24x24 hit area without changing the 12px visible dot. */
-.researchhub .hc-dot::after {
+.researchhub .hc-dot::before {
   content: "";
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 24px;
-  height: 24px;
+  width: 12px;
+  height: 12px;
   transform: translate(-50%, -50%);
+  border-radius: 9999px;
+  border: 1px solid #fff;
+  background: transparent;
 }
-.researchhub .hc-dot[aria-current="true"] {
+.researchhub .hc-dot[aria-current="true"]::before {
   background: #fff;
 }

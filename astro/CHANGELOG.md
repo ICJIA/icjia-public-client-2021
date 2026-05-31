@@ -3,6 +3,21 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.39.6] — 2026-05-31 — fix(a11y): ResearchHub carousel slide-dots meet WCAG 2.5.8 target-size
+
+The warm axe + Lighthouse sweep across every template found exactly ONE a11y violation: the
+`/researchhub/` carousel slide-dots were 12×12px buttons (`target-size [2.5.8 AA]` fails; the prior
+`::after` overlay didn't help — axe measures the element box, not a pseudo-element). Fixed: the
+BUTTON is now a 24×24 target with the visible 12px dot drawn by `::before` (centered). axe
+`/researchhub/` → **0**.
+
+**Sweep result (mobile, warm):** a11y / best-practices / SEO = **100 across every template**;
+perf **95–100 warm** (home 100, publications 99, apps 98, researchhub 97, hub-article 97, meetings
+96, funding 96, bio 96, news 95). Branch cold-start variance is a keep-warm-fixable artifact (Durable
+cache confirmed working via `cache-status`; the definitive perf gate is a post-cutover warm sweep).
+Minor perf follow-up (non-blocking): image-delivery savings on the carousel splash (~244 KiB) +
+news/article thumbs.
+
 ## [0.39.5] — 2026-05-31 — test: `--warm` mode (cache-warm before Lighthouse so perf reflects the warm path)
 
 `pnpm warm` / `warm:full` (a `--warm` flag on route-health.mjs): GETs each route 3× to populate
