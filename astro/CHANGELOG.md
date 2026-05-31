@@ -3,6 +3,23 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.2] — 2026-05-31 — fix(astro): CMS-body headings → Lato (was Oswald); VR harness proven deterministic
+
+- **`legacy-globals.css`** — the global `h1..h6 { Oswald }` leaked into `.markdown-body`, so CMS
+  content headings *and* the page-title h1 rendered in Oswald. **Prod renders them all in Lato**
+  (github-markdown inherits the body font: page-title h1 = Lato 900, content h2/h3 = Lato 700). Added
+  `.markdown-body :is(h1..h6) { font-family: Lato }` (same layer, higher specificity). Verified: about +
+  news now match prod's heading metrics EXACTLY. Oswald untouched for site chrome + ResearchHub scopes.
+- **VR harness is DETERMINISTIC (key):** prod-vs-prod VR = **0.00%** on all 3 viewports (frozen clock +
+  masks + same-engine capture). So the residual **astro-vs-prod % is REAL, not capture noise** — this
+  CORRECTS [0.41.1]/[0.42.1]'s "noise-dominated" framing. about-page still ~12% after the heading +
+  offset fixes with all text metrics matching → residual is text rasterization (prod's Google-hosted
+  Lato vs Astro's self-hosted `@fontsource` Lato) or sub-pixel positioning. The full VR sweep + triage
+  will characterize whether per-template diffs are font-rendering (visually identical, pixel-real) vs
+  real layout/content regressions.
+- New finding (queued): list-page title h1 size differs (grants/funding 32px/700 in Astro vs 36.8px/900
+  prod) — a list-template title-styling fix, separate from the CMS-body `.markdown-body` path.
+
 ## [0.42.1] — 2026-05-31 — test(vr): h1-anchored diffing + CMS-heading font mismatch found
 
 - **`run.mjs` — h1-anchored diffing.** `align()` now vertically anchors both frames to the `<h1>`
