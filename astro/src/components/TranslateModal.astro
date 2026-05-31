@@ -1,0 +1,214 @@
+---
+// Website Translation modal — ports legacy ModalTranslate.vue. A native <dialog>
+// (free focus-trap / Esc / ::backdrop) opened by ANY [data-translate-trigger] button
+// (the context-bar "Translate this site" + the footer "Translate Site"). Each language
+// opens Google's hosted translation of the CURRENT page in a new tab — prod's exact
+// mechanism: translate.google.com/translate?hl=en&sl=en&u=<page>&tl=<lang> — plus a
+// Plausible `translation_conversion` event. Mounted ONCE in BaseLayout.
+//
+// 18 languages in 3 columns (verbatim from ModalTranslate.vue; "iw" is Google's legacy
+// Hebrew code, kept for parity). Script is a bundled Astro <script> (not is:inline) so
+// it's CSP-safe under the enforced policy.
+const LANG_COLS: Array<Array<[string, string]>> = [
+  [
+    ["es", "Spanish"], ["pt", "Portuguese"], ["fr", "French"],
+    ["pl", "Polish"], ["ru", "Russian"], ["it", "Italian"],
+  ],
+  [
+    ["ar", "Arabic"], ["hy", "Armenian"], ["de", "German"],
+    ["zh-TW", "Chinese (Traditional)"], ["zh-CN", "Chinese (Simplified)"], ["sr", "Serbian"],
+  ],
+  [
+    ["iw", "Hebrew"], ["hu", "Hungarian"], ["is", "Icelandic"],
+    ["lv", "Latvian"], ["fa", "Persian"], ["tr", "Turkish"],
+  ],
+];
+---
+
+<dialog id="translate-modal" class="translate-modal" aria-labelledby="translate-modal-title">
+  <div class="tm-head">
+    <h2 id="translate-modal-title" class="tm-title">Website Translation Options</h2>
+    <button type="button" class="tm-close" data-translate-close>Close</button>
+  </div>
+
+  <div class="tm-body">
+    <div class="tm-cols">
+      {
+        LANG_COLS.map((col) => (
+          <ul class="tm-col">
+            {col.map(([code, label]) => (
+              <li>
+                <button type="button" class="tm-lang" data-lang={code}>{label}</button>
+              </li>
+            ))}
+          </ul>
+        ))
+      }
+    </div>
+
+    <hr class="tm-divider" />
+
+    <div class="tm-disclaimer">
+      <p>
+        The Illinois Criminal Justice Information Authority ('ICJIA') offers translations of the
+        content through Google Translate. Because Google Translate is an external website, ICJIA
+        does not control the quality or accuracy of translated content. All ICJIA content is
+        filtered through Google Translate which may result in unexpected and unpredictable
+        degradation of portions of text, images and the general appearance on translated pages.
+        Google Translate may maintain unique privacy and use policies. These policies are not
+        controlled by ICJIA and are not associated with ICJIA's privacy and use policies.
+      </p>
+      <p>
+        ICJIA would like to ensure that it provides Limited English Proficiency (LEP) individuals
+        with meaningful and universal access to ICJIA services, programs, and activities by all
+        persons, including those who self-identify as an LEP individual or have a preference for
+        information and materials in a language other than English. To support its goals of being
+        inclusive and accessible to all, ICJIA provides free language assistance services to
+        individuals whose primary language is not English. Language assistance services include
+        providing qualified interpreters and translating documents to ease access to important
+        information about ICJIA programs, benefits, and activities.
+      </p>
+      <p>
+        If you need additional language access assistance, please fill out
+        <a href="/forms/lap-request/">this online form</a>.
+      </p>
+      <p>
+        For more information on ICJIA's language access plan, please see our
+        <a href="/news/language-services-announcement/">language services announcement</a>.
+      </p>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .translate-modal {
+    width: min(60%, 720px);
+    max-width: calc(100vw - 2rem);
+    border: 0;
+    border-radius: 4px;
+    padding: 0;
+    box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 24px 38px 3px rgba(0, 0, 0, 0.14);
+  }
+  .translate-modal::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+  }
+  .tm-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: #e0e0e0; /* legacy grey lighten-2 title bar */
+    padding: 12px 20px;
+  }
+  .tm-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+  .tm-close {
+    border: 1px solid #bdbdbd;
+    background: #f5f5f5;
+    border-radius: 4px;
+    padding: 4px 12px;
+    font: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+  .tm-close:hover {
+    background: #eee;
+  }
+  .tm-body {
+    padding: 20px;
+  }
+  .tm-cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem 1rem;
+  }
+  @media (max-width: 599.98px) {
+    .tm-cols {
+      grid-template-columns: 1fr;
+    }
+  }
+  .tm-col {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .tm-col li {
+    margin: 0;
+  }
+  .tm-lang {
+    display: inline-block;
+    border: 0;
+    background: transparent;
+    color: #0d47a1;
+    font: inherit;
+    font-size: 0.875rem;
+    padding: 6px 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    text-align: left;
+    width: 100%;
+  }
+  .tm-lang:hover {
+    background: rgba(13, 71, 161, 0.08);
+    text-decoration: underline;
+  }
+  .tm-divider {
+    border: 0;
+    border-top: 1px solid #e0e0e0;
+    margin: 1rem 0;
+  }
+  .tm-disclaimer {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #333;
+  }
+  .tm-disclaimer p {
+    margin: 0 0 0.75rem;
+  }
+  .tm-disclaimer a {
+    color: #0a3a60;
+    text-decoration: underline;
+  }
+</style>
+
+<script>
+  const dlg = document.getElementById("translate-modal") as HTMLDialogElement | null;
+  if (dlg) {
+    // Any [data-translate-trigger] (context bar + footer) opens the modal.
+    document.querySelectorAll("[data-translate-trigger]").forEach((btn) =>
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        dlg.showModal();
+      }),
+    );
+    // Close button + backdrop click.
+    dlg.querySelectorAll("[data-translate-close]").forEach((b) =>
+      b.addEventListener("click", () => dlg.close()),
+    );
+    dlg.addEventListener("click", (e) => {
+      if (e.target === dlg) dlg.close(); // click on the backdrop (outside the content box)
+    });
+    // Each language → Google's hosted translation of the CURRENT page, new tab.
+    dlg.querySelectorAll<HTMLButtonElement>("[data-lang]").forEach((b) =>
+      b.addEventListener("click", () => {
+        const lang = b.getAttribute("data-lang") || "";
+        const u = encodeURIComponent(location.href);
+        try {
+          const p = (window as any).plausible;
+          if (typeof p === "function") p("translation_conversion", { props: { lang } });
+        } catch (e) {
+          /* no-op */
+        }
+        window.open(
+          `https://translate.google.com/translate?hl=en&sl=en&u=${u}&tl=${lang}`,
+          "_blank",
+          "noopener",
+        );
+        dlg.close();
+      }),
+    );
+  }
+</script>

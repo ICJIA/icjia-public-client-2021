@@ -3,6 +3,22 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.41.0] — 2026-05-31 — feat: restore Google Translate (was entirely missing) — context-bar + footer
+
+The VR header-offset investigation surfaced that **Google Translate wasn't functional** on the Astro
+site: the footer "Translate Site" button was a dead stub (`data-translate-trigger` with no handler)
+and prod's context-bar "Translate this site" trigger was absent. Restored to match legacy
+`ModalTranslate.vue` (a real LEP/access feature):
+- **`TranslateModal.astro`** (NEW): a native `<dialog>` (focus-trap / Esc / ::backdrop) — 18 languages
+  in 3 columns + the Google-Translate/LEP disclaimer (links to the LAP form + language-services
+  announcement). Each language opens Google's hosted translation of the CURRENT page in a new tab
+  (`translate.google.com/translate?hl=en&sl=en&u=<page>&tl=<lang>`) + fires the legacy Plausible
+  `translation_conversion` event. A bundled (CSP-safe) script wires every `[data-translate-trigger]`.
+- **SiteContextBar**: restored "🌐 Translate this site" on the navy breadcrumb (right), gated by the
+  section's `showTranslation` (globe-only `<960px`, full label `≥960`).
+- **Footer** "Translate Site" now works (the modal script wires its existing trigger).
+- Mounted once in BaseLayout. No CSP change (window.open new-tab navigation, not a fetch/iframe).
+
 ## [0.40.0] — 2026-05-31 — test + fix: data/cache/config unit tests (layer 2) — caught a file-size bug
 
 Test-suite layer 2 (Vitest, offline/deterministic — the hybrid strategy):

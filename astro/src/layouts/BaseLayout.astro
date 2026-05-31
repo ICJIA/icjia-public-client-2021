@@ -16,6 +16,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteContextBar from '../components/SiteContextBar.astro';
 import SiteDisclaimer from '../components/SiteDisclaimer.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import TranslateModal from '../components/TranslateModal.astro';
 
 interface Props {
   title?: string;
@@ -206,6 +207,7 @@ const ogImg = new URL(ogImage ?? siteConfig.ogImage, Astro.url.origin).href;
       <SiteDisclaimer />
     </main>
     <SiteFooter />
+    <TranslateModal />
     <script is:inline>
       (function () {
         var d = document;
