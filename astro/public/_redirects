@@ -18,6 +18,28 @@
 /drone/                        /innovation-and-digital-services/drone/         301
 /covid19/                      /about/covid-19/                                301
 
+# Trailing-slash canonicalization for SSR section landings. Astro is trailingSlash:'always',
+# but @astrojs/netlify routes the SSR function only at the /slash/ path — so a no-slash request
+# 404s before Astro can redirect (static pages already resolve no-slash via the served file).
+# These 301s fix inbound/hand-typed no-slash links to the main sections. Detail pages
+# (/news/<slug>, /researchhub/articles/<slug>, …) rely on canonical trailing-slash links.
+/news                          /news/                                          301
+/news/press                    /news/press/                                    301
+/news/meetings                 /news/meetings/                                 301
+/news/events                   /news/events/                                   301
+/events                        /events/                                        301
+/grants/funding                /grants/funding/                                301
+/grants/programs               /grants/programs/                               301
+/researchhub                   /researchhub/                                   301
+/researchhub/articles          /researchhub/articles/                          301
+/researchhub/datasets          /researchhub/datasets/                          301
+/researchhub/apps              /researchhub/apps/                              301
+/about/icjia-staff             /about/icjia-staff/                             301
+/about/composition-and-membership  /about/composition-and-membership/          301
+/about/employment              /about/employment/                              301
+/innovation-and-digital-services  /innovation-and-digital-services/            301
+/irb/irb-meetings              /irb/irb-meetings/                              301
+
 # Renamed content
 /news/volunteers/              /news/join-our-volunteer-reviewer-pool/         301
 /gata/funding/2021-cbvip-sfy22/  /grants/funding/community-based-violence-intervention-and-prevention/  301

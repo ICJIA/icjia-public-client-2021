@@ -3,6 +3,16 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.39.4] — 2026-05-31 — fix: no-slash → /slash 301s for SSR section landings (cutover readiness)
+
+`@astrojs/netlify` v7 routes the SSR function only at the trailing-slash path, so no-slash requests
+to live routes (`/news`, `/grants/funding`, `/researchhub`, …) 404'd *before* Astro's
+`trailingSlash:'always'` could redirect (the legacy SPA 200'd every path; static pages already
+resolve no-slash via the served file). Added explicit no-slash→`/slash` 301s for the main section
+landings in `public/_redirects` so inbound/hand-typed links canonicalize. Detail pages
+(`/news/<slug>`, …) rely on canonical trailing-slash links and aren't enumerated. (Global fix "B"
+wasn't viable — the adapter doesn't emit these and Netlify has no safe generic add-slash rule.)
+
 ## [0.39.3] — 2026-05-31 — fix: drop slug-less publications (sitemap self-404 /about/publications/null/)
 
 The full route sweep (2404/2405 → 200) found one self-404: a publication with a null slug emitted
