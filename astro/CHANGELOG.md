@@ -3,6 +3,21 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.40.0] — 2026-05-31 — test + fix: data/cache/config unit tests (layer 2) — caught a file-size bug
+
+Test-suite layer 2 (Vitest, offline/deterministic — the hybrid strategy):
+- `data.test.ts` — ~25 pure view-model helpers (label mappers, date/byte formatters, `slugifyHeading`,
+  `truncateWords`, `getFileType`, `isNew`, `filterUpcoming`, `monthBucket`, `strapiUrl`).
+- `cache.test.ts` — `setCache` headers + purge cache-tags (incl. aggregator dedup, bios 120s TTL).
+- `config.test.ts` — renderStrategy live/static no-overlap, cacheTTL `[s-maxage,swr]` sanity +
+  keep-warm SWR ≫ the 300s ping, keepWarm trailing-slash paths.
+**61 tests pass** (with the existing sanitizer parity suite).
+
+**BUG CAUGHT + FIXED:** `NICE_UNITS` was `["B","MB","MB","GB",…]` — index 1 (the **KB** range) was
+mislabeled "MB" and "MB" was duplicated. So `niceBytes()` rendered every file **1 KB–1 MB ~1000× too
+large** (a 50 KB attachment showed "50 MB"). Fixed to `["B","KB","MB","GB",…]`; the test now asserts
+`niceBytes(51200) === "50 KB"`. Affected attachment + publication file-size labels for sub-1 MB files.
+
 ## [0.39.6] — 2026-05-31 — fix(a11y): ResearchHub carousel slide-dots meet WCAG 2.5.8 target-size
 
 The warm axe + Lighthouse sweep across every template found exactly ONE a11y violation: the

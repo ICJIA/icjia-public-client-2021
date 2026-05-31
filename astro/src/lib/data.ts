@@ -474,7 +474,7 @@ export function meetingDateLine(start?: string, end?: string): string {
 // in the 1 KB–1 MB range render labeled "MB" (e.g. a 488 KB file → "488 MB").
 // Replicated verbatim so sizes match production exactly (the VR gate would flag
 // any "fix"). FLAGGED to the user as a pre-existing bug to correct separately.
-const NICE_UNITS = ["B", "MB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+const NICE_UNITS = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 export function niceBytes(x?: number): string {
   let l = 0;
   let n = typeof x === "number" ? x : parseInt(String(x ?? 0), 10) || 0;
