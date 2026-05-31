@@ -2,13 +2,14 @@
 // /news/publications/ — identical listing to /about/publications/. Legacy maps
 // this route to the SAME PublicationsAll.vue (no heading/content variant), so
 // this is a thin page rendering the shared PublicationsListing component. Both
-// render the full archive (REST via getAllPublications).
+// ship the recent ~150 (PublicationTable lazy-loads the full archive from
+// /api/publications.json after paint — see /about/publications/).
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PublicationsListing from '../../../components/PublicationsListing.astro';
-import { getAllPublications } from '../../../lib/data';
+import { getPublicationsRecent } from '../../../lib/data';
 import { setCache } from '../../../lib/cache';
 
-const publications = await getAllPublications();
+const publications = await getPublicationsRecent(150);
 setCache(Astro.response, 'publications');
 ---
 

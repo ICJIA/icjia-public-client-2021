@@ -1,14 +1,15 @@
 ---
 // /about/publications/ — canonical Publications listing. Live-data SSR; all
-// logic lives in PublicationsListing.astro + PublicationTable.astro. The full
-// ~1108-row archive is fetched via REST (getAllPublications; GraphQL limit:990
-// silently clips it). /news/publications/ renders the SAME component.
+// logic lives in PublicationsListing.astro + PublicationTable.astro. PERF: the SSR
+// ships only the RECENT ~150 rows (light doc → fast FCP/LCP); PublicationTable
+// lazy-loads the full ~1108-row archive from /api/publications.json after first paint
+// for whole-archive search/sort. /news/publications/ renders the SAME component.
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PublicationsListing from '../../../components/PublicationsListing.astro';
-import { getAllPublications } from '../../../lib/data';
+import { getPublicationsRecent } from '../../../lib/data';
 import { setCache } from '../../../lib/cache';
 
-const publications = await getAllPublications();
+const publications = await getPublicationsRecent(150);
 setCache(Astro.response, 'publications');
 ---
 

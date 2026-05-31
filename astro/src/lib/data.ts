@@ -1755,6 +1755,25 @@ export async function getAllPublications(): Promise<PublicationListItem[]> {
 }
 
 /** A single publication by slug, live (GraphQL is fine here — one row). null → 404. */
+/** Recent N publications (publicationDate desc), via a single light REST call
+ *  (_sort + _limit) — for the /about/publications/ INITIAL island/baseline so the doc
+ *  stays light (fast FCP/LCP). PublicationTable then lazy-loads the FULL archive from
+ *  /api/publications.json for whole-archive search/sort. Same island-trim as
+ *  getAllPublications (drop slug/haystack, ≤25-word summary). */
+export async function getPublicationsRecent(limit = 150): Promise<PublicationListItem[]> {
+  const res = await fetch(
+    `${PUB_BASE}/publications?_sort=publicationDate:DESC&_limit=${limit}`,
+  );
+  if (!res.ok) throw new Error(`publications recent HTTP ${res.status}`);
+  const clean = deepSanitize(uniqById(await res.json()));
+  return (clean as any[])
+    .map(shapePublication)
+    .map(({ slug, haystack, ...item }) => ({ ...item, summary: truncateWords(item.summary, 25) }))
+    .sort((a, b) =>
+      String(b.publicationDate || "").localeCompare(String(a.publicationDate || "")),
+    );
+}
+
 export async function getPublication(slug: string): Promise<PublicationListItem | null> {
   const { data } = await runQuery(GET_SINGLE_PUBLICATION_QUERY, { slug }, "no-cache");
   const p = data?.publications?.[0];

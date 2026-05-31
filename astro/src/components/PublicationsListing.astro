@@ -4,11 +4,11 @@
 // v-data-table (PublicationTable), and the bottom archive note. Shared by BOTH
 // routes (legacy maps them to the SAME view) so they can't diverge.
 //
-// Renders the #publications-data island ONCE (the full ~1108-row archive, real
-// JSON); PublicationTable reads + filters it client-side via Alpine x-for, so
-// the archive ships in the response exactly once and only the current page
-// (≤150 rows) is ever in the DOM. The SSR baseline (first 150 shaped rows) is
-// the no-JS / crawler / SiteImprove view.
+// Renders the #publications-data island with the RECENT ~150 rows (perf: keeps the
+// initial doc light); PublicationTable reads it via Alpine x-for, then lazy-loads the
+// full ~1108-row archive from /api/publications.json after paint for whole-archive
+// search/sort. Only the current page (≤150 rows) is ever in the DOM. The SSR baseline
+// (the shipped ~150 rows) is the no-JS / crawler / SiteImprove view.
 import PublicationTable from './PublicationTable.astro';
 import type { PublicationListItem } from '../lib/data';
 import '../styles/publications.css';

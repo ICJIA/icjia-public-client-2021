@@ -3,6 +3,18 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.37.5] — 2026-05-31 — perf: publications lazy full-archive index (FCP/LCP → 95 target)
+
+The haystack trim ([0.37.3]) got publications 87→89, but the doc was still ~0.9MB (display rows
+for all 1108). Now the SSR ships only the **recent ~150** (`getPublicationsRecent` — a single
+light REST `_sort=publicationDate:DESC&_limit=150`), so the initial doc is light. `PublicationTable`
+**lazy-loads the full ~1108-row archive** from a new `/api/publications.json` endpoint after first
+paint (rebuilds the client search index, swaps `this.all` 150→1108) — whole-archive search/sort is
+preserved, with a "loading full archive…" note until it lands. `perPage:150` default + the SSR
+baseline are unchanged (prod parity; no CLS — page-1's recent 150 == the first 150 of the full set).
+Applied to both `/about/publications/` + `/news/publications/`. Verify: doc light + Lighthouse ≥95 +
+searching a NON-recent publication returns it after the lazy-load.
+
 ## [0.37.4] — 2026-05-31 — fix: restore DICRA route + home Funding/Employment sort (parity)
 
 - **DICRA** was 404 at both URLs (Phase B's `about/[slug]` category-filter dropped it — DICRA is
