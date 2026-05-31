@@ -1,11 +1,8 @@
 ---
 // /researchhub/apps/[slug] — single web app (live, HUB Strapi). getApp returns
 // null when no published app matches → 404. Context bar = app title.
-//
-// ⚠️ Same BLOCKING FOUNDATION DEFECT as articles/[slug].astro (see its header):
-// the hub ignores `where:{slug:$slug}` as a variable and returns ALL apps, so
-// getApp yields apps[0] for every slug. Fix is in research.ts/hub.js (bind
-// `where` as a JSON variable). This page's logic is correct as written.
+// NOTE: hub single-record queries inline the sanitized slug literal (graphql/hub.js) —
+// this Strapi v3 hub ignores `where` variables. Distinct slugs resolve correctly.
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import AppView from '../../../components/researchhub/AppView.astro';
 import { getApp } from '../../../lib/research';

@@ -3,6 +3,14 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.39.1] — 2026-05-31 — docs: strip stale "BLOCKING FOUNDATION DEFECT" comments from hub [slug] pages
+
+The hub `articles`/`datasets`/`apps` `[slug].astro` headers carried alarming `⚠️ BLOCKING
+FOUNDATION DEFECT` comments claiming the hub ignores slug `where` filters (returns row[0] for
+every slug). That was fixed long ago — the single queries inline the sanitized slug literal
+(`graphql/hub.js`) — and re-verified on the deploy this session (two distinct slugs → two distinct
+articles). Replaced each block with a concise accurate note. Comments only, no behavior change.
+
 ## [0.39.0] — 2026-05-31 — feat: purge-on-publish webhook (Strapi edits to LIVE sections appear instantly)
 
 Live SSR pages were "live to within the edge cache's s-maxage window" (~1–2 min). This makes edits
