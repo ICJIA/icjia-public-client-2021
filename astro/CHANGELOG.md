@@ -3,6 +3,18 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.37.7] — 2026-05-31 — perf: publications listing fully build-time static (owner-approved)
+
+Publications need not be live (the whole site rebuilds nightly), so the listing is now
+**prerendered** and the full-archive endpoint is **build-time static**:
+- `/about/publications/` + `/news/publications/` → `prerender = true` (the recent-150 doc baked at build).
+- `/api/publications.json` → `prerender = true` → a **static** `dist/api/publications.json` (the full
+  ~1108-row archive). The lazy-load now hits a static CDN file — **no SSR, no per-request REST archive
+  fetch**. Perf stays 99 (light recent-150 doc). `renderStrategy` manifest: publications → static.
+
+Refreshed on the nightly/manual rebuild. (Publication DETAIL pages `/about/publications/[slug]` remain
+SSR — 1108 pages; can prerender later if wanted.)
+
 ## [0.37.6] — 2026-05-31 — build: IRB section (closes the 4 /irb/* cutover-404 blockers)
 
 Ports the legacy `/irb` section (`router/irb` + `IRBHome.vue` + `IRBMeetings.vue`):

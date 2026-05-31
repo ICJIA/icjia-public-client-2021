@@ -89,6 +89,8 @@ export const renderStrategy = {
     "/grants/rules-regs-policies",
     "/forms", // grant-status + lap-request shells (no live data)
     "/units",
+    "/about/publications", // + /news/publications — listing prerendered (recent-150 doc) + a static
+    "/news/publications", //   /api/publications.json (full ~1108 archive, lazy-loaded); nightly refresh
     "/search", // search shell (already static)
     "/404", // (already static)
   ],

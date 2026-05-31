@@ -7,10 +7,12 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PublicationsListing from '../../../components/PublicationsListing.astro';
 import { getPublicationsRecent } from '../../../lib/data';
-import { setCache } from '../../../lib/cache';
+
+// Prerendered (renderStrategy: static) — same as /about/publications/ (build-time, nightly
+// refresh; recent ~150 baked + the static /api/publications.json lazy-loaded for search/sort).
+export const prerender = true;
 
 const publications = await getPublicationsRecent(150);
-setCache(Astro.response, 'publications');
 ---
 
 <BaseLayout
