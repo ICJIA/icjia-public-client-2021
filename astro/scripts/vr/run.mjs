@@ -88,6 +88,19 @@ async function snap(context, base, route, vp) {
   }
   await page.waitForTimeout(route.settleMs || SETTLE_MS);
 
+  // For full-page diffs, record the <h1> top so align() can vertically anchor both
+  // frames to the title — removing the accepted constant top-offset (the per-template
+  // top-spacing delta) so the diff surfaces only real content differences below it.
+  let h1Top = null;
+  if (route.fullPage) {
+    h1Top = await page
+      .evaluate(() => {
+        const h1 = document.querySelector("h1");
+        return h1 ? Math.round(h1.getBoundingClientRect().top + window.scrollY) : null;
+      })
+      .catch(() => null);
+  }
+
   let buf;
   if (route.selector) {
     // Element-level capture (e.g. the footer, which sits at a variable
@@ -105,24 +118,33 @@ async function snap(context, base, route, vp) {
     buf = await page.screenshot(opts);
   }
   await page.close();
-  return PNG.sync.read(buf);
+  return { img: PNG.sync.read(buf), h1Top };
 }
 
-// Crop both frames to the COMMON (min) area. The two sites are live with different
-// content LENGTHS, so a full-page HEIGHT difference would otherwise white-pad the
-// shorter frame → every padded row reads as "diff" and floods the ratio. We compare
-// the shared top region instead; tail-length differences are content, not a parity
-// regression. (Width is the fixed viewport, so in practice only height differs.)
-function align(a, b) {
-  const w = Math.min(a.width, b.width);
-  const h = Math.min(a.height, b.height);
-  const crop = (img) => {
-    if (img.width === w && img.height === h) return img;
+// Anchor both frames to the page <h1>, then crop to the COMMON (min) area.
+//   1. The two sites carry an ACCEPTED constant top-offset (per-template top-spacing
+//      delta, ≤~20px — Astro unifies several legacy Vue views into shared templates).
+//      Cropping each frame's top to its OWN h1 makes row 0 = the title in both, so
+//      that offset drops out instead of shifting every text row below it (a shift >
+//      one line-height saturates the diff and masks real regressions). Non-fullPage
+//      captures (footer/element) have no h1 → cropTop 0 → plain top-anchor (old
+//      behavior). h1Top is in CSS px, so scale by the viewport's deviceScaleFactor.
+//   2. Live sites differ in content LENGTH, so we then crop to the shared min height;
+//      tail-length differences are content, not a parity regression.
+function align(prod, neu, vp) {
+  const dsf = (vp && vp.dsf) || 1;
+  const cropTop = (o) =>
+    o.h1Top != null ? Math.max(0, Math.min(Math.round(o.h1Top * dsf), o.img.height - 1)) : 0;
+  const tP = cropTop(prod);
+  const tN = cropTop(neu);
+  const w = Math.min(prod.img.width, neu.img.width);
+  const h = Math.min(prod.img.height - tP, neu.img.height - tN);
+  const crop = (img, top) => {
     const out = new PNG({ width: w, height: h });
-    PNG.bitblt(img, out, 0, 0, w, h, 0, 0);
+    PNG.bitblt(img, out, 0, top, w, h, 0, 0);
     return out;
   };
-  return [crop(a), crop(b), w, h];
+  return [crop(prod.img, tP), crop(neu.img, tN), w, h];
 }
 
 (async () => {
@@ -146,9 +168,9 @@ function align(a, b) {
       let note = "";
       try {
         // Back-to-back per route×viewport to minimize CMS drift between captures.
-        const prodImg = await snap(ctxProd, PROD_BASE, route, vp);
-        const newImg = await snap(ctxNew, NEW_BASE, route, vp);
-        const [a, b, w, h] = align(prodImg, newImg);
+        const prodSnap = await snap(ctxProd, PROD_BASE, route, vp);
+        const newSnap = await snap(ctxNew, NEW_BASE, route, vp);
+        const [a, b, w, h] = align(prodSnap, newSnap, vp);
         const diff = new PNG({ width: w, height: h });
         const bad = pixelmatch(a.data, b.data, diff.data, w, h, { threshold: PIXEL_THRESHOLD });
         ratio = bad / (w * h);

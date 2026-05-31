@@ -3,6 +3,23 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.1] — 2026-05-31 — test(vr): h1-anchored diffing + CMS-heading font mismatch found
+
+- **`run.mjs` — h1-anchored diffing.** `align()` now vertically anchors both frames to the `<h1>`
+  before the common-area crop: `snap()` returns the h1 top (CSS px → ×deviceScaleFactor), and each
+  frame is cropped from its OWN h1 so the accepted ≤20px top-offset drops out instead of shifting
+  every text row. Non-fullPage captures (footer/element) have no h1 → cropTop 0 → prior top-anchor
+  behavior. Generalizes the crop-to-common-height step.
+- **Finding — the real % driver is NOT the offset.** With the offset anchored out, about-page still
+  diffs ~12–15%; the diff-PNG shows faithful layout/structure but **all text red**. Root cause:
+  **CMS-body headings render in Oswald on Astro but Lato on prod** (`.markdown-body h2/h3` =
+  25.6px/20px 700, prod `"Lato"` vs Astro `"Oswald"`; body `li` matches at Lato 16/24). Prod uses
+  Oswald only for the page-title/chrome — github-markdown *content* headings inherit Lato; Astro's
+  heading-font rule is over-broad and reaches into `.markdown-body`. **NEXT (high value):** scope
+  Oswald off CMS-body headings (→ Lato). Likely the single biggest remaining parity lever — it
+  affects every CMS page's subheadings, and it's why the full-page % stays high even when content
+  is faithful.
+
 ## [0.42.0] — 2026-05-31 — fix(astro): splash hero container-width + BasePage −15 nudge (VR header offset)
 
 Resolved the bulk of the VR vertical offset via a local `astro dev` + `measure-header.mjs` loop.
