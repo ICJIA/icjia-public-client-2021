@@ -15,7 +15,9 @@ and prod's context-bar "Translate this site" trigger was absent. Restored to mat
   (`translate.google.com/translate?hl=en&sl=en&u=<page>&tl=<lang>`) + fires the legacy Plausible
   `translation_conversion` event. A bundled (CSP-safe) script wires every `[data-translate-trigger]`.
 - **SiteContextBar**: restored "🌐 Translate this site" on the navy breadcrumb (right), gated by the
-  section's `showTranslation` (globe-only `<960px`, full label `≥960`).
+  section's `showTranslation` (globe-only `<960px`, full label `≥960`). The trigger carries
+  `aria-label="Translate this site"` so it keeps an accessible name when the label is hidden on
+  mobile (verified via a Chrome interaction test — the modal opens with focus-trap + all 18 languages).
 - **Footer** "Translate Site" now works (the modal script wires its existing trigger).
 - Mounted once in BaseLayout. No CSP change (window.open new-tab navigation, not a fetch/iframe).
 
