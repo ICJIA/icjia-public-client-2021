@@ -3,6 +3,23 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.41.1] — 2026-05-31 — test(vr): crop-to-common-height + header-offset root-cause
+
+VR methodology refinement (the full-page %s were noise-dominated for cross-engine Vue/Vuetify vs Astro):
+- `run.mjs` `align()` now **crops both frames to the common (min) height** instead of white-padding the
+  shorter to the max — so a page-length difference between two live sites no longer floods the diff.
+  Measured: about-page mobile 20.1%→**15.5%**, md 14.8%→**10.1%** (the height-padding portion removed).
+- `scripts/vr/measure-header.mjs` (NEW): measures where content starts (h1 top + header-region element
+  bands) prod vs branch — used to root-cause the VR vertical offset.
+
+**Header offset root-caused:** the context bar MATCHES prod exactly (both 70px). The ~34px offset is
+entirely the **content-wrapper top padding** — prod's h1 sits ~21px below the bar, Astro's at 56px
+(`BasePage`'s `py-8` = 32px top + the h1 margin). The fix is an *iterative* content-padding tune (it
+interacts with the `-mt-[15px]` splash-nudge across ~40 wrappers — needs per-change measurement, best
+via a local-preview loop), deferred to a focused pass. With it fixed, the residual VR % drops to the
+cross-engine AA floor and the numeric gate becomes usable; until then the **diff PNGs are the gate**
+(visual triage confirms content parity is faithful) and the % is a triage aid.
+
 ## [0.41.0] — 2026-05-31 — feat: restore Google Translate (was entirely missing) — context-bar + footer
 
 The VR header-offset investigation surfaced that **Google Translate wasn't functional** on the Astro

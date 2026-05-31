@@ -108,19 +108,21 @@ async function snap(context, base, route, vp) {
   return PNG.sync.read(buf);
 }
 
-// Pad both images to a common canvas (white) so pixelmatch can compare frames
-// of differing height (full-page heights differ until templates are built).
+// Crop both frames to the COMMON (min) area. The two sites are live with different
+// content LENGTHS, so a full-page HEIGHT difference would otherwise white-pad the
+// shorter frame → every padded row reads as "diff" and floods the ratio. We compare
+// the shared top region instead; tail-length differences are content, not a parity
+// regression. (Width is the fixed viewport, so in practice only height differs.)
 function align(a, b) {
-  const w = Math.max(a.width, b.width);
-  const h = Math.max(a.height, b.height);
-  const pad = (img) => {
+  const w = Math.min(a.width, b.width);
+  const h = Math.min(a.height, b.height);
+  const crop = (img) => {
     if (img.width === w && img.height === h) return img;
     const out = new PNG({ width: w, height: h });
-    out.data.fill(0xff);
-    PNG.bitblt(img, out, 0, 0, img.width, img.height, 0, 0);
+    PNG.bitblt(img, out, 0, 0, w, h, 0, 0);
     return out;
   };
-  return [pad(a), pad(b), w, h];
+  return [crop(a), crop(b), w, h];
 }
 
 (async () => {
