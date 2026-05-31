@@ -11,7 +11,9 @@ import { setCache } from '../lib/cache';
 import { buildHomeJsonLd } from '../lib/seo';
 
 const home = await getHome();
-setCache(Astro.response, 'home');
+// Tag home with every live section it surfaces so a publish in ANY of them purges
+// the landing page too (purge-on-publish — netlify/functions/purge-cache.mjs).
+setCache(Astro.response, 'home', ['news', 'hub', 'grants', 'events', 'jobs', 'meetings', 'bios']);
 
 const newsMenuItems = [
   { label: 'News', url: '/news/' },

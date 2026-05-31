@@ -33,7 +33,17 @@ type Kind =
 
 const TTL = cacheTTL as Record<Kind, [number, number]>;
 
-export function setCache(response: Response, kind: Kind): void {
+export function setCache(
+  response: Response,
+  kind: Kind,
+  /**
+   * Extra cache tags beyond the page's own `kind`. Pass the OTHER sections an
+   * aggregator page surfaces (e.g. the home page shows news + hub + grants +
+   * events + jobs) so a publish in any of them purges this page too. See
+   * netlify/functions/purge-cache.mjs (purge-on-publish).
+   */
+  extraTags: string[] = [],
+): void {
   const [s, swr] = TTL[kind];
   // Netlify's CDN + Durable Cache honor THIS header for SSR/function responses;
   // a plain `Cache-Control: s-maxage` is bypassed (observed `cache-status:
@@ -49,4 +59,9 @@ export function setCache(response: Response, kind: Kind): void {
   // Browser: always revalidate (cheap against the warm CDN) so users never hold
   // stale HTML — keeps content "live" while the CDN absorbs the load.
   response.headers.set("Cache-Control", "public, max-age=0, must-revalidate");
+  // Cache tag(s) for PURGE-ON-PUBLISH: a Strapi webhook → purge-cache.mjs purges
+  // the changed section's tag, so the edit appears instantly (not after s-maxage).
+  // The page's `kind` is its tag; purging a tag invalidates EVERY page carrying it.
+  const tags = Array.from(new Set([kind, ...extraTags]));
+  response.headers.set("Netlify-Cache-Tag", tags.join(","));
 }

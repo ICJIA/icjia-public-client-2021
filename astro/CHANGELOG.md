@@ -3,6 +3,27 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.39.0] — 2026-05-31 — feat: purge-on-publish webhook (Strapi edits to LIVE sections appear instantly)
+
+Live SSR pages were "live to within the edge cache's s-maxage window" (~1–2 min). This makes edits
+to LIVE sections appear **immediately** — event-driven invalidation instead of time-based — while
+keeping the long TTL (best perf).
+- `setCache()` now stamps every SSR response with `Netlify-Cache-Tag: <kind>` (its section); the
+  home page is tagged with every live section it surfaces (`news,hub,grants,events,jobs,meetings,
+  bios`) so a publish anywhere refreshes the landing page too.
+- `netlify/functions/purge-cache.mjs` (NEW): a webhook that maps the changed Strapi content-type
+  (`post→news`, `meeting→meetings`, `biography→bios`, `event→events`, `funding`/`grant→grants`,
+  `job→jobs`, hub `article`/`dataset`/`app→hub`) to its tag and calls `purgeCache({tags})`. Purging
+  a tag invalidates every page carrying it → next request re-renders fresh. STATIC models
+  (`page`/`publication`/`unit`) defer to the nightly rebuild (or fire the build hook if
+  `PURGE_TRIGGER_BUILD=1`). Auth: a shared `PURGE_SECRET` (header `x-icjia-purge-secret` or
+  `?secret=`); rejects anything else with 401.
+
+**Manual setup required (owner):** set `PURGE_SECRET` in Netlify env, then add a webhook in BOTH
+Strapi admins (agency + researchhub) → `https://icjia.illinois.gov/.netlify/functions/purge-cache`
+with header `x-icjia-purge-secret: <PURGE_SECRET>`, on Entry create/update/delete/publish/unpublish.
+Until configured, the function safely 401s and the existing s-maxage/SWR freshness still applies.
+
 ## [0.38.0] — 2026-05-31 — fix: mobile responsiveness + a11y for data-heavy pages (no horizontal overflow)
 
 Reported: `/about/publications/` (and the other data tables) overflowed horizontally on mobile —
