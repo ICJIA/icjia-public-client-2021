@@ -5,10 +5,10 @@
 // subtitle, rendered bio body. Shared by the biographies list/detail + unit
 // staff lists + about staff pages.
 //
-// PARITY FLAG (search unported): legacy made the name an interactive element
-// that called goToSearch(fullName). Search is not yet ported, so the name is
-// rendered as PLAIN NON-LINK TEXT (no tooltip, no click handler). Restore the
-// search affordance when search lands.
+// NAME LINK: legacy made the name a goToSearch(fullName) trigger. Here it links to
+// the bio detail page instead (so listing cards aren't a dead-end), styled to match
+// prod's plain dark heading via bios.css `.bio-name-link` (the global a{underline;900}
+// is overridden there). The original search affordance is TBD when search lands.
 import '../styles/bios.css';
 import CmsImage from './CmsImage.astro';
 import type { Biography } from '../lib/data';

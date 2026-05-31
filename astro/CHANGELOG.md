@@ -3,6 +3,25 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.5] — 2026-05-31 — fix(parity): irb summary (P7) + bio name color (P2) from VR-triage
+
+A 23-agent VR-triage workflow classified each template's diff-PNGs (font-floor vs real diffs) and ranked
+fixes. First two verified-landed:
+- **P7 irb** — `BasePage.astro` gained an opt-in `showSummary` prop; `/irb/` passes it so the CMS `summary`
+  intro paragraph renders above the body (legacy `IRBHome.vue` rendered title+summary+body; generic
+  `BasePage.vue` omits summary). Verified: summary renders. (irb's md/desktop residual is the systemic
+  **P3** no-TOC container width — separate fix.)
+- **P2 bio names** — `.bio-name-link` now matches prod's plain dark heading (`#222`, no underline, weight
+  inherited from `.author-name`) + an underline-on-hover affordance, overriding the global
+  `a { underline; 900 }`. Fixes staff + board. Verified computed `rgb(34,34,34)` / none / 400. Corrected
+  BiographyCard's stale "PLAIN NON-LINK TEXT" comment (the name is a link now).
+- **VR harness** — `VR_ONLY` accepts a comma list (batch-verify several templates in one run).
+
+**FLAGGED — events (P6) needs a decision:** prod's events page boots into a CALENDAR month-grid; Astro's
+calendar view is an unbuilt `.cal-placeholder` (confirmed via a functional check — defaulting to it showed
+the placeholder, so reverted to the functional list-default). Build the calendar grid (port prod's Vuetify
+`v-calendar` — a real feature) or accept list-default as a known parity gap.
+
 ## [0.42.4] — 2026-05-31 — fix(cutover): B3 no-slash→slash canonicalization via Astro middleware
 
 - **`src/middleware.ts`** (NEW) — 301 no-slash → trailing-slash for on-demand (SSR) section landings

@@ -17,8 +17,9 @@
 // max-width container, matching the sibling detail pages.
 //
 // PARITY NOTES:
-// - `summary` is part of CmsPage / Props but legacy BasePage.vue never renders it
-//   in the body, so it is intentionally NOT rendered here (passed through only).
+// - `summary`: legacy BasePage.vue never rendered it, so it is omitted by default.
+//   Pages whose legacy view DID render it (e.g. IRBHome.vue → /irb/) opt in via the
+//   `showSummary` prop → rendered as an intro paragraph above the body.
 // - `hideUpdated`: legacy set this true ONLY for the `meeting-schedules` slug
 //   (to drop AttachmentList's "Last Updated" column). CmsPage carries no slug, so
 //   the quirk is exposed as an optional prop the consuming page can set.
@@ -33,8 +34,12 @@ interface Props {
   page: CmsPage;
   /** Legacy `meeting-schedules` quirk: hide AttachmentList's "Last Updated". */
   hideUpdated?: boolean;
+  /** Render `page.summary` as an intro paragraph above the body. Off by default
+      (generic BasePage.vue never rendered summary); on for pages whose legacy view
+      DID (e.g. IRBHome.vue → /irb/). */
+  showSummary?: boolean;
 }
-const { page, hideUpdated = false } = Astro.props;
+const { page, hideUpdated = false, showSummary = false } = Astro.props;
 
 const showToc = !!page.showTOC && page.toc.length > 0;
 ---
@@ -55,6 +60,8 @@ const showToc = !!page.showTOC && page.toc.length > 0;
   <div class:list={['bp-grid', { 'md:flex md:items-start md:gap-[109px]': showToc }]}>
     <div class:list={[{ 'md:min-w-0 md:flex-1': showToc }]}>
       {!page.hideTitle && <h1 set:html={page.titleHtml} />}
+
+      {showSummary && page.summary && <p class="bp-summary">{page.summary}</p>}
 
       <div set:html={page.safeBodyHtml} />
 

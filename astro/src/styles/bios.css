@@ -39,6 +39,19 @@
   color: #222;
   margin: 0 0 0 0.75rem;
 }
+/* The name is a link to the bio detail page, but prod renders it as a plain dark
+   heading. Match that: inherit the h2's color/weight and drop the global
+   `a { text-decoration: underline; font-weight: 900 }`; keep an underline-on-hover
+   affordance so it still reads as clickable. */
+.bio-card .author-name .bio-name-link {
+  color: #222;
+  font-weight: inherit;
+  text-decoration: none;
+}
+.bio-card .author-name .bio-name-link:hover,
+.bio-card .author-name .bio-name-link:focus-visible {
+  text-decoration: underline;
+}
 .bio-card .bio-subtitle {
   margin: 0 0.75rem;
   padding-top: 0.5rem;

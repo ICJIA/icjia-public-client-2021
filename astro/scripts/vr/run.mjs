@@ -157,7 +157,9 @@ function align(prod, neu, vp) {
 
   // VR_ONLY=<substring> limits routes for fast iteration (e.g. VR_ONLY=header).
   const only = process.env.VR_ONLY;
-  const routes = only ? ROUTES.filter((r) => r.id.includes(only)) : ROUTES;
+  const routes = only
+    ? ROUTES.filter((r) => only.split(',').some((o) => r.id.includes(o.trim())))
+    : ROUTES;
 
   for (const route of routes) {
     for (const vp of VIEWPORTS) {
