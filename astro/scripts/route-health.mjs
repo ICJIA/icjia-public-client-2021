@@ -18,6 +18,11 @@
 
 const args = process.argv.slice(2);
 const FULL = args.includes("--full");
+// --warm: don't assert — just GET each route a few times to populate Netlify's Durable
+// (edge) cache, so a Lighthouse sweep run RIGHT AFTER measures the WARM path (what prod
+// serves under keep-warm), not the branch's cold-start. SWR then keeps them fast through
+// the whole sweep. One-time local test aid — NOT a deployed/prod function.
+const WARM = args.includes("--warm");
 const baseArg = args.find((a) => a.startsWith("--base="));
 const BASE = (
   (baseArg && baseArg.split("=")[1]) ||
@@ -108,6 +113,28 @@ function sampleByFamily(paths) {
   const routes = Array.from(
     new Set([...CRITICAL_ROUTES, ...(FULL ? sitemapPaths : sampleByFamily(sitemapPaths))]),
   );
+
+  if (WARM) {
+    const ROUNDS = 3;
+    const warm = async (p) => {
+      const t = Date.now();
+      try {
+        await fetch(p.startsWith("http") ? p : BASE + p, { redirect: "manual" });
+      } catch {}
+      return Date.now() - t;
+    };
+    console.log(
+      `warming ${routes.length} routes × ${ROUNDS} rounds (populate the Durable cache so a Lighthouse run measures the WARM path, like prod keep-warm)…`,
+    );
+    for (let r = 1; r <= ROUNDS; r++) {
+      const ms = await pool(routes, warm, CONCURRENCY);
+      const avg = Math.round(ms.reduce((a, b) => a + b, 0) / ms.length);
+      console.log(`  round ${r}: avg ${avg}ms · slowest ${Math.max(...ms)}ms`);
+    }
+    console.log(`\n✓ warm complete — run the Lighthouse sweep NOW (SWR keeps these edge-fast through it)`);
+    process.exit(0);
+  }
+
   console.log(`testing ${routes.length} routes @ concurrency ${CONCURRENCY}…\n`);
 
   const results = await pool(routes, (p) => status(p, true), CONCURRENCY);

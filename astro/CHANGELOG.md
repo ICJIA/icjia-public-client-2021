@@ -3,6 +3,15 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.39.5] — 2026-05-31 — test: `--warm` mode (cache-warm before Lighthouse so perf reflects the warm path)
+
+`pnpm warm` / `warm:full` (a `--warm` flag on route-health.mjs): GETs each route 3× to populate
+Netlify's Durable (edge) cache, so a Lighthouse run RIGHT AFTER measures the WARM path — what prod
+serves under keep-warm — instead of the branch's cold-start (which gave false-low perf, e.g.
+`/grants/funding/` 91 cold → 96 warm). SWR then holds the warm copies through the whole sweep.
+One-time local test aid, NOT a deployed/prod function. Reports per-round avg/slowest TTFB so you can
+see the cold→warm drop.
+
 ## [0.39.4] — 2026-05-31 — chore: accept trailing-slash-canonical (no-slash SSR → 404); redirect attempt reverted
 
 Investigated making no-slash SSR routes (`/news`, `/grants/funding`, `/researchhub`, …) redirect to

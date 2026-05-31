@@ -23,6 +23,8 @@
     "vr": "node scripts/vr/run.mjs",
     "health": "node scripts/route-health.mjs",
     "health:full": "node scripts/route-health.mjs --full",
+    "warm": "node scripts/route-health.mjs --warm",
+    "warm:full": "node scripts/route-health.mjs --warm --full",
     "og-image": "node scripts/generate-og-image.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
