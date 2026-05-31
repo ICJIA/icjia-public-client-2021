@@ -12,11 +12,10 @@
 //
 // PARITY FLAGS:
 //  - search unported: categories + tags + author names are NON-INTERACTIVE.
-//  - The foundation ResearchArticleDetail (research.ts getArticle) joins authors
-//    to ONE string and does NOT return author descriptions, related apps/datasets,
-//    or doi. So the legacy "About the author(s)" + "Related contents" InfoBlocks
-//    and the citation DOI link are OMITTED here pending a research.ts field add.
-//    (Funding + Suggested-citation render fully.)  <!-- FLAG: see note above -->
+//  - ResearchArticleDetail does not yet return related apps/datasets, so the
+//    legacy "Related contents" InfoBlock remains omitted. Everything else renders:
+//    "About the author(s)" (authorBios), the citation DOI link, funding, and the
+//    suggested-citation block.
 import ArticleToc from './ArticleToc.astro';
 import InfoBlock from './InfoBlock.astro';
 import MarkerExternal from './MarkerExternal.astro';
@@ -188,6 +187,19 @@ const doiSafe = article.doi ? escapeHtml(article.doi) : null;
       <div class="article-body" set:html={article.bodyHtml} />
 
       <div class="my-12">
+        {/* "About the author(s)" — legacy hasAuthorInfo: shown when any author has a
+            description; plural heading keys off total author count (legacy ArticleView.vue). */}
+        {
+          article.authorBios.some((a) => a.description) && (
+            <InfoBlock title={`About the author${article.authorBios.length > 1 ? "s" : ""}`}>
+              {article.authorBios
+                .filter((a) => a.description)
+                .map((a) => (
+                  <p>{a.description}</p>
+                ))}
+            </InfoBlock>
+          )
+        }
         {
           article.funding && (
             <InfoBlock title="Funding acknowledgment">{article.funding}</InfoBlock>
@@ -207,9 +219,9 @@ const doiSafe = article.doi ? escapeHtml(article.doi) : null;
             />
           )
         }
-        {/* FLAG: "About the author(s)" + "Related contents" InfoBlocks omitted —
-            research.ts ResearchArticleDetail provides neither author descriptions
-            nor related apps/datasets. (DOI link now restored on the citation block.) */}
+        {/* FLAG: "Related contents" InfoBlock (related apps/datasets) still omitted —
+            research.ts ResearchArticleDetail does not yet provide related apps/datasets.
+            ("About the author(s)" is restored above; DOI link is on the citation block.) */}
       </div>
     </div>
   </div>

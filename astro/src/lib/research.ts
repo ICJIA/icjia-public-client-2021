@@ -321,6 +321,10 @@ export interface ResearchArticleDetail {
   /** DOI URL appended to the citation InfoBlock (legacy article.doi). */
   doi?: string;
   funding?: string;
+  /** Per-author objects for the "About the author(s)" InfoBlock (legacy
+   *  hasAuthorInfo). `authors` is a Strapi JSON field, so the relation already
+   *  returns each author's description — joinAuthors() only keeps .title. */
+  authorBios: Array<{ title?: string; description?: string }>;
   /** Same-origin extracted hero file (full-size splash) when stored at build —
    *  preferred; the detail hero renders this directly (no base64 island). */
   imgPath?: string | null;
@@ -354,6 +358,10 @@ export async function getArticle(slug: string): Promise<ResearchArticleDetail | 
     // renderToHtml runs DOMPurify (markdown.js) — same channel the body uses.
     abstract: a.abstract ? renderToHtml(a.abstract) : a.abstract,
     authors: joinAuthors(a.authors),
+    // raw author objects (JSON field) for the "About the author(s)" block
+    authorBios: Array.isArray(a.authors)
+      ? a.authors.map((x: any) => ({ title: x?.title, description: x?.description }))
+      : [],
     date: a.date,
     dateLabel: formatResearchDate(a.date),
     isNew: isNewResearch(a.date),

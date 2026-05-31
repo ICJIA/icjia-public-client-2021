@@ -3,6 +3,22 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.37.8] — 2026-05-31 — fix: restore "About the author(s)" bios on research articles (content parity)
+
+The hub-article detail dropped author descriptions: `getArticle` joined `authors` to one
+display string (`joinAuthors`), so the legacy `Hub/ArticleView.vue` "About the author(s)"
+InfoBlock had no data and was omitted. `authors` is a Strapi JSON field, so the relation
+**already returns each author's `description`** — no GraphQL change needed.
+- `research.ts`: `ResearchArticleDetail` gains `authorBios: {title,description}[]`; `getArticle`
+  passes the raw author objects through (alongside the existing joined byline string).
+- `ArticleView.astro`: renders the "About the author(s)" InfoBlock (legacy order: author →
+  funding → citation), shown when any author has a description; heading pluralizes on author
+  count — matching legacy `hasAuthorInfo`. Author descriptions render as text (legacy used
+  `{{ }}` interpolation, not v-html).
+
+Stale `FOUNDATION DEFECT`/omitted-block comments corrected: only the "Related contents"
+(related apps/datasets) InfoBlock remains unported; author bios + the citation DOI link render.
+
 ## [0.37.7] — 2026-05-31 — perf: publications listing fully build-time static (owner-approved)
 
 Publications need not be live (the whole site rebuilds nightly), so the listing is now
