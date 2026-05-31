@@ -21,6 +21,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "vr": "node scripts/vr/run.mjs",
+    "health": "node scripts/route-health.mjs",
+    "health:full": "node scripts/route-health.mjs --full",
     "og-image": "node scripts/generate-og-image.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"

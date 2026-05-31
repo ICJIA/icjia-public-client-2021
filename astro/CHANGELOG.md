@@ -3,6 +3,22 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.39.2] — 2026-05-31 — test: route + redirect health check (cutover gate, layer 1 of the test suite)
+
+`scripts/route-health.mjs` (+ `pnpm health` / `health:full`): GETs routes asserting 200
+(concurrency-limited), reports the no-slash→/slash redirect behavior, and always tests a
+`CRITICAL_ROUTES` must-200 list (section landings + the historically-broken forms/IRB/DICRA).
+Default SAMPLES the live sitemap (fast, for CI); `--full` sweeps all ~2387 URLs (pre-cutover).
+Runs against the deploy, **status-codes-only** (content-agnostic → stable vs live data — the
+hybrid testing strategy). Exits non-zero on any 200-failure (CI-gateable; don't pipe through
+`tail`, which masks the exit code).
+
+First run already surfaced two things: (a) `/about/units/` has no *listing* route (legacy router
+only has `/about/units/:slug`) — corrected the test list; (b) no-slash SSR routes (`/news`,
+`/grants/funding`, `/researchhub`) return 404 instead of 301→`/slash` (the legacy SPA 200s every
+path) — a **cutover decision**: support no-slash inbound links via redirects, or trailing-slash-
+canonical only. Static pages (`/about`, `/irb`) already resolve no-slash → 200.
+
 ## [0.39.1] — 2026-05-31 — docs: strip stale "BLOCKING FOUNDATION DEFECT" comments from hub [slug] pages
 
 The hub `articles`/`datasets`/`apps` `[slug].astro` headers carried alarming `⚠️ BLOCKING
