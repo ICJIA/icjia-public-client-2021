@@ -3,6 +3,16 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.37.2] — 2026-05-31 — docs: curate the v7.0 migration checklist
+
+Added running lessons **#28** (two distinct perf levers for base64-CMS-image pages — island
+payload/FCP vs delivery/LCP; the apps `62→92→97` arc + the Sharp-WebP-resize extraction) and
+**#29** (forms as prerendered Alpine shells + dual-POST CSP + the silent-404 section trap).
+Updated stale/out-of-spec items: the Portfolio-status row (flagship is **in-progress SSR**, not
+"don't start until IFVCC+infonet ship") and the Pagefind recommendation (SSR emits no static
+`dist/` HTML → the flagship uses Fuse). The cross-portfolio recipe + version history is retained
+intentionally (deliberately-kept institutional canon, per the doc's own "nothing deprecated" ethos).
+
 ## [0.37.1] — 2026-05-31 — fix(redirects): restore proxied sub-site rewrites (cutover-critical)
 
 The legacy root `_redirects` proxies several SEPARATE Netlify sites UNDER icjia.illinois.gov
