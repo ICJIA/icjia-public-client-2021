@@ -79,12 +79,14 @@ export const renderStrategy = {
     "/researchhub", // entire hub — changes constantly
     "/events",
     "/grants/funding", // NOFOs — must be live
+    "/about/biographies", // staff/board bio detail — edit-sensitive: live so Strapi edits + new bios appear immediately (no rebuild)
+    "/about/icjia-staff", // staff directory — lists bios (live for the same reason)
+    "/about/composition-and-membership", // board directory — lists bios (live for the same reason)
     "/search/[query]", // search results
   ],
   // Prerendered: stable content; a new/changed page appears on the NEXT build:
   static: [
-    "/about", // about pages
-    "/about/biographies", // staff / bios
+    "/about", // about pages (CMS about/[slug]) — NOTE: the bio pages moved to `live`
     "/grants/training",
     "/grants/rules-regs-policies",
     "/forms", // grant-status + lap-request shells (no live data)
@@ -116,7 +118,7 @@ export const cacheTTL = {
   events: [120, 600],
   jobs: [300, 900],
   publications: [300, 1800],
-  bios: [600, 3600],
+  bios: [120, 3600], // LIVE + edit-sensitive — s-maxage 120s ⇒ ≤2 min staleness ("immediate" enough); SWR ≫ that keeps it edge-fast
   page: [600, 3600],
   hub: [120, 3600], // warmed (/researchhub/*) — SWR ≫ 300s ping
 };

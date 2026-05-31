@@ -3,6 +3,24 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.37.9] — 2026-05-31 — change: staff/board biographies → live SSR (owner request: immediate Strapi edits)
+
+Staff and board members edit their own bios in Strapi and expect changes to appear
+immediately; prerendering meant edits only landed on the nightly/manual rebuild (and a
+**newly-added** bio 404'd until then). The data layer already supported live (`getBiography(slug)`
+is a single-record query; the detail page already called it), so this is a pure render-strategy flip:
+- `/about/biographies/[slug]` → live SSR: dropped `prerender = true` + the redundant `getStaticPaths`
+  (the frontmatter already fetched via `getBiography`); dropped the now-unused `getAllBiographies` import;
+  added `setCache(Astro.response, 'bios')`. A bogus slug still 404s (now at request time).
+- `/about/icjia-staff/` (staff directory) + `/about/composition-and-membership/` (board directory) →
+  live SSR (`setCache 'bios'`) so a newly-added bio appears in the listing immediately, no rebuild.
+- `cacheTTL.bios` 600→**120**s s-maxage (SWR 3600) ⇒ ≤2 min staleness — "immediate" for a human, still
+  edge-fast. `renderStrategy`: the three bio routes moved `static`→`live`.
+
+Impact: perf unchanged (content is in the edge-cached server HTML, same as news/grants); cost negligible
+(low-traffic about-pages; most hits serve from edge). Bio listings are left COLD (no keep-warm ping) — a
+~1s first-hit render is fine for low traffic; add to `keepWarm.routes` later if it ever matters.
+
 ## [0.37.8] — 2026-05-31 — fix: restore "About the author(s)" bios on research articles (content parity)
 
 The hub-article detail dropped author descriptions: `getArticle` joined `authors` to one
