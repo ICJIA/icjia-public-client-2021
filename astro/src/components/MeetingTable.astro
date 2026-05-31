@@ -72,7 +72,26 @@ const xdata = `{
       />
     </div>
 
-    <table class="mtable">
+    {/* Mobile-only sort control (parity with Vuetify v-data-table mobile mode,
+        which replaces the sortable column headers with a "Sort by" select <600px). */}
+    <div class="msort-mobile px-4 pb-1">
+      <label class="msearch-label" for={`${searchId}-sort`}>Sort by</label>
+      <select
+        id={`${searchId}-sort`}
+        class="msort-select"
+        x-model="sortKey"
+        @change="sortDir = sortKey === 'date' ? 'desc' : 'asc'; page = 1"
+        aria-label="Sort meetings by"
+      >
+        <option value="date">Meeting Date</option>
+        <option value="category">Category</option>
+        <option value="title">Title</option>
+        <option value="status">Status</option>
+        <option value="att">Attachments</option>
+      </select>
+    </div>
+
+    <table class="mtable" aria-label="Meetings">
       <thead>
         <tr>
           <th class="cell-date" :aria-sort="ariaSort('date')">
@@ -106,14 +125,14 @@ const xdata = `{
       <template x-for="(it, idx) in pageItems" :key="it.id">
         <tbody>
           <tr class="mrow" :class="idx % 2 ? 'mrow-alt' : ''" @click="toggle(it)">
-            <td class="cell-date" x-text="it.altDate"></td>
-            <td class="cell-cat" x-text="it.catLabel"></td>
-            <td class="cell-title" :class="it.isCancelled ? 'cancelled' : ''" x-text="it.title"></td>
-            <td class="col-center">
+            <td class="cell-date" data-label="Meeting Date" x-text="it.altDate"></td>
+            <td class="cell-cat" data-label="Category" x-text="it.catLabel"></td>
+            <td class="cell-title" data-label="Title" :class="it.isCancelled ? 'cancelled' : ''" x-text="it.title"></td>
+            <td class="col-center" data-label="Status">
               <template x-if="it.isCancelled"><span class="cancelled-chip">CANCELLED</span></template>
             </td>
-            <td class="col-center"><span class="att-chip" x-text="it.attCount"></span></td>
-            <td class="col-center">
+            <td class="col-center" data-label="Attachments"><span class="att-chip" x-text="it.attCount"></span></td>
+            <td class="col-center cell-expand">
               <button
                 type="button"
                 class="row-caret-btn"
@@ -164,6 +183,7 @@ const xdata = `{
                       <template x-if="det(it.id).attachments.length">
                         <div class="mt-8">
                           <h3 class="sub-heading">Attachments</h3>
+                          <div class="table-scroll" role="region" tabindex="0" aria-label="Meeting attachments">
                           <table class="att-table">
                             <thead><tr><th>Filename</th><th>Last Updated</th><th>Size</th></tr></thead>
                             <tbody>
@@ -176,6 +196,7 @@ const xdata = `{
                               </template>
                             </tbody>
                           </table>
+                          </div>
                         </div>
                       </template>
                       <template x-if="det(it.id).related.length">
@@ -228,7 +249,7 @@ const xdata = `{
   {
     baseline && (
       <div x-show="!ready">
-        <table class="mtable">
+        <table class="mtable" aria-label="Meetings">
           <thead>
             <tr>
               <th class="cell-date">Meeting Date</th>
@@ -240,14 +261,14 @@ const xdata = `{
           </thead>
           <tbody>
             {baseline.map((it, idx) => (
-              <tr class:list={{ 'mrow-alt': idx % 2 === 1 }}>
-                <td class="cell-date">{it.altDate}</td>
-                <td class="cell-cat">{it.catLabel}</td>
-                <td class:list={['cell-title', { cancelled: it.isCancelled }]}>
+              <tr class:list={['mrow', { 'mrow-alt': idx % 2 === 1 }]}>
+                <td class="cell-date" data-label="Meeting Date">{it.altDate}</td>
+                <td class="cell-cat" data-label="Category">{it.catLabel}</td>
+                <td class:list={['cell-title', { cancelled: it.isCancelled }]} data-label="Title">
                   <a href={it.fullPath}>{it.title}</a>
                 </td>
-                <td class="col-center">{it.isCancelled && <span class="cancelled-chip">CANCELLED</span>}</td>
-                <td class="col-center">
+                <td class="col-center" data-label="Status">{it.isCancelled && <span class="cancelled-chip">CANCELLED</span>}</td>
+                <td class="col-center" data-label="Attachments">
                   <span class="att-chip">{it.attCount}</span>
                 </td>
               </tr>

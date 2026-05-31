@@ -74,7 +74,24 @@ const xdata = `{
       />
     </div>
 
-    <table class="ptable">
+    {/* Mobile-only sort control (parity with Vuetify v-data-table mobile mode,
+        which replaces the sortable column headers with a "Sort by" select <600px). */}
+    <div class="psort-mobile px-4 pb-1">
+      <label class="psearch-label" for="psort">Sort by</label>
+      <select
+        id="psort"
+        class="psort-select"
+        x-model="sortKey"
+        @change="sortDir = sortKey === 'date' ? 'desc' : 'asc'; page = 1"
+        aria-label="Sort publications by"
+      >
+        <option value="date">Date</option>
+        <option value="title">Title</option>
+        <option value="type">Type</option>
+      </select>
+    </div>
+
+    <table class="ptable" aria-label="Publications">
       <thead>
         <tr>
           <th class="cell-date" :aria-sort="ariaSort('date')">
@@ -100,13 +117,13 @@ const xdata = `{
       <template x-for="(it, idx) in pageItems" :key="it.id">
         <tbody>
           <tr class="prow" :class="idx % 2 ? 'prow-alt' : ''" @click="toggle(it.id)">
-            <td class="cell-date" x-text="it.dateAlt"></td>
-            <td class="cell-title">
+            <td class="cell-date" data-label="Date" x-text="it.dateAlt"></td>
+            <td class="cell-title" data-label="Title">
               <template x-if="it.isNew"><span class="new-chip">NEW!</span></template>
               <span x-text="it.title"></span>
             </td>
-            <td x-text="it.typeLabel"></td>
-            <td class="col-center">
+            <td data-label="Type" x-text="it.typeLabel"></td>
+            <td class="col-center" data-label="Article">
               <template x-if="it.localArticlePath">
                 <a
                   class="pbtn"
@@ -115,7 +132,7 @@ const xdata = `{
                 >Web Article</a>
               </template>
             </td>
-            <td class="col-center">
+            <td class="col-center" data-label="File">
               <template x-if="it.fileURL && it.pubType !== 'application'">
                 <a
                   class="pbtn"
@@ -135,7 +152,7 @@ const xdata = `{
                 >Open Application</a>
               </template>
             </td>
-            <td class="col-center">
+            <td class="col-center cell-expand">
               <button
                 type="button"
                 class="row-caret-btn"
@@ -218,7 +235,7 @@ const xdata = `{
   {
     baseline && (
       <div x-show="!ready">
-        <table class="ptable">
+        <table class="ptable" aria-label="Publications">
           <thead>
             <tr>
               <th class="cell-date">Date</th>
@@ -231,20 +248,20 @@ const xdata = `{
           <tbody>
             {baseline.map((it, idx) => (
               <tr class:list={['prow', { 'prow-alt': idx % 2 === 1 }]}>
-                <td class="cell-date">{it.dateAlt}</td>
-                <td class="cell-title">
+                <td class="cell-date" data-label="Date">{it.dateAlt}</td>
+                <td class="cell-title" data-label="Title">
                   {it.isNew && <span class="new-chip">NEW!</span>}
                   {it.title}
                 </td>
-                <td>{it.typeLabel}</td>
-                <td class="col-center">
+                <td data-label="Type">{it.typeLabel}</td>
+                <td class="col-center" data-label="Article">
                   {it.localArticlePath && (
                     <a class="pbtn" href={it.localArticlePath}>
                       Web Article
                     </a>
                   )}
                 </td>
-                <td class="col-center">
+                <td class="col-center" data-label="File">
                   {it.fileURL && (
                     <a class="pbtn" href={it.fileURL} target="_blank" rel="noopener noreferrer">
                       {it.pubType === 'application' ? 'Open Application' : 'Download PDF'}

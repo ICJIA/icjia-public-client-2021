@@ -114,6 +114,9 @@ const { rules, regulations, policies } = await getRulesRegsPolicies();
     padding: 8px 8px;
     border-bottom: 1px solid #e8e8e8;
     vertical-align: top;
+    /* let long titles / unbroken citation URLs wrap instead of overflowing
+       the viewport on mobile (2-col table — wrapping beats horizontal scroll). */
+    overflow-wrap: anywhere;
   }
   .rrp-dl {
     text-align: center;

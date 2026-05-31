@@ -52,6 +52,7 @@ const { item } = Astro.props;
         item.attachments.length > 0 && (
           <div class="mt-8">
             <h3 class="sub-heading">Attachments</h3>
+            <div class="table-scroll" role="region" tabindex="0" aria-label="Attachments">
             <table class="att-table">
               <thead>
                 <tr>
@@ -74,6 +75,7 @@ const { item } = Astro.props;
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         )
       }

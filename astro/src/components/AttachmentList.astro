@@ -21,6 +21,7 @@ const { items, label = 'Attachments', hideUpdated = false } = Astro.props;
   items.length > 0 && (
     <div class="attachment-list">
       <h3 class="sub-heading">{label}</h3>
+      <div class="table-scroll" role="region" tabindex="0" aria-label={label}>
       <table class="att-table">
         <thead>
           <tr>
@@ -50,6 +51,7 @@ const { items, label = 'Attachments', hideUpdated = false } = Astro.props;
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   )
 }

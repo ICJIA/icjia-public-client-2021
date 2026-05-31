@@ -46,6 +46,7 @@ setCache(Astro.response, 'page');
       />
       <script type="application/json" id="rf-data" set:html={listJson}></script>
 
+      <div class="table-scroll" role="region" tabindex="0" aria-label="Required forms">
       <table class="rf-table">
         <thead>
           <tr>
@@ -81,6 +82,7 @@ setCache(Astro.response, 'page');
           </template>
         </tbody>
       </table>
+      </div>
       <p x-show="ready && !list.length" x-cloak class="rf-empty">No forms match your filter.</p>
     </div>
   </div>

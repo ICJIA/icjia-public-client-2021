@@ -3,6 +3,28 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.38.0] — 2026-05-31 — fix: mobile responsiveness + a11y for data-heavy pages (no horizontal overflow)
+
+Reported: `/about/publications/` (and the other data tables) overflowed horizontally on mobile —
+fixed multi-column tables forced the page wider than the viewport. Fixed to match prod's Vuetify
+behavior, in a `<600px` media query (desktop unchanged):
+- **Publications + Meetings** (v-data-table): below 600px the column headers drop (kept in the a11y
+  tree for screen readers) and each row STACKS as `label: value` pairs, with a "Sort by" select
+  replacing the sortable headers — the legacy v-data-table mobile mode. `data-label` on every
+  `<td>` (interactive + no-JS baseline); the footer (rows-per-page + pager) now wraps.
+- **Attachment tables** (×6: AttachmentList, meeting-row expand, MeetingCard, JobCard, funding NOFO,
+  programs) + the **required-forms** table → wrapped in a focusable `.table-scroll` region
+  (`role=region` `tabindex=0` `aria-label`) so the TABLE scrolls, not the page (matches Vuetify
+  v-simple-table); keyboard-reachable + screen-reader announced.
+- **Rules/Regs/Policies** (2-col) → cells wrap long titles/citation URLs (`overflow-wrap`) instead
+  of scrolling. Dataset-variables table unchanged (legacy `hidden-sm-and-down`, never shown <960px).
+- **CMS-authored body tables** (classless, injected via `set:html`) scroll on mobile via a scoped
+  `table:not([class])` rule (so the classed section tables above are untouched).
+- a11y: data tables get accessible names; keyboard focus uses the existing global `:focus-visible`.
+
+Tracked follow-up: keyboard-focus for genuinely-overflowing CMS body tables (needs a render-time
+wrap, which would churn the contentSanitizer parity snapshots).
+
 ## [0.37.9] — 2026-05-31 — change: staff/board biographies → live SSR (owner request: immediate Strapi edits)
 
 Staff and board members edit their own bios in Strapi and expect changes to appear

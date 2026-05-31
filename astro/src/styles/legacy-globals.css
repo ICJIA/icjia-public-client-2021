@@ -208,6 +208,35 @@ a[target="_blank"]::after {
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.7) !important;
 }
 
+/* ── Horizontal-scroll wrapper for wide tables on narrow viewports ──────
+   Wrap a wide <table> in <div class="table-scroll" role="region" tabindex="0"
+   aria-label="…">: the TABLE scrolls (matching Vuetify's v-simple-table wrapper)
+   instead of pushing the whole page wider on mobile. role+tabindex make the
+   scroll region keyboard-reachable + announced by screen readers (the global
+   :focus-visible above draws its ring). Only scrolls when content overflows. */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+
+/* CMS-authored tables (rendered via set:html from markdown — can't be wrapped in
+   markup) scroll instead of overflowing the page on mobile. Targets CLASSLESS
+   tables only (`:not([class])`) so the section data-tables (.ptable/.mtable/
+   .att-table/.rf-table/.rrp-table — all classed + handled elsewhere) are
+   untouched. NOTE: the genuinely-overflowing ones aren't keyboard-focusable yet
+   (a tracked cutover follow-up — needs a render-time wrap, which would churn the
+   contentSanitizer parity snapshots). */
+@media (max-width: 599.98px) {
+  .markdown-body table:not([class]),
+  #article-view .article-body table:not([class]) {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+}
+
 /* ── <details>/<summary> (used for expansion panels) ─────────────────── */
 summary { cursor: pointer; font-weight: 700; }
 details { margin-bottom: 15px; }

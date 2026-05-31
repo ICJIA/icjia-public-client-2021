@@ -81,6 +81,7 @@ const jsonldStr = JSON.stringify(jsonld).replace(/</g, '\\u003c');
         program.attachments.length > 0 && (
           <div class="mt-4">
             <h2 class="sub-heading">Attachments</h2>
+            <div class="table-scroll" role="region" tabindex="0" aria-label="Attachments">
             <table class="att-table">
               <thead>
                 <tr>
@@ -101,6 +102,7 @@ const jsonldStr = JSON.stringify(jsonld).replace(/</g, '\\u003c');
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         )
       }
