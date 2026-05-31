@@ -3,6 +3,21 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.4] — 2026-05-31 — fix(cutover): B3 no-slash→slash canonicalization via Astro middleware
+
+- **`src/middleware.ts`** (NEW) — 301 no-slash → trailing-slash for on-demand (SSR) section landings
+  (`/news`, `/grants/funding`, `/researchhub`, `/events`, …) that Astro SSR otherwise 404s on the bare
+  URL (legacy 200'd them — a regression flagged as audit B3). GET/HEAD only; skips root, files (dotted
+  last segment), and `/_*` + `/.netlify` internals; preserves the query string. Chosen over a
+  `_redirects` rule because Netlify's `_redirects` matching is slash-INSENSITIVE, so a `/news /news/ 301`
+  rule also matches `/news/` and 301-LOOPS (tried + reverted in an earlier session).
+- **Caveat (pending deploy-verify):** `astro dev`'s router 404s unmatched paths *before* middleware, so
+  the no-slash redirect can't be smoke-tested in dev (confirmed: `[MW]` logs for `/news/` but not
+  `/news`). The production SSR function runs the full pipeline (middleware before the 404 render, per
+  Astro docs), so it takes effect on the Netlify deploy. MUST verify post-deploy:
+  `curl -sI <deploy>/news` → expect `301 → /news/`. If it doesn't fire on Netlify either, fall back to
+  per-route Astro `redirects` config or accept trailing-slash-canonical-only.
+
 ## [0.42.3] — 2026-05-31 — fix(cutover): missing sub-site redirects (B2) + purge-webhook map gaps (B4)
 
 A 9-agent **cutover-readiness audit** (workflow) produced a prioritized punch-list; verdict NO-GO until
