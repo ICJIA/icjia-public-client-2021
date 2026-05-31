@@ -11,6 +11,7 @@
 // degrades to the live base64 fallback); it logs loudly and exits 0.
 import { mkdir, writeFile, rm } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import sharp from "sharp";
 
 const HUB = process.env.PUBLIC_HUB_GRAPHQL || "https://researchhub.icjia-api.cloud/graphql";
 const OUT = new URL("../public/hub-images/", import.meta.url);
@@ -57,11 +58,29 @@ async function main() {
   // ext-guessing) and knows which records are stored (else → live base64 fallback).
   const stored = {};
   let written = 0;
+  // Per-attr max display width (×~2 for retina). app `image` + article `thumbnail`
+  // are only ever card-sized (≤~370px shown); `splash` doubles as the article-detail
+  // hero (≤~1185px container) and the full-bleed DICRA splash (1297px), so it stays
+  // large. Decoded base64 → resized (never upscaled) WebP — slashes the raw
+  // multi-hundred-KB JPEG/PNG to card-appropriate bytes (the LCP / image-delivery win).
+  const MAXW = { splash: 1400, thumbnail: 500, image: 760 };
   const writeOne = async (id, attr, b64) => {
     const dec = decode(b64);
     if (!dec) return;
-    const name = `${id}-${attr}.${dec.ext}`;
-    await writeFile(new URL(name, OUT), dec.buf);
+    let name, buf;
+    try {
+      buf = await sharp(dec.buf)
+        .resize({ width: MAXW[attr] || 1400, withoutEnlargement: true })
+        .webp({ quality: attr === "splash" ? 82 : 80 })
+        .toBuffer();
+      name = `${id}-${attr}.webp`;
+    } catch (e) {
+      // Sharp couldn't process this one — fall back to the raw decoded bytes so the
+      // card still gets an image (the live base64 path is the ultimate fallback).
+      buf = dec.buf;
+      name = `${id}-${attr}.${dec.ext}`;
+    }
+    await writeFile(new URL(name, OUT), buf);
     stored[`${id}-${attr}`] = name;
     written++;
   };

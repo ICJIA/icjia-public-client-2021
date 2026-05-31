@@ -3,6 +3,20 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.37.0] — 2026-05-30 — Perf: optimize hub images (WebP + per-use resize) — apps LCP
+
+`generate-hub-images.mjs` now Sharp-processes each extracted base64 image instead of writing
+raw bytes: per-attr max width (app `image`/`thumbnail` 760/500 — card-only; article `splash`
+1400 — it doubles as the detail hero + the full-bleed DICRA splash) + WebP (q80/82, never
+upscale). Falls back to raw bytes if Sharp can't process one. `public/hub-images/` 54M → 26M;
+the `/researchhub/apps/` card images dropped from full-size (~913 KiB Lighthouse "image-delivery"
+flag, LCP 3.2s) to **27–42 KB WebP** each.
+
+Context: the base64-in-island bloat was already fixed earlier (apps perf **62 → 92**, verified on
+the deploy: A11y/BP/SEO 100); this targets the remaining LCP/image-delivery gap to 95+. Images +
+manifest are gitignored → the deploy regenerates them via the updated script. **Re-Lighthouse the
+deployed apps page after this deploy to confirm 95+.** Also improves article hero/card delivery.
+
 ## [0.36.0] — 2026-05-30 — Phase B (part 2b): prerender the section catch-alls
 
 The `about/[slug]` + `grants/[slug]` CMS catch-alls flip SSR → prerendered via
