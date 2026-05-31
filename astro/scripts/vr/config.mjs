@@ -13,13 +13,14 @@
 export const PROD_BASE = (process.env.VR_PROD || "https://icjia.illinois.gov").replace(/\/$/, "");
 export const NEW_BASE = (process.env.VR_NEW || "http://localhost:4321").replace(/\/$/, "");
 
-// Vuetify 2 breakpoints (+ 768 sm/md band). dsf = deviceScaleFactor.
+// Vuetify 2 breakpoints. dsf = deviceScaleFactor.
+// First comprehensive pass uses 3 key widths (mobile · the Vuetify md edge · desktop)
+// to keep the cross-template run tractable; add tablet-768 + xl-1920 back for the
+// FINAL pre-cutover VR run (set VR_ONLY to re-check specific routes at those widths).
 export const VIEWPORTS = [
   { name: "mobile-375", width: 375, height: 900, dsf: 2 },
-  { name: "tablet-768", width: 768, height: 1024, dsf: 2 },
   { name: "md-960", width: 960, height: 1024, dsf: 1 },
   { name: "desktop-1280", width: 1280, height: 1024, dsf: 1 },
-  { name: "xl-1920", width: 1920, height: 1080, dsf: 1 },
 ];
 
 // Routes to compare.
@@ -27,23 +28,46 @@ export const VIEWPORTS = [
 //   fullPage : diff the entire scrollable page (use once a template is built).
 //   mask     : CSS selectors painted out before diffing (volatile content;
 //              applied on whichever site has them).
+// Full per-template set. Paths confirmed to exist on prod via the legacy router
+// (src/router) so we never diff against prod's SPA 404 view. Detail slugs are real
+// (same Strapi feeds both sites → same content back-to-back). CAROUSEL_MASK paints
+// out the auto-rotating carousels (prod Vuetify .v-carousel/.v-window + Astro
+// .hub-carousel) so a slide-position difference between captures isn't a false diff.
+const CAROUSEL_MASK = [".hub-carousel", ".v-carousel", ".v-window"];
 export const ROUTES = [
-  // Chrome: header band + footer element — meaningful now (chrome is built).
+  // Chrome (clipped/element) — fast structural check of the app bar + footer.
   { id: "header-home", path: "/", clipTop: 90, mask: [] },
   { id: "footer-home", path: "/", selector: "footer", mask: [] },
-  // Home hero: header (90) + splash (600). Splash is static (no live data).
-  { id: "home-hero", path: "/", clipTop: 690, mask: [] },
-  // Full-page routes — large diffs until the matching template is built; the
-  // diff PNGs still show where the chrome differs at the top.
-  // settleMs: extra time for the client-fetched Research strip (both sites load
-  // it after mount) to render + decode its base64 imagery before capture.
-  { id: "home", path: "/", fullPage: true, mask: [], settleMs: 2500 },
-  {
-    id: "news-article",
-    path: "/news/co-responder-programs-serve-people-in-crisis/",
-    fullPage: true,
-    mask: [],
-  },
+  // Home — the client-fetched Research strip needs settle to paint its imagery.
+  { id: "home", path: "/", fullPage: true, settleMs: 2500, mask: [] },
+  // News / Press / Meetings / Events
+  { id: "news-list", path: "/news/", fullPage: true, mask: [] },
+  { id: "news-article", path: "/news/co-responder-programs-serve-people-in-crisis/", fullPage: true, mask: [] },
+  { id: "press", path: "/news/press/", fullPage: true, mask: [] },
+  { id: "meetings", path: "/news/meetings/", fullPage: true, mask: [] },
+  { id: "events", path: "/events/", fullPage: true, mask: [] },
+  // Publications
+  { id: "publications", path: "/about/publications/", fullPage: true, mask: [] },
+  // Grants
+  { id: "funding", path: "/grants/funding/", fullPage: true, mask: [] },
+  { id: "nofo", path: "/grants/funding/2020-casa/", fullPage: true, mask: [] },
+  { id: "rules-regs", path: "/grants/rules-regs-policies/", fullPage: true, mask: [] },
+  { id: "forms", path: "/forms/grant-status/", fullPage: true, mask: [] },
+  // About / Staff / Bios / Units
+  { id: "about-page", path: "/about/about-the-authority/", fullPage: true, mask: [] },
+  { id: "staff", path: "/about/icjia-staff/", fullPage: true, mask: [] },
+  { id: "board", path: "/about/composition-and-membership/", fullPage: true, mask: [] },
+  { id: "bio", path: "/about/biographies/ahmadou-drame/", fullPage: true, mask: [] },
+  { id: "unit", path: "/about/units/federal-and-state-grants-unit/", fullPage: true, mask: [] },
+  { id: "employment", path: "/about/employment/", fullPage: true, mask: [] },
+  // ResearchHub (mask the rotating carousel on the landing)
+  { id: "researchhub", path: "/researchhub/", fullPage: true, settleMs: 2500, mask: CAROUSEL_MASK },
+  { id: "hub-article", path: "/researchhub/articles/2019-illinois-methamphetamine-study/", fullPage: true, mask: [] },
+  { id: "dataset", path: "/researchhub/datasets/illinois-uniform-crime-reports-ucr-index-crime-offense/", fullPage: true, mask: [] },
+  { id: "app", path: "/researchhub/apps/parole-explorer/", fullPage: true, mask: [] },
+  // IRB
+  { id: "irb", path: "/irb/", fullPage: true, mask: [] },
+  { id: "irb-meetings", path: "/irb/irb-meetings/", fullPage: true, mask: [] },
 ];
 
 // pixelmatch per-pixel sensitivity. 0.2 tolerates the sub-pixel anti-aliasing
