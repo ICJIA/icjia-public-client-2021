@@ -3,6 +3,15 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.39.3] — 2026-05-31 — fix: drop slug-less publications (sitemap self-404 /about/publications/null/)
+
+The full route sweep (2404/2405 → 200) found one self-404: a publication with a null slug emitted
+`/about/publications/null/` into the sitemap — it has no detail page (→ 404), and a self-404 is
+exactly what SiteImprove/crawlers flag. Filtered slug-less records at the source: the
+sitemap/search-index generator AND `getAllPublications`/`getPublicationsRecent` (so neither the
+sitemap nor the listing's title link points at `/null/`). Regenerated sitemap: **2387 → 2386 URLs,
+zero `publications/null`**. (A publication in Strapi is missing its slug — give it one to restore it.)
+
 ## [0.39.2] — 2026-05-31 — test: route + redirect health check (cutover gate, layer 1 of the test suite)
 
 `scripts/route-health.mjs` (+ `pnpm health` / `health:full`): GETs routes asserting 200

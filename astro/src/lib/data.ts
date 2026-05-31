@@ -1734,6 +1734,9 @@ export async function getAllPublications(): Promise<PublicationListItem[]> {
   }
   const clean = deepSanitize(uniqById(rows));
   return (clean as any[])
+    // drop slug-less records (malformed — no detail page; the listing's title link +
+    // the sitemap would otherwise point at /about/publications/null/, a 404)
+    .filter((p: any) => p.slug)
     .map(shapePublication)
     // ISLAND TRIM (perf — this was the page's FCP/LCP bottleneck): the listing ships
     // ALL ~1108 rows as one JSON island for client search/sort. The dominant cost was
@@ -1767,6 +1770,7 @@ export async function getPublicationsRecent(limit = 150): Promise<PublicationLis
   if (!res.ok) throw new Error(`publications recent HTTP ${res.status}`);
   const clean = deepSanitize(uniqById(await res.json()));
   return (clean as any[])
+    .filter((p: any) => p.slug) // drop slug-less records (no detail page → /publications/null/ 404)
     .map(shapePublication)
     .map(({ slug, haystack, ...item }) => ({ ...item, summary: truncateWords(item.summary, 25) }))
     .sort((a, b) =>

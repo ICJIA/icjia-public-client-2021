@@ -238,9 +238,12 @@ async function fetchPublications() {
     const page = await getJSON(`${AGENCY_REST}/publications?_limit=${limit}&_start=${start}`);
     pubArray = pubArray.concat(page);
   }
-  // uniqBy id (REST pages can overlap if records shift between requests)
+  // uniqBy id (REST pages can overlap if records shift between requests) + DROP any
+  // record with no slug: it has no detail page, so /about/publications/<null>/ 404s and
+  // must never enter the sitemap (a self-404 SiteImprove/crawlers flag). Fix the
+  // record's slug in Strapi to restore it.
   const seen = new Set();
-  pubArray = pubArray.filter((p) => (seen.has(p.id) ? false : (seen.add(p.id), true)));
+  pubArray = pubArray.filter((p) => p.slug && (seen.has(p.id) ? false : (seen.add(p.id), true)));
   return pubArray.map((p) => ({
     ...p,
     altTitle: p.title?.toLowerCase(),
