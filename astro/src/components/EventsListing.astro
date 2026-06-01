@@ -7,11 +7,16 @@
 //   • LIST view = the proven Alpine x-for + SSR-page-1 baseline pattern over the
 //     events-only feed (getEventsCalendarData().eventsList); each row is a green
 //     EventCard linking to /events/{slug}/
-//   • CALENDAR view = a placeholder (see EventsCalendar.astro)
+//   • CALENDAR view = month grid (Alpine) — Today/prev/next + "MMMM YYYY",
+//     Sun–Sat header, day cells with today circled and events as colored chips
+//     linking to /events/{slug}/. Default view, matching legacy.
 //
 // DEVIATIONS from legacy (signed off in the migration brief):
-//   1. Default view is LIST (legacy default was "calendar"); the calendar is a
-//      coming-soon placeholder for this draft.
+//   1. The calendar grid is fed the events-only list (the same source the List
+//      view uses), NOT the legacy's richer calendarFeed (events+meetings+grants+
+//      jobs + synthetic OPEN/DEADLINE point-events). Wiring the full feed in is a
+//      follow-up; today's events-only list is empty under the default filter so
+//      both views render an empty current month, matching prod's current month.
 //   2. The events-only list filters by !hideFromList then the upcoming boundary
 //      (filterUpcoming). The richer calendar feed (events+meetings+grants+jobs +
 //      OPEN/DEADLINE point-events) is built in the data layer (calendarFeed) and
@@ -21,7 +26,6 @@
 //      pre-render a body for list items, and the default upcoming filter yields
 //      an EMPTY events list on prod today, so this is low-risk. VR-tune follow-up.
 import EventCard from './EventCard.astro';
-import EventsCalendar from './EventsCalendar.astro';
 import { filterUpcoming, type EventListItem } from '../lib/data';
 import '../styles/events.css';
 
@@ -30,8 +34,24 @@ interface Props {
 }
 const { events } = Astro.props;
 
+// Chicago-local day key (YYYY-MM-DD) for an ISO instant — buckets each event
+// into the SAME calendar day the rangeLine shows (the legacy v-calendar places
+// events by their America/Chicago date). en-CA yields ISO-ordered parts.
+const chiDayKey = (iso?: string): string => {
+  if (!iso) return '';
+  const p = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Chicago',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(new Date(iso));
+  const g = (t: string) => p.find((x) => x.type === t)?.value ?? '';
+  return `${g('year')}-${g('month')}-${g('day')}`;
+};
+
 // Client list data (consumed by Alpine x-for). Keep keys short; rangeLine is
-// pre-computed server-side (Chicago getRange wording).
+// pre-computed server-side (Chicago getRange wording). sd/ed are Chicago
+// day-keys (YYYY-MM-DD) used to bucket each event into the calendar grid.
 const listData = events.map((e) => ({
   p: e.fullPath,
   n: e.name,
@@ -39,6 +59,8 @@ const listData = events.map((e) => ({
   r: e.rangeLine,
   s: e.summary ?? '',
   t: e.tags ?? [],
+  sd: chiDayKey(e.start),
+  ed: chiDayKey(e.end || e.start),
   end: e.end ?? '',
 }));
 // JSON-in-HTML: neutralize "<" so the data island can't break out of the script.
@@ -54,14 +76,51 @@ const ssrUpcoming = filterUpcoming(events);
   class="events"
   x-data={`{
     all: JSON.parse(document.getElementById('events-data').textContent),
-    view: 'list', upcomingOnly: true, ready: false,
-    init(){ this.ready = true; },
+    view: 'calendar', upcomingOnly: true, ready: false,
+    calY: 0, calM: 0,
+    init(){
+      const now = new Date();
+      this.calY = now.getFullYear(); this.calM = now.getMonth();
+      this.ready = true;
+    },
     get shown(){
       if(!this.upcomingOnly) return this.all;
       const now = new Date();
       return this.all.filter((it)=>{ if(!it.end) return false; const exp = new Date(it.end); exp.setHours(24,0,0,0); return exp >= now; });
     },
-    get empty(){ return this.shown.length === 0; }
+    get empty(){ return this.shown.length === 0; },
+    pad2(n){ return n < 10 ? '0' + n : '' + n; },
+    dayKey(y, m, d){ return y + '-' + this.pad2(m + 1) + '-' + this.pad2(d); },
+    get monthLabel(){
+      return new Date(this.calY, this.calM, 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    },
+    todayKey(){ const n = new Date(); return this.dayKey(n.getFullYear(), n.getMonth(), n.getDate()); },
+    eventsFor(key){
+      return this.all.filter((it)=> it.sd && it.sd <= key && (it.ed || it.sd) >= key);
+    },
+    get weeks(){
+      const first = new Date(this.calY, this.calM, 1);
+      const lead = first.getDay();
+      const start = new Date(this.calY, this.calM, 1 - lead);
+      const tk = this.todayKey();
+      const weeks = [];
+      let cur = new Date(start);
+      for(let w = 0; w < 6; w++){
+        const row = [];
+        for(let d = 0; d < 7; d++){
+          const y = cur.getFullYear(), m = cur.getMonth(), dd = cur.getDate();
+          const key = this.dayKey(y, m, dd);
+          row.push({ day: dd, key, inMonth: m === this.calM, isToday: key === tk, events: this.eventsFor(key) });
+          cur.setDate(dd + 1);
+        }
+        weeks.push(row);
+        if(cur.getMonth() !== this.calM && cur > first && w >= 3) break;
+      }
+      return weeks;
+    },
+    prevMonth(){ if(this.calM === 0){ this.calM = 11; this.calY--; } else { this.calM--; } },
+    nextMonth(){ if(this.calM === 11){ this.calM = 0; this.calY++; } else { this.calM++; } },
+    goToday(){ const n = new Date(); this.calY = n.getFullYear(); this.calM = n.getMonth(); }
   }`}
 >
   <div class="page-heading text-center">
@@ -150,11 +209,57 @@ const ssrUpcoming = filterUpcoming(events);
     </div>
   </div>
 
-  {/* CALENDAR view — lazy-mounted placeholder (see EventsCalendar.astro). The
-      child component lives outside the native <template> per the .map caveat. */}
-  <template x-if="view === 'calendar'">
-    <div class="mt-8">
-      <EventsCalendar />
+  {/* CALENDAR view — month grid (Alpine). Parity with the legacy v-calendar:
+      Today / prev / next toolbar + "MMMM YYYY" label, Sun–Sat weekday header,
+      day cells with the today number circled (primary blue) and events as
+      colored chips linking to the detail page. Markup is inlined here (Astro
+      won't evaluate component closures inside a native <template>). */}
+  <div x-show="view === 'calendar'" x-cloak class="mt-8">
+    <div class="cal">
+      <div class="cal-toolbar">
+        <button type="button" class="cal-today-btn" @click="goToday()">Today</button>
+        <div class="cal-nav">
+          <button type="button" class="cal-arrow" @click="prevMonth()" aria-label="Previous month">
+            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path></svg>
+          </button>
+          <button type="button" class="cal-arrow" @click="nextMonth()" aria-label="Next month">
+            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg>
+          </button>
+        </div>
+        <div class="cal-month-label" aria-live="polite" x-text="monthLabel"></div>
+      </div>
+
+      <table class="cal-grid" role="grid" :aria-label="'Events calendar for ' + monthLabel">
+        <thead>
+          <tr>
+            <th scope="col" abbr="Sunday">Sun</th>
+            <th scope="col" abbr="Monday">Mon</th>
+            <th scope="col" abbr="Tuesday">Tue</th>
+            <th scope="col" abbr="Wednesday">Wed</th>
+            <th scope="col" abbr="Thursday">Thu</th>
+            <th scope="col" abbr="Friday">Fri</th>
+            <th scope="col" abbr="Saturday">Sat</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template x-for="(week, wi) in weeks" :key="wi">
+            <tr>
+              <template x-for="cell in week" :key="cell.key">
+                <td class="cal-cell" :class="{ 'cal-out': !cell.inMonth, 'cal-today': cell.isToday }">
+                  <div class="cal-day-label">
+                    <span class="cal-day-num" x-text="cell.day"></span>
+                  </div>
+                  <div class="cal-events">
+                    <template x-for="ev in cell.events" :key="ev.p + cell.key">
+                      <a :href="ev.p" class="cal-event" :title="ev.n"><span x-html="ev.n"></span></a>
+                    </template>
+                  </div>
+                </td>
+              </template>
+            </tr>
+          </template>
+        </tbody>
+      </table>
     </div>
-  </template>
+  </div>
 </div>

@@ -3,6 +3,26 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.9] — 2026-06-01 — feat(events): build the calendar month-grid (was an unbuilt placeholder)
+
+Built a real Alpine month-grid calendar for `/events/` (+ `/news/events/`), replacing the `.cal-placeholder`
+stub; default view flipped list→calendar to match prod. (Agent-built from a prod-matching spec; verified.)
+- **`EventsListing.astro`**: server-side `chiDayKey()` (America/Chicago day-keys) + `sd`/`ed` per event;
+  Alpine `calY`/`calM`/`monthLabel`/`weeks` (6×7 grid w/ adjacent-month days)/`eventsFor`/`prevMonth`/
+  `nextMonth`/`goToday`; semantic `<table role="grid">` with `<th scope="col">` weekday headers + `x-for`
+  cells; today circled (`#1565c0`); events = links to `/events/{slug}/` (green `#1b5e20` chips). Mobile
+  keeps the 7-col grid (matches prod). a11y + CSP-clean, no new deps. List view + SSR baseline intact.
+- **`events.css`**: `.cal*` styles + `max-width:600px` mobile block (replaces dead `.cal-placeholder`).
+
+Result: **events 34→17–24%** (structure now matches prod; both show an empty current month). Verified:
+May/June empty (matches prod), Nov 2021 shows 4 events incl. Thanksgiving spanning 2 cells; prev/next/today
++ list toggle work; mobile grid intact.
+
+**FOLLOW-UPS to FULL parity (the residual 17–24%):** (1) wire prod's **richer feed** — meetings + grant
+OPEN/DEADLINE point-events + jobs as chips (prod's May 2026 shows a "DEADLINE: Research & Policy" chip the
+events-only grid lacks); (2) add prod's **MONTH view-mode dropdown**; (3) tune toolbar alignment +
+day-number size/position to prod (CSS). `EventsCalendar.astro` is now orphaned (harmless).
+
 ## [0.42.8] — 2026-06-01 — fix(parity): dataset/hub table borders + rules-regs link color
 
 Correct-parity CSS fixes from the VR-triage. These templates are **font-floor-dominated** (Google-vs-

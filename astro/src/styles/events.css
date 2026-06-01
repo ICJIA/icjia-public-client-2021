@@ -145,23 +145,193 @@
   color: #0a3a60;
 }
 
-/* Empty-state + calendar placeholder */
+/* Empty-state */
 .events .events-empty {
   padding: 2rem 0;
   text-align: center;
   color: #666;
   font-size: 0.95rem;
 }
-.events .cal-placeholder {
-  border: 1px dashed #cfcfcf;
-  background: #fafafa;
-  padding: 3rem 1.5rem;
-  text-align: center;
-  color: #555;
+
+/* ── Month-grid calendar (parity with legacy Vuetify v-calendar) ──────────── */
+.events .cal {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
 }
-.events .cal-placeholder .cal-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #333;
-  margin-bottom: 0.5rem;
+
+/* Toolbar: Today | ‹ › | "MMMM YYYY" */
+.events .cal-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+.events .cal-today-btn {
+  border: 1px solid #cfcfcf;
+  border-radius: 4px;
+  background: #fff;
+  color: #444;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 7px 14px;
+  cursor: pointer;
+  line-height: 1.2;
+}
+.events .cal-today-btn:hover {
+  background: #f3f3f3;
+}
+.events .cal-nav {
+  display: inline-flex;
+  gap: 2px;
+}
+.events .cal-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: transparent;
+  color: #555;
+  cursor: pointer;
+}
+.events .cal-arrow:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+.events .cal-month-label {
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+/* Grid: 7 equal columns, full borders (#e0e0e0). Left/top come from .cal. */
+.events .cal-grid {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+.events .cal-grid th {
+  padding: 6px 4px;
+  font-size: 11px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #757575;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+}
+.events .cal-grid th:last-child {
+  border-right: 0;
+}
+.events .cal-cell {
+  vertical-align: top;
+  height: 110px;
+  background: #fff;
+  border-right: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0 0 4px;
+}
+.events .cal-cell:last-child {
+  border-right: 0;
+}
+.events .cal-grid tbody tr:last-child .cal-cell {
+  border-bottom: 0;
+}
+/* Adjacent-month days: keep the number visible but muted (legacy shows them). */
+.events .cal-cell.cal-out {
+  background: #fafafa;
+}
+.events .cal-cell.cal-out .cal-day-num {
+  color: #b0b0b0;
+}
+
+.events .cal-day-label {
+  text-align: center;
+  margin: 4px 0 2px;
+  min-height: 30px;
+}
+.events .cal-day-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 4px;
+  font-size: 15px;
+  color: #1a1a1a;
+  border-radius: 50%;
+}
+/* Today: filled primary-blue circle around the day number. */
+.events .cal-cell.cal-today .cal-day-num {
+  background: #1565c0;
+  color: #fff;
+}
+
+/* Event chips — colored bar, white text, single-line ellipsis (legacy chip).
+   Default color = green (event); indigo accent mirrors the legacy deadline hue. */
+.events .cal-events {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 0 3px;
+}
+.events a.cal-event {
+  display: block;
+  background: #1b5e20;
+  color: #fff;
+  text-decoration: none;
+  font-size: 12px;
+  line-height: 20px;
+  height: 20px;
+  border-radius: 4px;
+  padding: 0 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.events a.cal-event:hover {
+  filter: brightness(1.12);
+}
+
+/* Mobile: keep the 7-column month grid (legacy does too); shrink cells. */
+@media (max-width: 600px) {
+  .events .cal-toolbar {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  .events .cal-month-label {
+    flex-basis: 100%;
+    order: 3;
+    font-size: 1rem;
+  }
+  .events .cal-grid th {
+    font-size: 10px;
+    padding: 5px 2px;
+  }
+  .events .cal-cell {
+    height: 74px;
+    padding: 0 0 2px;
+  }
+  .events .cal-day-num {
+    min-width: 22px;
+    height: 22px;
+    font-size: 13px;
+  }
+  .events .cal-events {
+    padding: 0 2px;
+  }
+  .events a.cal-event {
+    font-size: 10px;
+    line-height: 16px;
+    height: 16px;
+    padding: 0 3px;
+  }
 }
