@@ -3,6 +3,20 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.8] — 2026-06-01 — fix(parity): dataset/hub table borders + rules-regs link color
+
+Correct-parity CSS fixes from the VR-triage. These templates are **font-floor-dominated** (Google-vs-
+@fontsource Lato rasterization sets an ~8–15% floor), so the % moves little — the diff-PNG/visual match is
+the real gate, and these improve it:
+- **dataset + hub-article tables** (`article-view.css`): removed the github-markdown per-cell grey grid +
+  `#f6f8fa` zebra stripe on both `#dataset-view .variables-table` and `#article-view .article-body table` →
+  prod's borderless rows with bottom dividers. dataset desktop 8.2→7.3, md 14.7→13.7%.
+- **rules-regs (P8)**: table title/citation links → prod's `#1565c0` (were inheriting `.markdown-body`
+  navy); `.rrp-head` 900/26px → 700/22px.
+
+Key learning: chasing the VR % below the font-floor on text-heavy pages is low-ROI — pivoting to the
+WAY-above-floor structural diffs (home 36%, app 33%, press 32%, irb-meetings 42%) + the events calendar.
+
 ## [0.42.7] — 2026-06-01 — fix(parity): P1 data-table row height + outlined chip (meetings)
 
 Measured prod's Vuetify v-data-table: rows are **48px**; the attachment-count chip is an **outlined pill**

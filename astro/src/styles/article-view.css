@@ -153,17 +153,16 @@
 #article-view .article-body table th {
   font-weight: 600;
 }
+/* prod's ResearchHub article tables are BORDERLESS with bottom row-dividers (no
+   per-cell grid, no zebra stripe) — not github-markdown's grid+#f6f8fa. */
 #article-view .article-body table td,
 #article-view .article-body table th {
-  border: 1px solid grey;
+  border: 0;
+  border-bottom: 1px solid #dfe2e5;
   padding: 6px 13px;
 }
 #article-view .article-body table tr {
   background-color: #fff;
-  border-top: 1px solid #c6cbd1;
-}
-#article-view .article-body table tr:nth-child(2n) {
-  background-color: #f6f8fa;
 }
 #article-view .article-body .article-figure {
   margin-left: auto;
@@ -281,15 +280,12 @@
 }
 #dataset-view .variables-table > table td,
 #dataset-view .variables-table > table th {
-  border: 1px solid grey;
+  border: 0;
+  border-bottom: 1px solid #dfe2e5;
   padding: 6px 13px;
 }
 #dataset-view .variables-table > table tr {
   background-color: #fff;
-  border-top: 1px solid #c6cbd1;
-}
-#dataset-view .variables-table > table tr:nth-child(2n) {
-  background-color: #f6f8fa;
 }
 
 #article-view .article-body p,

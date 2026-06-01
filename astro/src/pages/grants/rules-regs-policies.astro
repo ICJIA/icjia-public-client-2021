@@ -102,8 +102,8 @@ const { rules, regulations, policies } = await getRulesRegsPolicies();
     padding: 8px 8px;
     background: #0d4474;
     color: #fff;
-    font-weight: 900;
-    font-size: 26px;
+    font-weight: 700;
+    font-size: 22px;
   }
   .rrp-table {
     width: 100%;
@@ -117,6 +117,11 @@ const { rules, regulations, policies } = await getRulesRegsPolicies();
     /* let long titles / unbroken citation URLs wrap instead of overflowing
        the viewport on mobile (2-col table — wrapping beats horizontal scroll). */
     overflow-wrap: anywhere;
+  }
+  /* Title / citation links render in prod's brighter blue, not the inherited
+     navy .markdown-body link color (matches the sibling .rrp-download). */
+  .rrp-table td a {
+    color: #1565c0;
   }
   .rrp-dl {
     text-align: center;
