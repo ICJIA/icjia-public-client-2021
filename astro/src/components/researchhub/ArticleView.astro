@@ -145,9 +145,8 @@ const doiSafe = article.doi ? escapeHtml(article.doi) : null;
           article.tags.length > 0 && (
             <span>
               <span class="mx-2">|</span>
-              {/* PARITY FLAG: non-link pills (search unported) */}
               {article.tags.map((t) => (
-                <span class="chip">{t}</span>
+                <a class="chip" href={`/search/?q=${encodeURIComponent(t)}`}>{t}</a>
               ))}
             </span>
           )

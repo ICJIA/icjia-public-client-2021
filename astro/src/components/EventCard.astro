@@ -67,7 +67,7 @@ const catLabel = `${(category ?? '').toUpperCase()}${category ? ' ' : ''}EVENT`;
     tags.length > 0 && (
       <div class="event-tags">
         {tags.map((t) => (
-          <span class="chip">{t}</span>
+          <a class="chip" href={`/search/?q=${encodeURIComponent(t)}`}>{t}</a>
         ))}
       </div>
     )

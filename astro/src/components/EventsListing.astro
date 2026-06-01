@@ -226,7 +226,7 @@ const ssrUpcoming = filterUpcoming(events);
             <template x-if="ev.t && ev.t.length">
               <div class="event-tags">
                 <template x-for="tg in ev.t" :key="tg">
-                  <span class="chip" x-text="tg"></span>
+                  <a class="chip" :href="`/search/?q=${encodeURIComponent(tg)}`" x-text="tg"></a>
                 </template>
               </div>
             </template>

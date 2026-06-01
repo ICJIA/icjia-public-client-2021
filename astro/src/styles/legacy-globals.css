@@ -138,6 +138,8 @@ a[target="_blank"]::after {
   letter-spacing: 0.5px;
   padding: 2px 8px;
   border-radius: 0;
+  text-decoration: none;
+  cursor: pointer;
 }
 .chip:hover,
 .chip:focus-visible {

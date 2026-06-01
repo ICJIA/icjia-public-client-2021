@@ -69,7 +69,7 @@ const showSplash = !!post.splash && !post.hideSplash;
           post.tags.length > 0 && (
             <div class="mt-6">
               {post.tags.map((tag) => (
-                <span class="chip">{tag}</span>
+                <a class="chip" href={`/search/?q=${encodeURIComponent(tag)}`}>{tag}</a>
               ))}
             </div>
           )

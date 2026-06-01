@@ -71,7 +71,7 @@ const CJ = 'https://visitor.r20.constantcontact.com/manage/optin?v=001MqUcqqvjwL
               {g.tags.length > 0 && (
                 <div class="mt-3">
                   {g.tags.map((t) => (
-                    <span class="chip">{t}</span>
+                    <a class="chip" href={`/search/?q=${encodeURIComponent(t)}`}>{t}</a>
                   ))}
                 </div>
               )}
@@ -139,7 +139,7 @@ const CJ = 'https://visitor.r20.constantcontact.com/manage/optin?v=001MqUcqqvjwL
           </template>
           <template x-if="g.tags.length">
             <div class="mt-3">
-              <template x-for="t in g.tags" :key="t"><span class="chip" x-text="t"></span></template>
+              <template x-for="t in g.tags" :key="t"><a class="chip" :href="`/search/?q=${encodeURIComponent(t)}`" x-text="t"></a></template>
             </div>
           </template>
           <template x-if="g.attachments.length">

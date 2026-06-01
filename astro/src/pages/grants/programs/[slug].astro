@@ -126,7 +126,7 @@ const jsonldStr = JSON.stringify(jsonld).replace(/</g, '\\u003c');
         program.tags.length > 0 && (
           <div class="mt-4">
             {program.tags.map((t) => (
-              <span class="chip">{t}</span>
+              <a class="chip" href={`/search/?q=${encodeURIComponent(t)}`}>{t}</a>
             ))}
           </div>
         )

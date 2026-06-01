@@ -69,7 +69,7 @@ const showToc = !!page.showTOC && page.toc.length > 0;
         page.tags.length > 0 && (
           <div class="mt-6">
             {page.tags.map((tag) => (
-              <span class="chip">{tag}</span>
+              <a class="chip" href={`/search/?q=${encodeURIComponent(tag)}`}>{tag}</a>
             ))}
           </div>
         )

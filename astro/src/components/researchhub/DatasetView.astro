@@ -95,9 +95,8 @@ const categoriesStr = dataset.categories.join(', ');
     {
       dataset.tags.length > 0 && (
         <PropDisplay name="Tags">
-          {/* PARITY FLAG: non-link pills (search unported) */}
           {dataset.tags.map((t) => (
-            <span class="chip">{t}</span>
+            <a class="chip" href={`/search/?q=${encodeURIComponent(t)}`}>{t}</a>
           ))}
         </PropDisplay>
       )

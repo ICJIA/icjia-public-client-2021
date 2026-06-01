@@ -3,6 +3,19 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.17] — 2026-06-01 — feat(search): every tag chip links to /search?q=<tag> (cross-site)
+
+Tag chips were inert `<span>`s. Now every tag chip across the site (19 sites: news/press,
+meetings, funding, programs, events, publications, bios/CMS pages, + all ResearchHub views —
+articles/apps/datasets/hub cards) is an `<a class="chip" href="/search/?q=<tag>">`. Clicking a
+tag runs that search — autofills the box and shows related items across ALL content types
+(articles/news/meetings/funding/etc.). `/search` already read `?q=` (search.astro `init()`), so
+no search-side change. `.chip` base (legacy-globals.css) got `text-decoration:none` +
+`cursor:pointer` so `a.chip` renders identically to the old span but reads as clickable; the
+existing `.chip:hover` inversion is the affordance. `encodeURIComponent` handles multi-word tags.
+Status/count chips (`f-chip`, `chip-expired/cancelled/new`, `att-chip`, `cancelled-chip`) are NOT
+tags — left as spans. Verified end-to-end: clicked "drug" → `/search/?q=drug` → "129 results".
+
 ## [0.42.16] — 2026-06-01 — fix(parity): press card — CATEGORY|date eyebrow + image below/contain (NewsCard)
 
 From the source-verified re-triage: press cards put the splash ABOVE the title, object-cover-cropped to a

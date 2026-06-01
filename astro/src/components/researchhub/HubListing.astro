@@ -252,8 +252,7 @@ const baseline = paginate ? items.slice(0, perPage) : items;
 
               <template x-if="it.tags.length">
                 <div class="prop-row font-lato">
-                  {/* PARITY FLAG: non-link pills (search unported) */}
-                  <template x-for="t in it.tags" :key="t"><span class="chip" x-text="t"></span></template>
+                  <template x-for="t in it.tags" :key="t"><a class="chip" :href="`/search/?q=${encodeURIComponent(t)}`" x-text="t"></a></template>
                 </div>
               </template>
             </div>

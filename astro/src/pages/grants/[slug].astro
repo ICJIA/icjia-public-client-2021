@@ -15,9 +15,8 @@
 // In Astro, dedicated route files win over [slug]; this denylist is the belt to
 // that suspenders, so we never render another section's data through BasePage.
 //
-// NOTE (search unported): tag chips render as plain <span class="chip"> (in
-// BasePage.astro), not links to /search/:tag — the Search section is not built
-// yet. To be restored when Search lands.
+// NOTE: tag chips (rendered in BasePage.astro) link to /search/?q=<tag>, which
+// autofills the search box with the tag and shows related results.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import BasePage from '../../components/BasePage.astro';
 import { getPage, getAllPages } from '../../lib/data';
