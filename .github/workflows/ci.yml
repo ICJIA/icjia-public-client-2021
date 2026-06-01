@@ -58,4 +58,10 @@ jobs:
           cache-dependency-path: astro/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
+      # `astro check` statically resolves a build-generated JSON import (hub-images-manifest —
+      # gitignored, created by the prebuild, which hits Strapi). The typecheck only needs the
+      # module to RESOLVE (research.ts casts it + try/catches at runtime), so stub an empty
+      # manifest when absent; the real one is generated at build time on Netlify.
+      - name: Ensure hub-images manifest exists (typecheck only)
+        run: test -f public/hub-images-manifest.json || echo '{}' > public/hub-images-manifest.json
       - run: pnpm exec astro check
