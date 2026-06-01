@@ -3,6 +3,16 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.16] — 2026-06-01 — fix(parity): press card — CATEGORY|date eyebrow + image below/contain (NewsCard)
+
+From the source-verified re-triage: press cards put the splash ABOVE the title, object-cover-cropped to a
+176px band, and showed only the date. Prod shows the splash BELOW the title (`object-contain`, full
+uncropped ICJIA logo) + a `CATEGORY | date` eyebrow above the title. Fixed `NewsCard.astro` (press-only):
+added the bold-uppercase category eyebrow (`newsCategoryLabel`) + moved the image below the text with
+`object-contain`. press **32→28%**. Residual = live-data drift (different press releases captured) +
+font-floor + the **tag-chip row (DEFERRED** — needs `getAllPress` to expose `tags` on `NewsListItem` + a
+chip row in NewsCard).
+
 ## [0.42.15] — 2026-06-01 — fix(parity): funding attachments → Filename/Updated/Size table
 
 From the source-verified re-triage: funding cards rendered attachments as a flat `<ul>` (filename + size);
