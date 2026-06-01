@@ -448,7 +448,9 @@ export async function getDataset(slug: string): Promise<ResearchDatasetDetail | 
     notes: d.notes,
     variables: d.variables,
     funding: d.funding,
-    citation: d.citation,
+    // citation is rendered via set:html (InfoBlock) — MUST be DOMPurify-sanitized
+    // like the article path (line ~371); raw hub HTML otherwise = stored XSS.
+    citation: d.citation ? renderToHtml(d.citation) : d.citation,
     dataFileUrl: hubFileUrl(d.datafile),
     related: [
       ...hubRelated(d.apps, "App", "/researchhub/apps/"),
@@ -517,9 +519,13 @@ export async function getApp(slug: string): Promise<ResearchAppDetail | null> {
   return {
     ...shapeAppListItem(a),
     external: a.external,
-    url: a.url,
+    // url feeds window.open() in AppView — allow only http(s) so a malicious hub
+    // `url` (e.g. javascript:) cannot reach window.open (defense-in-depth).
+    url: a.url && /^https?:\/\//i.test(a.url) ? a.url : undefined,
     funding: a.funding,
-    citation: a.citation,
+    // citation is rendered via set:html (InfoBlock) — MUST be DOMPurify-sanitized
+    // like the article path (line ~371); raw hub HTML otherwise = stored XSS.
+    citation: a.citation ? renderToHtml(a.citation) : a.citation,
     related: [
       ...hubRelated(a.datasets, "Dataset", "/researchhub/datasets/"),
       ...hubRelated(a.articles, "Article", "/researchhub/articles/"),

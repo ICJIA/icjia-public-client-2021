@@ -3,6 +3,22 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.26] — 2026-06-01 — fix(security): close 3 stored-XSS sinks + app-url scheme check (pre-cutover red-team audit)
+
+A full adversarial red-team audit (6 parallel passes, each finding verified against source; full record in
+`README.md` → "Security audit") found three stored-XSS sinks where CMS content reached `set:html`/`x-html`
+through only the text-cleanup filter (the "SiteImprove" pass — NOT an XSS sanitizer):
+- `research.ts`: Hub dataset + app `citation` were raw → `set:html` (InfoBlock). **CRITICAL.** Now `renderToHtml`,
+  matching the article-citation path that was already correct.
+- `data.ts`: home `clickThroughBoxes.teaser` → `set:html`. **HIGH.** Now `renderToHtml` (matches the sibling
+  `ContentClickThroughBoxes` `teaserHtml`).
+- `data.ts`: event/meeting/grant `name` → `set:html` (EventCard) + Alpine `x-html` (EventsListing). **HIGH.** Now `renderInline`.
+- `research.ts`: Hub app `url` → `window.open()` now allows only `http(s)` (blocks `javascript:`). **MEDIUM.**
+Re-VR of home/events/dataset/app after the fix: parity unchanged, 0 ERR (fixes apply the same sanitization prod
+already uses). Remaining audit items (purge-cache timing-safe compare + query-param secret, API rate-limit,
+iframe allowlist, CSP enforcement at cutover, `.env` rotation) are documented in README with honest status
+(recommended / accepted / tracked); dependencies clean (0 critical/high, lockfile committed).
+
 ## [0.42.25] — 2026-06-01 — test(vr): final pre-cutover 5-viewport sweep — re-arm 768/1920; Vuetify-uppercase parity fixes; harness docs (checklist v7.1)
 
 Ran the final pre-cutover visual-regression sweep: restored `tablet-768` + `xl-1920` to

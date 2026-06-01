@@ -1101,7 +1101,12 @@ export async function getHome(): Promise<HomeData> {
   const employment = (data?.jobs ?? [])
     .map((e: any) => ({ ...e, fullPath: `/about/employment/${e.slug}/` }))
     .sort((a: any, b: any) => String(b.end || "").localeCompare(String(a.end || "")));
-  const boxes = data?.home?.clickThroughBoxes ?? [];
+  // teaser renders via set:html (HomeClickThroughBoxes) — sanitize like the sibling
+  // ContentClickThroughBoxes (teaserHtml); raw CMS HTML otherwise = stored XSS.
+  const boxes = (data?.home?.clickThroughBoxes ?? []).map((b: any) => ({
+    ...b,
+    teaser: b.teaser ? renderToHtml(b.teaser) : b.teaser,
+  }));
   return { news, meetings, funding, employment, boxes };
 }
 
@@ -1347,7 +1352,9 @@ function buildCalendarFeed(data: any): CalendarItem[] {
   for (const e of events)
     out.push({
       id: String(e.id),
-      name: e.name,
+      // name renders via set:html (EventCard) + x-html (EventsListing) — sanitize
+      // inline like other titles (renderInline); raw CMS HTML otherwise = stored XSS.
+      name: e.name ? renderInline(e.name) : e.name,
       slug: e.slug,
       fullPath: `/events/${e.slug}/`,
       contentType: "event",
@@ -1366,7 +1373,7 @@ function buildCalendarFeed(data: any): CalendarItem[] {
   for (const m of meetings)
     out.push({
       id: String(m.id),
-      name: m.name, // aliased title in GET_EVENTS
+      name: m.name ? renderInline(m.name) : m.name, // aliased title in GET_EVENTS
       slug: m.slug,
       fullPath: `/news/meetings/${m.slug}/`,
       contentType: "meeting",
@@ -1385,7 +1392,7 @@ function buildCalendarFeed(data: any): CalendarItem[] {
     const fullPath = `/grants/funding/${g.slug}/`;
     out.push({
       id: String(g.id),
-      name: g.name, // aliased title in GET_EVENTS
+      name: g.name ? renderInline(g.name) : g.name, // aliased title in GET_EVENTS
       slug: g.slug,
       fullPath,
       contentType: "funding",
@@ -1401,7 +1408,7 @@ function buildCalendarFeed(data: any): CalendarItem[] {
       tags: tags(g),
     });
     out.push({
-      name: `OPEN: ${g.name}`,
+      name: renderInline(`OPEN: ${g.name}`),
       slug: g.slug,
       fullPath,
       contentType: "funding",

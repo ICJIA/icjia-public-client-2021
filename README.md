@@ -157,9 +157,71 @@ Netlify builds from `base = "astro/"`. The `@astrojs/netlify` adapter emits the 
 
 ---
 
+## Security audit
+
+> **Audit date:** 2026-06-01 · **Scope:** full pre-cutover adversarial (red-team) review of the Astro SSR app — serverless/edge functions, HTTP headers + CSP + redirects, content sanitization / XSS, API endpoints, secrets & env handling, GraphQL injection, dependencies. **Method:** six parallel red-team passes, each finding then **independently verified against the source** before being recorded here. Living record — re-run and append on each material change.
+
+This section is intentionally complete and candid (it is meant for management + compliance review): it states what was **fixed**, what is **recommended but not yet done**, what is an **accepted risk** with its compensating control, and what was **investigated and found not exploitable**.
+
+### Summary
+
+| ID | Finding | Severity | Status |
+|----|---------|----------|--------|
+| XSS-1 | Hub dataset/app `citation` rendered via `set:html` **unsanitized** | **Critical** | ✅ Fixed |
+| XSS-2 | Home click-through `teaser` via `set:html` (text-cleaned only, no DOMPurify) | **High** | ✅ Fixed |
+| XSS-3 | Event/meeting/grant `name` via `set:html`/`x-html` (text-cleaned only) | **High** | ✅ Fixed |
+| INJ-1 | Hub app `url` → `window.open()` with no scheme check (`javascript:` possible) | Medium | ✅ Fixed |
+| CSP-1 | CSP ships **Report-Only** (not enforced) + stale allowlist hosts in active `netlify.toml` | **High** | 🗓 Tracked — cutover |
+| FN-1 | `purge-cache` secret compared with `!==` (not constant-time) | Medium | 📋 Recommended |
+| FN-2 | `purge-cache` accepts secret via `?secret=` query param (log exposure) | Medium | 📋 Recommended |
+| API-1 | No rate-limit on the SSR `?slug=` endpoints (cost / availability DoS) | Medium | 📋 Recommended |
+| HDR-1 | DOMPurify allows `<iframe>` in CMS markdown (content / phishing injection) | Medium | 📋 Recommended (content decision) |
+| FN-3 | `keep-warm`/`nightly-rebuild` trust a spoofable `x-nf-event` header | Low | 📋 Recommended |
+| CSP-2 | `script-src 'unsafe-inline' 'unsafe-eval'` (required by Alpine) | Medium | ⚖️ Accepted (compensating control) |
+| SEC-1 | Live credentials in the local `.env` | Info | ⚠️ Not committed (verified); rotate as precaution |
+| DEP-1 | 1 moderate transitive advisory (`yaml`), unreachable at runtime | Low | 👀 Monitored |
+| INJ-2 | Hub GraphQL slug interpolation | — | ✅ Verified not exploitable |
+
+### Fixed in this audit (see `astro/CHANGELOG.md` → `0.42.26`)
+
+- **XSS-1 (Critical).** `getDataset`/`getApp` returned the Hub CMS `citation` field raw; `InfoBlock` renders it through `set:html`. A malicious or compromised Hub author could store `<img src=x onerror=…>` and run script for every visitor of a dataset/app page. **Fix:** route `citation` through `renderToHtml` (DOMPurify) — the path the *article* citation already used. (`src/lib/research.ts`)
+- **XSS-2 (High).** Home click-through `teaser` reached `set:html` after only the text-cleanup filter (typo/apostrophe fixes — *not* an XSS sanitizer). **Fix:** `renderToHtml(teaser)` in `getHome`, matching the sibling `ContentClickThroughBoxes`. (`src/lib/data.ts`)
+- **XSS-3 (High).** Event / meeting / grant `name` reached `set:html` (`EventCard`) and Alpine `x-html` (`EventsListing`) text-cleaned only. **Fix:** `renderInline(name)` on all calendar-feed names. (`src/lib/data.ts`)
+- **INJ-1 (Medium).** Hub app `url` flowed into `window.open()`; a `javascript:` value could execute on click. **Fix:** allow only `http(s)` URLs. (`src/lib/research.ts`)
+
+All four were re-checked with the VR harness after fixing: affected pages render identically to prod with zero errors (the fixes apply the same sanitization prod already uses, so no visual regression).
+
+### Recommended (not yet applied)
+
+- **FN-1 / FN-2 — `purge-cache` hardening.** Compare the webhook secret with `crypto.timingSafeEqual`, and remove the `?secret=` query-param fallback (it can land in function/proxy logs); accept the `x-icjia-purge-secret` header only.
+- **API-1 — rate-limit the `?slug=` SSR endpoints.** Meeting slugs are publicly enumerable, so an attacker can bypass the edge cache and force one live Strapi query per slug. Add a Netlify rate-limit rule on `/api/*` (cost/availability only — all data is public records).
+- **HDR-1 — restrict `<iframe>` in CMS markdown.** DOMPurify currently lets authors embed arbitrary external iframes (phishing / disinformation vector). Replace the blanket allowance with an allowlist of known embed domains, or remove it. *Needs a content owner to confirm no legitimate embeds depend on it.*
+- **FN-3 — scheduled-function gate.** Drop the `x-nf-event: schedule` header branch in `keep-warm`/`nightly-rebuild`; rely on the un-spoofable "no HTTP method" check. Theoretical today (Netlify does not route scheduled functions over HTTP).
+
+### Accepted risk
+
+- **CSP-2 — `'unsafe-inline'` + `'unsafe-eval'` in `script-src`.** Required by Alpine's inline `x-*` handlers and expression evaluator throughout the SSR HTML; removing it means render-time nonces on every Alpine attribute (a large rearchitecture) or dropping Alpine. **Compensating control:** all CMS content is DOMPurify-sanitized server-side (the XSS pipeline above), so the realistic injection path a CSP would backstop is already closed at the source. Revisit if Alpine is replaced.
+
+### Tracked for cutover
+
+- **CSP-1 — enforce the CSP.** Today it ships as `Content-Security-Policy-Report-Only` (advisory; nothing blocked, and nothing reported — no report endpoint configured). The **active** branch config (`netlify.toml`) also still lists stale allowlist hosts (Adobe DTM, Google Fonts) that the post-cutover `public/_headers` already drops. **At cutover:** switch to the enforced `Content-Security-Policy` from `public/_headers` after adding a `report-to`/`report-uri` sink and confirming zero violations in report-only.
+
+### Investigated — not exploitable (verified)
+
+- **INJ-2 — Hub GraphQL slug interpolation.** The three Hub single-item queries inline the slug via `JSON.stringify(slug)` (a documented workaround for a Strapi v3 bug that ignores GraphQL variables). Payload analysis confirms `JSON.stringify` escapes the only character that could break out of the string literal (`"`), so injection is not possible. The agency Strapi uses proper parameterized `$slug` variables (no injection surface). *Defense-in-depth suggestion:* add a `^[a-z0-9-]+$` slug guard in the detail-page callers.
+- **Client-side secret exposure.** Zero `import.meta.env` references in `src/`; every secret is read only inside server-side Netlify functions — no server var reaches the client bundle.
+- **Open redirects.** The trailing-slash edge function mutates only the path on a fixed origin; every `_redirects` external destination is a hard-coded host. No user-controlled redirect target exists.
+
+### Secrets & dependencies
+
+- **SEC-1 (Info — not a repository exposure).** The local `.env` holds live credentials (`NETLIFY_AUTH_TOKEN`, `MAILGUN_API_KEY`, `NETLIFY_BUILD_HOOK_URL`, `PURGE_SECRET`). It is `.gitignore`d and was **never committed** — verified across all 1,357 commits on every branch — so it is **not** in the public repo. Because the values were read by tooling during this audit, **rotation is recommended as routine precaution**, and `.env` should not live on a cloud-synced or external volume. *(Values are deliberately redacted from this record.)*
+- **DEP-1 (Low).** `pnpm audit`: **0 critical, 0 high, 1 moderate** — `yaml@2.7.1` (DoS via deeply-nested collections), reached only transitively through `astro-seo → @astrojs/check` (a dev/build language-server chain) and **not on any runtime code path**, so unreachable in production. Lockfile (`pnpm-lock.yaml`) is committed. *Recommendation:* update/replace `astro-seo` to drop ~40 spurious build-tooling packages from the production tree.
+
+---
+
 ## Docs
 
-- **`docs/astro-conversion-checklist-v7.0.md`** — the build recipe + a running log of hard-won lessons (live-data SSR, edge caching, Alpine island patterns, the content pipeline, SEO). Read this before changing anything load-bearing.
+- **`docs/astro-conversion-checklist-v7.1.md`** — the build recipe + a running log of hard-won lessons (live-data SSR, edge caching, Alpine island patterns, the content pipeline, SEO, the VR harness). Read this before changing anything load-bearing.
 - **`astro/CHANGELOG.md`** — what shipped, in order.
 
 ## License
