@@ -230,6 +230,7 @@ All four were re-checked with the VR harness after fixing: affected pages render
 - **`docs/astro-conversion-checklist-v7.1.md`** — the build recipe + a running log of hard-won lessons (live-data SSR, edge caching, Alpine island patterns, the content pipeline, SEO, the VR harness). Read this before changing anything load-bearing.
 - **`astro/CHANGELOG.md`** — what shipped, in order.
 - **`.github/workflows/ci.yml`** — PR/push gates: vitest + eslint (a11y) + `astro check`, all blocking.
+- **`docs/CUTOVER.md`** — production cutover runbook (owner checklist: env, CSP, Strapi webhooks, verification, rollback).
 
 ## License
 

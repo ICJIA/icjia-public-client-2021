@@ -3,6 +3,12 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.29] — 2026-06-01 — docs(cutover): production cutover runbook
+
+Added `docs/CUTOVER.md` — the owner-facing, ordered cutover checklist (pre-flight, build promotion, production
+env vars, CSP enforce, Strapi purge webhooks in both admins, platform rate-limit, post-cutover verification,
+rollback) plus the security follow-ups from the red-team audit. Linked from the README. No code change.
+
 ## [0.42.28] — 2026-06-01 — chore(ci): clear all lint + type errors; add gated CI; broaden E2E
 
 Cleared the codebase's pre-existing lint + type debt (surfaced while wiring up CI) and added gated CI + E2E:
