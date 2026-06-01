@@ -117,6 +117,7 @@ pnpm dev            # dev server (Node adapter) on :4321, live CMS data
 pnpm build          # prebuild (generators) → astro build (Netlify SSR function)
 pnpm preview        # preview a production build
 pnpm test           # Vitest — sanitizer parity + markdown link-text suites (the render gate)
+pnpm test:e2e       # Playwright interaction E2E (against a running dev server)
 pnpm vr             # visual-regression harness (Playwright + pixelmatch)
 pnpm search-index   # regenerate searchIndex.json + sitemap.xml from the live CMS
 pnpm og-image       # regenerate the branded OG image (svg + png)
@@ -228,6 +229,7 @@ All four were re-checked with the VR harness after fixing: affected pages render
 
 - **`docs/astro-conversion-checklist-v7.1.md`** — the build recipe + a running log of hard-won lessons (live-data SSR, edge caching, Alpine island patterns, the content pipeline, SEO, the VR harness). Read this before changing anything load-bearing.
 - **`astro/CHANGELOG.md`** — what shipped, in order.
+- **`.github/workflows/ci.yml`** — PR/push gates: vitest + eslint (a11y) + `astro check`, all blocking.
 
 ## License
 

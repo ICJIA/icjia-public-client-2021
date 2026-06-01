@@ -16,7 +16,6 @@
 //
 // TTLs are tuned per content type by editorial cadence; they live in the single
 // source of truth at astro/icjia.config.mjs (see that file). [s-maxage, swr] secs.
-// @ts-expect-error — icjia.config.mjs is plain JS (shared by the raw Netlify fn).
 import { cacheTTL } from "../../icjia.config.mjs";
 
 type Kind =
@@ -34,7 +33,9 @@ type Kind =
 const TTL = cacheTTL as Record<Kind, [number, number]>;
 
 export function setCache(
-  response: Response,
+  // Accepts a real Response OR Astro.response (ResponseInit & { headers: Headers }) —
+  // we only mutate `.headers`, so the structural `{ headers: Headers }` type fits both.
+  response: { headers: Headers },
   kind: Kind,
   /**
    * Extra cache tags beyond the page's own `kind`. Pass the OTHER sections an

@@ -16,6 +16,7 @@
 // devDependency) — the production code path is unaffected.
 import { describe, it, expect } from "vitest";
 import { ServerDOMParser } from "./server-dom";
+// @ts-expect-error — jsdom ships no type declarations (test-only; markdown.js uses it identically)
 import { JSDOM } from "jsdom";
 import { sanitizeContent, sanitizeText } from "./contentSanitizer";
 

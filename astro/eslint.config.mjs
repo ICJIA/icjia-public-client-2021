@@ -42,6 +42,13 @@ export default [
       "astro/jsx-a11y/anchor-has-content": "off",
       "astro/jsx-a11y/heading-has-content": "off",
       "astro/jsx-a11y/no-noninteractive-element-interactions": "off",
+      // Scrollable data-table regions are `<div role="region" tabindex="0">` — axe
+      // (scrollable-region-focusable) REQUIRES the tabindex so keyboard users can scroll
+      // them; allow tabindex on role=region (the rule otherwise permits only tabpanel).
+      "astro/jsx-a11y/no-noninteractive-tabindex": [
+        "error",
+        { tags: [], roles: ["tabpanel", "region"], allowExpressionValues: true },
+      ],
     },
   },
 ];

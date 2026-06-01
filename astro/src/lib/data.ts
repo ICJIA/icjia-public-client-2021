@@ -6,7 +6,6 @@
 // the SSR response (so SiteImprove/axe/Google see real content); freshness is
 // governed by the per-route CDN cache (see cache.ts).
 import "./server-dom"; // ensure global DOMParser (linkedom) is installed
-// @ts-expect-error — gql-client.js is plain JS (ported verbatim)
 import { runQuery, deepSanitize } from "./gql-client.js";
 import { renderToHtml, renderInline, parseHeadings } from "./markdown.js";
 import {
@@ -14,7 +13,6 @@ import {
   GET_ALL_NEWS_QUERY,
   GET_ALL_PRESS_QUERY,
 } from "../graphql/news.js";
-// @ts-expect-error — GET_HOME from plain-JS graphql module
 import { GET_HOME } from "../graphql/home.js";
 import {
   GET_MEETINGS_LIST_QUERY,
@@ -1761,7 +1759,7 @@ export async function getAllPublications(): Promise<PublicationListItem[]> {
     }))
     .sort((a, b) =>
       String(b.publicationDate || "").localeCompare(String(a.publicationDate || "")),
-    );
+    ) as PublicationListItem[]; // island-trim intentionally drops slug (optional) + haystack (internal)
 }
 
 /** A single publication by slug, live (GraphQL is fine here — one row). null → 404. */
@@ -1782,7 +1780,7 @@ export async function getPublicationsRecent(limit = 150): Promise<PublicationLis
     .map(({ slug, haystack, ...item }) => ({ ...item, summary: truncateWords(item.summary, 25) }))
     .sort((a, b) =>
       String(b.publicationDate || "").localeCompare(String(a.publicationDate || "")),
-    );
+    ) as PublicationListItem[]; // island-trim intentionally drops slug (optional) + haystack (internal)
 }
 
 export async function getPublication(slug: string): Promise<PublicationListItem | null> {

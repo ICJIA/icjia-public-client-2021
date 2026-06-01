@@ -3,6 +3,23 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.28] — 2026-06-01 — chore(ci): clear all lint + type errors; add gated CI; broaden E2E
+
+Cleared the codebase's pre-existing lint + type debt (surfaced while wiring up CI) and added gated CI + E2E:
+- **Lint: 19 → 0.** `eslint.config.mjs` now allows `tabindex` on `role="region"` (the scrollable data-table
+  regions axe REQUIRES to be focusable — `scrollable-region-focusable`); the grant-status + lap-request
+  forms got proper `for`/`id` label↔control association (12 fields; `aria-label` kept so nothing else moves).
+- **astro check: 44 → 0.** `setCache()` param retyped `{ headers: Headers }` (accepts both `Response` and
+  `Astro.response` — cleared 36); removed 5 stale `@ts-expect-error` directives; added one where genuinely
+  needed (`jsdom` ships no types, test-only); cast the intentional publications island-trim shape; typed the
+  E2E `hamburger` helper (`Page`).
+- **CI:** `.github/workflows/ci.yml` — `pnpm test` (vitest) + `pnpm lint` + `astro check` as BLOCKING gates
+  on every PR/push (injection-safe — no untrusted input). The SSR build stays on Netlify's deploy-preview.
+- **E2E:** `e2e/flows.spec.ts` — 30 new Playwright tests (nav drawer; data-table sort/filter + mobile stack;
+  form validation with live endpoints route-blocked, no real submit; translate modal; events calendar; search
+  deep-link). **33/33 green.**
+No runtime/behavior change — all edits are types, lint-config, label association, tests, and CI.
+
 ## [0.42.27] — 2026-06-01 — fix(security): A-list hardening from the red-team audit (purge-cache, scheduled-fn gate, iframe allowlist, slug guard)
 
 Second security pass (after 0.42.26's stored-XSS fixes), applying the audit's A-list (README "Security audit"):

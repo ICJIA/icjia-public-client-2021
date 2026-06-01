@@ -66,49 +66,49 @@ const xdata = `{
 
       <form @submit.prevent="submit" novalidate x-show="!done">
         <div class="field" :class="err('subject') && 'has-error'">
-          <select x-model="form.subject" @change="touch('subject')" @blur="touch('subject')" aria-label="Select Type of Request">
+          <select id="gs-subject" x-model="form.subject" @change="touch('subject')" @blur="touch('subject')" aria-label="Select Type of Request">
             <option value="" disabled hidden></option>
             <template x-for="s in subjects" :key="s"><option :value="s" x-text="s"></option></template>
           </select>
-          <label>Select Type of Request</label>
+          <label for="gs-subject">Select Type of Request</label>
           <div class="field-error" x-text="err('subject')"></div>
         </div>
 
         <div class="field" :class="err('number') && 'has-error'">
-          <input type="text" x-model="form.number" placeholder=" " @input="clearFail()" @blur="touch('number')" aria-label="Grant Number" />
-          <label>Grant Number</label>
+          <input id="gs-number" type="text" x-model="form.number" placeholder=" " @input="clearFail()" @blur="touch('number')" aria-label="Grant Number" />
+          <label for="gs-number">Grant Number</label>
           <div class="field-error" x-text="err('number')"></div>
         </div>
 
         <div class="grid grid-cols-1 gap-x-6 md:grid-cols-2">
           <div class="field" :class="err('firstName') && 'has-error'">
-            <input type="text" x-model="form.firstName" placeholder=" " @input="clearFail()" @blur="touch('firstName')" aria-label="First Name" />
-            <label>First Name</label>
+            <input id="gs-firstName" type="text" x-model="form.firstName" placeholder=" " @input="clearFail()" @blur="touch('firstName')" aria-label="First Name" />
+            <label for="gs-firstName">First Name</label>
             <div class="field-error" x-text="err('firstName')"></div>
           </div>
           <div class="field" :class="err('lastName') && 'has-error'">
-            <input type="text" x-model="form.lastName" placeholder=" " @input="clearFail()" @blur="touch('lastName')" aria-label="Last Name" />
-            <label>Last Name</label>
+            <input id="gs-lastName" type="text" x-model="form.lastName" placeholder=" " @input="clearFail()" @blur="touch('lastName')" aria-label="Last Name" />
+            <label for="gs-lastName">Last Name</label>
             <div class="field-error" x-text="err('lastName')"></div>
           </div>
         </div>
 
         <div class="grid grid-cols-1 gap-x-6 md:grid-cols-2">
           <div class="field" :class="err('email') && 'has-error'">
-            <input type="email" x-model="form.email" placeholder=" " @input="clearFail()" @blur="touch('email')" aria-label="Email" />
-            <label>E-mail</label>
+            <input id="gs-email" type="email" x-model="form.email" placeholder=" " @input="clearFail()" @blur="touch('email')" aria-label="Email" />
+            <label for="gs-email">E-mail</label>
             <div class="field-error" x-text="err('email')"></div>
           </div>
           <div class="field" :class="err('phone') && 'has-error'">
-            <input type="text" x-model="form.phone" placeholder=" " @input="clearFail()" @blur="touch('phone')" aria-label="Phone" />
-            <label>Phone number</label>
+            <input id="gs-phone" type="text" x-model="form.phone" placeholder=" " @input="clearFail()" @blur="touch('phone')" aria-label="Phone" />
+            <label for="gs-phone">Phone number</label>
             <div class="field-error" x-text="err('phone')"></div>
           </div>
         </div>
 
         <div class="field field--area" :class="err('comment') && 'has-error'">
-          <textarea x-model="form.comment" placeholder=" " rows="10" @click="clearFail()" @blur="touch('comment')" aria-label="Request"></textarea>
-          <label>Please provide as much detail as possible about your grant status request.</label>
+          <textarea id="gs-comment" x-model="form.comment" placeholder=" " rows="10" @click="clearFail()" @blur="touch('comment')" aria-label="Request"></textarea>
+          <label for="gs-comment">Please provide as much detail as possible about your grant status request.</label>
           <div class="field-error" x-text="err('comment')"></div>
         </div>
 

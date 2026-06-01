@@ -1,0 +1,61 @@
+# CI — runs the checks Netlify's build does NOT: unit/parity tests, lint, typecheck.
+# (Netlify already builds + deploy-previews every PR, so the production build is gated
+# there; this workflow adds the test/quality gates on top.)
+#
+# Hard gates (all blocking):
+#   `pnpm test`   — vitest sanitizer/markdown parity + unit suite (61 tests).
+#   `pnpm lint`   — eslint jsx-a11y on .astro templates (0 findings).
+#   `astro check` — TypeScript typecheck (0 errors; 26 advisory hints remain).
+# (The 19 lint + 44 type findings present on 2026-06-01 were cleared, so lint + typecheck
+#  are now blocking gates — see CHANGELOG 0.42.28.)
+#
+# Not here (deliberately): the SSR `build` (Netlify deploy-preview covers it, and it hits
+# live Strapi ~140× so it'd be flaky in CI); Playwright E2E + axe/Lighthouse (need a
+# running server / the deploy-preview URL — wire as a deploy-preview-triggered job next).
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, feat/astro-migration]
+
+jobs:
+  test:
+    name: Tests (vitest — parity + unit render gate)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: astro
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: astro/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+
+  quality:
+    name: Lint + typecheck
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: astro
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: astro/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm exec astro check

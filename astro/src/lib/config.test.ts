@@ -2,7 +2,6 @@
 // cache TTLs + keep-warm. These catch drift that would silently break caching/perf or
 // serve stale content (e.g. a route in BOTH buckets, a keep-warm SWR ≤ the ping).
 import { describe, it, expect } from "vitest";
-// @ts-expect-error — plain .mjs config (shared with the raw Netlify functions)
 import { renderStrategy, cacheTTL, keepWarm } from "../../icjia.config.mjs";
 
 describe("renderStrategy manifest", () => {

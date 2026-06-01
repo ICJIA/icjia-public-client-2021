@@ -74,33 +74,33 @@ const xdata = `{
         </p>
 
         <div class="field" :class="err('name') && 'has-error'">
-          <input type="text" x-model="form.name" placeholder=" " @input="clearFail()" @blur="touch('name')" aria-label="Name" />
-          <label>Name</label>
+          <input id="lap-name" type="text" x-model="form.name" placeholder=" " @input="clearFail()" @blur="touch('name')" aria-label="Name" />
+          <label for="lap-name">Name</label>
           <div class="field-error" x-text="err('name')"></div>
         </div>
 
         <div class="grid grid-cols-1 gap-x-6 md:grid-cols-2">
           <div class="field" :class="err('email') && 'has-error'">
-            <input type="email" x-model="form.email" placeholder=" " @input="clearFail()" @blur="touch('email')" aria-label="Email" />
-            <label>E-mail</label>
+            <input id="lap-email" type="email" x-model="form.email" placeholder=" " @input="clearFail()" @blur="touch('email')" aria-label="Email" />
+            <label for="lap-email">E-mail</label>
             <div class="field-error" x-text="err('email')"></div>
           </div>
           <div class="field" :class="err('phone') && 'has-error'">
-            <input type="text" x-model="form.phone" placeholder=" " @input="clearFail()" @blur="touch('phone')" aria-label="Phone" />
-            <label>Phone number</label>
+            <input id="lap-phone" type="text" x-model="form.phone" placeholder=" " @input="clearFail()" @blur="touch('phone')" aria-label="Phone" />
+            <label for="lap-phone">Phone number</label>
             <div class="field-error" x-text="err('phone')"></div>
           </div>
         </div>
 
         <div class="field" :class="err('language') && 'has-error'">
-          <input type="text" x-model="form.language" placeholder=" " @input="clearFail()" @blur="touch('language')" aria-label="Requested Language" />
-          <label>Requested Language</label>
+          <input id="lap-language" type="text" x-model="form.language" placeholder=" " @input="clearFail()" @blur="touch('language')" aria-label="Requested Language" />
+          <label for="lap-language">Requested Language</label>
           <div class="field-error" x-text="err('language')"></div>
         </div>
 
         <div class="field field--area" :class="err('comment') && 'has-error'">
-          <textarea x-model="form.comment" placeholder=" " rows="10" @click="clearFail()" @blur="touch('comment')" aria-label="Request"></textarea>
-          <label>Please provide as much detail as possible about your language access request.</label>
+          <textarea id="lap-comment" x-model="form.comment" placeholder=" " rows="10" @click="clearFail()" @blur="touch('comment')" aria-label="Request"></textarea>
+          <label for="lap-comment">Please provide as much detail as possible about your language access request.</label>
           <div class="field-error" x-text="err('comment')"></div>
         </div>
 

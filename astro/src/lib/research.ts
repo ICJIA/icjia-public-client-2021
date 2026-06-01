@@ -14,7 +14,6 @@
 // fold). The same-origin endpoint keeps the initial HTML lean, avoids a browser
 // CORS dependency on the hub, and is edge-cacheable.
 
-// @ts-expect-error — gql-client.js is plain JS (ported verbatim)
 import { runQuery } from "./gql-client.js";
 import { renderToHtml } from "./markdown.js";
 
