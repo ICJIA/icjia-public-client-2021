@@ -21,6 +21,13 @@ const href = `/news/${item.slug}/`;
       <a href={href} class="!text-black hover:!text-primary">{item.title}</a>
     </h2>
     {item.summary && <p class="text-sm font-normal text-gray-800">{item.summary}</p>}
+    {item.tags && item.tags.length > 0 && (
+      <div class="mt-3">
+        {item.tags.slice(0, 4).map((tag) => (
+          <a class="chip" href={`/search/?q=${encodeURIComponent(tag)}`}>{tag}</a>
+        ))}
+      </div>
+    )}
   </div>
   {/* Image BELOW the text with object-contain so the full splash (the square ICJIA
       logo) shows uncropped — prod renders it under the title, not a cropped band. */}

@@ -3,6 +3,15 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.22] — 2026-06-01 — feat: press cards show clickable tag chips (→ /search)
+
+`NewsCard` (press-only) now renders a tag-chip row (≤4 tags) when the item has tags. The data layer
+was already wired — `GET_ALL_PRESS_QUERY` selects `tags{title slug}`, `shapeNewsList` maps them to
+`string[]`, `NewsListItem` declares `tags?: string[]` — so the only gap was the render. Chips are the
+site-wide clickable search links (`<a class="chip" href="/search/?q=<tag>">`). Verified: `/news/press/`
+now emits 14 chip search-links (was 0); `encodeURIComponent` handles spaces/commas/parens. (Chip
+styling on the press page — which is `.markdown-body` — is fixed in 0.42.23.)
+
 ## [0.42.21] — 2026-06-01 — fix(parity): unify ALL content containers to prod's v-container (900/1185/1785)
 
 Prod wraps every page in ONE Vuetify v-container (900px md / 1185px lg / 1785px xl) — confirmed by
