@@ -132,14 +132,16 @@
 }
 .meetings .cancelled-chip {
   display: inline-block;
-  /* #b71c1c (matches the cancel banner): white text clears WCAG AA, where the
-     legacy bright-red chip did not. */
-  background: #b71c1c;
+  /* Strong AAA red (white text 7.96:1) + bold/uppercase so a cancelled meeting is
+     unmistakable (intentional a11y deviation from prod). Matches the cancel banner. */
+  background: #a01818;
   color: #fff;
-  font-weight: 400;
+  font-weight: 700;
   font-size: 12px;
   padding: 2px 8px;
   border-radius: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 .meetings .att-chip {
   /* prod renders the attachment count as an OUTLINED pill (measured: white fill,
@@ -231,7 +233,7 @@
 }
 .meetings .cancel-banner {
   text-align: center;
-  background: #b71c1c;
+  background: #a01818; /* AAA red — white text 7.96:1 */
   color: #fff;
   padding: 6px 0;
 }

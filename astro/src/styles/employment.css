@@ -70,13 +70,16 @@
 }
 .job-card .job-chip-expired {
   display: inline-block;
-  background: #aa2525;
+  /* Strong AAA red (white text 7.96:1) + uppercase/bold so "EXPIRED" clearly pops
+     (intentional a11y deviation from prod — expired chips were being missed). */
+  background: #a01818;
   color: #fff;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
   padding: 3px 10px;
   border-radius: 4px;
-  text-transform: none;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   white-space: nowrap;
 }
 .job-card .job-title {

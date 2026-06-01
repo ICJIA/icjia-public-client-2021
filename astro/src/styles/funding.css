@@ -53,7 +53,13 @@
   background: #1b5e20;
 }
 .funding .f-chip-red {
-  background: #ad2e2e;
+  /* Expired NOFO. Strong AAA red (white text 7.96:1) + uppercase/bold so it reads
+     as a clear "EXPIRED" alert, visually distinct from the green deadline chip
+     (intentional a11y deviation from prod — prod's expired chips were being missed). */
+  background: #a01818;
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.03em;
 }
 .funding .fcard h2 {
   font-size: 22px;
@@ -119,7 +125,7 @@
 }
 /* Single grant (detail) */
 .funding .expired-banner {
-  background: #ad2e2e;
+  background: #a01818; /* AAA red — white text 7.96:1 */
   color: #fff;
   padding: 15px 10px;
   font-weight: 900;

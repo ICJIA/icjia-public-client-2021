@@ -144,11 +144,12 @@ const tabs = ['Funding', 'Meetings', 'Employment'];
     border-radius: 4px;
     vertical-align: middle;
   }
-  .chip-expired {
-    background: #ad2e2e;
-  }
+  .chip-expired,
   .chip-cancelled {
-    background: #c62828;
+    /* Strong AAA red (white text 7.96:1) + uppercase so the home-tab "EXPIRED" /
+       "CANCELLED" flags are unmistakable (folks were missing them on prod). */
+    background: #a01818;
+    text-transform: uppercase;
   }
   .chip-new {
     background: #0d4474;

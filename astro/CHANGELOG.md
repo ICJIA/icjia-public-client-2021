@@ -3,6 +3,22 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.18] — 2026-06-01 — a11y(chips): expired/cancelled chips → unified WCAG-AAA red + more distinctive
+
+User report: on prod the expired chips weren't distinctive enough — people missed that an item
+was expired. Unified ALL expired/cancelled indicators to ONE strong red **#a01818** (white text
+**7.96:1**, clears WCAG **AAA** for small text ≥7:1; prod's #ad2e2e/#aa2525/#b71c1c/#c62828 were
+AA-only at 5.6–7.0:1) and made the short chips more distinctive — UPPERCASE + font-weight 800 +
+letter-spacing:
+  • funding `.f-chip-red` (FundingListing + the FsguHome home strip, both `.funding`-scoped) +
+    `.expired-banner` (NOFO detail)
+  • employment `.job-chip-expired` (EmploymentListing + JobCard)
+  • meetings `.cancelled-chip` (table desktop + mobile) + `.cancel-banner` (meeting detail)
+  • HomeTabbed `.chip-expired` / `.chip-cancelled` (home-tab inline flags)
+Sentence banners get the AAA red only (no uppercase — shouty on a full sentence). Intentional a11y
+deviation from pixel-parity (user-requested). Verified rendered: `rgb(160,24,24)` / `#fff` /
+uppercase / 800.
+
 ## [0.42.17] — 2026-06-01 — feat(search): every tag chip links to /search?q=<tag> (cross-site)
 
 Tag chips were inert `<span>`s. Now every tag chip across the site (19 sites: news/press,
