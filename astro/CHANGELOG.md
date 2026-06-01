@@ -3,6 +3,20 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.7] — 2026-06-01 — fix(parity): P1 data-table row height + outlined chip (meetings)
+
+Measured prod's Vuetify v-data-table: rows are **48px**; the attachment-count chip is an **outlined pill**
+(white fill, 2px solid #222, 8px radius, black). Astro had denser rows (`.mtable td` had no height) + a
+filled-grey chip. Fixed in `meetings.css` (shared by news/meetings + irb-meetings via `MeetingTable`):
+- `.mtable td` → `height: 48px` (grows for wrapped content); mobile stacked cells reset to `height:auto` +
+  padding 6→10px.
+- `.att-chip` → outlined pill (white / 2px #222 / 8px radius), weight 900→700.
+
+Result: **meetings desktop 16.0→8.7%, mobile 9.6→4.2%** (now in the font-floor band); irb-meetings
+**mobile 36→26%**. NOTE: irb-meetings md/desktop stayed ~42% — it has only ~3 rows so row-height barely
+moves it; its 42% is a DIFFERENT driver than the triage's row-height hypothesis (likely the notice band /
+`max-w-6xl` container) — flagged for re-diagnosis (a re-triage after the fix batch will pinpoint it).
+
 ## [0.42.6] — 2026-05-31 — fix(parity): P3 no-TOC container md width (measured prod)
 
 Measured prod's body-column width: at **md-960** prod's Vuetify container caps at 900px (→876px content),
