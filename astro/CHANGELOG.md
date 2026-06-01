@@ -3,6 +3,16 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.20] — 2026-06-01 — fix(parity): search page width → site-standard container (was 768px)
+
+`/search` was capped at `max-w-3xl` (**768px**) — far narrower than prod (the standard Vuetify
+`v-container`: 900/1185/1785px by md/lg/xl) AND than every other astro content page (`max-w-[900px]
+lg:max-w-[1185px]`). Changed the search wrapper to the site-standard container so the box + results
+span the same width as the rest of the site. Verified at a 2593px viewport: **1185px** at lg (was
+768), input 1052px, result cards 1161px. NOTE: astro caps content at 1185px site-wide (accepted
+deviation from prod's xl=1785px at ≥1904px viewports); search now follows that site standard. If full
+prod-1785 parity at very wide displays is wanted, that's a separate site-wide container change.
+
 ## [0.42.19] — 2026-06-01 — fix(a11y/responsive): context-bar tabs scroll horizontally on narrow screens
 
 The grey section-tab strip used `justify-content: center` + `overflow-x: auto`. When the tabs
