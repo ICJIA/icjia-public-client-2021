@@ -3,6 +3,18 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.13] — 2026-06-01 — fix(parity): app card scope + researchhub carousel/strip-all (source-verified)
+
+From the source-verified re-triage:
+- **app (desktop/md 33→21%)**: AppView's `.detail-card` (bg `#fafafa` + 1px `#ddd` border, bold prop labels,
+  chip + button chrome) is styled by `.researchhub .detail-card` in researchhub.css, but the app-detail page
+  had **no `.researchhub` ancestor** → the card rendered unstyled (plain white, no border). Added
+  `researchhub` to `AppView.astro`'s root div — one change restores the card + labels + chips + button.
+- **researchhub carousel → constant 650px**: prod's `v-carousel` is **650px at ALL breakpoints** (measured
+  375/960/1280 — all 650); Astro had 240/360/650 responsive steps → too short on mobile/md, shifting
+  everything below up. Set 650 base + removed the steps. (The VR masks the carousel, so the % doesn't move,
+  but it now matches prod for real users.) `.strip-all` buttons → `text-transform:uppercase` + near-black.
+
 ## [0.42.12] — 2026-06-01 — fix(layout): short-page content fills viewport so disclaimer/footer flow below
 
 Source-verified re-triage (DevTools-measured both live sites) found irb-meetings' 42% was a VERTICAL DRIFT,

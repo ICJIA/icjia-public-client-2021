@@ -245,10 +245,11 @@
 .researchhub .strip-all {
   font-size: 13px;
   font-weight: 500;
+  text-transform: uppercase;
   border: 1px solid rgba(0, 0, 0, 0.3);
   border-radius: 4px;
   padding: 4px 12px;
-  color: #0d4474;
+  color: rgba(0, 0, 0, 0.87);
   text-decoration: none;
   white-space: nowrap;
 }
@@ -256,24 +257,15 @@
   background: #f5f5f5;
 }
 
-/* Carousel: a 650px (240/360 responsive) stage; slides are full-bleed splash
-   with a dark overlay + centered title/authors/date. Lightweight Alpine
-   advances the active index; CSS handles the visual swap. */
+/* Carousel: a CONSTANT 650px stage at every breakpoint, matching prod's legacy
+   v-carousel (which does NOT shrink on mobile — the earlier 240/360 responsive
+   steps left the mobile stage too short, shifting everything below it up). Slides
+   are full-bleed splash with a dark overlay + centered title/authors/date. */
 .researchhub .hub-carousel {
   position: relative;
-  height: 240px;
+  height: 650px;
   background: #1a1a1a;
   overflow: hidden;
-}
-@media (min-width: 600px) {
-  .researchhub .hub-carousel {
-    height: 360px;
-  }
-}
-@media (min-width: 960px) {
-  .researchhub .hub-carousel {
-    height: 650px;
-  }
 }
 .researchhub .hc-slide {
   position: absolute;
