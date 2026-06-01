@@ -215,6 +215,25 @@ if (menu) {
     -webkit-overflow-scrolling: touch; /* iOS momentum scroll */
     scrollbar-width: none; /* clean strip; tabs stay keyboard-reachable */
     white-space: nowrap;
+    /* Scroll affordance — pure-CSS "scrolling shadows" (Lea Verou's technique).
+       The strip already scrolls horizontally (overflow-x:auto) but the scrollbar is
+       hidden, so on a narrow phone there was no cue that more tabs exist off-screen.
+       Four background layers fix it with zero JS: two #eee "cover" gradients pinned to
+       the CONTENT (background-attachment: local) + two dark radial "shadow" gradients
+       pinned to the SCROLLPORT (scroll). At each scroll extreme the matching cover sits
+       over its shadow (hiding it); the moment there's more to scroll in a direction that
+       cover slides away and the edge shadow appears. When the tabs fit, both covers stay
+       over both shadows → no shadow at all. Cover (36px) is wider than shadow (14px) so
+       it fully masks it at the ends. Tabs are transparent, so the fade shows behind them. */
+    background-image: linear-gradient(to right, #eee 30%, rgba(238, 238, 238, 0)),
+      linear-gradient(to right, rgba(238, 238, 238, 0), #eee 70%),
+      radial-gradient(farthest-side at 0 50%, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0)),
+      radial-gradient(farthest-side at 100% 50%, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0));
+    background-position: left center, right center, left center, right center;
+    background-repeat: no-repeat;
+    background-size: 36px 100%, 36px 100%, 14px 100%, 14px 100%;
+    background-attachment: local, local, scroll, scroll;
+    background-color: #eee;
   }
   .ctx-tabs ul::-webkit-scrollbar {
     display: none;

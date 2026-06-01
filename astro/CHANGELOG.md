@@ -3,6 +3,19 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.30] — 2026-06-01 — fix(ui): always-discoverable horizontal scroll on the section context bar (narrow phones)
+
+The grey section-tab strip below the nav (`SiteContextBar.astro`) already scrolled horizontally on narrow
+screens (`overflow-x: auto` + `justify-content: safe center`), but the scrollbar was hidden
+(`scrollbar-width: none`), so on a phone there was no cue that off-screen tabs existed — sections with many
+or long tabs (e.g. Grants/FSGU has 7) showed only the first two with no hint to swipe. Added a pure-CSS
+"scrolling shadows" affordance (Lea Verou's technique) to `.ctx-tabs ul`: four background layers — two `#eee`
+cover gradients pinned to the content (`background-attachment: local`) and two dark radial shadows pinned to
+the scrollport (`scroll`) — render a soft edge fade only on the side(s) you can still scroll, and nothing when
+the tabs fit. Zero JS, no markup change, no a11y impact (tabs stay keyboard-reachable and transparent so the
+fade shows behind them). Verified at 380px: the strip overflows, scrolls 891px, and all four layers apply.
+Matches prod's Vuetify scroll-the-tabs behavior, with a clearer cue.
+
 ## [0.42.29] — 2026-06-01 — docs(cutover): production cutover runbook
 
 Added `docs/CUTOVER.md` — the owner-facing, ordered cutover checklist (pre-flight, build promotion, production
