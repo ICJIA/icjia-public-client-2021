@@ -3,6 +3,17 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.14] — 2026-06-01 — fix(parity): forms field rhythm + bold labels; bio text metrics
+
+From the source-verified re-triage:
+- **forms (20→10–11%)**: fields stacked too tight (~74px pitch vs prod's ~100px) → progressive upward
+  drift painting the whole form red. Bumped `.field margin-bottom` 6→28px; bolded labels + typed text
+  (`font-weight:700`, prod's `class="heavy"`). Now in the font-floor band.
+- **bio (27→22% md/desktop)**: body copy rendered at the github-markdown 16px (looser leading) → more
+  lines → taller card. Pinned `.bio-text` + its `p/li` to prod's Vuetify metrics (`.875rem / 1.375 /
+  letter-spacing`). Residual (subtitle metrics + ~4px text-indent + the hidden-avatar silhouette
+  [not-a-bug] + font-floor) deferred.
+
 ## [0.42.13] — 2026-06-01 — fix(parity): app card scope + researchhub carousel/strip-all (source-verified)
 
 From the source-verified re-triage:

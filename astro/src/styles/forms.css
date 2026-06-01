@@ -34,13 +34,16 @@
 .page-form .field {
   position: relative;
   padding-top: 18px;
-  margin-bottom: 6px;
+  /* prod's Vuetify fields stack with ~100px pitch; 6px was too tight (~74px),
+     drifting every field up. ~28px brings the underline-to-underline pitch to prod's. */
+  margin-bottom: 28px;
 }
 .page-form .field > input,
 .page-form .field > select,
 .page-form .field > textarea {
   width: 100%;
   font-size: 16px;
+  font-weight: 700; /* prod's fields use class="heavy" — typed text is bold */
   font-family: inherit;
   color: rgba(0, 0, 0, 0.87);
   background: transparent;
@@ -75,6 +78,7 @@
   left: 0;
   top: 22px;
   font-size: 16px;
+  font-weight: 700; /* prod's floating labels are bold (class="heavy") */
   color: rgba(0, 0, 0, 0.6);
   pointer-events: none;
   transform-origin: top left;

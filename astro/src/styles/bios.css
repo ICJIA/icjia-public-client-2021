@@ -64,6 +64,15 @@
 .bio-card .bio-subtitle .bio-role {
   color: #222;
 }
+.bio-card .bio-text,
+.bio-card .bio-text :is(p, li) {
+  /* prod's Vuetify body text is .875rem / 1.375 — it wraps into fewer lines than
+     the github-markdown 16px default, which made Astro's bio cards taller. Override
+     the .markdown-body 16px on the body's children too. */
+  font-size: 0.875rem;
+  line-height: 1.375;
+  letter-spacing: 0.0071428571em;
+}
 .bio-card .bio-text {
   margin: 0.5rem 0.75rem 0;
   text-align: left;
