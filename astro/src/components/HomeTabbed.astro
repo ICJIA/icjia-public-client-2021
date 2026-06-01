@@ -28,7 +28,7 @@ const tabs = ['Funding', 'Meetings', 'Employment'];
           type="button"
           role="tab"
           id={`home-tab-${i}`}
-          class="home-tab grow border border-transparent py-3 text-[22px]"
+          class="home-tab grow border border-transparent py-3 text-[22px] uppercase"
           x-bind:aria-selected={`tab === ${i} ? 'true' : 'false'`}
           x-bind:class={`tab === ${i} ? 'home-tab--active' : ''`}
           x-on:click={`tab = ${i}`}

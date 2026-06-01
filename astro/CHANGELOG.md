@@ -3,6 +3,22 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.25] — 2026-06-01 — test(vr): final pre-cutover 5-viewport sweep — re-arm 768/1920; Vuetify-uppercase parity fixes; harness docs (checklist v7.1)
+
+Ran the final pre-cutover visual-regression sweep: restored `tablet-768` + `xl-1920` to
+`scripts/vr/config.mjs` (full 5-viewport set per checklist L6) and diffed all 25 routes × 5
+viewports vs prod. Structural parity confirmed **faithful on every template spot-checked by eye**
+(chrome/home/list/detail/landing); the drift-dominated full-page % is triage, not a gate. Two
+**Vuetify-uppercase parity fixes** (a prod `v-tab`/`v-btn` default the rebuild had dropped to
+title-case): home section tabs (`HomeTabbed.astro` → FUNDING/MEETINGS/EMPLOYMENT) and the ResearchHub
+detail buttons (`researchhub.css .detail-btn` → e.g. LAUNCH THE APP; shared by app/dataset/article
+views). A **"systemic container-width gap" hypothesis was tried and REVERTED**: re-VR showed widening
+24 `max-w-4xl/5xl` containers to the v-container trio regressed table/profile pages (rules-regs
+18→35%) because prod's content renders narrower than its v-container *wrapper* — the per-template
+widths were already correct. Docs: checklist **v7.0 → v7.1** documents the VR harness (why/how/porting
+to smaller sites) + two methodology traps (frozen-clock-vs-SSR date boundary; v-container wrapper ≠
+content width). Net code change: viewports re-armed + two casing fixes; no regressions shipped.
+
 ## [0.42.24] — 2026-06-01 — test(e2e): Playwright interaction-test scaffold + first spec (this session's flows)
 
 Interaction E2E was missing — Playwright was VR-only (the `playwright` lib, no `@playwright/test` runner).

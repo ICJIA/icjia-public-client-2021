@@ -14,13 +14,14 @@ export const PROD_BASE = (process.env.VR_PROD || "https://icjia.illinois.gov").r
 export const NEW_BASE = (process.env.VR_NEW || "http://localhost:4321").replace(/\/$/, "");
 
 // Vuetify 2 breakpoints. dsf = deviceScaleFactor.
-// First comprehensive pass uses 3 key widths (mobile · the Vuetify md edge · desktop)
-// to keep the cross-template run tractable; add tablet-768 + xl-1920 back for the
-// FINAL pre-cutover VR run (set VR_ONLY to re-check specific routes at those widths).
+// Full 5-width set for the FINAL pre-cutover VR run. Set VR_ONLY to re-check
+// specific routes at these widths.
 export const VIEWPORTS = [
   { name: "mobile-375", width: 375, height: 900, dsf: 2 },
+  { name: "tablet-768", width: 768, height: 1024, dsf: 2 },
   { name: "md-960", width: 960, height: 1024, dsf: 1 },
   { name: "desktop-1280", width: 1280, height: 1024, dsf: 1 },
+  { name: "xl-1920", width: 1920, height: 1080, dsf: 1 },
 ];
 
 // Routes to compare.

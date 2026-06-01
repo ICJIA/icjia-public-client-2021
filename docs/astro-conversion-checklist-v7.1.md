@@ -1,6 +1,8 @@
-# Astro Migration Checklist — v7.0 (LIVE-DATA SSR increment: icjia.illinois.gov flagship — Strapi-at-view-time + Netlify edge cache + cold-start mitigations, 2026-05-30)
+# Astro Migration Checklist — v7.1 (VR-harness documentation + final pre-cutover visual-regression sweep — icjia.illinois.gov flagship, 2026-06-01)
 
-> **Checklist version: v7.0 (canonical / current). Continuously updated.**
+> **Checklist version: v7.1 (canonical / current). Continuously updated.**
+>
+> File renamed from `astro-conversion-checklist-v7.0.md` → `astro-conversion-checklist-v7.1.md` on 2026-06-01. **v7.1 documents the standalone visual-regression harness** (`scripts/vr/`): why a cross-engine (Vue/Vuetify → Astro/Tailwind) migration needs a parity gate that sees past sub-pixel anti-aliasing, how its capture → normalize → `<h1>`-align → pixelmatch → gate pipeline works, and how to port the two-file harness to a smaller site. It also records the **final pre-cutover sweep** (all 25 routes × 5 viewports — the 768 + xl-1920 edge widths re-armed per L6) and the two methodology traps it surfaced (frozen-clock-vs-SSR date boundary; v-container *wrapper* ≠ *content* width). See the new **"## The Visual Regression Harness (`scripts/vr/`)"** section + "What changed from v7.0 → v7.1" below.
 >
 > File renamed from `astro-conversion-checklist-v6.5.md` → `astro-conversion-checklist-v7.0.md` on 2026-05-30. **v7.0 is the first increment authored from a LIVE-DATA SSR site** — the `icjia.illinois.gov` flagship, which (unlike every prior site in the lineage, all `output: 'static'`) runs `output: 'server'` and fetches Strapi **per request at view time**. This is a deliberate, documented departure from the checklist's SSG default — see "What changed from v6.5 → v7.0" below for the SSR rendering model, the Netlify edge-cache requirement (`Netlify-CDN-Cache-Control`), cold-start mitigations (loading overlay + nav progress bar + keep-warm scheduled function with SWR-warmed edge), build-time hub-image extraction, and the recurring `this.$el`-in-`x-data` Alpine trap.
 >
@@ -334,6 +336,14 @@ v6.4 is a **single-pattern increment** authored from the SFS post-launch UX surf
 - `src/pages/404.astro` — full rewrite from the Vuetify-mimic placeholder to the Standard 404 page template.
 
 ---
+
+## What changed from v7.0 → v7.1
+
+v7.1 is a **documentation + verification increment** (no new site) authored while running the flagship's **final pre-cutover visual-regression sweep**. Three things landed:
+
+1. **The VR harness is now fully documented** — see the new **"## The Visual Regression Harness (`scripts/vr/`)"** section near the end. It explains *why* a cross-engine (Vue/Vuetify → Astro/Tailwind) migration needs a parity gate that sees past sub-pixel anti-aliasing, *how* the capture → normalize → `<h1>`-align → pixelmatch → gate pipeline works, and *how to port the two-file harness to a smaller site*.
+2. **The final sweep ran** — all 25 routes × 5 viewports, with the **768 + xl-1920 edge widths re-armed** (per L6 — exactly where wide-container drift hides). Structural parity confirmed **faithful on every template spot-checked by eye** (a representative set — chrome / home / list / detail / landing); the remaining routes read drift-level by %, with a couple of higher-% routes (`app`, `irb-meetings`) still worth a final eyeball before cutover. One real fix shipped (home section tabs were title-case, prod is UPPERCASE → added `uppercase` to `.home-tab`).
+3. **Two methodology traps got pinned** (details in the new section): (a) the **frozen-clock-vs-SSR date boundary** — the harness's frozen clock is a *client* init script, so it governs prod's SPA but not the new site's *server*-rendered dates; a run that straddles a month boundary shows spurious bucket/badge shifts on SSR routes that are **not** regressions; (b) **v-container *wrapper* ≠ *content* width** — a blanket "unify all content containers to the trio (900/1185/1785)" *regressed* table/profile pages because prod's content renders narrower than its container; measure prod's **content** width per template, and never let the (drift-dominated) full-page % adjudicate a width change.
 
 ## What changed from v6.5 → v7.0
 
@@ -5082,5 +5092,52 @@ Chip/badge text (≤~14px) is "normal" text → AAA needs 7:1. Common alert reds
 The repo had `playwright` (raw API, used by scripts/vr) but NOT `@playwright/test`. Interaction E2E (a `playwright.config.ts` + `playwright test`) needs the runner — install `@playwright/test` (pin to match `playwright`); chromium binaries from the VR harness are reused (no `playwright install`). Specs in `e2e/`, config at astro root, `test:e2e` script, NO `webServer` block (point at the running dev server; CI starts it). Web-first `expect` with generous waits handles the ~2.7MB Fuse index without flake. GOTCHA: `locatorA.or(locatorB)` throws strict-mode if BOTH match — assert separately.
 
 ### L6. VR harness defaults (re-arm before the final sweep)
-`scripts/vr/config.mjs`: `VR_NEW` defaults to localhost (visually identical to the branch deploy — only gzip/perf differ); VIEWPORTS default to 375/960/1280 to keep the cross-template run tractable. **RE-ADD 768 + xl-1920** for the final pre-cutover sweep — the L2 container change specifically needs the 1920 capture it never had. Gates ≤1% PASS / ≤3% WARN / >3% FAIL; live-data + cross-engine AA floor mean text pages never hit 0%.
+`scripts/vr/config.mjs`: `VR_NEW` defaults to localhost (visually identical to the branch deploy — only gzip/perf differ); VIEWPORTS default to 375/960/1280 to keep the cross-template run tractable. **RE-ADD 768 + xl-1920** for the final pre-cutover sweep — the L2 container change specifically needs the 1920 capture it never had. Gates ≤1% PASS / ≤3% WARN / >3% FAIL; live-data + cross-engine AA floor mean text pages never hit 0%. **DONE 2026-06-01 (v7.1):** the 5-viewport sweep ran; the xl-1920 capture surfaced a container-width question that resolved the *opposite* of L2's instinct (prod's v-container *wrapper* ≠ its *content* width — the per-template `max-w-4xl/5xl` content widths are correct; don't widen them to the trio). Full write-up in the section below.
+
+## The Visual Regression Harness (`scripts/vr/`) — a portable cross-engine parity gate
+
+> Added v7.1 (2026-06-01). Two standalone files — `config.mjs` (what to compare) + `run.mjs` (the engine) — plus three deps (`playwright`, `pixelmatch`, `pngjs`). No test framework. Point it at any two URLs and it pixel-diffs them at a set of viewports, writing prod/new/diff PNGs + a `report.md`. Run with `pnpm vr` (or `npm run vr`).
+
+### Why it exists (the problem it solves)
+
+The flagship's bar is **pixel-perfect to APPROVED prod** (Hard Rule #4): prod has cleared management sign-off, so any visible deviation reads as a regression. Proving that across ~25 templates × 5 widths by hand is infeasible and non-repeatable. But a naïve screenshot-diff is *useless here* for one specific reason — this is a **cross-engine** comparison: prod renders through **Vue 2 + Vuetify 2**, the rebuild through **Astro + Tailwind**. Two engines rasterize the same glyphs and edges differently at the sub-pixel level (anti-aliasing), so even a *visually identical* page diffs at ~1–2% everywhere. The harness exists to **see past that AA noise to structural differences** — and to do it against a *live* site whose CMS content shifts under you.
+
+### How it works (the pipeline)
+
+For every `route × viewport`:
+
+1. **Back-to-back capture.** Fresh Chromium contexts grab the **prod reference**, then the **new candidate** immediately after — minimizing CMS drift between the two shots (both sites read the *same* Strapi, so back-to-back ≈ identical content).
+2. **Normalization** (so live content / motion / the clock don't manufacture diffs):
+   - **Frozen clock** injected via `addInitScript` *before any page JS* → client-computed dates and "NEW"/expiry badges are deterministic.
+   - **Animations/transitions/caret off** (injected stylesheet) + a **`document.fonts.ready`** gate (web-fonts painted before capture).
+   - **Masks** — paint out volatile regions (auto-rotating carousels: Vuetify `.v-carousel/.v-window` + Astro `.hub-carousel`) so a slide-position difference isn't a false diff.
+   - **Strip the Astro dev toolbar** (a new-site-in-dev-only overlay; no-op on prod).
+   - **Full-page routes:** scroll top→bottom to trigger lazy/below-fold imagery, return to top, settle on `networkidle`.
+3. **`<h1>` alignment — the key trick.** Two engines carry an *accepted* constant top-offset (a per-template top-spacing delta, ≤~20px — Astro unifies several legacy Vue views into shared templates). A naïve top-anchored diff shifts *every* text row below that offset, saturating the page red and **masking real regressions** (the original harness's fatal flaw — see the 2026-05-31 h1-align lesson). Fix: crop **both** frames to their *own* `<h1>` top (row 0 = the title on both sides) so the constant offset drops out, then crop to the **common (min) height** (content-length differences are content, not regressions).
+4. **Diff + gate.** `pixelmatch` at `threshold: 0.2` (tolerates cross-engine AA) → a mismatched-pixel **ratio** → gates **≤1% PASS · ≤3% WARN · >3% FAIL**. Writes prod/new/diff PNGs + `report.md`; non-zero exit if any FAIL.
+
+**Knobs:** `VR_PROD` / `VR_NEW` env (compare against localhost *or* a branch deploy — visually identical, only gzip/perf differ); **`VR_ONLY=substring`** limits routes for fast iteration (e.g. `VR_ONLY=bio,events`); `VIEWPORTS` + `ROUTES` live in `config.mjs`.
+
+### The one rule that makes it usable: the % is triage, the diff PNG is truth
+
+On full-page routes the cross-engine AA floor + residual vertical drift hold a *faithful* page at **single-to-double-digit %** — this sweep saw `home` at 29–36% and `press` at 30–40%, **all confirmed faithful by eye.** So the number **ranks where to look; it does not pass/fail.** Read the diff PNG like a radiograph:
+
+- **Evenly-distributed red along every text baseline** = benign AA / vertical drift → ignore.
+- **Solid red blocks, missing regions, color bands, a shifted photo** = real → investigate.
+- **Ambiguous** (drift smears everything) → open the **prod-vs-new pair** and compare directly. (That's how `home`'s 36% and `news-list`'s 20% were both cleared, and how the one real fix — uppercased home tabs — was confirmed.)
+
+### Two traps this sweep surfaced (don't relearn them)
+
+1. **Frozen-clock vs SSR date boundary.** The frozen clock is a *client* init script: it governs prod (a client-rendered SPA) but **not** the new site's **server**-side rendering, which uses the *server's real* clock. When a run **straddles a date boundary** — this one ran 2026-06-01 against a frozen client clock of 2026-05-29 — date-*relative* content on SSR routes (the `/news/` "This Month / Last Month / Earlier" buckets; likely "NEW"/expired badges on news/press/funding/events) shows **spurious one-period shifts that are NOT regressions** (`data.ts`'s `monthBucket` documents it). For a pristine date-sensitive gate, set `FROZEN_TS` into the *current* month (or freeze the server clock) and re-run. **Structural/layout parity is unaffected.**
+2. **The v-container *wrapper* width ≠ the *content* width.** L2 records that prod wraps every page in one Vuetify `v-container` (900 / 1185 / **1785** @xl) and warns against approximating it with a Tailwind preset. The tempting corollary — "so unify *all* content containers to `max-w-[900px] lg:max-w-[1185px] xl:max-w-[1785px]`" — is **wrong applied blindly.** A blanket sweep across 24 templates *regressed* the table/profile pages (`rules-regs` 18→**35%** at desktop/xl): prod's **tables/lists/profiles render NARROWER than their v-container wrapper**, so the existing per-template `max-w-4xl`(896)/`5xl`(1024) widths were *correct*, and widening pushed content *past* prod. The drift-dominated full-page % gave **no warning** (it can't); only the **prod/new pair** showed the overshoot, and the change was reverted. **Lesson:** the v-container width is an *upper bound on the wrapper*, not the content width — measure prod's actual **content** width per template before touching a `max-w-*`, and never let the % adjudicate a width change.
+
+### Porting it to a smaller site
+
+It's deliberately framework-free, so adoption is cheap:
+
+- **Copy `scripts/vr/`**, add `playwright` + `pixelmatch` + `pngjs`, set `VR_PROD`/`VR_NEW`, fill `ROUTES` (use **real detail slugs that exist on both sites** so back-to-back compares identical content) + `VIEWPORTS`. Run.
+- **Pick widths in two passes:** 3 key widths (mobile · the framework's mid-edge · desktop) for the broad cross-template pass to stay tractable; **add the tablet + ultrawide (xl) edges for the final gate** — the ultrawide capture is where wide-container drift hides (it raised every container-width question this session).
+- **Mask anything non-deterministic** (carousels, random/"related" strips). Freeze the clock. Treat the WARN/FAIL band as triage, not verdict.
+- **SSG sites are simpler** — both sides are static, so the frozen-clock-vs-SSR trap (#1) doesn't apply.
+- The same two files work for **any before/after parity check**, not only a migration: a CSS-framework swap, a large refactor, a redesign-with-fidelity. Prod-vs-candidate is just two URLs.
 
