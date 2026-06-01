@@ -3,6 +3,17 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.19] — 2026-06-01 — fix(a11y/responsive): context-bar tabs scroll horizontally on narrow screens
+
+The grey section-tab strip used `justify-content: center` + `overflow-x: auto`. When the tabs
+overflow a narrow viewport, plain `center` strands the LEADING tabs off the left edge where
+horizontal scroll can't reach them (measured: the first of 7 grants tabs sat **−544px** off-screen
+at 160px wide). Changed to `justify-content: safe center` — centers when the tabs fit, falls back to
+flex-start when they overflow so the first tab stays reachable (measured: **+12px**, scrollable).
+Added `-webkit-overflow-scrolling: touch` (iOS momentum) + hid the scrollbar (`scrollbar-width: none`
++ `::-webkit-scrollbar`) for a clean strip; tabs remain keyboard-reachable. Matches prod's
+scroll-the-tabs behavior on mobile.
+
 ## [0.42.18] — 2026-06-01 — a11y(chips): expired/cancelled chips → unified WCAG-AAA red + more distinctive
 
 User report: on prod the expired chips weren't distinctive enough — people missed that an item

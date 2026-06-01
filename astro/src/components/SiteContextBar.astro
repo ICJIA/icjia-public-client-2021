@@ -203,11 +203,21 @@ if (menu) {
     margin: 0;
     padding: 0 12px;
     display: flex;
-    justify-content: center;
+    /* `safe center`: center the tabs when they fit, but fall back to flex-start when
+       they overflow a narrow viewport so the FIRST tab stays reachable by horizontal
+       scroll. Plain `center` strands the leading tabs off the left edge where scroll
+       can't reach them — that's why narrow screens couldn't scroll the context items.
+       Matches prod's scroll-the-tabs behavior on mobile. */
+    justify-content: safe center;
     align-items: stretch;
     gap: 0;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* iOS momentum scroll */
+    scrollbar-width: none; /* clean strip; tabs stay keyboard-reachable */
     white-space: nowrap;
+  }
+  .ctx-tabs ul::-webkit-scrollbar {
+    display: none;
   }
   .ctx-tab {
     display: inline-flex;
