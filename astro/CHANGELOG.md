@@ -3,6 +3,22 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.10] — 2026-06-01 — feat(events): wire calendar to prod's richer feed + chip parity + filter fix
+
+Polished the events calendar to prod content-parity (agent-built, verified against prod's rendered styles):
+- Wired the existing `calendarFeed` (events + meetings + funding/employment OPEN/DEADLINE point-events) into
+  the grid — both event pages pass it as a `calendar` prop; `EventsListing` emits a `#calendar-data` island;
+  the grid reads it. **List view unchanged** (events-only). Chips colored/labeled/linked BY TYPE matching
+  prod's measured Vuetify colors: event `#1b5e20`→`/events/`, meeting `#1976d2`→`/news/meetings/`, funding
+  `#1a237e`→`/grants/funding/`, employment `#4a148c`→`/about/employment/` (`OPEN:`/`DEADLINE:` labels).
+- **Parity bug fixed**: the grid now honors the "upcoming only" checkbox (prod does; the base build didn't).
+- Added the MONTH view-mode control; day numbers 12px/500; per-type chip color classes. No data-layer change.
+Verified: Oct 2023 (funding 9 / employment 15 / meeting 5) matches prod's colors/labels/links; June 2026
+shows the single NCHIP `DEADLINE` chip = prod; mobile grid intact; prev/next/today + list toggle work.
+RESIDUAL (events VR ~16–23%, accepted): a page-level vertical offset (h1→toolbar→grid spacing) + toolbar
+layout (prod centered-compact vs ours edge-spread) + font-floor on dense calendar text — low-ROI pixel-tuning,
+deferred. The calendar's content/chips/controls match prod.
+
 ## [0.42.9] — 2026-06-01 — feat(events): build the calendar month-grid (was an unbuilt placeholder)
 
 Built a real Alpine month-grid calendar for `/events/` (+ `/news/events/`), replacing the `.cal-placeholder`

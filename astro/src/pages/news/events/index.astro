@@ -9,7 +9,7 @@ import EventsListing from '../../../components/EventsListing.astro';
 import { getEventsCalendarData } from '../../../lib/data';
 import { setCache } from '../../../lib/cache';
 
-const { eventsList } = await getEventsCalendarData();
+const { eventsList, calendarFeed } = await getEventsCalendarData();
 setCache(Astro.response, 'events');
 ---
 
@@ -20,6 +20,6 @@ setCache(Astro.response, 'events');
   canonical="/events/"
 >
   <div class="mx-auto max-w-4xl px-4 py-8 md:px-6">
-    <EventsListing events={eventsList} />
+    <EventsListing events={eventsList} calendar={calendarFeed} />
   </div>
 </BaseLayout>

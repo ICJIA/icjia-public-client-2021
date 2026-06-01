@@ -209,6 +209,34 @@
   font-weight: 400;
   color: rgba(0, 0, 0, 0.87);
 }
+/* Push the view-mode control to the far right (legacy layout). */
+.events .cal-spacer {
+  flex: 1 1 auto;
+}
+/* "Month ▾" view-mode control — month-only (outlined, grey, matches the legacy
+   v-calendar's view dropdown look/position). Disabled: month view is the only
+   mode the grid renders. */
+.events .cal-viewmode {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  border: 1px solid #cfcfcf;
+  border-radius: 4px;
+  background: #fff;
+  color: #616161;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 7px 8px 7px 14px;
+  line-height: 1.2;
+}
+.events .cal-viewmode:disabled {
+  cursor: default;
+}
+.events .cal-viewmode svg {
+  margin-top: -1px;
+}
 
 /* Grid: 7 equal columns, full borders (#e0e0e0). Left/top come from .cal. */
 .events .cal-grid {
@@ -255,17 +283,20 @@
 .events .cal-day-label {
   text-align: center;
   margin: 4px 0 2px;
-  min-height: 30px;
+  min-height: 28px;
 }
+/* Day number — small, centered at the top of the cell (legacy v-calendar
+   renders a 12px / weight-500 day button). */
 .events .cal-day-num {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 28px;
-  height: 28px;
+  min-width: 26px;
+  height: 26px;
   padding: 0 4px;
-  font-size: 15px;
-  color: #1a1a1a;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.87);
   border-radius: 50%;
 }
 /* Today: filled primary-blue circle around the day number. */
@@ -274,8 +305,13 @@
   color: #fff;
 }
 
-/* Event chips — colored bar, white text, single-line ellipsis (legacy chip).
-   Default color = green (event); indigo accent mirrors the legacy deadline hue. */
+/* Event chips — colored bar, white text, single-line ellipsis (legacy v-event:
+   12px / 20px tall / radius 4px). Color is set BY contentType to match the
+   legacy v-calendar's per-type Vuetify colors:
+     event      → green  darken-4  #1b5e20
+     meeting    → blue   darken-2  #1976d2
+     funding    → indigo darken-4  #1a237e  (OPEN/DEADLINE point-events)
+     employment → purple darken-4  #4a148c  (OPEN/DEADLINE point-events) */
 .events .cal-events {
   display: flex;
   flex-direction: column;
@@ -295,6 +331,15 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.events a.cal-event.cal-meeting {
+  background: #1976d2;
+}
+.events a.cal-event.cal-funding {
+  background: #1a237e;
+}
+.events a.cal-event.cal-employment {
+  background: #4a148c;
 }
 .events a.cal-event:hover {
   filter: brightness(1.12);
