@@ -5,13 +5,34 @@
 Vue app. As of 2026-06-01 there are **no engineering blockers** — every item below is
 an operational / Netlify-dashboard / Strapi-admin step.
 
-**Rollback at any point:** revert the Netlify production build to the legacy Vue (swap
-the base back), or reset to the tag **`legacy-pre-cutover`** (→ `main` pre-cutover). The
-branch deploy is independent of production, so nothing here is one-way until step 1.
+**⏮ Rollback (if anything goes wrong):** see the **Rollback** section below — the fast path
+is a **one-click Netlify "Publish deploy"** of the last legacy Vue deploy (seconds, no rebuild).
+Nothing here is one-way until §1; the new Astro build stays on its branch for a retry.
 
 **Context:** SSR site on Netlify (base `astro/`), two Strapi v3 CMS backends, edge cache
 via `Netlify-CDN-Cache-Control`. Security audit + fixes are recorded in `README.md` →
 "Security audit". Quality gates (vitest + lint + `astro check`) run in CI on every PR.
+
+---
+
+## Rollback — if something goes south (fastest first)
+
+**Verified safe (2026-06-01):** production builds the **legacy Vue site from `main`** (`5d022bf`, tagged
+**`legacy-pre-cutover`**, pushed to origin). The entire Astro rebuild is isolated on `feat/astro-migration`
+and was **never merged to `main`** — so `main` is a pristine, known-good legacy build you can return to at
+any time. Because the cutover is a Netlify *config* change (not a git merge), rollback is also just a Netlify
+action — no code revert needed.
+
+1. **Instant (seconds, no rebuild) — Netlify "Publish deploy."** Netlify keeps every production deploy.
+   Netlify UI → **Deploys** → find the last **legacy Vue** production deploy (the one built from `main` /
+   `5d022bf`, just before cutover) → **"Publish deploy."** The live site immediately serves the old Vue build.
+   **This is the "revert now" button — use it first if anything looks wrong.**
+2. **Config revert (~one rebuild, 2–3 min) — point production back to `main`.** Netlify → Site config →
+   Build & deploy → set the **production branch** back to `main` and the **base** back to the repo root
+   (legacy build command). Netlify rebuilds the Vue site from `main` (= `5d022bf`). Use if the deploy history
+   was pruned or you want a fresh legacy build.
+3. **Git anchor — the `legacy-pre-cutover` tag** (`5d022bf`, on origin). The durable record of the exact
+   pre-cutover legacy state; reset `main` to it if `main` is ever disturbed.
 
 ---
 
