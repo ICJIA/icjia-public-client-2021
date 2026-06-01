@@ -43,7 +43,7 @@ const showSplash = !!post.splash && !post.hideSplash;
 ---
 
 <BaseLayout title={post.title} description={post.summary} contextTitle={post.title} jsonLd={jsonLd}>
-  <div class="news-item markdown-body mx-auto max-w-[900px] lg:max-w-[1185px] px-3 py-8">
+  <div class="news-item markdown-body mx-auto max-w-[900px] lg:max-w-[1185px] xl:max-w-[1785px] px-3 py-8">
     {/* 1. Splash — full-bleed hero above the grid (unless hideSplash). Legacy
         NewsSingle passes only :splash, so alt comes from Splash's own precedence
         (alternativeText → default), not the title. */}

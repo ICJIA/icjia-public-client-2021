@@ -3,6 +3,20 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.21] — 2026-06-01 — fix(parity): unify ALL content containers to prod's v-container (900/1185/1785)
+
+Prod wraps every page in ONE Vuetify v-container (900px md / 1185px lg / 1785px xl) — confirmed by
+measuring prod /news/ and /search/ (both 1785px at a 2593px viewport). Astro had drifted into TWO
+container widths: content pages at `max-w-[900px] lg:max-w-[1185px]` (capped at 1185, no xl step) and
+listing/researchhub pages at `max-w-6xl` (1152px). Unified every content container to
+`max-w-[900px] lg:max-w-[1185px] xl:max-w-[1785px]` — 20 containers across 17 files (all researchhub
+indexes + ArticleView; news index/press/meetings/publications; about/publications; irb-meetings; both
+forms; BasePage [ToC branch keeps 1185 at md/lg + gains xl]; news/[slug]; search; footer). This adds
+the xl step (matches prod on ultra-wide ≥1904px displays) AND fixes the listing pages that sat at 1152
+vs prod's 1185/1785 — improving their pixel parity (at 1920 they were 1152 vs prod 1785). Verified:
+1785px at xl, no horizontal overflow, listings render. Breakpoints map to Vuetify px (global.css:
+md 960 / lg 1264 / xl 1904).
+
 ## [0.42.20] — 2026-06-01 — fix(parity): search page width → site-standard container (was 768px)
 
 `/search` was capped at `max-w-3xl` (**768px**) — far narrower than prod (the standard Vuetify

@@ -88,7 +88,7 @@ const doiSafe = article.doi ? escapeHtml(article.doi) : null;
     )
   }
 
-  <div class="article-grid mx-auto max-w-6xl px-4 md:px-6">
+  <div class="article-grid mx-auto max-w-[900px] lg:max-w-[1185px] xl:max-w-[1785px] px-4 md:px-6">
     {/* TOC + downloads — md+ sidebar, sticky. */}
     {
       (headings.length > 0 || hasDownloads) && (
