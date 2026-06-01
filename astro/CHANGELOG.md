@@ -3,6 +3,18 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.24] — 2026-06-01 — test(e2e): Playwright interaction-test scaffold + first spec (this session's flows)
+
+Interaction E2E was missing — Playwright was VR-only (the `playwright` lib, no `@playwright/test` runner).
+Added `playwright.config.ts` (testDir `e2e/`, baseURL localhost:4321, chromium, no webServer — CI starts it)
++ `e2e/interactions.spec.ts` covering THIS session's shipped flows: (1) tag chip on /news/press/ →
+navigates to `/search/?q=<tag>` + autofills the box + shows results; (2) context-bar tabs overflow and
+stay scroll-reachable at 375px (the `safe center` fix); (3) `/search/?q=crime` autofills + shows results +
+filter chips narrow them. Installed `@playwright/test@1.60.0` (runner; chromium already present from the VR
+harness). Added `test:e2e` script. **3/3 pass** (6/6 on `--repeat-each=2`). A TODO block atop the spec
+lists the remaining flows to cover: nav drawer, data tables (sort/filter/mobile), forms, translate modal,
+calendar, search deep-link route + `?filter=`, ResearchHub carousel.
+
 ## [0.42.23] — 2026-06-01 — fix(css): tag chips inside .markdown-body lost their fill (cascade-layer regression)
 
 When tag chips became `<a>` search links (0.42.17), unscoped chips INSIDE `.markdown-body` (press
