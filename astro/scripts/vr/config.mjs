@@ -87,7 +87,11 @@ export const PIXEL_THRESHOLD = 0.2;
 export const GATES = { pass: 0.01, warn: 0.03 };
 
 // Frozen wall-clock for client-computed dates / "NEW" badges (America/Chicago).
-export const FROZEN_TS = Date.parse("2026-05-29T12:00:00-05:00");
+// Keep this within the CURRENT month: prod (SPA) reads it client-side, but the new SSR
+// site computes dates server-side with the REAL clock — if the two straddle a month
+// boundary, date-relative content (news buckets, NEW/expired badges) shows spurious
+// shifts that aren't regressions. Robust long-term fix: freeze the server clock too.
+export const FROZEN_TS = Date.parse("2026-06-01T12:00:00-05:00");
 
 // Per-attempt navigation + settle timing.
 export const NAV_TIMEOUT_MS = 45000;
