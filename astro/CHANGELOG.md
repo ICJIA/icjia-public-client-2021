@@ -3,6 +3,18 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.23] — 2026-06-01 — fix(css): tag chips inside .markdown-body lost their fill (cascade-layer regression)
+
+When tag chips became `<a>` search links (0.42.17), unscoped chips INSIDE `.markdown-body` (press
+cards, CMS-page tags, news-article tags) silently lost their high-contrast fill: github-markdown's
+UNLAYERED `.markdown-body a` (color #0366d6, background transparent) outranks the `.chip` rule in
+legacy-globals' `layer(base)` — an unlayered rule beats any cascade layer regardless of specificity.
+Added an UNLAYERED `a.chip` override in global.css at (0,1,1) specificity: it ties `.markdown-body a`
+and wins by source order (declared after the github-markdown @import), while staying BELOW the
+section-scoped `.funding .chip` / `.researchhub .chip` (0,2,0) so those keep their own look. Verified
+in-browser: press chip now white-fill/black-text (was transparent/blue-link); funding chip unchanged
+(grey #555 text, #bbb border, 12px radius — `preservedScopedStyle: true`).
+
 ## [0.42.22] — 2026-06-01 — feat: press cards show clickable tag chips (→ /search)
 
 `NewsCard` (press-only) now renders a tag-chip row (≤4 tags) when the item has tags. The data layer

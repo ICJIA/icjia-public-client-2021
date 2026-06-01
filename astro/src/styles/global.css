@@ -28,6 +28,25 @@
  * unlayered rule beats `no-underline`/`font-normal` utilities. */
 @import "./legacy-globals.css" layer(base);
 
+/* Tag chips are now <a> search links. Inside .markdown-body, github-markdown's
+ * (UNLAYERED) `.markdown-body a` rules — color #0366d6, background transparent —
+ * outrank the LAYERED `.chip` in legacy-globals (unlayered always beats layer(base),
+ * regardless of specificity) and strip the chip's high-contrast fill. Re-assert the
+ * chip look here, UNLAYERED, at `a.chip` specificity (0,1,1): it ties `.markdown-body
+ * a` and wins by source order (declared after the github-markdown @import), while
+ * staying BELOW the section-scoped `.funding .chip` / `.researchhub .chip` (0,2,0) so
+ * those keep their own look. Fixes press cards, CMS-page tags, and news-article tags. */
+a.chip {
+  background-color: #ffffff;
+  color: #000000;
+  text-decoration: none;
+}
+a.chip:hover,
+a.chip:focus-visible {
+  background-color: #000000;
+  color: #ffffff;
+}
+
 /*
  * ICJIA design tokens (Tailwind 4 CSS-first theme).
  * Phase 1: fonts + brand colors + Vuetify-aligned breakpoints. Component-level
