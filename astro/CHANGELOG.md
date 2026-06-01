@@ -3,6 +3,20 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.27] — 2026-06-01 — fix(security): A-list hardening from the red-team audit (purge-cache, scheduled-fn gate, iframe allowlist, slug guard)
+
+Second security pass (after 0.42.26's stored-XSS fixes), applying the audit's A-list (README "Security audit"):
+- `netlify/functions/purge-cache.mjs`: constant-time secret compare (`crypto.timingSafeEqual`) + removed the
+  `?secret=` query-param fallback (header-only → secret can't land in function/proxy logs). [FN-1, FN-2]
+- `netlify/functions/keep-warm.mjs` + `nightly-rebuild.mjs`: removed the spoofable `x-nf-event` header branch
+  from the scheduled-only gate (rely on the un-spoofable no-HTTP-method check). [FN-3, NR-1]
+- `src/lib/markdown.js`: DOMPurify `uponSanitizeElement` hook restricts CMS `<iframe>` to https + a trusted-host
+  allowlist (blocks arbitrary phishing/disinformation embeds); extend the list if a legit embed is blocked. [HDR-1]
+- `src/pages/api/meeting.json.ts`: validate slug shape before querying Strapi + cache negative results — caps the
+  per-arbitrary-slug cost/DoS vector (platform rate-limiting on `/api/*` remains an ops step). [API-1]
+Parity suite 61/61 green; functions syntax-checked. Remaining owner items: rotate `.env` creds, Netlify platform
+rate-limit on `/api/*`, CSP enforce at cutover.
+
 ## [0.42.26] — 2026-06-01 — fix(security): close 3 stored-XSS sinks + app-url scheme check (pre-cutover red-team audit)
 
 A full adversarial red-team audit (6 parallel passes, each finding verified against source; full record in

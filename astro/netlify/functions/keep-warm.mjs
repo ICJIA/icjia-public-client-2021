@@ -83,8 +83,9 @@ async function runKeepWarm(event) {
   // L1: accept ONLY a genuine scheduled invocation. A scheduled trigger has no
   // real HTTP method (or source aws.events). Any actual HTTP request → 403.
   const method = event && event.httpMethod;
-  const isScheduled =
-    !method || (event && event.source === "aws.events") || event?.headers?.["x-nf-event"] === "schedule";
+  // A genuine scheduled trigger has no HTTP method (or source aws.events). Do NOT
+  // trust the caller-settable `x-nf-event` header here — it is spoofable.
+  const isScheduled = !method || (event && event.source === "aws.events");
   if (method && !isScheduled) {
     return { statusCode: 403, body: "forbidden" };
   }

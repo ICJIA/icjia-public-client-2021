@@ -25,8 +25,9 @@ async function runNightlyRebuild(event) {
   }
   // Only a genuine scheduled invocation (no real HTTP method) may trigger a build.
   const method = event && event.httpMethod;
-  const isScheduled =
-    !method || (event && event.source === "aws.events") || event?.headers?.["x-nf-event"] === "schedule";
+  // No HTTP method (or source aws.events) = genuine scheduled trigger. The
+  // `x-nf-event` header is caller-settable, so it must not gate this.
+  const isScheduled = !method || (event && event.source === "aws.events");
   if (method && !isScheduled) return { statusCode: 403, body: "forbidden" };
 
   const hook = process.env.NETLIFY_BUILD_HOOK_URL;

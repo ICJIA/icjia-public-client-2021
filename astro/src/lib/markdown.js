@@ -37,6 +37,39 @@ const markdownItAttrs = interop(markdownItAttrsRaw);
 
 const DOMPurify = createDOMPurify(new JSDOM("").window);
 
+// CMS-embedded <iframe> is allowed (renderToHtml ADD_TAGS) for legitimate embeds,
+// but ONLY from trusted hosts — otherwise a malicious/compromised author could embed
+// an arbitrary external page (phishing / disinformation). This hook drops any iframe
+// whose src is not https + an allowlisted host. **EXTEND this list** if a legitimate
+// embed is blocked (confirm against actual CMS content before/at cutover).
+const IFRAME_HOST_ALLOWLIST = [
+  /(^|\.)icjia\.illinois\.gov$/i,
+  /(^|\.)icjia-api\.cloud$/i,
+  /(^|\.)icjia\.cloud$/i,
+  /(^|\.)youtube\.com$/i,
+  /(^|\.)youtube-nocookie\.com$/i,
+  /(^|\.)youtu\.be$/i,
+  /(^|\.)vimeo\.com$/i,
+  /(^|\.)arcgis\.com$/i,
+  /(^|\.)dwcdn\.net$/i, // Datawrapper
+  /(^|\.)tableau\.com$/i,
+  /(^|\.)google\.com$/i, // Maps / Docs embeds
+];
+function iframeSrcAllowed(src) {
+  try {
+    const u = new URL(src, "https://icjia.illinois.gov");
+    return u.protocol === "https:" && IFRAME_HOST_ALLOWLIST.some((re) => re.test(u.hostname));
+  } catch {
+    return false;
+  }
+}
+DOMPurify.addHook("uponSanitizeElement", (node, data) => {
+  if (data.tagName === "iframe") {
+    const src = node.getAttribute ? node.getAttribute("src") : null;
+    if (!src || !iframeSrcAllowed(src)) node.parentNode?.removeChild(node);
+  }
+});
+
 const mdAnchorOpts = {
   level: 2,
   slugify: (s) =>

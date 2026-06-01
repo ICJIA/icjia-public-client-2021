@@ -172,11 +172,11 @@ This section is intentionally complete and candid (it is meant for management + 
 | XSS-3 | Event/meeting/grant `name` via `set:html`/`x-html` (text-cleaned only) | **High** | ✅ Fixed |
 | INJ-1 | Hub app `url` → `window.open()` with no scheme check (`javascript:` possible) | Medium | ✅ Fixed |
 | CSP-1 | CSP ships **Report-Only** (not enforced) + stale allowlist hosts in active `netlify.toml` | **High** | 🗓 Tracked — cutover |
-| FN-1 | `purge-cache` secret compared with `!==` (not constant-time) | Medium | 📋 Recommended |
-| FN-2 | `purge-cache` accepts secret via `?secret=` query param (log exposure) | Medium | 📋 Recommended |
-| API-1 | No rate-limit on the SSR `?slug=` endpoints (cost / availability DoS) | Medium | 📋 Recommended |
-| HDR-1 | DOMPurify allows `<iframe>` in CMS markdown (content / phishing injection) | Medium | 📋 Recommended (content decision) |
-| FN-3 | `keep-warm`/`nightly-rebuild` trust a spoofable `x-nf-event` header | Low | 📋 Recommended |
+| FN-1 | `purge-cache` secret compared with `!==` (not constant-time) | Medium | ✅ Fixed |
+| FN-2 | `purge-cache` accepts secret via `?secret=` query param (log exposure) | Medium | ✅ Fixed |
+| API-1 | No rate-limit on the SSR `?slug=` endpoints (cost / availability DoS) | Medium | ✅ Fixed (code) · platform limit = ops |
+| HDR-1 | DOMPurify allows `<iframe>` in CMS markdown (content / phishing injection) | Medium | ✅ Fixed (host allowlist) |
+| FN-3 | `keep-warm`/`nightly-rebuild` trust a spoofable `x-nf-event` header | Low | ✅ Fixed |
 | CSP-2 | `script-src 'unsafe-inline' 'unsafe-eval'` (required by Alpine) | Medium | ⚖️ Accepted (compensating control) |
 | SEC-1 | Live credentials in the local `.env` | Info | ⚠️ Not committed (verified); rotate as precaution |
 | DEP-1 | 1 moderate transitive advisory (`yaml`), unreachable at runtime | Low | 👀 Monitored |
@@ -191,12 +191,17 @@ This section is intentionally complete and candid (it is meant for management + 
 
 All four were re-checked with the VR harness after fixing: affected pages render identically to prod with zero errors (the fixes apply the same sanitization prod already uses, so no visual regression).
 
-### Recommended (not yet applied)
+### Fixed in follow-up (commit `0.42.27`)
 
-- **FN-1 / FN-2 — `purge-cache` hardening.** Compare the webhook secret with `crypto.timingSafeEqual`, and remove the `?secret=` query-param fallback (it can land in function/proxy logs); accept the `x-icjia-purge-secret` header only.
-- **API-1 — rate-limit the `?slug=` SSR endpoints.** Meeting slugs are publicly enumerable, so an attacker can bypass the edge cache and force one live Strapi query per slug. Add a Netlify rate-limit rule on `/api/*` (cost/availability only — all data is public records).
-- **HDR-1 — restrict `<iframe>` in CMS markdown.** DOMPurify currently lets authors embed arbitrary external iframes (phishing / disinformation vector). Replace the blanket allowance with an allowlist of known embed domains, or remove it. *Needs a content owner to confirm no legitimate embeds depend on it.*
-- **FN-3 — scheduled-function gate.** Drop the `x-nf-event: schedule` header branch in `keep-warm`/`nightly-rebuild`; rely on the un-spoofable "no HTTP method" check. Theoretical today (Netlify does not route scheduled functions over HTTP).
+- **FN-1 / FN-2 — `purge-cache` hardening.** Secret now compared with `crypto.timingSafeEqual` (constant-time); the `?secret=` query-param fallback was removed (header-only, so the secret can't land in logs).
+- **FN-3 — scheduled-function gate.** Removed the spoofable `x-nf-event` header branch from `keep-warm`/`nightly-rebuild`; the gate relies on the un-spoofable "no HTTP method" check.
+- **HDR-1 — `<iframe>` host allowlist.** A DOMPurify `uponSanitizeElement` hook now drops any CMS-embedded iframe whose `src` is not https + an allowlisted host (`markdown.js`). **Action:** confirm the allowlist covers every legitimate embed in CMS content before cutover (extend it if needed).
+- **API-1 — `?slug=` DoS cap (code).** The meeting endpoint validates slug shape before any Strapi query and caches negative results, capping the per-arbitrary-slug cost vector. *Platform-level rate-limiting on `/api/*` remains an owner/ops step — a Netlify dashboard/edge feature that can't be configured or tested from the codebase.*
+
+### Remaining for the owner
+- **SEC-1 — rotate the `.env` credentials** (precaution; gitignored/never committed, but read during the audit).
+- **API-1 (platform) — configure Netlify rate-limiting on `/api/*`** at/after cutover.
+- **CSP-1 — enforce the CSP** (see "Tracked for cutover" below).
 
 ### Accepted risk
 

@@ -26,6 +26,7 @@
 // not edge-cached SSR, so a purge can't help them — they refresh on the nightly
 // rebuild, or immediately if PURGE_TRIGGER_BUILD=1 fires the build hook.
 import { purgeCache } from "@netlify/functions";
+import { timingSafeEqual } from "node:crypto";
 
 // Strapi content-type (singular `model` in the webhook payload) → the
 // Netlify-Cache-Tag set by setCache() in src/lib/cache.ts. Models NOT listed here
@@ -59,15 +60,23 @@ const MODEL_TAG = {
 // (pages render via prerendered routes); `page`/`publication` are LIVE (see MODEL_TAG).
 const STATIC_MODELS = new Set(["unit"]);
 
+// Constant-time compare so the shared secret can't be brute-forced via response
+// timing. Returns false on any type/length mismatch (the length is not sensitive).
+function secretMatches(sent, secret) {
+  if (typeof sent !== "string" || typeof secret !== "string" || !secret) return false;
+  const a = Buffer.from(sent);
+  const b = Buffer.from(secret);
+  if (a.length !== b.length) return false;
+  return timingSafeEqual(a, b);
+}
+
 export const handler = async (event) => {
-  // 1) Auth — shared secret via header (preferred) or ?secret= query param.
+  // 1) Auth — shared secret via the `x-icjia-purge-secret` header ONLY. (No `?secret=`
+  //    query-param fallback: query strings get written to function/proxy/CDN logs.)
   const secret = process.env.PURGE_SECRET;
   const h = event.headers || {};
-  const sent =
-    h["x-icjia-purge-secret"] ||
-    h["X-Icjia-Purge-Secret"] ||
-    (event.queryStringParameters && event.queryStringParameters.secret);
-  if (!secret || sent !== secret) {
+  const sent = h["x-icjia-purge-secret"] || h["X-Icjia-Purge-Secret"] || "";
+  if (!secretMatches(sent, secret)) {
     return { statusCode: 401, body: "unauthorized" };
   }
   if (event.httpMethod && event.httpMethod !== "POST") {

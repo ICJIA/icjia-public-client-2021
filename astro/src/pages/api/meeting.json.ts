@@ -13,10 +13,20 @@ export const prerender = false;
 
 export const GET: APIRoute = async ({ url }) => {
   const slug = url.searchParams.get("slug");
-  if (!slug) return new Response("Missing slug", { status: 400 });
+  // Validate slug shape BEFORE hitting Strapi — caps a cost/DoS vector where an
+  // attacker forces one live CMS query per arbitrary slug. Real slugs are kebab-case.
+  if (!slug || !/^[a-z0-9][a-z0-9-]{0,200}$/.test(slug)) {
+    return new Response("Bad slug", { status: 400 });
+  }
 
   const m = await getMeeting(slug);
-  if (!m) return new Response("Not found", { status: 404 });
+  if (!m) {
+    // Cache the negative result so repeat hits for a well-formed but nonexistent slug
+    // don't each re-query Strapi (the `meetings` tag purges it when a meeting changes).
+    const nf = new Response("Not found", { status: 404 });
+    setCache(nf, "meetings");
+    return nf;
+  }
 
   const res = new Response(
     JSON.stringify({
