@@ -3,6 +3,14 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.15] — 2026-06-01 — fix(parity): funding attachments → Filename/Updated/Size table
+
+From the source-verified re-triage: funding cards rendered attachments as a flat `<ul>` (filename + size);
+prod renders a 3-column table (Filename | Last Updated | Size). Replaced BOTH the SSR + Alpine `<ul>` blocks
+in `FundingListing.astro` with `<table class="att-table">` (the `.funding .att-table` CSS already existed),
+using `a.name` / `a.updatedAlt` / `a.niceSize`. funding **21→15–18%** (residual = live-data drift [the
+funding opportunities differ between the two captures] + font-floor — not bugs).
+
 ## [0.42.14] — 2026-06-01 — fix(parity): forms field rhythm + bold labels; bio text metrics
 
 From the source-verified re-triage:

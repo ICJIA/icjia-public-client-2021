@@ -78,16 +78,24 @@ const CJ = 'https://visitor.r20.constantcontact.com/manage/optin?v=001MqUcqqvjwL
               {g.attachments.length > 0 && (
                 <div class="mt-4">
                   <h3 class="sub-heading">Attachments</h3>
-                  <ul class="m-0 list-none p-0">
-                    {g.attachments.map((a) => (
-                      <li class="mt-1">
-                        <a class="attachment" href={a.url} target="_blank" rel="noopener noreferrer">
-                          {a.name}
-                        </a>{' '}
-                        <span class="text-xs text-gray-500">({a.niceSize})</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <table class="att-table">
+                    <thead>
+                      <tr><th>Filename</th><th>Last Updated</th><th>Size</th></tr>
+                    </thead>
+                    <tbody>
+                      {g.attachments.map((a) => (
+                        <tr>
+                          <td>
+                            <a class="attachment" href={a.url} target="_blank" rel="noopener noreferrer">
+                              {a.name}
+                            </a>
+                          </td>
+                          <td>{a.updatedAlt}</td>
+                          <td>{a.niceSize}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               )}
               <div class="mt-5">
@@ -137,14 +145,20 @@ const CJ = 'https://visitor.r20.constantcontact.com/manage/optin?v=001MqUcqqvjwL
           <template x-if="g.attachments.length">
             <div class="mt-4">
               <h3 class="sub-heading">Attachments</h3>
-              <ul class="m-0 list-none p-0">
-                <template x-for="a in g.attachments" :key="a.url">
-                  <li class="mt-1">
-                    <a class="attachment" :href="a.url" target="_blank" rel="noopener noreferrer" x-text="a.name"></a>
-                    <span class="text-xs text-gray-500">(<span x-text="a.niceSize"></span>)</span>
-                  </li>
-                </template>
-              </ul>
+              <table class="att-table">
+                <thead>
+                  <tr><th>Filename</th><th>Last Updated</th><th>Size</th></tr>
+                </thead>
+                <tbody>
+                  <template x-for="a in g.attachments" :key="a.url">
+                    <tr>
+                      <td><a class="attachment" :href="a.url" target="_blank" rel="noopener noreferrer" x-text="a.name"></a></td>
+                      <td x-text="a.updatedAlt"></td>
+                      <td x-text="a.niceSize"></td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
             </div>
           </template>
           <div class="mt-5">
