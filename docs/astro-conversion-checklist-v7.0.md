@@ -5060,3 +5060,27 @@ State agencies have specific copy that legally must remain verbatim — accessib
 
 These pages are usually 5–10 routes max, but breaking them is higher-severity than breaking a news post.
 
+---
+
+## Lessons appended 2026-06-01 — UX/parity polish batch + E2E scaffold
+
+Branch `feat/astro-migration`, commits `f7a88f2..e75a829` (UX changes deployed; E2E scaffold is test-only).
+
+### L1. Cascade layers beat specificity — watch unlayered vendor CSS vs `layer(base)`
+github-markdown.css is `@import`ed UNLAYERED in `global.css`; legacy-globals.css is in `layer(base)`. An unlayered rule beats ANY layered rule regardless of specificity. So when tag chips became `<a>` search links, `.markdown-body a` (unlayered: blue color + transparent bg) silently overrode the `.chip` rule (layer base) on every UNSCOPED chip inside `.markdown-body` (press cards, CMS-page tags, news-article tags) — fill stripped, blue link text. Section-scoped chips (`.funding .chip` = 0,2,0) were fine (specificity beats `.markdown-body a` 0,1,1). FIX: an UNLAYERED `a.chip` override (0,1,1) in global.css — ties `.markdown-body a`, wins by source order, stays BELOW section scopes. LESSON: when converting `<span>`→`<a>`, re-check `.markdown-body a` overrides AND whether your base rule sits in a cascade layer (layered always loses to unlayered vendor CSS).
+
+### L2. Match prod's ONE container exactly — Vuetify v-container = 900 / 1185 / 1785 (md/lg/xl)
+Prod wraps EVERY page in one Vuetify `v-container` (max-width 900 ≥960, 1185 ≥1264, 1785 ≥1904) — measured live: prod /news/ and /search/ both 1785px at a 2593px viewport. Astro had drifted into TWO containers: content pages `max-w-[900px] lg:max-w-[1185px]` (capped 1185) and listings `max-w-6xl` (=1152, never reached xl). Unified all 20 containers to `max-w-[900px] lg:max-w-[1185px] xl:max-w-[1785px]`. LESSON: don't approximate the content container with a Tailwind preset (`max-w-6xl`≈1152 ≠ 1185); measure prod's v-container per breakpoint and match the arbitrary px. (Breakpoints here are remapped to Vuetify px in global.css `@theme`: md 960 / lg 1264 / xl 1904.)
+
+### L3. `justify-content: center` + overflow strands leading items (unscrollable)
+A centered flex strip (`justify-content: center` + `overflow-x: auto`) that overflows pushes its LEADING items off the left edge where scroll can't reach — measured: the first of 7 context-bar tabs sat −544px off-screen at 375px. FIX: `justify-content: safe center` (centers when it fits, falls back to flex-start on overflow). LESSON: any centered + scrollable strip (tab bars, chip rows) needs `safe center`, not `center`.
+
+### L4. WCAG-AAA on small text = ≥7:1 → dark reds only
+Chip/badge text (≤~14px) is "normal" text → AAA needs 7:1. Common alert reds are AA-only against white: #ad2e2e=6.55, #b71c1c=6.57, #c62828=5.62, #aa2525=7.00 (borderline). **#a01818** = 7.96:1 → AAA with margin (relative luminance ≤ ~0.10). LESSON: compute the ratio, don't eyeball; used for all expired/cancelled chips (intentional deviation — prod's were AA-only and users missed them).
+
+### L5. Playwright: the VR `playwright` lib ≠ the `@playwright/test` runner
+The repo had `playwright` (raw API, used by scripts/vr) but NOT `@playwright/test`. Interaction E2E (a `playwright.config.ts` + `playwright test`) needs the runner — install `@playwright/test` (pin to match `playwright`); chromium binaries from the VR harness are reused (no `playwright install`). Specs in `e2e/`, config at astro root, `test:e2e` script, NO `webServer` block (point at the running dev server; CI starts it). Web-first `expect` with generous waits handles the ~2.7MB Fuse index without flake. GOTCHA: `locatorA.or(locatorB)` throws strict-mode if BOTH match — assert separately.
+
+### L6. VR harness defaults (re-arm before the final sweep)
+`scripts/vr/config.mjs`: `VR_NEW` defaults to localhost (visually identical to the branch deploy — only gzip/perf differ); VIEWPORTS default to 375/960/1280 to keep the cross-template run tractable. **RE-ADD 768 + xl-1920** for the final pre-cutover sweep — the L2 container change specifically needs the 1920 capture it never had. Gates ≤1% PASS / ≤3% WARN / >3% FAIL; live-data + cross-engine AA floor mean text pages never hit 0%.
+
