@@ -3,6 +3,18 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.12] — 2026-06-01 — fix(layout): short-page content fills viewport so disclaimer/footer flow below
+
+Source-verified re-triage (DevTools-measured both live sites) found irb-meetings' 42% was a VERTICAL DRIFT,
+not row-height: prod's legacy `.page` has `min-height ≈ calc(100vh − chrome)`, filling short-page content so
+the disclaimer + footer flow BELOW the fold. Astro's `flex-1` was on `<main>` but `SiteDisclaimer` renders
+INSIDE `<main>` after `<slot/>`, so the fill landed below the disclaimer → it rode up ~455px on short pages.
+Fixed in `BaseLayout.astro`: wrap `<slot/>` in `min-h-[calc(100vh-160px)]` (160 ≈ header 90 + context bar 70)
+so the content fills the viewport and the disclaimer/footer flow below — matching prod. **Systemic** (all
+short pages). irb-meetings desktop/md **42→31%**, footer 834→1162px (prod 1482); no regression
+(publications/news-article unchanged). Remaining gap traced to a SEPARATE global issue: Astro's
+`SiteDisclaimer` is ~270px SHORTER than prod's (138 vs 408px) — investigating next.
+
 ## [0.42.11] — 2026-06-01 — fix(cutover): B3 no-slash→slash via Netlify Edge Function (middleware removed)
 
 The Astro middleware (0.42.4) did **not** fire on the Netlify build either — **confirmed on the deploy**:

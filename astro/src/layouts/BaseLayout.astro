@@ -198,12 +198,17 @@ const ogImg = new URL(ogImage ?? siteConfig.ogImage, Astro.url.origin).href;
     </div>
     <a class="skiplink" href="#main-content">Skip to main content</a>
     <SiteHeader />
-    {/* flex-1 makes main fill remaining height so the footer sticks to the
-        bottom of the viewport on short pages (sticky-footer layout). The fixed
-        header is out of flow, so pt-[90px] clears it. */}
+    {/* The CONTENT area fills the first viewport so the disclaimer + footer flow
+        BELOW the fold on short pages — mirroring prod's legacy `.page`
+        min-height: calc(100vh - chrome). Without it the disclaimer rode up ~455px on
+        short pages (e.g. /irb/irb-meetings/, 3 rows). NOTE: `flex-1` here is WRONG —
+        it reserves the disclaimer INSIDE the viewport (pulls it up); a min-height on
+        the content fills past it. 160px ≈ fixed header (90) + context bar (~70). The
+        fixed header is out of flow, so pt-[90px] clears it; main stays flex-1 so the
+        footer still sticks on any sub-viewport page. */}
     <main id="main-content" class="flex-1 pt-[90px]">
       <SiteContextBar contextTitle={contextTitle} />
-      <slot />
+      <div class="min-h-[calc(100vh-160px)]"><slot /></div>
       <SiteDisclaimer />
     </main>
     <SiteFooter />
