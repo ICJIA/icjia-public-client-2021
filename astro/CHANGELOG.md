@@ -3,6 +3,19 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.11] — 2026-06-01 — fix(cutover): B3 no-slash→slash via Netlify Edge Function (middleware removed)
+
+The Astro middleware (0.42.4) did **not** fire on the Netlify build either — **confirmed on the deploy**:
+`/news`, `/grants/funding`, `/researchhub`, `/events` all returned 404 (not 301). Astro's router rejects
+unmatched no-slash paths *before* middleware runs, in production too. Replaced with a **Netlify Edge
+Function** (`astro/netlify/edge-functions/trailing-slash.ts`) — it runs at the edge *before* the SSR function
+and sees the exact bare path, so it 301s the no-slash form with no loop (Netlify auto-detects the
+`<base>/netlify/edge-functions/` dir; in-file `config.path = '/*'`). Passes through root/slashed/files;
+`excludedPath` skips the 6 proxied sub-apps + `/api` + `/.netlify` + `/_image` so their in-place paths
+aren't rewritten. Open-redirect-safe (mutates only `url.pathname`). **No keep-warm needed** — edge functions
+are Deno-at-edge with no cold-start (keep-warm is only for the SSR Lambda). Removed the dead
+`src/middleware.ts`. VERIFY post-deploy: `curl <deploy>/news` → `301 → /news/`.
+
 ## [0.42.10] — 2026-06-01 — feat(events): wire calendar to prod's richer feed + chip parity + filter fix
 
 Polished the events calendar to prod content-parity (agent-built, verified against prod's rendered styles):
