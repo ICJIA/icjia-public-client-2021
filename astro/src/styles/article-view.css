@@ -322,6 +322,11 @@
   }
 }
 /* article-toc */
+#article-toc {
+  /* Cap the TOC block so its divider (hr) + heading underline don't stretch across the
+     now-wider 25% TOC column and bleed into the article content. Compact, left-aligned. */
+  max-width: 275px;
+}
 #article-toc .v-list {
   background: none;
 }

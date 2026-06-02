@@ -3,6 +3,13 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.37] — 2026-06-02 — fix(researchhub): TOC divider no longer bleeds into the content
+
+After the wider-layout change the TOC column is 25% of the row, so the TOC's horizontal divider (`hr`) +
+heading underline stretched across the whole (now-wide) column and reached into the article content. Capped
+`#article-toc` at `max-width: 275px` (the original compact TOC width), left-aligned. Verified: hr 275px,
+ending 358px before the content (was spanning right up to it).
+
 ## [0.42.36] — 2026-06-02 — fix(researchhub): space the article tag pills apart
 
 The detail-page tag pills (e.g. FATALITY REVIEW · INTIMATE PARTNER VIOLENCE · DOMESTIC VIOLENCE) rendered
