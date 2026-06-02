@@ -283,6 +283,17 @@
 #article-view .article-download:hover {
   background-color: #e0e0e0;
 }
+/* Article-detail tag chips → match the canonical Vuetify v-btn.chip. The white fill /
+   black text / 2px #222 border / 10px-700 come from the base .chip (legacy-globals.css);
+   the v-btn also gave them UPPERCASE + a pill radius + Lato, which the native .chip lacks
+   (and #article-view's Georgia leaks into the font). Restore those so the tags read
+   identical to prod (e.g. "FATALITY REVIEW" as a pill, not "Fatality Review" as a box). */
+#article-view .chip {
+  font-family: "Lato", sans-serif;
+  text-transform: uppercase;
+  border-radius: 28px;
+  padding: 0 9px;
+}
 #article-view .article-title {
   font-size: 48px;
   font-weight: 700;

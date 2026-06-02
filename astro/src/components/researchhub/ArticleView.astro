@@ -280,7 +280,11 @@ const doiSafe = article.doi ? escapeHtml(article.doi) : null;
       display: grid;
       grid-template-columns: 275px 1fr;
       gap: 1.5rem;
-      align-items: start;
+      /* Stretch the TOC column to the body's height so position:sticky has its full range:
+         the TOC stays pinned through the article, then releases at the content bottom —
+         before the footer (no overlap). `align-items:start` collapsed the column to its own
+         ~213px, leaving the sticky TOC almost no range, so it scrolled away immediately. */
+      align-items: stretch;
     }
     .article-toc-col { display: block; }
     .article-toc-sticky-wrap {

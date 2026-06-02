@@ -3,6 +3,22 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.33] — 2026-06-02 — fix(researchhub): TOC stays sticky (releases before footer) + article tag chips match prod
+
+Two follow-ups to 0.42.32 from manager review of the branch deploy:
+- **TOC now actually sticks.** `align-items: start` on the article grid collapsed the TOC column to its
+  own ~213px height, so `position: sticky` had almost no range and the TOC scrolled away immediately
+  ("toc is not fixed"). Changed the grid to `align-items: stretch` so the column matches the body height —
+  the TOC now stays pinned at `top: 170px` through the article and **releases at the content bottom, before
+  the footer** (no overlap, on long or short TOCs). Verified: stuck at 170 mid-scroll; at page bottom the
+  TOC wrap bottom (383) sits well above the footer top (752).
+- **Article tag chips match prod.** The detail-page `.chip` had the right white fill / black text / 2px
+  `#222` border / 10px-700 (from base `.chip`), but was missing the canonical Vuetify `v-btn.chip`'s
+  UPPERCASE + pill radius (28px) + Lato — and `#article-view`'s Georgia leaked into the font. Added
+  `#article-view .chip` to restore those three, so tags render identical to prod (e.g. "FATALITY REVIEW"
+  as a Lato pill, not "Fatality Review" as a serif box). The category (`VICTIMS`, #0e4471/900/Georgia)
+  already matched prod exactly.
+
 ## [0.42.32] — 2026-06-02 — fix(researchhub): pixel-perfect article body, TOC, download button + sticky context bar
 
 Fixed the visual regressions managers/users flagged on the Astro ResearchHub article pages

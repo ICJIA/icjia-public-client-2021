@@ -64,6 +64,20 @@ export const ROUTES = [
   // ResearchHub (mask the rotating carousel on the landing)
   { id: "researchhub", path: "/researchhub/", fullPage: true, settleMs: 2500, mask: CAROUSEL_MASK },
   { id: "hub-article", path: "/researchhub/articles/2019-illinois-methamphetamine-study/", fullPage: true, mask: [] },
+  // Article batch for the post-fix VR sweep (Vue prod vs Astro branch) — a spread of
+  // reports/studies/evaluations/reviews/surveys that exercise the fixed paths: nested
+  // lists, in-text footnotes + numbered endnotes, bordered+striped tables, TOC, download.
+  { id: "hub-cbc", path: "/researchhub/articles/community-based-corrections-task-force-report/", fullPage: true, mask: [] },
+  { id: "hub-death-custody", path: "/researchhub/articles/2022-illinois-death-in-custody-annual-report/", fullPage: true, mask: [] },
+  { id: "hub-victim-needs", path: "/researchhub/articles/2022-victim-needs-assessment/", fullPage: true, mask: [] },
+  { id: "hub-bullying", path: "/researchhub/articles/a-content-analysis-of-illinois-school-bullying-policies/", fullPage: true, mask: [] },
+  { id: "hub-mhc-review", path: "/researchhub/articles/a-review-of-literature-on-mental-health-court-goals-effectiveness-and-future-implications/", fullPage: true, mask: [] },
+  { id: "hub-victim-assist", path: "/researchhub/articles/a-multi-site-evaluation-of-illinois-police-department-based-victim-assistance-programs/", fullPage: true, mask: [] },
+  { id: "hub-drug-testing", path: "/researchhub/articles/a-study-of-drug-testing-practices-in-probation/", fullPage: true, mask: [] },
+  { id: "hub-traffic-stop", path: "/researchhub/articles/2024-2025-illinois-traffic-and-pedestrian-stop-data-use-and-collection-task-force-findings/", fullPage: true, mask: [] },
+  { id: "hub-arrest-covid", path: "/researchhub/articles/a-preliminary-look-at-illinois-arrest-trends-during-the-covid-19-pandemic-in-2020/", fullPage: true, mask: [] },
+  { id: "hub-legal-aid", path: "/researchhub/articles/a-survey-of-civil-legal-aid-service-providers-in-illinois/", fullPage: true, mask: [] },
+  { id: "hub-deflection", path: "/researchhub/articles/a-multi-site-evaluation-of-law-enforcement-deflection-in-the-united-states/", fullPage: true, mask: [] },
   { id: "dataset", path: "/researchhub/datasets/illinois-uniform-crime-reports-ucr-index-crime-offense/", fullPage: true, mask: [] },
   { id: "app", path: "/researchhub/apps/parole-explorer/", fullPage: true, mask: [] },
   // IRB
