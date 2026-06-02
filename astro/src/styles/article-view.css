@@ -296,6 +296,9 @@
   text-transform: uppercase;
   border-radius: 28px;
   padding: 0 9px;
+  /* Space the pills apart (they were touching) + a little bottom room for when they wrap. */
+  margin-right: 6px;
+  margin-bottom: 4px;
 }
 #article-view .article-title {
   font-size: 48px;

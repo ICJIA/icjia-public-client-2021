@@ -3,6 +3,12 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.36] — 2026-06-02 — fix(researchhub): space the article tag pills apart
+
+The detail-page tag pills (e.g. FATALITY REVIEW · INTIMATE PARTNER VIOLENCE · DOMESTIC VIOLENCE) rendered
+edge-to-edge / touching. Added `margin-right: 6px` (+ `margin-bottom: 4px` so they breathe when they wrap) to
+`#article-view .chip`. Verified: 6px gap between each pill.
+
 ## [0.42.35] — 2026-06-02 — fix(researchhub): article body matches prod's wider, left-aligned layout (VR alignment)
 
 The post-fix VR sweep FAILed every article at 7–19% — traced not to styling (which matched prod) but to the
