@@ -296,6 +296,32 @@ const fixLabelInName = function (html) {
   return changed ? doc.body.innerHTML : html;
 };
 
+// CMS authors inconsistently type a space before the footnote marker (e.g. "word [^1]"
+// vs "word[^1]"), so some in-text references render with a stray gap before the [n]
+// superscript. Trim trailing whitespace from the text node immediately before each
+// .footnote-ref so the reference hugs the preceding word/punctuation — consistently, and
+// matching standard footnote typography. (A CSS margin can't do this safely: it would pull
+// the [n] into the text on references that already have no space. Intentional improvement
+// over prod, which keeps the authored space.)
+const fixFootnoteRefSpace = function (html) {
+  if (!html || html.indexOf("footnote-ref") === -1) return html;
+  let doc;
+  try {
+    doc = new DOMParser().parseFromString(html, "text/html");
+  } catch (e) {
+    return html;
+  }
+  let changed = false;
+  doc.querySelectorAll(".footnote-ref").forEach((ref) => {
+    const prev = ref.previousSibling;
+    if (prev && prev.nodeType === 3 && /\s$/.test(prev.textContent || "")) {
+      prev.textContent = (prev.textContent || "").replace(/\s+$/, "");
+      changed = true;
+    }
+  });
+  return changed ? doc.body.innerHTML : html;
+};
+
 const renderToHtml = function (markdown) {
   const raw = md.render(markdown || "");
   const sanitized = DOMPurify.sanitize(raw, {
@@ -325,7 +351,9 @@ const renderToHtml = function (markdown) {
   // fixCmsLinkText before fixLabelInName: the former adds visible-text-prefixed
   // aria-labels to generic links; the latter then validates them (and strips any
   // genuinely mismatched ones). Order matters.
-  return fixLabelInName(fixCmsLinkText(sanitizeContent(fixImageLinks(fixTableHeaders(sanitized)))));
+  return fixFootnoteRefSpace(
+    fixLabelInName(fixCmsLinkText(sanitizeContent(fixImageLinks(fixTableHeaders(sanitized))))),
+  );
 };
 
 const parseHeadings = function (markdown) {

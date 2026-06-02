@@ -3,6 +3,17 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.38] — 2026-06-02 — fix(researchhub): trim the stray space before in-text footnote refs
+
+Some CMS authors type a space before the footnote marker (`word [^1]`) and some don't, so in-text references
+rendered with an inconsistent gap before the `[n]` superscript (e.g. "disorders. [3]" vs "suicide,[1]"). Added a
+`fixFootnoteRefSpace` post-render step in `markdown.js` (runs LAST in `renderToHtml`, so nothing re-adds the
+space) that trims trailing whitespace from the text node immediately before each `.footnote-ref` — so every
+reference hugs the preceding word/punctuation, the standard footnote typography, consistently across articles.
+A CSS margin couldn't do this safely (it would pull the `[n]` into the text on refs that already have no space).
+Verified: community-based `[1]`–`[4]` gaps 4×→0px; DV-fatality (already no-space) unchanged at 0px (no
+over-trim). Intentional improvement over prod, which keeps the authored space (manager-requested).
+
 ## [0.42.37] — 2026-06-02 — fix(researchhub): TOC divider no longer bleeds into the content
 
 After the wider-layout change the TOC column is 25% of the row, so the TOC's horizontal divider (`hr`) +
