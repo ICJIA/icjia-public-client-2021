@@ -3,6 +3,35 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.32] — 2026-06-02 — fix(researchhub): pixel-perfect article body, TOC, download button + sticky context bar
+
+Fixed the visual regressions managers/users flagged on the Astro ResearchHub article pages
+(`/researchhub/articles/*`), every value measured against and matched to the canonical deployed Vue site.
+Since all articles share the `ArticleView` + `.article-body` pipeline, these fix every article at once.
+- **`article-view.css`** — restored what Tailwind's preflight had stripped from `.article-body`
+  (github-markdown.css only styles `.markdown-body`, never the article body): list markers (`ul`→disc /
+  `ol`→decimal — fixes missing bullets AND missing endnote numbers), `p` margin-bottom 16px (paragraphs were
+  running together), and link color `#1565c0` (fixes the black in-text footnote superscripts `[n]` + all body
+  links; the underline + weight-900 already come from the global `a` rule). Tables: restored the full 1px-grey
+  per-cell grid (the vertical column lines were missing) + added a `#f6f8fa` zebra stripe (owner-requested).
+  Download button: matched the canonical Vuetify `v-btn` exactly (36px grey raised, uppercase Lato 12.8px/500,
+  v-btn letter-spacing, elevation-2 shadow). TOC items: undid the underline/weight-900 they inherited as `<a>`
+  from the global link rule, so they render plain like prod's `<div>`s.
+- **`SiteContextBar.astro`** — the context bar is now `position: sticky; top: 90px` (below the fixed 90px nav),
+  matching the canonical Vue where it stays pinned while scrolling (≈160px of pinned chrome). Global to all
+  non-home pages; verified it doesn't disturb list-page layout (`/news/` etc.).
+- **TOC + footnote smooth-scroll** (`ArticleToc.astro`, `ArticleView.astro`) — clicking a TOC heading, an
+  in-text footnote ref `[n]`, or a `↵` backref now smooth-scrolls the target to just below the live pinned
+  chrome (nav + sticky context bar) + a 12px margin, computed at click time so it adapts to viewport. The TOC
+  sidebar sticks at `top: 170px` to clear that chrome. Intentionally better than the canonical, whose footnote
+  offset was slightly off.
+
+Verified in-browser (desktop) on the *Community-Based Corrections Task Force Report* article: every computed
+value (link color, list markers, p-margin, table grid + zebra, TOC item, download button) matches
+`icjia.illinois.gov` exactly; footnote + TOC targets land 12px below the 160px pinned chrome. Pushed to
+`feat/astro-researchhub-fixes` for the Netlify branch-deploy manager review. (0.42.31 is the production
+rollback to legacy Vue, committed on `main`; it slots in when this branch is rebased.)
+
 ## [0.42.30] — 2026-06-01 — fix(ui): always-discoverable horizontal scroll on the section context bar (narrow phones)
 
 The grey section-tab strip below the nav (`SiteContextBar.astro`) already scrolled horizontally on narrow

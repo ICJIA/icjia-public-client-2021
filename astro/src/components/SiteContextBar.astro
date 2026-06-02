@@ -92,6 +92,15 @@ if (menu) {
 }
 
 <style>
+  /* Sticky below the fixed 90px nav (SiteHeader), matching the canonical Vue where the
+     context bar stays pinned under the app bar while scrolling (nav 90 + this ≈ 161px of
+     pinned chrome). z-index sits below the nav (z-50) + its mobile drawer overlay (z-40)
+     but above article content. */
+  .ctxbar {
+    position: sticky;
+    top: 90px;
+    z-index: 30;
+  }
   .ctx-crumb {
     background: #0a3a60;
     color: #fff;

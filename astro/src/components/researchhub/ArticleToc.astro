@@ -40,7 +40,14 @@ const headingsJson = JSON.stringify(headings).replace(/</g, '\\u003c');
         go(id){
           const el = document.getElementById(id);
           if (!el) return;
-          const t = el.getBoundingClientRect().top + window.pageYOffset - 80;
+          // Offset by the live pinned chrome (fixed nav + sticky context bar) + a hair,
+          // so the heading lands just below it rather than under it.
+          let off = 12;
+          document.querySelectorAll('header, .ctxbar').forEach((c) => {
+            const p = getComputedStyle(c).position;
+            if (p === 'fixed' || p === 'sticky') off += c.offsetHeight;
+          });
+          const t = el.getBoundingClientRect().top + window.pageYOffset - off;
           window.scrollTo({ top: Math.max(0, t), behavior: 'smooth' });
           this.active = id;
         }

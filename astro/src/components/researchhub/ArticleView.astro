@@ -228,6 +228,36 @@ const doiSafe = article.doi ? escapeHtml(article.doi) : null;
 
 <script type="application/ld+json" set:html={serializeJsonLd(jsonLd)} is:inline />
 
+{/* Footnote smooth-scroll: in-text ref [n] → endnote, and the ↵ backref → back to the
+    ref, both offset below the pinned chrome (fixed nav + sticky context bar) + a hair —
+    cleaner than the canonical's fixed offset. Only touches footnote anchors; TOC links
+    keep their own Alpine handler and other links jump natively. */}
+<script is:inline>
+  (() => {
+    const offset = () => {
+      let o = 12;
+      document.querySelectorAll('header, .ctxbar').forEach((c) => {
+        const p = getComputedStyle(c).position;
+        if (p === 'fixed' || p === 'sticky') o += c.offsetHeight;
+      });
+      return o;
+    };
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest && e.target.closest('a');
+      if (!a) return;
+      const isFn = a.closest('.footnote-ref') || a.classList.contains('footnote-backref');
+      const href = a.getAttribute('href') || '';
+      if (!isFn || href.charAt(0) !== '#') return;
+      const el = document.getElementById(decodeURIComponent(href.slice(1)));
+      if (!el) return;
+      e.preventDefault();
+      const t = el.getBoundingClientRect().top + window.pageYOffset - offset();
+      window.scrollTo({ top: Math.max(0, t), behavior: 'smooth' });
+      history.replaceState(null, '', href);
+    });
+  })();
+</script>
+
 <style>
   /* Responsive splash hero heights (legacy xs240 / sm360 / md+650). */
   .article-splash-img {
@@ -254,8 +284,10 @@ const doiSafe = article.doi ? escapeHtml(article.doi) : null;
     }
     .article-toc-col { display: block; }
     .article-toc-sticky-wrap {
+      /* Clear the pinned chrome (90px fixed nav + ~71px sticky context bar) so the TOC
+         heading isn't hidden behind them when the sidebar sticks. */
       position: sticky;
-      top: 70px;
+      top: 170px;
       padding-top: 1rem;
     }
   }
