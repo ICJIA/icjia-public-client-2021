@@ -88,7 +88,7 @@ const doiSafe = article.doi ? escapeHtml(article.doi) : null;
     )
   }
 
-  <div class="article-grid mx-auto max-w-[900px] lg:max-w-[1185px] xl:max-w-[1785px] px-4 md:px-6">
+  <div class="article-grid px-4 md:px-6">
     {/* TOC + downloads — md+ sidebar, sticky. */}
     {
       (headings.length > 0 || hasDownloads) && (
@@ -278,8 +278,13 @@ const doiSafe = article.doi ? escapeHtml(article.doi) : null;
   @media (min-width: 960px) {
     .article-grid {
       display: grid;
-      grid-template-columns: 275px 1fr;
-      gap: 1.5rem;
+      /* Match prod's full-width, left-aligned article (no max-width cap): a TOC column, a
+         text column sized to prod's body, and an empty spacer on the right (prod's content
+         is left-aligned inside a wider column). md (960–1263) = prod md4 TOC / sm10-of-md8
+         text; the lg+ override below switches to prod's lg3 / lg9-of-lg9. Scoped to the
+         article view, so other templates' widths are untouched. */
+      grid-template-columns: 33.33% 55.56% 1fr;
+      gap: 0;
       /* Stretch the TOC column to the body's height so position:sticky has its full range:
          the TOC stays pinned through the article, then releases at the content bottom —
          before the footer (no overlap). `align-items:start` collapsed the column to its own
@@ -293,6 +298,12 @@ const doiSafe = article.doi ? escapeHtml(article.doi) : null;
       position: sticky;
       top: 170px;
       padding-top: 1rem;
+    }
+  }
+  @media (min-width: 1264px) {
+    /* prod's lg breakpoint: TOC lg3 (25%) + text (lg9 of lg9 = 56.25%) + empty spacer. */
+    .article-grid {
+      grid-template-columns: 25% 56.25% 1fr;
     }
   }
 </style>

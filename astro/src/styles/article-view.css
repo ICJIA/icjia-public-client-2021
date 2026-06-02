@@ -49,7 +49,10 @@
   background: #fafafa !important;
 }
 #article-view .article-body {
-  margin-top: 22px;
+  /* 34px (was 22px) puts the body's first line at prod's vertical position relative to the
+     title — closing the residual ~12px of header-block (title→body) spacing after the
+     width match. */
+  margin-top: 34px;
 }
 #article-view .article-body h1,
 #article-view .article-body h2,

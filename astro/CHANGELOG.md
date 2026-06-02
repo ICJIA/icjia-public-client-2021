@@ -3,6 +3,18 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.35] — 2026-06-02 — fix(researchhub): article body matches prod's wider, left-aligned layout (VR alignment)
+
+The post-fix VR sweep FAILed every article at 7–19% — traced not to styling (which matched prod) but to the
+body's POSITION: Astro capped the article at `max-w-1785`, centered, with a fixed 275px TOC, so the text block
+sat ~63px right and ~36px high of prod. Per owner decision (match prod's wider layout), reworked `.article-grid`
+— **scoped to `#article-view`, so other templates' widths are untouched** — to prod's full-width, left-aligned
+proportional columns: a TOC column + a text column sized to prod's body + an empty right spacer, matching
+Vuetify's `lg3 / lg9-of-lg9` (25% / 56.25%) and `md4 / sm10-of-md8` (33.3% / 55.6%) at md. Bumped the body's
+top margin 22→34px to close the residual header-block spacing. **Verified at lg/xl (vw 2593): body left-X 657
+(was 720) and width 1423 — both = prod; header block 511 = prod.** Re-running the 5-viewport sweep to confirm
+md/mobile.
+
 ## [0.42.34] — 2026-06-02 — fix(researchhub): TOC active-marker reads as a marker (thicker + set off from the divider)
 
 Per review: the active-section marker (the blue left-border on the current TOC item) was 1px and sat flush
