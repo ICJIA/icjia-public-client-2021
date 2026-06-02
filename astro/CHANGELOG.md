@@ -3,6 +3,14 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.34] — 2026-06-02 — fix(researchhub): TOC active-marker reads as a marker (thicker + set off from the divider)
+
+Per review: the active-section marker (the blue left-border on the current TOC item) was 1px and sat flush
+against the divider's bottom-left corner, so it looked like part of the TOC's frame rather than an indicator.
+Bumped it to **3px** — reserved as `transparent` on every item so the active one doesn't shift the text — and
+added a **10px gap** between the divider (`hr`) and the list, so the marker stands apart. Verified: gap 10px,
+active border-left 3px `#1873cd`, text aligned between active/non-active items.
+
 ## [0.42.33] — 2026-06-02 — fix(researchhub): TOC stays sticky (releases before footer) + article tag chips match prod
 
 Two follow-ups to 0.42.32 from manager review of the branch deploy:

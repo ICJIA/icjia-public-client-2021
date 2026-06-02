@@ -319,6 +319,11 @@
 #article-toc .v-list {
   background: none;
 }
+#article-toc ul {
+  /* Breathing room between the divider (hr) and the list, so the active marker sits a bit
+     below the horizontal bar and reads as a distinct marker rather than part of the frame. */
+  margin-top: 10px;
+}
 #article-toc .toc-item {
   font-size: 1.1em;
   color: #000;
@@ -326,18 +331,22 @@
   /* TOC items render as <a> in Astro (legacy used plain <div>s), so they inherit the
      global `a { font-weight:900; text-decoration:underline }` from legacy-globals.css.
      Prod TOC items are plain text — undo it. (article-view.css is unlayered, so it wins
-     over the layered base `a` rule.) Active/hover keep the #1873cd blue + left border. */
+     over the layered base `a` rule.) */
   text-decoration: none;
   font-weight: 400;
+  /* Active-section marker: a 3px bar, reserved transparent on EVERY item so the active one
+     doesn't shift the text. Thicker than prod's 1px and (with the ul gap above) set apart
+     from the divider, so it clearly reads as an active-indicator — not the TOC's border. */
+  border-left: 3px solid transparent;
 }
 #article-toc .toc-item:hover {
   background: rgba(0, 0, 0, 0.04);
   color: #1873cd;
-  border-left: 1px solid #1873cd;
+  border-left-color: #1873cd;
 }
 #article-toc .toc-item-active {
   color: #1873cd !important;
-  border-left: 1px solid #1873cd !important;
+  border-left-color: #1873cd !important;
 }
 /* dataset view */
 #dataset-view .variables-table {
