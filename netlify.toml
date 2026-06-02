@@ -38,6 +38,12 @@
     #   - fonts.googleapis.com, fonts.gstatic.com (Google Fonts)
     #   - plausible.icjia.cloud (analytics)
     # MDI icon font is now self-hosted from /fonts/mdi/ — no CDN needed.
+    #   - ari.icjia-api.cloud (Strapi for the PROXIED /adultredeploy sub-app):
+    #     pages under icjia.illinois.gov/<app>/* (a Netlify 200! rewrite, lesson
+    #     #27) inherit THIS CSP. The ARI sub-app uses client-side live-fetch
+    #     islands that connect to its own Strapi, so it must be in connect-src
+    #     below — else they report-only-violate now and BREAK when this policy is
+    #     promoted to enforcing. Add other sub-apps' API origins as they adopt it.
     #
     # To promote to enforcement when you have monitoring in place:
     #   rename "Content-Security-Policy-Report-Only" → "Content-Security-Policy"
@@ -55,7 +61,7 @@
     #     Re-add it inside the enforcement block when promoting:
     #       …; form-action 'self' https://agency.icjia-api.cloud;
     #       upgrade-insecure-requests
-    Content-Security-Policy-Report-Only = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.icjia.cloud https://assets.adobedtm.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://agency.icjia-api.cloud https://agency.icjia.cloud https://researchhub.icjia-api.cloud https://plausible.icjia.cloud https://assets.adobedtm.com; worker-src 'self'; frame-src 'self' https://www.youtube.com https://player.vimeo.com https://public.tableau.com https://docs.google.com https://forms.office.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://agency.icjia-api.cloud"
+    Content-Security-Policy-Report-Only = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.icjia.cloud https://assets.adobedtm.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://agency.icjia-api.cloud https://agency.icjia.cloud https://researchhub.icjia-api.cloud https://ari.icjia-api.cloud https://plausible.icjia.cloud https://assets.adobedtm.com; worker-src 'self'; frame-src 'self' https://www.youtube.com https://player.vimeo.com https://public.tableau.com https://docs.google.com https://forms.office.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://agency.icjia-api.cloud"
     # Hide Express server framework disclosure (SEC-14)
     X-Powered-By = ""
 
