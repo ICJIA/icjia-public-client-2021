@@ -1,15 +1,10 @@
-# PRODUCTION = the Astro SSR app (cutover 2026-06-01). The legacy Vue build is preserved
-# on the `legacy-vue` branch + the `legacy-pre-cutover` tag. ROLLBACK: in Netlify publish
-# the last Vue deploy (instant), or point production at the `legacy-vue` branch.
 [build]
-  base = "astro"
-  command = "pnpm build"
+  command = "npm run build"
   publish = "dist"
-  functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "22"
-  PNPM_VERSION = "10.33.4"
+  NPM_FLAGS = "--legacy-peer-deps"
 
   
 [[headers]]

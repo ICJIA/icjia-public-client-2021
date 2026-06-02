@@ -3,6 +3,20 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.31] — 2026-06-02 — rollback: production builds the legacy Vue site again (Astro hub visual bugs)
+
+Users reported visual rendering bugs in the new Astro **ResearchHub article pages** (`/researchhub/articles/*`)
+after cutover. The legacy Vue 2/Vuetify site (incl. its hub) is known-good, so production is rolled back to it
+while the Astro hub visuals are fixed. The rollback reverts the cutover commit `737ecbf` — a **one-file
+`netlify.toml` change** restoring the root Vue `[build]` block (`command = "npm run build"`, no `base`,
+`NPM_FLAGS = "--legacy-peer-deps"`); the post-cutover report-only CSP `[[headers]]` are kept. Verified the
+shipping Vue app source is **byte-identical to the `legacy-pre-cutover` anchor** (`src`, `public`,
+`vue.config.js`, `package.json`, `package-lock.json`, `generators` all diff-clean vs `5d022bf`), so the deploy
+is exactly the blessed old site — no history rewrite, no force-push. All current Astro work (incl. the
+context-bar + CSP fixes) is preserved on **`feat/astro-researchhub-fixes`** (branched from the pre-revert
+`main` HEAD `6a6e4b3`); `astro/` stays dormant on `main` so re-cutover is a one-file flip later. Next: pixel
+visual-regression sweep of the hub article pages (Vue prod vs local Astro) on the branch, then fix and re-cut.
+
 ## [0.42.30] — 2026-06-01 — fix(ui): always-discoverable horizontal scroll on the section context bar (narrow phones)
 
 The grey section-tab strip below the nav (`SiteContextBar.astro`) already scrolled horizontally on narrow
