@@ -3,6 +3,15 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.42.39] — 2026-06-03 — docs: de-serverless migration plan (static + live-islands)
+
+Added `docs/STATIC-ISLANDS-MIGRATION.md` — a route-by-route plan to drop the SSR/serverless architecture
+(`output:'server'` + the keep-warm `*/5` cron = the Netlify-functions-quota blowup, >50% in 2 days) in favor of
+a static build + client-side Alpine **live-islands** (the Adult Redeploy model: build-baked content for
+crawlability/SiteImprove + browser-polled Strapi for live freshness + **zero functions**). Proposal for the
+re-cutover; no code change yet. Inventory: ~38 SSR routes to flip to `prerender`, 19 islands already present,
+3 functions + 3 `/api` SSR endpoints to retire.
+
 ## [0.42.38] — 2026-06-02 — fix(researchhub): trim the stray space before in-text footnote refs
 
 Some CMS authors type a space before the footnote marker (`word [^1]`) and some don't, so in-text references
