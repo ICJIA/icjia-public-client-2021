@@ -34,7 +34,7 @@ export default defineConfig({
   // third-party cookie being sent to the Strapi host — the Lighthouse ding).
   image: { domains: ['agency.icjia-api.cloud'] },
   vite: { plugins: [tailwindcss()] },
-  integrations: [alpinejs(), icon()],
+  integrations: [alpinejs({ entrypoint: '/src/lib/live/alpine-entry' }), icon()],
   env: {
     schema: {
       // Strapi endpoints — public read, no token. Server-context = consumed at
