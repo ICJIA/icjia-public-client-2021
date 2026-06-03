@@ -23,10 +23,10 @@
 .publications .ptable thead th {
   font-size: 12px;
   font-weight: 600;
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(0, 0, 0, 0.87);
   text-align: left;
   padding: 0 16px;
-  height: 48px;
+  height: 32px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   white-space: nowrap;
   vertical-align: middle;
@@ -53,9 +53,20 @@
 }
 .publications .ptable td {
   font-size: 14px;
-  padding: 8px 16px;
+  color: rgba(0, 0, 0, 0.87);
+  padding: 0 16px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   vertical-align: middle;
+}
+/* Prod (Vuetify) data-row metrics: 39px row, 21px line, single-line centered.
+   Structural cells stay single-line (prod parity); only the title may wrap. */
+.publications .prow > td {
+  height: 39px;
+  line-height: 21px;
+  white-space: nowrap;
+}
+.publications .prow > td.cell-title {
+  white-space: normal;
 }
 .publications .prow {
   cursor: pointer;
@@ -64,16 +75,14 @@
   background: rgba(0, 0, 0, 0.04);
 }
 .publications .prow-alt {
-  background: rgba(0, 0, 0, 0.02);
+  background: rgb(246, 248, 250);
 }
 .publications .cell-date {
   width: 90px;
   font-size: 14px;
-  font-weight: 700;
-  color: #222;
 }
 .publications .cell-title {
-  font-weight: 700;
+  font-weight: 400;
 }
 .publications .row-caret-btn {
   display: inline-flex;
@@ -124,17 +133,18 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 12px;
+  height: 20px;
+  font-size: 10px;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 4px 10px;
+  letter-spacing: 0.089em;
+  padding: 0 9px;
   border-radius: 4px;
   border: 1px solid #0d4474;
   background: #fff;
   color: #0d4474;
   cursor: pointer;
-  line-height: 1.4;
+  line-height: 1;
   text-decoration: none;
   white-space: nowrap;
 }
@@ -349,6 +359,7 @@
     justify-content: space-between;
     gap: 1rem;
     width: auto;
+    height: auto;
     padding: 6px 16px;
     border: 0;
     text-align: right;
