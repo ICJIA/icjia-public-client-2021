@@ -16,7 +16,9 @@ export async function fetchCollection<T extends { id: string | number }>(
     for (let i = 0; i < Math.ceil(count / size); i++) {
       const r = await fetch(`${host}/${collection}?_limit=${size}&_start=${i * size}`);
       if (!r.ok) return null;
-      raw = raw.concat(await r.json());
+      const slice = await r.json();
+      if (!Array.isArray(slice)) return null; // malformed response → keep the baked baseline
+      raw = raw.concat(slice);
     }
     const seen = new Set<string>(), uniq: T[] = [];
     for (const p of raw) {
