@@ -41,6 +41,7 @@ describe('shapeNewsRow (client live-island shaper)', () => {
     expect(row.cl).toBe('PRESS RELEASE');
     expect(row.c).toBe('pressRelease');
     expect(row.d).toBe('May 14, 2026');
+    expect(row.pd).toBe('2026-05-14T12:00:00.000Z'); // sortable ISO key (newest-first)
     expect(row.img).toBe('/uploads/img.jpg');
     // summary truncated at 25 words
     expect(row.s.endsWith('...')).toBe(true);

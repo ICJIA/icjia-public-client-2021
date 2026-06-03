@@ -9,7 +9,6 @@
  */
 import type { Alpine as AlpineType } from 'alpinejs';
 import { fetchCollection } from './live-list';
-import { contentSignature } from './signature';
 import { shapeNewsRow } from './shapers/news';
 import { SOURCES } from './sources';
 
@@ -31,7 +30,7 @@ export default (Alpine: AlpineType) => {
    *   - Must be sorted newest-first then sliced at index 1 to exclude featured
    *
    * State provided by the factory:
-   *   rows       — shaped rows (baseline on mount; swapped on sig change after fetch)
+   *   rows       — shaped rows (baseline on mount; swapped to live data after fetch)
    *   ready      — false until init() fires; controls SSR↔interactive flip
    *   live       — true once a live fetch completes (regardless of swap)
    *   cat/page/perPage — filter + pagination UI state
@@ -50,24 +49,26 @@ export default (Alpine: AlpineType) => {
 
     init(this: any) {
       this.ready = true;
-      // LIVE ISLAND: fetch /posts via the shared fetchCollection + shapeNewsRow.
-      // Sort newest-first, slice(1) to exclude the featured post (index 0 of the
-      // full sorted set). Swap rows only when the content signature changed vs the
-      // current baseline. Falls back silently on any network/parse failure.
+      // LIVE ISLAND: fetch /posts via the shared fetchCollection + shapeNewsRow,
+      // sort newest-first by the ISO publication date (pd — NOT the display string),
+      // and drop index 0 (the featured post, rendered separately by the SSR card).
+      // Live data is authoritative on a single fetch-per-load island, so we take it
+      // directly; Alpine's keyed x-for (:key="it.p") diffs efficiently, making a
+      // content-signature guard redundant here (contentSignature stays in lib/live
+      // for a future polling variant). Falls back silently on network/parse failure
+      // (the baked SSR baseline stays visible).
       fetchCollection(
         SOURCES.news.host,
         SOURCES.news.collection,
         shapeNewsRow,
       )
         .then((fetched) => {
-          if (!fetched) return;
+          if (!fetched || !fetched.length) return;
           const next = fetched
-            .sort((a, b) => String(b.d || '').localeCompare(String(a.d || '')))
+            .slice()
+            .sort((a, b) => String(b.pd || '').localeCompare(String(a.pd || '')))
             .slice(1); // exclude featured (most-recent, index 0)
-          if (!next.length) return;
-          if (contentSignature(next) !== contentSignature(this.rows)) {
-            this.rows = next;
-          }
+          if (next.length) this.rows = next;
           this.live = true;
         })
         .catch(() => {});

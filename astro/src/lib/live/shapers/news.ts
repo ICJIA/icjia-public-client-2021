@@ -46,8 +46,10 @@ export interface NewsListItem {
 export interface NewsRowItem {
   /** id — required by live-list fetchCollection for de-dupe + signature. */
   id: string;
-  /** updatedAt — required by contentSignature for change detection. */
+  /** updatedAt — change-detection field (used by a polling variant via contentSignature). */
   updatedAt?: string;
+  /** publicationDate (ISO) — sortable key for newest-first ordering of live rows. */
+  pd?: string;
   /** path: /news/<slug>/ */
   p: string;
   /** title */
@@ -85,6 +87,7 @@ export function shapeNewsRow(raw: any): NewsRowItem {
   return {
     id: String(raw.id),
     updatedAt: raw.updated_at ?? raw.updatedAt,
+    pd: publicationDate,
     p: `/news/${raw.slug}/`,
     t: raw.title,
     s: truncateWords(raw.summary, 25),
