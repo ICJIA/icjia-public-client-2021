@@ -14,6 +14,12 @@
 // Client-list thumbnails are pre-optimized server-side via getImage() so they
 // stay same-origin (no Thumbor, no third-party cookie). Exact Vuetify spacing +
 // v-pagination ellipsis = VR-tune follow-up.
+//
+// LIVE ISLAND: after Alpine hydrates, init() fetches /posts from agency Strapi
+// in the browser (same REST pager the server uses). If the content signature
+// changed, `all` is swapped with the fresh rows — new posts appear without a
+// rebuild. On failure the baked baseline is kept (null → no swap). Pattern
+// matches PublicationTable.astro (the pilot); see live-list.ts + sources.ts.
 import { getImage } from 'astro:assets';
 import CmsImage from './CmsImage.astro';
 import {
@@ -122,8 +128,39 @@ const ssrGroups = (['this', 'last', 'earlier'] as const)
   <div
     x-data={`{
       all: JSON.parse(document.getElementById('news-data').textContent),
-      cat: 'all', page: 1, perPage: ${PER_PAGE}, ready: false,
-      init(){ this.ready = true; },
+      cat: 'all', page: 1, perPage: ${PER_PAGE}, ready: false, live: false,
+      init(){
+        this.ready = true;
+        // LIVE ISLAND: fetch fresh /posts from Strapi; swap only when signature changed.
+        // Falls back to baked baseline on any failure (null → no swap). Browser-verify only.
+        const BASE = 'https://agency.icjia-api.cloud', SIZE = 500;
+        const sig = (rows) => { const parts = rows.map((r) => r.id + ':' + (r.updatedAt || '')).sort(); let h = 5381; const s = parts.join('|'); for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return rows.length + '.' + (h >>> 0).toString(36); };
+        const shapeRow = (p) => { const pub = (p.dateOverride && p.dateOverride.length) ? p.dateOverride : p.published_at; const MN = ['January','February','March','April','May','June','July','August','September','October','November','December']; const fmtDate = (d) => { if (!d) return ''; const t = new Date(d); if (Number.isNaN(t.getTime())) return ''; const day = t.getUTCDate(); return MN[t.getUTCMonth()] + ' ' + (day < 10 ? '0' : '') + day + ', ' + t.getUTCFullYear(); }; const catLabel = ({ news: 'News', pressRelease: 'Press Release', outreach: 'Community Outreach', mediaAdvisory: 'Media Advisory' })[p.category] || 'News'; const trunc = (s, max) => { if (!s) return ''; const a = s.trim().split(/[\\s]+/); const o = a.slice(0, max).join(' '); return a.length > max ? o + '...' : o; }; const isNewDate = (iso) => { if (!iso) return false; const t = new Date(iso).getTime(); return !Number.isNaN(t) && (Date.now() - t) / 86400000 <= 5; }; const now = new Date(); const nowY = now.getFullYear() * 12 + now.getMonth(); const getMonthIdx = (iso) => { if (!iso) return null; const d = new Date(iso); if (Number.isNaN(d.getTime())) return null; return d.getFullYear() * 12 + d.getMonth(); }; const mi = getMonthIdx(pub); const b = mi === null ? 'earlier' : mi === nowY ? 'this' : mi === nowY - 1 ? 'last' : 'earlier'; return { id: String(p.id), updatedAt: p.updated_at || p.updatedAt, p: '/news/' + p.slug + '/', t: p.title, s: trunc(p.summary, 25), cl: catLabel.toUpperCase(), c: p.category || '', d: fmtDate(pub), b, n: isNewDate(pub), img: p.splash ? p.splash.url : null }; };
+        (async () => {
+          try {
+            const cRes = await fetch(BASE + '/posts/count');
+            if (!cRes.ok) return;
+            const count = Number(await cRes.json());
+            let raw = [];
+            for (let i = 0; i < Math.ceil(count / SIZE); i++) {
+              const r = await fetch(BASE + '/posts?_limit=' + SIZE + '&_start=' + (i * SIZE));
+              if (!r.ok) return;
+              const slice = await r.json();
+              if (!Array.isArray(slice)) return;
+              raw = raw.concat(slice);
+            }
+            const seen = new Set(), uniq = [];
+            for (const p of raw) { const k = String(p.id); if (!seen.has(k)) { seen.add(k); uniq.push(p); } }
+            const shaped = uniq.filter((p) => p.slug)
+              .map(shapeRow)
+              .sort((a, b) => { const pa = a.d || ''; const pb = b.d || ''; return pb.localeCompare(pa); });
+            if (!shaped.length) return;
+            const next = shaped.slice(1); // exclude featured (index 0 = most recent)
+            if (sig(next) !== sig(this.all)) { this.all = next; }
+            this.live = true;
+          } catch (e) {}
+        })();
+      },
       get filtered(){ return this.cat==='all' ? this.all : this.all.filter((x)=>x.c===this.cat); },
       get totalPages(){ return Math.max(1, Math.ceil(this.filtered.length/this.perPage)); },
       get pageItems(){ const s=(this.page-1)*this.perPage; return this.filtered.slice(s, s+this.perPage); },
