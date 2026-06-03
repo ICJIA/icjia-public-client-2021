@@ -5,9 +5,15 @@
 // this Strapi v3 hub ignores `where` variables. Distinct slugs resolve correctly.
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import AppView from '../../../components/researchhub/AppView.astro';
-import { getApp } from '../../../lib/research';
+import { getApp, getAllApps } from '../../../lib/research';
 import { setCache } from '../../../lib/cache';
 import { buildAppJsonLd } from '../../../lib/seo';
+
+export const prerender = true;
+export async function getStaticPaths() {
+  const items = await getAllApps();
+  return items.filter((a) => a.slug).map((a) => ({ params: { slug: a.slug } }));
+}
 
 const { slug } = Astro.params;
 const app = slug ? await getApp(slug) : null;

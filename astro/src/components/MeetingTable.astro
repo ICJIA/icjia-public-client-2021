@@ -49,7 +49,7 @@ const xdata = `{
   ariaSort(k){ return this.sortKey === k ? (this.sortDir === 'asc' ? 'ascending' : 'descending') : null; },
   toggle(it){ const id = it.id; this.expanded = this.expanded === id ? null : id; if (this.expanded === id) this.loadDetail(it); },
   det(id){ return this.details[id] || null; },
-  async loadDetail(it){ if (this.details[it.id]) return; this.loadingId = it.id; let d = null; try { const r = await fetch('/api/meeting.json?slug=' + encodeURIComponent(it.slug)); if (r.ok) d = await r.json(); } catch (e) {} if (!d) d = { bodyHtml: '', tags: [], attachments: [], related: [], external: [], error: true }; this.details = Object.assign({}, this.details, { [it.id]: d }); this.loadingId = null; },
+  async loadDetail(it){ if (this.details[it.id]) return; this.loadingId = it.id; let d = null; try { const r = await fetch('/api/meeting/' + encodeURIComponent(it.slug) + '.json'); if (r.ok) d = await r.json(); } catch (e) {} if (!d) d = { bodyHtml: '', tags: [], attachments: [], related: [], external: [], error: true }; this.details = Object.assign({}, this.details, { [it.id]: d }); this.loadingId = null; },
   track(url){ try { if (typeof window.plausible === 'function') { window.plausible('file_download', { props: { url } }); window.plausible('Outbound Link: Click', { props: { url } }); } } catch (e) {} }
 }`;
 ---

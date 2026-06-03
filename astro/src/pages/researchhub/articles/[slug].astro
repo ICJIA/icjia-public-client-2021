@@ -8,8 +8,14 @@
 // rows). Verified on the deploy: distinct slugs resolve to distinct articles.
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import ArticleView from '../../../components/researchhub/ArticleView.astro';
-import { getArticle } from '../../../lib/research';
+import { getArticle, getAllArticles } from '../../../lib/research';
 import { setCache } from '../../../lib/cache';
+
+export const prerender = true;
+export async function getStaticPaths() {
+  const items = await getAllArticles();
+  return items.filter((a) => a.slug).map((a) => ({ params: { slug: a.slug } }));
+}
 
 const { slug } = Astro.params;
 const article = slug ? await getArticle(slug) : null;

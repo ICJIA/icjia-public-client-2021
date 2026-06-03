@@ -6,7 +6,7 @@
 import type { APIRoute } from "astro";
 import { getHomeResearch } from "../../lib/research";
 
-export const prerender = false;
+export const prerender = true;
 
 export const GET: APIRoute = async () => {
   const data = await getHomeResearch();

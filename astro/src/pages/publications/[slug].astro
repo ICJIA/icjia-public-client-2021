@@ -5,6 +5,14 @@
 // route (it would 404). Redirecting the slug is strictly better — it preserves
 // any old deep links and removes the empty-200. Mirrors the /publications/ index
 // redirect (runtime 301, since the shared astro.config isn't edited per-section).
+import { getAllPublications } from '../../lib/data';
+// Static mode: a dynamic route needs getStaticPaths. Enumerate the publication slugs
+// so each /publications/<slug>/ prerenders its 301 to /about/publications/<slug>/.
+export const prerender = true;
+export async function getStaticPaths() {
+  const items = await getAllPublications();
+  return items.filter((p) => p.slug).map((p) => ({ params: { slug: p.slug } }));
+}
 const { slug } = Astro.params;
 return Astro.redirect(`/about/publications/${slug}/`, 301);
 ---

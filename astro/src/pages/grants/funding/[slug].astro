@@ -3,9 +3,17 @@
 // expired banner, NOFO header, title, body, attachments, related, tags + JSON-LD
 // GovernmentService.
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { getGrant } from '../../../lib/data';
+import { getGrant, getFunding } from '../../../lib/data';
 import { setCache } from '../../../lib/cache';
 import '../../../styles/funding.css';
+
+// Prerendered — one static page per funding/NOFO slug. getFunding() is the list
+// fetcher the /grants/funding/ index uses; refreshed on nightly/manual rebuild.
+export const prerender = true;
+export async function getStaticPaths() {
+  const items = await getFunding();
+  return items.filter((g) => g.slug).map((g) => ({ params: { slug: g.slug } }));
+}
 
 const { slug } = Astro.params;
 const grant = slug ? await getGrant(slug) : null;

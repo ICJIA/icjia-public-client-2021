@@ -1,6 +1,4 @@
 import { defineConfig, envField } from 'astro/config';
-import netlify from '@astrojs/netlify';
-import node from '@astrojs/node';
 import alpinejs from '@astrojs/alpinejs';
 import icon from 'astro-icon';
 import tailwindcss from '@tailwindcss/vite';
@@ -18,12 +16,15 @@ import tailwindcss from '@tailwindcss/vite';
 // adapter never touches netlify.toml, so dev just works. Both are interchangeable
 // because the data layer + pages are adapter-agnostic — this is also the
 // @astrojs/node escape hatch the plan keeps for a possible DigitalOcean move.
-const isDevServer = process.argv.includes('dev');
-
 export default defineConfig({
   site: 'https://icjia.illinois.gov',
-  output: 'server',
-  adapter: isDevServer ? node({ mode: 'standalone' }) : netlify(),
+  // Pure static — NO adapter. Every route is prerendered (getStaticPaths on dynamics);
+  // content stays live via client-side Alpine islands polling Strapi; new pages appear on
+  // a rebuild (publish webhook → build hook). Dropping @astrojs/netlify removes the SSR
+  // catch-all function + the adapter's edge-middleware + the auto-provisioned Netlify DB —
+  // zero serverless. astro:assets images optimize at BUILD (Sharp) instead of the Netlify
+  // Image CDN. `astro dev` + `astro build` both run adapterless in static mode.
+  output: 'static',
   trailingSlash: 'always',
   // Inline ALL CSS (not just small sheets): the SSR head was emitting external
   // render-blocking <link>s (cache.css + per-page css) that delayed first paint

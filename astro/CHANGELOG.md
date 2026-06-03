@@ -3,6 +3,31 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
 
+## [0.43.0] — 2026-06-03 — refactor(arch): SSR → fully static, ZERO serverless (de-serverless Phase 1)
+
+Phase 1 of `docs/STATIC-ISLANDS-MIGRATION.md` — drop the SSR/serverless architecture (the Netlify Functions
+quota blowup: `output:'server'` + a keep-warm cron pinging lambdas every 5 min) for a pure static build.
+**Verified**: `pnpm build` → `dist/` is 100% static — 1308 HTML pages, 289 static `/api/*.json`, 308
+build-optimized images, and **LITERALLY ZERO functions** (no `.netlify/`, no SSR catch-all, no edge functions;
+`@astrojs/netlify` referenced 0× in the build log).
+- **`astro.config.ts`**: `output:'server'`→`'static'`, and **removed the `@astrojs/netlify` adapter entirely**
+  — it emitted an SSR catch-all function + an edge-middleware + an auto-provisioned Netlify Postgres DB even
+  with zero on-demand routes. Adapterless: `astro:assets` images optimize at BUILD (Sharp) instead of the
+  runtime Netlify Image CDN (build time unchanged, ~3m).
+- **12 dynamic `[slug]` routes** got `getStaticPaths` (news, news/meetings, events, researchhub articles/
+  datasets/apps, grants funding/programs, about biographies/employment/publications, innovation) — enumerating
+  slugs at build via the existing build-time fetchers. `publications/[slug]` redirect prerendered.
+- **`/api`**: `home-research.json` + `hub-app-images.json` baked (`prerender=true`); the `meeting.json?slug=`
+  SSR function → **per-slug static `api/meeting/[slug].json`** (286 files), `MeetingTable` repointed.
+- **`search/[query]`** (unbounded → un-prerenderable SSR) removed; old deep-links 301 → `/search/?q=` (the
+  static search reads `?q=`).
+- **Deleted**: the 3 scheduled functions (keep-warm/nightly/purge), the trailing-slash **edge function**
+  (Netlify canonicalizes trailing slashes natively for static), and the dead function tests. `netlify/` is gone.
+
+Remaining (Phase 2): client-side **live-islands** for freshness-without-rebuild (publications first, per owner);
+`setCache` no-op cleanup (39 files) + `lib/cache.ts` + the `keepWarm`/`cacheTTL` config; the publish→build-hook
+webhook for new pages; and verify `/news`→`/news/` on the deploy.
+
 ## [0.42.39] — 2026-06-03 — docs: de-serverless migration plan (static + live-islands)
 
 Added `docs/STATIC-ISLANDS-MIGRATION.md` — a route-by-route plan to drop the SSR/serverless architecture

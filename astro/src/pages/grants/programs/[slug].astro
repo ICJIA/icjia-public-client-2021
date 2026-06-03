@@ -3,9 +3,16 @@
 // ProgramsSingle.vue: title, body, attachments, related, tags + JSON-LD
 // GovernmentService. Same markup/classes as funding/[slug] (so CSS matches prod).
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { getProgram } from '../../../lib/data';
+import { getProgram, getAllPrograms } from '../../../lib/data';
 import { setCache } from '../../../lib/cache';
 import '../../../styles/funding.css';
+
+// Prerendered — one static page per program slug, refreshed on nightly/manual rebuild.
+export const prerender = true;
+export async function getStaticPaths() {
+  const items = await getAllPrograms();
+  return items.filter((p) => p.slug).map((p) => ({ params: { slug: p.slug } }));
+}
 
 const { slug } = Astro.params;
 const program = slug ? await getProgram(slug) : null;

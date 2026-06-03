@@ -77,3 +77,7 @@
 # view) and /grants/policies/ redirects to it (above). /grants/training/ and the other
 # grants CMS pages render via the grants/[slug] catch-all. Still deferred: /ta/ and
 # /gata/:slug→/grants/:slug (add if/when those targets are confirmed).
+
+# Old path-based search deep-links → query-string (handled client-side by the static /search/).
+/search/:q/   /search/?q=:q   301
+/search/:q    /search/?q=:q   301

@@ -13,7 +13,7 @@ import type { APIRoute } from "astro";
 import { getAllApps } from "../../lib/research";
 import { setCache } from "../../lib/cache";
 
-export const prerender = false;
+export const prerender = true;
 
 export const GET: APIRoute = async () => {
   const apps = await getAllApps();

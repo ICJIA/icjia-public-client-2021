@@ -4,9 +4,15 @@
 // meetings »" link, and the JSON-LD Event (ported from metaInfo).
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import MeetingCard from '../../../components/MeetingCard.astro';
-import { getMeeting } from '../../../lib/data';
+import { getMeeting, getAllMeetings } from '../../../lib/data';
 import { setCache } from '../../../lib/cache';
 import { buildEventJsonLd } from '../../../lib/seo';
+
+export const prerender = true;
+export async function getStaticPaths() {
+  const items = await getAllMeetings();
+  return items.filter((m) => m.slug).map((m) => ({ params: { slug: m.slug } }));
+}
 
 const { slug } = Astro.params;
 const meeting = slug ? await getMeeting(slug) : null;

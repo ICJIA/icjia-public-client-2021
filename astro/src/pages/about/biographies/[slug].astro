@@ -7,9 +7,15 @@
 // <title> is the bare fullName (legacy metaInfo.title; matches news/[slug] precedent).
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import BiographyCard from '../../../components/BiographyCard.astro';
-import { getBiography } from '../../../lib/data';
+import { getBiography, getAllBiographies } from '../../../lib/data';
 import { setCache } from '../../../lib/cache';
 import { buildPersonJsonLd } from '../../../lib/seo';
+
+export const prerender = true;
+export async function getStaticPaths() {
+  const items = await getAllBiographies();
+  return items.filter((b) => b.slug).map((b) => ({ params: { slug: b.slug } }));
+}
 
 // Live-data SSR (renderStrategy: live) — staff/board edit their own bios in Strapi
 // and expect changes to appear immediately, so this renders on demand (edge-cached,

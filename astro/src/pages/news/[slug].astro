@@ -14,9 +14,15 @@ import Splash from "../../components/Splash.astro";
 import PageToc from "../../components/PageToc.astro";
 import AttachmentList from "../../components/AttachmentList.astro";
 import RelatedList from "../../components/RelatedList.astro";
-import { getNewsPost, strapiUrl } from "../../lib/data";
+import { getNewsPost, getAllNews, strapiUrl } from "../../lib/data";
 import { setCache } from "../../lib/cache";
 import { buildArticleJsonLd } from "../../lib/seo";
+
+export const prerender = true;
+export async function getStaticPaths() {
+  const items = await getAllNews();
+  return items.filter((p) => p.slug).map((p) => ({ params: { slug: p.slug } }));
+}
 
 const { slug } = Astro.params;
 const post = slug ? await getNewsPost(slug) : null;

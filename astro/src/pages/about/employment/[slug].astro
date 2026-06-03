@@ -8,9 +8,15 @@
 // context-label = "Employment at ICJIA" (legacy EmploymentSingle EventBus emit).
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import JobCard from '../../../components/JobCard.astro';
-import { getJob } from '../../../lib/data';
+import { getJob, getAllJobs } from '../../../lib/data';
 import { setCache } from '../../../lib/cache';
 import { buildJobPostingJsonLd } from '../../../lib/seo';
+
+export const prerender = true;
+export async function getStaticPaths() {
+  const items = await getAllJobs();
+  return items.filter((j) => j.slug).map((j) => ({ params: { slug: j.slug } }));
+}
 
 const { slug } = Astro.params;
 const job = slug ? await getJob(slug) : null;

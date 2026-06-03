@@ -6,10 +6,16 @@
 // getPublication returns null when the slug is unknown → 404 (legacy pushed /404).
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PublicationCard from '../../../components/PublicationCard.astro';
-import { getPublication } from '../../../lib/data';
+import { getPublication, getAllPublications } from '../../../lib/data';
 import { setCache } from '../../../lib/cache';
 import { buildArticleJsonLd } from '../../../lib/seo';
 import '../../../styles/publications.css';
+
+export const prerender = true;
+export async function getStaticPaths() {
+  const items = await getAllPublications();
+  return items.filter((p) => p.slug).map((p) => ({ params: { slug: p.slug } }));
+}
 
 const { slug } = Astro.params;
 const publication = slug ? await getPublication(slug) : null;

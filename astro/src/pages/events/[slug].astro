@@ -6,9 +6,15 @@
 // only). 404 when the slug is not found.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import EventCard from '../../components/EventCard.astro';
-import { getEvent } from '../../lib/data';
+import { getEvent, getEventsCalendarData } from '../../lib/data';
 import { setCache } from '../../lib/cache';
 import { buildEventJsonLd } from '../../lib/seo';
+
+export const prerender = true;
+export async function getStaticPaths() {
+  const { eventsList } = await getEventsCalendarData();
+  return eventsList.filter((e) => e.slug).map((e) => ({ params: { slug: e.slug } }));
+}
 
 const { slug } = Astro.params;
 const event = slug ? await getEvent(slug) : null;
