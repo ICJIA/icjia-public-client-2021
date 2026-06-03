@@ -43,6 +43,18 @@ import {
   GET_BIOGRAPHIES_BY_UNIT_QUERY,
 } from "../graphql/biographies.js";
 import { GET_SINGLE_UNIT_QUERY, GET_ALL_UNITS_QUERY } from "../graphql/units.js";
+// Pure client-safe shapers — imported for internal use + re-exported so
+// existing consumers (NewsListing.astro, data.test.ts, etc.) keep working.
+import {
+  type StrapiImage,
+  type MonthBucket,
+  monthBucket,
+  BUCKET_LABELS,
+} from "./live/shapers/index";
+export type { StrapiImage, MonthBucket };
+export { monthBucket, BUCKET_LABELS };
+import { type NewsListItem, shapeNewsList } from "./live/shapers/news";
+export type { NewsListItem };
 
 // Strapi (agency) host — splash URLs come back as /uploads/... relative paths.
 const STRAPI_BASE = "https://agency.icjia-api.cloud";
@@ -65,44 +77,6 @@ export const NEWS_CATEGORIES: Array<{ category: string; label: string }> = [
   { category: "outreach", label: "Community Outreach" },
   { category: "mediaAdvisory", label: "Media Advisory" },
 ];
-
-// Month-grouping for the /news/ list (legacy groups by This Month / Last Month
-// / Earlier). Computed in America/Chicago so it matches the displayed dates.
-// SSR NOTE: "now" is request time; under the frozen-clock VR run a record within
-// ~1 day of a month boundary could bucket differently than prod (a VR-tune item).
-function chicagoMonthIndex(d: Date): number | null {
-  try {
-    const parts = new Intl.DateTimeFormat("en-US", {
-      timeZone: "America/Chicago",
-      year: "numeric",
-      month: "numeric",
-    }).formatToParts(d);
-    const y = Number(parts.find((p) => p.type === "year")?.value);
-    const m = Number(parts.find((p) => p.type === "month")?.value);
-    if (!y || !m) return null;
-    return y * 12 + (m - 1);
-  } catch {
-    return null;
-  }
-}
-export type MonthBucket = "this" | "last" | "earlier";
-export function monthBucket(iso?: string): MonthBucket {
-  if (!iso) return "earlier";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "earlier";
-  const a = chicagoMonthIndex(d);
-  const now = chicagoMonthIndex(new Date());
-  if (a == null || now == null) return "earlier";
-  const diff = now - a;
-  if (diff <= 0) return "this";
-  if (diff === 1) return "last";
-  return "earlier";
-}
-export const BUCKET_LABELS: Record<MonthBucket, string> = {
-  this: "This Month",
-  last: "Last Month",
-  earlier: "Earlier",
-};
 
 // Legacy News.vue truncate(): first `max` words, append "..." when truncated.
 export function truncateWords(str?: string, max = 25): string {
@@ -152,15 +126,6 @@ export function formatDateShort(iso?: string): string {
   } catch {
     return "";
   }
-}
-
-export interface StrapiImage {
-  caption?: string;
-  alternativeText?: string;
-  url?: string;
-  width?: number;
-  height?: number;
-  formats?: Record<string, unknown>;
 }
 
 export interface StrapiImagePick {
@@ -295,46 +260,6 @@ export async function getNewsPost(slug: string): Promise<NewsPost | null> {
     tags: Array.isArray(post.tags) ? post.tags.map((t: any) => t.title) : [],
     toc: buildToc(safeBodyHtml),
   };
-}
-
-export interface NewsListItem {
-  id: string;
-  title: string;
-  slug: string;
-  summary?: string;
-  category?: string;
-  published_at?: string;
-  dateOverride?: string;
-  /** dateOverride || published_at (legacy getPublicationDate). */
-  publicationDate?: string;
-  fullPath?: string;
-  bucket?: MonthBucket;
-  /** flattened tag titles (legacy getUnifiedTags). */
-  tags?: string[];
-  splash?: StrapiImage | null;
-}
-
-/**
- * Shape raw Strapi posts for a news listing the way News.vue does: flatten
- * tags to title strings, derive publicationDate (dateOverride || published_at)
- * + month bucket, set fullPath, sort newest-first.
- */
-function shapeNewsList(posts: any[]): NewsListItem[] {
-  return (posts ?? [])
-    .map((e: any) => {
-      const publicationDate =
-        e.dateOverride && e.dateOverride.length ? e.dateOverride : e.published_at;
-      return {
-        ...e,
-        tags: Array.isArray(e.tags) ? e.tags.map((t: any) => t.title) : [],
-        publicationDate,
-        fullPath: `/news/${e.slug}/`,
-        bucket: monthBucket(publicationDate),
-      } as NewsListItem;
-    })
-    .sort((a, b) =>
-      String(b.publicationDate || "").localeCompare(String(a.publicationDate || "")),
-    );
 }
 
 /** Fetch all news posts (newest first), live, for the /news/ listing. */
