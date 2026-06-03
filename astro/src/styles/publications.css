@@ -86,11 +86,22 @@
   cursor: pointer;
 }
 .publications .row-caret {
+  display: inline-flex;
   transition: transform 0.2s;
-  color: #777;
+  color: rgba(0, 0, 0, 0.54);
+}
+.publications .row-caret svg {
+  width: 24px;
+  height: 24px;
 }
 .publications .row-caret.open {
   transform: rotate(180deg);
+}
+/* Expand-chevron column — narrow, leftmost (parity with prod's Vuetify
+   v-data-table__expand-icon, which leads each row). */
+.publications .ptable .cell-expand {
+  width: 56px;
+  text-align: center;
 }
 
 /* NEW! chip — legacy v-chip color #0D4474 (dark-on-dark text was a legacy

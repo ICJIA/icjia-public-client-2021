@@ -13,6 +13,7 @@
 //   Web Article → publicationList_article_view {url: articleURL}
 //   Download PDF → publicationList_file_download {url: fileURL}
 import type { PublicationListItem } from '../lib/data';
+import { Icon } from 'astro-icon/components';
 
 interface Props {
   baseline?: PublicationListItem[];
@@ -144,6 +145,7 @@ const xdata = `{
     <table class="ptable" aria-label="Publications">
       <thead>
         <tr>
+          <th class="cell-expand"><span class="sr-only">Expand</span></th>
           <th class="cell-date" :aria-sort="ariaSort('date')">
             <button type="button" @click="setSort('date')">
               Date <span class="caret" x-text="sortKey==='date' && sortDir==='asc' ? '▲' : '▼'"></span>
@@ -161,12 +163,22 @@ const xdata = `{
           </th>
           <th class="col-center">Article</th>
           <th class="col-center">File</th>
-          <th><span class="sr-only">Expand</span></th>
         </tr>
       </thead>
       <template x-for="(it, idx) in pageItems" :key="it.id">
         <tbody>
           <tr class="prow" :class="idx % 2 ? 'prow-alt' : ''" @click="toggle(it.id)">
+            <td class="col-center cell-expand">
+              <button
+                type="button"
+                class="row-caret-btn"
+                @click.stop="toggle(it.id)"
+                :aria-expanded="expanded === it.id ? 'true' : 'false'"
+                :aria-label="(expanded === it.id ? 'Collapse' : 'Expand') + ' details for ' + it.title"
+              >
+                <span class="row-caret" :class="expanded === it.id ? 'open' : ''"><Icon name="mdi:chevron-down" aria-hidden="true" /></span>
+              </button>
+            </td>
             <td class="cell-date" data-label="Date" x-text="it.dateAlt"></td>
             <td class="cell-title" data-label="Title">
               <template x-if="it.isNew"><span class="new-chip">NEW!</span></template>
@@ -201,17 +213,6 @@ const xdata = `{
                   @click.stop="trackDownload(it.fileURL)"
                 >Open Application</a>
               </template>
-            </td>
-            <td class="col-center cell-expand">
-              <button
-                type="button"
-                class="row-caret-btn"
-                @click.stop="toggle(it.id)"
-                :aria-expanded="expanded === it.id ? 'true' : 'false'"
-                :aria-label="(expanded === it.id ? 'Collapse' : 'Expand') + ' details for ' + it.title"
-              >
-                <span class="row-caret" :class="expanded === it.id ? 'open' : ''">▾</span>
-              </button>
             </td>
           </tr>
           <template x-if="expanded === it.id">
@@ -288,6 +289,7 @@ const xdata = `{
         <table class="ptable" aria-label="Publications">
           <thead>
             <tr>
+              <th class="cell-expand"><span class="sr-only">Expand</span></th>
               <th class="cell-date">Date</th>
               <th>Title</th>
               <th>Type</th>
@@ -298,6 +300,7 @@ const xdata = `{
           <tbody>
             {baseline.map((it, idx) => (
               <tr class:list={['prow', { 'prow-alt': idx % 2 === 1 }]}>
+                <td class="col-center cell-expand"><span class="row-caret" aria-hidden="true"><Icon name="mdi:chevron-down" /></span></td>
                 <td class="cell-date" data-label="Date">{it.dateAlt}</td>
                 <td class="cell-title" data-label="Title">
                   {it.isNew && <span class="new-chip">NEW!</span>}
