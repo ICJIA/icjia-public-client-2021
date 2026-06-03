@@ -5,6 +5,12 @@
  */
 import type { StrapiImage, MonthBucket } from "./index";
 import { monthBucket } from "./index";
+import {
+  truncateWords,
+  isNew,
+  formatNewsDate,
+  newsCategoryLabel,
+} from "./format";
 
 export type { MonthBucket };
 
@@ -23,6 +29,72 @@ export interface NewsListItem {
   /** flattened tag titles (legacy getUnifiedTags). */
   tags?: string[];
   splash?: StrapiImage | null;
+}
+
+// ── NewsRowItem (compact Alpine x-for row shape for NewsListing) ──────────────
+
+/**
+ * Compact row shape consumed by NewsListing.astro's Alpine x-for loop.
+ * Field names are single-character / short to keep the JSON island small
+ * (same naming convention as the build-time listData in NewsListing.astro).
+ *
+ * NOTE: `img` is the raw splash URL (relative /uploads/... or absolute) —
+ * the live-island fetch cannot call astro:assets getImage() client-side.
+ * Build-time baseline rows carry pre-optimized URLs from getImage(); live-
+ * fetched rows carry the raw Strapi URL. Both are accepted by the <img> tag.
+ */
+export interface NewsRowItem {
+  /** id — required by live-list fetchCollection for de-dupe + signature. */
+  id: string;
+  /** updatedAt — required by contentSignature for change detection. */
+  updatedAt?: string;
+  /** path: /news/<slug>/ */
+  p: string;
+  /** title */
+  t: string;
+  /** summary truncated to 25 words */
+  s: string;
+  /** category label uppercased (e.g. "PRESS RELEASE") */
+  cl: string;
+  /** raw category key (e.g. "pressRelease") */
+  c: string;
+  /** formatted publication date ("May 05, 2026") */
+  d: string;
+  /** month bucket key: "this" | "last" | "earlier" */
+  b: MonthBucket;
+  /** within the NEW! window */
+  n: boolean;
+  /** raw splash URL (may be relative /uploads/...) or null */
+  img: string | null;
+}
+
+/**
+ * Shape ONE raw Strapi /posts record → the compact NewsRowItem consumed by
+ * NewsListing.astro's Alpine x-for loop.
+ *
+ * Called client-side by the live-island fetch (no astro:assets, no getImage).
+ * The `img` field carries the raw Strapi URL; the build-time baseline rows
+ * carry pre-optimized URLs — both are accepted by the component's <img> tag.
+ */
+export function shapeNewsRow(raw: any): NewsRowItem {
+  // Derive publicationDate the same way shapeNewsList does.
+  const publicationDate =
+    raw.dateOverride && raw.dateOverride.length ? raw.dateOverride : raw.published_at;
+  // Raw splash URL — may be relative (/uploads/…) or absolute.
+  const splashUrl = raw.splash?.url ?? null;
+  return {
+    id: String(raw.id),
+    updatedAt: raw.updated_at ?? raw.updatedAt,
+    p: `/news/${raw.slug}/`,
+    t: raw.title,
+    s: truncateWords(raw.summary, 25),
+    cl: newsCategoryLabel(raw.category).toUpperCase(),
+    c: raw.category ?? '',
+    d: formatNewsDate(publicationDate),
+    b: monthBucket(publicationDate),
+    n: isNew(publicationDate, 5),
+    img: splashUrl,
+  };
 }
 
 /**

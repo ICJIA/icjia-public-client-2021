@@ -55,20 +55,18 @@ export type { StrapiImage, MonthBucket };
 export { monthBucket, BUCKET_LABELS };
 import { type NewsListItem, shapeNewsList } from "./live/shapers/news";
 export type { NewsListItem };
+// Pure formatting helpers relocated to shapers/format.ts (client-safe).
+// Imported for internal use + re-exported so all existing callers are unaffected.
+import {
+  truncateWords,
+  isNew,
+  formatNewsDate,
+  newsCategoryLabel,
+} from "./live/shapers/format";
+export { truncateWords, isNew, formatNewsDate, newsCategoryLabel };
 
 // Strapi (agency) host — splash URLs come back as /uploads/... relative paths.
 const STRAPI_BASE = "https://agency.icjia-api.cloud";
-
-// News category → display label (config.maps.news).
-const NEWS_LABELS: Record<string, string> = {
-  news: "News",
-  pressRelease: "Press Release",
-  outreach: "Community Outreach",
-  mediaAdvisory: "Media Advisory",
-};
-export function newsCategoryLabel(cat?: string): string {
-  return (cat && NEWS_LABELS[cat]) || "News";
-}
 
 // config.maps.news — order + labels for the /news/ category filter buttons.
 export const NEWS_CATEGORIES: Array<{ category: string; label: string }> = [
@@ -78,14 +76,6 @@ export const NEWS_CATEGORIES: Array<{ category: string; label: string }> = [
   { category: "mediaAdvisory", label: "Media Advisory" },
 ];
 
-// Legacy News.vue truncate(): first `max` words, append "..." when truncated.
-export function truncateWords(str?: string, max = 25): string {
-  if (!str) return "";
-  const arr = str.trim().split(/\s+/);
-  const out = arr.slice(0, max).join(" ");
-  return arr.length > max ? out + "..." : out;
-}
-
 // Funding category → label (HomeTabbed.getCategory).
 export function fundingCategoryLabel(cat?: string): string {
   if (cat === "nofo") return "Notice of Funding Opportunity";
@@ -93,16 +83,9 @@ export function fundingCategoryLabel(cat?: string): string {
   return "";
 }
 
+// DAYS_TO_SHOW_NEW is defined in shapers/format.ts (isNew relocated there).
+// Keep a local alias for the publications shaper which still calls isNew directly.
 const DAYS_TO_SHOW_NEW = 5;
-
-/** Within the "NEW!" window (days since published). */
-export function isNew(iso?: string, days = DAYS_TO_SHOW_NEW): boolean {
-  if (!iso) return false;
-  const then = new Date(iso).getTime();
-  if (Number.isNaN(then)) return false;
-  // FROZEN-CLOCK NOTE: under SSR this uses request time; VR freezes the clock.
-  return (Date.now() - then) / 86_400_000 <= days;
-}
 
 /** Expired = now is past end-of-(end-date) (legacy adds one day to `end`). */
 export function isExpired(end?: string): boolean {
@@ -948,25 +931,7 @@ export async function getProgram(slug: string): Promise<ProgramDetail | null> {
   };
 }
 
-/**
- * Exact port of the legacy `format` Vue filter: full month name + zero-padded
- * day + year ("May 05, 2026"). The legacy filter ran in the browser and added
- * abs(tz-offset) to pin the UTC calendar date; reading UTC components here is
- * the tz-independent server equivalent (so it matches regardless of where it
- * runs). Use for news/press dates so they match prod to the day.
- */
-const MONTH_NAMES = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
-];
-export function formatNewsDate(d?: string): string {
-  if (!d) return "";
-  const t = new Date(d);
-  if (Number.isNaN(t.getTime())) return "";
-  const day = t.getUTCDate();
-  const pad = day < 10 ? "0" + day : String(day);
-  return `${MONTH_NAMES[t.getUTCMonth()]} ${pad}, ${t.getUTCFullYear()}`;
-}
+// formatNewsDate relocated to shapers/format.ts — re-exported above.
 
 /** Format an ISO date in America/Chicago (matches the legacy site's tz). */
 export function formatDate(iso?: string): string {
