@@ -8,7 +8,6 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import BiographyCard from '../../../components/BiographyCard.astro';
 import { getAllBiographies, getPage } from '../../../lib/data';
-import { setCache } from '../../../lib/cache';
 
 // Live-data SSR (renderStrategy: live) — board bios are edit-sensitive (members want
 // Strapi changes live), so the directory renders on demand (edge-cached, kind 'bios');
@@ -17,7 +16,6 @@ const [bios, page] = await Promise.all([
   getAllBiographies(),
   getPage('composition-and-membership'),
 ]);
-setCache(Astro.response, 'bios');
 const board = bios.filter((b) => b.affiliation === 'board');
 
 const pageTitle = page?.title || 'Composition & Membership';

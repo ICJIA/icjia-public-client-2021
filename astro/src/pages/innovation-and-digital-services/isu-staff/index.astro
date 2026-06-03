@@ -13,7 +13,6 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import UnitStaffListing from '../../../components/UnitStaffListing.astro';
 import { getUnit, getBiographiesByUnit } from '../../../lib/data';
-import { setCache } from '../../../lib/cache';
 
 const HEADING = 'Information Systems Unit Staff';
 const [unit, bios] = await Promise.all([
@@ -21,7 +20,6 @@ const [unit, bios] = await Promise.all([
   getBiographiesByUnit('IDS'),
 ]);
 if (!unit || bios.length === 0) return new Response(null, { status: 404 });
-setCache(Astro.response, 'bios');
 ---
 
 <BaseLayout title={HEADING} description={HEADING} contextTitle="Staff">

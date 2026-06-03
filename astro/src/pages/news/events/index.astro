@@ -7,10 +7,8 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import EventsListing from '../../../components/EventsListing.astro';
 import { getEventsCalendarData } from '../../../lib/data';
-import { setCache } from '../../../lib/cache';
 
 const { eventsList, calendarFeed } = await getEventsCalendarData();
-setCache(Astro.response, 'events');
 ---
 
 <BaseLayout

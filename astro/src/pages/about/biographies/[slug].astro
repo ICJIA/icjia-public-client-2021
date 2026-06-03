@@ -8,7 +8,6 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import BiographyCard from '../../../components/BiographyCard.astro';
 import { getBiography, getAllBiographies } from '../../../lib/data';
-import { setCache } from '../../../lib/cache';
 import { buildPersonJsonLd } from '../../../lib/seo';
 
 export const prerender = true;
@@ -27,7 +26,6 @@ const item = slug ? await getBiography(slug) : null;
 if (!item) {
   return new Response('Not found', { status: 404 });
 }
-setCache(Astro.response, 'bios');
 
 // Meta description: name + role (+ unit) — concise, plain text (no body HTML).
 const metaDescription = [

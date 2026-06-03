@@ -4,7 +4,6 @@
 // GovernmentService. Same markup/classes as funding/[slug] (so CSS matches prod).
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getProgram, getAllPrograms } from '../../../lib/data';
-import { setCache } from '../../../lib/cache';
 import '../../../styles/funding.css';
 
 // Prerendered — one static page per program slug, refreshed on nightly/manual rebuild.
@@ -21,7 +20,6 @@ if (!program) {
   return new Response('Not found', { status: 404 });
 }
 
-setCache(Astro.response, 'grants');
 
 // JSON-LD GovernmentService — mirrors funding/[slug] (provider ICJIA, areaServed
 // Illinois). Programs have no start/end, so no validThrough/hoursAvailable.

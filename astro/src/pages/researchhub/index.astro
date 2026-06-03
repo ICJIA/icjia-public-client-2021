@@ -16,7 +16,6 @@ import HubCard from '../../components/researchhub/HubCard.astro';
 import ContentClickThroughBoxes from '../../components/ContentClickThroughBoxes.astro';
 import { getPage } from '../../lib/data';
 import { getHubBannerArticles, getAllApps, getAllDatasets } from '../../lib/research';
-import { setCache } from '../../lib/cache';
 import '../../styles/researchhub.css';
 
 const [page, banner, allApps, allDatasets] = await Promise.all([
@@ -28,7 +27,6 @@ const [page, banner, allApps, allDatasets] = await Promise.all([
 const apps = allApps.slice(0, 3);
 const datasets = allDatasets.slice(0, 3);
 
-setCache(Astro.response, 'hub');
 ---
 
 <BaseLayout

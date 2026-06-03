@@ -11,11 +11,9 @@ import ContentClickThroughBoxes from '../../../components/ContentClickThroughBox
 import '../../../styles/units.css';
 import '../../../styles/github-markdown.css';
 import { getPage } from '../../../lib/data';
-import { setCache } from '../../../lib/cache';
 
 const page = await getPage('infonet');
 if (!page) return new Response(null, { status: 404 });
-setCache(Astro.response, 'page');
 ---
 
 <BaseLayout

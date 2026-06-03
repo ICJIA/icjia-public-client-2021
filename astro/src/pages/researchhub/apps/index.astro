@@ -6,10 +6,8 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import HubListing from '../../../components/researchhub/HubListing.astro';
 import { getAllApps } from '../../../lib/research';
-import { setCache } from '../../../lib/cache';
 
 const apps = await getAllApps();
-setCache(Astro.response, 'hub');
 ---
 
 <BaseLayout

@@ -9,7 +9,6 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import BasePage from '../../components/BasePage.astro';
 import { getPage, getAllPages } from '../../lib/data';
-import { setCache } from '../../lib/cache';
 
 // Prerendered — builds the innovationAndDigitalServices-category CMS sub-pages
 // (e.g. /drone/) minus the RESERVED slugs that have their own dedicated routes.
@@ -31,7 +30,6 @@ export async function getStaticPaths() {
 const { slug } = Astro.params;
 const page = slug ? await getPage(slug) : null;
 if (!page) return new Response(null, { status: 404 });
-setCache(Astro.response, 'page');
 ---
 
 <BaseLayout

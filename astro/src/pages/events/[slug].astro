@@ -7,7 +7,6 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import EventCard from '../../components/EventCard.astro';
 import { getEvent, getEventsCalendarData } from '../../lib/data';
-import { setCache } from '../../lib/cache';
 import { buildEventJsonLd } from '../../lib/seo';
 
 export const prerender = true;
@@ -23,7 +22,6 @@ if (!event) {
   return new Response('Not found', { status: 404 });
 }
 
-setCache(Astro.response, 'events');
 
 const jsonLd = buildEventJsonLd({
   path: Astro.url.pathname,

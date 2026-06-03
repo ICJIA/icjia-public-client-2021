@@ -27,14 +27,23 @@ const xdata = `{
     catch (e) { this.all = []; }
     this.index(this.all);
     this.ready = true;
-    // Lazy-load the FULL archive (~1108) after first paint for whole-archive search/sort.
-    // The initial island ships only the recent ~150 (perf — keeps the doc light).
-    fetch('/api/publications.json').then((r) => r.ok ? r.json() : null).then((rows) => {
-      if (!Array.isArray(rows) || rows.length <= this.all.length) { this.fullLoaded = true; return; }
-      this.index(rows);
-      this.all = rows;
-      this.fullLoaded = true;
-    }).catch(() => {});
+    // LIVE-ISLAND (pilot for the de-serverless live-island pattern): after first
+    // paint, fetch the FULL archive straight from the PUBLIC Strapi in the browser
+    // via the SAME REST pager the server uses (count + 500-row slices), then swap it
+    // in — so new/edited publications appear on reload with NO rebuild. GraphQL clips
+    // this list, so REST is the proven path (it is literally the legacy Vue SPA's own
+    // client-side method, CORS-open: access-control-allow-origin *). Falls back to the
+    // build-baked /api/publications.json if Strapi is unreachable; the SSR ~150 baseline
+    // stays the no-JS / crawler / SiteImprove view either way. Mirrors data.ts
+    // getAllPublications + shapePublication, minus deepSanitize (unneeded client-side:
+    // x-text auto-escapes, and SiteImprove reads the baked HTML, not this swap).
+    this.fetchLive()
+      .then((rows) => (Array.isArray(rows) && rows.length) ? rows : this.fetchStatic())
+      .then((rows) => {
+        if (Array.isArray(rows) && rows.length > this.all.length) { this.index(rows); this.all = rows; }
+        this.fullLoaded = true;
+      })
+      .catch(() => { this.fullLoaded = true; });
   },
   // Client-side search string (_h) from the shipped display fields — the heavy
   // full-summary 'haystack' is no longer in the island (it was the ~1.1MB FCP/LCP cost).
@@ -55,7 +64,48 @@ const xdata = `{
   ariaSort(k){ return this.sortKey === k ? (this.sortDir === 'asc' ? 'ascending' : 'descending') : null; },
   toggle(id){ this.expanded = this.expanded === id ? null : id; },
   trackArticle(url){ try { if (typeof window.plausible === 'function') window.plausible('publicationList_article_view', { props: { url } }); } catch (e) {} },
-  trackDownload(url){ try { if (typeof window.plausible === 'function') window.plausible('publicationList_file_download', { props: { url } }); } catch (e) {} }
+  trackDownload(url){ try { if (typeof window.plausible === 'function') window.plausible('publicationList_file_download', { props: { url } }); } catch (e) {} },
+  // ── Live-island data layer — client port of data.ts getAllPublications + shapePublication ──
+  // (regexes are backslash-free — [0-9] not \\d, space-split not \\s+ — so the x-data
+  //  attribute string survives template-literal escaping intact.)
+  fetchStatic(){ return fetch('/api/publications.json').then((r) => r.ok ? r.json() : null).catch(() => null); },
+  async fetchLive(){
+    const BASE = 'https://agency.icjia-api.cloud', SIZE = 500;
+    try {
+      const cRes = await fetch(BASE + '/publications/count');
+      if (!cRes.ok) return null;
+      const count = Number(await cRes.json());
+      const iters = Math.ceil(count / SIZE);
+      let raw = [];
+      for (let i = 0; i < iters; i++) {
+        const r = await fetch(BASE + '/publications?_limit=' + SIZE + '&_start=' + (i * SIZE));
+        if (!r.ok) return null;
+        raw = raw.concat(await r.json());
+      }
+      const seen = new Set(), uniq = [];
+      for (const p of raw) { const k = String(p.id); if (!seen.has(k)) { seen.add(k); uniq.push(p); } }
+      return uniq.filter((p) => p.slug).map((p) => this.shapePublication(p))
+        .sort((a, b) => String(b.publicationDate || '').localeCompare(String(a.publicationDate || '')));
+    } catch (e) { return null; }
+  },
+  shapePublication(p){
+    const CLIENT = 'https://icjia.illinois.gov';
+    const tags = Array.isArray(p.tags) ? p.tags.map((t) => typeof t === 'string' ? t : (t && t.title)).filter(Boolean) : [];
+    const localArticlePath = p.articleURL && p.articleURL.indexOf(CLIENT) !== -1 ? p.articleURL.replace(CLIENT, '') : null;
+    return {
+      id: String(p.id), title: p.title, summary: this.truncateWords(p.summary, 25),
+      pubType: p.pubType, publicationDate: p.publicationDate, tags: tags,
+      fileURL: p.fileURL, articleURL: p.articleURL, fullPath: '/about/publications/' + p.slug + '/',
+      localArticlePath: localArticlePath, typeLabel: this.publicationTypeLabel(p.pubType),
+      dateAlt: this.dateFormatAlt(p.publicationDate), isNew: this.isNewDate(p.publicationDate),
+      fileType: this.getFileType(p.fileURL)
+    };
+  },
+  truncateWords(s, max){ if (!s) return ''; const a = s.trim().split(' ').filter(Boolean); const o = a.slice(0, max).join(' '); return a.length > max ? o + '...' : o; },
+  isNewDate(iso){ if (!iso) return false; const t = new Date(iso).getTime(); if (Number.isNaN(t)) return false; return (Date.now() - t) / 86400000 <= 5; },
+  dateFormatAlt(iso){ if (!iso) return ''; const MA = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; const m = /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.exec(iso); if (m) { const mi = Number(m[2]) - 1; return MA[mi] ? MA[mi] + ' ' + m[3] + ', ' + m[1] : ''; } const d = new Date(iso); return Number.isNaN(d.getTime()) ? '' : MA[d.getMonth()] + ' ' + String(d.getDate()).padStart(2, '0') + ', ' + d.getFullYear(); },
+  publicationTypeLabel(t){ return ({ researchReport: 'Research Report', researchBulletin: 'Research Bulletin', researchAtAGlance: 'Research At A Glance', trendsAndIssuesUpdate: 'Trends and Issues Update', motorVehicleTheftPublications: 'Motor Vehicle Theft Publication', barj: 'BARJ', compiler: 'Compiler', dataset: 'Dataset', getTheFacts: 'GET THE FACTS', programEvaluationSummary: 'Program Evaluation Summary', megProfiles: 'MEG Profiles', annualReport: 'Annual Report', article: 'Article', report: 'Report', evaluation: 'Evaluation', toolkit: 'Toolkit', onGoodAuthority: 'On Good Authority', application: 'Application' })[t] || 'General'; },
+  getFileType(url){ if (!url) return ''; return url.split(/[#?]/)[0].split('.').pop().trim().toUpperCase(); }
 }`;
 ---
 

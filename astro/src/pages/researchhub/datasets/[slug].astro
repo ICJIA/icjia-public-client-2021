@@ -6,7 +6,6 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import DatasetView from '../../../components/researchhub/DatasetView.astro';
 import { getDataset, getAllDatasets } from '../../../lib/research';
-import { setCache } from '../../../lib/cache';
 import { buildDatasetJsonLd } from '../../../lib/seo';
 
 export const prerender = true;
@@ -20,7 +19,6 @@ const dataset = slug ? await getDataset(slug) : null;
 if (!dataset) {
   return new Response('Dataset not found', { status: 404 });
 }
-setCache(Astro.response, 'hub');
 
 const jsonLd = buildDatasetJsonLd({
   path: Astro.url.pathname,

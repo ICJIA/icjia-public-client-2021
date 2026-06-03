@@ -4,7 +4,6 @@
 // GovernmentService.
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getGrant, getFunding } from '../../../lib/data';
-import { setCache } from '../../../lib/cache';
 import '../../../styles/funding.css';
 
 // Prerendered — one static page per funding/NOFO slug. getFunding() is the list
@@ -22,7 +21,6 @@ if (!grant) {
   return new Response('Not found', { status: 404 });
 }
 
-setCache(Astro.response, 'grants');
 
 // JSON-LD GovernmentService — port of FundingSingle.metaInfo.
 const STRAPI_BASE = 'https://agency.icjia-api.cloud';

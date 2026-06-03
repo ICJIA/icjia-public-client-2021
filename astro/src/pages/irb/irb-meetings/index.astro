@@ -7,11 +7,9 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import MeetingTable from '../../../components/MeetingTable.astro';
 import { getAllMeetings } from '../../../lib/data';
-import { setCache } from '../../../lib/cache';
 import '../../../styles/meetings.css';
 
 const meetings = (await getAllMeetings()).filter((m) => m.category === 'irb');
-setCache(Astro.response, 'meetings');
 
 // JSON-in-HTML: neutralize "<" so the data island can't break out of the script.
 const listJson = JSON.stringify(meetings).replace(/</g, '\\u003c');

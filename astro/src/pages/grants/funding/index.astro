@@ -4,10 +4,8 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import FundingListing from '../../../components/FundingListing.astro';
 import { getFunding, getPage } from '../../../lib/data';
-import { setCache } from '../../../lib/cache';
 
 const [items, page] = await Promise.all([getFunding(), getPage('funding')]);
-setCache(Astro.response, 'grants');
 ---
 
 <BaseLayout

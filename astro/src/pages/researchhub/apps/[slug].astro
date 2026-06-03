@@ -6,7 +6,6 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import AppView from '../../../components/researchhub/AppView.astro';
 import { getApp, getAllApps } from '../../../lib/research';
-import { setCache } from '../../../lib/cache';
 import { buildAppJsonLd } from '../../../lib/seo';
 
 export const prerender = true;
@@ -20,7 +19,6 @@ const app = slug ? await getApp(slug) : null;
 if (!app) {
   return new Response('App not found', { status: 404 });
 }
-setCache(Astro.response, 'hub');
 
 const jsonLd = buildAppJsonLd({
   path: Astro.url.pathname,

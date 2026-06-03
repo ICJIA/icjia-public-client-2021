@@ -9,7 +9,6 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import JobCard from '../../../components/JobCard.astro';
 import { getJob, getAllJobs } from '../../../lib/data';
-import { setCache } from '../../../lib/cache';
 import { buildJobPostingJsonLd } from '../../../lib/seo';
 
 export const prerender = true;
@@ -25,7 +24,6 @@ if (!job) {
   return new Response('Not found', { status: 404 });
 }
 
-setCache(Astro.response, 'jobs');
 
 // Meta description: plain-text job summary (tags stripped), with a generic fallback.
 const metaDescription =

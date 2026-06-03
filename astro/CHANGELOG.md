@@ -1,7 +1,34 @@
 # Changelog — ICJIA Astro migration
 
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
-This is the live-data SSR migration tracked on the `feat/astro-migration` branch.
+Now a fully static build with client-side Alpine live-islands (de-serverless); tracked on `feat/astro-researchhub-fixes`.
+
+## [0.44.0] — 2026-06-03 — feat(arch): publications live-island + SSR cache teardown (de-serverless Phase 2)
+
+Phase 2 of `docs/STATIC-ISLANDS-MIGRATION.md` — add the first client-side **live-island** and tear out the dead
+SSR edge-cache layer. `pnpm build` → `dist/` stays 100% static (1308 HTML, 289 `/api/*.json`, **ZERO functions**).
+
+- **Publications live-island (pilot).** `PublicationTable.astro` now fetches the FULL archive straight from the
+  **public Strapi in the browser** via the same REST pager the server uses (`/publications/count` + 500-row
+  slices), shapes it client-side (faithful port of `data.ts` `getAllPublications`/`shapePublication`, minus
+  `deepSanitize` — unneeded for `x-text`), and swaps it in — so new/edited publications appear on reload with
+  **NO rebuild**. GraphQL can't (it clips this list at ~990 rows); REST is the legacy Vue SPA's own client
+  method, CORS-open (`access-control-allow-origin: *`). Falls back to the build-baked `/api/publications.json`
+  if Strapi is unreachable; the SSR ~150 baseline stays the no-JS / crawler / SiteImprove view. **Verified
+  in-browser**: count + 3 slices `200`, 1108 rows swapped in, shaped pixel-identically (`Jun 02, 2026`), zero
+  console errors.
+- **SSR cache teardown.** Removed all **37 `setCache()` no-ops** + their imports (a static response can't set
+  CDN headers), deleted `src/lib/cache.ts` + `cache.test.ts`, and gutted `icjia.config.mjs` — dropped `keepWarm`,
+  `cacheTTL`, and the now-moot `renderStrategy` LIVE-vs-STATIC manifest (everything is static) + `config.test.ts`.
+- **`astro.config.ts`**: corrected the stale header/comments that still described `output:'server'` +
+  `@astrojs/netlify`/`@astrojs/node` (the code has been adapterless-static since Phase 1).
+- **Functionless rebuilds.** New `.github/workflows/nightly-rebuild.yml` (GitHub-Actions cron → Netlify build
+  hook) replaces the deleted nightly Netlify function; `docs/nightly-rebuild.md` rewritten to document it + the
+  Strapi-publish → build-hook webhook (new pages within minutes, still zero functions).
+
+Trailing slash: the build is directory-structured (`dist/news/index.html`); `/news`→`/news/` relies on Netlify's
+native static trailing-slash redirect — **confirm on the branch deploy** (`astro preview` 404s on the slash-less
+form by design, so it cannot verify the CDN behavior locally).
 
 ## [0.43.0] — 2026-06-03 — refactor(arch): SSR → fully static, ZERO serverless (de-serverless Phase 1)
 

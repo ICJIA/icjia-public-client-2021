@@ -10,13 +10,11 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import BiographyCard from '../../components/BiographyCard.astro';
 import { getBiographiesByUnit, getUnit } from '../../lib/data';
-import { setCache } from '../../lib/cache';
 
 const [staff, unit] = await Promise.all([
   getBiographiesByUnit('R&A'),
   getUnit('research-and-analysis-unit'),
 ]);
-setCache(Astro.response, 'bios');
 ---
 
 <BaseLayout

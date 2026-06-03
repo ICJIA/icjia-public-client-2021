@@ -3,19 +3,13 @@ import alpinejs from '@astrojs/alpinejs';
 import icon from 'astro-icon';
 import tailwindcss from '@tailwindcss/vite';
 
-// ICJIA flagship — live-data SSR migration.
-// output: 'server' (on-demand SSR per request) with @astrojs/netlify.
-// Content pages fetch Strapi server-side per request; a short
-// stale-while-revalidate CDN cache (set per-route via Astro.response.headers)
-// keeps perf high while content stays live. CMS-independent routes opt into
-// `export const prerender = true` per page.
-// Local `astro dev` uses @astrojs/node; the build / Netlify branch-deploy uses
-// @astrojs/netlify. Why: the Netlify adapter's dev integration reads the root
-// netlify.toml and mis-resolves the branch context's `base = "astro"` relative
-// to the Astro root (looks for astro/astro) — there is no per-cwd fix. The node
-// adapter never touches netlify.toml, so dev just works. Both are interchangeable
-// because the data layer + pages are adapter-agnostic — this is also the
-// @astrojs/node escape hatch the plan keeps for a possible DigitalOcean move.
+// ICJIA flagship — fully static build (de-serverless, 2026-06-03).
+// output: 'static' + NO adapter: every route is prerendered to HTML at build
+// (getStaticPaths on dynamics) and served from the CDN with ZERO Netlify
+// functions. Content stays live via client-side Alpine "live-islands" that poll
+// Strapi in the browser and swap in fresh data on load; new pages (new slugs)
+// appear on a rebuild (Strapi publish webhook → Netlify build hook).
+// See docs/STATIC-ISLANDS-MIGRATION.md.
 export default defineConfig({
   site: 'https://icjia.illinois.gov',
   // Pure static — NO adapter. Every route is prerendered (getStaticPaths on dynamics);
@@ -33,18 +27,19 @@ export default defineConfig({
   // the loading overlay appear as soon as the response paints. The HTML is
   // edge-cached (Durable Cache), so the per-page inline cost is paid once.
   build: { inlineStylesheets: 'always' },
-  // Astro image optimization for live CMS images (astro:assets — Sharp in dev,
-  // Netlify Image CDN on deploy; the Netlify adapter auto-allowlists these hosts
-  // for remote_images). NO Thumbor: CMS images are compressed by Astro only and
-  // served SAME-ORIGIN (which also stops the third-party cookie being sent to the
-  // Strapi host — the Lighthouse best-practices ding).
+  // Astro image optimization for CMS images (astro:assets — Sharp at BUILD; there
+  // is no adapter/Image CDN now, so images are optimized into dist/ at build time).
+  // `domains` allowlists the remote Strapi host. NO Thumbor: CMS images are
+  // optimized by Astro only and served SAME-ORIGIN (which also stops the
+  // third-party cookie being sent to the Strapi host — the Lighthouse ding).
   image: { domains: ['agency.icjia-api.cloud'] },
   vite: { plugins: [tailwindcss()] },
   integrations: [alpinejs(), icon()],
   env: {
     schema: {
-      // Strapi endpoints — public read, no token. Server-context (fetched
-      // server-side under SSR, so they need not appear in CSP connect-src).
+      // Strapi endpoints — public read, no token. Server-context = consumed at
+      // BUILD by the data layer. (The Alpine live-islands fetch Strapi directly in
+      // the browser, so the Strapi hosts ARE in the CSP connect-src — see _headers.)
       PUBLIC_API_BASE: envField.string({
         context: 'server',
         access: 'public',

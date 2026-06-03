@@ -6,11 +6,9 @@
 // all rows as the no-JS / SEO baseline; Alpine filters once hydrated.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getRequiredForms } from '../../lib/data';
-import { setCache } from '../../lib/cache';
 
 const forms = await getRequiredForms();
 const listJson = JSON.stringify(forms).replace(/</g, '\\u003c');
-setCache(Astro.response, 'page');
 ---
 
 <BaseLayout

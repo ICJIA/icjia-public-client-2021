@@ -1,0 +1,37 @@
+name: Nightly rebuild
+
+# Functionless nightly rebuild — replaces the deleted Netlify scheduled function
+# (netlify/functions/nightly-rebuild.mjs), removed in the de-serverless migration.
+# POSTs a Netlify build hook so the STATIC build's build-time artifacts refresh
+# daily WITHOUT a code push — and WITHOUT any Netlify function (this runs on
+# GitHub's CI minutes, not the Netlify function meter). New pages also build
+# within minutes via the Strapi publish -> build-hook webhook; this cron is the
+# safety net for anything that webhook misses. See docs/nightly-rebuild.md.
+on:
+  schedule:
+    - cron: "0 5 * * *" # 05:00 UTC = ~midnight US Central
+  workflow_dispatch: {} # run on demand from the Actions tab
+
+# Least privilege: this job only POSTs an opaque URL; it touches nothing in the repo.
+permissions: {}
+
+concurrency:
+  group: nightly-rebuild
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trigger Netlify build hook
+        env:
+          NETLIFY_BUILD_HOOK_URL: ${{ secrets.NETLIFY_BUILD_HOOK_URL }}
+        run: |
+          if [ -z "${NETLIFY_BUILD_HOOK_URL}" ]; then
+            echo "NETLIFY_BUILD_HOOK_URL secret not set - skipping (no-op)."
+            exit 0
+          fi
+          echo "POSTing Netlify build hook..."
+          curl -fsS -X POST -d '{}' "${NETLIFY_BUILD_HOOK_URL}"
+          echo "Build enqueued."

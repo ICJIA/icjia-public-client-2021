@@ -9,7 +9,6 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import ArticleView from '../../../components/researchhub/ArticleView.astro';
 import { getArticle, getAllArticles } from '../../../lib/research';
-import { setCache } from '../../../lib/cache';
 
 export const prerender = true;
 export async function getStaticPaths() {
@@ -22,7 +21,6 @@ const article = slug ? await getArticle(slug) : null;
 if (!article) {
   return new Response('Article not found', { status: 404 });
 }
-setCache(Astro.response, 'hub');
 // NOTE: the ScholarlyArticle JSON-LD (with real author names) is emitted by the
 // <ArticleView> component itself — do NOT add a page-level block here (it would
 // duplicate). See src/components/researchhub/ArticleView.astro.

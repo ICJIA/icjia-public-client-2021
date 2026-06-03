@@ -15,7 +15,6 @@ import PageToc from "../../components/PageToc.astro";
 import AttachmentList from "../../components/AttachmentList.astro";
 import RelatedList from "../../components/RelatedList.astro";
 import { getNewsPost, getAllNews, strapiUrl } from "../../lib/data";
-import { setCache } from "../../lib/cache";
 import { buildArticleJsonLd } from "../../lib/seo";
 
 export const prerender = true;
@@ -30,9 +29,6 @@ const post = slug ? await getNewsPost(slug) : null;
 if (!post) {
   return new Response("Not found", { status: 404 });
 }
-
-// Live, but edge-cached for 60s with background revalidation.
-setCache(Astro.response, "news");
 
 const jsonLd = buildArticleJsonLd({
   type: "NewsArticle",

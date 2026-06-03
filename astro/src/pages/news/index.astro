@@ -4,10 +4,8 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import NewsListing from '../../components/NewsListing.astro';
 import { getAllNews } from '../../lib/data';
-import { setCache } from '../../lib/cache';
 
 const posts = await getAllNews();
-setCache(Astro.response, 'news');
 ---
 
 <BaseLayout

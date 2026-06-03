@@ -4,10 +4,8 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import ProgramsListing from '../../../components/ProgramsListing.astro';
 import { getAllPrograms } from '../../../lib/data';
-import { setCache } from '../../../lib/cache';
 
 const programs = await getAllPrograms();
-setCache(Astro.response, 'grants');
 ---
 
 <BaseLayout

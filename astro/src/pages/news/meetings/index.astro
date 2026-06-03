@@ -5,10 +5,8 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import MeetingsListing from '../../../components/MeetingsListing.astro';
 import { getAllMeetings } from '../../../lib/data';
-import { setCache } from '../../../lib/cache';
 
 const meetings = await getAllMeetings();
-setCache(Astro.response, 'meetings');
 ---
 
 <BaseLayout

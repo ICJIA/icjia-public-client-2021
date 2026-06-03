@@ -17,11 +17,9 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import FsguHome from '../../../components/FsguHome.astro';
 import { getPage, getFunding } from '../../../lib/data';
-import { setCache } from '../../../lib/cache';
 
 const [page, grants] = await Promise.all([getPage('fsgu-home'), getFunding()]);
 if (!page) return new Response(null, { status: 404 });
-setCache(Astro.response, 'grants');
 ---
 
 <BaseLayout

@@ -6,11 +6,9 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import BasePage from '../../components/BasePage.astro';
 import { getPage } from '../../lib/data';
-import { setCache } from '../../lib/cache';
 
 const page = await getPage('innovation-and-digital-services-home');
 if (!page) return new Response(null, { status: 404 });
-setCache(Astro.response, 'page');
 ---
 
 <BaseLayout

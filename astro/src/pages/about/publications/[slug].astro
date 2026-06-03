@@ -7,7 +7,6 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PublicationCard from '../../../components/PublicationCard.astro';
 import { getPublication, getAllPublications } from '../../../lib/data';
-import { setCache } from '../../../lib/cache';
 import { buildArticleJsonLd } from '../../../lib/seo';
 import '../../../styles/publications.css';
 
@@ -24,7 +23,6 @@ if (!publication) {
   return new Response('Not found', { status: 404 });
 }
 
-setCache(Astro.response, 'publications');
 
 const jsonLd = buildArticleJsonLd({
   type: 'Report',

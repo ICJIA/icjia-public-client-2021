@@ -11,7 +11,6 @@
 // most views serve from the CDN without re-hitting the ResearchHub Strapi.
 import type { APIRoute } from "astro";
 import { getAllApps } from "../../lib/research";
-import { setCache } from "../../lib/cache";
 
 export const prerender = true;
 
@@ -24,6 +23,5 @@ export const GET: APIRoute = async () => {
   const res = new Response(JSON.stringify(map), {
     headers: { "Content-Type": "application/json; charset=utf-8" },
   });
-  setCache(res, "hub");
   return res;
 };
