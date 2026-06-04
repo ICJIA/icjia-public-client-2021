@@ -3,6 +3,14 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 Now a fully static build with client-side Alpine live-islands (de-serverless); tracked on `feat/astro-researchhub-fixes`.
 
+## [0.46.0] — 2026-06-04 — fix(researchhub): card nested-`<a>` split + app-detail two-column
+
+Two real ResearchHub parity bugs the VR flagged (10–25% fail) but earlier triage wrongly attributed to the cross-engine floor — found by drilling into the diffs + a live DOM probe.
+
+- **HubCard / HubListing — nested-`<a>` card split.** The card wrapped its whole body in `<a href={detail}>`, but `.hc-props` contains tag-chip + contributor `<a>` links. **Nested `<a>` is invalid HTML** → the browser auto-closes the card link early and ejects `.hc-props` into the *next* CSS-grid cell (props detached into the wrong column on the `/researchhub/` "Latest …" strips and the datasets/apps list pages). Fix: the card is now a `<div>`; the main content (date/title/image/teaser) is a single `<a class="hc-cardlink">`; `.hc-props` is a sibling so its links aren't nested. `.hc-cardlink` also resets the `.markdown-body` blue/underline link cascade on the landing. **Verified** (dev render + DOM probe): apps-strip grid children 6→3, `.hc-props` inside the card, card link color dark/no-underline, list page renders 3 self-contained cards.
+- **AppView — two-column detail.** The props column was `md:col-span-2` only on the base64-image fallback path; on the common extracted-image path it fell back to `col-span-3`, so props wrapped *below* the image leaving the right two-thirds blank. Now `(appImgFile || imageJson) ? col-span-2 : col-span-3`. **Verified:** image-left / props-right restored.
+- **VR lesson (logged):** a full-page mismatch % can't distinguish a real layout bug from anti-aliasing noise when both land at ~10–20% — every diff PNG must be eyeballed (or augmented with DOM assertions like "each card contains its props"); don't dismiss a failing page as "the floor" without looking.
+
 ## [0.45.0] — 2026-06-04 — test(vr)+fix(researchhub): datasets/apps parity sweep, Oswald→Lato headings, README VR docs
 
 Strict VR sweep of the ResearchHub datasets/apps sections (12 routes × 5 breakpoints) plus the parity fix + live foundation it surfaced.

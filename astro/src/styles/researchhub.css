@@ -71,6 +71,16 @@
 .researchhub .hub-card--grid {
   min-height: 400px;
 }
+/* Card link wraps ONLY the main content (date/title/image/teaser); hc-props is a
+   sibling so its tag/contributor <a> links aren't nested inside this <a> (invalid
+   HTML → browser ejects hc-props out of the card). Stacks like the old card body
+   and resets the .markdown-body link styling (blue/underline) on the landing. */
+.researchhub .hub-card .hc-cardlink {
+  display: flex;
+  flex-direction: column;
+  color: inherit;
+  text-decoration: none;
+}
 .researchhub .hub-card .hc-date {
   font-family: "Lato", sans-serif;
   font-size: 0.85rem;

@@ -64,7 +64,7 @@ const imageJson =
         )
       }
 
-      <div class:list={[imageJson ? 'md:col-span-2' : 'md:col-span-3']}>
+      <div class:list={[(appImgFile || imageJson) ? 'md:col-span-2' : 'md:col-span-3']}>
         {app.external && <MarkerExternal />}
 
         {app.dateLabel && <PropDisplay name="Updated">{app.dateLabel}</PropDisplay>}

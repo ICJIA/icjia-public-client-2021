@@ -55,10 +55,11 @@ const showImage = allowImage && !!image;
 const imagePath = (item as ResearchArticleListItem).imagePath;
 ---
 
-<a
-  href={item.fullPath}
-  class:list={['hub-card', orientation === 'grid' ? 'hub-card--grid' : 'hub-card--list']}
->
+<div class:list={['hub-card', orientation === 'grid' ? 'hub-card--grid' : 'hub-card--list']}>
+  {/* Main content is the card link. hc-props (tag/contributor <a>) MUST stay a
+      SIBLING outside this <a> — a nested <a> is invalid HTML; the browser closes
+      the card link early and ejects hc-props into the next grid cell. */}
+  <a class="hc-cardlink" href={item.fullPath}>
   {!showUpdated && item.dateLabel && <div class="hc-date">{item.dateLabel}</div>}
 
   {item.isNew && <span class="hub-new">NEW!</span>}
@@ -99,6 +100,7 @@ const imagePath = (item as ResearchArticleListItem).imagePath;
   }
 
   {teaser && <div class="hc-teaser">{teaser}</div>}
+  </a>
 
   <div class="hc-props">
     {
@@ -156,4 +158,4 @@ const imagePath = (item as ResearchArticleListItem).imagePath;
       )
     }
   </div>
-</a>
+</div>

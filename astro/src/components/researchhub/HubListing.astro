@@ -182,7 +182,11 @@ const baseline = paginate ? items.slice(0, perPage) : items;
     <div x-show="ready" x-cloak>
       <div :class="view === 'list' ? 'grid grid-cols-1 gap-2' : 'grid grid-cols-1 gap-2 md:grid-cols-3'">
         <template x-for="it in visible" :key="it.p">
-          <a :href="it.p" class="hub-card" :class="view === 'grid' ? 'hub-card--grid' : 'hub-card--list'">
+          <div class="hub-card" :class="view === 'grid' ? 'hub-card--grid' : 'hub-card--list'">
+            {/* hc-props (tag/contributor <a>) MUST be a sibling of this link, not
+                nested inside it — a nested <a> is invalid HTML (browser ejects the
+                props out of the card into the next grid cell). */}
+            <a class="hc-cardlink" :href="it.p">
             <template x-if={`!${showUpdated} && it.d`}>
               <div class="hc-date" x-text="it.d"></div>
             </template>
@@ -216,6 +220,7 @@ const baseline = paginate ? items.slice(0, perPage) : items;
               />
             </template>
             <template x-if="it.te"><div class="hc-teaser" x-text="it.te"></div></template>
+            </a>
 
             <div class="hc-props">
               <template x-if="it.contrib && it.contrib.length">
@@ -256,7 +261,7 @@ const baseline = paginate ? items.slice(0, perPage) : items;
                 </div>
               </template>
             </div>
-          </a>
+          </div>
         </template>
       </div>
 
