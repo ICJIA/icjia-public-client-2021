@@ -9,7 +9,7 @@ Definitive mobile Lighthouse across all ResearchHub routes: a11y / SEO / best-pr
 
 - **New `card` image derivative (760px).** `generate-hub-images.mjs` now writes `<id>-card.webp` (the high-res splash resized to 760 = the card display size ×2 retina) alongside the 1400px `splash` hero. `research.ts` points the `/researchhub/articles/` list cards **and** the home Research strip at `card` (splash → thumbnail → base64 still fall back); the article DETAIL hero keeps the full 1400px `splash`. Card ≈29 KB vs splash ≈73 KB; +251 files at build.
 - **`fetchpriority="high"` on the article-detail splash hero** (`ArticleView.astro`) — it is the LCP element, so the hint addresses Lighthouse's `lcp-discovery-insight`.
-- Measured definitively on the **branch deploy** (Netlify, Brotli-compressed) rather than `astro preview` — see the perf table in that session.
+- Measured definitively on the **branch deploy** (Netlify, Brotli-compressed) rather than `astro preview`. **Deploy result:** a11y / best-practices / SEO **100** on all 7 researchhub routes (mobile + desktop); perf **100 desktop everywhere**, mobile 100 on the landing + both detail-light pages and **95–98** on the image-heavy ones (articles list **83 → 95**). Full mobile+desktop scorecard added to the README (§ "ResearchHub quality scorecard (for managers)") with the lab-Lighthouse-vs-field-Core-Web-Vitals framing.
 
 ## [0.48.0] — 2026-06-04 — feat: smart 404 (publishing detection) + researchhub mobile perf audit
 
