@@ -3,6 +3,11 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 Now a fully static build with client-side Alpine live-islands (de-serverless); tracked on `feat/astro-researchhub-fixes`.
 
+## [0.46.2] — 2026-06-04 — fix: TOC anchor offset (sticky context bar) + print page margin
+
+- **TOC / anchor scroll now lands below BOTH sticky bands.** Anchor jumps (PageToc click + `#hash` deep-links) tucked the target heading under the **70px sticky context bar** — the offsets only accounted for the 90px app bar. Measured the sticky chrome on `/about/` (header 90 + context bar 70 = 160) and bumped the offset to **168px** (160 + buffer): `PageToc` `offset` 96→168, and the `.markdown-body :is(h1..h4)[id]` scroll-margin-top fallback in `BasePage` + `news/[slug]` 96→168. (ResearchHub `ArticleToc`/`ArticleView` already sum sticky/fixed ancestor heights dynamically, so they were already correct — unchanged.)
+- **Print: page margin.** Added `@page { margin: 0.5in 0.65in }` so printed content (especially ResearchHub article bodies) never runs edge-to-edge — reassures readers that nothing is cut off.
+
 ## [0.46.1] — 2026-06-04 — fix(researchhub): list-view splash matches prod (hidden)
 
 - **List view: hide the card splash image.** Prod renders the ResearchHub list view text-only (title / teaser / props) — the splash is **grid-view only**. The new site was adding a cropped banner in list view; `.hub-card--list .hc-img { display: none }` removes it to match prod (grid view keeps its thumbnail). Verified against prod's `?view=list`. (User chose parity-with-prod over showing a full-size list image.)

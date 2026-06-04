@@ -102,7 +102,8 @@ const showToc = !!page.showTOC && page.toc.length > 0;
      a smooth, offset scroll when JS is on; this guarantees correct landing either
      way. Scoped to CMS-body headings (the anchor targets). */
   .markdown-body :is(h1, h2, h3, h4)[id] {
-    scroll-margin-top: 96px;
+    /* 90px fixed app bar + 70px sticky context bar + buffer. */
+    scroll-margin-top: 168px;
   }
 
   /* Reproduce prod BasePage.vue's always-on `v-container { margin-top: -15px }`

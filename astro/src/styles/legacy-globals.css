@@ -21,6 +21,11 @@
 body {
   font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
+/* Print: give every printed page a margin so content (esp. ResearchHub article
+   bodies) never runs edge-to-edge — reassures readers that nothing is cut off. */
+@page {
+  margin: 0.5in 0.65in;
+}
 h1, h2, h3, h4, h5, h6 {
   font-family: "Oswald", "Lato", sans-serif;
 }

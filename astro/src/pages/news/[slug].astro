@@ -101,7 +101,8 @@ const showSplash = !!post.splash && !post.hideSplash;
   /* No-JS / deep-link fallback: native anchor jumps land below the fixed 90px
      app bar (the PageToc click handler does a smooth offset scroll when JS is on). */
   .news-item.markdown-body :is(h1, h2, h3, h4)[id] {
-    scroll-margin-top: 96px;
+    /* 90px fixed app bar + 70px sticky context bar + buffer. */
+    scroll-margin-top: 168px;
   }
   /* Legacy NewsSingle date/category header (font-weight 900, 16px category). */
   .news-item .news-meta {
