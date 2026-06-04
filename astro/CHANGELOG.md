@@ -3,6 +3,11 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 Now a fully static build with client-side Alpine live-islands (de-serverless); tracked on `feat/astro-researchhub-fixes`.
 
+## [0.46.1] — 2026-06-04 — fix(researchhub): list-view splash matches prod (hidden)
+
+- **List view: hide the card splash image.** Prod renders the ResearchHub list view text-only (title / teaser / props) — the splash is **grid-view only**. The new site was adding a cropped banner in list view; `.hub-card--list .hc-img { display: none }` removes it to match prod (grid view keeps its thumbnail). Verified against prod's `?view=list`. (User chose parity-with-prod over showing a full-size list image.)
+- **VR re-run (researchhub, 12 routes):** confirmed the [0.46.0] card-split + two-col fixes render correctly (DOM probe: apps-strip grid children 6→3, `.hc-props` inside the card; the VR's own apps-list capture shows 3 self-contained cards). The full-page mismatch % is unchanged (~10–25%) because it's dominated by **app card images + vertical drift (differing card/image heights) + cross-engine text AA**, not the (now-fixed) card layout — reaffirming that the diff PNGs, not the %, are the arbiter. **Next real delta: the app card images** (size/crop/height vs prod), stable ~23% across all runs.
+
 ## [0.46.0] — 2026-06-04 — fix(researchhub): card nested-`<a>` split + app-detail two-column
 
 Two real ResearchHub parity bugs the VR flagged (10–25% fail) but earlier triage wrongly attributed to the cross-engine floor — found by drilling into the diffs + a live DOM probe.

@@ -113,6 +113,11 @@
   margin-bottom: 1rem;
   background: #f3f4f6;
 }
+/* Prod shows the splash ONLY in grid view — list view is text-only (title /
+   teaser / props, no image). Match prod: hide the card image in list view. */
+.researchhub .hub-card--list .hc-img {
+  display: none;
+}
 .researchhub .hub-card .hc-teaser {
   color: #111;
   font-size: 0.95rem;
