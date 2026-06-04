@@ -33,7 +33,7 @@ try {
 }
 /** Stored same-origin path for a hub image if extracted at build, else null.
  *  Uses the manifest's exact filename (correct extension — jpeg/png vary). */
-export function hubImagePath(id: string, attr: "splash" | "thumbnail" | "image"): string | null {
+export function hubImagePath(id: string, attr: "splash" | "thumbnail" | "image" | "card"): string | null {
   const file = HUB_IMG_MANIFEST[`${id}-${attr}`];
   return file ? `/hub-images/${file}` : null;
 }
@@ -165,9 +165,10 @@ export async function getHomeResearch(): Promise<HomeResearchData> {
     isNew: isNewResearch(a.date),
     authors: joinAuthors(a.authors),
     teaser: truncateBySentence(a.abstract, 2),
-    // Card image is ~370×250 (object-fit:cover), so the 300×300 thumbnail is too
-    // small (soft). Use full-size splash (1297×734); thumbnail/base64 only fall back.
-    img: hubImagePath(String(a.id), "splash") || hubImagePath(String(a.id), "thumbnail") || a.splash || null,
+    // Card image is ~370×250 (object-fit:cover). Use the right-sized 760px `card`
+    // derivative (the 1400px splash hero was oversized for cards); splash/thumbnail/
+    // base64 only fall back.
+    img: hubImagePath(String(a.id), "card") || hubImagePath(String(a.id), "splash") || hubImagePath(String(a.id), "thumbnail") || a.splash || null,
   }));
 
   const apps: ResearchCard[] = (app?.apps ?? []).map((a: any) => ({
@@ -282,6 +283,7 @@ function shapeArticleListItem(a: any): ResearchArticleListItem {
     // the last build (new post) fall back to the prod convention URL. Both hide on
     // error (not every article has an image). Same-origin is faster + cutover-safe.
     imagePath:
+      hubImagePath(String(a.id), "card") ||
       hubImagePath(String(a.id), "splash") ||
       `https://icjia.illinois.gov/images/${String(a.id)}-splash.jpeg`,
   };

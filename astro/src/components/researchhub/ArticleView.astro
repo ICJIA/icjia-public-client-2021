@@ -73,7 +73,7 @@ const doiSafe = article.doi ? escapeHtml(article.doi) : null;
   {
     heroFile && (
       <div class="article-splash">
-        <img src={heroFile} alt="" loading="eager" decoding="async" class="article-splash-img" />
+        <img src={heroFile} alt="" loading="eager" fetchpriority="high" decoding="async" class="article-splash-img" />
       </div>
     )
   }
@@ -83,7 +83,7 @@ const doiSafe = article.doi ? escapeHtml(article.doi) : null;
     splashJson && (
       <div class="article-splash" x-data="{ src: '' }" x-init="src = JSON.parse(document.getElementById('article-splash-json').textContent).src">
         <script type="application/json" id="article-splash-json" set:html={splashJson} is:inline />
-        <img :src="src" alt="" loading="eager" decoding="async" class="article-splash-img" />
+        <img :src="src" alt="" loading="eager" fetchpriority="high" decoding="async" class="article-splash-img" />
       </div>
     )
   }

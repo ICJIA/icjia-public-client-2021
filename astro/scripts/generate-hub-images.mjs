@@ -63,7 +63,11 @@ async function main() {
   // hero (≤~1185px container) and the full-bleed DICRA splash (1297px), so it stays
   // large. Decoded base64 → resized (never upscaled) WebP — slashes the raw
   // multi-hundred-KB JPEG/PNG to card-appropriate bytes (the LCP / image-delivery win).
-  const MAXW = { splash: 1400, thumbnail: 500, image: 760 };
+  // `card` = the splash resized to 760 for the LIST / home-strip cards (~370×250 shown,
+  // ×2 retina). The 1400px splash HERO was being shipped to the cards too (≈526 KiB of
+  // waste — it tanked the /researchhub/articles/ Lighthouse perf to 83); the small Strapi
+  // `thumbnail` is too soft for the card. So: detail hero stays `splash`, cards use `card`.
+  const MAXW = { splash: 1400, thumbnail: 500, image: 760, card: 760 };
   const writeOne = async (id, attr, b64) => {
     const dec = decode(b64);
     if (!dec) return;
@@ -88,6 +92,8 @@ async function main() {
   for (const a of data.articles || []) {
     await writeOne(a.id, "splash", a.splash);
     await writeOne(a.id, "thumbnail", a.thumbnail);
+    // card = the high-res splash source resized to 760 (list/strip card, not the 1400 hero)
+    await writeOne(a.id, "card", a.splash);
   }
   for (const ap of data.apps || []) {
     await writeOne(ap.id, "image", ap.image);
