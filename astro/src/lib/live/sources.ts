@@ -28,9 +28,14 @@ export const SOURCES = {
   events:       { host: AGENCY, collection: 'events' },         // convention (confirm at deploy gate)
   funding:      { host: AGENCY, collection: 'grants' },         // convention (confirm at deploy gate)
   programs:     { host: AGENCY, collection: 'programs' },       // convention (confirm at deploy gate)
-  hubArticles:  { host: HUB,    collection: 'articles' },       // convention (confirm at deploy gate)
-  hubDatasets:  { host: HUB,    collection: 'datasets' },       // convention (confirm at deploy gate)
-  hubApps:      { host: HUB,    collection: 'apps' },           // convention (confirm at deploy gate)
+  // researchhub gates on a CUSTOM `status` field (NOT Strapi's built-in publish
+  // state), so the live REST read MUST carry status=published or it returns the
+  // 30 datasets / 9 apps that are draft on the live site — which neither the baked
+  // baseline nor prod show. Verified: /datasets/count?status=published → 5,
+  // /apps/count?status=published → 5, ACAO:* from a preview origin (browser-safe).
+  hubArticles:  { host: HUB,    collection: 'articles', query: 'status=published' }, // convention (confirm at deploy gate)
+  hubDatasets:  { host: HUB,    collection: 'datasets', query: 'status=published' }, // verified 200, ACAO:*
+  hubApps:      { host: HUB,    collection: 'apps',     query: 'status=published' }, // verified 200, ACAO:*
 } as const;
 
 export type SourceKey = keyof typeof SOURCES;

@@ -7,14 +7,21 @@ export async function fetchCollection<T extends { id: string | number }>(
   collection: string,
   shapeOne: (raw: any) => T,
   size = 500,
+  /** extra Strapi v3 REST query (e.g. "status=published") appended to BOTH the
+   *  /count and the paged list calls. Needed for collections that gate on a
+   *  CUSTOM content field (researchhub datasets/apps use a `status` field) rather
+   *  than Strapi's built-in publish state (the agency collections); without it the
+   *  read returns drafts the baked baseline + prod never show. */
+  query = '',
 ): Promise<T[] | null> {
+  const q = query ? `&${query}` : '';
   try {
-    const cRes = await fetch(`${host}/${collection}/count`);
+    const cRes = await fetch(`${host}/${collection}/count${query ? `?${query}` : ''}`);
     if (!cRes.ok) return null;
     const count = Number(await cRes.json());
     let raw: any[] = [];
     for (let i = 0; i < Math.ceil(count / size); i++) {
-      const r = await fetch(`${host}/${collection}?_limit=${size}&_start=${i * size}`);
+      const r = await fetch(`${host}/${collection}?_limit=${size}&_start=${i * size}${q}`);
       if (!r.ok) return null;
       const slice = await r.json();
       if (!Array.isArray(slice)) return null; // malformed response → keep the baked baseline

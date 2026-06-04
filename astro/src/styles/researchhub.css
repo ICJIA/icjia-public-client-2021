@@ -8,9 +8,12 @@
 
 /* ── list page heading + "Showing N of M" + view toggle ───────────────── */
 .researchhub .page-heading h1 {
-  font-family: "Oswald", sans-serif;
+  /* Prod renders every page-title h1 in Lato 900 (legacy-globals.css notes the
+     global Oswald rule leaks; it was restored to Lato for .markdown-body but the
+     fix never reached this scope). Match prod: Lato 900, not Oswald. */
+  font-family: "Lato", sans-serif;
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: 900;
   color: #111;
   margin: 0;
 }
@@ -75,10 +78,12 @@
   padding: 0 0.75rem;
 }
 .researchhub .hub-card .hc-title {
-  font-family: "Oswald", sans-serif;
+  /* Prod card titles are Lato 700 (measured), not Oswald 500 — same Oswald-leak
+     parity miss as the page-title h1 above. */
+  font-family: "Lato", sans-serif;
   font-size: 1.4rem;
   line-height: 1.6rem;
-  font-weight: 500;
+  font-weight: 700;
   color: #111;
   padding: 0 0.75rem;
   margin: 0.25rem 0 0.5rem;

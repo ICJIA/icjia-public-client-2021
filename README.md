@@ -158,6 +158,62 @@ Netlify builds from `base = "astro/"`. The `@astrojs/netlify` adapter emits the 
 
 ---
 
+## Visual regression & parity testing
+
+> **The core mission of this migration is parity.** The new Astro site must look *and* behave exactly like the approved production site — same layout, same content, same interactions, at every screen size. We don't eyeball that and hope; we measure it automatically with a visual-regression (VR) harness and can gate a release on the result.
+
+**First, three terms (for non-technical readers).**
+
+- **"Testing," in software,** means proving the product still does what it should. Rather than have a person manually click through every page on every change — slow, and easy to miss something — software teams write small programs that perform the checks *automatically* and *identically* every time. That's **automated testing**, and a modern site has several kinds running constantly (does the page load? is the content right? is it accessible? — and, here, *does it still look correct?*).
+- **A "regression"** is when a change *accidentally* breaks or alters something that was already working — the product *regresses*, i.e. slips backward. The danger isn't a new feature that has a bug; it's the *unrelated* thing that used to be fine and quietly isn't anymore. Catching those is the whole game.
+- **A "visual regression,"** then, is a regression you can *see*: a heading in the wrong font, a card that shifted, an image that resized, spacing that drifted. This harness exists to catch exactly those — automatically, before they ship.
+
+**What it does, concretely.** Before anything ships, the harness opens the *current production site* and the *new site* together, takes full-page screenshots of each at five common screen widths (phone → large desktop), and compares them pixel-for-pixel. Anything that moved, resized, recolored, or went missing is highlighted in a "difference" image and counted. If a page differs by more than a small tolerance the check **fails**, and that page is fixed (or the difference is explained) before cutover. It is an automatic game of "spot the difference" between old and new — run on every page — so a visual regression cannot slip through unnoticed.
+
+**How it works (technical).** `pnpm vr` (→ `astro/scripts/vr/`) drives a headless Chromium via **Playwright** and pixel-diffs with **pixelmatch**:
+
+- **Reference vs candidate.** Each route is captured on `VR_PROD` (default `https://icjia.illinois.gov`) and `VR_NEW` (default `http://localhost:4321` — the local production build — or a Netlify branch-deploy URL), back-to-back to minimize live-CMS drift between the two shots.
+- **Five breakpoints.** The Vuetify-2 widths — 375 / 768 / 960 / 1280 / 1920 — at their real device-scale factors, so *responsive* layout is checked, not a single width.
+- **Normalization (this is what kills false alarms).** A frozen wall-clock so date-relative "NEW!" badges are deterministic; all CSS animations/transitions disabled; a wait on `document.fonts.ready`; volatile regions masked (e.g. auto-rotating carousels); the dev toolbar stripped; and, for full-page shots, a scripted scroll to trigger lazy-loaded images followed by a network-idle wait so everything is painted before capture.
+- **Alignment.** Both frames are anchored to the page `<h1>` and cropped to their common area, so an accepted constant top-spacing offset doesn't smear every row beneath it and hide the real differences.
+- **Gates.** Per capture, the mismatched-pixel ratio is graded **PASS ≤ 1% · WARN ≤ 3% · FAIL > 3%**. *Why not 0%?* Two different rendering engines (Vue/Vuetify vs Astro) never produce byte-identical text even with identical fonts — sub-pixel anti-aliasing alone floors a text-heavy region at ~1–2%. So the gate is tuned to catch **structural** regressions (a layout shift, a wrong size, a missing or extra element all show up as a high %), and pixel-level fidelity is confirmed by eye on the diff images.
+
+**Output.** Three PNGs per capture — `…__prod.png`, `…__new.png`, `…__diff.png` (the diff paints the changed pixels) — plus a `report.md` summary table, all under `astro/scripts/vr/__diffs__/`. The run exits non-zero if any capture FAILs, so it can block a CI job or a pre-cutover release.
+
+**Coverage & usage.** The route list (`scripts/vr/config.mjs`) spans the app chrome (header, footer) and the content templates — home, news/press/meetings, events, grants, publications, about/staff/bios/units, the ResearchHub sections (landing, articles, and the dataset/app **lists and details**), and IRB — each at all five widths. Run from `astro/`:
+
+```bash
+pnpm vr                                    # full sweep: prod vs the local production build
+VR_ONLY=rh- pnpm vr                        # only routes whose id matches (fast iteration)
+VR_NEW=https://deploy-preview-123--icjia.netlify.app pnpm vr   # diff prod vs a Netlify deploy
+```
+
+**Why this is foundational here — not a formality.** Visual + functional parity with the approved production site is the *premise* of this entire rebuild, not a final checkbox — and this harness is how that premise is **continuously proven with evidence** rather than asserted. Every milestone of the migration is re-checked against production with it. Over the rebuild it has, concretely:
+
+- **Caught what the eye missed.** It flagged ResearchHub headings and card titles rendering in *Oswald* where production uses *Lato* — the kind of difference people scroll right past, but a real deviation from the approved design. Found by measurement, not by luck.
+- **Overruled plausible-but-wrong fixes.** "These pages look a little narrow — just widen them" is exactly the reasonable-sounding change that ships bugs. The harness was used to test that very change — *twice* — and rejected it both times, because widening measurably made pages *worse* (production's content is intentionally narrower than its outer frame). The resulting rule — **measure, don't adjust on a hunch** — is now written into the project's own engineering notes and reused.
+- **Separated real problems from unavoidable noise.** It established that two different rendering engines (the old Vue site vs. the new Astro one) never produce byte-identical screenshots — a few percent of difference is just anti-aliasing, and live content (today's news, today's events) legitimately changes between captures. So a human reads the *difference images* to judge true parity instead of chasing an impossible "zero," and the thresholds are tuned to surface *structural* changes — a moved, resized, or missing element — which is what actually matters.
+
+That is what "parity is a foundational principle, not an add-on" looks like in practice: a tool run at every step, catching real regressions, vetoing well-intentioned mistakes, and turning judgment calls into recorded, reusable rules.
+
+**Reusing this harness on another site.** It is deliberately small and portable — two files do the work:
+
+- **`scripts/vr/run.mjs`** — the engine (capture → normalize → align → diff → write report). **Site-agnostic; you don't edit it.**
+- **`scripts/vr/config.mjs`** — the *only* site-specific part: the two base URLs, the list of routes to check, the breakpoints, and the pass/warn/fail thresholds.
+
+To drop it into another project:
+
+1. Copy the `scripts/vr/` folder in.
+2. Install the three dev dependencies: `pnpm add -D playwright pixelmatch pngjs`, then `npx playwright install chromium`.
+3. Add a script to `package.json`: `"vr": "node scripts/vr/run.mjs"`.
+4. Edit **only `config.mjs`** — set `PROD_BASE` / `NEW_BASE` to that site's reference and candidate URLs, and list its routes (each `{ id, path, fullPage }`, with an optional `mask`/`settleMs`/`clipTop`); adjust the breakpoints or gates if its design calls for it.
+
+Everything else — the clock-freeze, animation-off, fonts-ready gate, region masking, `<h1>` alignment, the `prod`/`new`/`diff` PNGs + `report.md`, and the non-zero exit on failure — is generic and works as-is. (It assumes the two URLs render the *same content from the same source* — the usual "approved old site vs new build of it" comparison this is built for; it is a parity checker, not a generic two-page differ.)
+
+> **Visual is one half; functional is the other.** Parity of *behavior* is gated separately: the Vitest render/sanitizer suite (`pnpm test`), the Playwright interaction E2E (`pnpm test:e2e`), and axe-core + Lighthouse accessibility (a11y 100). Together they enforce the "looks the same **and** works the same" bar this migration is held to.
+
+---
+
 ## Security audit
 
 > **Audit date:** 2026-06-01 · **Scope:** full pre-cutover adversarial (red-team) review of the Astro SSR app — serverless/edge functions, HTTP headers + CSP + redirects, content sanitization / XSS, API endpoints, secrets & env handling, GraphQL injection, dependencies. **Method:** six parallel red-team passes, each finding then **independently verified against the source** before being recorded here. Living record — re-run and append on each material change.

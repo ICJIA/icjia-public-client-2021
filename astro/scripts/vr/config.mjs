@@ -80,6 +80,26 @@ export const ROUTES = [
   { id: "hub-deflection", path: "/researchhub/articles/a-multi-site-evaluation-of-law-enforcement-deflection-in-the-united-states/", fullPage: true, mask: [] },
   { id: "dataset", path: "/researchhub/datasets/illinois-uniform-crime-reports-ucr-index-crime-offense/", fullPage: true, mask: [] },
   { id: "app", path: "/researchhub/apps/parole-explorer/", fullPage: true, mask: [] },
+  // ── ResearchHub Datasets + Apps — strict full-section sweep (user-requested) ──
+  // The two LIST pages (the real gap — never diffed before) + EVERY detail page
+  // within each section: all 5 datasets + all 5 apps (status:"published" — the
+  // filter both prod and Astro use; the other 30 datasets / 9 apps are unpublished
+  // and render on neither site). Dataset cards are TEXT-ONLY (no images); APP cards
+  // carry lazy base64 images (fetched from /api/hub-app-images.json or same-origin
+  // imagePath) so the apps list + app details get extra settle to paint them.
+  // Run just this set:  VR_ONLY=rh- pnpm vr
+  { id: "rh-datasets-list", path: "/researchhub/datasets/", fullPage: true, mask: [] },
+  { id: "rh-apps-list", path: "/researchhub/apps/", fullPage: true, settleMs: 2500, mask: [] },
+  { id: "rh-ds-custody", path: "/researchhub/datasets/death-in-custody-reports/", fullPage: true, mask: [] },
+  { id: "rh-ds-jj", path: "/researchhub/datasets/illinois-juvenile-justice-data-dashboard-dataset/", fullPage: true, mask: [] },
+  { id: "rh-ds-ucr-hate", path: "/researchhub/datasets/illinois-uniform-crime-reports-ucr-hate-crime-offense/", fullPage: true, mask: [] },
+  { id: "rh-ds-ucr-arrest", path: "/researchhub/datasets/illinois-uniform-crime-reports-ucr-index-crime-arrest/", fullPage: true, mask: [] },
+  { id: "rh-ds-ucr-offense", path: "/researchhub/datasets/illinois-uniform-crime-reports-ucr-index-crime-offense/", fullPage: true, mask: [] },
+  { id: "rh-app-arrest", path: "/researchhub/apps/arrest-explorer/", fullPage: true, settleMs: 1500, mask: [] },
+  { id: "rh-app-idot", path: "/researchhub/apps/idot-traffics-stops-dashboard/", fullPage: true, settleMs: 1500, mask: [] },
+  { id: "rh-app-custody", path: "/researchhub/apps/illinois-death-in-custody-dashboard/", fullPage: true, settleMs: 1500, mask: [] },
+  { id: "rh-app-jj", path: "/researchhub/apps/illinois-juvenile-justice-data-dashboard-2025/", fullPage: true, settleMs: 1500, mask: [] },
+  { id: "rh-app-parole", path: "/researchhub/apps/parole-explorer/", fullPage: true, settleMs: 1500, mask: [] },
   // IRB
   { id: "irb", path: "/irb/", fullPage: true, mask: [] },
   { id: "irb-meetings", path: "/irb/irb-meetings/", fullPage: true, mask: [] },

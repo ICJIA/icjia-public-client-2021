@@ -3,6 +3,16 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 Now a fully static build with client-side Alpine live-islands (de-serverless); tracked on `feat/astro-researchhub-fixes`.
 
+## [0.45.0] — 2026-06-04 — test(vr)+fix(researchhub): datasets/apps parity sweep, Oswald→Lato headings, README VR docs
+
+Strict VR sweep of the ResearchHub datasets/apps sections (12 routes × 5 breakpoints) plus the parity fix + live foundation it surfaced.
+
+- **VR coverage.** Added the two list pages (`/researchhub/datasets/`, `/researchhub/apps/` — never diffed before) + all 5 dataset and 5 app detail pages to `scripts/vr/config.mjs` (`VR_ONLY=rh- pnpm vr`). The sweep confirmed the lists/details sit at the **known cross-engine floor + live-data drift** baseline — a control run of *untouched* pages (publications, header, footer) also fails the 3% gate at 5–9% — with apps ~10pts higher from the base64 card images (the next real target).
+- **fix(researchhub) — Oswald→Lato.** `.page-heading h1` + `.hc-title` (list page titles + card titles) rendered in Oswald; production uses Lato (`legacy-globals.css` documents prod = "Lato 900, NOT Oswald" — the `.markdown-body` correction never reached `researchhub.css`). Restored Lato (h1 900, card title 700). **NOTE:** `legacy-globals.css` also says "Oswald stays for the ResearchHub scopes" — if that was intentional, this is a one-line revert.
+- **Container width NOT changed.** A `max-w-5xl→6xl` detail-container widen was tried and reverted — re-confirms the prior finding that prod content renders narrower than its wrapper; do not widen on intuition (the VR is the arbiter).
+- **Live-on-refresh foundation for datasets/apps (additive, NOT yet wired).** `fetchCollection` gained an optional Strapi REST `query` (researchhub gates on a custom `status` field → needs `status=published`, unlike the agency collections' built-in publish state); `sources.ts` maps the hub collections with it. Verified researchhub REST returns `access-control-allow-origin: *` from a preview origin (browser-live-safe). Deferred behind the parity work.
+- **README.** Expanded the "Visual regression & parity testing" section for tech + non-tech readers — what "testing"/"regression" mean, why parity is foundational (with real examples), and how to reuse the harness on another site. `pnpm test` 79/79 green.
+
 ## [0.44.0] — 2026-06-03 — feat(arch): publications live-island + SSR cache teardown (de-serverless Phase 2)
 
 Phase 2 of `docs/STATIC-ISLANDS-MIGRATION.md` — add the first client-side **live-island** and tear out the dead
