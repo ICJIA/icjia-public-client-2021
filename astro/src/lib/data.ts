@@ -1652,6 +1652,27 @@ export async function getAllPublications(): Promise<PublicationListItem[]> {
     ) as PublicationListItem[]; // island-trim intentionally drops slug (optional) + haystack (internal)
 }
 
+/** Every publication SLUG — the source for the detail routes' getStaticPaths + the
+ *  /publications/<slug> redirect. getAllPublications() island-trims the slug OUT (a
+ *  listing perf win), so the prerendered detail pages CANNOT reuse it: with no slug
+ *  source, getStaticPaths builds ZERO publication pages and every
+ *  /about/publications/<slug>/ 404s — the regression this restores. */
+export async function getAllPublicationSlugs(): Promise<string[]> {
+  const countRes = await fetch(`${PUB_BASE}/publications/count`);
+  if (!countRes.ok) throw new Error(`publications/count HTTP ${countRes.status}`);
+  const count = Number(await countRes.json());
+  const iterations = Math.ceil(count / PUB_PAGE_SIZE);
+  let rows: any[] = [];
+  for (let i = 0; i < iterations; i++) {
+    const res = await fetch(`${PUB_BASE}/publications?_limit=${PUB_PAGE_SIZE}&_start=${i * PUB_PAGE_SIZE}`);
+    if (!res.ok) throw new Error(`publications slice HTTP ${res.status}`);
+    rows = rows.concat(await res.json());
+  }
+  const slugs = new Set<string>();
+  for (const r of uniqById(rows)) if (r && r.slug) slugs.add(String(r.slug));
+  return Array.from(slugs);
+}
+
 /** A single publication by slug, live (GraphQL is fine here — one row). null → 404. */
 /** Recent N publications (publicationDate desc), via a single light REST call
  *  (_sort + _limit) — for the /about/publications/ INITIAL island/baseline so the doc

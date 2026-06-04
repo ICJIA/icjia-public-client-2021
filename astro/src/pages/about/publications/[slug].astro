@@ -6,14 +6,16 @@
 // getPublication returns null when the slug is unknown → 404 (legacy pushed /404).
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PublicationCard from '../../../components/PublicationCard.astro';
-import { getPublication, getAllPublications } from '../../../lib/data';
+import { getPublication, getAllPublicationSlugs } from '../../../lib/data';
 import { buildArticleJsonLd } from '../../../lib/seo';
 import '../../../styles/publications.css';
 
 export const prerender = true;
 export async function getStaticPaths() {
-  const items = await getAllPublications();
-  return items.filter((p) => p.slug).map((p) => ({ params: { slug: p.slug } }));
+  // getAllPublications() island-trims the slug out, so use the slug-preserving fetcher
+  // (else ZERO detail pages build and every /about/publications/<slug>/ 404s).
+  const slugs = await getAllPublicationSlugs();
+  return slugs.map((slug) => ({ params: { slug } }));
 }
 
 const { slug } = Astro.params;
