@@ -75,7 +75,7 @@ const { item } = Astro.props;
     item.tags.length > 0 && (
       <div class="py-2 px-3">
         {item.tags.map((tag) => (
-          <span class="chip mt-1">{tag}</span>
+          <a class="chip mt-1" href={`/search/?q=${encodeURIComponent(tag)}`}>{tag}</a>
         ))}
       </div>
     )

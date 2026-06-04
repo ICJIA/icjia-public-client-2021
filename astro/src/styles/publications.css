@@ -259,8 +259,9 @@
   vertical-align: middle;
 }
 
-/* Tag chips (match the news / meetings listing chip — non-link spans;
-   search is unported) */
+/* Tag chips → clickable /search/?q=<tag> links (site-wide pattern). The dim grey look
+   is publications-specific; the global unlayered `a.chip` rule resets the markdown-body
+   link cascade so they don't render blue/underlined. */
 .publications .chip {
   display: inline-block;
   border: 1px solid #bbb;

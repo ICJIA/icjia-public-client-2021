@@ -250,7 +250,7 @@ const xdata = `{
                   </template>
                   <template x-if="it.tags.length">
                     <div class="py-2 px-3">
-                      <template x-for="t in it.tags" :key="t"><span class="chip mt-1" x-text="t"></span></template>
+                      <template x-for="t in it.tags" :key="t"><a class="chip mt-1" :href="`/search/?q=${encodeURIComponent(t)}`" x-text="t"></a></template>
                     </div>
                   </template>
                   <div class="pub-card-archive text-center mt-10 px-3 py-3">
