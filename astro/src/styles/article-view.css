@@ -381,6 +381,12 @@
 #dataset-view .variables-table > table tr {
   background-color: #fff;
 }
+/* Zebra-stripe even body rows to match prod (#f6f8fa — github-markdown / the legacy
+   nth-child rule), mirroring the #article-view article table above. Without this the
+   variables table is flat white; prod alternates white / #f6f8fa. */
+#dataset-view .variables-table > table tbody tr:nth-child(even) {
+  background-color: #f6f8fa;
+}
 
 #article-view .article-body p,
 #article-view .article-body ul,

@@ -118,7 +118,8 @@ pnpm build          # prebuild (generators) → astro build (Netlify SSR functio
 pnpm preview        # preview a production build
 pnpm test           # Vitest — sanitizer parity + markdown link-text suites (the render gate)
 pnpm test:e2e       # Playwright interaction E2E (against a running dev server)
-pnpm vr             # visual-regression harness (Playwright + pixelmatch)
+pnpm vr             # visual-regression harness — pixel diff (Playwright + pixelmatch)
+pnpm vr:assert      # parity assertions on computed CSS, not pixels (catches subtle/localized diffs)
 pnpm search-index   # regenerate searchIndex.json + sitemap.xml from the live CMS
 pnpm og-image       # regenerate the branded OG image (svg + png)
 ```
@@ -186,6 +187,8 @@ Netlify builds from `base = "astro/"`. The `@astrojs/netlify` adapter emits the 
 pnpm vr                                    # full sweep: prod vs the local production build
 VR_ONLY=rh- pnpm vr                        # only routes whose id matches (fast iteration)
 VR_NEW=https://deploy-preview-123--icjia.netlify.app pnpm vr   # diff prod vs a Netlify deploy
+
+pnpm vr:assert                             # STRICT: compare computed CSS values, prod vs new (zero tolerance)
 ```
 
 **Why this is foundational here — not a formality.** Visual + functional parity with the approved production site is the *premise* of this entire rebuild, not a final checkbox — and this harness is how that premise is **continuously proven with evidence** rather than asserted. Every milestone of the migration is re-checked against production with it. Over the rebuild it has, concretely:
@@ -196,10 +199,35 @@ VR_NEW=https://deploy-preview-123--icjia.netlify.app pnpm vr   # diff prod vs a 
 
 That is what "parity is a foundational principle, not an add-on" looks like in practice: a tool run at every step, catching real regressions, vetoing well-intentioned mistakes, and turning judgment calls into recorded, reusable rules.
 
-**Reusing this harness on another site.** It is deliberately small and portable — two files do the work:
+**The pixel diff has a blind spot — and this is the honest part.** A screenshot comparison is powerful, but it is not omniscient, and on this project it missed two *real* regressions on the ResearchHub dataset pages: the Variables table lost its zebra striping (the alternating row shading), and the tag chips rendered in the wrong style and bunched together with no spacing. Both slipped past a "green" pixel run. Here is exactly why, because understanding it is the point:
+
+- **Subtle colors hide under the tolerance.** A zebra stripe here is `#f6f8fa` — a barely-there grey — against white: about a 3.5% color difference per pixel. The pixel comparison deliberately ignores per-pixel differences below ~20% (that tolerance is precisely what stops anti-aliasing from screaming on every line of text). So a striped table and a flat-white table read as *identical* to it. The missing stripe was invisible to the tool, not just easy to miss by eye.
+- **Small things drown in big pages.** The tag-chip strip is a sliver near the top of a very tall page. Even rendered completely wrong, it's a fraction of a percent of the page's pixels — under the cross-engine anti-aliasing "noise floor" every page already carries. The page's overall difference number simply didn't move enough to trip the gate.
+
+A single pixel percentage cannot *localize* a small change or *see* a subtle color — and you can't fix that by tightening the tolerance, because pushing it toward zero makes every page light up red from anti-aliasing alone. That's *less* signal, not more.
+
+**So the harness now has a second, stricter layer that reads the CSS itself, not the picture** (`pnpm vr:assert`, → `scripts/vr/assert.mjs` + `assertions.mjs`). It opens the same two sites and, for a curated list of parity-critical details, compares their **computed styles and measured geometry** — the actual `border-radius`, `text-transform`, `background-color`, rendered height, gap between elements — and **fails on any difference at all**. Because it compares *values* (is the even row `#f6f8fa`? are the chips uppercase pills 4px apart? is the heading Lato, not Oswald?) instead of *pixels*, it is completely immune to anti-aliasing noise, it names the exact element and property that drifted, and it has zero tolerance by design. It is the "not forgiving — at all" check. Both datasets bugs above are now permanent assertions in it and cannot silently return.
+
+**Read these results as engineering, not magic.** No tool understands a design by intuition. This harness knows what "correct" means only because a person *measured production and wrote the check down* — "the dataset tag chip is a white pill, 2px border, uppercase, 24px tall, 4px gap." That list of checks is small today and is *meant to grow*: each time a real regression slips past the pixel diff, the remedy is to add a check so it can never slip again. The harness even needed correcting while it was built — its very first run raised a *false* alarm (it measured the wrong layer of an image) and the selector had to be fixed. That is normal and expected. These tools are authentic, maintained engineering that gets sharper over time as the team teaches it what to look at — not a one-time, all-seeing guarantee. Run at every step, corrected when it's wrong, and extended when it misses something, *that* is how "pixel-perfect parity" stops being a slogan and becomes something proven on every release.
+
+**Where this harness has been — a short record (so the change is legible).**
+
+| | Before (through mid-2026) | After (this pass) |
+|---|---|---|
+| What it compares | full-page **screenshots**, pixel-by-pixel | screenshots **plus computed CSS values** |
+| Per-pixel tolerance | 20% (to absorb cross-engine anti-aliasing) | pixel layer unchanged; the new layer has **zero** tolerance |
+| Verdict per page | one mismatch **%** (coarse) | the % **and** an exact pass/fail per checked property |
+| Subtle-color diffs (zebra `#f6f8fa` vs white) | **missed** — the 3.5% delta is under the 20% tolerance | **caught** — `background-color` compared as a value |
+| Localized diffs (tag-chip spacing/style) | **missed** — a few hundred px drowned in the page-wide AA floor | **caught** — `margin`/`gap`/`radius`/`text-transform` compared as values |
+| Run with | `pnpm vr` | `pnpm vr` **and** `pnpm vr:assert` |
+
+**What forced the change, and why.** Two real regressions shipped to the ResearchHub dataset pages — a Variables table that had lost its zebra striping, and tag chips rendered in the wrong style with no spacing — and a *green* pixel run flagged neither, for the two reasons spelled out above (the stripe colour is under the pixel tolerance; the chip strip is under the page-wide noise floor). That is the concrete evidence that a pixel percentage is *necessary but not sufficient*. The computed-style layer closes exactly that gap; both bugs are now permanent assertions and cannot silently return. The next regression the pixel diff misses becomes the next assertion — that ongoing growth *is* the maintenance, and it is why this is engineering rather than a one-time guarantee.
+
+**Reusing this harness on another site.** It is deliberately small and portable — two files do the core work:
 
 - **`scripts/vr/run.mjs`** — the engine (capture → normalize → align → diff → write report). **Site-agnostic; you don't edit it.**
 - **`scripts/vr/config.mjs`** — the *only* site-specific part: the two base URLs, the list of routes to check, the breakpoints, and the pass/warn/fail thresholds.
+- **`scripts/vr/assertions.mjs` + `assert.mjs`** *(optional but recommended)* — the strict computed-CSS layer. `assert.mjs` is the site-agnostic engine; `assertions.mjs` is your curated list of "this property must match the reference" checks. Start with a handful and grow it every time the pixel diff misses something.
 
 To drop it into another project:
 

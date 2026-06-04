@@ -22,6 +22,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "vr": "node scripts/vr/run.mjs",
+    "vr:assert": "node scripts/vr/assert.mjs",
     "health": "node scripts/route-health.mjs",
     "health:full": "node scripts/route-health.mjs --full",
     "warm": "node scripts/route-health.mjs --warm",

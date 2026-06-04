@@ -163,13 +163,18 @@
   font-size: 12px;
   color: #0e4471;
 }
-.researchhub .chip {
-  display: inline-block;
-  border: 1px solid #bbb;
-  color: #555;
-  font-size: 11px;
-  padding: 1px 8px;
-  border-radius: 12px;
+/* Tag chips → match prod's Vuetify v-btn.chip (measured on /researchhub/datasets/*
+   + /apps/*): white pill, 2px #222 border, 10px/700 UPPERCASE, 0.5px tracking — those
+   all come from the base .chip (legacy-globals.css). The square base lacks the pill
+   radius, UPPERCASE, Lato, and the mr-1 (4px) gap, so add only those. Covers AppView +
+   HubCard (.researchhub ancestor) AND DatasetView (#dataset-view, which has no
+   .researchhub ancestor). The old dim 1px-#bbb/#555 style did NOT match prod. */
+.researchhub .chip,
+#dataset-view .chip {
+  font-family: "Lato", sans-serif;
+  text-transform: uppercase;
+  border-radius: 28px;
+  padding: 0 9px;
   margin-right: 4px;
   margin-bottom: 4px;
 }
