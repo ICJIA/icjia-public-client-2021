@@ -1,21 +1,23 @@
 ---
-// Standard ICJIA 404 — stylish, on-brand, per the conversion checklist's canonical
-// "Standard 404 page" pattern: BaseLayout + hero band (aria-hidden decorative
-// numeral + announced <h1>) + a GET /search/ hand-off form + a quick-link card grid
-// mirroring the legacy 404's destinations + a help line. noindex (followable).
+// Standard ICJIA 404 — stylish, on-brand (BaseLayout + hero band + GET /search/
+// hand-off + quick-link grid + help line). noindex (followable).
 //
-// Prerendered (static): Netlify serves this for any unmatched route with a 404
-// status — no function invocation per miss, and the (build-time) path is /404 so
-// the per-section SiteContextBar correctly renders nothing.
+// SMART 404 (new): the site is a static build, so a brand-new CMS slug 404s until
+// the next rebuild. To avoid a dead end, a client check looks at the unmatched path;
+// if it's a known content-detail route AND the record EXISTS in Strapi (public REST),
+// the page is "published but not yet built" → we show a "being published" state
+// instead of a hard 404. Hosts come from sources.ts (single source of truth); the
+// collection names mirror the [slug] detail routes. The check is browser-only (this
+// page is prerendered at /404, served by Netlify for any miss — no function per hit).
 //
 // Parity with legacy src/views/404.vue: same destination set + the Plausible "404"
-// custom event (path prop) fired on load.
+// event (path prop) fired on load.
 export const prerender = true;
 
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { AGENCY, HUB } from '../lib/live/sources';
 
 // Quick links mirror legacy 404.vue (Home + the seven section destinations).
-// /search is intentionally NOT a card — the search form already sits in the hero.
 const links = [
   { label: 'ICJIA Home', href: '/' },
   { label: 'Funding Opportunities', href: '/grants/funding/' },
@@ -26,17 +28,76 @@ const links = [
   { label: 'Innovation & Digital Services', href: '/innovation-and-digital-services/' },
   { label: 'Contact ICJIA', href: '/about/contact/' },
 ];
+
+// Ordered most-specific-first: the first matching prefix wins (so /news/meetings/
+// matches meetings before /news/ matches posts). q = extra REST query (researchhub
+// gates on a custom `status` field → needs status=published, unlike the agency
+// collections' built-in publish state). Collections are confirmed in sources.ts.
+const DETECT = [
+  { prefix: '/researchhub/articles/', host: HUB, coll: 'articles', q: 'status=published' },
+  { prefix: '/researchhub/datasets/', host: HUB, coll: 'datasets', q: 'status=published' },
+  { prefix: '/researchhub/apps/', host: HUB, coll: 'apps', q: 'status=published' },
+  { prefix: '/news/meetings/', host: AGENCY, coll: 'meetings', q: '' },
+  { prefix: '/news/press/', host: AGENCY, coll: 'posts', q: '' },
+  { prefix: '/news/', host: AGENCY, coll: 'posts', q: '' },
+  { prefix: '/events/', host: AGENCY, coll: 'events', q: '' },
+  { prefix: '/grants/funding/', host: AGENCY, coll: 'grants', q: '' },
+];
+const detectJson = JSON.stringify(DETECT).replace(/</g, '\\u003c');
 ---
 
 <BaseLayout title="Page Not Found" description="The page you requested could not be found." noindex>
-  <section class="nf">
+  <section class="nf" data-nf>
     <div class="nf-inner">
+      {/* Detection runs BEFORE the default messaging parses, so a path that turns out
+          to be "publishing" never flashes "not found" first. */}
+      <script type="application/json" id="nf-detect" set:html={detectJson} is:inline />
+      <script is:inline>
+        {`(() => {
+          try {
+            var sec = document.currentScript.closest('[data-nf]');
+            var map = JSON.parse(document.getElementById('nf-detect').textContent);
+            var p = location.pathname;
+            for (var i = 0; i < map.length; i++) {
+              var e = map[i];
+              if (p.indexOf(e.prefix) === 0) {
+                var slug = p.slice(e.prefix.length).replace(/\\/$/, '');
+                if (slug && slug.indexOf('/') === -1) {
+                  sec.setAttribute('data-nf-slug', slug);
+                  sec.setAttribute('data-nf-url', e.host + '/' + e.coll + '?slug=' + encodeURIComponent(slug) + (e.q ? '&' + e.q : '') + '&_limit=5');
+                  sec.setAttribute('data-nf-state', 'checking');
+                  break;
+                }
+              }
+            }
+          } catch (_) {}
+        })();`}
+      </script>
+
       <div class="nf-num" aria-hidden="true">404</div>
-      <h1 class="nf-head">We couldn&rsquo;t find that page</h1>
-      <p class="nf-sub">
-        The page may have moved, been renamed, or no longer exists. Try a search,
-        or pick up one of the links below.
-      </p>
+
+      {/* Three mutually-exclusive states, swapped by [data-nf-state] (CSS below). */}
+      <div class="nf-msg nf-msg--default">
+        <h1 class="nf-head">We couldn&rsquo;t find that page</h1>
+        <p class="nf-sub">
+          The page may have moved, been renamed, or no longer exists. Try a search,
+          or pick up one of the links below.
+        </p>
+      </div>
+      <div class="nf-msg nf-msg--checking" aria-live="polite">
+        <h1 class="nf-head">One moment&hellip;</h1>
+        <p class="nf-sub">Checking whether this page is being published&hellip;</p>
+      </div>
+      <div class="nf-msg nf-msg--publishing" aria-live="polite">
+        <h1 class="nf-head">This page is being published</h1>
+        <p class="nf-sub">
+          Good news &mdash; this content exists and is being prepared. New pages usually
+          appear within a few minutes. Please check back shortly, or try again.
+        </p>
+        <p class="nf-retry-wrap">
+          <button type="button" class="nf-search-btn" id="nf-retry">Try again</button>
+        </p>
+      </div>
 
       <form method="get" action="/search/" role="search" class="nf-search">
         <label for="nf-q" class="sr-only">Search ICJIA</label>
@@ -69,11 +130,48 @@ const links = [
   </section>
 </BaseLayout>
 
-{/* Parity: legacy 404.vue fired a Plausible "404" event with the requested path. */}
+{/* Resolver: if the early script flagged a candidate, REST-check Strapi. A record
+    whose slug matches → "publishing"; otherwise (or on error/timeout) → the normal
+    404. Defensively verify slug === to survive a Strapi that ignores the filter. */}
 <script is:inline>
-  if (typeof window !== 'undefined' && typeof window.plausible === 'function') {
-    window.plausible('404', { props: { path: location.pathname } });
-  }
+  {`(() => {
+    var sec = document.querySelector('[data-nf]');
+    if (!sec || sec.getAttribute('data-nf-state') !== 'checking') {
+      if (typeof window !== 'undefined' && typeof window.plausible === 'function') {
+        window.plausible('404', { props: { path: location.pathname } });
+      }
+      return;
+    }
+    var url = sec.getAttribute('data-nf-url');
+    var slug = sec.getAttribute('data-nf-slug');
+    var settled = false;
+    var fallback = function () {
+      if (settled) return;
+      settled = true;
+      sec.removeAttribute('data-nf-state');
+      if (typeof window.plausible === 'function') window.plausible('404', { props: { path: location.pathname } });
+    };
+    var timer = setTimeout(fallback, 6000);
+    fetch(url, { headers: { accept: 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (rows) {
+        if (settled) return;
+        var exists = Array.isArray(rows) && rows.some(function (x) { return x && x.slug === slug; });
+        if (exists) {
+          settled = true;
+          clearTimeout(timer);
+          sec.setAttribute('data-nf-state', 'publishing');
+          document.title = 'Publishing\\u2026 | ICJIA';
+          if (typeof window.plausible === 'function') window.plausible('404-publishing', { props: { path: location.pathname } });
+          var retry = document.getElementById('nf-retry');
+          if (retry) retry.addEventListener('click', function () { location.reload(); });
+        } else {
+          clearTimeout(timer);
+          fallback();
+        }
+      })
+      .catch(function () { clearTimeout(timer); fallback(); });
+  })();`}
 </script>
 
 <style>
@@ -87,7 +185,8 @@ const links = [
     text-align: center;
   }
   /* Decorative numeral — Oswald, navy→primary gradient. aria-hidden; the <h1>
-     carries the announcement. */
+     carries the announcement. Hidden in the checking/publishing states (it's not a
+     "not found" there). */
   .nf-num {
     font-family: 'Oswald', system-ui, sans-serif;
     font-weight: 700;
@@ -113,6 +212,26 @@ const links = [
     color: #444;
     max-width: 56ch;
     margin: 0 auto 28px;
+  }
+
+  /* ── state machine: default visible; checking/publishing revealed by the early
+     script setting [data-nf-state] BEFORE this content paints (no "not found" flash). */
+  .nf-msg--checking,
+  .nf-msg--publishing {
+    display: none;
+  }
+  [data-nf-state='checking'] .nf-num,
+  [data-nf-state='publishing'] .nf-num,
+  [data-nf-state='checking'] .nf-msg--default,
+  [data-nf-state='publishing'] .nf-msg--default {
+    display: none;
+  }
+  [data-nf-state='checking'] .nf-msg--checking,
+  [data-nf-state='publishing'] .nf-msg--publishing {
+    display: block;
+  }
+  .nf-retry-wrap {
+    margin: 0 0 28px;
   }
 
   .nf-search {

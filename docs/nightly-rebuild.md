@@ -16,6 +16,18 @@ enqueues one build). Neither runs a Netlify function:
 A build hook can only *enqueue* a build — no fan-out/loop risk. The hook URL is the
 credential, so it lives in a secret/env var, never in code.
 
+**During the publish → build window: the smart 404.** A new slug is live in Strapi the
+moment it's published, but its static page doesn't exist until the triggered build finishes
+(the "minutes" above). To avoid a dead end in that gap, `src/pages/404.astro` is
+**slug-aware**: for a known content-detail path (`/news/<slug>/`, `/news/meetings/<slug>/`,
+`/researchhub/{articles,datasets,apps}/<slug>/`, `/events/<slug>/`, `/grants/funding/<slug>/`)
+it REST-checks Strapi in the browser (hosts from `src/lib/live/sources.ts`) and, if the record
+exists, shows a **"this page is being published"** message with a *Try again* button instead of
+a hard 404. No matching record → the normal 404. It's purely client-side (this page is still
+prerendered at `/404`, served by Netlify for any miss — no function per hit), and it's the
+complement to the rebuild triggers below: the build mints the real page within minutes; the
+smart 404 keeps the link from looking broken in the meantime.
+
 ## 1. Create the build hook (one-time)
 
 Netlify → Site configuration → Build & deploy → **Build hooks** → *Add build hook*
