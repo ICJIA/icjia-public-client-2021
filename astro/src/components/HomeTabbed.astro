@@ -3,6 +3,14 @@
 // Meetings / Employment), each a list of clickable cards. Expiry / new /
 // cancelled flags are computed server-side (SSR). Tabs are an ARIA tablist
 // driven by Alpine.
+//
+// LIVE ISLAND: the baked `.map` cards below are the SSR baseline (real HTML for
+// SEO / no-JS / crawlers), shown only behind x-show="!ready". Once Alpine hydrates
+// it renders an x-for layer over `all` — seeded from the #home-tabbed-data island
+// (same shaped fields as the baked cards) and swapped from live Strapi via
+// window.__liveRows.homeTabbed, so a post-build NOFO / meeting / job appears here
+// without a rebuild. Every card field is plain text (x-text) → no markdown in the
+// x-data string. Falls back to the baked baseline on fetch failure.
 import {
   fundingCategoryLabel,
   formatDate,
@@ -18,9 +26,58 @@ interface Props {
 }
 const { grants = [], meetings = [], employment = [] } = Astro.props;
 const tabs = ['Funding', 'Meetings', 'Employment'];
+
+// JSON island baseline for the Alpine x-for layer — the SAME shaped fields the
+// baked cards render, in the SAME order (props are already getHome-sorted). Mirrors
+// shapeHome*Row in lib/live/shapers/home-tabbed.ts so the live swap is shape-compatible.
+const islandData = {
+  grants: grants.map((g) => ({
+    p: g.fullPath,
+    cl: fundingCategoryLabel(g.category),
+    expired: isExpired(g.end),
+    range: `${formatDateShort(g.start)} to ${formatDateShort(g.end)}`,
+    t: g.title,
+    s: g.summary ?? '',
+  })),
+  meetings: meetings.map((m) => ({
+    p: m.fullPath,
+    d: formatDate(m.start),
+    cancelled: !!m.isCancelled,
+    t: m.title,
+    s: m.summary ?? '',
+  })),
+  employment: employment.map((j) => ({
+    p: j.fullPath,
+    expired: isExpired(j.end),
+    acceptEnd: formatDate(j.end),
+    isNew: isNew(j.published_at, 7),
+    t: j.title,
+    s: j.summary ?? '',
+  })),
+};
+// JSON-in-HTML: neutralize "<" so the island can't break out of the <script>.
+const islandJson = JSON.stringify(islandData).replace(/</g, '\\u003c');
 ---
 
-<div x-data="{ tab: 0 }">
+<script type="application/json" id="home-tabbed-data" set:html={islandJson} is:inline></script>
+
+<div
+  x-data="{
+    tab: 0, ready: false,
+    all: { grants: [], meetings: [], employment: [] },
+    init() {
+      try { this.all = JSON.parse(document.getElementById('home-tabbed-data').textContent); } catch (e) {}
+      this.ready = true;
+      // LIVE: swap in fresh Strapi rows (post-build items appear without a rebuild).
+      // Keeps the baked baseline if the fetch fails or returns nothing.
+      try {
+        if (window.__liveRows && window.__liveRows.homeTabbed) {
+          window.__liveRows.homeTabbed().then((d) => { if (d) this.all = d; }).catch(() => {});
+        }
+      } catch (e) {}
+    },
+  }"
+>
   <div role="tablist" aria-label="Funding, meetings, employment" class="mt-2 flex">
     {
       tabs.map((t, i) => (
@@ -39,6 +96,9 @@ const tabs = ['Funding', 'Meetings', 'Employment'];
     }
   </div>
 
+  {/* SSR baseline (SEO / no-JS / crawlers) — real HTML cards, hidden once Alpine
+      hydrates (then the x-for layer below renders live-swappable rows). */}
+  <div x-show="!ready">
   {/* Funding */}
   <div role="tabpanel" aria-labelledby="home-tab-0" x-show="tab === 0" class="bg-white pt-[15px]">
     {
@@ -63,7 +123,7 @@ const tabs = ['Funding', 'Meetings', 'Employment'];
   </div>
 
   {/* Meetings */}
-  <div role="tabpanel" aria-labelledby="home-tab-1" x-show="tab === 1" x-cloak class="bg-white pt-[15px]">
+  <div role="tabpanel" aria-labelledby="home-tab-1" x-show="tab === 1" class="bg-white pt-[15px]">
     {
       meetings.map((m, i) => (
         <a
@@ -88,7 +148,7 @@ const tabs = ['Funding', 'Meetings', 'Employment'];
   </div>
 
   {/* Employment */}
-  <div role="tabpanel" aria-labelledby="home-tab-2" x-show="tab === 2" x-cloak class="bg-white pt-[15px]">
+  <div role="tabpanel" aria-labelledby="home-tab-2" x-show="tab === 2" class="bg-white pt-[15px]">
     {
       employment.length > 0 ? (
         employment.map((j, i) => (
@@ -117,6 +177,78 @@ const tabs = ['Funding', 'Meetings', 'Employment'];
         </div>
       )
     }
+  </div>
+  </div>
+
+  {/* Interactive (Alpine x-for) layer — shown after hydrate, swapped from live Strapi. */}
+  <div x-show="ready" x-cloak>
+    {/* Funding */}
+    <div role="tabpanel" aria-labelledby="home-tab-0" x-show="tab === 0" class="bg-white pt-[15px]">
+      <template x-for="(g, i) in all.grants" :key="g.p">
+        <a
+          :href="g.p"
+          class="card hover block px-8 py-3 no-underline"
+          :class="i > 0 ? 'rule-top' : ''"
+        >
+          <p class="text-[0.9em] !font-normal !text-black">
+            <span class="font-bold" x-text="g.cl"></span>
+            <template x-if="g.expired"><span> | <span class="chip-flag chip-expired">Expired</span></span></template>
+            <template x-if="!g.expired"><span x-text="' | ' + g.range"></span></template>
+          </p>
+          <h2 class="mt-2 text-[1.1em] !text-black" x-text="g.t"></h2>
+          <p class="mt-2 text-[0.9em] !font-normal !text-black" x-text="g.s"></p>
+        </a>
+      </template>
+    </div>
+
+    {/* Meetings */}
+    <div role="tabpanel" aria-labelledby="home-tab-1" x-show="tab === 1" class="bg-white pt-[15px]">
+      <template x-for="(m, i) in all.meetings" :key="m.p">
+        <a
+          :href="m.p"
+          class="card hover block px-8 py-8 no-underline"
+          :class="i > 0 ? 'rule-top' : ''"
+        >
+          <p class="text-[0.9em] !font-normal !text-black">
+            <span class="font-bold">MEETING</span> <span x-text="'| ' + m.d"></span>
+            <template x-if="m.cancelled"><span> | <span class="chip-flag chip-cancelled">CANCELLED</span></span></template>
+          </p>
+          <h2 class="mt-2 text-[1.1em] !text-black" :class="m.cancelled ? 'line-through' : ''" x-text="m.t"></h2>
+          <p class="mt-2 text-[0.9em] !font-normal !text-black" x-text="m.cancelled ? 'This meeting is cancelled' : m.s"></p>
+        </a>
+      </template>
+    </div>
+
+    {/* Employment */}
+    <div role="tabpanel" aria-labelledby="home-tab-2" x-show="tab === 2" class="bg-white pt-[15px]">
+      <template x-if="all.employment.length > 0">
+        <div>
+          <template x-for="(j, i) in all.employment" :key="j.p">
+            <a
+              :href="j.p"
+              class="card hover block px-8 py-8 no-underline"
+              :class="i > 0 ? 'rule-top' : ''"
+            >
+              <p class="text-sm !font-normal !text-black">
+                <span class="font-bold">Employment Opportunity</span>
+                <template x-if="j.expired"><span> | <span class="chip-flag chip-expired">Expired</span></span></template>
+                <template x-if="!j.expired"><span x-text="' | Accepting applications through ' + j.acceptEnd"></span></template>
+              </p>
+              <h2 class="mt-2 text-[1.1em] !text-black">
+                <template x-if="j.isNew"><span class="chip-flag chip-new mr-2">NEW!</span></template>
+                <span x-text="j.t"></span>
+              </h2>
+              <p class="mt-2 text-[0.9em] !font-normal !text-black" x-text="j.s"></p>
+            </a>
+          </template>
+        </div>
+      </template>
+      <template x-if="all.employment.length === 0">
+        <div class="flex h-[200px] items-center justify-center px-8 text-center">
+          <h2 class="text-[1.1em]">There are no current employment opportunities</h2>
+        </div>
+      </template>
+    </div>
   </div>
 </div>
 

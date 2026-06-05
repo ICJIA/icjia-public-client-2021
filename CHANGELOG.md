@@ -82,6 +82,20 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.49] - 2026-06-05
+
+### feat — Live home strips (the last surface → whole site is post-build-live)
+
+The home page's two "latest" widgets now fetch live Strapi instead of build-time data:
+- **Latest Research** (`HomeResearch`): was fetching the prerendered `/api/home-research.json` *snapshot*; now fetches the live HUB collections (top-3 articles/apps/datasets) via `window.__liveRows.homeResearch`, falling back to the snapshot only on total fetch failure.
+- **Funding / Meetings / Employment** (`HomeTabbed`): was baked static cards (only the tabs were Alpine); now an `x-for` live layer over the live agency collections, with the baked cards kept as the no-JS/SEO baseline (`x-show="!ready"`).
+
+Browser-verified on a served build: the home fetched `researchhub` + `agency` collections and rendered live cards with **no** static-snapshot fallback. **Files:** `shapers/home-research.ts` + `home-tabbed.ts`; `alpine-entry.ts` (`homeResearch`/`homeTabbed` fetchers + a `raw` identity shaper); `HomeResearch.astro` + `HomeTabbed.astro`; `package.json` → 1.5.49. 205 tests, clean build (3531 pages).
+
+**Caveat:** live home-research card images use raw base64 (no build image-manifest client-side) — heavier than the snapshot's optimized same-origin files, but fetched *after* load (off the LCP path); the nightly rebuild restores the optimized images. With this, **every content surface — detail pages, section lists, and the home strips — shows post-build content immediately, no rebuild required.**
+
+---
+
 ## [1.5.48] - 2026-06-05
 
 ### feat — Live for the remaining detail types + programs/employment lists
