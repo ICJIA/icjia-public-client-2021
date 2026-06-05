@@ -35,6 +35,7 @@ import {
   strapiUrl,
   type MeetingAttachmentItem,
 } from "./meeting";
+import { safeUrl } from "../safe-url";
 
 // data.ts's AttachmentItem is structurally identical to the meeting one.
 export type PageAttachmentItem = MeetingAttachmentItem;
@@ -155,7 +156,8 @@ export function shapePage(
           teaser: c.teaser,
           teaserHtml: c.teaser ? render(c.teaser) : "",
           icon: c.icon,
-          url: c.url,
+          // clickthrough[].url reaches an href — scheme-guard before render.
+          url: safeUrl(c.url),
           datePosted: c.datePosted,
         }))
       : [],

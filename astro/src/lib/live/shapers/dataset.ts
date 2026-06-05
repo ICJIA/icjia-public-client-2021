@@ -24,6 +24,7 @@
  * (same inputs → same outputs) — they cannot silently diverge.
  */
 import { HUB } from "../sources";
+import { safeUrl } from "../safe-url";
 
 export interface DatasetRelatedItem {
   displayTitle: string;
@@ -136,7 +137,10 @@ export function hubRelated(
  */
 export function shapeDataset(d: any, render: (md: string) => string): DatasetItem {
   const sources = Array.isArray(d.sources)
-    ? d.sources.filter((s: any) => s && s.url !== "undefined")
+    ? d.sources
+        .filter((s: any) => s && s.url !== "undefined")
+        // sources[].url reaches an href (set:html) — scheme-guard each before render.
+        .map((s: any) => ({ ...s, url: safeUrl(s.url) }))
     : [];
   return {
     id: String(d.id),

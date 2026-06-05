@@ -18,15 +18,7 @@ import { shapeDatasetRow } from './shapers/dataset';
 import { shapeAppRow } from './shapers/app';
 import { shapeJobRow } from './shapers/job';
 import { shapeProgramRow } from './shapers/program';
-import { shapeHomeResearch } from './shapers/home-research';
-import { shapeHomeTabbed } from './shapers/home-tabbed';
 import { SOURCES } from './sources';
-
-/** Identity shaper for fetchCollection: keep the RAW Strapi record (it already has
- *  `id`, which fetchCollection needs to de-dupe). The home strips need raw fields
- *  (splash/abstract/authors/date, or grant/meeting/job dates) that the light list
- *  shapers drop, so we fetch raw here and shape into the card/row shape afterward. */
-const raw = (r: any) => r;
 
 const NEWS_PER_PAGE = 15;
 
@@ -42,8 +34,17 @@ export default (Alpine: AlpineType) => {
   (window as any).__liveRows = {
     meetings: () =>
       fetchCollection(SOURCES.meetings.host, SOURCES.meetings.collection, shapeMeetingRow),
+    // events rows bind the name via x-html, so render it here (a MODULE → lazy
+    // markdown chunk) into `n` from the raw `nameRaw` — sanitizing it exactly like
+    // the build's calendar feed (renderInline). Never imported into the x-data string.
     events: () =>
-      fetchCollection(SOURCES.events.host, SOURCES.events.collection, shapeEventRow),
+      fetchCollection(SOURCES.events.host, SOURCES.events.collection, shapeEventRow).then(
+        async (rows) => {
+          if (!rows || !rows.length) return rows;
+          const { renderInline } = await import('../markdown.client.js');
+          return rows.map((ev: any) => ({ ...ev, n: ev.nameRaw ? renderInline(ev.nameRaw) : '' }));
+        },
+      ),
     // funding cards bind summaryHtml via x-html, so render it here (this is a
     // MODULE, so markdown.client is a lazy chunk loaded only when the funding list
     // fetches — never imported into the Alpine x-data string, where the path can't resolve).
@@ -82,34 +83,6 @@ export default (Alpine: AlpineType) => {
           return rows.map((p: any) => ({ ...p, bodyHtml: p.bodyMd ? renderToHtml(p.bodyMd) : '' }));
         },
       ),
-    // HOME "Latest Research" strip: fetch the three HUB collections RAW (identity
-    // shaper keeps splash/abstract/authors/date), then shape the top-3 of each into
-    // the home card shape ({ fullPath, img, dateLabel, isNew, title, authors, teaser }).
-    // Returns null if ALL three failed so the island falls back to the static
-    // /api/home-research.json snapshot. img is the raw base64 splash/image data-URI
-    // (no build manifest client-side) — fine here, the strip fetches after load.
-    homeResearch: async () => {
-      const [art, app, ds] = await Promise.all([
-        fetchCollection(SOURCES.hubArticles.host, SOURCES.hubArticles.collection, raw, 500, SOURCES.hubArticles.query),
-        fetchCollection(SOURCES.hubApps.host, SOURCES.hubApps.collection, raw, 500, SOURCES.hubApps.query),
-        fetchCollection(SOURCES.hubDatasets.host, SOURCES.hubDatasets.collection, raw, 500, SOURCES.hubDatasets.query),
-      ]);
-      if (!art && !app && !ds) return null; // total failure → island keeps the static snapshot
-      return shapeHomeResearch(art, app, ds);
-    },
-    // HOME tabbed widget (Funding / Meetings / Employment): fetch the three agency
-    // collections RAW, then shape + sort end:desc + cap to getHome's per-tab limits.
-    // All home-card fields are plain text (x-text), so NO markdown render is needed.
-    // Returns null if ALL three failed so the island keeps its baked baseline.
-    homeTabbed: async () => {
-      const [grants, meetings, jobs] = await Promise.all([
-        fetchCollection(SOURCES.funding.host, SOURCES.funding.collection, raw),
-        fetchCollection(SOURCES.meetings.host, SOURCES.meetings.collection, raw),
-        fetchCollection(SOURCES.employment.host, SOURCES.employment.collection, raw),
-      ]);
-      if (!grants && !meetings && !jobs) return null; // total failure → keep baked baseline
-      return shapeHomeTabbed(grants, meetings, jobs);
-    },
   };
 
   /**

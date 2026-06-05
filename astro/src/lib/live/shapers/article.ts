@@ -28,6 +28,7 @@
  */
 import { HUB } from "../sources";
 import { imageUrl } from "../imageUrl";
+import { safeUrl } from "../safe-url";
 
 const HUB_UPLOADS = "https://researchhub.icjia-api.cloud/uploads";
 const DAYS_TO_SHOW_NEW_RESEARCH = 10; // research.ts (config.json maps.daysToShowNewResearch)
@@ -159,7 +160,10 @@ export function shapeArticle(a: any, render: (md: string) => string): ArticleIte
     tags: Array.isArray(a.tags) ? a.tags : [],
     external: a.external,
     citation: a.citation ? render(a.citation) : a.citation,
-    doi: a.doi,
+    // doi builds the citation's external href — scheme-guard it (a real DOI is a
+    // bare "10.x/…" id (no scheme → unchanged) or an https URL; a javascript: DOI
+    // would otherwise be a click-to-execute link in the citation InfoBlock).
+    doi: a.doi ? safeUrl(a.doi) : a.doi,
     funding: a.funding,
     // Transient render: no build manifest → imgPath null, hero comes from the raw
     // splash via the island (imageUrl passes a base64 data-URI through unchanged).

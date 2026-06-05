@@ -24,22 +24,11 @@ const panels = [
     class="mb-[18px] bg-white"
     x-data="{
       loading: true, tab: 0, articles: [], apps: [], datasets: [],
-      apply(d) { this.articles = d.articles || []; this.apps = d.apps || []; this.datasets = d.datasets || []; },
-      fallback() {
-        return fetch('/api/home-research.json')
-          .then((r) => r.json())
-          .then((d) => this.apply(d));
-      },
       init() {
-        // LIVE: fetch the three HUB collections in the browser and shape the top-3
-        // of each (so a post-build article/app/dataset shows here without a rebuild).
-        // On any failure (or no live helper), fall back to the static build snapshot.
-        const live = window.__liveRows && window.__liveRows.homeResearch;
-        const run = live
-          ? window.__liveRows.homeResearch().then((d) => (d ? this.apply(d) : this.fallback()))
-          : this.fallback();
-        Promise.resolve(run)
-          .catch(() => this.fallback().catch(() => {}))
+        fetch('/api/home-research.json')
+          .then((r) => r.json())
+          .then((d) => { this.articles = d.articles || []; this.apps = d.apps || []; this.datasets = d.datasets || []; })
+          .catch(() => {})
           .finally(() => { this.loading = false; });
       },
     }"

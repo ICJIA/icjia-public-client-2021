@@ -74,7 +74,7 @@ const REGISTRY: Record<string, Renderer> = {
   }),
   // Events use `name` (not `title`) — the build page passes title={event.name}.
   "/events/": (rec) => ({
-    html: renderEventDetail(shapeEvent(rec, renderToHtml)),
+    html: renderEventDetail(shapeEvent(rec, renderToHtml, renderInline)),
     title: brandTitle(rec.name),
   }),
   // Researchhub (HUB host; the 404 fetch carries status=published). Titles use `title`.

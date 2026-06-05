@@ -89,7 +89,7 @@ const full: PublicationItem = {
   haystack: "",
 };
 
-// Edge: a file but NO local article (external articleURL → localArticlePath null);
+// Edge: a file but NO local article (external articleURL → localArticlePath "");
 // confirms the Article <li> is omitted while the Download <li> renders.
 const fileOnly: PublicationItem = {
   ...full,
@@ -97,7 +97,7 @@ const fileOnly: PublicationItem = {
   title: "File Only Report",
   slug: "file-only",
   articleURL: "https://example.com/external-article",
-  localArticlePath: null,
+  localArticlePath: "",
   fullPath: "/about/publications/file-only/",
   fileType: "DOCX",
   fileURL: "https://researchhub.icjia-api.cloud/uploads/report.docx",
@@ -116,7 +116,7 @@ const minimal: PublicationItem = {
   fileURL: undefined,
   articleURL: undefined,
   fullPath: "/about/publications/bare/",
-  localArticlePath: null,
+  localArticlePath: "",
   typeLabel: "General",
   dateAlt: "",
   isNew: false,

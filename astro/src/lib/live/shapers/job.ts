@@ -17,6 +17,7 @@
  * the originals by shapers/job.test.ts so they cannot silently diverge.
  */
 import { formatNewsDate } from "./format";
+import { safeUrl } from "../safe-url";
 import {
   dateFormatAlt,
   niceBytes,
@@ -125,7 +126,7 @@ export function shapeJob(j: any, render: (md: string) => string): JobItem {
   const external: JobExternalItem[] = Array.isArray(j.external)
     ? j.external
         .filter((e: any) => e && e.url)
-        .map((e: any) => ({ title: e.title || e.url, url: e.url }))
+        .map((e: any) => ({ title: e.title || e.url, url: safeUrl(e.url) }))
     : [];
   return {
     id: String(j.id),

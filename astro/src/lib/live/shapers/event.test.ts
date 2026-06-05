@@ -16,7 +16,7 @@ import {
   buildRelated as s_related,
   shapeEvent,
 } from "./event";
-import { renderToHtml } from "../../markdown.js";
+import { renderToHtml, renderInline } from "../../markdown.js";
 
 describe("event shaper — drift guard vs data.ts originals", () => {
   it("eventRangeLine matches (timed same-day, all-day, multi-day, missing)", () => {
@@ -60,9 +60,10 @@ describe("event shaper — shapeEvent correctness", () => {
   };
 
   it("maps the record to an EventItem (body from details)", () => {
-    const e = shapeEvent(raw, renderToHtml);
+    const e = shapeEvent(raw, renderToHtml, renderInline);
     expect(e.id).toBe("42");
-    expect(e.name).toBe("Budget Forum & Q&A");
+    // name is sanitized via renderInline (set:html sink) → entities encoded.
+    expect(e.name).toBe("Budget Forum &amp; Q&amp;A");
     expect(e.fullPath).toBe(`/events/${raw.slug}/`);
     expect(e.category).toBe("training");
     expect(e.timed).toBe(true);
@@ -78,12 +79,12 @@ describe("event shaper — shapeEvent correctness", () => {
   });
 
   it("falls back to summary for the body when details is absent", () => {
-    const e = shapeEvent({ ...raw, details: "" }, renderToHtml);
+    const e = shapeEvent({ ...raw, details: "" }, renderToHtml, renderInline);
     expect(e.bodyHtml).toMatch(/Public budget forum\./);
   });
 
   it("renders no body when neither details nor summary is present", () => {
-    const e = shapeEvent({ ...raw, details: "", summary: "" }, renderToHtml);
+    const e = shapeEvent({ ...raw, details: "", summary: "" }, renderToHtml, renderInline);
     expect(e.bodyHtml).toBe("");
   });
 });

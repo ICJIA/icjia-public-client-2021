@@ -15,6 +15,7 @@
  * to the originals by shapers/meeting.drift.test.ts — they cannot silently diverge.
  */
 import { AGENCY } from "../sources";
+import { safeUrl } from "../safe-url";
 
 export interface MeetingAttachmentItem {
   name: string;
@@ -188,7 +189,7 @@ export function shapeMeeting(m: any, render: (md: string) => string): MeetingIte
   const external: MeetingExternalItem[] = Array.isArray(m.external)
     ? m.external
         .filter((e: any) => e && e.url)
-        .map((e: any) => ({ title: e.title || e.url, url: e.url }))
+        .map((e: any) => ({ title: e.title || e.url, url: safeUrl(e.url) }))
     : [];
   const altDate = dateFormatAlt(m.start);
   return {

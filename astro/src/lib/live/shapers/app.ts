@@ -34,6 +34,7 @@ import {
   hubRelated,
   type DatasetRelatedItem,
 } from "./dataset";
+import { safeUrl } from "../safe-url";
 
 export type AppRelatedItem = DatasetRelatedItem;
 
@@ -88,7 +89,11 @@ export function shapeApp(a: any, render: (md: string) => string): AppItem {
     // No build manifest client-side → always the raw base64 image fallback (§4).
     imagePath: null,
     image: a.image || null,
-    contributors: a.contributors,
+    // contributors[].url reaches an href (set:html) — scheme-guard each before
+    // render (the launch `url` below is already http-guarded; leave it).
+    contributors: Array.isArray(a.contributors)
+      ? a.contributors.map((c: any) => ({ ...c, url: safeUrl(c.url) }))
+      : a.contributors,
     external: a.external,
     // url feeds window.open() in AppView — allow only http(s) so a malicious hub
     // `url` (e.g. javascript:) cannot reach window.open (defense-in-depth), exactly

@@ -141,11 +141,17 @@ const eventTags = (x: any): string[] =>
  * environment's markdown→HTML renderer (markdown.js at build / markdown.client.js
  * in the browser).
  */
-export function shapeEvent(e: any, render: (md: string) => string): EventItem {
+export function shapeEvent(
+  e: any,
+  render: (md: string) => string,
+  renderInline: (md: string) => string,
+): EventItem {
   const bodySource = e.details || e.summary || "";
   return {
     id: String(e.id),
-    name: e.name,
+    // name renders via set:html (EventCard) — sanitize inline like the build's
+    // calendar feed does (renderInline); raw CMS HTML otherwise = stored XSS.
+    name: e.name ? renderInline(e.name) : e.name,
     slug: e.slug,
     fullPath: `/events/${e.slug}/`,
     category: e.category,
@@ -186,7 +192,12 @@ function chiDayKey(iso?: string): string {
 export interface EventRow {
   id: string;
   p: string;
+  /** rendered/sanitized name (filled by the events fetcher's renderInline swap;
+   *  empty out of shapeEventRow, which carries the raw name as `nameRaw`). */
   n: string;
+  /** raw CMS name — the fetcher renders it into `n` via renderInline (the list
+   *  binds `n` via x-html, so it MUST be sanitized before reaching the DOM). */
+  nameRaw: string;
   c: string;
   r: string;
   s: string;
@@ -205,7 +216,11 @@ export function shapeEventRow(e: any): EventRow {
   return {
     id: String(e.id),
     p: `/events/${e.slug}/`,
-    n: e.name,
+    // `n` (bound via x-html) is rendered/sanitized by the events fetcher's
+    // renderInline swap (alpine-entry.ts); shapeEventRow can't render here (it's
+    // called by fetchCollection with no injected renderer), so carry the raw name.
+    n: "",
+    nameRaw: e.name ?? "",
     c: e.category ?? "",
     r: eventRangeLine(e.start, e.end, !!e.timed),
     s: e.summary ?? "",

@@ -27,6 +27,7 @@
  * client render can't run astro:assets (docs §4).
  */
 import { imageUrl } from "../imageUrl";
+import { safeUrl } from "../safe-url";
 
 /** Raw-URL headshot for the transient client render (§4) — mirror of the fields a
  *  BiographyCard reads off a shaped Biography.headshot (url/width/height). */
@@ -86,7 +87,8 @@ export function shapeUnit(
     slug: u.slug,
     title: u.title,
     shortName: u.shortName,
-    url: u.url,
+    // url reaches an href in the unit card — scheme-guard before render.
+    url: u.url ? safeUrl(u.url) : u.url,
     bodyHtml: u.body ? render(u.body) : "",
     staff,
   };

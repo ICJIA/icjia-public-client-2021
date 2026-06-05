@@ -277,6 +277,45 @@ Everything else — the clock-freeze, animation-off, fonts-ready gate, region ma
 
 ## Security audit
 
+> **Latest audit:** 2026-06-05 · **Scope:** adversarial **red-team / blue-team** review of the **new client-side live-data layer** (changelog `0.50.0`) — the site now fetches Strapi REST *in the browser* and renders CMS content client-side (the smart-404 detail fallback, the live section lists, the home strips). **Method:** four parallel red-team passes — client XSS/HTML-injection · untrusted-data-flow & exposure · secrets/dependencies/CSP/CORS · abuse/availability — each finding **independently verified against the source** before it was recorded, then blue-team fixes (changelog `0.50.1`). The earlier **2026-06-01 SSR-era audit follows below as history**; several of its findings are now **moot** because the de-serverless migration removed the Netlify functions.
+
+This block is written for management + compliance: it states what was **found and fixed**, what is **accepted with a compensating control**, what is **tracked for cutover/ops**, and what was **investigated and found not exploitable**.
+
+### Live-data audit — summary (2026-06-05)
+
+| ID | Finding | Severity | Status |
+|----|---------|----------|--------|
+| INJ-3 | Client event `name` rendered as HTML **raw** (regression of XSS-3) → `<img onerror>` auto-executes on the live `/events/` list + the 404 preview | **High** | ✅ Fixed |
+| INJ-4…10 | `javascript:` / `data:` URLs in client-rendered `href`s (CMS `url`/`fileURL`/`doi`/etc.) — the renderers HTML-escape but never validated the URL **scheme** | **Medium** | ✅ Fixed (`safeUrl`) |
+| LIVE-1 | Home "Latest Research" strip fetched **~100 MB/visit** (full hub collections incl. base64 images) to show 3 cards — self-DoS + Strapi egress + mobile killer | **High** | ✅ Fixed |
+| SEC-S1–4 | Secrets in the client bundle (`PUBLIC_THUMBOR_KEY`, tokens, sourcemaps) | — | ✅ Verified **none** |
+| DOMPurify | CMS body/rich-text sanitization shipped to the browser | — | ✅ Verified present + correctly configured |
+| CSP-1 | CSP is **Report-Only** while the client now renders CMS HTML | Medium | ⚖️ Accepted — DOMPurify is the control; enforce at cutover |
+| DEP-1…3 | Client-shipped libs (DOMPurify / markdown-it / Alpine) | Low | 👀 No known CVE; maintenance bumps recommended |
+| CORS-1 | Strapi `Access-Control-Allow-Origin: *` (+ `allow-credentials`) on public-read data | Low | ⚖️ Accepted (inert for public data) · cosmetic ops fix |
+| FN-4 | Stale `functions =` + legacy `[[headers]]` block in `netlify.toml` | Low | 🗓 Tracked — cutover |
+| OBS-1 | Public Strapi API returns drafts on a **direct** call (NOT via the fallback) | Medium | ⚠️ Infra/CMS (Strapi permissions) — not a client fix |
+| INJ/PP/DOM/SSRF | Prototype pollution · DOM clobbering · SSRF · slug param-injection · draft-via-fallback | — | ✅ Verified **not exploitable** |
+| FN-1/2/3, API-1 | Prior SSR / serverless findings | — | ✅ **Moot** (de-serverless removed the functions) |
+
+**Fixed in this audit (see `astro/CHANGELOG.md` → `0.50.1`):**
+- **INJ-3 (High).** The client event shaper passed the CMS event `name` raw into an HTML sink, where `<img src=x onerror=…>` auto-executes — the build path neutralizes it with `renderInline`, the client re-implementation had dropped that. **Fix:** `renderInline` the name on both the detail and live-list paths.
+- **INJ-4…INJ-10 (Medium).** The new client renderers HTML-escaped `href` values but did not validate the URL scheme, so a CMS field of `javascript:…` produced a click-to-execute link. **Fix:** a single `safeUrl()` guard (blocks any non-`http(s)`/`mailto`/`tel` scheme, including control-char-obfuscated variants; allows site-relative) applied in the shapers to every externally-sourced URL field (external links, dataset sources, app contributors, publication file URLs, unit/page/article links). +11 unit tests; a no-op for legitimate URLs.
+- **LIVE-1 (High, availability).** The home "Latest Research" strip fetched the **entire** Research-Hub collections — including each record's inline base64 image — on every home-page visit just to display three cards (measured ~100 MB, uncached). **Fix:** reverted the home strips to their bounded path (a small optimized build-time snapshot, refreshed nightly). The home strips are now nightly-fresh; the **section lists and detail pages remain fully live**.
+
+**The real XSS control (verified):** all CMS body/rich-text (markdown bodies, abstracts, citations, summaries) is rendered through the **same DOMPurify + sanitizer pipeline the build uses** — made isomorphic in `0.50.0` and shipped to the browser — so client-rendered CMS HTML is XSS-sanitized at the source, with the trusted-iframe-host allowlist enforced. CSP is defense-in-depth on top of this.
+
+**Accepted / tracked for cutover / ops:**
+- **CSP Report-Only (CSP-1)** — DOMPurify carries the XSS load; promote the CSP to *enforced* at cutover once a violation-report endpoint exists.
+- **Stale `netlify.toml` (FN-4)** — remove the obsolete `functions =` lines + legacy `[[headers]]` block at cutover (this also activates the tighter `public/_headers` CSP).
+- **Dependency bumps (DEP-1…3)** — `dompurify`→3.4.8, `markdown-it`→14.x behind the parity suite, a `yaml` override; none has a known runtime CVE today.
+- **Strapi CORS (CORS-1)** — set `Access-Control-Allow-Origin` to the site origin and drop `allow-credentials` (Strapi-side; inert today for public-read content).
+- **Strapi draft exposure (OBS-1)** — the public CMS API returns unpublished records on a *direct* API call (unchanged from the legacy live site). The smart-404 fallback does **not** widen this: it hard-codes `status=published` for Research Hub and Strapi hides agency drafts by default (verified — an embargoed agenda is **not** previewable via the fallback). Close it at the Strapi permission/policy layer.
+
+**Follow-up (pre-existing, build-side):** the build's event detail/list (`data.ts`) also pass a raw event `name` to their HTML sinks (the calendar feed already sanitizes it) — apply `renderInline` there for full parity with the client fix.
+
+---
+
 > **Audit date:** 2026-06-01 · **Scope:** full pre-cutover adversarial (red-team) review of the Astro SSR app — serverless/edge functions, HTTP headers + CSP + redirects, content sanitization / XSS, API endpoints, secrets & env handling, GraphQL injection, dependencies. **Method:** six parallel red-team passes, each finding then **independently verified against the source** before being recorded here. Living record — re-run and append on each material change.
 
 This section is intentionally complete and candid (it is meant for management + compliance review): it states what was **fixed**, what is **recommended but not yet done**, what is an **accepted risk** with its compensating control, and what was **investigated and found not exploitable**.

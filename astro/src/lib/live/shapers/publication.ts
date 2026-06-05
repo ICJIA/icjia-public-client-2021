@@ -26,6 +26,7 @@
  */
 import { dateFormatAlt } from "./meeting";
 import { isNew } from "./format";
+import { safeUrl } from "../safe-url";
 
 const PUB_CLIENT = "https://icjia.illinois.gov";
 const DAYS_TO_SHOW_NEW = 5;
@@ -110,7 +111,8 @@ export interface PublicationItem {
   fileURL?: string;
   articleURL?: string;
   fullPath: string;
-  localArticlePath: string | null;
+  /** site-relative article path ("" when none / not a true "/"-relative path). */
+  localArticlePath: string;
   typeLabel: string;
   dateAlt: string;
   isNew: boolean;
@@ -131,14 +133,22 @@ export function shapePublication(
   p: any,
   _render: (md: string) => string,
 ): PublicationItem {
-  const fileURL = fixupFileUrl(p.fileURL);
+  // fileURL feeds a Download href — scheme-guard it (safeUrl is a no-op for the
+  // real https/relative file links the fixups produce). Keep undefined when absent
+  // so the card renders NO Download link (a "#" would be a spurious one).
+  const fixedFileUrl = fixupFileUrl(p.fileURL);
+  const fileURL = fixedFileUrl ? safeUrl(fixedFileUrl) : fixedFileUrl;
   const tagsArr: string[] = Array.isArray(p.tags)
     ? p.tags.map((t: any) => (typeof t === "string" ? t : t?.title)).filter(Boolean)
     : [];
-  const localArticlePath =
+  // localArticlePath feeds an href — only accept a true site-relative path (starts
+  // with "/"); a crafted articleURL (e.g. javascript:/*…icjia.illinois.gov…*/) that
+  // survives the PUB_CLIENT strip would NOT start with "/", so it collapses to "".
+  const stripped =
     p.articleURL && p.articleURL.includes(PUB_CLIENT)
       ? p.articleURL.replace(PUB_CLIENT, "")
-      : null;
+      : "";
+  const localArticlePath = stripped.startsWith("/") ? stripped : "";
   const typeLabel = publicationTypeLabel(p.pubType);
   return {
     id: String(p.id),

@@ -87,12 +87,12 @@ describe("publication shaper — shapePublication correctness", () => {
     expect(p.localArticlePath).toBe("/researchhub/articles/assessing-infonet-data");
   });
 
-  it("external articleURL yields a null localArticlePath", () => {
+  it("external articleURL yields an empty localArticlePath", () => {
     const p = shapePublication(
       { ...raw, articleURL: "https://example.com/x" },
       renderToHtml,
     );
-    expect(p.localArticlePath).toBeNull();
+    expect(p.localArticlePath).toBe("");
   });
 
   it("applies the legacy fileURL capitalization fixups (matches getPublication)", () => {
