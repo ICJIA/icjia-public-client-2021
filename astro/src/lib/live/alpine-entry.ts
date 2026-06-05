@@ -16,6 +16,8 @@ import { shapeFundingRow } from './shapers/grant';
 import { shapeArticleRow } from './shapers/article';
 import { shapeDatasetRow } from './shapers/dataset';
 import { shapeAppRow } from './shapers/app';
+import { shapeJobRow } from './shapers/job';
+import { shapeProgramRow } from './shapers/program';
 import { SOURCES } from './sources';
 
 const NEWS_PER_PAGE = 15;
@@ -54,6 +56,24 @@ export default (Alpine: AlpineType) => {
       fetchCollection(SOURCES.hubDatasets.host, SOURCES.hubDatasets.collection, shapeDatasetRow, 500, SOURCES.hubDatasets.query),
     hubApps: () =>
       fetchCollection(SOURCES.hubApps.host, SOURCES.hubApps.collection, shapeAppRow, 500, SOURCES.hubApps.query),
+    // employment + programs cards bind their summary/body via x-html, so render the
+    // markdown here (a module → lazy markdown chunk), like funding — never in the x-data string.
+    employment: () =>
+      fetchCollection(SOURCES.employment.host, SOURCES.employment.collection, shapeJobRow).then(
+        async (rows) => {
+          if (!rows || !rows.length) return rows;
+          const { renderToHtml } = await import('../markdown.client.js');
+          return rows.map((j: any) => ({ ...j, s: j.summaryMd ? renderToHtml(j.summaryMd) : '' }));
+        },
+      ),
+    programs: () =>
+      fetchCollection(SOURCES.programs.host, SOURCES.programs.collection, shapeProgramRow).then(
+        async (rows) => {
+          if (!rows || !rows.length) return rows;
+          const { renderToHtml } = await import('../markdown.client.js');
+          return rows.map((p: any) => ({ ...p, bodyHtml: p.bodyMd ? renderToHtml(p.bodyMd) : '' }));
+        },
+      ),
   };
 
   /**

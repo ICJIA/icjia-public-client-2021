@@ -35,7 +35,22 @@ const listJson = JSON.stringify(items).replace(/</g, '\\u003c');
     x-data={`{
       all: JSON.parse(document.getElementById('programs-data').textContent),
       category: 'all', status: 'current', ready: false,
-      init(){ this.ready = true; },
+      init(){
+        this.ready = true;
+        // LIVE: swap in fresh Strapi programs so a post-build program appears in the
+        // list without a rebuild. Keeps the baked baseline if the fetch fails. The
+        // Category/Status toggles read this.all via the list getter, so swapping
+        // this.all preserves both client filters. Cards bind bodyHtml via x-html, so
+        // the programs fetcher (alpine-entry.ts) renders bodyHtml after the fetch (the
+        // light row carries raw bodyMd — this x-data string can't import a renderer).
+        try {
+          if (window.__liveRows && window.__liveRows.programs) {
+            window.__liveRows.programs().then((rows) => {
+              if (rows && rows.length) this.all = rows;
+            }).catch(() => {});
+          }
+        } catch (e) {}
+      },
       get list(){ return this.all.filter((p) => (this.category === 'all' || p.category === this.category) && p.status === this.status); },
       get empty(){ return this.list.length === 0; }
     }`}

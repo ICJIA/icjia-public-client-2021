@@ -28,6 +28,7 @@ export const SOURCES = {
   events:       { host: AGENCY, collection: 'events' },         // convention (confirm at deploy gate)
   funding:      { host: AGENCY, collection: 'grants' },         // convention (confirm at deploy gate)
   programs:     { host: AGENCY, collection: 'programs' },       // convention (confirm at deploy gate)
+  employment:   { host: AGENCY, collection: 'jobs' },           // jobs collection (live employment list + detail)
   // researchhub gates on a CUSTOM `status` field (NOT Strapi's built-in publish
   // state), so the live REST read MUST carry status=published or it returns the
   // 30 datasets / 9 apps that are draft on the live site — which neither the baked

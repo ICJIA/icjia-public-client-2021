@@ -27,6 +27,9 @@ import '../styles/events.css';
 import '../styles/article-view.css';
 import '../styles/researchhub.css';
 import '../styles/publications.css';
+import '../styles/bios.css';
+import '../styles/employment.css';
+import '../styles/github-markdown.css';
 
 // Quick links mirror legacy 404.vue (Home + the seven section destinations).
 const links = [
@@ -53,7 +56,17 @@ const DETECT = [
   { prefix: '/news/', host: AGENCY, coll: 'posts', q: '' },
   { prefix: '/events/', host: AGENCY, coll: 'events', q: '' },
   { prefix: '/grants/funding/', host: AGENCY, coll: 'grants', q: '' },
+  { prefix: '/grants/programs/', host: AGENCY, coll: 'programs', q: '' },
   { prefix: '/about/publications/', host: AGENCY, coll: 'publications', q: '' },
+  { prefix: '/about/biographies/', host: AGENCY, coll: 'biographies', q: '' },
+  { prefix: '/about/employment/', host: AGENCY, coll: 'jobs', q: '' },
+  { prefix: '/about/units/', host: AGENCY, coll: 'units', q: '' },
+  // BROAD CMS-page prefixes (the `pages` collection) — LAST, after every specific
+  // /about/* and /grants/* entry, since the loop takes the FIRST matching prefix.
+  { prefix: '/about/', host: AGENCY, coll: 'pages', q: '' },
+  { prefix: '/grants/', host: AGENCY, coll: 'pages', q: '' },
+  { prefix: '/irb/', host: AGENCY, coll: 'pages', q: '' },
+  { prefix: '/innovation-and-digital-services/', host: AGENCY, coll: 'pages', q: '' },
 ];
 const detectJson = JSON.stringify(DETECT).replace(/</g, '\\u003c');
 ---

@@ -68,7 +68,24 @@ const FLYER =
     x-data={`{
       all: JSON.parse(document.getElementById('jobs-data').textContent),
       status: 'current', ready: false,
-      init(){ this.ready = true; },
+      init(){
+        this.ready = true;
+        // LIVE: swap in fresh Strapi jobs so a post-build job appears in the list
+        // without a rebuild. The registry fetcher (alpine-entry __liveRows.employment)
+        // returns rows in this same shape (p,t,cl,posted,accepting,expired,expiredChip,s),
+        // with 's' already rendered from markdown (this x-data string can't import()).
+        // No category filter (getAllJobs applies none); rows re-sorted end-desc to
+        // match the baked baseline order (GET_ALL_JOBS_QUERY end:desc; fetchCollection
+        // returns REST order). Keeps the baked baseline if the fetch fails; the
+        // Current/Expired filter below re-applies automatically (it derives from this.all).
+        try {
+          if (window.__liveRows && window.__liveRows.employment) {
+            window.__liveRows.employment().then((rows) => {
+              if (rows && rows.length) this.all = rows.slice().sort((a, b) => b.endMs - a.endMs);
+            }).catch(() => {});
+          }
+        } catch (e) {}
+      },
       get filtered(){ return this.all.filter((j) => this.status === 'expired' ? j.expired : !j.expired); },
       get empty(){ return this.filtered.length === 0; },
       setStatus(s){ this.status = s; }

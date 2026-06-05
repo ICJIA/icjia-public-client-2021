@@ -82,6 +82,21 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.48] - 2026-06-05
+
+### feat — Live for the remaining detail types + programs/employment lists
+
+Extends post-build-live to (nearly) every remaining content type:
+
+- **Detail fallback** added for **biographies, employment (jobs), units, grant programs, and generic CMS pages** — one `page` renderer serves all four `pages`-backed prefixes (`/about/`, `/grants/`, `/irb/`, `/innovation-and-digital-services/`). Browser-verified: a moved-aside bio (`jennifer-hiselman`), unit (`federal-and-state-grants-unit`), and CMS page (`/about/about-the-authority/`) each render client-side via the smart-404.
+- **Live lists** for **programs (65)** + **employment (219)** — both render their card markdown (`x-html`) in the `alpine-entry` registry fetcher (the funding pattern), not the Alpine string. Verified: live rows swap in with bodies/summaries rendered.
+
+DETECT ordering matters: the four broad `pages` prefixes are placed **last** (after every specific `/about/*` and `/grants/*` entry), since detection takes the first matching prefix.
+
+**Caveats:** unit detail renders **without its related-staff list** on the transient view (the registry render is synchronous + single-record, so it can't do the second `/biographies?unit=` fetch; the nightly rebuild fills staff). Component-scoped styles + the context bar remain the documented transient gaps. **Files:** `shapers/{biography,job,unit,program,page}.ts` + `renderers/*` + parity/shaper tests; `sources.ts` (`employment`→`jobs`); `404.astro` (9 DETECT entries + bios/employment/github-markdown CSS); `detail-preview.ts` (+`renderInline` + 9 registry entries); `alpine-entry.ts` (employment+programs fetchers); `EmploymentListing`/`ProgramsListing` init swaps; `package.json` → 1.5.48. **205 tests, clean build (3531 pages).** Remaining: the home strips (multi-collection snapshot).
+
+---
+
 ## [1.5.47] - 2026-06-05
 
 ### feat — Publications detail fallback + live listings (events, funding, researchhub)

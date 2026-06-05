@@ -11,7 +11,7 @@
  * This module is dynamically imported ONLY on a content-detail hit, so a normal
  * 404 never downloads the markdown/sanitizer bundle.
  */
-import { renderToHtml } from "../markdown.client.js";
+import { renderToHtml, renderInline } from "../markdown.client.js";
 import { shapeMeeting } from "./shapers/meeting";
 import { renderMeetingDetail } from "./renderers/meeting";
 import { shapeGrant } from "./shapers/grant";
@@ -28,6 +28,16 @@ import { shapeApp } from "./shapers/app";
 import { renderAppDetail } from "./renderers/app";
 import { shapePublication } from "./shapers/publication";
 import { renderPublicationDetail } from "./renderers/publication";
+import { shapeBiography } from "./shapers/biography";
+import { renderBiographyDetail } from "./renderers/biography";
+import { shapeJob } from "./shapers/job";
+import { renderJobDetail } from "./renderers/job";
+import { shapeUnit } from "./shapers/unit";
+import { renderUnitDetail } from "./renderers/unit";
+import { shapeProgram } from "./shapers/program";
+import { renderProgramDetail } from "./renderers/program";
+import { shapePage } from "./shapers/page";
+import { renderPageDetail } from "./renderers/page";
 
 export interface DetailPreview {
   /** innerHTML for the page's content slot (replaces the 404 body). */
@@ -84,6 +94,40 @@ const REGISTRY: Record<string, Renderer> = {
   // pilot) but detail pages 404'd post-build until this was added.
   "/about/publications/": (rec) => ({
     html: renderPublicationDetail(shapePublication(rec, renderToHtml)),
+    title: brandTitle(rec.title),
+  }),
+  "/grants/programs/": (rec) => ({
+    html: renderProgramDetail(shapeProgram(rec, renderToHtml)),
+    title: brandTitle(rec.title),
+  }),
+  "/about/biographies/": (rec) => ({
+    html: renderBiographyDetail(shapeBiography(rec, renderToHtml)),
+    title: brandTitle(rec.fullName),
+  }),
+  "/about/employment/": (rec) => ({
+    html: renderJobDetail(shapeJob(rec, renderToHtml)),
+    title: brandTitle(rec.title),
+  }),
+  "/about/units/": (rec) => ({
+    html: renderUnitDetail(shapeUnit(rec, renderToHtml)),
+    title: brandTitle(rec.title),
+  }),
+  // CMS pages — 4 URL prefixes, one `pages` collection. renderInline for the <h1>
+  // title (a block render would emit invalid <h1><p>…</p></h1>).
+  "/about/": (rec) => ({
+    html: renderPageDetail(shapePage(rec, renderToHtml, renderInline)),
+    title: brandTitle(rec.title),
+  }),
+  "/grants/": (rec) => ({
+    html: renderPageDetail(shapePage(rec, renderToHtml, renderInline)),
+    title: brandTitle(rec.title),
+  }),
+  "/irb/": (rec) => ({
+    html: renderPageDetail(shapePage(rec, renderToHtml, renderInline)),
+    title: brandTitle(rec.title),
+  }),
+  "/innovation-and-digital-services/": (rec) => ({
+    html: renderPageDetail(shapePage(rec, renderToHtml, renderInline)),
     title: brandTitle(rec.title),
   }),
 };
