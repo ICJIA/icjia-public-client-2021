@@ -16,6 +16,10 @@ export const prerender = true;
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { AGENCY, HUB } from '../lib/live/sources';
+// Content CSS for the live-detail render (the 404 is now the universal preview
+// shell for post-build slugs). inlineStylesheets:'always' inlines these into
+// 404.html. One stylesheet per detail type the renderer registry supports.
+import '../styles/meetings.css';
 
 // Quick links mirror legacy 404.vue (Home + the seven section destinations).
 const links = [
@@ -52,18 +56,25 @@ const detectJson = JSON.stringify(DETECT).replace(/</g, '\\u003c');
       {/* Detection runs BEFORE the default messaging parses, so a path that turns out
           to be "publishing" never flashes "not found" first. */}
       <script type="application/json" id="nf-detect" set:html={detectJson} is:inline />
+      {/* RAW inline JS (NOT wrapped in a {`…`} expression): is:inline emits content
+          verbatim, so a {`…`} wrapper would ship as a literal block + template-string
+          and the IIFE would never run — the bug that left the smart-404 detection dead.
+          Kept inline + classic so it runs DURING parse (sets the state before the
+          default 404 paints → no "not found" flash). */}
       <script is:inline>
-        {`(() => {
+        (() => {
           try {
-            var sec = document.currentScript.closest('[data-nf]');
+            var sec = document.querySelector('[data-nf]');
+            if (!sec) return;
             var map = JSON.parse(document.getElementById('nf-detect').textContent);
             var p = location.pathname;
             for (var i = 0; i < map.length; i++) {
               var e = map[i];
               if (p.indexOf(e.prefix) === 0) {
-                var slug = p.slice(e.prefix.length).replace(/\\/$/, '');
+                var slug = p.slice(e.prefix.length).replace(/\/$/, '');
                 if (slug && slug.indexOf('/') === -1) {
                   sec.setAttribute('data-nf-slug', slug);
+                  sec.setAttribute('data-nf-prefix', e.prefix);
                   sec.setAttribute('data-nf-url', e.host + '/' + e.coll + '?slug=' + encodeURIComponent(slug) + (e.q ? '&' + e.q : '') + '&_limit=5');
                   sec.setAttribute('data-nf-state', 'checking');
                   break;
@@ -71,7 +82,7 @@ const detectJson = JSON.stringify(DETECT).replace(/</g, '\\u003c');
               }
             }
           } catch (_) {}
-        })();`}
+        })();
       </script>
 
       <div class="nf-num" aria-hidden="true">404</div>
@@ -130,48 +141,91 @@ const detectJson = JSON.stringify(DETECT).replace(/</g, '\\u003c');
   </section>
 </BaseLayout>
 
-{/* Resolver: if the early script flagged a candidate, REST-check Strapi. A record
-    whose slug matches → "publishing"; otherwise (or on error/timeout) → the normal
-    404. Defensively verify slug === to survive a Strapi that ignores the filter. */}
-<script is:inline>
-  {`(() => {
-    var sec = document.querySelector('[data-nf]');
-    if (!sec || sec.getAttribute('data-nf-state') !== 'checking') {
+{/* Resolver (bundled module — NOT is:inline — so the dynamic import() is bundled):
+    if the early script flagged a candidate, REST-check Strapi. A record whose slug
+    matches is "published but not yet built" →
+      • renderer exists for this type  → render it CLIENT-SIDE in place (the author
+        sees their content immediately; the nightly rebuild then mints the canonical
+        optimized + indexed page). See docs/LIVE-DETAIL-FALLBACK.md.
+      • no renderer yet                → the "being published" notice (graceful).
+    No match / error / timeout → the normal 404. The detail-preview module (with the
+    markdown bundle) is imported ONLY on a hit, so plain 404s stay light. Defensively
+    verify slug === to survive a Strapi that ignores the filter. */}
+<script>
+  (async () => {
+    const sec = document.querySelector('[data-nf]');
+    const fire404 = () => {
       if (typeof window !== 'undefined' && typeof window.plausible === 'function') {
         window.plausible('404', { props: { path: location.pathname } });
       }
+    };
+    if (!sec || sec.getAttribute('data-nf-state') !== 'checking') {
+      fire404();
       return;
     }
-    var url = sec.getAttribute('data-nf-url');
-    var slug = sec.getAttribute('data-nf-slug');
-    var settled = false;
-    var fallback = function () {
+
+    const url = sec.getAttribute('data-nf-url');
+    const slug = sec.getAttribute('data-nf-slug');
+    const prefix = sec.getAttribute('data-nf-prefix');
+
+    let settled = false;
+    const toDefault404 = () => {
       if (settled) return;
       settled = true;
       sec.removeAttribute('data-nf-state');
-      if (typeof window.plausible === 'function') window.plausible('404', { props: { path: location.pathname } });
+      fire404();
     };
-    var timer = setTimeout(fallback, 6000);
-    fetch(url, { headers: { accept: 'application/json' } })
-      .then(function (r) { return r.ok ? r.json() : []; })
-      .then(function (rows) {
-        if (settled) return;
-        var exists = Array.isArray(rows) && rows.some(function (x) { return x && x.slug === slug; });
-        if (exists) {
-          settled = true;
-          clearTimeout(timer);
-          sec.setAttribute('data-nf-state', 'publishing');
-          document.title = 'Publishing\\u2026 | ICJIA';
-          if (typeof window.plausible === 'function') window.plausible('404-publishing', { props: { path: location.pathname } });
-          var retry = document.getElementById('nf-retry');
-          if (retry) retry.addEventListener('click', function () { location.reload(); });
-        } else {
-          clearTimeout(timer);
-          fallback();
+    const toPublishing = () => {
+      settled = true;
+      sec.setAttribute('data-nf-state', 'publishing');
+      document.title = 'Publishing… | ICJIA';
+      if (typeof window.plausible === 'function') {
+        window.plausible('404-publishing', { props: { path: location.pathname } });
+      }
+      const retry = document.getElementById('nf-retry');
+      if (retry) retry.addEventListener('click', () => location.reload());
+    };
+    const timer = setTimeout(toDefault404, 6000);
+
+    try {
+      const rows = await fetch(url, { headers: { accept: 'application/json' } }).then((r) =>
+        r.ok ? r.json() : [],
+      );
+      if (settled) return;
+      const rec = Array.isArray(rows) ? rows.find((x) => x && x.slug === slug) : null;
+      if (!rec) {
+        clearTimeout(timer);
+        toDefault404();
+        return;
+      }
+
+      // Published but not yet built → render it live if we have a renderer.
+      let preview = null;
+      try {
+        const mod = await import('../lib/live/detail-preview');
+        preview = mod.renderDetail(prefix, rec);
+      } catch (_e) {
+        preview = null;
+      }
+      if (settled) return;
+      clearTimeout(timer);
+
+      if (preview) {
+        settled = true;
+        sec.removeAttribute('data-nf-state');
+        sec.outerHTML = preview.html;
+        document.title = preview.title;
+        if (typeof window.plausible === 'function') {
+          window.plausible('404-rendered', { props: { path: location.pathname } });
         }
-      })
-      .catch(function () { clearTimeout(timer); fallback(); });
-  })();`}
+      } else {
+        toPublishing();
+      }
+    } catch (_e) {
+      clearTimeout(timer);
+      toDefault404();
+    }
+  })();
 </script>
 
 <style>

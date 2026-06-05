@@ -82,6 +82,33 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.44] - 2026-06-05
+
+### feat — Live-detail fallback: render post-build CMS slugs immediately (smart-404)
+
+The Astro site is a fully static build, so a record added to Strapi **after** the last build has no page and 404s until the nightly rebuild. New requirement: an author who adds content in the CMS must see the live page **immediately**. The smart-404 now fetches the record and **renders it client-side**, in place, instead of only showing a "being published" notice. (SEO/sitemap/search for these transient pages is intentionally deferred to the nightly rebuild, which mints the canonical, optimized, indexed page.) First type wired: **meetings** (`/news/meetings/<slug>`), browser-verified end-to-end.
+
+**Root-cause bug fixed — the smart-404 detection had never executed.** Its inline detection + resolver were authored as `<script is:inline>{`…IIFE…`}</script>`. Astro's `is:inline` emits the body verbatim, so the `{`…`}` shipped as a literal block + template *string* and the IIFE never ran — every published-but-unbuilt slug hit a hard 404. Detection is now raw, executing JS (and the resolver is a bundled module). This also means **all** detected types now at least get the graceful "being published" notice instead of a hard 404.
+
+**How it works** — the existing `404.astro` is the universal catch-all Netlify serves for any miss. On a content-detail prefix it REST-fetches the slug from Strapi (CORS `ACAO:*`, already allowed in `connect-src`), and on a hit dynamically imports a per-type renderer and swaps the content in (so plain 404s never download the markdown bundle). The body is rendered by the build's **own** `renderToHtml` running in the browser, so footnotes, headings, tables, and the SiteImprove/a11y sanitizer all match the eventual built page byte-for-byte. Build-time-optimized images fall back to the raw Strapi URL on the transient view (Thumbor-swappable via `imageUrl()` if `PUBLIC_THUMBOR_KEY` is set).
+
+**Files:**
+
+- `astro/src/lib/markdown-core.js` (new) — browser-safe markdown core (markdown-it + plugins + DOM fixers + `contentSanitizer`), parameterized by a DOMPurify instance.
+- `astro/src/lib/markdown.js` (refactor) — thin Node/build wrapper (jsdom DOMPurify); build output byte-identical, all existing consumers unchanged.
+- `astro/src/lib/markdown.client.js` (new) — browser wrapper (native-`window` DOMPurify); bundles with **no jsdom** in the client.
+- `astro/src/lib/live/shapers/meeting.ts` (new) — client-safe meeting shaper (`renderToHtml` injected); pure helpers pinned to `data.ts` by a drift-guard test.
+- `astro/src/lib/live/renderers/meeting.ts` (new) — twin renderer, locked to `MeetingCard.astro` by an Astro Container-API parity test.
+- `astro/src/lib/live/detail-preview.ts` (new) — prefix→renderer registry the smart-404 imports on a hit.
+- `astro/src/pages/404.astro` — detection unwrapped to raw JS; resolver renders the record client-side; imports `meetings.css`.
+- `astro/vitest.config.ts` — `getViteConfig` so tests can import `.astro` via the Container API.
+- Tests (new): `markdown.parity`, `live/renderers/meeting.parity`, `live/shapers/meeting` — 99/99 green.
+- `docs/LIVE-DETAIL-FALLBACK.md` (new) — design spec; `docs/astro-conversion-checklist-v7.1.md` — v7.5 lessons; `package.json` — version bump to 1.5.44.
+
+**Known limitation (flagged for follow-up):** the per-section context bar (navy breadcrumb + grey tabs) is not yet rendered on the transient view (Astro scoped CSS + the 404 builds for `/404`); content renders fully styled. Remaining detail types (news/press, events, researchhub articles/datasets/apps, grants) follow the same pattern.
+
+---
+
 ## [1.5.43] - 2026-05-29
 
 ### feat — Publications export for accessibility analysis (`npm run export:publications`)
