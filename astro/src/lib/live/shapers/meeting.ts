@@ -216,3 +216,48 @@ export function shapeMeeting(m: any, render: (md: string) => string): MeetingIte
       .toLowerCase(),
   };
 }
+
+// ── LIGHT list-row shape (live listings) ──────────────────────────────────────
+
+/** The compact row MeetingTable.astro renders from #meetings-data — every field it
+ *  reads (id, altDate, catLabel, title, isCancelled, attCount, startMs, dateLine,
+ *  slug, fullPath, category, haystack), NONE of the heavy detail (body/tags/
+ *  attachments load lazily on expand). Mirrors data.ts `shapeMeetingLight`. */
+export interface MeetingRow {
+  id: string;
+  slug: string;
+  title: string;
+  fullPath: string;
+  isCancelled: boolean;
+  category: string;
+  catLabel: string;
+  altDate: string;
+  startMs: number;
+  dateLine: string;
+  attCount: number;
+  haystack: string;
+}
+
+/** Shape one raw Strapi v3 REST meeting → the compact MeetingRow the live listing
+ *  swaps in (so a post-build meeting appears in the table without a rebuild). */
+export function shapeMeetingRow(m: any): MeetingRow {
+  const cat = m.category ?? "";
+  const catLabel = meetingCategoryLabel(cat);
+  const altDate = dateFormatAlt(m.start);
+  return {
+    id: String(m.id),
+    slug: m.slug,
+    title: m.title,
+    fullPath: `/news/meetings/${m.slug}/`,
+    isCancelled: !!m.isCancelled,
+    category: cat,
+    catLabel,
+    altDate,
+    startMs: m.start ? new Date(m.start).getTime() : 0,
+    dateLine: meetingDateLine(m.start, m.end),
+    attCount: Array.isArray(m.attachments) ? m.attachments.length : 0,
+    haystack: [m.title, catLabel, altDate, m.isCancelled ? "cancelled" : ""]
+      .join(" ")
+      .toLowerCase(),
+  };
+}

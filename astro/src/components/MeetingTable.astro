@@ -30,6 +30,17 @@ const xdata = `{
       this.all = this.cat ? data.filter((m) => m.category === this.cat) : data;
     } catch (e) { this.all = []; }
     this.ready = true;
+    // LIVE: swap in fresh Strapi meetings so a post-build meeting appears in the
+    // table without a rebuild. Keeps the baked baseline if the fetch fails. (Expanding
+    // a brand-new row still hits /api/meeting/<slug>.json which 404s until the rebuild
+    // → the row shows "open the meeting page", and that detail page now live-renders.)
+    try {
+      if (window.__liveRows && window.__liveRows.meetings) {
+        window.__liveRows.meetings().then((rows) => {
+          if (rows && rows.length) this.all = this.cat ? rows.filter((m) => m.category === this.cat) : rows;
+        }).catch(() => {});
+      }
+    } catch (e) {}
   },
   get searched(){ const q = this.search.trim().toLowerCase(); return q ? this.all.filter((m) => m.haystack.includes(q)) : this.all; },
   get sorted(){ const a = [...this.searched], d = this.sortDir === 'asc' ? 1 : -1, k = this.sortKey;

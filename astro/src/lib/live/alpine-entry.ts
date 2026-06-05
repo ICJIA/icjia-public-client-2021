@@ -10,11 +10,25 @@
 import type { Alpine as AlpineType } from 'alpinejs';
 import { fetchCollection } from './live-list';
 import { shapeNewsRow } from './shapers/news';
+import { shapeMeetingRow } from './shapers/meeting';
 import { SOURCES } from './sources';
 
 const NEWS_PER_PAGE = 15;
 
 export default (Alpine: AlpineType) => {
+  /**
+   * Live-row fetchers for listing islands whose logic is INLINE x-data (they can't
+   * import modules). Each returns fresh Strapi rows (or null on failure → the island
+   * keeps its baked baseline). The island's init() calls window.__liveRows.<key>()
+   * and swaps its list, so a post-build item appears in the LIST without a rebuild.
+   * The shared cores stay in modules (fetchCollection + the shapers); this only
+   * EXPOSES them (it does NOT re-inline the core — see checklist v7.4 #1).
+   */
+  (window as any).__liveRows = {
+    meetings: () =>
+      fetchCollection(SOURCES.meetings.host, SOURCES.meetings.collection, shapeMeetingRow),
+  };
+
   /**
    * newsLive(baselineElId)
    *

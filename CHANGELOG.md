@@ -82,6 +82,20 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.46] - 2026-06-05
+
+### feat — Live listings: meetings table surfaces post-build items (no rebuild)
+
+Companion to the live-detail fallback: the **meetings listing** (`/news/meetings/`) now fetches fresh Strapi rows in the browser and swaps them into the table, so a meeting added after the last build appears **in the list** immediately — not just via its direct URL. (Previously only `/news` and the publications pilot were live; every other list was frozen baked HTML.)
+
+**Mechanism (reusable for the remaining listings):** a light client-safe row shaper (`shapeMeetingRow`) + a `window.__liveRows` registry exposed from the Alpine entrypoint (the shared `fetchCollection` + shaper, NOT a re-inlined core) + a few lines in the island's `init()` that swap `this.all` with the fetched rows (keeping the baked baseline on any failure). Each future surface = its row shaper + one registry entry + the init swap.
+
+**Verified in a browser** on a served static build: deleted the June-9 meeting from the baked `#meetings-data` baseline (286 rows), loaded the page, and confirmed the live fetch restored the full **287** rows with June-9 back at the top of the table — i.e. a post-baseline item surfaces in the list without a rebuild.
+
+**Note:** expanding a brand-new meeting's row still hits `/api/meeting/<slug>.json` (build-time static, 404 until the rebuild) → the row shows "open the meeting page", and that detail page now live-renders (1.5.44). Files: `astro/src/lib/live/shapers/meeting.ts` (+`shapeMeetingRow`/`MeetingRow`), `astro/src/lib/live/alpine-entry.ts` (`window.__liveRows`), `astro/src/components/MeetingTable.astro` (init swap); `package.json` → 1.5.46.
+
+---
+
 ## [1.5.45] - 2026-06-05
 
 ### feat — Live-detail fallback: remaining detail types (grants, news, events, researchhub)
