@@ -90,6 +90,9 @@ const rows = items.map((it) => {
 // JSON-in-HTML: neutralize "<" so the island can't break out of the <script>.
 const listJson = JSON.stringify(rows).replace(/</g, '\\u003c');
 const islandId = `hub-${kind}-data`;
+// LIVE: kind → __liveRows registry key (alpine-entry.ts). The init() swap fetches
+// fresh HUB rows so a post-build item appears in the list without a rebuild.
+const liveKey = { articles: 'hubArticles', datasets: 'hubDatasets', apps: 'hubApps' }[kind];
 
 // SSR baseline = page 1 (articles) or all (datasets/apps).
 const baseline = paginate ? items.slice(0, perPage) : items;
@@ -107,10 +110,21 @@ const baseline = paginate ? items.slice(0, perPage) : items;
       all: JSON.parse(document.getElementById('${islandId}').textContent),
       view: '${initialView}', shown: ${perPage}, perPage: ${perPage},
       paginate: ${paginate}, ready: false,
+      liveKey: ${JSON.stringify(liveKey)},
       init(){
         const p = new URLSearchParams(location.search).get('view');
         if (p === 'list' || p === 'grid') this.view = p;
         this.ready = true;
+        // LIVE: swap in fresh HUB rows so a post-build item appears without a
+        // rebuild. REST returns insertion order, so re-sort date-desc to match the
+        // baked baseline (GraphQL date:desc). Keeps the baked baseline on failure.
+        if (window.__liveRows && window.__liveRows[this.liveKey]) {
+          window.__liveRows[this.liveKey]().then((rows) => {
+            if (rows && rows.length) {
+              this.all = rows.slice().sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+            }
+          }).catch(() => {});
+        }
       },
       setView(v){
         this.view = v;

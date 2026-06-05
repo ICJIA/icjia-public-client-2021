@@ -172,3 +172,58 @@ export function shapeArticle(a: any, render: (md: string) => string): ArticleIte
     extraFileUrl: hubFileUrl(a.extrafile),
   };
 }
+
+// ── LIGHT list-row shape (live listing) ───────────────────────────────────────
+
+/** research.ts `truncateWordsLocal`: first `max` words + "..." only when longer.
+ *  (DUPLICATED — research.ts does not export it; locked by shapers/article.test.ts.) */
+export function truncateWordsLocal(str?: string, max = 30): string {
+  if (!str) return "";
+  const arr = str.trim().split(/\s+/);
+  const out = arr.slice(0, max).join(" ");
+  return arr.length > max ? out + "..." : out;
+}
+
+/** The compact row HubListing.astro renders from #hub-articles-data (rows.map):
+ *  { p,t,d,n,te,au,cats,tags,ip,hasImg,slug,contrib }. `id` is required by
+ *  fetchCollection (de-dupe). `date` is a NON-RENDERED raw ISO carried only so the
+ *  init-swap can re-sort live rows date-desc (REST returns insertion order, not the
+ *  baked date:desc). Mirrors research.ts shapeArticleListItem; image is build-time
+ *  only → ip:null/hasImg:false for a live (post-build) row (the nightly rebuild
+ *  adds it). articles carry `au` (authors); contrib is null. */
+export interface HubArticleRow {
+  id: string;
+  date?: string;
+  p: string;
+  t: string;
+  d: string;
+  n: boolean;
+  te: string;
+  au: string;
+  cats: string[];
+  tags: string[];
+  ip: string | null;
+  hasImg: boolean;
+  slug: string;
+  contrib: null;
+}
+
+/** Shape one raw HUB article REST record → the compact HubListing row. */
+export function shapeArticleRow(a: any): HubArticleRow {
+  return {
+    id: String(a.id),
+    date: a.date,
+    p: `/researchhub/articles/${a.slug}/`,
+    t: a.title,
+    d: formatResearchDate(a.date),
+    n: isNewResearch(a.date),
+    te: truncateWordsLocal(a.abstract, 30),
+    au: joinAuthors(a.authors),
+    cats: categoriesArray(a.categories),
+    tags: Array.isArray(a.tags) ? a.tags : [],
+    ip: null,
+    hasImg: false,
+    slug: a.slug,
+    contrib: null,
+  };
+}

@@ -11,6 +11,11 @@ import type { Alpine as AlpineType } from 'alpinejs';
 import { fetchCollection } from './live-list';
 import { shapeNewsRow } from './shapers/news';
 import { shapeMeetingRow } from './shapers/meeting';
+import { shapeEventRow } from './shapers/event';
+import { shapeFundingRow } from './shapers/grant';
+import { shapeArticleRow } from './shapers/article';
+import { shapeDatasetRow } from './shapers/dataset';
+import { shapeAppRow } from './shapers/app';
 import { SOURCES } from './sources';
 
 const NEWS_PER_PAGE = 15;
@@ -27,6 +32,28 @@ export default (Alpine: AlpineType) => {
   (window as any).__liveRows = {
     meetings: () =>
       fetchCollection(SOURCES.meetings.host, SOURCES.meetings.collection, shapeMeetingRow),
+    events: () =>
+      fetchCollection(SOURCES.events.host, SOURCES.events.collection, shapeEventRow),
+    // funding cards bind summaryHtml via x-html, so render it here (this is a
+    // MODULE, so markdown.client is a lazy chunk loaded only when the funding list
+    // fetches — never imported into the Alpine x-data string, where the path can't resolve).
+    funding: () =>
+      fetchCollection(SOURCES.funding.host, SOURCES.funding.collection, shapeFundingRow).then(
+        async (rows) => {
+          if (!rows || !rows.length) return rows;
+          const { renderToHtml } = await import('../markdown.client.js');
+          return rows.map((g: any) => ({
+            ...g,
+            summaryHtml: g.summaryMd ? renderToHtml(g.summaryMd) : '',
+          }));
+        },
+      ),
+    hubArticles: () =>
+      fetchCollection(SOURCES.hubArticles.host, SOURCES.hubArticles.collection, shapeArticleRow, 500, SOURCES.hubArticles.query),
+    hubDatasets: () =>
+      fetchCollection(SOURCES.hubDatasets.host, SOURCES.hubDatasets.collection, shapeDatasetRow, 500, SOURCES.hubDatasets.query),
+    hubApps: () =>
+      fetchCollection(SOURCES.hubApps.host, SOURCES.hubApps.collection, shapeAppRow, 500, SOURCES.hubApps.query),
   };
 
   /**

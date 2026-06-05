@@ -160,3 +160,58 @@ export function shapeEvent(e: any, render: (md: string) => string): EventItem {
     published_at: e.published_at,
   };
 }
+
+// ── LIGHT list-row shape (live listing) ───────────────────────────────────────
+
+// Chicago-local day key (YYYY-MM-DD) for an ISO instant — the SAME helper inlined
+// in EventsListing.astro's frontmatter (en-CA → ISO-ordered parts). Buckets an
+// event into its America/Chicago calendar day. Pure + client-safe.
+function chiDayKey(iso?: string): string {
+  if (!iso) return "";
+  const p = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Chicago",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date(iso));
+  const g = (t: string) => p.find((x) => x.type === t)?.value ?? "";
+  return `${g("year")}-${g("month")}-${g("day")}`;
+}
+
+/** The COMPACT row EventsListing.astro renders from #events-data — the short-key
+ *  island shape its `x-data` builds from each EventListItem and its x-for / `shown`
+ *  getter read (p=fullPath, n=name, c=category, r=rangeLine, s=summary, t=tags,
+ *  sd/ed=Chicago day-keys, end=end ISO). `id` is NOT read by the template
+ *  (x-for keys on `p`) but IS required by fetchCollection (de-dupes on it). */
+export interface EventRow {
+  id: string;
+  p: string;
+  n: string;
+  c: string;
+  r: string;
+  s: string;
+  t: string[];
+  sd: string;
+  ed: string;
+  end: string;
+}
+
+/** Shape one raw Strapi v3 REST event → the compact EventRow the live listing
+ *  swaps into `this.all` (so a post-build event appears in the LIST without a
+ *  rebuild). Mirrors EventsListing.astro's build-time `listData.map` exactly,
+ *  reusing the drift-guarded eventRangeLine (the calendar grid keeps its baked
+ *  #calendar-data feed — only the events-only LIST is swapped). */
+export function shapeEventRow(e: any): EventRow {
+  return {
+    id: String(e.id),
+    p: `/events/${e.slug}/`,
+    n: e.name,
+    c: e.category ?? "",
+    r: eventRangeLine(e.start, e.end, !!e.timed),
+    s: e.summary ?? "",
+    t: eventTags(e),
+    sd: chiDayKey(e.start),
+    ed: chiDayKey(e.end || e.start),
+    end: e.end ?? "",
+  };
+}

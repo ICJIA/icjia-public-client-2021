@@ -26,6 +26,7 @@ import '../styles/page-toc.css';
 import '../styles/events.css';
 import '../styles/article-view.css';
 import '../styles/researchhub.css';
+import '../styles/publications.css';
 
 // Quick links mirror legacy 404.vue (Home + the seven section destinations).
 const links = [
@@ -52,6 +53,7 @@ const DETECT = [
   { prefix: '/news/', host: AGENCY, coll: 'posts', q: '' },
   { prefix: '/events/', host: AGENCY, coll: 'events', q: '' },
   { prefix: '/grants/funding/', host: AGENCY, coll: 'grants', q: '' },
+  { prefix: '/about/publications/', host: AGENCY, coll: 'publications', q: '' },
 ];
 const detectJson = JSON.stringify(DETECT).replace(/</g, '\\u003c');
 ---

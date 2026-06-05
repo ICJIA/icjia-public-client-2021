@@ -82,6 +82,22 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.47] - 2026-06-05
+
+### feat — Publications detail fallback + live listings (events, funding, researchhub)
+
+Two more pieces of "an author sees new content immediately":
+
+**Publications detail fallback (was a hard 404).** A publication added after the last build showed in the (live) publications list but its detail URL `/about/publications/<slug>` 404'd — `/about/publications/` was never in the smart-404's `DETECT` array. Added the prefix + a `shapePublication` shaper + a `renderPublicationDetail` twin (Container-API parity, **byte-exact** — publications have no astro:assets image) + `publications.css`. Browser-verified: the reported URL now live-renders. (`/publications/<slug>` is a 301 redirect, not a second detail route, so it needs no entry.)
+
+**Live listings — events, funding, researchhub (articles/datasets/apps).** Following the meetings reference (1.5.46): each inline-`x-data` island now swaps in fresh Strapi rows on `init()` via a `window.__liveRows` registry entry + a light row shaper, so a post-build item appears **in the list** without a rebuild. Browser-verified by deleting an item from each baked baseline and confirming the live fetch restored it: researchhub articles (251→252, the deleted article back at top), funding (105→106, **with its `x-html` summary re-rendered** — markdown lazy-loaded in the registry fetcher, not the Alpine string), events (live `shapeEventRow` rows swapped in).
+
+**Two build-trap fixes (recorded in the checklist):** a stray `` `backtick` `` inside an Alpine `x-data` comment terminated the template literal (`Expected ")"`); and `import('../lib/markdown.client.js')` inside an `x-data` string can't be bundled/resolved by Vite — moved to the `alpine-entry` registry fetcher where it's a proper lazy chunk. Neither is caught by Vitest (no test imports the islands/entrypoint) — only a real build.
+
+Files: `astro/src/lib/live/shapers/{publication,event,grant,article,dataset,app}.ts` (+row shapers / publication shaper) + `renderers/publication.ts` + parity/shaper tests; `astro/src/lib/live/alpine-entry.ts` (`__liveRows` events/funding/hub) + `detail-preview.ts` + `404.astro` (publications DETECT/CSS); `astro/src/components/{EventsListing,FundingListing,researchhub/HubListing}.astro` (init swaps); `package.json` → 1.5.47. **Other detail types still pending** (`/about/biographies`, `/about/employment`, `/about/units`, `/grants/programs`, and the `pages`-backed about/grants/irb/innovation routes) — same pattern, listed in the checklist.
+
+---
+
 ## [1.5.46] - 2026-06-05
 
 ### feat — Live listings: meetings table surfaces post-build items (no rebuild)

@@ -104,3 +104,50 @@ export function shapeApp(a: any, render: (md: string) => string): AppItem {
     ],
   };
 }
+
+// ── LIGHT list-row shape (live listing) ───────────────────────────────────────
+
+/** The compact row HubListing.astro renders from #hub-apps-data (rows.map):
+ *  { p,t,d,n,te,au,cats,tags,ip,hasImg,slug,contrib }. `id` is required by
+ *  fetchCollection (de-dupe); `date` is a NON-RENDERED raw ISO carried only so the
+ *  init-swap can re-sort live rows date-desc (REST returns insertion order, not the
+ *  baked date:desc). Mirrors research.ts shapeAppListItem; the app image
+ *  (base64 / build-extracted file) is build-time only → ip:null/hasImg:false for a
+ *  live (post-build) row (the nightly rebuild adds it). apps carry `contrib`
+ *  (contributors); au is ''. */
+export interface HubAppRow {
+  id: string;
+  date?: string;
+  p: string;
+  t: string;
+  d: string;
+  n: boolean;
+  te: string;
+  au: string;
+  cats: string[];
+  tags: string[];
+  ip: null;
+  hasImg: boolean;
+  slug: string;
+  contrib: any;
+}
+
+/** Shape one raw HUB app REST record → the compact HubListing row. */
+export function shapeAppRow(a: any): HubAppRow {
+  return {
+    id: String(a.id),
+    date: a.date,
+    p: `/researchhub/apps/${a.slug}/`,
+    t: a.title,
+    d: formatResearchDate(a.date),
+    n: isNewResearch(a.date),
+    te: truncateBySentence(a.description, 2),
+    au: "",
+    cats: categoriesArray(a.categories),
+    tags: Array.isArray(a.tags) ? a.tags : [],
+    ip: null,
+    hasImg: false,
+    slug: a.slug,
+    contrib: a.contributors ?? null,
+  };
+}

@@ -168,3 +168,49 @@ export function shapeDataset(d: any, render: (md: string) => string): DatasetIte
     ],
   };
 }
+
+// ── LIGHT list-row shape (live listing) ───────────────────────────────────────
+
+/** The compact row HubListing.astro renders from #hub-datasets-data (rows.map):
+ *  { p,t,d,n,te,au,cats,tags,ip,hasImg,slug,contrib }. `id` is required by
+ *  fetchCollection (de-dupe); `date` is a NON-RENDERED raw ISO carried only so the
+ *  init-swap can re-sort live rows date-desc (REST returns insertion order, not the
+ *  baked date:desc). Mirrors research.ts shapeDatasetListItem; datasets have no
+ *  image (ip:null/hasImg:false) and carry neither authors nor contributors
+ *  (au:''/contrib:null). */
+export interface HubDatasetRow {
+  id: string;
+  date?: string;
+  p: string;
+  t: string;
+  d: string;
+  n: boolean;
+  te: string;
+  au: string;
+  cats: string[];
+  tags: string[];
+  ip: null;
+  hasImg: boolean;
+  slug: string;
+  contrib: null;
+}
+
+/** Shape one raw HUB dataset REST record → the compact HubListing row. */
+export function shapeDatasetRow(d: any): HubDatasetRow {
+  return {
+    id: String(d.id),
+    date: d.date,
+    p: `/researchhub/datasets/${d.slug}/`,
+    t: d.title,
+    d: formatResearchDate(d.date),
+    n: isNewResearch(d.date),
+    te: truncateBySentence(d.description, 2),
+    au: "",
+    cats: categoriesArray(d.categories),
+    tags: Array.isArray(d.tags) ? d.tags : [],
+    ip: null,
+    hasImg: false,
+    slug: d.slug,
+    contrib: null,
+  };
+}

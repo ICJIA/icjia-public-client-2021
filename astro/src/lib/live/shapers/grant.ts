@@ -26,6 +26,9 @@ import {
   type MeetingRelatedItem,
 } from "./meeting";
 
+// data.ts's AttachmentItem is structurally identical to the meeting/grant one.
+export type FundingAttachmentItem = MeetingAttachmentItem;
+
 // Reuse the meeting shaper's identical attachment/related shapes (same fields).
 export type GrantAttachmentItem = MeetingAttachmentItem;
 export type GrantRelatedItem = MeetingRelatedItem;
@@ -122,6 +125,64 @@ export function shapeGrant(g: any, render: (md: string) => string): GrantItem {
     endFormatted: formatNewsDate(g.end),
     attachments: shapeAttachments(g.attachments),
     related: buildRelated(g),
+    tags: Array.isArray(g.tags) ? g.tags.map((t: any) => t.title) : [],
+  };
+}
+
+// ── LIGHT funding list-row shape (live /grants/funding/ listing) ──────────────
+
+/** The row FundingListing.astro renders from #funding-data — every field its
+ *  cards read (id, catLabel, deadlineAlt, fullPath, title, dateRange, summaryHtml,
+ *  tags, attachments + the isExpired flag the Current/Expired tab getter splits on).
+ *  Mirrors data.ts `shapeFundingListItem` / `FundingListItem`.
+ *
+ *  ONE deviation: `summaryHtml` is NOT pre-rendered here. This module is client-
+ *  safe (zero server-only imports, no `window` at import — Node tests + SSR import
+ *  it), so it cannot pull in a markdown renderer. It carries the RAW `summaryMd`
+ *  instead; FundingListing's live swap renders `summaryHtml` via the browser
+ *  markdown pipeline (markdown.client.js) after the fetch, byte-identical to the
+ *  baked rows' build-time renderToHtml(summary). */
+export interface FundingRow {
+  id: string;
+  slug: string;
+  title: string;
+  fullPath: string;
+  category: string;
+  catLabel: string;
+  /** raw summary markdown — rendered to summaryHtml client-side after the swap. */
+  summaryMd: string;
+  summaryHtml: string;
+  dateRange: string;
+  deadlineAlt: string;
+  isExpired: boolean;
+  endMs: number;
+  attachments: FundingAttachmentItem[];
+  tags: string[];
+}
+
+/** Shape one raw Strapi v3 REST grant → the FundingRow the live listing swaps in
+ *  (so a post-build funding opportunity appears in the list without a rebuild).
+ *  Every grant record IS a funding opportunity — getFunding applies no category
+ *  filter (GET_ALL_FUNDING_QUERY selects all `grants`), so neither does this. */
+export function shapeFundingRow(g: any): FundingRow {
+  const catLabel =
+    fundingCategoryLabel(g.category).toUpperCase() ||
+    String(g.category || "").toUpperCase();
+  return {
+    id: String(g.id),
+    slug: g.slug,
+    title: g.title,
+    fullPath: `/grants/funding/${g.slug}/`,
+    category: g.category ?? "",
+    catLabel,
+    summaryMd: g.summary ?? "",
+    summaryHtml: "",
+    dateRange:
+      g.start && g.end ? `${formatNewsDate(g.start)} to ${formatNewsDate(g.end)}` : "",
+    deadlineAlt: dateFormatAlt(g.end),
+    isExpired: isExpired(g.end),
+    endMs: g.end ? new Date(g.end).getTime() : 0,
+    attachments: shapeAttachments(g.attachments),
     tags: Array.isArray(g.tags) ? g.tags.map((t: any) => t.title) : [],
   };
 }

@@ -26,6 +26,8 @@ import { shapeDataset } from "./shapers/dataset";
 import { renderDatasetDetail } from "./renderers/dataset";
 import { shapeApp } from "./shapers/app";
 import { renderAppDetail } from "./renderers/app";
+import { shapePublication } from "./shapers/publication";
+import { renderPublicationDetail } from "./renderers/publication";
 
 export interface DetailPreview {
   /** innerHTML for the page's content slot (replaces the 404 body). */
@@ -76,6 +78,12 @@ const REGISTRY: Record<string, Renderer> = {
   }),
   "/researchhub/apps/": (rec) => ({
     html: renderAppDetail(shapeApp(rec, renderToHtml)),
+    title: brandTitle(rec.title),
+  }),
+  // Publications (/about/publications/<slug>) — the list is live (PublicationTable
+  // pilot) but detail pages 404'd post-build until this was added.
+  "/about/publications/": (rec) => ({
+    html: renderPublicationDetail(shapePublication(rec, renderToHtml)),
     title: brandTitle(rec.title),
   }),
 };

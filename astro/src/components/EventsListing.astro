@@ -104,6 +104,18 @@ const ssrUpcoming = filterUpcoming(events);
       const now = new Date();
       this.calY = now.getFullYear(); this.calM = now.getMonth();
       this.ready = true;
+      // LIVE: swap in fresh Strapi events so a post-build event appears in the
+      // LIST without a rebuild. Keeps the baked baseline if the fetch fails. Rows
+      // are the same compact shape the build bakes; re-sort start-asc to match the
+      // baked list order (the upcomingOnly filter re-derives via shown). The
+      // CALENDAR grid keeps its baked #calendar-data feed (this.cal) untouched.
+      try {
+        if(window.__liveRows && window.__liveRows.events){
+          window.__liveRows.events().then((rows)=>{
+            if(rows && rows.length){ this.all = rows.slice().sort((a,b)=> (a.sd||'').localeCompare(b.sd||'')); }
+          }).catch(()=>{});
+        }
+      } catch(e) {}
     },
     get shown(){
       if(!this.upcomingOnly) return this.all;
