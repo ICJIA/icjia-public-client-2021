@@ -151,6 +151,21 @@ un-double-escaped to `/\/$/`); the resolver is a bundled (non-inline) module scr
 **Lesson:** an `is:inline` script's body must be the literal JS to run — never wrap it in a
 `{`…`}` expression (use `set:html` for dynamic values, as the `nf-detect` JSON does).
 
-**Known remaining gap:** the per-section **context bar** (navy breadcrumb + grey tabs) is not
-yet rendered on the transient view (it uses Astro scoped CSS and renders nothing at build for
-`/404`). Content renders fully styled; only that nav strip is absent until addressed.
+**Update — all 7 detail types built + verified.** Meetings, grants/funding, news posts
+(`/news/` + `/news/press/`), events, and researchhub articles/datasets/apps each have a
+client shaper + twin renderer + green Container-API parity test (163/163 across 22 files), are
+registered in `detail-preview.ts`, and inline their CSS in `404.astro`. Browser-verified on a
+clean static build: meetings, a news post (raw splash URL), a researchhub article (base64
+splash → byte-exact, no image deviation), and a dataset all render via the fallback. Build
+stays clean (no jsdom in the client bundle; renderer in a lazy chunk).
+
+**Known remaining gaps (cosmetic, transient-only):**
+- The per-section **context bar** (navy breadcrumb + grey tabs) is not rendered on the
+  transient view (Astro scoped CSS + the 404 builds for `/404`).
+- A few **component-scoped `<style>`** rules don't apply on the 404 (they're hashed per
+  component, absent for `/404`): news `.news-meta`/`.news-title` + RelatedList styling;
+  ArticleView hero heights + the md+ two-column `.article-grid`; DatasetView `.variables-md-only`;
+  AppView `.app-img` sizing. Content renders and is largely styled (global + imported sheets);
+  these are layout polish only, and the nightly rebuild produces the fully-styled canonical page.
+- Image types use the **raw Strapi URL** on the transient view (researchhub base64 heroes are
+  exact). All gaps vanish on the next rebuild.

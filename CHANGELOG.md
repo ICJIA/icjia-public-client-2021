@@ -82,6 +82,24 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.45] - 2026-06-05
+
+### feat — Live-detail fallback: remaining detail types (grants, news, events, researchhub)
+
+Extends the live-detail fallback (1.5.44, meetings) to **every** content-detail type the smart-404 detects. A record added to Strapi after the last build now renders client-side for: **grants/funding**, **news posts** (`/news/` + `/news/press/`), **events**, and **researchhub articles / datasets / apps** — in addition to meetings. Each is the same pattern: a client-safe shaper (build `renderToHtml` injected), a "twin" renderer locked to the real `.astro` component by an Astro Container-API parity test, a registry entry in `detail-preview.ts`, and its CSS inlined in `404.astro`.
+
+**Verified:** 163 unit tests across 22 files (7 types × parity + shaper/drift); clean static build (3528 pages, no jsdom in the client bundle, renderer in a lazy chunk). Browser-verified on a served build via the move-aside technique: meetings, a news post (raw splash URL), a researchhub article (base64 hero → byte-exact), and a dataset all render through the fallback; a random path still shows the plain 404.
+
+**Notable:**
+- **Researchhub heroes are byte-exact, not a deviation.** HUB stores splash/app images as base64 data-URIs, so the components take their base64 Alpine-island branch (no astro:assets transform) — fully reproducible client-side. News-post splashes still fall back to the raw Strapi URL (the documented ≤24h deviation).
+- **Per-type field quirks captured:** events title from `name` (not `title`); news `/news/` + `/news/press/` share one renderer (no `/news/press/[slug]` page); researchhub fetch carries `status=published`.
+
+**Files:** new `shapers/{grant,post,event,article,dataset,app}.ts` + `renderers/{grant,post,event,article,dataset,app}.ts` + their `*.parity.test.ts` / shaper tests under `astro/src/lib/live/`; `astro/src/lib/live/imageUrl.ts` (raw-URL image helper, Thumbor-swappable); `detail-preview.ts` (registry entries); `404.astro` (CSS imports: funding, attachment-list, page-toc, events, article-view, researchhub); `package.json` → 1.5.45.
+
+**Known gaps (cosmetic, transient-only, vanish on rebuild):** the per-section context bar and a few component-scoped `<style>` rules (news/RelatedList styling, ArticleView hero heights + 2-col grid, DatasetView variables-table breakpoint, AppView image sizing) don't apply on the `/404` shell. Content renders and is largely styled; layout polish only.
+
+---
+
 ## [1.5.44] - 2026-06-05
 
 ### feat — Live-detail fallback: render post-build CMS slugs immediately (smart-404)

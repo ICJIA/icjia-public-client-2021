@@ -14,6 +14,18 @@
 import { renderToHtml } from "../markdown.client.js";
 import { shapeMeeting } from "./shapers/meeting";
 import { renderMeetingDetail } from "./renderers/meeting";
+import { shapeGrant } from "./shapers/grant";
+import { renderGrantDetail } from "./renderers/grant";
+import { shapePost } from "./shapers/post";
+import { renderPostDetail } from "./renderers/post";
+import { shapeEvent } from "./shapers/event";
+import { renderEventDetail } from "./renderers/event";
+import { shapeArticle } from "./shapers/article";
+import { renderArticleDetail } from "./renderers/article";
+import { shapeDataset } from "./shapers/dataset";
+import { renderDatasetDetail } from "./renderers/dataset";
+import { shapeApp } from "./shapers/app";
+import { renderAppDetail } from "./renderers/app";
 
 export interface DetailPreview {
   /** innerHTML for the page's content slot (replaces the 404 body). */
@@ -33,8 +45,39 @@ const REGISTRY: Record<string, Renderer> = {
     html: renderMeetingDetail(shapeMeeting(rec, renderToHtml)),
     title: brandTitle(rec.title),
   }),
-  // Additional types (news posts, events, researchhub, grants) are registered here
-  // as their shaper+renderer pairs land — see docs/LIVE-DETAIL-FALLBACK.md §8.
+  "/grants/funding/": (rec) => ({
+    html: renderGrantDetail(shapeGrant(rec, renderToHtml)),
+    title: brandTitle(rec.title),
+  }),
+  // /news/press/ + /news/ both resolve through /news/[slug].astro (same `posts`
+  // collection) → one renderer, two keys. Keyed by the prefix the 404 DETECT
+  // matched (most-specific-first), so press is distinguished from generic news.
+  "/news/press/": (rec) => ({
+    html: renderPostDetail(shapePost(rec, renderToHtml)),
+    title: brandTitle(rec.title),
+  }),
+  "/news/": (rec) => ({
+    html: renderPostDetail(shapePost(rec, renderToHtml)),
+    title: brandTitle(rec.title),
+  }),
+  // Events use `name` (not `title`) — the build page passes title={event.name}.
+  "/events/": (rec) => ({
+    html: renderEventDetail(shapeEvent(rec, renderToHtml)),
+    title: brandTitle(rec.name),
+  }),
+  // Researchhub (HUB host; the 404 fetch carries status=published). Titles use `title`.
+  "/researchhub/articles/": (rec) => ({
+    html: renderArticleDetail(shapeArticle(rec, renderToHtml)),
+    title: brandTitle(rec.title),
+  }),
+  "/researchhub/datasets/": (rec) => ({
+    html: renderDatasetDetail(shapeDataset(rec, renderToHtml)),
+    title: brandTitle(rec.title),
+  }),
+  "/researchhub/apps/": (rec) => ({
+    html: renderAppDetail(shapeApp(rec, renderToHtml)),
+    title: brandTitle(rec.title),
+  }),
 };
 
 /** Render a fetched record for the matched prefix; null when no renderer exists
