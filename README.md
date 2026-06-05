@@ -50,20 +50,20 @@ pnpm dev          # http://localhost:4321 — live CMS data
 
 ### Request flow (the core idea)
 
+The site is a **fully static build** (`output: 'static'`, no adapter) — every page is prerendered to HTML at build and served from the Netlify CDN with **zero runtime functions**. Freshness comes from the browser, not a server:
+
 ```
-Browser ─▶ Netlify edge ──(cache miss / stale)──▶ Astro SSR function
-                │                                      │
-                │                              fetch Strapi GraphQL (live)
-          warm copy (~150ms)                          │
-                │                              render Markdown + sanitize
-                ▼                                      ▼
-          HTML response  ◀───── setCache() headers ── complete HTML
+Build:   Strapi (GraphQL/REST) ─▶ getX()/shapers ─▶ prerendered HTML  ─▶ CDN
+                                                                           │
+Browser: paints baked HTML ─▶ Alpine "live-island" ─▶ fetch Strapi REST (live)
+                                                                           │
+                                              swap in fresh rows / render the new page
 ```
 
-- **`src/lib/data.ts` / `research.ts`** are the single server-side entry points pages call (`getNewsPost(slug)`, `getFunding()`, `getArticle(slug)`, …). They query the CMS (`no-cache`), shape the response, and render body Markdown.
-- **`src/lib/cache.ts` + `icjia.config.mjs`** set per-content-type TTLs via **`Netlify-CDN-Cache-Control`** — the one header that actually drives Netlify's Durable Cache for function responses (a plain `Cache-Control: s-maxage` is ignored there).
-- **Resilience:** a 5 s fetch timeout and `Promise.allSettled` per section, so one slow query degrades gracefully instead of failing the page.
-- **Cold starts** are masked three ways: an inlined loading overlay, a top nav-progress bar on link clicks, and a `keep-warm` scheduled function that pings the highest-traffic routes to keep the lambda + edge warm.
+- **`src/lib/data.ts` / `research.ts`** are the single entry points pages call at **build** (`getNewsPost(slug)`, `getFunding()`, `getArticle(slug)`, …): query the CMS, shape, render body Markdown → static HTML. The same shapers are reused **client-side** by the live-islands.
+- **Live-islands (`src/lib/live/`).** After paint, Alpine islands fetch the section's current data from Strapi's **public** REST in the browser and swap it in — so an edit / new item shows on reload **without a rebuild**. A `window.__liveRows` registry exposes the shared `fetchCollection` + per-surface row shapers; section lists, the home strips, and (via the smart-404) detail pages all use it.
+- **Smart-404 detail fallback (`src/pages/404.astro`).** A brand-new slug has no prerendered page, so Netlify serves the 404 — which detects the content type, REST-fetches the record, and **renders the real detail page client-side** with the build's own (now isomorphic) `renderToHtml`. New pages also appear permanently on the **nightly rebuild** (Strapi publish webhook → build hook). See `docs/LIVE-DETAIL-FALLBACK.md`.
+- **Resilience:** every live fetch falls back to the baked baseline on failure — offline / Strapi-down still shows the page's build-time content, and the no-JS/crawler view is the baked HTML. (The legacy SSR's `setCache`/`keep-warm`/cold-start machinery was removed in the de-serverless migration; the loading-overlay + nav-progress chrome is retained.)
 
 ### Build-time generators (`astro/scripts/`, run in `prebuild` + nightly)
 
