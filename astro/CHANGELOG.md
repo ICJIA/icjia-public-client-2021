@@ -29,6 +29,15 @@ A four-pass red-team / blue-team security audit of the NEW client-side surface i
 
 **Verified:** 216 tests (incl. the new safe-url suite); clean build (3531 pages); browser-checked the home strips render from baked data, an event renders sanitized, and legitimate external/file links still work.
 
+## [0.50.2] — 2026-06-08 — fix(404): kill the post-build "404 flash" + live meeting-detail expand
+
+Two post-build-live polish fixes surfaced on the branch deploy.
+
+- **No more "404 flash" on an unbuilt detail page.** The 0.48.0/0.50.0 smart-404 ran an early `is:inline` script to set `[data-nf-state='checking']` *before* the numeral paints — but on real Netlify deploys the "404" still painted for **~200ms** before the hide took visual effect (the no-flash guarantee depended on JS running before first paint; a 45-frame rAF probe in headless Chrome couldn't reproduce it — paint races are sub-frame). Fix: **invert the default** — the numeral + "not found" copy are now `display:none` in static CSS and revealed ONLY when JS sets `[data-nf-state='gone']` (a confirmed miss / non-detail path / `<noscript>` for JS-off). A detail-route candidate paints the neutral "checking" state, **never "404", independent of paint timing**. Also clears the transient `ICJIA | Page Not Found` tab title during the check. Verified in `dist/404.html`: default-hide rule + `gone`-reveal rule + dual-branch detect script + un-hoisted `<noscript>` style all emit correctly.
+- **Meeting list row-expand now lives.** Expanding a post-build meeting hit the baked `/api/meeting/<slug>.json` (404 → "Couldn't load details — open the meeting page"). `loadDetail` now falls back to a new `window.__liveDetail.meeting(slug)` registry — a single-record Strapi fetch shaped by the **existing `shapeMeeting`** into the same `{bodyHtml, tags, attachments, related, external}` the expand renders. The standalone detail page already live-rendered via the smart 404; the inline expand now matches, so a brand-new meeting shows current detail without a rebuild.
+
+**Verified:** 216 tests (30 files); clean static build (**3530 pages**, `BUILD_EXIT=0`, no errors). Lessons: `docs/astro-conversion-checklist-v7.1.md` (v7.7 increment).
+
 ## [0.49.2] — 2026-06-04 — fix(publications): tag chips link to /search (site-wide parity)
 
 The `/about/publications/` tag chips — in `PublicationCard` AND the live `PublicationTable` rows — rendered as **non-clickable `<span class="chip">`**, the one surface the site-wide "every tag chip is a `/search/?q=<tag>` link" change had missed (the `.publications .chip` comment even read "non-link spans; search is unported"). Changed both to `<a class="chip" href="/search/?q=<tag>">` like every other section. **Audited every `.chip` tag rendering site-wide** (`grep` of all components/pages): publications (Card + Table) were the ONLY non-clickable tag chips; news, press, events, meetings, funding, programs, jobs, bios/CMS catch-alls, and all researchhub views were already linked. `NEW!` / file-type / calendar-category / search-filter chips are intentionally **not** tags and stay non-link.

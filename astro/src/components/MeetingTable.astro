@@ -32,8 +32,10 @@ const xdata = `{
     this.ready = true;
     // LIVE: swap in fresh Strapi meetings so a post-build meeting appears in the
     // table without a rebuild. Keeps the baked baseline if the fetch fails. (Expanding
-    // a brand-new row still hits /api/meeting/<slug>.json which 404s until the rebuild
-    // → the row shows "open the meeting page", and that detail page now live-renders.)
+    // a brand-new row's baked /api/meeting/<slug>.json 404s until the next rebuild →
+    // loadDetail falls back to window.__liveDetail.meeting(slug), shaping the live Strapi
+    // record so the expand shows current detail post-build; the standalone detail page
+    // likewise live-renders via the smart 404.)
     try {
       if (window.__liveRows && window.__liveRows.meetings) {
         window.__liveRows.meetings().then((rows) => {
@@ -60,7 +62,7 @@ const xdata = `{
   ariaSort(k){ return this.sortKey === k ? (this.sortDir === 'asc' ? 'ascending' : 'descending') : null; },
   toggle(it){ const id = it.id; this.expanded = this.expanded === id ? null : id; if (this.expanded === id) this.loadDetail(it); },
   det(id){ return this.details[id] || null; },
-  async loadDetail(it){ if (this.details[it.id]) return; this.loadingId = it.id; let d = null; try { const r = await fetch('/api/meeting/' + encodeURIComponent(it.slug) + '.json'); if (r.ok) d = await r.json(); } catch (e) {} if (!d) d = { bodyHtml: '', tags: [], attachments: [], related: [], external: [], error: true }; this.details = Object.assign({}, this.details, { [it.id]: d }); this.loadingId = null; },
+  async loadDetail(it){ if (this.details[it.id]) return; this.loadingId = it.id; let d = null; try { const r = await fetch('/api/meeting/' + encodeURIComponent(it.slug) + '.json'); if (r.ok) d = await r.json(); } catch (e) {} if ((!d || d.error) && window.__liveDetail && window.__liveDetail.meeting) { try { const live = await window.__liveDetail.meeting(it.slug); if (live) d = live; } catch (e) {} } if (!d) d = { bodyHtml: '', tags: [], attachments: [], related: [], external: [], error: true }; this.details = Object.assign({}, this.details, { [it.id]: d }); this.loadingId = null; },
   track(url){ try { if (typeof window.plausible === 'function') { window.plausible('file_download', { props: { url } }); window.plausible('Outbound Link: Click', { props: { url } }); } } catch (e) {} }
 }`;
 ---

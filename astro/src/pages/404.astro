@@ -74,21 +74,25 @@ const detectJson = JSON.stringify(DETECT).replace(/</g, '\\u003c');
 <BaseLayout title="Page Not Found" description="The page you requested could not be found." noindex>
   <section class="nf" data-nf>
     <div class="nf-inner">
-      {/* Detection runs BEFORE the default messaging parses, so a path that turns out
-          to be "publishing" never flashes "not found" first. */}
+      {/* The 404 numeral + "not found" copy are hidden by CSS until JS sets
+          [data-nf-state='gone'] (a confirmed miss). A detail-route candidate paints the
+          neutral "checking" state — never "not found" — until the Strapi check resolves,
+          so there is NO "404 flash" regardless of JS/paint timing. */}
       <script type="application/json" id="nf-detect" set:html={detectJson} is:inline />
       {/* RAW inline JS (NOT wrapped in a {`…`} expression): is:inline emits content
           verbatim, so a {`…`} wrapper would ship as a literal block + template-string
           and the IIFE would never run — the bug that left the smart-404 detection dead.
-          Kept inline + classic so it runs DURING parse (sets the state before the
-          default 404 paints → no "not found" flash). */}
+          Kept inline + classic so it runs DURING parse. It sets [data-nf-state] in BOTH
+          branches: 'checking' for a detail candidate, 'gone' for a real miss (or on
+          error) — so the hidden-by-default 404 copy is revealed ONLY for a confirmed miss. */}
       <script is:inline>
         (() => {
+          var sec = document.querySelector('[data-nf]');
+          if (!sec) return;
           try {
-            var sec = document.querySelector('[data-nf]');
-            if (!sec) return;
             var map = JSON.parse(document.getElementById('nf-detect').textContent);
             var p = location.pathname;
+            var matched = false;
             for (var i = 0; i < map.length; i++) {
               var e = map[i];
               if (p.indexOf(e.prefix) === 0) {
@@ -98,13 +102,27 @@ const detectJson = JSON.stringify(DETECT).replace(/</g, '\\u003c');
                   sec.setAttribute('data-nf-prefix', e.prefix);
                   sec.setAttribute('data-nf-url', e.host + '/' + e.coll + '?slug=' + encodeURIComponent(slug) + (e.q ? '&' + e.q : '') + '&_limit=5');
                   sec.setAttribute('data-nf-state', 'checking');
+                  document.title = 'ICJIA';
+                  matched = true;
                   break;
                 }
               }
             }
-          } catch (_) {}
+            if (!matched) sec.setAttribute('data-nf-state', 'gone');
+          } catch (_) {
+            sec.setAttribute('data-nf-state', 'gone');
+          }
         })();
       </script>
+
+      {/* JS disabled → the smart fallback can't run; reveal the standard 404. is:inline
+          keeps this <style> in place (un-hoisted) so it only applies inside <noscript>. */}
+      <noscript>
+        <style is:inline>
+          [data-nf] .nf-num, [data-nf] .nf-msg--default { display: block !important; }
+          [data-nf] .nf-msg--checking, [data-nf] .nf-msg--publishing { display: none !important; }
+        </style>
+      </noscript>
 
       <div class="nf-num" aria-hidden="true">404</div>
 
@@ -193,7 +211,7 @@ const detectJson = JSON.stringify(DETECT).replace(/</g, '\\u003c');
     const toDefault404 = () => {
       if (settled) return;
       settled = true;
-      sec.removeAttribute('data-nf-state');
+      sec.setAttribute('data-nf-state', 'gone');
       fire404();
     };
     const toPublishing = () => {
@@ -289,17 +307,20 @@ const detectJson = JSON.stringify(DETECT).replace(/</g, '\\u003c');
     margin: 0 auto 28px;
   }
 
-  /* ── state machine: default visible; checking/publishing revealed by the early
-     script setting [data-nf-state] BEFORE this content paints (no "not found" flash). */
+  /* ── state machine (404 hidden by default): the numeral + "not found" copy stay
+     display:none until JS confirms a real miss ([data-nf-state='gone']). A detail-route
+     candidate paints the neutral "checking" state — never "not found" — until the Strapi
+     check resolves, so there is no "404 flash" independent of JS/paint timing. The
+     <noscript> block above restores the 404 when JS is disabled. */
+  .nf-num,
+  .nf-msg--default,
   .nf-msg--checking,
   .nf-msg--publishing {
     display: none;
   }
-  [data-nf-state='checking'] .nf-num,
-  [data-nf-state='publishing'] .nf-num,
-  [data-nf-state='checking'] .nf-msg--default,
-  [data-nf-state='publishing'] .nf-msg--default {
-    display: none;
+  [data-nf-state='gone'] .nf-num,
+  [data-nf-state='gone'] .nf-msg--default {
+    display: block;
   }
   [data-nf-state='checking'] .nf-msg--checking,
   [data-nf-state='publishing'] .nf-msg--publishing {

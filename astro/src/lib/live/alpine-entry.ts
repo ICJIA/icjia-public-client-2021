@@ -10,7 +10,7 @@
 import type { Alpine as AlpineType } from 'alpinejs';
 import { fetchCollection } from './live-list';
 import { shapeNewsRow } from './shapers/news';
-import { shapeMeetingRow } from './shapers/meeting';
+import { shapeMeetingRow, shapeMeeting } from './shapers/meeting';
 import { shapeEventRow } from './shapers/event';
 import { shapeFundingRow } from './shapers/grant';
 import { shapeArticleRow } from './shapers/article';
@@ -83,6 +83,39 @@ export default (Alpine: AlpineType) => {
           return rows.map((p: any) => ({ ...p, bodyHtml: p.bodyMd ? renderToHtml(p.bodyMd) : '' }));
         },
       ),
+  };
+
+  /**
+   * Live DETAIL fetchers — used by an interactive list whose row-expand normally loads a
+   * baked per-slug JSON (MeetingTable → /api/meeting/<slug>.json). A post-build record has
+   * no baked file (404), so the expand falls back to window.__liveDetail.<key>(slug): fetch
+   * the single Strapi record + shape it with the SAME build shaper (shapeMeeting), returning
+   * the detail object the expand template reads {bodyHtml,tags,attachments,related,external}.
+   * Returns null on any failure (the expand then shows "open the meeting page"). The markdown
+   * pipeline is a lazy chunk — loaded only when a fallback actually fires.
+   */
+  (window as any).__liveDetail = {
+    meeting: async (slug: string) => {
+      try {
+        const { host, collection } = SOURCES.meetings;
+        const rows = await fetch(
+          `${host}/${collection}?slug=${encodeURIComponent(slug)}&_limit=1`,
+        ).then((r) => (r.ok ? r.json() : null));
+        const rec = Array.isArray(rows) ? rows.find((x: any) => x && x.slug === slug) : null;
+        if (!rec) return null;
+        const { renderToHtml } = await import('../markdown.client.js');
+        const m = shapeMeeting(rec, renderToHtml);
+        return {
+          bodyHtml: m.bodyHtml,
+          tags: m.tags,
+          attachments: m.attachments,
+          related: m.related,
+          external: m.external,
+        };
+      } catch {
+        return null;
+      }
+    },
   };
 
   /**
