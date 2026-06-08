@@ -16,6 +16,7 @@
 
 import { runQuery } from "./gql-client.js";
 import { renderToHtml } from "./markdown.js";
+import { safeUrl } from "./live/safe-url";
 
 // Build-time hub-image manifest: the set of "<id>-<attr>" keys that have a real
 // extracted file under /hub-images/ (written by scripts/generate-hub-images.mjs
@@ -370,7 +371,9 @@ export async function getArticle(slug: string): Promise<ResearchArticleDetail | 
     tags: Array.isArray(a.tags) ? a.tags : [],
     external: a.external,
     citation: a.citation ? renderToHtml(a.citation) : a.citation,
-    doi: a.doi,
+    // safeUrl: doi feeds a citation href — block javascript:/data: (INJ-12, parity
+    // with the client article shaper). No-op for real DOI/URL values.
+    doi: a.doi ? safeUrl(a.doi) : a.doi,
     funding: a.funding,
     // Hero: prefer the extracted full-size splash file; base64 only for new posts.
     imgPath: hubImagePath(String(a.id), "splash") || null,
@@ -439,7 +442,10 @@ export async function getDataset(slug: string): Promise<ResearchDatasetDetail | 
   const d = data?.datasets?.[0];
   if (!d) return null;
   const sources = Array.isArray(d.sources)
-    ? d.sources.filter((s: any) => s && s.url !== "undefined")
+    ? d.sources
+        .filter((s: any) => s && s.url !== "undefined")
+        // safeUrl each source link (INJ-12, parity with the client dataset shaper).
+        .map((s: any) => ({ ...s, url: safeUrl(s.url) }))
     : [];
   return {
     ...shapeDatasetListItem(d),
@@ -496,7 +502,10 @@ function shapeAppListItem(a: any): ResearchAppListItem {
     imagePath: imagePath || null,
     // Drop heavy base64 when we have a file path (keeps the island tiny).
     image: imagePath ? null : a.image || null,
-    contributors: a.contributors,
+    // safeUrl each contributor link (INJ-12, parity with the client app shaper).
+    contributors: Array.isArray(a.contributors)
+      ? a.contributors.map((c: any) => ({ ...c, url: safeUrl(c.url) }))
+      : a.contributors,
   };
 }
 /** All published apps (date desc), live, for /researchhub/apps/. */

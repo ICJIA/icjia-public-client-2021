@@ -58,6 +58,20 @@ Adversarial red-team / blue-team audit of commit `50c9c8b` (the smart-404 **hidd
 
 **Verified:** 216 tests (30 files); clean static build (3530 pages, `BUILD_EXIT=0`). Code touched: `astro/src/lib/data.ts` (+`safeUrl` import + meeting external), `astro/src/pages/404.astro` (watchdog).
 
+## [0.50.4] — 2026-06-08 — security: complete the INJ-12 build-path safeUrl sweep (static render path)
+
+Closes **INJ-12** from the `0.50.3` audit. The `0.50.1` `safeUrl` scheme-guard (block `javascript:`/`data:` in hrefs) had only ever been applied to the **client** shapers (`src/lib/live/shapers/*`); the **build** shapers (`data.ts` + `research.ts`) — which render the **static pages + baked JSON that serve 99% of traffic** — validated no URL schemes, so a malicious/compromised CMS author could land a `javascript:` link on a static detail page.
+
+**Fix — `safeUrl` now guards every externally-sourced link URL on the build path, field-for-field with the client shapers:**
+- `research.ts`: article `doi`, dataset `sources[].url`, app `contributors[].url` (app's own `url` was already scheme-guarded — INJ-1).
+- `data.ts`: job `external[].url`, publication `fileURL` + a **site-relative guard** on `localArticlePath` (a crafted `articleURL` that survives the `PUB_CLIENT` strip now collapses to `null` unless it starts with `/`), unit `url`, page clickthrough `url`, home clickthrough-box `url`, biography→unit `url`. (Meeting `external` was fixed in `0.50.3`.)
+
+**Deliberately NOT touched:** image/`data:` `src` fields — Research-Hub base64 splash heroes, `CmsImage` sources, Strapi media `/uploads/` attachments — `safeUrl` blocks `data:`, so guarding those would break legitimate inline images. Optional fields use `x ? safeUrl(x) : x` so an absent URL stays absent (no spurious `"#"` link).
+
+A **no-op for every legitimate URL** (http(s)/mailto/tel/site-relative pass through unchanged), so renderer/VR parity holds. Build and client render paths are now at URL-scheme-validation parity.
+
+**Verified:** 216 tests (30 files); clean static build (3530 pages, `BUILD_EXIT=0`); a source sweep confirms no unguarded link sink (`url:`/`fileURL`/`doi`/`contributors`) remains on the build path. README "Security audit" → 2026-06-08 block (INJ-12 now ✅ Fixed).
+
 ## [0.49.2] — 2026-06-04 — fix(publications): tag chips link to /search (site-wide parity)
 
 The `/about/publications/` tag chips — in `PublicationCard` AND the live `PublicationTable` rows — rendered as **non-clickable `<span class="chip">`**, the one surface the site-wide "every tag chip is a `/search/?q=<tag>` link" change had missed (the `.publications .chip` comment even read "non-link spans; search is unported"). Changed both to `<a class="chip" href="/search/?q=<tag>">` like every other section. **Audited every `.chip` tag rendering site-wide** (`grep` of all components/pages): publications (Card + Table) were the ONLY non-clickable tag chips; news, press, events, meetings, funding, programs, jobs, bios/CMS catch-alls, and all researchhub views were already linked. `NEW!` / file-type / calendar-category / search-filter chips are intentionally **not** tags and stay non-link.

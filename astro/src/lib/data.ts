@@ -683,7 +683,7 @@ export async function getPage(slug: string): Promise<CmsPage | null> {
           teaser: c.teaser,
           teaserHtml: c.teaser ? renderToHtml(c.teaser) : "",
           icon: c.icon,
-          url: c.url,
+          url: safeUrl(c.url),
           datePosted: c.datePosted,
         }))
       : [],
@@ -996,6 +996,7 @@ export async function getHome(): Promise<HomeData> {
   // ContentClickThroughBoxes (teaserHtml); raw CMS HTML otherwise = stored XSS.
   const boxes = (data?.home?.clickThroughBoxes ?? []).map((b: any) => ({
     ...b,
+    url: b.url ? safeUrl(b.url) : b.url,
     teaser: b.teaser ? renderToHtml(b.teaser) : b.teaser,
   }));
   return { news, meetings, funding, employment, boxes };
@@ -1088,7 +1089,8 @@ export async function getJob(slug: string): Promise<JobDetail | null> {
   const external: MeetingExternalItem[] = Array.isArray(j.external)
     ? j.external
         .filter((e: any) => e && e.url)
-        .map((e: any) => ({ title: e.title || e.url, url: e.url }))
+        // safeUrl: block javascript:/data: (INJ-12) — parity with the client job shaper.
+        .map((e: any) => ({ title: e.title || e.url, url: safeUrl(e.url) }))
     : [];
   // JobCard wires RelatedList off the job's relations; the single query returns
   // only `posts`, so related is News-only (heading "Related ICJIA Content").
@@ -1565,10 +1567,14 @@ function shapePublication(p: any): PublicationListItem {
   const tagsArr: string[] = Array.isArray(p.tags)
     ? p.tags.map((t: any) => (typeof t === "string" ? t : t?.title)).filter(Boolean)
     : [];
-  const localArticlePath =
+  // Only a true site-relative path ("/…") is a safe href; a crafted articleURL that
+  // survives the PUB_CLIENT strip but isn't site-relative (e.g. javascript:…) collapses
+  // to null (INJ-12, parity with the client publication shaper).
+  const strippedArticle =
     p.articleURL && p.articleURL.includes(PUB_CLIENT)
       ? p.articleURL.replace(PUB_CLIENT, "")
-      : null;
+      : "";
+  const localArticlePath = strippedArticle.startsWith("/") ? strippedArticle : null;
   const typeLabel = publicationTypeLabel(p.pubType);
   return {
     id: String(p.id),
@@ -1578,7 +1584,9 @@ function shapePublication(p: any): PublicationListItem {
     pubType: p.pubType,
     publicationDate: p.publicationDate,
     tags: tagsArr,
-    fileURL: p.fileURL,
+    // fileURL feeds a Download href — scheme-guard it (INJ-12); keep undefined when
+    // absent so no spurious "#" Download link renders.
+    fileURL: p.fileURL ? safeUrl(p.fileURL) : p.fileURL,
     articleURL: p.articleURL,
     fullPath: `/about/publications/${p.slug}/`,
     localArticlePath,
@@ -1742,7 +1750,7 @@ function shapeBiography(b: any): Biography {
         title: b.unit.title,
         shortName: b.unit.shortName,
         slug: b.unit.slug,
-        url: b.unit.url,
+        url: b.unit.url ? safeUrl(b.unit.url) : b.unit.url,
       }
     : null;
   return {
@@ -1817,7 +1825,7 @@ export async function getUnit(slug: string): Promise<UnitDetail | null> {
     slug: u.slug,
     title: u.title,
     shortName: u.shortName,
-    url: u.url,
+    url: u.url ? safeUrl(u.url) : u.url,
     summaryHtml: u.summary ? renderToHtml(u.summary) : "",
     bodyHtml: u.body ? renderToHtml(u.body) : "",
   };
