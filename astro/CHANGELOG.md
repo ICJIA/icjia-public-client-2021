@@ -38,6 +38,26 @@ Two post-build-live polish fixes surfaced on the branch deploy.
 
 **Verified:** 216 tests (30 files); clean static build (**3530 pages**, `BUILD_EXIT=0`, no errors). Lessons: `docs/astro-conversion-checklist-v7.1.md` (v7.7 increment).
 
+## [0.50.3] — 2026-06-08 — security: red/blue audit of the 0.50.2 change (404 inversion + live meeting detail)
+
+Adversarial red-team / blue-team audit of commit `50c9c8b` (the smart-404 **hidden-by-default** inversion + the new `window.__liveDetail.meeting` client→Strapi fetch + client render). An **independent red-team agent** attacked the change; each finding was **verified against source** and, where testable, the **live deploy**. Manager-facing writeup: README "Security audit" → 2026-06-08 block.
+
+**The change itself is clean.** The live meeting-detail fallback introduces **no new sink** — it reuses the hardened client `shapeMeeting` (DOMPurify-sanitized body via the shared `markdown-core.js`, `safeUrl` on external links, `encodeURIComponent` slug, `_limit=1`, hard-coded `agency` host) and feeds the **same** row-expand template the baked `/api/meeting/<slug>.json` already fed.
+
+**Fixed:**
+- **INJ-11 (Medium) — build-path meeting `external[].url` not scheme-validated.** The `0.50.1` `safeUrl` guard was applied to the *client* shapers but not the *build* shaper (`data.ts`), so the baked meeting JSON + the static `MeetingCard` rendered `external[].url` **raw** — a `javascript:`/`data:` external link from a malicious/compromised CMS author would be click-to-execute on the static page (the *live* fallback path was already safe). Fix: `safeUrl(e.url)` in `data.ts` `shapeMeeting`, matching the client shaper. No-op for legitimate URLs; the only external entry site-wide is currently `null`.
+- **NF-1 (Low) — 404 "stuck on checking" watchdog.** The hidden-by-default 404 relies on JS to reveal the real 404 on a confirmed miss; the resolver's 6s fetch-timeout lives in a bundled chunk, so if that chunk fails to download a candidate could sit on "checking" (**pre-existing** behavior — not a regression of the inversion, since the old `checking` state also hid the 404). Fix: an inline `setTimeout` reveals the 404 after 10s, independent of the chunk (no-op once the resolver settles).
+
+**Tracked (highest-value follow-up):**
+- **INJ-12 (Medium) — finish the `safeUrl` sweep on the build path.** `data.ts` is the **primary** (static) render path and validated **no** URL schemes before this fix (it never imported `safeUrl`). Mirror the client shapers' exact field coverage into the `data.ts` shapers — job/meeting `external`, app contributors, publication `fileURL` (+ site-relative `localArticlePath`), dataset sources, unit/page/article links — **carefully excluding image/`data:` `src` fields** (e.g. Research-Hub base64 splash heroes), locked with parity tests, the same field-by-field discipline the client fix used. Low exploit-likelihood today (insider/compromised-author; no triggering data), but it closes the INJ-4…10 class on the surface serving 99% of traffic.
+
+**Backend / infra (out of client scope):**
+- **OBS-2 (Medium) — public draft exposure.** A direct `…/meetings?_publicationState=preview` returns 2 unpublished meetings (`/meetings/count` → 290 vs 288). The audited client **never** sends `_publicationState`, and `encodeURIComponent` on the slug makes it un-smuggleable, so the live fallback/404 cannot surface a draft — tighten the Strapi public-role policy at cutover.
+
+**Verified not exploitable:** body XSS (the live `renderToHtml` *is* the DOMPurify pipeline, byte-identical to build); REST param-injection via slug (`encodeURIComponent` is **load-bearing** — the backend *does* honor `_publicationState`/`_limit` if injected; the early 404 script also rejects slugs containing `/`); SSRF (host/collection constant); DoS/egress (`_limit=1`, single record, only on a post-build expand whose baked JSON 404'd, memoized); prototype pollution (`it.id` is a Strapi numeric PK); `attachments[].url` (Strapi media — all 288 meetings verified `/uploads/`, no free-text scheme); the 404 state machine (`noindex` + 404 status, `<noscript>` JS-off restore verified un-hoisted in `dist/404.html`, early-script `catch` always reveals the 404).
+
+**Verified:** 216 tests (30 files); clean static build (3530 pages, `BUILD_EXIT=0`). Code touched: `astro/src/lib/data.ts` (+`safeUrl` import + meeting external), `astro/src/pages/404.astro` (watchdog).
+
 ## [0.49.2] — 2026-06-04 — fix(publications): tag chips link to /search (site-wide parity)
 
 The `/about/publications/` tag chips — in `PublicationCard` AND the live `PublicationTable` rows — rendered as **non-clickable `<span class="chip">`**, the one surface the site-wide "every tag chip is a `/search/?q=<tag>` link" change had missed (the `.publications .chip` comment even read "non-link spans; search is unported"). Changed both to `<a class="chip" href="/search/?q=<tag>">` like every other section. **Audited every `.chip` tag rendering site-wide** (`grep` of all components/pages): publications (Card + Table) were the ONLY non-clickable tag chips; news, press, events, meetings, funding, programs, jobs, bios/CMS catch-alls, and all researchhub views were already linked. `NEW!` / file-type / calendar-category / search-filter chips are intentionally **not** tags and stay non-link.

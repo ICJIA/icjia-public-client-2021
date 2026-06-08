@@ -8,6 +8,7 @@
 import "./server-dom"; // ensure global DOMParser (linkedom) is installed
 import { runQuery, deepSanitize } from "./gql-client.js";
 import { renderToHtml, renderInline, parseHeadings } from "./markdown.js";
+import { safeUrl } from "./live/safe-url";
 import {
   GET_SINGLE_POST_QUERY,
   GET_ALL_NEWS_QUERY,
@@ -463,7 +464,9 @@ function shapeMeeting(m: any): MeetingItem {
   const external: MeetingExternalItem[] = Array.isArray(m.external)
     ? m.external
         .filter((e: any) => e && e.url)
-        .map((e: any) => ({ title: e.title || e.url, url: e.url }))
+        // safeUrl: block javascript:/data: schemes (INJ-4..10) — parity with the
+        // client shaper (shapers/meeting.ts), which already guards external URLs.
+        .map((e: any) => ({ title: e.title || e.url, url: safeUrl(e.url) }))
     : [];
   const altDate = dateFormatAlt(m.start);
   return {

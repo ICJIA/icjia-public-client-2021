@@ -103,6 +103,11 @@ const detectJson = JSON.stringify(DETECT).replace(/</g, '\\u003c');
                   sec.setAttribute('data-nf-url', e.host + '/' + e.coll + '?slug=' + encodeURIComponent(slug) + (e.q ? '&' + e.q : '') + '&_limit=5');
                   sec.setAttribute('data-nf-state', 'checking');
                   document.title = 'ICJIA';
+                  // Watchdog: the resolver's 6s fetch timeout lives in the BUNDLED chunk;
+                  // if that chunk fails to download, don't sit on "checking" forever —
+                  // reveal the real 404 after 10s. No-op once the resolver settles (state
+                  // is no longer 'checking'). Defense-in-depth for the hidden-by-default 404.
+                  setTimeout(function () { if (sec.getAttribute('data-nf-state') === 'checking') sec.setAttribute('data-nf-state', 'gone'); }, 10000);
                   matched = true;
                   break;
                 }
