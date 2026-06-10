@@ -7,6 +7,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import MeetingTable from '../../../components/MeetingTable.astro';
 import { getAllMeetings } from '../../../lib/data';
+import { buildProbe } from '../../../lib/live/probe';
 import '../../../styles/meetings.css';
 
 const meetings = (await getAllMeetings()).filter((m) => m.category === 'irb');
@@ -14,6 +15,10 @@ const meetings = (await getAllMeetings()).filter((m) => m.category === 'irb');
 // JSON-in-HTML: neutralize "<" so the data island can't break out of the script.
 const listJson = JSON.stringify(meetings).replace(/</g, '\\u003c');
 const baseline = meetings.slice(0, 25);
+
+// Collection-level freshness probe (same one the shared meetings island bakes).
+const liveProbe = await buildProbe('meetings');
+const liveProbeAttr = liveProbe ? JSON.stringify(liveProbe) : undefined;
 ---
 
 <BaseLayout
@@ -30,8 +35,10 @@ const baseline = meetings.slice(0, 25);
         <p>No IRB meetings at this time.</p>
       ) : (
         <>
-          <script type="application/json" id="meetings-data" set:html={listJson}></script>
-          <MeetingTable baseline={baseline} />
+          <script type="application/json" id="meetings-data" set:html={listJson} data-live-probe={liveProbeAttr}></script>
+          {/* category="irb": the island ships irb-only rows, so the LIVE swap must
+              filter too — without it the swap replaced this table with ALL meetings. */}
+          <MeetingTable category="irb" baseline={baseline} />
         </>
       )
     }

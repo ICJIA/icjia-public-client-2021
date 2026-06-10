@@ -10,6 +10,7 @@
 // sub-heading/f-empty) so layout + CSS match prod.
 import '../styles/funding.css';
 import type { ProgramListItem } from '../lib/data';
+import { buildProbe } from '../lib/live/probe';
 
 interface Props {
   items: ProgramListItem[];
@@ -19,6 +20,11 @@ const { items } = Astro.props;
 // SSR baseline = the default filter (category All + status Current).
 const baseline = items.filter((p) => p.status === 'current');
 const listJson = JSON.stringify(items).replace(/</g, '\\u003c');
+
+// Build-time freshness probe — skips the programs fetch + per-card markdown
+// render when the collection is provably unchanged since build.
+const liveProbe = await buildProbe('programs');
+const liveProbeAttr = liveProbe ? JSON.stringify(liveProbe) : undefined;
 ---
 
 <div class="funding markdown-body">
@@ -32,21 +38,29 @@ const listJson = JSON.stringify(items).replace(/</g, '\\u003c');
   </div>
 
   <div
+    data-live-probe={liveProbeAttr}
     x-data={`{
       all: JSON.parse(document.getElementById('programs-data').textContent),
       category: 'all', status: 'current', ready: false,
       init(){
         this.ready = true;
-        // LIVE: swap in fresh Strapi programs so a post-build program appears in the
-        // list without a rebuild. Keeps the baked baseline if the fetch fails. The
-        // Category/Status toggles read this.all via the list getter, so swapping
-        // this.all preserves both client filters. Cards bind bodyHtml via x-html, so
-        // the programs fetcher (alpine-entry.ts) renders bodyHtml after the fetch (the
-        // light row carries raw bodyMd — this x-data string can't import a renderer).
+        // LIVE: probe-gated (data-live-probe) swap of fresh Strapi programs so a
+        // post-build program appears without a rebuild — the fetch + per-card
+        // markdown render is skipped when nothing changed. Keeps the baked baseline
+        // if the probe/fetch fails. The Category/Status toggles read this.all via
+        // the list getter, so swapping this.all preserves both client filters.
+        // Cards bind bodyHtml via x-html, so the programs fetcher (alpine-entry.ts)
+        // renders bodyHtml after the fetch (the light row carries raw bodyMd —
+        // this x-data string can't import a renderer).
         try {
           if (window.__liveRows && window.__liveRows.programs) {
-            window.__liveRows.programs().then((rows) => {
-              if (rows && rows.length) this.all = rows;
+            let probe = null;
+            try { probe = JSON.parse(this.$root.dataset.liveProbe || 'null'); } catch (e) {}
+            window.__liveRows.programs(probe).then((rows) => {
+              if (rows && rows.length) {
+                this.all = rows;
+                if (window.__liveAnnounce) window.__liveAnnounce('Programs list updated');
+              }
             }).catch(() => {});
           }
         } catch (e) {}

@@ -25,21 +25,29 @@ const xdata = `{
   all: [], search: '', sortKey: 'date', sortDir: 'desc',
   page: 1, perPage: 25, expanded: null, details: {}, loadingId: null, ready: false,
   init(){
+    let probe = null;
     try {
-      const data = JSON.parse(document.getElementById('meetings-data').textContent);
+      const el = document.getElementById('meetings-data');
+      const data = JSON.parse(el.textContent);
       this.all = this.cat ? data.filter((m) => m.category === this.cat) : data;
+      try { probe = JSON.parse(el.dataset.liveProbe || 'null'); } catch (e) {}
     } catch (e) { this.all = []; }
     this.ready = true;
-    // LIVE: swap in fresh Strapi meetings so a post-build meeting appears in the
-    // table without a rebuild. Keeps the baked baseline if the fetch fails. (Expanding
-    // a brand-new row's baked /api/meeting/<slug>.json 404s until the next rebuild →
+    // LIVE: probe-gated (the island's data-live-probe) swap of fresh Strapi
+    // meetings so a post-build meeting appears in the table without a rebuild —
+    // the full fetch is skipped when the collection is unchanged since build.
+    // Keeps the baked baseline if the probe/fetch fails. (Expanding a brand-new
+    // row's baked /api/meeting/<slug>.json 404s until the next rebuild →
     // loadDetail falls back to window.__liveDetail.meeting(slug), shaping the live Strapi
     // record so the expand shows current detail post-build; the standalone detail page
     // likewise live-renders via the smart 404.)
     try {
       if (window.__liveRows && window.__liveRows.meetings) {
-        window.__liveRows.meetings().then((rows) => {
-          if (rows && rows.length) this.all = this.cat ? rows.filter((m) => m.category === this.cat) : rows;
+        window.__liveRows.meetings(probe).then((rows) => {
+          if (rows && rows.length) {
+            this.all = this.cat ? rows.filter((m) => m.category === this.cat) : rows;
+            if (window.__liveAnnounce) window.__liveAnnounce('Meetings table updated');
+          }
         }).catch(() => {});
       }
     } catch (e) {}
@@ -62,7 +70,13 @@ const xdata = `{
   ariaSort(k){ return this.sortKey === k ? (this.sortDir === 'asc' ? 'ascending' : 'descending') : null; },
   toggle(it){ const id = it.id; this.expanded = this.expanded === id ? null : id; if (this.expanded === id) this.loadDetail(it); },
   det(id){ return this.details[id] || null; },
-  async loadDetail(it){ if (this.details[it.id]) return; this.loadingId = it.id; let d = null; try { const r = await fetch('/api/meeting/' + encodeURIComponent(it.slug) + '.json'); if (r.ok) d = await r.json(); } catch (e) {} if ((!d || d.error) && window.__liveDetail && window.__liveDetail.meeting) { try { const live = await window.__liveDetail.meeting(it.slug); if (live) d = live; } catch (e) {} } if (!d) d = { bodyHtml: '', tags: [], attachments: [], related: [], external: [], error: true }; this.details = Object.assign({}, this.details, { [it.id]: d }); this.loadingId = null; },
+  async loadDetail(it){ if (this.details[it.id]) return; this.loadingId = it.id; let d = null; try { const r = await fetch('/api/meeting/' + encodeURIComponent(it.slug) + '.json'); if (r.ok) d = await r.json(); } catch (e) {}
+    // stale gate: the live row's updatedAt (set by the probe-triggered swap) newer
+    // than the baked JSON's build stamp → a post-build EDIT → prefer the live record
+    // (ISO-string compare; both stamps come from the same Strapi field).
+    const stale = !!(d && !d.error && it.updatedAt && d.updatedAt && it.updatedAt > d.updatedAt);
+    if ((!d || d.error || stale) && window.__liveDetail && window.__liveDetail.meeting) { try { const live = await window.__liveDetail.meeting(it.slug); if (live) d = live; } catch (e) {} } if (!d) d = { bodyHtml: '', tags: [], attachments: [], related: [], external: [], error: true }; this.details = Object.assign({}, this.details, { [it.id]: d }); this.loadingId = null; },
+  announceRange(){ try { if (window.__liveAnnounce) window.__liveAnnounce('Showing ' + this.rangeText + ' meetings'); } catch (e) {} },
   track(url){ try { if (typeof window.plausible === 'function') { window.plausible('file_download', { props: { url } }); window.plausible('Outbound Link: Click', { props: { url } }); } } catch (e) {} }
 }`;
 ---
@@ -253,8 +267,8 @@ const xdata = `{
         <option value="-1">All</option>
       </select>
       <span x-text="rangeText"></span>
-      <button class="pg-arrow" type="button" @click="if (page > 1) page--" :disabled="page <= 1" aria-label="Previous page">‹</button>
-      <button class="pg-arrow" type="button" @click="if (page < totalPages) page++" :disabled="page >= totalPages" aria-label="Next page">›</button>
+      <button class="pg-arrow" type="button" @click="if (page > 1) { page--; announceRange() }" :disabled="page <= 1" aria-label="Previous page">‹</button>
+      <button class="pg-arrow" type="button" @click="if (page < totalPages) { page++; announceRange() }" :disabled="page >= totalPages" aria-label="Next page">›</button>
     </div>
   </div>
 

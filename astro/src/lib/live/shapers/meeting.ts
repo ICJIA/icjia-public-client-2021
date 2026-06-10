@@ -237,6 +237,10 @@ export interface MeetingRow {
   dateLine: string;
   attCount: number;
   haystack: string;
+  /** live-edit stamp (REST updated_at ?? updatedAt, '' when absent) — the
+   *  table's expand compares it to the baked detail JSON's updatedAt and
+   *  falls back to the live detail fetch when the row is newer. */
+  updatedAt: string;
 }
 
 /** Shape one raw Strapi v3 REST meeting → the compact MeetingRow the live listing
@@ -260,5 +264,6 @@ export function shapeMeetingRow(m: any): MeetingRow {
     haystack: [m.title, catLabel, altDate, m.isCancelled ? "cancelled" : ""]
       .join(" ")
       .toLowerCase(),
+    updatedAt: (m.updated_at ?? m.updatedAt) ?? "",
   };
 }

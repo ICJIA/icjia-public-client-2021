@@ -19,6 +19,7 @@
 // component exists in the migration yet, so this renders single-column. FLAGGED.
 import '../styles/employment.css';
 import type { JobListItem, CmsPage } from '../lib/data';
+import { buildProbe } from '../lib/live/probe';
 
 interface Props {
   page: CmsPage | null;
@@ -27,6 +28,11 @@ interface Props {
 const { page, items } = Astro.props;
 
 const current = items.filter((j) => !j.expired);
+
+// Build-time freshness probe — skips the jobs fetch + per-card markdown render
+// when the collection is provably unchanged since build.
+const liveProbe = await buildProbe('employment');
+const liveProbeAttr = liveProbe ? JSON.stringify(liveProbe) : undefined;
 
 // Client list data (consumed by Alpine x-for). summaryHtml is pre-rendered +
 // sanitized server-side; `s` carries markup → the island JSON must escape `<`.
@@ -65,30 +71,41 @@ const FLYER =
   <h2 id="current-icjia-opportunities">Employment Opportunities</h2>
 
   <div
+    data-live-probe={liveProbeAttr}
     x-data={`{
       all: JSON.parse(document.getElementById('jobs-data').textContent),
       status: 'current', ready: false,
       init(){
         this.ready = true;
-        // LIVE: swap in fresh Strapi jobs so a post-build job appears in the list
-        // without a rebuild. The registry fetcher (alpine-entry __liveRows.employment)
-        // returns rows in this same shape (p,t,cl,posted,accepting,expired,expiredChip,s),
-        // with 's' already rendered from markdown (this x-data string can't import()).
-        // No category filter (getAllJobs applies none); rows re-sorted end-desc to
-        // match the baked baseline order (GET_ALL_JOBS_QUERY end:desc; fetchCollection
-        // returns REST order). Keeps the baked baseline if the fetch fails; the
+        // LIVE: probe-gated (data-live-probe) swap of fresh Strapi jobs so a
+        // post-build job appears without a rebuild — the fetch + per-card markdown
+        // render is skipped when nothing changed. The registry fetcher (alpine-entry
+        // __liveRows.employment) returns rows in this same shape
+        // (p,t,cl,posted,accepting,expired,expiredChip,s), with 's' already rendered
+        // from markdown (this x-data string can't import()). No category filter
+        // (getAllJobs applies none); rows re-sorted end-desc to match the baked
+        // baseline order (GET_ALL_JOBS_QUERY end:desc; fetchCollection returns REST
+        // order). Keeps the baked baseline if the probe/fetch fails; the
         // Current/Expired filter below re-applies automatically (it derives from this.all).
         try {
           if (window.__liveRows && window.__liveRows.employment) {
-            window.__liveRows.employment().then((rows) => {
-              if (rows && rows.length) this.all = rows.slice().sort((a, b) => b.endMs - a.endMs);
+            let probe = null;
+            try { probe = JSON.parse(this.$root.dataset.liveProbe || 'null'); } catch (e) {}
+            window.__liveRows.employment(probe).then((rows) => {
+              if (rows && rows.length) {
+                this.all = rows.slice().sort((a, b) => b.endMs - a.endMs);
+                if (window.__liveAnnounce) window.__liveAnnounce('Job listings updated');
+              }
             }).catch(() => {});
           }
         } catch (e) {}
       },
       get filtered(){ return this.all.filter((j) => this.status === 'expired' ? j.expired : !j.expired); },
       get empty(){ return this.filtered.length === 0; },
-      setStatus(s){ this.status = s; }
+      setStatus(s){
+        this.status = s;
+        if (window.__liveAnnounce) window.__liveAnnounce(this.filtered.length + ' ' + (s === 'expired' ? 'expired' : 'current') + ' job listings shown');
+      }
     }`}
   >
     <div class="vtoggle mb-8" role="group" aria-label="Employment status">

@@ -24,24 +24,40 @@ const xdata = `{
   all: [], search: '', sortKey: 'date', sortDir: 'desc',
   page: 1, perPage: 150, expanded: null, ready: false, fullLoaded: false,
   init(){
-    try { this.all = JSON.parse(document.getElementById('publications-data').textContent); }
+    let probe = null;
+    try {
+      const el = document.getElementById('publications-data');
+      this.all = JSON.parse(el.textContent);
+      try { probe = JSON.parse(el.dataset.liveProbe || 'null'); } catch (e) {}
+    }
     catch (e) { this.all = []; }
     this.index(this.all);
     this.ready = true;
     // LIVE-ISLAND (pilot for the de-serverless live-island pattern): after first
-    // paint, fetch the FULL archive straight from the PUBLIC Strapi in the browser
-    // via the SAME REST pager the server uses (count + 500-row slices), then swap it
-    // in — so new/edited publications appear on reload with NO rebuild. GraphQL clips
-    // this list, so REST is the proven path (it is literally the legacy Vue SPA's own
-    // client-side method, CORS-open: access-control-allow-origin *). Falls back to the
-    // build-baked /api/publications.json if Strapi is unreachable; the SSR ~150 baseline
-    // stays the no-JS / crawler / SiteImprove view either way. Mirrors data.ts
+    // paint the table still needs the FULL ~1110-row archive (only ~150 ship in the
+    // island), but the SOURCE is now probe-gated: when the baked probe (count +
+    // latest updated_at, data-live-probe) matches the live API, the archive loads
+    // from the build-baked /api/publications.json (ONE cached CDN file); only on a
+    // real change does it page the PUBLIC Strapi REST archive (count + 500-row
+    // slices — the legacy Vue SPA's own client-side method, CORS-open). Falls back
+    // to the static JSON if Strapi is unreachable; the SSR ~150 baseline stays the
+    // no-JS / crawler / SiteImprove view either way. Mirrors data.ts
     // getAllPublications + shapePublication, minus deepSanitize (unneeded client-side:
     // x-text auto-escapes, and SiteImprove reads the baked HTML, not this swap).
-    this.fetchLive()
-      .then((rows) => (Array.isArray(rows) && rows.length) ? rows : this.fetchStatic())
+    const gate = (probe && window.__liveUnchanged)
+      ? window.__liveUnchanged('publications', probe)
+      : Promise.resolve(false);
+    let liveSwap = false;
+    gate.then((unchanged) => {
+      if (unchanged) return this.fetchStatic();
+      liveSwap = true;
+      return this.fetchLive().then((rows) => (Array.isArray(rows) && rows.length) ? rows : this.fetchStatic());
+    })
       .then((rows) => {
-        if (Array.isArray(rows) && rows.length > this.all.length) { this.index(rows); this.all = rows; }
+        if (Array.isArray(rows) && rows.length > this.all.length) {
+          this.index(rows); this.all = rows;
+          if (liveSwap && window.__liveAnnounce) window.__liveAnnounce('Publications list updated');
+        }
         this.fullLoaded = true;
       })
       .catch(() => { this.fullLoaded = true; });
@@ -64,6 +80,7 @@ const xdata = `{
   setSort(k){ if (this.sortKey === k) this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc'; else { this.sortKey = k; this.sortDir = k === 'date' ? 'desc' : 'asc'; } this.page = 1; },
   ariaSort(k){ return this.sortKey === k ? (this.sortDir === 'asc' ? 'ascending' : 'descending') : null; },
   toggle(id){ this.expanded = this.expanded === id ? null : id; },
+  announceRange(){ try { if (window.__liveAnnounce) window.__liveAnnounce('Showing ' + this.rangeText + ' publications'); } catch (e) {} },
   trackArticle(url){ try { if (typeof window.plausible === 'function') window.plausible('publicationList_article_view', { props: { url } }); } catch (e) {} },
   trackDownload(url){ try { if (typeof window.plausible === 'function') window.plausible('publicationList_file_download', { props: { url } }); } catch (e) {} },
   // ── Live-island data layer — client port of data.ts getAllPublications + shapePublication ──
@@ -277,8 +294,8 @@ const xdata = `{
       </select>
       <span x-text="rangeText"></span>
       <span x-show="!fullLoaded" x-cloak class="ml-2 text-sm text-gray-500">loading full archive…</span>
-      <button class="pg-arrow" type="button" @click="if (page > 1) page--" :disabled="page <= 1" aria-label="Previous page">‹</button>
-      <button class="pg-arrow" type="button" @click="if (page < totalPages) page++" :disabled="page >= totalPages" aria-label="Next page">›</button>
+      <button class="pg-arrow" type="button" @click="if (page > 1) { page--; announceRange() }" :disabled="page <= 1" aria-label="Previous page">‹</button>
+      <button class="pg-arrow" type="button" @click="if (page < totalPages) { page++; announceRange() }" :disabled="page >= totalPages" aria-label="Next page">›</button>
     </div>
   </div>
 

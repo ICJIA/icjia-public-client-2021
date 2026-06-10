@@ -18,9 +18,65 @@ import { shapeDatasetRow } from './shapers/dataset';
 import { shapeAppRow } from './shapers/app';
 import { shapeJobRow } from './shapers/job';
 import { shapeProgramRow } from './shapers/program';
-import { SOURCES } from './sources';
+import { SOURCES, type SourceKey } from './sources';
+import { restProbe, hubProbe, probeUnchanged, type LiveProbe } from './probe';
+import { fetchHubRows, mergeBakedHubImages, type HubKind } from './gql';
 
 const NEWS_PER_PAGE = 15;
+
+/** True ⇔ a baked probe exists AND the live REST probe proves the collection is
+ *  unchanged since build → the island can skip its full fetch entirely. Any
+ *  probe failure → false → full fetch (today's behavior, never less fresh). */
+async function restUnchanged(key: SourceKey, probe?: LiveProbe | null): Promise<boolean> {
+  if (!probe) return false;
+  const src = SOURCES[key] as { host: string; collection: string; query?: string };
+  return probeUnchanged(probe, await restProbe(src.host, src.collection, src.query ?? ''));
+}
+
+/** Same gate for hub collections, against the SAME GraphQL source the thin
+ *  live fetch reads (hub REST is never touched — its records inline base64). */
+async function hubUnchanged(kind: HubKind, probe?: LiveProbe | null): Promise<boolean> {
+  if (!probe) return false;
+  return probeUnchanged(probe, await hubProbe(kind));
+}
+
+/** Probe-gated thin hub list: null when unchanged/failed (island keeps its
+ *  baked baseline); on change, thin GraphQL rows shaped + baked ip/hasImg
+ *  merged back by slug so existing cards keep their images. */
+async function hubRows(
+  kind: HubKind,
+  shapeOne: (raw: any) => any,
+  probe?: LiveProbe | null,
+  baked?: any[],
+): Promise<any[] | null> {
+  if (await hubUnchanged(kind, probe)) return null;
+  const raw = await fetchHubRows(kind);
+  if (!raw) return null;
+  const rows = raw.map(shapeOne);
+  return Array.isArray(baked) && baked.length ? mergeBakedHubImages(rows, baked) : rows;
+}
+
+/** Announce a content change to assistive tech via ONE body-level polite
+ *  region (created on first use; .sr-only ships in the global CSS). The
+ *  clear-then-set delay lets repeated identical messages re-announce. */
+function liveAnnounce(msg: string) {
+  try {
+    let el = document.getElementById('live-status');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'live-status';
+      el.className = 'sr-only';
+      el.setAttribute('aria-live', 'polite');
+      document.body.appendChild(el);
+    }
+    el.textContent = '';
+    window.setTimeout(() => {
+      el.textContent = msg;
+    }, 60);
+  } catch {
+    /* best-effort */
+  }
+}
 
 export default (Alpine: AlpineType) => {
   /**
@@ -31,59 +87,90 @@ export default (Alpine: AlpineType) => {
    * The shared cores stay in modules (fetchCollection + the shapers); this only
    * EXPOSES them (it does NOT re-inline the core — see checklist v7.4 #1).
    */
+  // Every fetcher takes an optional baked PROBE ({n,u} stamped at build, read
+  // from the island's data-live-probe attr). When the live probe proves the
+  // collection unchanged, the fetcher resolves null and the island keeps its
+  // baked baseline — the full download + markdown work is skipped entirely.
   (window as any).__liveRows = {
-    meetings: () =>
-      fetchCollection(SOURCES.meetings.host, SOURCES.meetings.collection, shapeMeetingRow),
+    meetings: async (probe?: LiveProbe | null) =>
+      (await restUnchanged('meetings', probe))
+        ? null
+        : fetchCollection(SOURCES.meetings.host, SOURCES.meetings.collection, shapeMeetingRow),
     // events rows bind the name via x-html, so render it here (a MODULE → lazy
     // markdown chunk) into `n` from the raw `nameRaw` — sanitizing it exactly like
     // the build's calendar feed (renderInline). Never imported into the x-data string.
-    events: () =>
-      fetchCollection(SOURCES.events.host, SOURCES.events.collection, shapeEventRow).then(
-        async (rows) => {
-          if (!rows || !rows.length) return rows;
-          const { renderInline } = await import('../markdown.client.js');
-          return rows.map((ev: any) => ({ ...ev, n: ev.nameRaw ? renderInline(ev.nameRaw) : '' }));
-        },
-      ),
+    events: async (probe?: LiveProbe | null) =>
+      (await restUnchanged('events', probe))
+        ? null
+        : fetchCollection(SOURCES.events.host, SOURCES.events.collection, shapeEventRow).then(
+            async (rows) => {
+              if (!rows || !rows.length) return rows;
+              const { renderInline } = await import('../markdown.client.js');
+              return rows.map((ev: any) => ({
+                ...ev,
+                n: ev.nameRaw ? renderInline(ev.nameRaw) : '',
+              }));
+            },
+          ),
     // funding cards bind summaryHtml via x-html, so render it here (this is a
     // MODULE, so markdown.client is a lazy chunk loaded only when the funding list
     // fetches — never imported into the Alpine x-data string, where the path can't resolve).
-    funding: () =>
-      fetchCollection(SOURCES.funding.host, SOURCES.funding.collection, shapeFundingRow).then(
-        async (rows) => {
-          if (!rows || !rows.length) return rows;
-          const { renderToHtml } = await import('../markdown.client.js');
-          return rows.map((g: any) => ({
-            ...g,
-            summaryHtml: g.summaryMd ? renderToHtml(g.summaryMd) : '',
-          }));
-        },
-      ),
-    hubArticles: () =>
-      fetchCollection(SOURCES.hubArticles.host, SOURCES.hubArticles.collection, shapeArticleRow, 500, SOURCES.hubArticles.query),
-    hubDatasets: () =>
-      fetchCollection(SOURCES.hubDatasets.host, SOURCES.hubDatasets.collection, shapeDatasetRow, 500, SOURCES.hubDatasets.query),
-    hubApps: () =>
-      fetchCollection(SOURCES.hubApps.host, SOURCES.hubApps.collection, shapeAppRow, 500, SOURCES.hubApps.query),
+    funding: async (probe?: LiveProbe | null) =>
+      (await restUnchanged('funding', probe))
+        ? null
+        : fetchCollection(SOURCES.funding.host, SOURCES.funding.collection, shapeFundingRow).then(
+            async (rows) => {
+              if (!rows || !rows.length) return rows;
+              const { renderToHtml } = await import('../markdown.client.js');
+              return rows.map((g: any) => ({
+                ...g,
+                summaryHtml: g.summaryMd ? renderToHtml(g.summaryMd) : '',
+              }));
+            },
+          ),
+    // Hub lists fetch via thin GraphQL (fetchHubRows) — NEVER hub REST, whose
+    // records inline base64 splash/images (the ~105MB /articles read). baked =
+    // the island's baseline rows, so build-extracted images survive the swap.
+    hubArticles: (probe?: LiveProbe | null, baked?: any[]) =>
+      hubRows('articles', shapeArticleRow, probe, baked),
+    hubDatasets: (probe?: LiveProbe | null, baked?: any[]) =>
+      hubRows('datasets', shapeDatasetRow, probe, baked),
+    hubApps: (probe?: LiveProbe | null, baked?: any[]) => hubRows('apps', shapeAppRow, probe, baked),
     // employment + programs cards bind their summary/body via x-html, so render the
     // markdown here (a module → lazy markdown chunk), like funding — never in the x-data string.
-    employment: () =>
-      fetchCollection(SOURCES.employment.host, SOURCES.employment.collection, shapeJobRow).then(
-        async (rows) => {
-          if (!rows || !rows.length) return rows;
-          const { renderToHtml } = await import('../markdown.client.js');
-          return rows.map((j: any) => ({ ...j, s: j.summaryMd ? renderToHtml(j.summaryMd) : '' }));
-        },
-      ),
-    programs: () =>
-      fetchCollection(SOURCES.programs.host, SOURCES.programs.collection, shapeProgramRow).then(
-        async (rows) => {
-          if (!rows || !rows.length) return rows;
-          const { renderToHtml } = await import('../markdown.client.js');
-          return rows.map((p: any) => ({ ...p, bodyHtml: p.bodyMd ? renderToHtml(p.bodyMd) : '' }));
-        },
-      ),
+    employment: async (probe?: LiveProbe | null) =>
+      (await restUnchanged('employment', probe))
+        ? null
+        : fetchCollection(SOURCES.employment.host, SOURCES.employment.collection, shapeJobRow).then(
+            async (rows) => {
+              if (!rows || !rows.length) return rows;
+              const { renderToHtml } = await import('../markdown.client.js');
+              return rows.map((j: any) => ({ ...j, s: j.summaryMd ? renderToHtml(j.summaryMd) : '' }));
+            },
+          ),
+    programs: async (probe?: LiveProbe | null) =>
+      (await restUnchanged('programs', probe))
+        ? null
+        : fetchCollection(SOURCES.programs.host, SOURCES.programs.collection, shapeProgramRow).then(
+            async (rows) => {
+              if (!rows || !rows.length) return rows;
+              const { renderToHtml } = await import('../markdown.client.js');
+              return rows.map((p: any) => ({
+                ...p,
+                bodyHtml: p.bodyMd ? renderToHtml(p.bodyMd) : '',
+              }));
+            },
+          ),
   };
+
+  /** Probe-only check for islands that own their fetch (PublicationTable):
+   *  true ⇔ provably unchanged since build → load the baked static JSON
+   *  instead of paging the live REST archive. */
+  (window as any).__liveUnchanged = (key: SourceKey, baked?: LiveProbe | null) =>
+    restUnchanged(key, baked).catch(() => false);
+
+  /** Screen-reader announcement for live swaps + list state changes. */
+  (window as any).__liveAnnounce = liveAnnounce;
 
   /**
    * Live DETAIL fetchers — used by an interactive list whose row-expand normally loads a
@@ -152,26 +239,38 @@ export default (Alpine: AlpineType) => {
 
     init(this: any) {
       this.ready = true;
-      // LIVE ISLAND: fetch /posts via the shared fetchCollection + shapeNewsRow,
-      // sort newest-first by the ISO publication date (pd — NOT the display string),
-      // and drop index 0 (the featured post, rendered separately by the SSR card).
-      // Live data is authoritative on a single fetch-per-load island, so we take it
-      // directly; Alpine's keyed x-for (:key="it.p") diffs efficiently, making a
-      // content-signature guard redundant here (contentSignature stays in lib/live
-      // for a future polling variant). Falls back silently on network/parse failure
-      // (the baked SSR baseline stays visible).
-      fetchCollection(
-        SOURCES.news.host,
-        SOURCES.news.collection,
-        shapeNewsRow,
-      )
+      // LIVE ISLAND: probe first (count + latest updated_at baked into the JSON
+      // island's data-live-probe attr) — when the collection is provably
+      // unchanged since build, the full /posts download is skipped. On change,
+      // fetch via the shared fetchCollection + shapeNewsRow, sort newest-first
+      // by the ISO publication date (pd — NOT the display string), and drop
+      // index 0 (the featured post, rendered separately by the SSR card).
+      // Alpine's keyed x-for (:key="it.p") diffs efficiently. Falls back
+      // silently on any failure (the baked SSR baseline stays visible).
+      let probe: LiveProbe | null = null;
+      try {
+        probe = JSON.parse(
+          (document.getElementById(baselineElId) as HTMLElement).dataset.liveProbe ?? 'null',
+        );
+      } catch {
+        probe = null;
+      }
+      restUnchanged('news', probe)
+        .then((unchanged) =>
+          unchanged
+            ? null
+            : fetchCollection(SOURCES.news.host, SOURCES.news.collection, shapeNewsRow),
+        )
         .then((fetched) => {
           if (!fetched || !fetched.length) return;
           const next = fetched
             .slice()
             .sort((a, b) => String(b.pd || '').localeCompare(String(a.pd || '')))
             .slice(1); // exclude featured (most-recent, index 0)
-          if (next.length) this.rows = next;
+          if (next.length) {
+            this.rows = next;
+            liveAnnounce('News list updated');
+          }
           this.live = true;
         })
         .catch(() => {});
@@ -241,11 +340,13 @@ export default (Alpine: AlpineType) => {
     setCat(c: string) {
       this.cat = c;
       this.page = 1;
+      liveAnnounce(`${(this.filtered as any[]).length} news articles shown`);
       this.scrollList();
     },
     go(p: number | string) {
       if (p === '…' || (p as number) < 1 || (p as number) > this.totalPages) return;
       this.page = p as number;
+      liveAnnounce(`Page ${this.page} of ${this.totalPages}`);
       this.scrollList();
     },
     scrollList() {

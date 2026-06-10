@@ -1,16 +1,19 @@
-# Rebuilds (functionless) — nightly cron + Strapi publish webhook
+# Rebuilds (functionless) — nightly cron + Strapi content webhook
 
 The site is a **fully static build** (de-serverless — see `docs/STATIC-ISLANDS-MIGRATION.md`).
-Existing-page **edits** are already live without a rebuild (the client-side Alpine
-live-islands poll Strapi in the browser). A **rebuild** is only needed to mint **new pages**
-(new Strapi slugs) and to refresh build-time artifacts (hub images, search index, sitemap, RSS).
+**Listing** surfaces are live without a rebuild (the client-side Alpine live-islands
+probe + swap from Strapi in the browser), and the meetings table's row-expand detects a
+post-build edit (`updatedAt` gate) and fetches the live record. But the **built detail
+pages themselves** render what the last build baked — so a rebuild is needed to mint
+**new pages** (new Strapi slugs), to refresh **edited** detail pages, and to refresh
+build-time artifacts (hub images, search index, sitemap, RSS).
 
 Both rebuild triggers are **functionless** — they POST a Netlify **build hook** (a URL that
 enqueues one build). Neither runs a Netlify function:
 
 | Trigger | Mechanism | Latency |
 |---|---|---|
-| **New content published** | Strapi webhook → build hook (direct POST) | minutes |
+| **Content published / edited / deleted** | Strapi webhook → build hook (direct POST) | minutes |
 | **Nightly safety net** | GitHub Actions cron → build hook | next run |
 
 A build hook can only *enqueue* a build — no fan-out/loop risk. The hook URL is the
@@ -33,13 +36,24 @@ smart 404 keeps the link from looking broken in the meantime.
 Netlify → Site configuration → Build & deploy → **Build hooks** → *Add build hook*
 (branch `main` after cutover). Copy the URL — both triggers below use this same URL.
 
-## 2. Strapi publish webhook (new pages appear within minutes)
+## 2. Strapi content webhook (new pages AND edits land within minutes)
 
-Strapi admin → Settings → **Webhooks** → *Create new webhook*:
-- **URL** = the build hook from step 1.
-- **Events** = entry **publish** / **unpublish** (add media events if new uploads must trigger
-  a build). Strapi POSTs the hook on publish → Netlify enqueues one build.
-- Debounce in the Strapi webhook config if publishes cluster, to coalesce a burst into one build.
+⚠️ **Configure on BOTH Strapi admins** — `agency.icjia-api.cloud` *and*
+`researchhub.icjia-api.cloud` (hub articles/datasets/apps publish from the second
+instance; without its webhook, new hub content only appears on the nightly rebuild).
+
+Each Strapi admin → Settings → **Webhooks** → *Create new webhook*:
+- **URL** = the build hook from step 1 (same URL on both admins).
+- **Events** = entry **publish / unpublish / update / delete** (+ media events if new
+  uploads must trigger a build). Strapi POSTs the hook → Netlify enqueues one build.
+  - **update/delete matter:** in Strapi v3, editing an already-published entry fires
+    `entry.update` (NOT publish) — with publish-only events, an edited meeting agenda
+    or corrected date stays stale on its built detail page (and the static home
+    snapshot) until the nightly rebuild. With update/delete subscribed, everything
+    converges in minutes.
+- **Debounce** in the Strapi webhook config (5–10 min if available) so an authoring
+  session's save-burst coalesces into one build instead of one build per save.
+  Netlify also queues builds serially per site, so bursts degrade gracefully.
 
 This replaces the old SSR purge-on-publish webhook (`netlify/functions/purge-cache.mjs`, removed)
 — there is no edge cache to purge anymore; a publish simply rebuilds.

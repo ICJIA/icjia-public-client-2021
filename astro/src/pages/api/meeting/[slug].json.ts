@@ -23,6 +23,9 @@ export const GET: APIRoute = async ({ params }) => {
         attachments: m.attachments,
         related: m.related,
         external: m.external,
+        // build-time stamp: the table expand compares it to the live row's
+        // updatedAt and prefers the live detail when the row is newer.
+        updatedAt: m.updatedAt ?? "",
       }
     : { bodyHtml: "", tags: [], attachments: [], related: [], external: [], error: true };
   return new Response(JSON.stringify(body), {

@@ -32,6 +32,7 @@ import {
   BUCKET_LABELS,
   type NewsListItem,
 } from '../lib/data';
+import { buildProbe } from '../lib/live/probe';
 
 interface Props {
   items: NewsListItem[];
@@ -41,6 +42,11 @@ const { items } = Astro.props;
 const PER_PAGE = 15;
 const featured = items[0] ?? null;
 const rest = items.slice(1);
+
+// Build-time freshness probe — newsLive (alpine-entry) reads it off the island
+// and skips the full /posts download when nothing changed since build.
+const liveProbe = await buildProbe('news');
+const liveProbeAttr = liveProbe ? JSON.stringify(liveProbe) : undefined;
 
 // Filter buttons: config-ordered categories that actually appear in `rest`.
 const present = new Set(rest.map((i) => i.category));
@@ -123,7 +129,7 @@ const ssrGroups = (['this', 'last', 'earlier'] as const)
     )
   }
 
-  <script type="application/json" id="news-data" set:html={listJson}></script>
+  <script type="application/json" id="news-data" set:html={listJson} data-live-probe={liveProbeAttr}></script>
 
   <div x-data="newsLive('news-data')">
     {/* Category filters */}

@@ -20,6 +20,7 @@ import type {
   ResearchDatasetListItem,
   ResearchAppListItem,
 } from '../../lib/research';
+import { buildProbe } from '../../lib/live/probe';
 import '../../styles/researchhub.css';
 
 type HubItem = ResearchArticleListItem | ResearchDatasetListItem | ResearchAppListItem;
@@ -94,6 +95,13 @@ const islandId = `hub-${kind}-data`;
 // fresh HUB rows so a post-build item appears in the list without a rebuild.
 const liveKey = { articles: 'hubArticles', datasets: 'hubDatasets', apps: 'hubApps' }[kind];
 
+// Freshness probe baked at build (count + latest updatedAt via the hub GraphQL —
+// the same source the live fetch reads). When the live probe matches, the island
+// skips the full fetch entirely; null (probe failed) → omit the attr → the island
+// full-fetches as before.
+const liveProbe = await buildProbe(liveKey as 'hubArticles' | 'hubDatasets' | 'hubApps');
+const liveProbeAttr = liveProbe ? JSON.stringify(liveProbe) : undefined;
+
 // SSR baseline = page 1 (articles) or all (datasets/apps).
 const baseline = paginate ? items.slice(0, perPage) : items;
 ---
@@ -106,6 +114,7 @@ const baseline = paginate ? items.slice(0, perPage) : items;
   <script type="application/json" id={islandId} set:html={listJson} is:inline />
 
   <div
+    data-live-probe={liveProbeAttr}
     x-data={`{
       all: JSON.parse(document.getElementById('${islandId}').textContent),
       view: '${initialView}', shown: ${perPage}, perPage: ${perPage},
@@ -115,13 +124,17 @@ const baseline = paginate ? items.slice(0, perPage) : items;
         const p = new URLSearchParams(location.search).get('view');
         if (p === 'list' || p === 'grid') this.view = p;
         this.ready = true;
-        // LIVE: swap in fresh HUB rows so a post-build item appears without a
-        // rebuild. REST returns insertion order, so re-sort date-desc to match the
-        // baked baseline (GraphQL date:desc). Keeps the baked baseline on failure.
+        // LIVE: probe-gated thin GraphQL swap (alpine-entry) so a post-build item
+        // appears without a rebuild. The baked probe rides data-live-probe; the
+        // baked rows ride along so build-extracted images survive the swap
+        // (mergeBakedHubImages). null (unchanged/failed) keeps the baseline.
         if (window.__liveRows && window.__liveRows[this.liveKey]) {
-          window.__liveRows[this.liveKey]().then((rows) => {
+          let probe = null;
+          try { probe = JSON.parse(this.$root.dataset.liveProbe || 'null'); } catch (e) {}
+          window.__liveRows[this.liveKey](probe, this.all).then((rows) => {
             if (rows && rows.length) {
               this.all = rows.slice().sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+              if (window.__liveAnnounce) window.__liveAnnounce(${JSON.stringify(`${heading} list updated`)});
             }
           }).catch(() => {});
         }
@@ -135,19 +148,24 @@ const baseline = paginate ? items.slice(0, perPage) : items;
       get visible(){ return this.paginate ? this.all.slice(0, this.shown) : this.all; },
       get hasMore(){ return this.paginate && this.shown < this.all.length; },
       get shownCount(){ return Math.min(this.shown, this.all.length); },
-      loadMore(){ this.shown += this.perPage; }
+      loadMore(){
+        this.shown += this.perPage;
+        if (window.__liveAnnounce) window.__liveAnnounce('Showing ' + this.shownCount + ' of ' + this.all.length + ' ' + ${JSON.stringify(noun)});
+      }
     }`}
   >
     {/* "Showing N of M" + grid/list toggle */}
     <div class="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
       <div class="showing-count">
         {
+          /* counts bind to all.length (not the baked total) so a live swap that
+             adds/removes items keeps the label honest; SSR text = baked total. */
           paginate ? (
-            <span x-text={`(shownCount >= ${total} ? 'Showing all ${total} ${noun}' : 'Showing ' + shownCount + ' of ${total} ${noun}')`}>
+            <span x-text={`(shownCount >= all.length ? 'Showing all ' + all.length + ' ${noun}' : 'Showing ' + shownCount + ' of ' + all.length + ' ${noun}')`}>
               Showing {Math.min(perPage, total)} of {total} {noun}
             </span>
           ) : (
-            <span>Showing all {total} {noun}</span>
+            <span x-text={`'Showing all ' + all.length + ' ${noun}'`}>Showing all {total} {noun}</span>
           )
         }
       </div>
@@ -285,7 +303,7 @@ const baseline = paginate ? items.slice(0, perPage) : items;
             <button type="button" class="load-more" @click="loadMore()">
               Load more
             </button>
-            <div class="showing-count mt-2" x-text={`'Showing ' + shownCount + ' of ${total} ${noun}'`} />
+            <div class="showing-count mt-2" x-text={`'Showing ' + shownCount + ' of ' + all.length + ' ${noun}'`} />
           </div>
         )
       }

@@ -27,6 +27,7 @@
 //      an EMPTY events list on prod today, so this is low-risk. VR-tune follow-up.
 import EventCard from './EventCard.astro';
 import { filterUpcoming, type EventListItem, type CalendarItem } from '../lib/data';
+import { buildProbe } from '../lib/live/probe';
 import '../styles/events.css';
 
 interface Props {
@@ -91,10 +92,16 @@ const calJson = JSON.stringify(calData).replace(/</g, '\\u003c');
 // DEFAULT filter (upcomingOnly=true). On prod this is empty today (all 6 events
 // are from 2021) — parity reproduces that.
 const ssrUpcoming = filterUpcoming(events);
+
+// Build-time freshness probe — the island skips the events fetch + per-row
+// markdown render when the collection is provably unchanged since build.
+const liveProbe = await buildProbe('events');
+const liveProbeAttr = liveProbe ? JSON.stringify(liveProbe) : undefined;
 ---
 
 <div
   class="events"
+  data-live-probe={liveProbeAttr}
   x-data={`{
     all: JSON.parse(document.getElementById('events-data').textContent),
     cal: JSON.parse(document.getElementById('calendar-data').textContent),
@@ -104,15 +111,22 @@ const ssrUpcoming = filterUpcoming(events);
       const now = new Date();
       this.calY = now.getFullYear(); this.calM = now.getMonth();
       this.ready = true;
-      // LIVE: swap in fresh Strapi events so a post-build event appears in the
-      // LIST without a rebuild. Keeps the baked baseline if the fetch fails. Rows
-      // are the same compact shape the build bakes; re-sort start-asc to match the
-      // baked list order (the upcomingOnly filter re-derives via shown). The
-      // CALENDAR grid keeps its baked #calendar-data feed (this.cal) untouched.
+      // LIVE: probe-gated (data-live-probe) swap of fresh Strapi events so a
+      // post-build event appears in the LIST without a rebuild — the fetch +
+      // per-row markdown render is skipped when nothing changed. Keeps the baked
+      // baseline if the probe/fetch fails. Rows are the same compact shape the
+      // build bakes; re-sort start-asc to match the baked list order (the
+      // upcomingOnly filter re-derives via shown). The CALENDAR grid keeps its
+      // baked #calendar-data feed (this.cal) untouched.
       try {
         if(window.__liveRows && window.__liveRows.events){
-          window.__liveRows.events().then((rows)=>{
-            if(rows && rows.length){ this.all = rows.slice().sort((a,b)=> (a.sd||'').localeCompare(b.sd||'')); }
+          let probe = null;
+          try { probe = JSON.parse(this.$root.dataset.liveProbe || 'null'); } catch(e) {}
+          window.__liveRows.events(probe).then((rows)=>{
+            if(rows && rows.length){
+              this.all = rows.slice().sort((a,b)=> (a.sd||'').localeCompare(b.sd||''));
+              if (window.__liveAnnounce) window.__liveAnnounce('Events list updated');
+            }
           }).catch(()=>{});
         }
       } catch(e) {}

@@ -12,6 +12,7 @@
 import MeetingTable from './MeetingTable.astro';
 import MeetingsCategoryView from './MeetingsCategoryView.astro';
 import { MEETING_CATEGORIES, type MeetingItem } from '../lib/data';
+import { buildProbe } from '../lib/live/probe';
 import '../styles/meetings.css';
 
 interface Props {
@@ -21,6 +22,11 @@ const { meetings } = Astro.props;
 
 // JSON-in-HTML: neutralize "<" so the data island can't break out of the script.
 const listJson = JSON.stringify(meetings).replace(/</g, '\\u003c');
+
+// Build-time freshness probe (collection-level), carried on the shared island —
+// every MeetingTable reads it and skips the full meetings fetch when unchanged.
+const liveProbe = await buildProbe('meetings');
+const liveProbeAttr = liveProbe ? JSON.stringify(liveProbe) : undefined;
 const baseline = meetings.slice(0, 25);
 
 // Only categories that actually have meetings (all four do today; guard anyway).
@@ -51,7 +57,7 @@ const cats = MEETING_CATEGORIES.filter((c) => present.has(c.category));
     </div>
   </div>
 
-  <script type="application/json" id="meetings-data" set:html={listJson}></script>
+  <script type="application/json" id="meetings-data" set:html={listJson} data-live-probe={liveProbeAttr}></script>
 
   {/* By date */}
   <div x-show="view === 'all'">

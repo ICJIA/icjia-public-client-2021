@@ -11,6 +11,7 @@
 // (the shipped ~150 rows) is the no-JS / crawler / SiteImprove view.
 import PublicationTable from './PublicationTable.astro';
 import type { PublicationListItem } from '../lib/data';
+import { buildProbe } from '../lib/live/probe';
 import '../styles/publications.css';
 
 interface Props {
@@ -21,6 +22,12 @@ const { publications } = Astro.props;
 // JSON-in-HTML: neutralize "<" so the data island can't break out of the script.
 const listJson = JSON.stringify(publications).replace(/</g, '\\u003c');
 const baseline = publications.slice(0, 150);
+
+// Build-time freshness probe — PublicationTable reads it off the island: when
+// the archive is provably unchanged it loads the baked /api/publications.json
+// (one CDN file) instead of paging the live Strapi archive (3 REST calls).
+const liveProbe = await buildProbe('publications');
+const liveProbeAttr = liveProbe ? JSON.stringify(liveProbe) : undefined;
 ---
 
 <div class="publications markdown-body pb-12">
@@ -28,7 +35,7 @@ const baseline = publications.slice(0, 150);
     <h1>ICJIA Publications</h1>
   </div>
 
-  <script type="application/json" id="publications-data" set:html={listJson}></script>
+  <script type="application/json" id="publications-data" set:html={listJson} data-live-probe={liveProbeAttr}></script>
 
   <PublicationTable baseline={baseline} />
 

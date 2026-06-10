@@ -19,6 +19,7 @@ import {
   niceBytes as s_bytes,
   strapiUrl as s_url,
   shapeMeeting,
+  shapeMeetingRow,
 } from "./meeting";
 import { renderToHtml } from "../../markdown.js";
 
@@ -105,5 +106,17 @@ describe("meeting shaper — shapeMeeting correctness", () => {
     const m = shapeMeeting({ ...raw, isCancelled: true }, renderToHtml);
     expect(m.isCancelled).toBe(true);
     expect(m.bodyHtml).toBe("");
+  });
+});
+
+describe("meeting ROW shaper — live-edit stamp", () => {
+  const base = { id: 7, slug: "s", title: "T", category: "board", start: "2026-06-09T15:00:00.000Z" };
+  it("carries updatedAt (REST snake_case normalized) so the expand can detect a stale baked detail", () => {
+    const row = shapeMeetingRow({ ...base, updated_at: "2026-06-09T19:42:15.666Z" });
+    expect(row.updatedAt).toBe("2026-06-09T19:42:15.666Z");
+  });
+  it("accepts camelCase updatedAt and defaults to '' when absent", () => {
+    expect(shapeMeetingRow({ ...base, updatedAt: "u2" }).updatedAt).toBe("u2");
+    expect(shapeMeetingRow(base).updatedAt).toBe("");
   });
 });

@@ -430,6 +430,9 @@ export interface MeetingItem {
   related: MeetingRelatedItem[];
   /** lowercased search haystack (title + category + date + status). */
   haystack: string;
+  /** CMS updated stamp (single-meeting query only; baked into the per-slug
+   *  detail JSON so the table expand can detect a post-build edit). */
+  updatedAt?: string;
 }
 
 // Shape one raw Strapi meeting the way the legacy card/table do: flatten tags,
@@ -492,6 +495,7 @@ function shapeMeeting(m: any): MeetingItem {
     haystack: [m.title, catLabel, altDate, m.isCancelled ? "cancelled" : ""]
       .join(" ")
       .toLowerCase(),
+    updatedAt: m.updated_at ?? undefined,
   };
 }
 

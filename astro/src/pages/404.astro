@@ -256,9 +256,26 @@ const detectJson = JSON.stringify(DETECT).replace(/</g, '\\u003c');
 
       if (preview) {
         settled = true;
+        // Announce via a BODY-level polite region created BEFORE the swap —
+        // sec.outerHTML replaces the 404's own aria-live regions, and replacing
+        // a live region silences it; the title change alone is not announced.
+        const status = document.createElement('div');
+        status.className = 'sr-only';
+        status.setAttribute('aria-live', 'polite');
+        document.body.appendChild(status);
         sec.removeAttribute('data-nf-state');
         sec.outerHTML = preview.html;
         document.title = preview.title;
+        // Client-side "navigation" completed → move focus to the rendered
+        // content's first heading so SR/keyboard users land on the content.
+        const h = document.querySelector('main h1, main h2');
+        if (h) {
+          h.setAttribute('tabindex', '-1');
+          h.focus();
+        }
+        setTimeout(() => {
+          status.textContent = 'Page loaded: ' + preview.title;
+        }, 60);
         if (typeof window.plausible === 'function') {
           window.plausible('404-rendered', { props: { path: location.pathname } });
         }
