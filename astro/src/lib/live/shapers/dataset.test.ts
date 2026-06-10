@@ -148,6 +148,24 @@ describe("dataset shaper — shapeDataset correctness (getDataset parity)", () =
     expect(out.citation).toBe("");
   });
 
+  it("url-less source stays LINKLESS — no minted '#' (safeUrl-on-absent regression guard, 2026-06-10)", () => {
+    const out = shapeDataset(
+      {
+        ...raw,
+        sources: [
+          { title: "Plain" }, // no url → renders as text (s.url ? <a> : text)
+          { title: "A", url: "https://a.example" },
+          { title: "Evil", url: "javascript:x" }, // present-but-dangerous → '#'
+        ],
+      },
+      renderToHtml,
+    );
+    expect(out.sources[0]).toEqual({ title: "Plain" });
+    expect(out.sources[0].url).toBeUndefined();
+    expect(out.sources[1].url).toBe("https://a.example");
+    expect(out.sources[2].url).toBe("#");
+  });
+
   it("non-array sources/notes/variables tolerated", () => {
     const out = shapeDataset(
       { ...raw, sources: undefined, datafile: null, apps: undefined, articles: undefined },

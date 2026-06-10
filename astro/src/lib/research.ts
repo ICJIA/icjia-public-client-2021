@@ -444,8 +444,10 @@ export async function getDataset(slug: string): Promise<ResearchDatasetDetail | 
   const sources = Array.isArray(d.sources)
     ? d.sources
         .filter((s: any) => s && s.url !== "undefined")
-        // safeUrl each source link (INJ-12, parity with the client dataset shaper).
-        .map((s: any) => ({ ...s, url: safeUrl(s.url) }))
+        // safeUrl each source link (INJ-12, parity with the client dataset
+        // shaper) — ONLY when a url exists: safeUrl('') → '#' would turn a
+        // url-less (text-only) source into a dead '#' link (2026-06-10 audit).
+        .map((s: any) => (s.url ? { ...s, url: safeUrl(s.url) } : { ...s }))
     : [];
   return {
     ...shapeDatasetListItem(d),
@@ -502,9 +504,17 @@ function shapeAppListItem(a: any): ResearchAppListItem {
     imagePath: imagePath || null,
     // Drop heavy base64 when we have a file path (keeps the island tiny).
     image: imagePath ? null : a.image || null,
-    // safeUrl each contributor link (INJ-12, parity with the client app shaper).
+    // Mirror of shapers/app.ts shapeContributor (pinned by app.test.ts): bare
+    // string → {title}; url scheme-guarded (INJ-12) ONLY when present —
+    // safeUrl on an ABSENT url returns '#', which minted nameless
+    // <a href="#"> contributor links (axe link-name violation, fixed 2026-06-10).
     contributors: Array.isArray(a.contributors)
-      ? a.contributors.map((c: any) => ({ ...c, url: safeUrl(c.url) }))
+      ? a.contributors.map((c: any) => {
+          if (typeof c === "string") return { title: c };
+          if (!c || typeof c !== "object") return {};
+          const { url, ...rest } = c;
+          return url ? { ...rest, url: safeUrl(url) } : { ...rest };
+        })
       : a.contributors,
   };
 }

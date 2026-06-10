@@ -277,7 +277,9 @@
   background: #fafafa;
 }
 .events .cal-cell.cal-out .cal-day-num {
-  color: #b0b0b0;
+  /* #6d6d6d on the #fafafa cell ≈ 5.0:1 — keeps the muted look but passes
+     WCAG 1.4.3 AA (the prior #b0b0b0 was ~2.2:1; axe serious, 2026-06-10). */
+  color: #6d6d6d;
 }
 
 .events .cal-day-label {

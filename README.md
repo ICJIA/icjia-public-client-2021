@@ -53,16 +53,16 @@ pnpm dev          # http://localhost:4321 — live CMS data
 The site is a **fully static build** (`output: 'static'`, no adapter) — every page is prerendered to HTML at build and served from the Netlify CDN with **zero runtime functions**. Freshness comes from the browser, not a server:
 
 ```
-Build:   Strapi (GraphQL/REST) ─▶ getX()/shapers ─▶ prerendered HTML  ─▶ CDN
-                                                                           │
-Browser: paints baked HTML ─▶ Alpine "live-island" ─▶ fetch Strapi REST (live)
-                                                                           │
-                                              swap in fresh rows / render the new page
+Build:   Strapi (GraphQL/REST) ─▶ getX()/shapers ─▶ prerendered HTML ＋ probe ─▶ CDN
+                                                                                  │
+Browser: paints baked HTML ─▶ Alpine "live-island" ─▶ PROBE (count + latest stamp)
+                                                          │ unchanged?  │ changed
+                                                      keep baked    full fetch → swap
 ```
 
 - **`src/lib/data.ts` / `research.ts`** are the single entry points pages call at **build** (`getNewsPost(slug)`, `getFunding()`, `getArticle(slug)`, …): query the CMS, shape, render body Markdown → static HTML. The same shapers are reused **client-side** by the live-islands.
-- **Live-islands (`src/lib/live/`).** After paint, Alpine islands fetch the section's current data from Strapi's **public** REST in the browser and swap it in — so an edit / new item shows on reload **without a rebuild**. A `window.__liveRows` registry exposes the shared `fetchCollection` + per-surface row shapers; section lists, the home strips, and (via the smart-404) detail pages all use it.
-- **Smart-404 detail fallback (`src/pages/404.astro`).** A brand-new slug has no prerendered page, so Netlify serves the 404 — which detects the content type, REST-fetches the record, and **renders the real detail page client-side** with the build's own (now isomorphic) `renderToHtml`. New pages also appear permanently on the **nightly rebuild** (Strapi publish webhook → build hook). See `docs/LIVE-DETAIL-FALLBACK.md`.
+- **Live-islands (`src/lib/live/`), probe-first.** Each listing bakes the collection's `(count, latest-updated)` probe at build (`data-live-probe`); on load the island re-reads those two values from the API (~2 KB) and runs its **full fetch only when something actually changed** — so an edit / new item shows on reload **without a rebuild**, and the steady-state per-view cost is a couple of tiny requests instead of whole collections. Agency collections fetch REST (`fetchCollection`); the researchhub collections fetch **thin GraphQL** (`lib/live/gql.ts`) because their REST records inline base64 images (~105 MB for one articles read — never client-fetch those). Swaps preserve build-extracted images (merge by slug) and announce to assistive tech via a shared polite live region (`window.__liveAnnounce`).
+- **Smart-404 detail fallback (`src/pages/404.astro`).** A brand-new slug has no prerendered page, so Netlify serves the 404 — which detects the content type, REST-fetches the record, and **renders the real detail page client-side** with the build's own (now isomorphic) `renderToHtml`, then moves focus to the rendered heading and announces the load. New pages also appear permanently within minutes via the **Strapi content webhook → build hook** (publish/unpublish/**update/delete**, configured on BOTH Strapi admins — see `docs/nightly-rebuild.md`) with a nightly safety net; the meetings table expand additionally detects post-build **edits** (`updatedAt` gate) and fetches the live record. See `docs/LIVE-DETAIL-FALLBACK.md`.
 - **Resilience:** every live fetch falls back to the baked baseline on failure — offline / Strapi-down still shows the page's build-time content, and the no-JS/crawler view is the baked HTML. (The legacy SSR's `setCache`/`keep-warm`/cold-start machinery was removed in the de-serverless migration; the loading-overlay + nav-progress chrome is retained.)
 
 ### Build-time generators (`astro/scripts/`, run in `prebuild` + nightly)
@@ -280,6 +280,17 @@ Everything else — the clock-freeze, animation-off, fonts-ready gate, region ma
 > **Latest audit:** 2026-06-08 · **Scope:** adversarial **red-team / blue-team** review of the `0.50.2` change — the smart-404 **hidden-by-default** state-machine inversion + the new client-side **live meeting-detail** fallback (`window.__liveDetail.meeting`). **Method:** an **independent red-team agent** attacked commit `50c9c8b` (XSS · REST/param injection · draft/data exposure · SSRF · DoS · prototype pollution · the 404 state machine), each finding **verified against source and the live deploy**, then blue-team fixes (changelog `0.50.3`; the INJ-12 build-path `safeUrl` sweep completed in `0.50.4`). **The `0.50.0` live-data audit (2026-06-05) and the SSR-era audit (2026-06-01) follow below as history** — several of the latter's findings are **moot** post-de-serverless.
 
 This block is written for management + compliance: it states what was **found and fixed**, what is **accepted with a compensating control**, what is **tracked for cutover/ops**, and what was **investigated and found not exploitable**.
+
+### Accessibility + performance audit — summary (2026-06-10, `0.51.x`)
+
+A per-section **axe-core (WCAG 2.1 AA, mobile)** + **Lighthouse (mobile)** sweep of the built site after the probe-first live-island upgrade (14 representative pages: home, every section listing, news/article/dataset details, the 404). Results: **Lighthouse a11y/best-practices/SEO 100 everywhere; mobile perf 96–100** (home 100, meetings 99, article detail 99, news 98, funding 98, hub articles 98, publications 97, news detail 96 — localhost preview, so production CDN numbers will differ slightly). axe was clean except **two findings, both fixed**:
+
+| Finding | Cause | Fix |
+|---|---|---|
+| `link-name` (WCAG A, serious) — nameless `<a href="#">` contributor links on `/researchhub/apps/` | A **regression from the 0.50.4 `safeUrl` sweep**: `safeUrl()` was applied to contributor/source URLs **whether or not a url existed**, and its `'#'` fallback minted links out of plain-text entries (a bare-string CMS contributor became an *empty* link) | Guard every `safeUrl` call site on **presence** (build `research.ts` + client twins), normalize bare-string contributors to `{title}`, pinned by shaper tests. Lesson: *a blanket security sweep is itself a change that needs an a11y/UI regression pass; `safeUrl`'s `'#'` fallback is for present-but-dangerous values, never absent ones* |
+| `color-contrast` (AA, serious) — events-calendar adjacent-month day numbers | `#b0b0b0` on `#fafafa` ≈ 2.2:1 (the calendar shipped after the 5/31 axe sweep) | `#6d6d6d` ≈ 5.0:1, still visibly muted |
+
+One additional note (not a defect): Lighthouse flags `heading-order` on one news post whose CMS body starts at `<h3>` — that's authored content; the content pipeline can demote stray heading levels if the team wants it normalized.
 
 ### Post-build-polish audit — summary (2026-06-08)
 

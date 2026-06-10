@@ -3,6 +3,16 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 Now a fully static build with client-side Alpine live-islands (de-serverless); tracked on `feat/astro-researchhub-fixes`.
 
+## [0.51.1] — 2026-06-10 — fix(a11y): post-change audit sweep — safeUrl '#'-link regression + calendar contrast
+
+A per-section **axe (WCAG AA, mobile) + Lighthouse (mobile)** sweep of the rebuilt site (14 representative pages). Lighthouse: a11y/BP/SEO 100 everywhere, mobile perf 96–100 (localhost preview). axe: clean everywhere except two findings, both fixed:
+
+- **`link-name` (WCAG A, serious) on `/researchhub/apps/` — a regression from the 0.50.4 `safeUrl` sweep.** `safeUrl()` was applied to app `contributors[].url` and dataset `sources[].url` **whether or not a url existed**; `safeUrl(undefined)` returns its `'#'` neutralization fallback, so url-less contributors rendered as `<a href="#">` (and the one bare-STRING CMS contributor — the hub stores both shapes — spread into garbage and rendered a **nameless empty link**). Fix: scheme-guard **only behind an existence check** at every affected call site (build `research.ts` + client twins `shapers/app.ts` incl. the live listing row + `shapers/dataset.ts`), and normalize bare-string contributors to `{title}` (a `shapeContributor` helper, mirrored build/client, pinned by new shaper tests). Url-less dataset sources render as plain text again instead of dead `'#'` links. Page-clickthrough call sites were checked and left as-is (`ContentClickThroughBoxes` itself falls back to `'#'` — render-identical). **Lesson (checklist fable-v1.0 #9): a blanket security sweep is itself a change that needs an a11y/UI regression pass; `safeUrl`'s `'#'` is for present-but-dangerous values, never absent ones.**
+- **`color-contrast` (AA, serious) on the events calendar** — adjacent-month day numbers were `#b0b0b0` on `#fafafa` (≈2.2:1); now `#6d6d6d` (≈5.0:1), still visibly muted. (The calendar shipped after the 5/31 axe sweep — audits are point-in-time.)
+- Noted, not a defect: Lighthouse `heading-order` on one news post whose CMS body starts at `<h3>` (authored content; a content-pipeline demotion is possible if the team wants it).
+
+**Verified:** 242 tests (33 files; +4 new contributor/source guards); clean rebuild; re-audited `/researchhub/apps/` + `/events/` + a dataset detail → 0 axe violations (results in README "Accessibility + performance audit").
+
 ## [0.51.0] — 2026-06-10 — perf/a11y: probe-first live islands + hub GraphQL thin fetch + edit-aware freshness
 
 The live-island layer stops paying a full-collection download on every page view, the researchhub listings stop pulling ~105MB of base64 per visit (LIVE-1's unfixed sibling), and the freshness model closes its remaining hole (post-build **edits**). All changes are additive — the baked-baseline fallback semantics are unchanged (any probe/fetch failure → the island keeps its baked rows).

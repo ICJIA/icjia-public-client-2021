@@ -139,8 +139,10 @@ export function shapeDataset(d: any, render: (md: string) => string): DatasetIte
   const sources = Array.isArray(d.sources)
     ? d.sources
         .filter((s: any) => s && s.url !== "undefined")
-        // sources[].url reaches an href (set:html) — scheme-guard each before render.
-        .map((s: any) => ({ ...s, url: safeUrl(s.url) }))
+        // sources[].url reaches an href (set:html) — scheme-guard each before
+        // render, but ONLY when a url exists: safeUrl('') → '#' would turn a
+        // url-less (text-only) source into a dead '#' link (2026-06-10 audit).
+        .map((s: any) => (s.url ? { ...s, url: safeUrl(s.url) } : { ...s }))
     : [];
   return {
     id: String(d.id),

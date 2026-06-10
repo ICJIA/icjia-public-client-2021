@@ -38,6 +38,21 @@ import { safeUrl } from "../safe-url";
 
 export type AppRelatedItem = DatasetRelatedItem;
 
+/** Normalize ONE CMS contributor. The hub stores two shapes: `{title, url?}`
+ *  objects AND bare strings. Rules (mirrored in research.ts shapeAppListItem;
+ *  pinned by app.test.ts):
+ *    - bare string → `{ title }` (renders as text, never an empty link)
+ *    - object WITHOUT url → url stays ABSENT. Never call safeUrl on an absent
+ *      url: its '#' fallback minted nameless `<a href="#">` links — the axe
+ *      link-name violation found 2026-06-10.
+ *    - object WITH url → scheme-guarded (javascript:/data: → '#', INJ-12). */
+export function shapeContributor(c: any): { title?: string; url?: string } {
+  if (typeof c === "string") return { title: c };
+  if (!c || typeof c !== "object") return {};
+  const { url, ...rest } = c;
+  return url ? { ...rest, url: safeUrl(url) } : { ...rest };
+}
+
 export interface AppItem {
   id: string;
   title: string;
@@ -92,7 +107,7 @@ export function shapeApp(a: any, render: (md: string) => string): AppItem {
     // contributors[].url reaches an href (set:html) — scheme-guard each before
     // render (the launch `url` below is already http-guarded; leave it).
     contributors: Array.isArray(a.contributors)
-      ? a.contributors.map((c: any) => ({ ...c, url: safeUrl(c.url) }))
+      ? a.contributors.map(shapeContributor)
       : a.contributors,
     external: a.external,
     // url feeds window.open() in AppView — allow only http(s) so a malicious hub
@@ -153,6 +168,8 @@ export function shapeAppRow(a: any): HubAppRow {
     ip: null,
     hasImg: false,
     slug: a.slug,
-    contrib: a.contributors ?? null,
+    // same normalization as shapeApp — live rows feed `:href` in the listing
+    // x-for, so bare strings/absent urls must never mint links ('#' or raw).
+    contrib: Array.isArray(a.contributors) ? a.contributors.map(shapeContributor) : null,
   };
 }

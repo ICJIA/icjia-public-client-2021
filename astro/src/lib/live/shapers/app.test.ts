@@ -7,7 +7,7 @@
 // helpers (formatResearchDate/truncateBySentence/isNewResearch/categoriesArray/
 // hubRelated) are pinned by shapers/dataset.test.ts.
 import { describe, it, expect } from "vitest";
-import { shapeApp } from "./app";
+import { shapeApp, shapeAppRow } from "./app";
 import { renderToHtml } from "../../markdown.js";
 
 describe("app shaper — shapeApp correctness (getApp parity)", () => {
@@ -72,5 +72,38 @@ describe("app shaper — shapeApp correctness (getApp parity)", () => {
     );
     expect(out.citation).toBe("");
     expect(out.related).toEqual([]);
+  });
+});
+
+describe("contributors normalization (axe link-name regression 2026-06-10: safeUrl on an ABSENT url minted '#' links)", () => {
+  const base = {
+    id: 9,
+    title: "App",
+    slug: "app",
+    date: "2026-01-01T00:00:00.000Z",
+    description: "One. Two.",
+  };
+  const contribs = [
+    { title: "ICJIA R&A staff" }, // url-less object → must stay LINKLESS (no '#')
+    { title: "X", url: "javascript:alert(1)" }, // present-but-dangerous → neutralized '#'
+    { title: "Y", url: "https://ok.example" }, // legit → untouched
+  ];
+  it("shapeApp: url-less contributor has NO url; real urls scheme-guarded", () => {
+    const out = shapeApp({ ...base, contributors: contribs }, renderToHtml);
+    expect(out.contributors[0].url).toBeUndefined();
+    expect(out.contributors[0].title).toBe("ICJIA R&A staff");
+    expect(out.contributors[1].url).toBe("#");
+    expect(out.contributors[2].url).toBe("https://ok.example");
+  });
+  it("shapeApp: a bare-STRING contributor (live CMS shape) becomes {title} — text, never an empty link", () => {
+    const out = shapeApp({ ...base, contributors: ["ICJIA R&A Staff"] }, renderToHtml);
+    expect(out.contributors[0]).toEqual({ title: "ICJIA R&A Staff" });
+  });
+  it("shapeAppRow: live listing rows get the SAME normalization (parity + scheme guard on :href)", () => {
+    const row = shapeAppRow({ ...base, contributors: contribs });
+    expect(row.contrib![0].url).toBeUndefined();
+    expect(row.contrib![1].url).toBe("#");
+    expect(row.contrib![2].url).toBe("https://ok.example");
+    expect(shapeAppRow({ ...base, contributors: ["Solo"] }).contrib).toEqual([{ title: "Solo" }]);
   });
 });
