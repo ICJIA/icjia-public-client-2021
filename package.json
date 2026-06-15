@@ -103,7 +103,7 @@
     "release-it": "^14.11.5",
     "sass": "~1.32.13",
     "sass-loader": "10.1.1",
-    "vue-cli-plugin-compression": "^1.1.5",
+    "vue-cli-plugin-compression": "^2.0.0",
     "vue-cli-plugin-lodash": "^0.1.4",
     "vue-cli-plugin-vuetify": "^2.4.2",
     "vue-template-compiler": "^2.6.14",
