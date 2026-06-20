@@ -82,6 +82,21 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.44] - 2026-06-20
+
+### fix — Resilient GraphQL schema download (`generate:schema`) — unbreaks Netlify builds
+
+Netlify production builds of `main` (and deploy preview #37) began failing with `schema.json: Unexpected end of JSON input` during the Vue/ESLint compile. Root cause: the build step ran `get-graphql-schema <url> -j > schema.json` directly. The shell `>` truncates the committed `schema.json` **before** the fetch runs, so when the download to `agency.icjia-api.cloud` dies mid-stream (`ERR_STREAM_PREMATURE_CLOSE` — "Premature close") the file is left empty/partial. `get-graphql-schema` exits `0` on that error, so the corruption is silent, and the build dies later when `.eslintrc.js` (`eslint-plugin-graphql`) does `require("./schema.json")`.
+
+Why it started now and only on Netlify: the fetch works locally but fails on Netlify's new Ubuntu **Noble** build image (`build-image … noble-new-builds`), whose changed build-network/Node/TLS stack trips the premature close against this API's gzipped ~1 MB introspection response. It is an environmental fetch failure we don't control — so the fix makes the build tolerate it rather than depend on the fetch.
+
+`generate:schema` now runs `node ./generators/generateSchema.mjs`, which fetches to a temp file, **validates** that it parses and contains `__schema`, and only then **atomically** replaces `schema.json`. It retries up to 3× (in case the close is intermittent); on total failure it keeps the committed `schema.json` and exits `0` so the build proceeds, and fails loud only when there is no valid committed schema to fall back to. (Netlify's suggested `> tmp && mv` fix is insufficient here because `get-graphql-schema` exits `0` on the error — validation, not exit code, is what catches it.)
+
+**Files:**
+
+- `generators/generateSchema.mjs` (new) — resilient fetch → validate → atomic replace, with committed-file fallback. `GRAPHQL_SCHEMA_URL` overrides the endpoint (used to verify the fallback path).
+- `package.json` — `generate:schema` now calls the script; version bump to 1.5.44.
+
 ## [1.5.43] - 2026-05-29
 
 ### feat — Publications export for accessibility analysis (`npm run export:publications`)

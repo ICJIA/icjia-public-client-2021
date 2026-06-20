@@ -1,6 +1,6 @@
 {
   "name": "icjia-public-client",
-  "version": "1.5.43",
+  "version": "1.5.44",
   "private": true,
   "description": "ICJIA Public Website (2024)",
   "author": {
@@ -18,7 +18,7 @@
     "lint": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service lint",
     "generate:feeds": "node ./generators/generateRSSNews.mjs && node ./generators/generateRSSFunding.mjs && node ./generators/generateRSSMeetings.mjs && node ./generators/generateRSSEmployment.mjs",
     "generate:images": "node ./generators/generateImagesHub",
-    "generate:schema": "get-graphql-schema https://agency.icjia-api.cloud/graphql -j > schema.json",
+    "generate:schema": "node ./generators/generateSchema.mjs",
     "generate:search": "node ./generators/generateIndexHub && node ./generators/generateIndexUnits && node ./generators/generateIndexGrants && node ./generators/generateIndexPages && node ./generators/generateIndexMeetings && node ./generators/generateIndexEvents && node ./generators/generateIndexPosts && node ./generators/generateIndexJobs && node ./generators/generateIndexBiographies &&  node ./generators/generateIndexPublications && node ./generators/searchIndexAndSitemap",
     "postbuild": "node ./generators/generateBuildInfo",
     "test": "npx playwright test",
