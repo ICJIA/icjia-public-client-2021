@@ -39,7 +39,7 @@
     "@iconify-json/mdi": "^1.2.3",
     "@tailwindcss/vite": "^4.3.0",
     "alpinejs": "^3.15.12",
-    "astro": "^6.4.2",
+    "astro": "^6.4.6",
     "astro-icon": "^1.1.5",
     "astro-seo": "^1.1.0",
     "dompurify": "^3.4.7",
