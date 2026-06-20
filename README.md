@@ -4,6 +4,11 @@
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/e6614e77-00b4-4772-8034-a3b9c9c9986d/deploy-status)](https://app.netlify.com/sites/icjia-public/deploys) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+> [!IMPORTANT]
+> **`main` builds and serves the legacy Vue 2 SPA** — the app at this repository root, built by `npm run build` (`vue-cli-service`) per `netlify.toml`. That is what is live at [`icjia.illinois.gov`](https://icjia.illinois.gov).
+>
+> **The Astro rewrite described below lives in [`astro/`](astro/) and is dormant** — it is *not* built or served by `main` and is awaiting cutover approval. Cutting over is a single-file change to `netlify.toml [build]`.
+
 The public website for the **Illinois Criminal Justice Information Authority** — [`icjia.illinois.gov`](https://icjia.illinois.gov).
 
 Built on **Astro 6 + Tailwind 4 + Alpine**, rendered **server-side with live CMS data on every request**. The design requirement that shapes everything: content must reflect the CMS **at the moment a page is viewed** (not at build time), while scoring 95+ mobile Lighthouse, 100 accessibility (ADA Title II / IITAA 2.1), and 100 SEO.

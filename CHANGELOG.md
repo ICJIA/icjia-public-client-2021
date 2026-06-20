@@ -82,6 +82,14 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.45] - 2026-06-20
+
+### docs — README banner: clarify `main` serves the legacy Vue SPA (not Astro)
+
+Added a prominent banner to the top of `README.md` stating that `main` builds and serves the **legacy Vue 2 SPA** (repo root, `npm run build`), while the **Astro rewrite in [`astro/`](astro/) is dormant pending cutover approval**. The README body still describes the Astro app, so the banner prevents the misread that `main` is the Astro build. No code or build-output change.
+
+Context: the Astro-content README predates the 2026-06-01 production cutover (it was rewritten in commit `312e3cc` on 2026-05-30). The 2026-06-02 rollback (`git revert` of the cutover) only undid the one-file `netlify.toml [build]` flip, so the README — and the inert `astro/` source folder — correctly remained. Neither affects what `main` builds or serves.
+
 ## [1.5.44] - 2026-06-20
 
 ### fix — Resilient GraphQL schema download (`generate:schema`) — unbreaks Netlify builds
