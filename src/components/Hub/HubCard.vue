@@ -43,7 +43,7 @@
         :height="splashHeight"
         class="mb-5"
         :ref="'img_' + item.id"
-        @error="errorHandler(item.id)"
+        @error="errorHandler"
         style="border: 1px solid #fafafa"
         alt="ICJIA News image"
         @load="resize"
@@ -60,12 +60,12 @@
 
       <v-img
         v-if="item.imagePath && !item.image && !textOnly && imageOK"
-        :src="item.imagePath"
+        :src="splashSrc"
         width="100%"
         :height="splashHeight"
         class="mb-5"
         :ref="'img_' + item.id"
-        @error="errorHandler(item.id)"
+        @error="errorHandler"
         style="border: 1px solid #fafafa"
         alt="ICJIA News image"
         @load="resize"
@@ -88,7 +88,7 @@
         :height="splashHeight"
         class="mb-5"
         :ref="'img_' + item.id"
-        @error="errorHandler(item.id)"
+        @error="errorHandler"
         style="border: 1px solid #fafafa"
         alt="ICJIA News image"
         @load="resize"
@@ -164,11 +164,22 @@
 
 <script>
 import { goToSearch } from "@/utils/search";
+import { splashCandidates } from "@/utils/hubImage";
 const arrford = require("arrford");
 import { format, parseISO } from "date-fns";
 import dayjs from "@/plugins/dayjs";
 export default {
   computed: {
+    // Hub images are pre-generated under their original extension (.jpeg or
+    // .png); offer the built URL first, then the alternate format, so PNG
+    // splashes render like JPEGs. See utils/hubImage.js +
+    // generators/generateImagesHub.js.
+    splashUrls() {
+      return splashCandidates(this.item && this.item.imagePath);
+    },
+    splashSrc() {
+      return this.splashUrls[this.splashAttempt] || this.item.imagePath;
+    },
     truncation() {
       if (this.orientation === "grid") {
         return 30;
@@ -187,6 +198,7 @@ export default {
   data() {
     return {
       imageOK: true,
+      splashAttempt: 0,
     };
   },
   props: {
@@ -243,10 +255,14 @@ export default {
         type: "hub",
       });
     },
-    errorHandler(id) {
-      console.log("error for image: ", id);
-      console.log(this.$refs["img_" + id].src);
-      // this.$refs["img_" + id].src = "https://via.placeholder.com/400x200";
+    errorHandler() {
+      // Hub images are written under their original extension; walk the
+      // candidate list (original ext -> alternate) before surrendering to the
+      // default placeholder. See utils/hubImage.js.
+      if (this.splashAttempt < this.splashUrls.length - 1) {
+        this.splashAttempt += 1;
+        return;
+      }
       this.imageOK = false;
     },
     displayAuthors(arr) {

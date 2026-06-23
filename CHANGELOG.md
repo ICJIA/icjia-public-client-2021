@@ -82,6 +82,25 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.47] - 2026-06-23
+
+### fix — Research hub article cards: render PNG splashes (not just JPEG)
+
+Article cards on `/researchhub/articles/` fell back to the default ICJIA placeholder whenever the author's splash image was a **PNG** instead of a JPEG. JPEG cards rendered fine; PNG cards showed the generic placeholder.
+
+**Root cause.** Hub splash/app images are pre-generated at build time by `generators/generateImagesHub.js`, which decodes each Strapi base64 image and writes it under its **original** extension (`${id}-splash.png` for a PNG upload, `${id}-splash.jpeg` for a JPEG). But `ArticlesAll.vue` built the card URL with a hard-coded `.jpeg` (`https://icjia.illinois.gov/images/${id}-splash.jpeg`). For a PNG article that `.jpeg` file doesn't exist, so the static host answers with the SPA's `200 text/html` fallback; the `<img>` can't decode it, and `HubCard`'s error handler swaps in the placeholder. (Confirmed live: the PNG article's `…-splash.jpeg` returns `200 text/html` while `…-splash.png` returns `200 image/png`.) `AppsAll.vue` carried the mirror hard-code (`.png`).
+
+**Fix.** Added `src/utils/hubImage.js` → `splashCandidates(url)`, which expands one hard-coded URL into an ordered list: the original extension first, then the alternate format. `HubCard` now renders the first candidate and, on image-load error, advances to the next before surrendering to the placeholder. Because the original extension is tried first, existing JPEG cards are byte-identical (single request, no extra fetch); only the other format incurs one extra request. This also hardens the apps cards for free.
+
+**Verified** (dev server, live production images): the PNG article (`Evaluation of the Action-Planning Process…`, id `69dfeb55…`) now loads `…-splash.png` after the `.jpeg` decode-fail and shows the real image; a JPEG article still loads `…-splash.jpeg` on its single request. Unit tests: `tests/unit/hubImage.spec.js` (6/6 passing).
+
+**Files:**
+
+- `src/utils/hubImage.js` (new) — `splashCandidates()` extension-fallback helper.
+- `src/components/Hub/HubCard.vue` — renders `splashSrc` (candidate walk) instead of the raw `item.imagePath`; `errorHandler` advances through candidates before the placeholder.
+- `tests/unit/hubImage.spec.js` (new) — unit coverage for the helper.
+- `package.json` — version bump to 1.5.47.
+
 ## [1.5.46] - 2026-06-23
 
 ### refactor — Remove Thumbor image proxy; serve Strapi formats directly (fixes news-splash 400)
