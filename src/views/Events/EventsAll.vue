@@ -23,7 +23,7 @@
             <h1 class="mb-6">ICJIA Events</h1>
             <EventToggle
               @toggleEventView="toggleEventView"
-              @toggleUpcoming="toggleUpcoming"
+              @toggleRange="toggleRange"
             ></EventToggle>
           </div>
 
@@ -156,6 +156,7 @@ import NProgress from "@/services/Progress";
 import dayjs from "@/plugins/dayjs";
 import { EventBus } from "@/event-bus";
 import { getUnifiedTags } from "@/utils/content";
+import { buildEventWheres } from "@/utils/eventsRange";
 export default {
   watch: {},
   name: "Events",
@@ -178,7 +179,7 @@ export default {
     nanoid,
     focus: "",
     error: "",
-    upcomingOnly: null,
+    monthsBack: 0,
     type: "month",
     typeToLabel: {
       month: "Month",
@@ -201,12 +202,7 @@ export default {
   }),
   methods: {
     filterDisplay() {
-      // console.log(
-      //   "filter for: ",
-      //   this.display,
-      //   " upcomingOnly: ",
-      //   this.upcomingOnly
-      // );
+      // console.log("filter for: ", this.display);
       let newItems;
       if (this.display === "list") {
         newItems = this.allEvents.filter((item) => {
@@ -223,20 +219,9 @@ export default {
           }
         });
       }
-      let filteredNewItems;
-      if (this.upcomingOnly) {
-        filteredNewItems = newItems.filter((item) => {
-          let expired = new Date(item.end);
-          //expired.setHours(0, 0, 0, 0);
-          expired.setHours(24, 0, 0, 0);
-          if (expired >= new Date()) {
-            return item;
-          }
-        });
-        return filteredNewItems;
-      } else {
-        return newItems;
-      }
+      // Date bounding now happens server-side via buildEventWheres(); here we
+      // only split list vs calendar visibility.
+      return newItems;
     },
     async change() {
       //console.log("change here");
@@ -252,11 +237,14 @@ export default {
       // console.log("toggle event view ", val);
     },
 
-    toggleUpcoming(val) {
-      //console.log("upcoming only: ", val);
-      this.upcomingOnly = val;
-      this.filterDisplay(this.display, val);
-      this.$refs.calendar.checkChange();
+    toggleRange(monthsBack) {
+      this.monthsBack = monthsBack;
+      // Re-run the bounded query for the new window. The reactive variables()
+      // above also tracks monthsBack; refetch() makes the re-fetch explicit and
+      // deterministic regardless of the fetch-shim's reactivity.
+      if (this.$apollo && this.$apollo.queries && this.$apollo.queries.events) {
+        this.$apollo.queries.events.refetch();
+      }
     },
     getEventColor(event) {
       return event.color;
@@ -336,7 +324,9 @@ export default {
   apollo: {
     events: {
       query: GET_EVENTS,
-      variables() {},
+      variables() {
+        return buildEventWheres(this.monthsBack);
+      },
       fetchPolicy: "no-cache",
       error(error) {
         this.error = JSON.stringify(error.message);
@@ -526,7 +516,6 @@ export default {
         this.allEvents = _.orderBy(allEvents, ["start"], ["asc"]);
 
         this.display = "list";
-        this.upcomingOnly = true;
         this.isLoading = false;
         NProgress.done();
 
