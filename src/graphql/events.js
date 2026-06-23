@@ -1,8 +1,8 @@
 import { gql } from "@/gql-client";
 
 const GET_EVENTS = gql`
-  query Events {
-    events(sort: "start:asc") {
+  query Events($eventsWhere: JSON, $meetingsWhere: JSON, $jobsWhere: JSON, $grantsWhere: JSON) {
+    events(sort: "start:asc", where: $eventsWhere) {
       id
       created_at
       updated_at
@@ -28,7 +28,7 @@ const GET_EVENTS = gql`
         slug
       }
     }
-    meetings(sort: "start:asc", where: { addToEventCalendar: true }) {
+    meetings(sort: "start:asc", where: $meetingsWhere) {
       id
       name: title
       summary
@@ -45,7 +45,7 @@ const GET_EVENTS = gql`
         slug
       }
     }
-    jobs(sort: "start:asc") {
+    jobs(sort: "start:asc", where: $jobsWhere) {
       id
       title
       summary
@@ -62,7 +62,7 @@ const GET_EVENTS = gql`
       }
     }
 
-    grants(sort: "start:asc") {
+    grants(sort: "start:asc", where: $grantsWhere) {
       id
       name: title
       slug
