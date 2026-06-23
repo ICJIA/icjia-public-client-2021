@@ -15,30 +15,31 @@
         </v-btn>
       </v-btn-toggle>
       <div class="mt-5">
-        <input
-          type="checkbox"
-          id="showHideUpcoming"
-          name="showHideUpcoming"
-          v-model="showHideUpcoming"
-        />
-        <label
-          for="showHideUpcoming"
-          aria-label="Show/Hide Upcoming events"
-          style="font-size: 12px"
-        >
-          Upcoming and ongoing events only</label
-        >
+        <v-select
+          v-model="monthsBack"
+          :items="rangeItems"
+          item-text="label"
+          item-value="monthsBack"
+          dense
+          outlined
+          hide-details
+          label="Show events from"
+          aria-label="Show events from time range"
+          style="max-width: 260px; margin: 0 auto"
+        ></v-select>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { EVENT_RANGE_OPTIONS } from "@/utils/eventsRange";
 export default {
   data() {
     return {
       icon: "list",
-      showHideUpcoming: true,
+      monthsBack: 0,
+      rangeItems: EVENT_RANGE_OPTIONS,
     };
   },
   props: {
@@ -49,20 +50,14 @@ export default {
   },
   mounted() {
     this.$emit("toggleEventView", this.icon);
-    this.$emit("toggleUpcoming", this.showHideUpcoming);
+    this.$emit("toggleRange", this.monthsBack);
   },
   watch: {
     icon(newValue, oldValue) {
-      if (!newValue) {
-        this.$emit("toggleEventView", oldValue);
-      } else {
-        this.$emit("toggleEventView", newValue);
-      }
+      this.$emit("toggleEventView", newValue || oldValue);
     },
-    // eslint-disable-next-line no-unused-vars
-    showHideUpcoming(newValue, oldValue) {
-      this.$emit("toggleUpcoming", newValue);
-      //console.log(newValue);
+    monthsBack(newValue) {
+      this.$emit("toggleRange", newValue);
     },
   },
 };

@@ -149,3 +149,27 @@ describe("Disclaimer component", () => {
   it.skip("has id=disclaimer on container", () => {});
   it.skip("sanitizes XSS in disclaimer body", () => {});
 });
+
+import EventToggle from "@/components/EventToggle.vue";
+
+describe("EventToggle component", () => {
+  it("emits toggleRange(0) on mount (current & ongoing default)", () => {
+    const wrapper = shallowMount(EventToggle, { localVue, vuetify });
+    expect(wrapper.emitted("toggleRange")[0]).to.deep.equal([0]);
+  });
+
+  it("emits toggleRange with the selected monthsBack on change", async () => {
+    const wrapper = shallowMount(EventToggle, { localVue, vuetify });
+    wrapper.vm.monthsBack = 12;
+    await wrapper.vm.$nextTick();
+    const emits = wrapper.emitted("toggleRange");
+    expect(emits[emits.length - 1]).to.deep.equal([12]);
+  });
+
+  it("offers five range options (current + 6/12/18/24)", () => {
+    const wrapper = shallowMount(EventToggle, { localVue, vuetify });
+    expect(wrapper.vm.rangeItems.map((o) => o.monthsBack)).to.deep.equal([
+      0, 6, 12, 18, 24,
+    ]);
+  });
+});
