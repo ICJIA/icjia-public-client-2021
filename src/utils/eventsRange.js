@@ -14,10 +14,20 @@ const EVENT_RANGE_OPTIONS = [
   { label: "Past 24 months", monthsBack: 24 },
 ];
 
+// The hard cap is the largest offered option (24). Derived from the list so
+// extending EVENT_RANGE_OPTIONS later (e.g. 36/48) moves the cap with it.
+const MAX_MONTHS_BACK = EVENT_RANGE_OPTIONS.reduce(
+  (max, o) => Math.max(max, o.monthsBack),
+  0
+);
+
 // Lower bound (YYYY-MM-DD) for `end_gte`. monthsBack 0 => today; else today - N.
+// Clamped to [0, MAX_MONTHS_BACK] so the "full fetch is never reachable"
+// guarantee holds structurally, not just via the UI options.
 function sinceDate(monthsBack, now) {
   const base = now ? dayjs(now) : dayjs();
-  const d = monthsBack > 0 ? base.subtract(monthsBack, "month") : base;
+  const mb = Math.min(Math.max(0, monthsBack), MAX_MONTHS_BACK);
+  const d = mb > 0 ? base.subtract(mb, "month") : base;
   return d.format("YYYY-MM-DD");
 }
 

@@ -20,7 +20,18 @@ describe("eventsRange", () => {
 
   it("sinceDate(N) is N months earlier", () => {
     expect(sinceDate(6, "2026-06-23")).to.equal("2025-12-23");
+    expect(sinceDate(12, "2026-06-23")).to.equal("2025-06-23");
+    expect(sinceDate(18, "2026-06-23")).to.equal("2024-12-23");
     expect(sinceDate(24, "2026-06-23")).to.equal("2024-06-23");
+  });
+
+  it("sinceDate clamps to the 24-month cap (full fetch never reachable)", () => {
+    expect(sinceDate(36, "2026-06-23")).to.equal(sinceDate(24, "2026-06-23"));
+    expect(sinceDate(120, "2026-06-23")).to.equal("2024-06-23");
+  });
+
+  it("sinceDate treats negative monthsBack as 0", () => {
+    expect(sinceDate(-5, "2026-06-23")).to.equal("2026-06-23");
   });
 
   it("buildEventWheres sets end_gte on events/jobs/grants", () => {
