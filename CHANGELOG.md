@@ -82,6 +82,18 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.50] - 2026-06-23
+
+### ux(events) — Default the events page to List view (was Calendar)
+
+`/events/` now opens in **List view** instead of Calendar view. List view (with the default "Upcoming and ongoing only" filter) shows every current/upcoming item as a card — including open NOFOs — whereas the calendar plots NOFOs only as point markers on their open/deadline dates, so a currently-open NOFO whose deadline is next month left the *current-month* calendar looking empty (a NOFO open Jun 8 → Jul 10 has its OPEN marker past-filtered and its DEADLINE marker in July). Defaulting to List surfaces "what's open now" immediately; the Calendar toggle still works exactly as before. The initial `display` and the toggle's default button are changed together so the List/Calendar buttons reflect the active view with no flash.
+
+**Files:**
+
+- `src/components/EventToggle.vue` — default toggle `icon: "calendar"` → `"list"`.
+- `src/views/Events/EventsAll.vue` — initial `display` `"calendar"` → `"list"`.
+- `package.json` — version bump to 1.5.50.
+
 ## [1.5.49] - 2026-06-23
 
 ### chore — Remove stray debug `console.warn`s that leaked into the production console

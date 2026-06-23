@@ -525,7 +525,7 @@ export default {
         // this.calendarEvents = _.orderBy(calendarEvents, ["start"], ["asc"]);
         this.allEvents = _.orderBy(allEvents, ["start"], ["asc"]);
 
-        this.display = "calendar";
+        this.display = "list";
         this.upcomingOnly = true;
         this.isLoading = false;
         NProgress.done();
