@@ -31,13 +31,11 @@ Bound the fetch **in the query** so the API returns only the slice the user aske
   | Label | `since` |
   |---|---|
   | Current & ongoing *(default)* | today |
-  | Past 3 months | today − 3 mo |
   | Past 6 months | today − 6 mo |
-  | Past 9 months | today − 9 mo |
   | Past 12 months | today − 12 mo |
   | Past 18 months | today − 18 mo |
   | Past 24 months | today − 24 mo |
-- **Hard cap at 24 months** — no "all" option, so the full ~648-record fetch is never reachable.
+- **6-month intervals, hard-capped at 24 months** — no "all" option, so the full ~648-record fetch is never reachable. The range list is a plain array, so extending the interval or cap later (e.g., to 36/48 months) is a one-line change.
 - On change, emit the selected **`monthsBack`** integer (`0` = current & ongoing) to the parent — replacing the current `toggleUpcoming` emit; the parent computes `since` from it. Keep the existing List/Calendar toggle untouched (List is the default view as of 1.5.50).
 - Accessibility: the select needs a visible/associated label; preserve current keyboard/focus behavior.
 
