@@ -82,6 +82,33 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.48] - 2026-06-23
+
+### fix(csp) — Remove KaTeX/texmath jsDelivr loads; drop Adobe DTM from the CSP
+
+Two Content-Security-Policy cleanups on the research-hub article pages, ahead of promoting the Report-Only policy to enforced.
+
+**Why this only showed in production:** the CSP is an HTTP response header emitted by Netlify from `netlify.toml`. The local dev server (webpack-dev-server) doesn't read `netlify.toml` and sends no CSP header, so the browser has no policy to check against — the violations are logged only on the live (Netlify) site. Verification was therefore done by confirming the *cause* is gone on dev (no CDN requests fire at all), not by watching the report-only violation disappear.
+
+**KaTeX / markdown-it-texmath removed (was jsDelivr).** Every article page ran `ArticleView.vue` `created()` → `initTexmath()`, which injected four `cdn.jsdelivr.net` `<script>`/`<link>` tags (KaTeX + markdown-it-texmath) and then built the markdown renderer from the `window.texmath`/`window.katex` globals those scripts exposed. `cdn.jsdelivr.net` is not in the CSP `script-src`/`style-src` allowlist, so each article logged a Report-Only violation — and would have **broken every article page** (the `created()` hook throws without the globals) the moment the policy is enforced. A scan of all 252 published articles found `$$…$$` math in exactly one (the rape-crisis-hotline baseline regression model, which was already rendering as a KaTeX parse error rather than real math), so the integration was removed outright rather than bundled: `texmath.js` deleted, `.use(texmath.use(katex))` dropped from the markdown pipeline, and `katex` + `markdown-it-texmath` uninstalled. (Verified on dev: no jsdelivr/CDN requests fire, no `#katexJS`/`#texmathJS` tags are injected, `window.katex`/`window.texmath` are undefined, and article bodies — including that one — render fully.) Reinstate the plugin if a real need returns.
+
+**Equation image for the one affected article.** Rendered that baseline-model equation to a self-contained SVG (MathJax → glyph paths, no external fonts) plus a 3× transparent-background PNG, both with embedded `<title>`/`<desc>` for accessibility, so the author can embed it as an image in Strapi. Going forward, authors who need notation should embed an SVG/PNG with descriptive alt text rather than LaTeX.
+
+**Adobe DTM removed.** The `assets.adobedtm.com` Launch embed in `public/index.html` was already commented out (dead), but the origin still sat in the CSP `script-src` and `connect-src`. Removed the dead `<script>` comment and both allowlist entries. **Plausible is untouched** — `plausible.icjia.cloud` stays in `script-src`/`connect-src`, and the active Plausible script + `window.plausible` queue stub + component event calls are preserved (confirmed on dev: Plausible logs its expected "Ignoring Event: localhost" notice).
+
+**Defensive: TOC scroll-spy null guard.** Dropping the CDN `await` from `created()` makes the markdown renderer (and the parsed `headings`) available synchronously, before first paint, so a scroll event during load can now reach `onScroll` before the body's heading elements exist. Added a null check so it skips a not-yet-painted heading instead of calling `getBoundingClientRect()` on a missing element.
+
+**Files:**
+
+- `src/utils/texmath.js` — deleted (was the jsDelivr KaTeX/texmath loader).
+- `src/components/Hub/ArticleView.vue` — `created()` builds the markdown renderer without texmath/katex (no CDN `await`, no `window` globals); `onScroll` skips headings whose element isn't yet in the DOM.
+- `public/hotline-calls-baseline-model.svg`, `public/hotline-calls-baseline-model.png` — static equation image (replaces the removed inline math for the one article that used it).
+- `public/index.html` — removed the dead, commented-out Adobe DTM Launch `<script>`.
+- `netlify.toml` — dropped `https://assets.adobedtm.com` from CSP `script-src` + `connect-src` (Plausible retained).
+- `package.json` / `package-lock.json` — removed `katex` + `markdown-it-texmath`; version bump to 1.5.48.
+
+Note: an unrelated, pre-existing Vuetify `VSlideGroup.scrollIntoView` console error (a slide-group/tabs component measuring an element before it is ready) is present on article pages independent of this change and is not addressed here.
+
 ## [1.5.47] - 2026-06-23
 
 ### fix — Research hub article cards: render PNG splashes (not just JPEG)

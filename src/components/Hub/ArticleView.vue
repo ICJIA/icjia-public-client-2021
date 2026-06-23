@@ -191,7 +191,6 @@
 import DOMPurify from "dompurify";
 import { format } from "@/utils/itemFormatter";
 import { createMarkdownUtils, initMarkdownIt } from "@/utils/markdownIt";
-import { initTexmath } from "@/utils/texmath";
 import { EventBus } from "@/event-bus";
 import { goToSearch } from "@/utils/search";
 
@@ -275,10 +274,8 @@ export default {
       else return 650;
     },
   },
-  async created() {
-    await initTexmath();
-    // eslint-disable-next-line no-undef
-    const md = initMarkdownIt().use(texmath.use(katex));
+  created() {
+    const md = initMarkdownIt();
     this.markdownUtils = createMarkdownUtils(md);
   },
   methods: {
@@ -305,6 +302,10 @@ export default {
       } else {
         headings.forEach((heading) => {
           let elHeading = this.$el.querySelector(`#${heading.id}`);
+          // A parsed heading may not yet be painted (markdown now renders
+          // synchronously in created(), so scroll events can fire before the
+          // body's heading elements exist). Skip until the element is present.
+          if (!elHeading) return;
           let rect = elHeading.getBoundingClientRect();
           if (rect.top < 181 && this.activeHeading !== heading.id) {
             this.activeHeading = heading.id;
