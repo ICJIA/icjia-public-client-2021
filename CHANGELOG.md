@@ -82,6 +82,19 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.49] - 2026-06-23
+
+### chore — Remove stray debug `console.warn`s that leaked into the production console
+
+`PublicationsAll.vue`'s `fetchPublications()` logged `console.warn("Publications cached…")` and `console.warn("Fetching publications…")` as debug breadcrumbs. The production build strips `console.log` but deliberately keeps `console.warn`/`console.error` (`babel.config.js` → `transform-remove-console` with `exclude: ["error", "warn"]`, so genuine warnings survive minification) — so these info-level logs slipped into the live console on `/researchhub/publications/` (the "Fetching publications…" line, on first load and on every filter change). Neither indicated a fetch problem; both were removed, along with the now-redundant `else` (the `if` returns early on a cache hit). The fetch logic is unchanged.
+
+Swept the rest of `src` for the same pattern: the only other `console.warn` (`utils/search.js` — "goToSearch navigation error") is a legitimate navigation-failure warning and was kept, as were the two `console.error` handlers.
+
+**Files:**
+
+- `src/views/About/PublicationsAll.vue` — removed two debug `console.warn`s from `fetchPublications()`.
+- `package.json` — version bump to 1.5.49.
+
 ## [1.5.48] - 2026-06-23
 
 ### fix(csp) — Remove KaTeX/texmath jsDelivr loads; drop Adobe DTM from the CSP

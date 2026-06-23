@@ -254,11 +254,8 @@ export default {
     async fetchPublications() {
       if (this.$myApp.publications && this.$myApp.publications.length) {
         this.publications = this.$myApp.publications;
-        console.warn("Publications cached...");
         this.tableLoading = false;
         return;
-      } else {
-        console.warn("Fetching publications...");
       }
       const limit = 500;
       let pubArray = [];
