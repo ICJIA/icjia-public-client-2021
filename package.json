@@ -39,7 +39,7 @@
     "core-js": "^3.18.0",
     "date-fns": "^2.24.0",
     "dayjs": "^1.11.20",
-    "dompurify": "^2.3.3",
+    "dompurify": "^3.4.11",
     "dotenv": "^10.0.0",
     "eslint-plugin-graphql": "^4.0.0",
     "feed": "^4.2.2",
