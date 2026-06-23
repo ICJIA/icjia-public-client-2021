@@ -157,6 +157,7 @@ import dayjs from "@/plugins/dayjs";
 import { EventBus } from "@/event-bus";
 import { getUnifiedTags } from "@/utils/content";
 import { buildEventWheres } from "@/utils/eventsRange";
+import { runQuery } from "@/gql-client";
 export default {
   watch: {},
   name: "Events",
@@ -239,12 +240,19 @@ export default {
 
     toggleRange(monthsBack) {
       this.monthsBack = monthsBack;
-      // Re-run the bounded query for the new window. The reactive variables()
-      // above also tracks monthsBack; refetch() makes the re-fetch explicit and
-      // deterministic regardless of the fetch-shim's reactivity.
-      if (this.$apollo && this.$apollo.queries && this.$apollo.queries.events) {
-        this.$apollo.queries.events.refetch();
-      }
+      // The fetch-shim (mixins/apollo-shim.js) runs each query once on
+      // created() and does NOT expose $apollo.queries.*/refetch(), so re-run
+      // the bounded query directly and feed the result through the same
+      // handler that processed the initial load.
+      this.$apollo.loading = true;
+      runQuery(GET_EVENTS, buildEventWheres(this.monthsBack), "no-cache")
+        .then((r) => this.$options.apollo.events.result.call(this, r))
+        .catch((err) => {
+          this.error = JSON.stringify(err && err.message ? err.message : err);
+        })
+        .finally(() => {
+          this.$apollo.loading = false;
+        });
     },
     getEventColor(event) {
       return event.color;
@@ -515,7 +523,9 @@ export default {
         // this.calendarEvents = _.orderBy(calendarEvents, ["start"], ["asc"]);
         this.allEvents = _.orderBy(allEvents, ["start"], ["asc"]);
 
-        this.display = "list";
+        // Only bootstrap the default view on the initial load — a range
+        // re-fetch must not bounce the user back to List if they're on Calendar.
+        if (!this.display) this.display = "list";
         this.isLoading = false;
         NProgress.done();
 
