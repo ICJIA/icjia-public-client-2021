@@ -82,6 +82,21 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.51] - 2026-06-23
+
+### perf(events) — Bound the events fetch with a time-range dropdown (was a full fetch every load)
+
+`/events/` used to fetch **all** events/meetings/jobs/grants (~648 records → ~1,276 client-side markers) on every load and hide most of them client-side via the "Upcoming and ongoing only" checkbox — the checkbox never reduced the fetch. Replaced it with a time-range dropdown (**Current & ongoing** default, + Past 6 / 12 / 18 / 24 months, hard-capped) that bounds the fetch **in the GraphQL query** (`where: { end_gte: since }`, Strapi-3 syntax, passed as `JSON` `where` variables). The default now fetches only current/ongoing (~a handful of records); history is opt-in and bounded (~54 / 109 / 161 / ~200). Re-fetches on change; stays a client-side SPA. `filterDisplay()`'s client-side date filter was removed (the bound is server-side now); applies to both List and Calendar.
+
+**Files:**
+
+- `src/utils/eventsRange.js` (new) — `EVENT_RANGE_OPTIONS` + `sinceDate()` + `buildEventWheres()`; unit-tested.
+- `src/components/EventToggle.vue` — checkbox → `v-select` range dropdown; emits `toggleRange(monthsBack)`.
+- `src/graphql/events.js` — `GET_EVENTS` takes per-entity `JSON` `where` variables.
+- `src/views/Events/EventsAll.vue` — bounded `variables()`, `toggleRange` re-fetch, removed `upcomingOnly` client filter.
+- `tests/unit/eventsRange.spec.js`, `tests/unit/components.spec.js` — coverage.
+- `package.json` — version bump to 1.5.51.
+
 ## [1.5.50] - 2026-06-23
 
 ### ux(events) — Default the events page to List view (was Calendar)
