@@ -1,6 +1,6 @@
 {
   "name": "icjia-public-client",
-  "version": "1.5.45",
+  "version": "1.5.46",
   "private": true,
   "description": "ICJIA Public Website (2024)",
   "author": {
@@ -66,7 +66,6 @@
     "regenerator-runtime": "^0.13.9",
     "sitemap": "^7.0.0",
     "slug": "^5.1.0",
-    "thumbor-url-builder": "^0.1.1",
     "vue": "^2.6.14",
     "vue-gtag": "^1.16.1",
     "vue-meta": "^2.4.0",

@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-img
-      :src="getImagePath(splash.url, 0, 0, 80)"
-      :lazy-src="getImagePath(splash.formats.thumbnail.url)"
+      :src="splashSrc"
+      :lazy-src="lazySrc"
       width="100%"
       :height="splashHeight"
       class="mb-5"
@@ -84,15 +84,25 @@
 </template>
 
 <script>
-import { getImageURL } from "@/services/Image";
 export default {
-  methods: {
-    getImagePath(url) {
-      let imgPath;
-      imgPath = `${this.$myApp.config.api.base}${url}`;
-      const thumborImgPath = getImageURL(imgPath);
-      return thumborImgPath;
+  computed: {
+    // Prefer Strapi's pre-sized "large" (1000px); fall back when it's absent
+    // (source < 1000px) or there are no formats (e.g. SVG).
+    splashSrc() {
+      const formats = (this.splash && this.splash.formats) || {};
+      const best = formats.large || formats.medium || formats.small || null;
+      const path = best ? best.url : this.splash && this.splash.url;
+      return `${this.$myApp.config.api.base}${path}`;
     },
+    lazySrc() {
+      const formats = (this.splash && this.splash.formats) || {};
+      const path = formats.thumbnail
+        ? formats.thumbnail.url
+        : this.splash && this.splash.url;
+      return `${this.$myApp.config.api.base}${path}`;
+    },
+  },
+  methods: {
     getAltText() {
       if (this.splash.alternativeText) {
         return this.splash.alternativeText;

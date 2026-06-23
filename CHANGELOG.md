@@ -82,6 +82,28 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.46] - 2026-06-23
+
+### refactor — Remove Thumbor image proxy; serve Strapi formats directly (fixes news-splash 400)
+
+Removed the `thumbor-url-builder` dependency and the `src/services/Image.js` URL-signing service from the legacy Vue app. Images now load straight from Strapi's pre-generated formats (`large`/`medium`/`small`/`thumbnail`) instead of being proxied and resized through `image.icjia.cloud`.
+
+This also resolves a production `400` on news splash images. `Image.js` signed Thumbor URLs with `process.env.VUE_APP_THUMBOR_KEY`, but that variable is unset on the Netlify build (the only key defined anywhere is the mismatched `PUBLIC_THUMBOR_KEY`), so the build emitted unsigned `…/unsafe/…` URLs that the secure Thumbor server rejects with 400. Serving Strapi formats directly removes the signing-key dependency, so this failure mode is no longer possible. (Verified against the live server: an `ICJIA`-signed request returns 200, an unsigned/`unsafe` request returns 400, and the raw Strapi source returns 200.)
+
+Of the 7 files importing the service, only `Splash.vue` and `SplashText.vue` actually rendered through Thumbor; the other 5 already used Strapi `formats.*` URLs in their templates and merely carried dead `getImageURL` imports / `getImagePath` methods, now removed.
+
+The news single splash (`Splash.vue` — shared by News/BasePage/Covid/Infonet) was rebuilt from Vuetify `<v-img>` to a plain `<img>` using Strapi's `large` render, capped to a centered **750px** wrapper (`.splash-wrap`) so it stays sharp on Retina without overwhelming the layout. The wrapper is capped rather than the `<img>` because github-markdown-css's `.markdown-body img { max-width: 100% }` outranks a single-class rule on the image itself.
+
+**Files:**
+
+- `src/services/Image.js` (deleted) — the Thumbor URL-signing service.
+- `src/components/Splash.vue` — `<v-img>` → constrained `<img>` (Strapi `large`, 750px `.splash-wrap` cap); Thumbor removed.
+- `src/components/SplashText.vue` — splash now uses Strapi `large` (was Thumbor).
+- `src/components/NewsCard.vue`, `src/components/Hub/HubCard.vue`, `src/components/HomeResearchCard.vue` — removed dead `getImageURL`/`getGrayscaleImageURL` import + unused `getImagePath` method.
+- `src/views/Hub/DatasetsSingle.vue`, `src/views/Hub/AppsSingle.vue` — removed dead `getImageURL` import.
+- `src/config/config.json` — removed the now-orphaned `image` block (Thumbor server + dimensions).
+- `package.json` / `package-lock.json` — dropped `thumbor-url-builder`; version bump to 1.5.46.
+
 ## [1.5.45] - 2026-06-20
 
 ### docs — README banner: clarify `main` serves the legacy Vue SPA (not Astro)

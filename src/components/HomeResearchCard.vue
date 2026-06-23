@@ -121,7 +121,6 @@
 </template>
 
 <script>
-import { getImageURL, getGrayscaleImageURL } from "@/services/Image";
 const arrford = require("arrford");
 import dayjs from "@/plugins/dayjs";
 export default {
@@ -163,35 +162,6 @@ export default {
       } else {
         return 525;
       }
-    },
-    getImagePath(
-      url,
-      imgWidth = 0,
-      imgHeight = 0,
-      imageQuality = 50,
-      grayscale
-    ) {
-      let imgPath;
-      imgPath = `${url}`;
-      let thumborImgPath;
-      if (grayscale) {
-        thumborImgPath = getGrayscaleImageURL(
-          imgPath,
-          imgWidth,
-          imgHeight,
-          imageQuality
-        );
-      } else {
-        thumborImgPath = getImageURL(
-          imgPath,
-          imgWidth,
-          imgHeight,
-          imageQuality
-        );
-      }
-
-      //console.log("grayscale", grayscale);
-      return thumborImgPath;
     },
     truncate(string, maxWords = 30) {
       var strippedString = string.trim();

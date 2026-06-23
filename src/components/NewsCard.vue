@@ -112,7 +112,6 @@
 import { goToSearch } from "@/utils/search";
 const arrford = require("arrford");
 import { format, parseISO } from "date-fns";
-import { getImageURL } from "@/services/Image";
 import { getProperCategory } from "@/utils/content";
 import dayjs from "@/plugins/dayjs";
 export default {
@@ -233,20 +232,6 @@ export default {
       }
 
       return string;
-    },
-    getImagePath(url, imgWidth = 0, imgHeight = 0, imageQuality = 50) {
-      let imgPath;
-
-      imgPath = `${url}`;
-
-      const thumborImgPath = getImageURL(
-        imgPath,
-        imgWidth,
-        imgHeight,
-        imageQuality
-      );
-      // console.log(thumborImgPath);
-      return thumborImgPath;
     },
     formatDate(d) {
       const temp = new Date(d).toJSON().split("T")[0];
