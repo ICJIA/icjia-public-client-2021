@@ -3,6 +3,10 @@
 All notable changes to the Astro (`astro/`) rewrite of `icjia.illinois.gov`.
 Now a fully static build with client-side Alpine live-islands (de-serverless); tracked on `feat/astro-researchhub-fixes`.
 
+## [0.51.2] — 2026-06-24 — docs: cutover punch list (`docs/OUTSTANDING.md`)
+
+Added `docs/OUTSTANDING.md` — a clean, grouped punch list of everything left before cutover (operational, security/hardening, polish, repo/docs hygiene, future), reflecting the static + live-islands architecture. Documentation only; no code change. Restates that there are no hard engineering blockers — the remaining work is operational/ops + a CSP enforce + a Strapi public-role tighten + docs reconciliation (`main`'s SSR-era `CUTOVER.md`/README still describe the pre-de-serverless plan).
+
 ## [0.51.1] — 2026-06-10 — fix(a11y): post-change audit sweep — safeUrl '#'-link regression + calendar contrast
 
 A per-section **axe (WCAG AA, mobile) + Lighthouse (mobile)** sweep of the rebuilt site (14 representative pages). Lighthouse: a11y/BP/SEO 100 everywhere, mobile perf 96–100 (localhost preview). axe: clean everywhere except two findings, both fixed:
