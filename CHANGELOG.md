@@ -82,6 +82,25 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.52] - 2026-06-24
+
+### test(ci) — Wire the Vue 2 unit suite into CI; add filters + lib/utils coverage; repair 10 stale assertions
+
+Nothing ran the root Vue 2 unit suite (`npm run tests`): CI (`.github/workflows/ci.yml`) only built and tested `astro/`, and the Netlify build runs `npm run build` with no test step — so the mocha suite had silently drifted to **10 failing assertions**. Added a **`vue-unit`** CI job (repo root, Node 22) that gates every PR/push on the suite. It runs `tests/unit/!(config).spec.js`, excluding `config.spec.js` because it reads `public/api/*.json`, which is git-ignored and build-generated and so can't run on a clean checkout — run the full `npm run tests` locally to include those data-integrity checks.
+
+Added coverage for two untested areas: all 22 Vue filters (`src/filters.js`) and the `src/lib/utils.js` helpers — `getPublicationType` (live, used by the publication views), the recursive `getObjects`/`getValues`/`getKeys`, and `getContextMenu` (pinned with a note that it is currently dead code with a last-match-wins quirk that resolves any Footer-sitemap path to "Footer"). +66 passing tests, all timezone-deterministic.
+
+Repaired the 10 pre-existing failures — every one a stale test trailing an intentional a11y improvement in the source, not a regression: footnote target size `24px`→`28px`; SkipLink text/href → "Skip to main content" / `#main-content`; `<pre tabindex="0">` (scrollable-region-focusable); and `fixCmsTables` now emitting explicit `id`/`headers` on every cell (SiteImprove sia-r46), with the table-id assertions switched to regex since the id counter is non-deterministic across a run.
+
+**Files:**
+
+- `tests/unit/filters.spec.js` (new) — 41 tests across all 22 filters (date/time, text, relative-time, sanitize).
+- `tests/unit/lib-utils.spec.js` (new) — 25 tests for `src/lib/utils.js`.
+- `.github/workflows/ci.yml` — new `vue-unit` job (repo root, npm, Node 22).
+- `tests/unit/a11y.spec.js`, `tests/unit/components.spec.js`, `tests/unit/contentSanitizer.spec.js`, `tests/unit/markdown.spec.js` — updated 10 stale assertions to current correct behavior.
+- `README.md` — added a "Testing the Vue 2 app" section + scope note (the rest of the README documents the dormant Astro app).
+- `package.json` — version bump to 1.5.52.
+
 ## [1.5.51] - 2026-06-23
 
 ### perf(events) — Bound the events fetch with a time-range dropdown (was a full fetch every load)

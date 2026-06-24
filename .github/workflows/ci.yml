@@ -65,3 +65,32 @@ jobs:
       - name: Ensure hub-images manifest exists (typecheck only)
         run: test -f public/hub-images-manifest.json || echo '{}' > public/hub-images-manifest.json
       - run: pnpm exec astro check
+
+  # ---------------------------------------------------------------------------
+  # Vue 2 main app (repo root). Runs the mocha unit suite — the one thing
+  # nothing else gates: Netlify only runs `npm run build`, and the jobs above
+  # only cover astro/. Self-contained (no live server / no Strapi); search.spec
+  # stubs fetch, AppInit reads committed src/config/*.json.
+  #
+  # NOTE: config.spec.js reads public/api/*.json, which is .gitignored
+  # (build-generated from Strapi). It is excluded from the CI invocation below
+  # so the gate stays hermetic; run the full `npm run tests` locally to include
+  # the data-integrity checks.
+  # ---------------------------------------------------------------------------
+  vue-unit:
+    name: Vue 2 unit tests (mocha — main app)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --legacy-peer-deps
+      - name: Unit tests (excludes config.spec — needs build-generated public/api/*.json)
+        run: >-
+          NODE_OPTIONS=--openssl-legacy-provider
+          npx vue-cli-service test:unit
+          --require ./tests/unit/setup.js
+          --timeout 10000
+          "tests/unit/!(config).spec.js"

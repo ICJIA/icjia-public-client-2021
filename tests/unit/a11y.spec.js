@@ -164,13 +164,13 @@ describe("fixEmptyTableHeaders()", () => {
 // fixFootnoteTargetSize
 // ---------------------------------------------------------------------------
 describe("fixFootnoteTargetSize()", () => {
-  it("sets minimum 24px dimensions on footnote links", () => {
+  it("sets minimum 28px dimensions on footnote links", () => {
     document.body.innerHTML = '<a href="#fn1" class="footnote-ref">1</a>';
     // The selector in the function matches a[href^='#fn']
     fixFootnoteTargetSize();
     const link = document.querySelector("a");
-    expect(link.style.minWidth).to.equal("24px");
-    expect(link.style.minHeight).to.equal("24px");
+    expect(link.style.minWidth).to.equal("28px");
+    expect(link.style.minHeight).to.equal("28px");
     expect(link.style.display).to.equal("inline-block");
   });
 
@@ -179,7 +179,7 @@ describe("fixFootnoteTargetSize()", () => {
       '<a class="footnote-backref" href="#fnref1">↩</a>';
     fixFootnoteTargetSize();
     const link = document.querySelector("a");
-    expect(link.style.minWidth).to.equal("24px");
+    expect(link.style.minWidth).to.equal("28px");
   });
 });
 

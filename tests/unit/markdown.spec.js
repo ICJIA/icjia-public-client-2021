@@ -94,7 +94,7 @@ describe("Markdown rendering — tables", () => {
     expect(html).to.include("<table>");
     expect(html).to.include("<thead>");
     expect(html).to.include("<tbody>");
-    expect(html).to.include('<th scope="col">Col A</th>');
+    expect(html).to.match(/<th[^>]*scope="col"[^>]*>Col A<\/th>/);
     // The first data cell is promoted to <th scope="row"> by fixCmsTables,
     // so the value "val 1" ends up inside a <th>, not a <td>.
     expect(html).to.match(/<th[^>]*scope="row"[^>]*>val 1<\/th>/);
@@ -117,7 +117,7 @@ describe("Markdown rendering — blockquotes and code blocks", () => {
 
   it("renders fenced code blocks", () => {
     const html = renderToHtml("```\nconst x = 1;\n```");
-    expect(html).to.include("<pre>");
+    expect(html).to.match(/<pre[^>]*>/);
     expect(html).to.include("<code>");
     expect(html).to.include("const x = 1;");
   });

@@ -8,6 +8,27 @@
 > **`main` builds and serves the legacy Vue 2 SPA** — the app at this repository root, built by `npm run build` (`vue-cli-service`) per `netlify.toml`. That is what is live at [`icjia.illinois.gov`](https://icjia.illinois.gov).
 >
 > **The Astro rewrite described below lives in [`astro/`](astro/) and is dormant** — it is *not* built or served by `main` and is awaiting cutover approval. Cutting over is a single-file change to `netlify.toml [build]`.
+>
+> **Scope note:** everything below — Stack, Commands, Architecture — documents the **Astro** rewrite (pnpm · Vitest, run from `astro/`). For the live Vue 2 app at this repo root, see **[Testing the Vue 2 app](#testing-the-vue-2-app)** immediately below.
+
+---
+
+## Testing the Vue 2 app
+
+The live site is the Vue 2 SPA at the **repository root** (`vue-cli-service`), tested with **mocha + chai + @vue/test-utils** (unit) and **Playwright** (regression). Commands run from the repo root with **npm** — not `pnpm`, and not from `astro/`:
+
+```bash
+npm run tests        # mocha unit suite (jsdom) — the main gate
+npm run tests:watch  # same, in watch mode
+npm test             # Playwright regression suite — needs a dev server (npm run serve) on :8080
+npm run lint         # eslint (vue-cli-service)
+```
+
+**Unit coverage** (`tests/unit/*.spec.js`, bootstrapped by `tests/unit/setup.js`): the content sanitizer (table/contrast/link a11y fixes), markdown rendering + XSS, the `src/a11y/` DOM-fix functions, all 22 Vue filters, `src/lib/utils.js` helpers, the events time-range builder, hub-image fallback, the auth Vuex module, the lazy Fuse search loader, publication-export helpers, security regressions, and config/data-integrity checks.
+
+**CI:** `.github/workflows/ci.yml` gates every PR/push with a **`vue-unit`** job (repo root, Node 22). It runs `tests/unit/!(config).spec.js` — `config.spec.js` is excluded because it reads `public/api/*.json`, which is git-ignored and generated at build time. Run the full `npm run tests` locally to include those data-integrity checks.
+
+---
 
 The public website for the **Illinois Criminal Justice Information Authority** — [`icjia.illinois.gov`](https://icjia.illinois.gov).
 

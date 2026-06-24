@@ -21,7 +21,7 @@ describe("fixCmsTables — simple tables", () => {
       "<table><thead><tr><th>A</th><th>B</th></tr></thead><tbody>" +
       "<tr><td>Illinois</td><td>42</td></tr></tbody></table>";
     const out = fixCmsTables(html);
-    expect(out).to.include('<th scope="row">Illinois</th>');
+    expect(out).to.match(/<th scope="row"[^>]*>Illinois<\/th>/);
   });
 
   it("adds scope=col to existing thead th cells", () => {
@@ -29,8 +29,8 @@ describe("fixCmsTables — simple tables", () => {
       "<table><thead><tr><th>A</th><th>B</th></tr></thead>" +
       "<tbody><tr><td>1</td><td>2</td></tr></tbody></table>";
     const out = fixCmsTables(html);
-    expect(out).to.match(/<th scope="col">A<\/th>/);
-    expect(out).to.match(/<th scope="col">B<\/th>/);
+    expect(out).to.match(/<th scope="col"[^>]*>A<\/th>/);
+    expect(out).to.match(/<th scope="col"[^>]*>B<\/th>/);
   });
 
   it("wraps loose <tr> rows in <tbody>", () => {
@@ -52,12 +52,16 @@ describe("fixCmsTables — complex tables", () => {
     expect(out).to.match(/<td[^>]*headers="cmstbl\d+-h\d+( cmstbl\d+-h\d+)*"/);
   });
 
-  it("removes scope on complex <th> cells (headers supersedes)", () => {
+  it("assigns id to <th> and headers to <td> on rowspan tables", () => {
     const html =
       '<table><tbody><tr><th scope="col" rowspan="2">X</th><td>1</td></tr>' +
       "<tr><td>2</td></tr></tbody></table>";
     const out = fixCmsTables(html);
-    expect(out).to.not.include('scope="col"');
+    // The complex pass assigns an explicit id to each <th> and writes that id
+    // into a headers="..." attribute on the governed <td> cells (WCAG H43).
+    // scope is intentionally retained alongside headers (belt-and-suspenders).
+    expect(out).to.match(/<th[^>]*id="cmstbl\d+-h\d+"[^>]*>X<\/th>/);
+    expect(out).to.match(/<td[^>]*headers="cmstbl\d+-h\d+"[^>]*>1<\/td>/);
   });
 });
 
