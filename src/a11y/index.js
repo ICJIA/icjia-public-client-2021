@@ -694,13 +694,22 @@ const fixAriaRoleAttribute = function () {
   });
 };
 
-// Fix prohibited `aria-haspopup` on plain links — Vuetify 2.x v-tooltip injects
-// `aria-haspopup="true"` and `aria-expanded` on activator elements via v-bind="attrs".
-// These attributes are invalid on <a> elements (WAI-ARIA only allows them on
-// button, combobox, gridcell, menuitem, row, tab, textbox, and treeitem roles).
+// Fix prohibited `aria-haspopup` on plain links and headings — Vuetify 2.x
+// v-tooltip injects `aria-haspopup="true"` and `aria-expanded` on activator
+// elements via v-bind="attrs". These attributes are invalid on <a> elements
+// and on headings (WAI-ARIA only allows them on button, combobox, gridcell,
+// menuitem, row, tab, textbox, and treeitem roles) — SiteImprove sia-r18
+// "ARIA attribute unsupported or prohibited" (WCAG 4.1.2). The BiographyCard
+// activator (an <h2>) is the primary source; this is the app-wide backstop.
 const fixProhibitedAriaOnLinks = function () {
-  const links = document.querySelectorAll("a[aria-haspopup], a[aria-expanded]");
-  links.forEach((el) => {
+  const els = document.querySelectorAll(
+    "a[aria-haspopup], a[aria-expanded]," +
+      "h1[aria-haspopup],h2[aria-haspopup],h3[aria-haspopup]," +
+      "h4[aria-haspopup],h5[aria-haspopup],h6[aria-haspopup]," +
+      "h1[aria-expanded],h2[aria-expanded],h3[aria-expanded]," +
+      "h4[aria-expanded],h5[aria-expanded],h6[aria-expanded]"
+  );
+  els.forEach((el) => {
     el.removeAttribute("aria-haspopup");
     el.removeAttribute("aria-expanded");
   });
@@ -1020,6 +1029,20 @@ const fixTableCellContext = function () {
     if (table.closest(".v-data-table") || table.classList.contains("v-data-table")) {
       return;
     }
+    // Skip tables the render-time content pipeline (contentSanitizer's
+    // fixCmsTables) already processed — they carry cmstbl* ids, empty rows
+    // already stripped, single-column tables marked presentational, and
+    // empty headers demoted. Reprocessing here on the live DOM would recompute
+    // headers/scope from the already-transformed markup and could reintroduce
+    // the very issues the pipeline fixed. contentSanitizer is authoritative
+    // for CMS markdown; this DOM pass only handles anything it didn't touch.
+    if (table.getAttribute("role") === "presentation") return;
+    if (table.querySelector('[id^="cmstbl"]')) return;
+    // Strip zero-cell rows (markdown-it-multimd emits them for `| x ||`);
+    // an empty leading row would otherwise zero out getColumnCount below.
+    table.querySelectorAll("tr").forEach((tr) => {
+      if (tr.querySelectorAll("th, td").length === 0) tr.remove();
+    });
     // Normalize single-cell continuation rows before any promotion or
     // header/id attribution runs.
     normalizeRaggedRows(table);

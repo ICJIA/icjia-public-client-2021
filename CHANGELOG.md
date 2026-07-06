@@ -82,6 +82,29 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.53] - 2026-07-06
+
+### fix(a11y) — Clear five SiteImprove findings on the live Vue 2 SPA (sia-r14/r18/r68/r77/r46)
+
+Triaged six SiteImprove "Pages with a specific issue" exports (2026-07-06) and fixed the five real WCAG **Level A** findings at their root cause in the render pipeline, not per-page. All changes are scoped to the Vue 2/Vuetify SPA (the live site); the dormant Astro rebuild is untouched. Verified locally: **365/365 unit tests pass**, **axe-core AA reports 0 violations** and **Lighthouse a11y 100/100** on every affected page, and page contrast is **byte-identical to production** (the remaining contrast "fails" are the pre-existing context-bar `.v-tab` pixel-sample-over-image false positives — present on prod too, not introduced here). SiteImprove itself can't be run locally, so a post-deploy recrawl is the final confirmation (see the note at the top of this file).
+
+- **sia-r14 "Visible label and accessible name do not match" (WCAG 2.5.3).** Two sources. (1) In article / NOFO / dicra body markdown, `fixCmsSameHrefLinkLabels` unified same-href links to the _longest_ sibling's accessible name — which broke Label-in-Name for every link whose visible text wasn't a substring of that name (e.g. a "730 ILCS 210/3-5(e)" link acquiring a sibling citation's "(b)(2)" text). It now only unifies when the canonical name contains the link's own visible text; otherwise the visible text remains the accessible name. (2) On `/grants/required-forms/` the download links read "Download Form" but carried `aria-label="Download {title}"`, which doesn't contain "Download Form" — the label is now prefixed with the visible text.
+- **sia-r18 "ARIA attribute unsupported or prohibited" (WCAG 4.1.2).** Vuetify's `v-tooltip` injects `aria-haspopup`/`aria-expanded` onto its activator via `v-bind="attrs"`; on the `<h2>` author names in `BiographyCard` (composition, unit, and researchhub pages) those attributes are prohibited on the heading role. The card already stripped `aria-expanded` on mount — it now strips `aria-haspopup` too, with an app-wide backstop for headings in the a11y sweep.
+- **sia-r68 "Container element is empty" (WCAG 1.3.1).** `markdown-it-multimd-table` emits an empty `<tr></tr>` for section-label rows authored as `| Label ||` (the trailing colspan pipes drop the cell). `fixCmsTables` now strips zero-cell rows first; `fixCmsEmptyContainers` also removes empty inline elements (`<strong></strong>` from `** **`).
+- **sia-r77 "Table cell missing context" (WCAG 1.3.1).** CMS "lists styled as a 1-column table" (e.g. the statewide-plan goals) had a blank header cell that data cells then referenced for context. Single-column tables are now marked `role="presentation"` — they convey no row/column relationships. This also cures a cascade: an empty _leading_ row made `getColumnCount()` return 0, which aborted header assignment for the entire table.
+- **sia-r46 "No data cells assigned to table header" (WCAG 1.3.1).** Empty corner `<th>` cells (the blank intersection of row and column headers, e.g. the law-enforcement survey table) were orphan headers. They're now demoted to presentational spacer `<td>` — the W3C pattern for a blank corner — carrying no header semantics, and `fixCmsEmptyTableCells` leaves those spacers empty rather than filling them.
+
+The two most irregular multi-level tables (drug-testing, criminal-history — whose _second_ header row was authored as body cells with a colspan-count mismatch) verify clean against the render pipeline and axe-core after these changes; they are the most likely to need a source-content follow-up if a SiteImprove recrawl still flags them.
+
+**Files:**
+
+- `src/utils/contentSanitizer.js` — `fixCmsSameHrefLinkLabels` Label-in-Name guard; `fixCmsTables` empty-row removal, single-column→presentation, empty-header demotion; `fixCmsEmptyContainers` empty-inline removal; `fixCmsEmptyTableCells` skips presentational spacers.
+- `src/components/BiographyCard.vue` — strip `aria-haspopup` on mount alongside `aria-expanded`.
+- `src/components/RequiredFormTable.vue` — download-link `aria-label` now contains the visible "Download Form".
+- `src/a11y/index.js` — `fixProhibitedAriaOnLinks` extended to headings; `fixTableCellContext` defers to the render pipeline (skips `cmstbl*`/presentation tables) and strips empty rows.
+- `tests/unit/contentSanitizer.spec.js` — corrected 2 assertions to the fixed behavior; added coverage for single-column presentation, empty-row removal, empty-header demotion, and Label-in-Name safety.
+- `package.json` — version bump to 1.5.53.
+
 ## [1.5.52] - 2026-06-24
 
 ### test(ci) — Wire the Vue 2 unit suite into CI; add filters + lib/utils coverage; repair 10 stale assertions

@@ -72,12 +72,39 @@ describe("fixCmsTables — orphan headers", () => {
     expect(out).to.include('role="presentation"');
   });
 
-  it("leaves normal tables without role=presentation", () => {
+  it("leaves normal (multi-column) tables without role=presentation", () => {
+    const html =
+      "<table><thead><tr><th>A</th><th>B</th></tr></thead>" +
+      "<tbody><tr><td>1</td><td>2</td></tr></tbody></table>";
+    const out = fixCmsTables(html);
+    expect(out).to.not.include('role="presentation"');
+  });
+
+  it("marks single-column tables presentational (a list, not tabular data)", () => {
     const html =
       "<table><thead><tr><th>A</th></tr></thead>" +
       "<tbody><tr><td>1</td></tr></tbody></table>";
     const out = fixCmsTables(html);
-    expect(out).to.not.include('role="presentation"');
+    expect(out).to.include('role="presentation"');
+  });
+
+  it("removes empty <tr> rows (sia-r68) and unblocks header assignment", () => {
+    const html =
+      "<table><thead><tr><th>A</th><th>B</th></tr></thead>" +
+      "<tbody><tr></tr><tr><td>Illinois</td><td>42</td></tr></tbody></table>";
+    const out = fixCmsTables(html);
+    expect(out).to.not.include("<tr></tr>");
+    expect(out).to.match(/<th scope="row"[^>]*>Illinois<\/th>/);
+  });
+
+  it("demotes empty <th> corner cells to presentational spacer <td>", () => {
+    const html =
+      "<table><thead><tr><th></th><th>Score</th></tr></thead>" +
+      "<tbody><tr><td>Illinois</td><td>42</td></tr></tbody></table>";
+    const out = fixCmsTables(html);
+    // The empty header becomes a presentational <td>, not an orphan <th>.
+    expect(out).to.match(/<td[^>]*role="presentation"[^>]*><\/td>|<td[^>]*><\/td>/);
+    expect(out).to.not.match(/<th[^>]*>\s*<\/th>/);
   });
 });
 
@@ -147,16 +174,32 @@ describe("fixCmsDuplicateLinkText", () => {
 });
 
 describe("fixCmsSameHrefLinkLabels", () => {
-  it("normalizes aria-label when same-href links have different text", () => {
+  it("normalizes aria-label when unifying stays label-in-name safe", () => {
+    // Both links share the href; the shorter link's visible text ("Annual
+    // Report") is contained in the canonical ("Annual Report 2024"), so
+    // adopting it as the accessible name does not violate WCAG 2.5.3.
+    const html =
+      "<ul>" +
+      '<li><a href="/article/x">Annual Report 2024</a></li>' +
+      '<li><a href="/article/x">Annual Report</a></li>' +
+      "</ul>";
+    const out = fixCmsSameHrefLinkLabels(html);
+    expect(out).to.include('aria-label="Annual Report 2024"');
+    // Only the shorter link gets the aria-label
+    expect((out.match(/aria-label=/g) || []).length).to.equal(1);
+  });
+
+  it("does NOT unify when it would break label-in-name (WCAG 2.5.3)", () => {
+    // "Read more" is not contained in "Annual Report 2024", so overriding its
+    // accessible name would make the visible label absent from the accessible
+    // name — the exact SiteImprove sia-r14 failure. Leave it alone.
     const html =
       "<ul>" +
       '<li><a href="/article/x">Annual Report 2024</a></li>' +
       '<li><a href="/article/x">Read more</a></li>' +
       "</ul>";
     const out = fixCmsSameHrefLinkLabels(html);
-    expect(out).to.include('aria-label="Annual Report 2024"');
-    // Only the shorter link gets the aria-label
-    expect((out.match(/aria-label=/g) || []).length).to.equal(1);
+    expect(out).to.not.include('aria-label="Annual Report 2024"');
   });
 
   it("does not touch different-href links with different text", () => {

@@ -222,6 +222,14 @@ function fixCmsTables(html) {
 
   tables.forEach((table) => {
     const tableIdx = tableIdCounter++;
+    // Strip zero-cell rows first. markdown-it-multimd-table emits an empty
+    // <tr></tr> for section-label rows authored as `| Label ||` (the trailing
+    // colspan pipes drop the cell). Those empty rows are SiteImprove sia-r68
+    // "Container element is empty"; an empty *leading* row also makes
+    // getColumnCount() return 0, which aborts complex-table header assignment
+    // and cascades into sia-r77/r46. A cell-less row conveys nothing, so
+    // removing it is safe and clears all three at once.
+    removeEmptyRows(table);
     // TH elements should not carry headers attrs — they define, not
     // reference, headers. CMS authors sometimes paste tables with stale
     // headers="..." on TH cells pointing at non-existent ids (axe
@@ -231,6 +239,13 @@ function fixCmsTables(html) {
       .forEach((th) => th.removeAttribute("headers"));
     ensureTableStructure(doc, table);
 
+    // A single-column table conveys no row/column relationships — it is a
+    // list styled as a table (CMS authors do this for bordered lists, often
+    // with an empty header cell). Its cells then reference an empty/missing
+    // header and SiteImprove sia-r77 flags them as "missing context". Mark
+    // the table presentational and skip the data-table passes.
+    if (markPresentationalIfSingleColumn(doc, table)) return;
+
     // Always run the simple-table pass first — it promotes row-label
     // <td>s to <th scope="row"> and ensures <th scope="col"> on the
     // header row. Then always run the complex-table pass to assign
@@ -239,12 +254,78 @@ function fixCmsTables(html) {
     // unambiguously (H43 allows scope OR headers; explicit headers
     // attrs are the safer option across scanner interpretations).
     fixSimpleTable(doc, table);
+    // Empty <th> cells cannot label anything: left in place they are orphan
+    // headers (sia-r46 "no data cells assigned") or give referencing cells no
+    // context (sia-r77). Demote them to presentational spacer <td>s — the
+    // W3C pattern for the blank corner between row and column headers — after
+    // promotion (which may create empty <th>) and before id/headers wiring.
+    demoteEmptyHeaderCells(doc, table);
     fixComplexTable(doc, table, tableIdx);
 
     handleOrphanHeaders(doc, table);
   });
 
   return doc.body.innerHTML;
+}
+
+// Remove rows that contain no cells at all (see call site for why).
+function removeEmptyRows(table) {
+  table.querySelectorAll("tr").forEach((tr) => {
+    if (tr.querySelectorAll("th, td").length === 0) tr.remove();
+  });
+}
+
+// If no row has more than one cell, the table is single-column: it carries no
+// tabular relationships. Mark it role="presentation" and strip header
+// semantics so its cells are not treated as data cells (sia-r77). Returns
+// true when it marked the table.
+function markPresentationalIfSingleColumn(doc, table) {
+  const rows = Array.from(table.querySelectorAll("tr"));
+  if (!rows.length) return false;
+  let maxCols = 0;
+  rows.forEach((row) => {
+    let n = 0;
+    row.querySelectorAll("th, td").forEach((c) => {
+      n += parseInt(c.getAttribute("colspan") || "1", 10);
+    });
+    if (n > maxCols) maxCols = n;
+  });
+  if (maxCols > 1) return false;
+  table.setAttribute("role", "presentation");
+  table.querySelectorAll("th").forEach((th) => {
+    th.removeAttribute("scope");
+    th.removeAttribute("id");
+    // An empty header cell (CMS lists often start with `|  |`) is a bare
+    // empty container even inside a presentational table — demote it to a
+    // presentational spacer <td> so nothing can flag it.
+    if (
+      !(th.textContent || "").trim() &&
+      !th.querySelector(CELL_MEDIA_SELECTOR)
+    ) {
+      const td = doc.createElement("td");
+      td.setAttribute("role", "presentation");
+      th.parentNode.replaceChild(td, th);
+    }
+  });
+  return true;
+}
+
+// Convert empty <th> cells (no text, no media) to presentational spacer
+// <td>s so they carry no header semantics. fixCmsEmptyTableCells skips
+// role="presentation" cells, so these stay empty rather than being filled
+// with the "No data" placeholder (a blank corner is not missing data).
+function demoteEmptyHeaderCells(doc, table) {
+  table.querySelectorAll("th").forEach((th) => {
+    if ((th.textContent || "").trim()) return;
+    if (th.querySelector(CELL_MEDIA_SELECTOR)) return;
+    const td = doc.createElement("td");
+    for (const attr of th.attributes) {
+      if (attr.name === "scope" || attr.name === "id") continue;
+      td.setAttribute(attr.name, attr.value);
+    }
+    td.setAttribute("role", "presentation");
+    th.parentNode.replaceChild(td, th);
+  });
 }
 
 function ensureTableStructure(doc, table) {
@@ -710,7 +791,27 @@ function fixCmsFocusablePre(html) {
 // their enclosing element has no text.
 // ═══════════════════════════════════════════════════════════════════
 
-const EMPTY_CONTAINER_TAGS = ["P", "DIV", "SPAN", "LI"];
+const EMPTY_CONTAINER_TAGS = [
+  "P",
+  "DIV",
+  "SPAN",
+  "LI",
+  // Empty inline formatting elements (e.g. `** **` / `****` in CMS markdown
+  // renders <strong></strong>) are SiteImprove sia-r68 "Container element is
+  // empty". They carry nothing, so remove them. Footnote <sup>/<sub> wrap an
+  // <a> and are non-empty, so isElementEmpty leaves them alone.
+  "STRONG",
+  "EM",
+  "B",
+  "I",
+  "U",
+  "S",
+  "CODE",
+  "SUP",
+  "SUB",
+  "MARK",
+  "SMALL",
+];
 const HEADING_TAGS = ["H1", "H2", "H3", "H4", "H5", "H6"];
 const MEANINGFUL_CHILDREN = new Set([
   "IMG",
@@ -972,6 +1073,18 @@ function fixCmsSameHrefLinkLabels(html) {
     if (!canonical) return;
     group.forEach((a) => {
       if (accName(a).toLowerCase() === canonical.toLowerCase()) return;
+      // WCAG 2.5.3 Label in Name (Level A): the accessible name must contain
+      // the visible label text. Overriding a link's accessible name with a
+      // sibling's longer text breaks that whenever the link's own visible
+      // text isn't a substring of the canonical — and SiteImprove sia-r14
+      // then flags the exact mismatch this plugin introduced (observed on
+      // /about/dicra/, researchhub articles, and NOFO funding bodies). Only
+      // unify when it stays label-in-name safe; otherwise leave the visible
+      // text to serve as the accessible name.
+      const visible = (a.textContent || "").replace(/\s+/g, " ").trim();
+      if (visible && !canonical.toLowerCase().includes(visible.toLowerCase())) {
+        return;
+      }
       if (!a.getAttribute("aria-label")) {
         a.setAttribute("aria-label", canonical);
         changed = true;
@@ -1028,6 +1141,9 @@ function fixCmsEmptyTableCells(html) {
 
   let changed = false;
   cells.forEach((cell) => {
+    // Presentational spacer cells (e.g. the blank corner produced by
+    // demoteEmptyHeaderCells) are intentionally empty — don't fill them.
+    if (cell.getAttribute("role") === "presentation") return;
     if ((cell.textContent || "").trim()) return;
     if (cell.querySelector(CELL_MEDIA_SELECTOR)) return;
     cell.innerHTML = EMPTY_CELL_FILL;

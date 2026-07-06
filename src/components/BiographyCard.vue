@@ -82,9 +82,15 @@ import { renderToHtml } from "@/services/Markdown";
 import { goToSearch } from "@/utils/search";
 export default {
   mounted() {
+    // Vuetify's v-tooltip injects aria-expanded AND aria-haspopup="true" onto
+    // the activator via v-bind="attrs". On these <h2> author names that yields
+    // ARIA the heading role does not support — SiteImprove sia-r18 "ARIA
+    // attribute unsupported or prohibited" (WCAG 4.1.2) on /about/composition-
+    // and-membership/ and /about/units/*. Strip both; the tooltip still works.
     const els = document.getElementsByClassName("author-name");
     for (let i = 0, len = els.length; i < len; ++i) {
       els[i].removeAttribute("aria-expanded");
+      els[i].removeAttribute("aria-haspopup");
     }
   },
   methods: {
