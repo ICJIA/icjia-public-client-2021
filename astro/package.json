@@ -52,7 +52,7 @@
     "markdown-it-implicit-figures": "^0.10.0",
     "markdown-it-link-attributes": "^3.0.0",
     "markdown-it-multimd-table": "^4.1.0",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.0",
     "tailwindcss": "^4.3.0"
   },
   "devDependencies": {
