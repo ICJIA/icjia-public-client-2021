@@ -82,6 +82,19 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.54] - 2026-08-02
+
+### fix(csp) — Add mail.icjia.cloud to connect-src so the mail forms survive CSP enforcement
+
+A grant-status submission surfaced a **report-only** CSP violation for `https://mail.icjia.cloud/internet/grant-status`: the nodemailer relay origin was missing from `connect-src`. Root cause of the gap: the 2026-04-12 CSP audit exercised page **loads** only, never a form **submit**, and this origin only appears in network traffic at submit time. Because the policy is report-only, nothing is blocked today (verified live: CORS preflight from the site origin returns 204 with `access-control-allow-origin: *`, and the mail server is healthy) — but both mail forms (Grant Status and LAP Request, the only submit targets on this origin) would break the day the policy is promoted to enforcing. A single bare-origin entry covers all `/internet/*` mail routes on every page of the site.
+
+Not changed, deliberately: the Vue site's `form-action` directive (the forms submit via axios/XHR, which `connect-src` governs — `form-action` only applies to native HTML form navigation), and the Astro rebuild's `_headers` (it already lists `mail.icjia.cloud` in both `connect-src` and `form-action`).
+
+**Files:**
+
+- `netlify.toml` — add `https://mail.icjia.cloud` to `connect-src`; document the origin — and why the page-load-only audit missed it — in the allowlist comment block.
+- `package.json` — version bump to 1.5.54.
+
 ## [1.5.53] - 2026-07-06
 
 ### fix(a11y) — Clear five SiteImprove findings on the live Vue 2 SPA (sia-r14/r18/r68/r77/r46)

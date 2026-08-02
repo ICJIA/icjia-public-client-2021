@@ -39,6 +39,10 @@
     #     islands that connect to its own Strapi, so it must be in connect-src
     #     below — else they report-only-violate now and BREAK when this policy is
     #     promoted to enforcing. Add other sub-apps' API origins as they adopt it.
+    #   - mail.icjia.cloud (nodemailer relay): axios POST target of the Grant
+    #     Status and LAP Request form SUBMITS. Missed by the 2026-04-12 audit
+    #     because it only exercised page loads, never a submit. One origin
+    #     entry covers all /internet/* mail routes on every page.
     #
     # To promote to enforcement when you have monitoring in place:
     #   rename "Content-Security-Policy-Report-Only" → "Content-Security-Policy"
@@ -56,7 +60,7 @@
     #     Re-add it inside the enforcement block when promoting:
     #       …; form-action 'self' https://agency.icjia-api.cloud;
     #       upgrade-insecure-requests
-    Content-Security-Policy-Report-Only = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.icjia.cloud; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://agency.icjia-api.cloud https://agency.icjia.cloud https://researchhub.icjia-api.cloud https://ari.icjia-api.cloud https://plausible.icjia.cloud; worker-src 'self'; frame-src 'self' https://www.youtube.com https://player.vimeo.com https://public.tableau.com https://docs.google.com https://forms.office.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://agency.icjia-api.cloud"
+    Content-Security-Policy-Report-Only = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.icjia.cloud; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://agency.icjia-api.cloud https://agency.icjia.cloud https://researchhub.icjia-api.cloud https://ari.icjia-api.cloud https://mail.icjia.cloud https://plausible.icjia.cloud; worker-src 'self'; frame-src 'self' https://www.youtube.com https://player.vimeo.com https://public.tableau.com https://docs.google.com https://forms.office.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://agency.icjia-api.cloud"
     # Hide Express server framework disclosure (SEC-14)
     X-Powered-By = ""
 
