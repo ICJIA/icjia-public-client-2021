@@ -62,7 +62,7 @@
     "markdown-link": "^0.1.1",
     "markdown-toc": "^1.2.0",
     "material-design-icons-iconfont": "^6.1.0",
-    "nanoid": "^3.1.25",
+    "nanoid": "^3.3.17",
     "regenerator-runtime": "^0.13.9",
     "sitemap": "^7.0.0",
     "slug": "^5.1.0",
