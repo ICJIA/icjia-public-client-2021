@@ -37,8 +37,20 @@
             "
           >
             <div style="height: 15px; background: #fff !important"></div>
-            <HomeNews :items="news" :loading="loading"></HomeNews
-          ></v-col>
+            <HomeNews :items="news" :loading="loading"></HomeNews>
+            <div class="text-center py-4" v-if="!loading">
+              <v-btn
+                dark
+                small
+                color="#0d4474"
+                to="/news/"
+                class="news-archive-btn"
+                >Browse the news archive<v-icon right small
+                  >mdi-arrow-right</v-icon
+                ></v-btn
+              >
+            </div>
+          </v-col>
           <v-col
             cols="12"
             md="6"
@@ -277,4 +289,18 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+/* v-btn renders as an <a> when :to is set, so the global `a:hover` rule in
+   app.css (color: #000 !important) repaints this label black on the navy
+   background — ~2.1:1, effectively invisible. Darken the button instead and
+   keep the label and icon white. Same collision HomeSplashV2 works around
+   with .splash-button:hover. */
+.news-archive-btn:hover {
+  background-color: #092f51 !important;
+  color: #fff !important;
+}
+
+.news-archive-btn:hover .v-icon {
+  color: #fff !important;
+}
+</style>

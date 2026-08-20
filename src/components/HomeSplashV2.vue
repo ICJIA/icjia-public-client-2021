@@ -67,7 +67,12 @@
             system in Illinois is efficient, effective, and equitable.
           </div>
           <div class="mt-7 hidden-md-and-up text-center">
-            <v-btn dark small color="#0d4474" to="/grants/" class="mb-3"
+            <v-btn
+              dark
+              small
+              color="#0d4474"
+              to="/grants/"
+              class="splash-button mb-3"
               >Apply for funding</v-btn
             ><br />
             <v-btn
@@ -123,7 +128,12 @@ export default {
   font-weight: 900;
 }
 
+/* v-btn renders as an <a> when :to is set, so the global `a:hover` rule in
+   app.css (color: #000 !important) repaints these labels black on the navy
+   background. Darken the button and hold the label white, same treatment as
+   the news-archive button on Home.vue. */
 .splash-button:hover {
+  background-color: #092f51 !important;
   color: #fff !important;
 }
 </style>

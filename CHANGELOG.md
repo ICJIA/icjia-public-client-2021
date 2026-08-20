@@ -82,6 +82,77 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.55] - 2026-08-20
+
+### feat(home) — Surface the news archive with a button under the home page news list
+
+Users reported not knowing that older news stories are still on the site. `/news/` has always
+been the complete archive — `GET_ALL_NEWS_QUERY` fetches every post with no limit, paginated 15
+at a time with category filters — but the only route to it from the home page was the `MENU`
+dropdown in the `News & Information` `WidgetBar`, which reads as navigation chrome rather than
+as "there is more here." The home page shows only the 5 most recent items (`totalNewsItems`)
+and then simply stopped, with no affordance at the point where a reader runs out of stories.
+
+A **Browse the news archive** button now sits centered directly beneath the news column, using
+the existing home page button treatment (`dark small color="#0d4474"`, same as the splash CTAs)
+with a trailing `mdi-arrow-right` action icon — the same label-plus-trailing-icon CTA pattern as
+`Hub/AppView.vue`. It is gated on `v-if="!loading"` so it does not appear beside the skeleton
+loaders. On mobile, where the two columns stack, it lands between the last news card and the
+Funding/Meetings/Employment tabs.
+
+### fix(a11y) — Keep the button label legible on hover
+
+`v-btn` renders as an `<a>` when `:to` is set, so the global `a:hover { color: #000 !important }`
+rule in `src/assets/app.css` repainted the label black on the navy background — **2.1:1**, which
+reads as the text nearly vanishing. A scoped `.news-archive-btn:hover` rule darkens the button to
+`#092f51` and holds the label and icon at `#fff` instead, so hover is now a visible affordance
+rather than a legibility failure. This is the same collision `HomeSplashV2` already works around
+at `.splash-button:hover`.
+
+Verified in a real hover state via CDP (`:hover` matched, computed styles read off the live
+element), not simulated:
+
+| state | label | background | contrast |
+| --- | --- | --- | --- |
+| rest | `#ffffff` | `#0d4474` | 10.0:1 |
+| hover | `#ffffff` | `#092f51` | 13.7:1 |
+
+Also verified: axe-core AA on the rendered home page — **0 violations**; the `mdi-arrow-right`
+icon carries Vuetify's default `aria-hidden="true"`, so the accessible name stays the label text;
+desktop and 414px mobile screenshots confirm placement.
+
+Not changed, deliberately: `HomeNews.vue` stays a pure list renderer; the `WidgetBar` menu keeps
+its existing `News` item (the button is an addition, not a replacement); and the global `a:hover`
+rule is left alone — it is load-bearing for ordinary body links across the site, so the fix is
+scoped to this button rather than applied to every anchor-rendered `v-btn`.
+
+The same hover treatment is applied to the four splash CTAs in `HomeSplashV2.vue`, which share
+this root cause. The mobile-breakpoint **Apply for funding** button was missing the
+`splash-button` class entirely (it carried only `mb-3`), so it inherited the full black-on-navy
+hover; it now has the class. `.splash-button:hover` itself is upgraded from only restoring the
+label color to also darkening the background to `#092f51`, so all five navy CTAs on the home page
+now behave identically on hover. Those buttons sit on a `rgba(100, 100, 100, 0.9)` panel over the
+hero image, where darkening also *increases* the button-to-panel separation (1.75:1 → 2.38:1)
+rather than reducing it.
+
+Hover verified per button by driving a real pointer via CDP and reading computed styles off the
+live element with `:hover` matching — including the mobile-only variant, temporarily unhidden in
+the browser so the real node could be hovered:
+
+| button | rest | hover |
+| --- | --- | --- |
+| Browse the news archive (`Home.vue`) | 10.0:1 | 13.7:1 |
+| Apply for funding — desktop | 10.0:1 | 13.7:1 |
+| Apply for funding — mobile (was broken) | 10.0:1 | 13.7:1 |
+
+**Files:**
+
+- `src/views/Home/Home.vue` — add the archive button below `<HomeNews>` in the left column;
+  add the scoped `.news-archive-btn:hover` rule.
+- `src/components/HomeSplashV2.vue` — add the missing `splash-button` class to the
+  mobile-breakpoint "Apply for funding" button; darken `.splash-button:hover`.
+- `package.json` — version bump to 1.5.55.
+
 ## [1.5.54] - 2026-08-02
 
 ### fix(csp) — Add mail.icjia.cloud to connect-src so the mail forms survive CSP enforcement
