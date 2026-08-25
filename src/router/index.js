@@ -24,6 +24,7 @@ import { external } from "@/router/external";
 import { search } from "@/router/search";
 import { forms } from "@/router/forms";
 import { singles } from "@/router/singles";
+import { homicide } from "@/router/homicide";
 
 // import { preview } from "@/router/preview";
 Vue.use(VueRouter);
@@ -39,6 +40,7 @@ const home = [
 const routes = [
   ...home,
   ...singles,
+  ...homicide,
   ...forms,
   ...external,
   ...redirects,

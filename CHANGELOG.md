@@ -82,6 +82,71 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.56] - 2026-08-25
+
+### feat(homicide) — New Illinois Homicide Reporting page at `/homicide/`
+
+The Illinois Criminal Justice Information Act (20 ILCS 3930) requires ICJIA to publish data on
+homicides and aggravated assaults involving a firearm reported by Illinois law enforcement
+agencies. This release adds the publication page for that data product, built from the approved
+stakeholder mockup (`Homicide Reporting Web Page Mockup.pptx`, September 2026 release).
+
+The page is a standalone, code-managed view (not Strapi-driven): statutory intro (with the
+20 ILCS 3930 link to ilga.gov), Dashboard Overview, Understanding Clearances, Data Updates and
+Reporting, Supplementary Reports and Data (downloads), and Additional NIBRS Information (link
+to ilucr.nibrs.com). Where the dashboard will eventually be embedded, a grey `v-sheet`
+placeholder ("Homicide Reporting Dashboard — Coming soon") holds the slot; when the embed URL
+exists, it is a drop-in replacement of that one element in `src/views/Homicide/Homicide.vue`.
+A bold centered "Last updated" footnote sits directly beneath the box (the `Sandbox.vue`
+footnote idiom), to be refreshed with each quarterly release.
+
+**Downloads served from `public/homicide/` — a first for this repo.** All prior downloads live
+on Strapi (`agency.icjia-api.cloud/uploads/`). This quarterly data product is instead versioned
+with the code: `homicide-reporting-sept2026.pdf` (the Homicide and Firearm Assault Report,
+September 2026) plus three datasets (`quarterly_totals`, `annual_totals`, `12_month_totals`,
+all `_sept2026.xlsx`). Filenames are dated per release; a quarterly update means replacing the
+files, the four links in the view, and the four `netlify.toml` header paths in one commit.
+
+Wiring, in full:
+
+- `src/router/homicide/index.js` (new) — lazy route, spread into `src/router/index.js` before
+  the 404 catch-all. Vue Router's non-strict matching serves both `/homicide` and `/homicide/`.
+- `generators/searchIndexAndSitemap.js` — `/homicide/` added to `manualIndex`, the only
+  registration hook for non-Strapi routes. Verified present in the generated `sitemap.xml`.
+  Note: `searchIndex.json` has no manual hook, so the page is not findable via internal site
+  search — a pre-existing limitation for all non-CMS routes (`/status/`, `/forms/*`, etc.).
+- `netlify.toml` — `Cache-Control: public, max-age=86400, stale-while-revalidate=604800` on the
+  four downloads via **exact paths, deliberately not `/homicide/*`**: a splat would also match
+  the `/homicide/` SPA route itself and override `index.html`'s `must-revalidate`.
+- Download clicks fire the standard non-blocking Plausible `file_download` event (same pattern
+  as `AttachmentList.vue`; no `Outbound Link` event since these are same-origin).
+
+### fix(a11y) — Download buttons ship with the anchor-hover fix from day one
+
+The four download CTAs are anchor-rendered `v-btn`s (`href` set), so the global
+`a:hover { color: #000 !important }` rule in `app.css` would repaint their labels black on navy
+— the same collision fixed on the home page CTAs in v1.5.55, and part of the deferred sitewide
+sweep. The scoped `.download-btn:hover` rule darkens the button and holds the label white
+(plus `text-decoration: none` to guard against `.markdown-body a:hover`). Verified in a real
+hover state via CDP with `:hover` matching on the live element:
+
+| state | label | background | contrast |
+| --- | --- | --- | --- |
+| rest | `#ffffff` | `#0d4474` | 10.0:1 |
+| hover | `#ffffff` | `#092f51` | 13.7:1 |
+
+Verified: axe-core AA on the rendered page — **0 violations**; heading hierarchy h1 → h2 → h3
+with no skips; the runtime a11y pass correctly suffixes the three new-tab links with "(opens in
+new tab)"; page title `ICJIA | Homicide Reporting` via the standard `metaInfo()` pattern; all
+four downloads return 200 with correct MIME types and byte-exact sizes; lint clean; unit suite
+365 passing, 6 pending (unchanged baseline — the pending are the gitignored config.spec
+fixtures).
+
+Not changed, deliberately: no `menus.json` / `contextMenus.json` entries (standalone URL by
+stakeholder decision — nav placement can follow); no per-page meta description (no page on the
+site sets one); page copy is verbatim from the mockup, which carries one unresolved review
+comment ("add how many reporting periods are excluded") — copy edits can land as a follow-up.
+
 ## [1.5.55] - 2026-08-20
 
 ### feat(home) — Surface the news archive with a button under the home page news list

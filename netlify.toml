@@ -115,6 +115,31 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
+# Homicide reporting downloads (linked from src/views/Homicide/Homicide.vue).
+# Exact paths, NOT "/homicide/*" — a splat would also match the /homicide/
+# SPA route itself and override index.html's must-revalidate. Filenames are
+# dated per quarterly release, so a day of caching is safe; each release
+# ships new filenames (update these blocks when replacing the files).
+[[headers]]
+  for = "/homicide/homicide-reporting-sept2026.pdf"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+[[headers]]
+  for = "/homicide/homicide-reporting-quarterly_totals_sept2026.xlsx"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+[[headers]]
+  for = "/homicide/homicide-reporting-annual_totals_sept2026.xlsx"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+[[headers]]
+  for = "/homicide/homicide-reporting-12_month_totals_sept2026.xlsx"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
 # ──────────────────────────────────────────────────────────────────────────
 # Astro migration branch (feat/astro-migration)
 #
