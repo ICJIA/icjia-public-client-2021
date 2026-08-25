@@ -129,9 +129,10 @@
 <script>
 // The Tableau dashboard is authored at a fixed 1366×2600 (#tab-dashboard-region)
 // and does not reflow. The frame gets a little extra for the bottom toolbar so
-// no internal scrollbar appears and steals width; when the content column is
-// narrower than the frame, the whole embed scales down proportionally instead
-// of clipping on the right.
+// no internal scrollbar appears and steals width; the whole embed then scales
+// proportionally to match the content column width — down on narrow viewports
+// (instead of clipping on the right) and up on wide ones (so the dashboard is
+// as wide as the text).
 const EMBED_WIDTH = 1390;
 const EMBED_HEIGHT = 2675;
 
@@ -177,7 +178,7 @@ export default {
       const wrap = this.$el.querySelector(".dashboard-embed");
       const avail =
         wrap && wrap.parentElement ? wrap.parentElement.clientWidth : 0;
-      this.embedScale = avail > 0 ? Math.min(1, avail / this.embedWidth) : 1;
+      this.embedScale = avail > 0 ? avail / this.embedWidth : 1;
     },
     trackDownload(url) {
       // Fire-and-forget analytics; do NOT block the browser's native download

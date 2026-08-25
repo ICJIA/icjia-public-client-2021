@@ -82,6 +82,25 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.59] - 2026-08-25
+
+### feat(homicide) — Dashboard embed scales up to the full text-column width
+
+Stakeholder request: the dashboard should be as wide as the prose. Previously the embed
+rendered at its native 1390px and only scaled *down* on narrow viewports; on wide monitors it
+sat centered, narrower than the text. The `Math.min(1, …)` cap on the scale factor is removed,
+so the embed now scales proportionally to match the content column in both directions — e.g.
+2553px (scale 1.84) on a 2878px viewport, exactly matching the paragraph width with aligned
+left edges. Narrow-viewport behavior is unchanged (1043px at a 1200px viewport, no clipping,
+no page overflow).
+
+Known tradeoff, accepted: Tableau draws chart marks on canvas at the frame's native
+resolution, so upscaling softens them slightly on standard-DPI displays. The alternative — a
+wider authored viz — lives in the Tableau workbook (data team), not the embed.
+
+Verified: width/alignment measured at 2878px and 1200px viewports; axe-core AA — 0 violations;
+lint clean.
+
 ## [1.5.58] - 2026-08-25
 
 ### chore(homicide) — Remove the page-level "Last updated" footnote
