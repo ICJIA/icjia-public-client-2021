@@ -28,7 +28,7 @@
             method.
           </p>
 
-          <div class="mb-2">
+          <div class="mb-10">
             <div class="dashboard-embed mx-auto" :style="embedWrapStyle">
               <iframe
                 src="https://public.data.illinois.gov/t/Public/views/PA104-0197Clearances/CrimeClearancesinIllinoisForHomicideandAggravatedAssaultwithaFirearm?:embed=yes&amp;:showVizHome=no&amp;:tabs=no&amp;:toolbar=bottom"
@@ -40,12 +40,6 @@
                 title="Crime Clearances in Illinois for Homicide and Aggravated Assault with a Firearm"
               ></iframe>
             </div>
-          </div>
-          <div
-            class="text-center mb-10"
-            style="font-size: 12px; font-weight: bold"
-          >
-            Last updated: August 25, 2026
           </div>
 
           <h2>Understanding Clearances</h2>

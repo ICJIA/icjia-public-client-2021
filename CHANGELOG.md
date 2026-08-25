@@ -82,6 +82,17 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.58] - 2026-08-25
+
+### chore(homicide) — Remove the page-level "Last updated" footnote
+
+The Tableau dashboard displays its own last-updated date, so the page-level
+"Last updated: August 25, 2026" footnote beneath the embed (added in v1.5.56 for the
+placeholder era) duplicated it. Removed; the embed block takes over its bottom margin so the
+spacing before "Understanding Clearances" is unchanged. One less thing to touch in the
+quarterly refresh: the procedure is now the 4 files, the 4 hrefs in `Homicide.vue`, and the 4
+`netlify.toml` header paths.
+
 ## [1.5.57] - 2026-08-25
 
 ### feat(homicide) — Embed the live Tableau dashboard, replacing the placeholder
