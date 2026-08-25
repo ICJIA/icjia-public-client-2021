@@ -82,6 +82,41 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.57] - 2026-08-25
+
+### feat(homicide) — Embed the live Tableau dashboard, replacing the placeholder
+
+The embed for the homicide reporting dashboard arrived: a Tableau viz hosted at
+`public.data.illinois.gov` (workbook `PA104-0197Clearances`, view "Crime Clearances in
+Illinois for Homicide and Aggravated Assault with a Firearm"). The grey `v-sheet` placeholder
+from v1.5.56 is replaced by the iframe. The "Last updated" footnote stays directly beneath.
+
+**Embed sizing — measured, not taken from the generated embed code.** The supplied embed code
+carried Tableau's generic 1366×768-preset width and the viz height (1366×2640), which clipped
+the dashboard's right edge two ways: the `:toolbar=bottom` chrome made the content taller than
+the frame, so an internal vertical scrollbar stole ~15px of the fixed-width viz; and on any
+viewport narrower than ~1450px the old `max-width: 100%` shrank the frame below the viz width.
+The dashboard's actual authored size, measured off the live Tableau DOM
+(`#tab-dashboard-region`), is a fixed, non-reflowing **1366×2600**. The frame is now
+**1390×2675** (viz + toolbar/scrollbar allowance, so no internal scrollbar can appear), and
+when the content column is narrower than the frame, the whole embed scales down
+proportionally (`transform: scale`, wrapper sized to the scaled dimensions, recomputed on
+resize) — the full dashboard stays visible at every width instead of clipping. True
+phone-optimized rendering would require device layouts authored in the Tableau workbook
+itself; worth raising with the data team.
+
+`https://public.data.illinois.gov` is added to `frame-src` in netlify.toml's CSP. The policy
+is report-only today, so nothing would have been blocked either way, but it is kept accurate
+for eventual enforcement. The Tableau server itself sends no `X-Frame-Options` and no enforced
+`frame-ancestors`, so framing is permitted.
+
+Verified: the Tableau session fully bootstraps inside the frame — `startSession`,
+`bootstrapSession`, and Tableau's own `notify-first-client-render-occurred` first-paint beacon
+all returned 200 over the embed; the iframe carries the supplied accessible title (axe
+`frame-title`); responsive scaling verified at 2812px (scale 1, frame 1390), 1200px (scaled to
+the 1043px column exactly, no clip, no page overflow), and 400px mobile (336px, complete);
+axe-core AA on the rendered page — **0 violations**; no console errors; lint clean.
+
 ## [1.5.56] - 2026-08-25
 
 ### feat(homicide) — New Illinois Homicide Reporting page at `/homicide/`

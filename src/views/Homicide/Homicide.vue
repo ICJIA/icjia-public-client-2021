@@ -28,16 +28,19 @@
             method.
           </p>
 
-          <v-sheet
-            color="grey lighten-3"
-            class="dashboard-placeholder d-flex flex-column align-center justify-center text-center mb-2"
-            :height="$vuetify.breakpoint.smAndDown ? 400 : 700"
-          >
-            <div class="text-h5 font-weight-medium grey--text text--darken-3">
-              Homicide Reporting Dashboard
+          <div class="mb-2">
+            <div class="dashboard-embed mx-auto" :style="embedWrapStyle">
+              <iframe
+                src="https://public.data.illinois.gov/t/Public/views/PA104-0197Clearances/CrimeClearancesinIllinoisForHomicideandAggravatedAssaultwithaFirearm?:embed=yes&amp;:showVizHome=no&amp;:tabs=no&amp;:toolbar=bottom"
+                :width="embedWidth"
+                :height="embedHeight"
+                frameborder="0"
+                style="border: 0; transform-origin: top left"
+                :style="{ transform: `scale(${embedScale})` }"
+                title="Crime Clearances in Illinois for Homicide and Aggravated Assault with a Firearm"
+              ></iframe>
             </div>
-            <div class="mt-2 grey--text text--darken-3">Coming soon</div>
-          </v-sheet>
+          </div>
           <div
             class="text-center mb-10"
             style="font-size: 12px; font-weight: bold"
@@ -130,9 +133,20 @@
 </template>
 
 <script>
+// The Tableau dashboard is authored at a fixed 1366×2600 (#tab-dashboard-region)
+// and does not reflow. The frame gets a little extra for the bottom toolbar so
+// no internal scrollbar appears and steals width; when the content column is
+// narrower than the frame, the whole embed scales down proportionally instead
+// of clipping on the right.
+const EMBED_WIDTH = 1390;
+const EMBED_HEIGHT = 2675;
+
 export default {
   data() {
     return {
+      embedWidth: EMBED_WIDTH,
+      embedHeight: EMBED_HEIGHT,
+      embedScale: 1,
       datasets: [
         {
           label: "Quarterly Dataset",
@@ -149,7 +163,28 @@ export default {
       ],
     };
   },
+  computed: {
+    embedWrapStyle() {
+      return {
+        width: `${Math.round(this.embedWidth * this.embedScale)}px`,
+        height: `${Math.round(this.embedHeight * this.embedScale)}px`,
+      };
+    },
+  },
+  mounted() {
+    this.setEmbedScale();
+    window.addEventListener("resize", this.setEmbedScale);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.setEmbedScale);
+  },
   methods: {
+    setEmbedScale() {
+      const wrap = this.$el.querySelector(".dashboard-embed");
+      const avail =
+        wrap && wrap.parentElement ? wrap.parentElement.clientWidth : 0;
+      this.embedScale = avail > 0 ? Math.min(1, avail / this.embedWidth) : 1;
+    },
     trackDownload(url) {
       // Fire-and-forget analytics; do NOT block the browser's native download
       // (no preventDefault — the anchor's href triggers the download directly).
@@ -180,5 +215,11 @@ export default {
   background-color: #092f51 !important;
   color: #fff !important;
   text-decoration: none !important;
+}
+
+/* Sized by embedWrapStyle to the scaled dashboard dimensions; hidden overflow
+   only guards sub-pixel rounding at the scaled edge. */
+.dashboard-embed {
+  overflow: hidden;
 }
 </style>
