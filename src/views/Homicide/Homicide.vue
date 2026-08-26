@@ -74,12 +74,12 @@
               large
               block
               color="#0d4474"
-              href="/homicide/homicide-reporting-sept2026.pdf"
+              href="/homicide/homicide-reporting-sept2026-A0.pdf"
               target="_blank"
               rel="noopener noreferrer"
               class="download-btn"
               @click="
-                trackDownload('/homicide/homicide-reporting-sept2026.pdf')
+                trackDownload('/homicide/homicide-reporting-sept2026-A0.pdf')
               "
             >
               View/Download PDF

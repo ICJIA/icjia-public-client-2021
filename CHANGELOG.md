@@ -82,6 +82,18 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.61] - 2026-08-26
+
+### chore(homicide) — Serve the remediated PDF under its supplied `-A0` filename
+
+Follow-up to v1.5.60, which had swapped the remediated bytes in under the old filename. The
+`-A0` suffix must appear in the served filename: the file is renamed to
+`homicide-reporting-sept2026-A0.pdf`, the two references in `Homicide.vue` (button href +
+Plausible trackDownload) and the exact-path `netlify.toml` header block now point at it, and
+the old path is removed (it now falls through to the SPA's 404 view). The new URL has never
+been cached, so every visitor — including anyone whose browser held the pre-remediation file
+under the old URL — gets the remediated PDF immediately.
+
 ## [1.5.60] - 2026-08-26
 
 ### chore(homicide) — Replace report PDF with the accessibility-remediated version

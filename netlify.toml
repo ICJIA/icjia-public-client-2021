@@ -121,7 +121,7 @@
 # dated per quarterly release, so a day of caching is safe; each release
 # ships new filenames (update these blocks when replacing the files).
 [[headers]]
-  for = "/homicide/homicide-reporting-sept2026.pdf"
+  for = "/homicide/homicide-reporting-sept2026-A0.pdf"
   [headers.values]
     Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
 
