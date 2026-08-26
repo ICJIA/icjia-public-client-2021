@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Publishing Isn't Promotion — ICJIA Web Team Briefing</title>
+<meta name="description" content="Why deliberate outreach (CJ Dispatch, social, a Research Hub article) beats passive placement for new state-mandated pages.">
+</head>
+<body>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+  :root {
+    --paper: #f6f8fb;
+    --card: #ffffff;
+    --ink: #182a3d;
+    --muted: #54677c;
+    --line: #d8e1ec;
+    --navy: #1b4d80;
+    --navy-deep: #0f3355;
+    --accent: #b97514;
+    --accent-soft: #f4e3c4;
+    --good: #2e7d4f;
+    --bar-track: #e7edf4;
+    --bar-passive: #8fa3b8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0e1723;
+      --card: #16242f;
+      --ink: #e4ecf5;
+      --muted: #97a9bc;
+      --line: #2a3c50;
+      --navy: #74a8dc;
+      --navy-deep: #a9c8e9;
+      --accent: #e2a147;
+      --accent-soft: #3a2f1a;
+      --good: #5cb884;
+      --bar-track: #1e2f40;
+      --bar-passive: #51677e;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0e1723;
+    --card: #16242f;
+    --ink: #e4ecf5;
+    --muted: #97a9bc;
+    --line: #2a3c50;
+    --navy: #74a8dc;
+    --navy-deep: #a9c8e9;
+    --accent: #e2a147;
+    --accent-soft: #3a2f1a;
+    --good: #5cb884;
+    --bar-track: #1e2f40;
+    --bar-passive: #51677e;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+    font-size: 1.0rem;
+    line-height: 1.62;
+    margin: 0;
+  }
+  .wrap {
+    max-width: 60rem;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 4rem;
+  }
+  .measure { max-width: 46rem; }
+
+  .eyebrow, .stat-label, .bar-name, .step-when, .card-kicker, .seg-label {
+    font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
+  }
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+  .eyebrow strong { color: var(--accent); font-weight: 700; }
+
+  h1 {
+    font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.1rem, 5vw, 3.1rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 1rem;
+    text-wrap: balance;
+    color: var(--ink);
+  }
+  h1 .kn { color: var(--navy); }
+  .standfirst {
+    font-size: 1.13rem;
+    line-height: 1.6;
+    color: var(--ink);
+    margin: 0 0 0.4rem;
+    text-wrap: pretty;
+  }
+  .standfirst em { color: var(--muted); }
+
+  h2 {
+    font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 700;
+    font-size: 1.32rem;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin: 0 0 0.9rem;
+    text-wrap: balance;
+  }
+  section { margin-top: 3rem; }
+  .sec-num {
+    display: inline-block;
+    font-family: "Libre Franklin", Arial, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-top: 3px solid var(--accent);
+    padding-top: 0.45rem;
+    margin-bottom: 0.55rem;
+  }
+  p { margin: 0 0 1rem; }
+  p.tight { margin-bottom: 0.4rem; }
+  strong.num {
+    font-family: "Libre Franklin", Arial, sans-serif;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--navy);
+    white-space: nowrap;
+  }
+
+  /* ── Stat strip ─────────────────────────────────────────── */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10.2rem, 1fr));
+    gap: 0.8rem;
+    margin: 2.2rem 0 0;
+  }
+  .stat {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--navy);
+    border-radius: 4px;
+    padding: 0.95rem 1rem 0.85rem;
+  }
+  .stat.hot { border-top-color: var(--accent); }
+  .stat-value {
+    font-family: "Libre Franklin", Arial, sans-serif;
+    font-weight: 800;
+    font-size: 1.9rem;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+  .stat.hot .stat-value { color: var(--accent); }
+  .stat-label {
+    font-size: 0.78rem;
+    line-height: 1.4;
+    color: var(--muted);
+  }
+
+  /* ── Share bar (stacked) ────────────────────────────────── */
+  .sharebar { margin: 1.4rem 0 0.4rem; }
+  .sharebar-track {
+    display: flex;
+    height: 2rem;
+    border-radius: 3px;
+    overflow: hidden;
+    background: var(--bar-track);
+  }
+  .seg { display: flex; align-items: center; padding: 0 0.6rem; min-width: 0; }
+  .seg-hub { background: var(--navy); width: 48%; }
+  .seg-rest { background: var(--bar-passive); width: 52%; }
+  .seg-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #f6f8fb;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sharebar-caption { font-size: 0.85rem; color: var(--muted); margin-top: 0.5rem; }
+
+  /* ── Comparator bars ────────────────────────────────────── */
+  .bars {
+    display: grid;
+    gap: 0.65rem;
+    margin: 1.5rem 0 0.6rem;
+  }
+  .bar-row {
+    display: grid;
+    grid-template-columns: minmax(11rem, 16rem) 1fr;
+    gap: 0.8rem;
+    align-items: center;
+  }
+  .bar-name { font-size: 0.82rem; line-height: 1.35; color: var(--ink); }
+  .bar-name small { color: var(--muted); display: block; font-size: 0.72rem; }
+  .bar-track { background: var(--bar-track); border-radius: 3px; height: 1.35rem; position: relative; }
+  .bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--bar-passive);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 2.4rem;
+  }
+  .bar-fill.win { background: var(--navy); }
+  .bar-val {
+    font-family: "Libre Franklin", Arial, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: #f6f8fb;
+    padding: 0 0.5rem;
+    white-space: nowrap;
+  }
+  .bars-caption { font-size: 0.85rem; color: var(--muted); }
+
+  /* ── Channel cards ──────────────────────────────────────── */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 0.9rem;
+    margin: 1.4rem 0 1.2rem;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1.1rem 1.15rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .card-kicker {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .card h3 {
+    font-family: "Libre Franklin", Arial, sans-serif;
+    font-weight: 700;
+    font-size: 1.02rem;
+    margin: 0;
+    line-height: 1.25;
+  }
+  .card p { font-size: 0.9rem; line-height: 1.55; margin: 0; color: var(--ink); }
+  .card .payoff {
+    font-family: "Libre Franklin", Arial, sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--navy);
+    border-top: 1px solid var(--line);
+    padding-top: 0.55rem;
+    margin-top: auto;
+  }
+
+  /* ── Playbook ───────────────────────────────────────────── */
+  .steps { display: grid; gap: 0; margin: 1.4rem 0 0; counter-reset: step; }
+  .step {
+    display: grid;
+    grid-template-columns: 2.1rem minmax(6.4rem, 8.5rem) 1fr;
+    gap: 0.85rem;
+    padding: 0.72rem 0;
+    border-top: 1px solid var(--line);
+  }
+  .step:last-child { border-bottom: 1px solid var(--line); }
+  .step::before {
+    counter-increment: step;
+    content: counter(step);
+    font-family: "Libre Franklin", Arial, sans-serif;
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.45;
+  }
+  .step-when {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--muted);
+    line-height: 1.5;
+    padding-top: 0.22rem;
+  }
+  .step-what { font-size: 0.92rem; line-height: 1.55; }
+  .step-what strong { font-family: "Libre Franklin", Arial, sans-serif; font-size: 0.88rem; }
+
+  /* ── Evidence aside ─────────────────────────────────────── */
+  .evidence {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--navy);
+    border-radius: 4px;
+    padding: 1.05rem 1.25rem 0.95rem;
+    margin: 1.5rem 0 1.2rem;
+  }
+  .evidence h3 {
+    font-family: "Libre Franklin", Arial, sans-serif;
+    font-weight: 700;
+    font-size: 0.98rem;
+    margin: 0 0 0.55rem;
+    line-height: 1.3;
+  }
+  .evidence ul { margin: 0; padding-left: 1.15rem; }
+  .evidence li { font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.45rem; }
+  .evidence li:last-child { margin-bottom: 0; }
+
+  .linkx {
+    display: block;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    background: var(--bar-track);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.55rem 0.75rem;
+    margin: 0.9rem 0;
+    overflow-wrap: anywhere;
+    color: var(--ink);
+  }
+  .linkx b { color: var(--accent); font-weight: 600; }
+
+  /* ── Bottom line ────────────────────────────────────────── */
+  .bottomline {
+    margin-top: 3rem;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--accent);
+    border-radius: 4px;
+    padding: 1.4rem 1.5rem 1.3rem;
+  }
+  .bottomline h2 { margin-bottom: 0.6rem; }
+  .bottomline p { margin-bottom: 0.55rem; }
+  .bottomline p:last-child { margin-bottom: 0; }
+
+  .foot {
+    margin-top: 2.6rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--muted);
+    font-family: "Libre Franklin", Arial, sans-serif;
+  }
+  .foot p { margin: 0 0 0.45rem; }
+
+  a { color: var(--navy); }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .stat, .card { transition: border-color 160ms ease; }
+  }
+
+  @media print {
+    :root {
+      --paper: #ffffff; --card: #ffffff; --ink: #14212f; --muted: #4c5b6b;
+      --line: #c9d3de; --navy: #1b4d80; --navy-deep: #0f3355;
+      --accent: #a96608; --accent-soft: #f4e3c4;
+      --bar-track: #e9edf2; --bar-passive: #7e93a9;
+    }
+    body { font-size: 9.4pt; }
+    .wrap { padding: 0; max-width: none; }
+    section { margin-top: 1.1rem; }
+    .stats { margin-top: 1rem; gap: 0.45rem; }
+    .stat, .card, .evidence { break-inside: avoid; box-shadow: none; }
+    .step { padding: 0.4rem 0; }
+    .bottomline { margin-top: 1.2rem; break-inside: avoid; }
+    .bar-fill, .seg-hub, .seg-rest { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">ICJIA Web Team · Briefing · August 26, 2026 · <strong>For discussion</strong></p>
+    <h1>Publishing isn't <span class="kn">promotion</span></h1>
+    <p class="standfirst measure">
+      The Homicide Reporting page is live and working. Now it needs an audience — and our own
+      analytics say that audience will not come from passive placement, whether that's a menu link
+      or a news item on the homepage. It comes when we push:
+      the <strong>CJ&nbsp;Dispatch</strong> list, <strong>social channels</strong>, and a
+      <strong>Research&nbsp;Hub article</strong>. Here is the evidence, and a repeatable playbook
+      for this page and every state-mandated page that follows it.
+    </p>
+
+    <div class="stats">
+      <div class="stat hot">
+        <div class="stat-value">9</div>
+        <div class="stat-label">visitors to /homicide in its first days, unannounced — the passive baseline</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">4 in 5</div>
+        <div class="stat-label">visits start on an interior page — most visitors never see the homepage</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">48%</div>
+        <div class="stat-label">of all pageviews happen in the Research Hub</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">4,000+</div>
+        <div class="stat-label">CJ Dispatch subscribers — opted-in criminal-justice professionals</div>
+      </div>
+      <div class="stat hot">
+        <div class="stat-value">~2%</div>
+        <div class="stat-label">of traffic is <em>credited</em> to social — a floor, not the truth: untagged app &amp; email clicks are filed under "Direct"</div>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-num">The audience</div>
+    <h2>How people actually find icjia.illinois.gov</h2>
+    <div class="measure">
+      <p>
+        Over the last 12 months the site drew <strong class="num">61,100 visitors</strong> across
+        <strong class="num">146,300 visits</strong> and <strong class="num">463,700 pageviews</strong>.
+        About <strong class="num">90%</strong> of those visits arrived through a search engine or as
+        "Direct" — the bucket where analytics also files every click whose origin it cannot see
+        (more on that below). People land on the exact page that answers their question, read it, and leave
+        (63% bounce rate). Only 1 visit in 5 even begins at the homepage. Almost nobody arrives at
+        the front door and browses the menus looking for something new.
+      </p>
+      <p class="tight">And where they land is overwhelmingly one place:</p>
+    </div>
+
+    <div class="sharebar" role="img" aria-label="Research Hub: 48% of all pageviews; everything else: 52%">
+      <div class="sharebar-track">
+        <div class="seg seg-hub"><span class="seg-label">Research Hub — 48%</span></div>
+        <div class="seg seg-rest"><span class="seg-label">Everything else — 52%</span></div>
+      </div>
+      <p class="sharebar-caption">Share of all pageviews, trailing 12 months. Seven of the site's ten most-visited pages are Hub articles.</p>
+    </div>
+
+    <p class="measure">
+      One new development worth naming: <strong>AI assistants are now our #3 referrer.</strong>
+      ChatGPT sent ~2,500 visitors last year — more than Bing. Search engines and AI assistants
+      have one thing in common: they can only recommend pages whose <em>text</em> they can read.
+    </p>
+  </section>
+
+  <section>
+    <div class="sec-num">The passive path</div>
+    <h2>What a menu link (alone) can deliver</h2>
+    <div class="measure">
+      <p>
+        A menu item serves people who are already on the site for another reason. That is
+        <em>findability</em> — necessary, cheap, and worth doing on day one. But it creates no new
+        audience, and the numbers show what navigation-only reach looks like:
+      </p>
+    </div>
+
+    <div class="bars">
+      <div class="bar-row">
+        <div class="bar-name">Top Research Hub article <small>promoted + search-indexed</small></div>
+        <div class="bar-track"><div class="bar-fill win" style="width:100%"><span class="bar-val">16 / day</span></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-name">Typical menu-reached page <small>e.g. /about/dicra</small></div>
+        <div class="bar-track"><div class="bar-fill" style="width:20%"><span class="bar-val">3 / day</span></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-name">Best single news post of the year <small>homepage news item</small></div>
+        <div class="bar-track"><div class="bar-fill" style="width:12%"><span class="bar-val">≈2 / day</span></div></div>
+      </div>
+    </div>
+    <p class="bars-caption">Average visitors per day, trailing 12 months (Plausible).</p>
+
+    <div class="measure">
+      <p>
+        The Homicide Reporting page has a second, structural problem: its centerpiece is an embedded
+        Tableau dashboard. To Google — and to ChatGPT — an embedded dashboard is nearly invisible.
+        The page carries very little indexable text, so organic search will not build this audience
+        on its own, either. Left passive, /homicide stays at tens of visitors a month.
+      </p>
+      <p>
+        There <em>is</em> a smart version of on-site promotion — it just isn't the menu. Since
+        visitors enter through articles, promote where they land: the ten most-read Hub articles
+        alone logged <strong class="num">≈42,000 readers</strong> last year. A "New: Illinois
+        Homicide Clearance Dashboard" callout inside the most-read related articles puts the page in
+        front of the site's real front door. Worth doing — but note its limit: on-site placement can
+        only <em>convert</em> traffic we already have. It cannot <em>create</em> traffic. Creating
+        it is what the push channels are for.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-num">The active path</div>
+    <h2>What deliberate outreach delivers</h2>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-kicker">Highest yield · 48 hours</div>
+        <h3>CJ Dispatch (Constant Contact)</h3>
+        <p>
+          4,000+ subscribers who chose to hear from us. At a deliberately conservative
+          30% open / 3% click — at or below published government-sector benchmarks
+          (30–47% open, 2–4% click) — one send produces <strong>≈1,200 reads</strong> and
+          <strong>≈120 visits</strong> within two days. And if past sends drove clicks, our
+          analytics never saw them: untagged email lands in "Direct" too.
+        </p>
+        <p class="payoff">One email ≈ three months of the passive baseline, delivered in 48 hours — to the equivalent of 70% of a typical month's entire site audience.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-kicker">Compounding · Weeks</div>
+        <h3>Social — LinkedIn, X, Facebook</h3>
+        <p>
+          Social's <em>credited</em> share is ~2% of traffic — ≈1,500 visitors last year, and it has
+          sat in that range since tracking began in 2021 (Facebook runs a steady 50–150
+          visitors/month: ambient shares, no campaign spikes). Credited is a floor — social apps
+          routinely strip the referrer — but the pattern is clear: we rarely push. The practitioner
+          audience lives on LinkedIn; posts get re-shared by partner agencies and picked up by
+          local press. With sustained posting, a realistic year-one outcome is social growing from
+          ~2% to 5–10% of traffic — and its unique value is reach: it is the one channel that finds
+          people who never search for us.
+        </p>
+        <p class="payoff">Small as measured, larger in truth, biggest in headroom — and tagged links (step 8) finally make its real yield visible.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-kicker">Durable · Quarters</div>
+        <h3>Research Hub article</h3>
+        <p>
+          A short findings piece — what the clearance data actually shows — published in the channel
+          that already carries 48% of our pageviews, linking to the dashboard. It also creates the
+          crawlable narrative that search engines and AI assistants can cite, which the embedded
+          dashboard cannot provide.
+        </p>
+        <p class="payoff">Hub articles compound: our top article still drew 5,900 visitors last year. Refresh it each quarterly release.</p>
+      </div>
+    </div>
+
+    <div class="evidence">
+      <h3>Why "2% from social" is a floor — what "Direct" is hiding</h3>
+      <ul>
+        <li><strong>48% of all visits are "Direct,"</strong> and 7 in 10 of them begin on deep interior URLs — article addresses nobody types by hand. Those are followed links whose origin was stripped before our analytics could see it.</li>
+        <li><strong>Direct traffic skews desktop (77%),</strong> which points at email clients, Teams, and shared documents as the biggest hidden pipe — exactly where CJ Dispatch clicks would land. The fragments that do self-identify (Teams, Word Online, Gmail, Adobe) prove each of these pipes is active.</li>
+        <li><strong>Social apps only partially self-report:</strong> we see their link-shims (m./l./lm.facebook.com, t.co, l.instagram.com) when a referrer survives — and nothing when it doesn't. A UTM-tagged link is immune, because the credit rides in the URL itself.</li>
+      </ul>
+    </div>
+
+    <div class="measure">
+      <p>
+        Two supporting moves round it out: a <strong>homepage news item</strong> (worth posting, but single
+        news posts historically top out around 600 visitors a year — it's the garnish, not the meal), and
+        <strong>partner links</strong> — IDOC's website alone sent us 1,600 visitors last year; sister
+        agencies should be asked to link the dashboard from their statistics pages.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-num">The playbook</div>
+    <h2>Launch sequence for any state-mandated page</h2>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-when">Day 1</div>
+        <div class="step-what"><strong>Findability floor.</strong> Menu link, internal site search, sitemap. Do it — just don't mistake it for promotion.</div>
+      </div>
+      <div class="step">
+        <div class="step-when">Week 1</div>
+        <div class="step-what"><strong>Research Hub article.</strong> Three or four key findings in plain language, a chart or two, prominent link to the live page.</div>
+      </div>
+      <div class="step">
+        <div class="step-when">Week 1</div>
+        <div class="step-what"><strong>CJ Dispatch feature.</strong> Lead item or dedicated send, linking to the article and the page.</div>
+      </div>
+      <div class="step">
+        <div class="step-when">Weeks 1–4</div>
+        <div class="step-what"><strong>Social push.</strong> Launch post on LinkedIn, X, and Facebook, then one stat-of-the-week per week for a month.</div>
+      </div>
+      <div class="step">
+        <div class="step-when">Week 1</div>
+        <div class="step-what"><strong>Homepage news item.</strong> Posted the same day as the Dispatch send, so homepage visitors see a consistent story.</div>
+      </div>
+      <div class="step">
+        <div class="step-when">Weeks 1–2</div>
+        <div class="step-what"><strong>In-article callouts.</strong> Add a short "New: Illinois Homicide Clearance Dashboard" promo to the most-read related Hub articles — the site's real front door (~42,000 readers/year across the top ten).</div>
+      </div>
+      <div class="step">
+        <div class="step-when">Week 2</div>
+        <div class="step-what"><strong>Partner links.</strong> Ask IDOC, ISP, ILETSB, and other sister agencies to link the page from their data/statistics sections.</div>
+      </div>
+      <div class="step">
+        <div class="step-when">Always</div>
+        <div class="step-what"><strong>Tag every link</strong> (utm_source, utm_campaign). 98% of our visits carry no campaign tag, so email and social wins hide inside "Direct." A tagged link survives app and email referrer-stripping because the credit travels in the URL itself — the few tagged links that reach us today (e.g., another agency's govdelivery emails) attribute perfectly. Tagging turns the next launch into evidence.</div>
+      </div>
+      <div class="step">
+        <div class="step-when">Weeks 2 &amp; 6</div>
+        <div class="step-what"><strong>Report actuals.</strong> A one-screen Plausible readout to managers: visits by channel, downloads, dashboard views. Closes the loop and builds the case for the next launch.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-num">The measurement</div>
+    <h2>UTM tags: how we prove what worked</h2>
+    <div class="measure">
+      <p>
+        A UTM tag is a short label added to the end of a link's address that names where the link
+        was posted. The page ignores it; our analytics reads it. This is the entire technology:
+      </p>
+      <span class="linkx">icjia.illinois.gov/homicide?<b>utm_source=cjdispatch</b>&amp;<b>utm_medium=email</b>&amp;<b>utm_campaign=homicide-sept2026</b></span>
+      <p>
+        Why it matters here: a tagged link attributes correctly <em>no matter what</em> — even when
+        a social app or email client strips the referrer, because the credit travels inside the URL
+        itself. It costs nothing, requires no code changes to the site, and Constant Contact can
+        append tags automatically to every link in a send. With tags in place, the week-two report
+        stops being "traffic went up" and becomes "the Dispatch send drove 143 visits, LinkedIn 51,
+        the news item 12" — per channel, per campaign, per quarter.
+      </p>
+      <p>
+        The convention: <strong>utm_source</strong> names the channel (cjdispatch, linkedin,
+        facebook, x, partner-idoc), <strong>utm_medium</strong> the type (email, social, referral),
+        <strong>utm_campaign</strong> the release (homicide-sept2026). Tags go on links we
+        distribute <em>outside</em> the site — never on the site's own internal links, which would
+        corrupt the numbers.
+      </p>
+    </div>
+  </section>
+
+  <div class="bottomline">
+    <h2>The bottom line</h2>
+    <p>
+      <strong>A menu item files the page. Outreach announces it.</strong> Do both — but only one
+      creates traffic.
+    </p>
+    <p>
+      Passive-only, /homicide plateaus at tens of visitors a month. With the playbook, it gets
+      hundreds of qualified visitors in week one, durable search and AI discovery through the Hub
+      article, and a measured result we can show — a sequence we can repeat, on schedule, for every
+      page the state asks us to stand up.
+    </p>
+    <p>
+      Ranked honestly: the <strong>Dispatch send</strong> is the surest immediate win; the
+      <strong>Hub article</strong> is the one that keeps paying; <strong>social</strong> multiplies
+      both and is the only channel that reaches people who never search for us. No single channel is
+      "the key" — the sequence is.
+    </p>
+  </div>
+
+  <div class="foot">
+    <p>
+      <strong>Data:</strong> ICJIA's own analytics (Plausible, self-hosted at plausible.icjia.cloud), icjia.illinois.gov,
+      trailing 12 months ending Aug 26, 2026, except as noted. /homicide figures: since its Aug 25 launch, unannounced.
+    </p>
+    <p>
+      <strong>Email projections:</strong> 4,000 subscribers × 30% open × 3% click-through. Published 2026 government-sector
+      benchmarks run 30–47% open and 2–4% click (Constant Contact benchmark reports; WebFX industry benchmarks) — the model
+      deliberately sits at the bottom of those ranges.
+    </p>
+    <p>
+      <strong>Social accounting (sitewide, not page-specific):</strong> credited social over the trailing 12 months = 1,520 visitors /
+      1,730 visits — Facebook ≈1,100 (incl. m./l./lm. app domains), LinkedIn 291, X (t.co) 87, Instagram 43 — i.e. 2.5% of visitors,
+      1.2% of visits. Lifetime since tracking began (~2021): Facebook 2.1% and LinkedIn 0.7% of 178,300 visitors — the credited share
+      has never been materially higher. It is a lower bound; see "what Direct is hiding" above. UTM tagging in use today: 98%+ of
+      visits untagged (tagged: 79 email, 5 social — all year).
+    </p>
+    <p>Prepared by the ICJIA web team.</p>
+  </div>
+</div>
+
+</body>
+</html>

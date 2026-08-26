@@ -82,6 +82,21 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.62] - 2026-08-26
+
+### docs — Page-promotion strategy pager (outreach vs. passive placement)
+
+New manager-facing briefing `docs/PAGE-PROMOTION-STRATEGY.{md,html,docx}` ("Publishing Isn't
+Promotion"): the data case for promoting the Homicide Reporting page — and every future
+state-mandated page — through deliberate outreach (CJ Dispatch email, LinkedIn/X/Facebook, a
+Research Hub article, in-article callouts, partner links) rather than passive placement (menu
+link, homepage news item). Backed by the site's own Plausible analytics, trailing 12 months:
+Research Hub = 48% of pageviews; only 1 in 5 visits enters at the homepage; credited social
+≈ 2% of traffic (stable since 2021, and a floor — referrer-stripped app/email clicks land in
+"Direct", 70% of which enters on deep interior URLs); 98% of visits carry no UTM tag. Includes
+a 9-step launch playbook and a UTM-tagging explainer. Docs-only change; no site code touched.
+The three formats are kept in sync (md is the docx source; html is the styled/print version).
+
 ## [1.5.61] - 2026-08-26
 
 ### chore(homicide) — Serve the remediated PDF under its supplied `-A0` filename
