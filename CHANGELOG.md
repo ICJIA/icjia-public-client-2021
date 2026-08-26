@@ -82,6 +82,20 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.60] - 2026-08-26
+
+### chore(homicide) — Replace report PDF with the accessibility-remediated version
+
+Byte-for-byte swap of `public/homicide/homicide-reporting-sept2026.pdf` with the remediated
+file supplied by the report's authors (same document: 56 pages, identical title/subject/author
+metadata; 2.4 MB → 535 KB). Filename and URL unchanged, so the two hrefs in `Homicide.vue` and
+the exact-path `netlify.toml` header block are untouched; copies cached since the page's
+launch revalidate within the 1-day `max-age`.
+
+Verified via audit.icjia.app (v1.97.0): grade A, 100/100 — 0 failures on the veraPDF PDF/UA-1
+profile and 0 failures on the WCAG 2.2 machine-validation profile; tagged, language and title
+set, all 4 fonts embedded. SHA-256 of the repo copy matches the supplied remediated file.
+
 ## [1.5.59] - 2026-08-25
 
 ### feat(homicide) — Dashboard embed scales up to the full text-column width
