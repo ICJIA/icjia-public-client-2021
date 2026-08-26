@@ -82,6 +82,19 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.63] - 2026-08-26
+
+### docs — Promotion pager: plain-language pass + Plausible explainer + Comms ownership
+
+`docs/PAGE-PROMOTION-STRATEGY.{md,html,docx}` revised for a smart but non-technical audience:
+an "About the numbers" note up front explains Plausible (privacy-friendly, self-hosted
+counterpart to Google Analytics — no cookies, no individual tracking); analytics jargon
+removed or translated throughout (bounce rate → "one page and done", referrer → "origin
+information", indexable/crawlable → "text they can read", visitors/visits/pageviews spelled
+out); and the UTM section + playbook step 8 now state that Communications owns tagging (they
+build tagged links into their sends/posts — not a web-team task; web team supplies link
+recipes and reads results). All three formats regenerated in sync.
+
 ## [1.5.62] - 2026-08-26
 
 ### docs — Page-promotion strategy pager (outreach vs. passive placement)

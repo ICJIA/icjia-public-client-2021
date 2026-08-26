@@ -101,6 +101,15 @@
     text-wrap: pretty;
   }
   .standfirst em { color: var(--muted); }
+  .datanote {
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: var(--muted);
+    border-left: 3px solid var(--line);
+    padding-left: 0.85rem;
+    margin: 1rem 0 0;
+  }
+  .datanote strong { color: var(--ink); }
 
   h2 {
     font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
@@ -395,6 +404,12 @@
       <strong>Research&nbsp;Hub article</strong>. Here is the evidence, and a repeatable playbook
       for this page and every state-mandated page that follows it.
     </p>
+    <p class="datanote measure">
+      <strong>About the numbers:</strong> every figure in this briefing comes from Plausible, the
+      website's analytics tool — a privacy-friendly counterpart to Google Analytics that we run on
+      our own server. It counts visits and shows where each one came from, without cookies and
+      without tracking individual people. These are our own measured numbers, not estimates.
+    </p>
 
     <div class="stats">
       <div class="stat hot">
@@ -415,7 +430,7 @@
       </div>
       <div class="stat hot">
         <div class="stat-value">~2%</div>
-        <div class="stat-label">of traffic is <em>credited</em> to social — a floor, not the truth: untagged app &amp; email clicks are filed under "Direct"</div>
+        <div class="stat-label">of traffic is <em>credited</em> to social — a floor, not the truth: clicks from apps and email often arrive unlabeled and get filed under "Direct"</div>
       </div>
     </div>
   </header>
@@ -425,13 +440,15 @@
     <h2>How people actually find icjia.illinois.gov</h2>
     <div class="measure">
       <p>
-        Over the last 12 months the site drew <strong class="num">61,100 visitors</strong> across
-        <strong class="num">146,300 visits</strong> and <strong class="num">463,700 pageviews</strong>.
-        About <strong class="num">90%</strong> of those visits arrived through a search engine or as
-        "Direct" — the bucket where analytics also files every click whose origin it cannot see
-        (more on that below). People land on the exact page that answers their question, read it, and leave
-        (63% bounce rate). Only 1 visit in 5 even begins at the homepage. Almost nobody arrives at
-        the front door and browses the menus looking for something new.
+        Over the last 12 months, <strong class="num">61,100 different people</strong> made
+        <strong class="num">146,300 visits</strong> to the site and viewed
+        <strong class="num">463,700 pages</strong>.
+        About <strong class="num">90%</strong> of those visits arrived either from a search engine
+        or as what analytics calls "Direct" — clicks that show up with no information about where
+        they came from (more on that below). People land on the exact page that answers their
+        question, read it, and leave: 63% of visits are one page and done. Only 1 visit in 5 even
+        begins at the homepage. Almost nobody arrives at the front door and browses the menus
+        looking for something new.
       </p>
       <p class="tight">And where they land is overwhelmingly one place:</p>
     </div>
@@ -441,13 +458,14 @@
         <div class="seg seg-hub"><span class="seg-label">Research Hub — 48%</span></div>
         <div class="seg seg-rest"><span class="seg-label">Everything else — 52%</span></div>
       </div>
-      <p class="sharebar-caption">Share of all pageviews, trailing 12 months. Seven of the site's ten most-visited pages are Hub articles.</p>
+      <p class="sharebar-caption">Share of all pageviews, last 12 months. Seven of the site's ten most-visited pages are Hub articles.</p>
     </div>
 
     <p class="measure">
-      One new development worth naming: <strong>AI assistants are now our #3 referrer.</strong>
-      ChatGPT sent ~2,500 visitors last year — more than Bing. Search engines and AI assistants
-      have one thing in common: they can only recommend pages whose <em>text</em> they can read.
+      One new development worth naming: <strong>AI assistants are now our #3 source of
+      visitors.</strong> ChatGPT sent ~2,500 people to the site last year — more than Bing. Search
+      engines and AI assistants have one thing in common: they can only recommend pages whose
+      <em>text</em> they can read.
     </p>
   </section>
 
@@ -464,7 +482,7 @@
 
     <div class="bars">
       <div class="bar-row">
-        <div class="bar-name">Top Research Hub article <small>promoted + search-indexed</small></div>
+        <div class="bar-name">Top Research Hub article <small>promoted + found via Google</small></div>
         <div class="bar-track"><div class="bar-fill win" style="width:100%"><span class="bar-val">16 / day</span></div></div>
       </div>
       <div class="bar-row">
@@ -476,14 +494,16 @@
         <div class="bar-track"><div class="bar-fill" style="width:12%"><span class="bar-val">≈2 / day</span></div></div>
       </div>
     </div>
-    <p class="bars-caption">Average visitors per day, trailing 12 months (Plausible).</p>
+    <p class="bars-caption">Average visitors per day, last 12 months (Plausible).</p>
 
     <div class="measure">
       <p>
-        The Homicide Reporting page has a second, structural problem: its centerpiece is an embedded
-        Tableau dashboard. To Google — and to ChatGPT — an embedded dashboard is nearly invisible.
-        The page carries very little indexable text, so organic search will not build this audience
-        on its own, either. Left passive, /homicide stays at tens of visitors a month.
+        The Homicide Reporting page has a second, structural problem: its centerpiece — the
+        interactive dashboard — is drawn on our page by another website (the state's Tableau
+        server). To Google, and to ChatGPT, that window is effectively invisible: our page contains
+        almost no text they can read, so they have nothing to index or quote, and search will not
+        build this audience on its own, either. Left passive, /homicide stays at tens of visitors
+        a month.
       </p>
       <p>
         There <em>is</em> a smart version of on-site promotion — it just isn't the menu. Since
@@ -510,7 +530,8 @@
           30% open / 3% click — at or below published government-sector benchmarks
           (30–47% open, 2–4% click) — one send produces <strong>≈1,200 reads</strong> and
           <strong>≈120 visits</strong> within two days. And if past sends drove clicks, our
-          analytics never saw them: untagged email lands in "Direct" too.
+          analytics never saw them — email clicks arrive with no origin information and get filed
+          under "Direct" too.
         </p>
         <p class="payoff">One email ≈ three months of the passive baseline, delivered in 48 hours — to the equivalent of 70% of a typical month's entire site audience.</p>
       </div>
@@ -521,14 +542,15 @@
         <p>
           Social's <em>credited</em> share is ~2% of traffic — ≈1,500 visitors last year, and it has
           sat in that range since tracking began in 2021 (Facebook runs a steady 50–150
-          visitors/month: ambient shares, no campaign spikes). Credited is a floor — social apps
-          routinely strip the referrer — but the pattern is clear: we rarely push. The practitioner
+          visitors/month: ambient shares, no campaign spikes). Credited is a floor — a link tapped
+          inside the Facebook or LinkedIn app often arrives with no origin information — but the
+          pattern is clear: we rarely push. The practitioner
           audience lives on LinkedIn; posts get re-shared by partner agencies and picked up by
           local press. With sustained posting, a realistic year-one outcome is social growing from
           ~2% to 5–10% of traffic — and its unique value is reach: it is the one channel that finds
           people who never search for us.
         </p>
-        <p class="payoff">Small as measured, larger in truth, biggest in headroom — and tagged links (step 8) finally make its real yield visible.</p>
+        <p class="payoff">Small as measured, larger in truth, biggest in headroom — and trackable links (playbook step 8) finally make its real yield visible.</p>
       </div>
 
       <div class="card">
@@ -536,9 +558,9 @@
         <h3>Research Hub article</h3>
         <p>
           A short findings piece — what the clearance data actually shows — published in the channel
-          that already carries 48% of our pageviews, linking to the dashboard. It also creates the
-          crawlable narrative that search engines and AI assistants can cite, which the embedded
-          dashboard cannot provide.
+          that already carries 48% of our pageviews, linking to the dashboard. It also gives search
+          engines and AI assistants what the dashboard cannot: readable text to find, index,
+          and quote.
         </p>
         <p class="payoff">Hub articles compound: our top article still drew 5,900 visitors last year. Refresh it each quarterly release.</p>
       </div>
@@ -547,9 +569,9 @@
     <div class="evidence">
       <h3>Why "2% from social" is a floor — what "Direct" is hiding</h3>
       <ul>
-        <li><strong>48% of all visits are "Direct,"</strong> and 7 in 10 of them begin on deep interior URLs — article addresses nobody types by hand. Those are followed links whose origin was stripped before our analytics could see it.</li>
-        <li><strong>Direct traffic skews desktop (77%),</strong> which points at email clients, Teams, and shared documents as the biggest hidden pipe — exactly where CJ Dispatch clicks would land. The fragments that do self-identify (Teams, Word Online, Gmail, Adobe) prove each of these pipes is active.</li>
-        <li><strong>Social apps only partially self-report:</strong> we see their link-shims (m./l./lm.facebook.com, t.co, l.instagram.com) when a referrer survives — and nothing when it doesn't. A UTM-tagged link is immune, because the credit rides in the URL itself.</li>
+        <li><strong>48% of all visits are "Direct"</strong> — clicks that arrive with no information about where they came from. And 7 in 10 of them begin on long interior article addresses nobody types by hand: those are followed links whose origin got lost in transit.</li>
+        <li><strong>Direct traffic skews desktop (77%),</strong> which points at email programs, Teams chats, and shared documents as the biggest hidden pipe — exactly where CJ Dispatch clicks would land. The few that do identify themselves (Teams, Word Online, Gmail, Adobe) prove each of these pipes is active.</li>
+        <li><strong>Social apps only sometimes identify themselves:</strong> we can see Facebook's mobile-app addresses when the origin information survives the trip — and nothing when it doesn't. A link that carries its own tracking label (see "UTM tags," below) is immune, because the credit travels inside the link itself.</li>
       </ul>
     </div>
 
@@ -570,7 +592,7 @@
     <div class="steps">
       <div class="step">
         <div class="step-when">Day 1</div>
-        <div class="step-what"><strong>Findability floor.</strong> Menu link, internal site search, sitemap. Do it — just don't mistake it for promotion.</div>
+        <div class="step-what"><strong>Findability floor.</strong> Menu link, the site's internal search, and the page index that search engines read (the sitemap). Do it — just don't mistake it for promotion.</div>
       </div>
       <div class="step">
         <div class="step-when">Week 1</div>
@@ -598,7 +620,7 @@
       </div>
       <div class="step">
         <div class="step-when">Always</div>
-        <div class="step-what"><strong>Tag every link</strong> (utm_source, utm_campaign). 98% of our visits carry no campaign tag, so email and social wins hide inside "Direct." A tagged link survives app and email referrer-stripping because the credit travels in the URL itself — the few tagged links that reach us today (e.g., another agency's govdelivery emails) attribute perfectly. Tagging turns the next launch into evidence.</div>
+        <div class="step-what"><strong>Tag every link</strong> — owned by Communications, who build the tagged links into each send and post (see "UTM tags," below). 98% of our visits carry no tag today, so email and social wins hide inside "Direct." A tagged link keeps its credit even when apps and email programs drop the origin information — the few tagged links that already reach us (another state agency's email system) are counted perfectly. Tagging turns the next launch into evidence.</div>
       </div>
       <div class="step">
         <div class="step-when">Weeks 2 &amp; 6</div>
@@ -617,18 +639,25 @@
       </p>
       <span class="linkx">icjia.illinois.gov/homicide?<b>utm_source=cjdispatch</b>&amp;<b>utm_medium=email</b>&amp;<b>utm_campaign=homicide-sept2026</b></span>
       <p>
-        Why it matters here: a tagged link attributes correctly <em>no matter what</em> — even when
-        a social app or email client strips the referrer, because the credit travels inside the URL
-        itself. It costs nothing, requires no code changes to the site, and Constant Contact can
-        append tags automatically to every link in a send. With tags in place, the week-two report
-        stops being "traffic went up" and becomes "the Dispatch send drove 143 visits, LinkedIn 51,
-        the news item 12" — per channel, per campaign, per quarter.
+        Why it matters here: a tagged link is counted correctly <em>no matter what</em> — even when
+        a social app or email program drops the "where this click came from" information — because
+        the credit travels inside the link itself. It costs nothing, changes nothing on the
+        website, and Constant Contact can add the tags automatically to every link in a send. With
+        tags in place, the week-two report stops being "traffic went up" and becomes "the Dispatch
+        send drove 143 visits, LinkedIn 51, the news item 12" — per channel, per campaign, per
+        quarter.
+      </p>
+      <p>
+        <strong>Who does this: the Communications team.</strong> Comms builds the tagged links into
+        the emails and posts they send — it is part of composing the message, not a website change,
+        and nothing about it touches the web team's code. The web team's role is to supply the
+        link recipes and read the results out of Plausible.
       </p>
       <p>
         The convention: <strong>utm_source</strong> names the channel (cjdispatch, linkedin,
         facebook, x, partner-idoc), <strong>utm_medium</strong> the type (email, social, referral),
-        <strong>utm_campaign</strong> the release (homicide-sept2026). Tags go on links we
-        distribute <em>outside</em> the site — never on the site's own internal links, which would
+        <strong>utm_campaign</strong> the release (homicide-sept2026). Tags belong on links
+        distributed <em>outside</em> the site — never on the site's own internal links, which would
         corrupt the numbers.
       </p>
     </div>
@@ -657,7 +686,7 @@
   <div class="foot">
     <p>
       <strong>Data:</strong> ICJIA's own analytics (Plausible, self-hosted at plausible.icjia.cloud), icjia.illinois.gov,
-      trailing 12 months ending Aug 26, 2026, except as noted. /homicide figures: since its Aug 25 launch, unannounced.
+      last 12 months ending Aug 26, 2026, except as noted. /homicide figures: since its Aug 25 launch, unannounced.
     </p>
     <p>
       <strong>Email projections:</strong> 4,000 subscribers × 30% open × 3% click-through. Published 2026 government-sector
@@ -665,8 +694,8 @@
       deliberately sits at the bottom of those ranges.
     </p>
     <p>
-      <strong>Social accounting (sitewide, not page-specific):</strong> credited social over the trailing 12 months = 1,520 visitors /
-      1,730 visits — Facebook ≈1,100 (incl. m./l./lm. app domains), LinkedIn 291, X (t.co) 87, Instagram 43 — i.e. 2.5% of visitors,
+      <strong>Social accounting (sitewide, not page-specific):</strong> credited social over the last 12 months = 1,520 visitors /
+      1,730 visits — Facebook ≈1,100 (including its mobile-app addresses), LinkedIn 291, X 87, Instagram 43 — i.e. 2.5% of visitors,
       1.2% of visits. Lifetime since tracking began (~2021): Facebook 2.1% and LinkedIn 0.7% of 178,300 visitors — the credited share
       has never been materially higher. It is a lower bound; see "what Direct is hiding" above. UTM tagging in use today: 98%+ of
       visits untagged (tagged: 79 email, 5 social — all year).
