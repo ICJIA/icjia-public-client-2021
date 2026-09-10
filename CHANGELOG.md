@@ -82,6 +82,24 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.64] - 2026-09-10
+
+### chore(deps) — Vue CLI toolchain 4.5 → 5.0.9 (webpack 5); supersedes Dependabot #68
+
+Dependabot #68 bumped `@vue/cli-service` alone to 5.0.9 (to pull the patched `svgo@2.8.4` for
+GHSA-w27v-7q3p-w38r, GHSA-4vpr-x523-8j87 and GHSA-2p49-hgcm-8545) and failed on Netlify and in
+the mocha CI job with `Cannot find module 'webpack/lib/rules/BasicEffectRulePlugin'`: the four
+sibling `@vue/cli-plugin-*` packages stayed on 4.5 and pinned webpack 4, leaving two webpacks in
+the tree (4.47.0 hoisted, 5.110.3 nested under cli-service) and `@vue/vue-loader-v15` resolving
+the wrong one. This release moves all five `@vue/cli-*` packages (`cli-plugin-babel`, `-eslint`,
+`-router`, `-vuex`, `cli-service`) to `~5.0.9` together (`cli-plugin-unit-mocha` already was),
+giving a single webpack 5.110.3, `svgo@2.8.4`, and a regenerated lockfile. No changes to
+`vue.config.js`, sass-loader, vuetify-loader, or the `--openssl-legacy-provider` flag were needed.
+Verified locally on Node 22 with the exact Netlify build and CI test commands: `npm run build`
+exit 0 (51 non-fatal warnings, 47 of them the known vue-loader-15 + webpack 5 `style0` notice;
+CSS confirmed emitted), mocha 281 passing / 6 pre-existing pending — identical to main. Webpack 5
+renames emitted chunks (numeric ids); no source changes.
+
 ## [1.5.63] - 2026-08-26
 
 ### docs — Promotion pager: plain-language pass + Plausible explainer + Comms ownership
