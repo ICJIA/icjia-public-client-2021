@@ -82,6 +82,21 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.66] - 2026-09-16
+
+### docs(accessibility) — The statement uses W3C's exact conformance label
+
+The statement said the pages "partially conform". The agency's rule is to use W3C terms only, and
+the W3C Accessibility Statement Generator's labels are **fully conformant**, **partially
+conformant**, **non conformant** and **not assessed**, each with a fixed definition. The
+conformance paragraph now follows the generator's pattern: "The ICJIA website is partially
+conformant with WCAG 2.1 at Level AA. Partially conformant means that some parts of the content do
+not fully conform to the accessibility standard." The status itself is unchanged, and so is the
+rest of the statement. 1.5.65 recorded "partially conforms" as the W3C term; the generator's label
+is "partially conformant".
+
+---
+
 ## [1.5.65] - 2026-09-16
 
 ### feat(accessibility) — Public accessibility statement at `/accessibility/`, and visible focus rings

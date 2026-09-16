@@ -14,17 +14,17 @@
 
           <h2>Conformance status</h2>
           <p>
-            The web pages of this site <strong>partially conform</strong> to the
+            The ICJIA website is <strong>partially conformant</strong> with the
             <a
               href="https://www.w3.org/TR/WCAG21/"
               target="_blank"
               rel="noopener noreferrer"
               >Web Content Accessibility Guidelines (WCAG) 2.1</a
             >
-            at <strong>Level AA</strong>. “Partially conform” means that some
-            parts of the content do not yet fully conform to the standard. We
-            work to find and correct these, and our goal is full conformance
-            with WCAG 2.1 Level AA.
+            at <strong>Level AA</strong>. Partially conformant means that some
+            parts of the content do not fully conform to the accessibility
+            standard. We work to find and correct these, and our goal is full
+            conformance with WCAG 2.1 Level AA.
           </p>
           <p>
             WCAG 2.1 Level AA is the standard these pages are working toward,
