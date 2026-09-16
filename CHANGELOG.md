@@ -82,6 +82,66 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.65] - 2026-09-16
+
+### feat(accessibility) — Public accessibility statement at `/accessibility/`, and visible focus rings
+
+The site had no accessibility statement: no page naming the standard it targets, and no route in
+the footer for a visitor who hits a barrier to report one. The 2026-09-16 Accessibility Check in
+the ICJIA documentation index flagged the gap. The new page follows the agency's existing
+statement for Safe From the Start (`sfs.icjia.illinois.gov/accessibility.html`) section for
+section: conformance status (**partially conforms** to WCAG 2.1 AA, the standard IITAA 2.1 and
+ADA Title II name), measures, how the site is tested (a self-evaluation, not a certification),
+technical specifications, and feedback via `cja.info@illinois.gov`, last reviewed September 16,
+2026.
+
+"Partially conforms" is the W3C term for content where some parts do not yet fully conform. The
+statement claims only measures that were verified against this site.
+
+Wiring, in full (the `/homicide/` pattern):
+
+- `src/views/Accessibility/Accessibility.vue` (new): a static, code-managed view with the
+  standard `metaInfo()` title (`ICJIA | Accessibility Statement`).
+- `src/router/accessibility/index.js` (new): lazy route (`webpackChunkName: "accessibility"`),
+  spread into `src/router/index.js` after `homicide` and before the 404 catch-all.
+- `generators/searchIndexAndSitemap.js`: `/accessibility/` added to `manualIndex` so it reaches
+  `sitemap.xml`. As with `/homicide/`, `searchIndex.json` has no manual hook, so internal site
+  search will not find the page.
+- `src/components/AppFooter.vue`: an "Accessibility" link after "Privacy".
+
+The statement says plainly that **JavaScript is required**: the served document is 6,706 bytes
+carrying 47 characters of body text, so content depends on the app loading. That is the reverse
+of the SFS line "remain accessible if JavaScript is turned off", which is true there and not here.
+
+### fix(a11y) — keyboard focus rings meet 3:1 on every bar and the footer
+
+`app.css` gave a yellow focus ring to `header.v-app-bar :focus-visible`, assuming every app bar is
+dark. Three are rendered and only one is, and the footer was not matched at all. WCAG 2.4.7 /
+1.4.11 require 3:1 for a focus indicator:
+
+| Surface | Background | Before | After |
+|---|---|---|---|
+| `AppNav` main header | white | yellow 1.35:1 | blue **5.75:1** |
+| `AppNavContext` bar | `#eee` | yellow 1.16:1 | blue **4.95:1** |
+| `AppNavContextBottom` bar | `#11568e` | yellow 5.68:1 | yellow **5.68:1** |
+| `AppFooter` | `#0d4474` | blue 1.74:1 | yellow **7.44:1** |
+
+Surfaces now opt in to the yellow ring with the existing `dark-surface` class rather than being
+matched by element type; `AppNavContextBottom` and `AppFooter` carry it.
+
+The rule also adds `.dark-surface .v-tab:focus-visible` (and the `.v-list-item` and
+`.v-list-group__header` equivalents). They are not redundant: a later blue rule for those
+components has the same specificity as `.dark-surface :focus-visible` and wins the tie on source
+order. Verified both ways in a browser against the real stylesheet — with the extra selectors the
+dark bar's tabs get yellow at 5.68:1; with them removed they fall back to blue at 1.33:1.
+
+Verified: `vue-cli-service lint --no-fix` on the changed files: 0 errors. (Plain `npm run lint`
+autofixes and rewrites unrelated files.) Not run: `npm run build` / `serve` — they hit the live
+Strapi CMS; the Netlify build does the full build.
+
+Not changed, deliberately: the dormant `astro/` rewrite does not get the statement page (work is
+focused on the live Vue site), so it must be re-added if the rewrite is ever cut over.
+
 ## [1.5.64] - 2026-09-10
 
 ### chore(deps) — Vue CLI toolchain 4.5 → 5.0.9 (webpack 5); supersedes Dependabot #68

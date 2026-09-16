@@ -72,7 +72,7 @@ let siteIndex = [
   // ...policies,
 ];
 
-const manualIndex = ["/news/press/", "/homicide/"];
+const manualIndex = ["/news/press/", "/homicide/", "/accessibility/"];
 
 const dirpath = "./public/api";
 if (!fs.existsSync(dirpath)) fs.mkdirSync(dirpath);

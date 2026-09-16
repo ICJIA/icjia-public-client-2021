@@ -1,5 +1,5 @@
 <template>
-  <v-footer dark class="">
+  <v-footer dark class="dark-surface">
     <v-card
       flat
       tile
@@ -89,6 +89,12 @@
                 to="/about/privacy/"
                 style="color: #fff; background: none"
                 >Privacy</router-link
+              >
+              |
+              <router-link
+                to="/accessibility/"
+                style="color: #fff; background: none"
+                >Accessibility</router-link
               >
               |
               <router-link

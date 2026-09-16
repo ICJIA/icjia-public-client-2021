@@ -581,11 +581,30 @@ a[target="_blank"]::after {
   outline-offset: 2px !important;
 }
 
-/* On dark surfaces (dark header, navy blocks), the default blue ring
-   has poor contrast against navy. Switch to a yellow outline + thin
-   dark inner shadow so it reads against #0A3A60-family backgrounds. */
-header.v-app-bar :focus-visible,
+/* On dark surfaces, the default blue ring has poor contrast. Switch to a
+   yellow outline + thin dark inner shadow. Opt a surface in with the
+   `dark-surface` class — do NOT select by element type.
+
+   This used to include `header.v-app-bar :focus-visible`, which assumed
+   every app bar is dark. Three are rendered and only one is:
+     AppNav              white     yellow 1.35:1  blue 5.75:1  -> blue
+     AppNavContext       #eee      yellow 1.16:1  blue 4.95:1  -> blue
+     AppNavContextBottom #11568e   yellow 5.68:1  blue 1.33:1  -> yellow
+   and the footer (#0d4474, yellow 7.44:1, blue 1.74:1) was not matched at
+   all. WCAG 2.4.7 / 1.4.11 require 3:1 for a focus indicator, so three of
+   those four surfaces failed. AppNavContextBottom and AppFooter now carry
+   `dark-surface`; every other surface falls through to the blue ring.
+
+   The .v-tab / .v-list-item selectors below are not redundant. The blue
+   rule for those components further down this file has the same
+   specificity as `.dark-surface :focus-visible` (0,2,0) and comes later,
+   so it would win the tie and put a 1.33:1 blue ring on the dark context
+   bar's tabs. The explicit selectors are (0,3,0) and win regardless of
+   order. */
 .dark-surface :focus-visible,
+.dark-surface .v-tab:focus-visible,
+.dark-surface .v-list-item:focus-visible,
+.dark-surface .v-list-group__header:focus-visible,
 [style*="background: #0A3A60"] :focus-visible,
 [style*="background:#0A3A60"] :focus-visible {
   outline: 2px solid #ffdd00 !important;

@@ -4,7 +4,12 @@
       <span id="nav-additional-label" class="sr-only"
         >Additional navigation</span
       >
-      <v-app-bar height="35" scroll-threshold="0" color="#11568e">
+      <v-app-bar
+        height="35"
+        scroll-threshold="0"
+        color="#11568e"
+        class="dark-surface"
+      >
         <v-tabs
           show-arrows
           centered
