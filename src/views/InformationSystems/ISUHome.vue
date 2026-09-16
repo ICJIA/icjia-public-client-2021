@@ -47,6 +47,14 @@ import { renderToHtml } from "@/services/Markdown";
 import NProgress from "@/services/Progress";
 
 export default {
+  metaInfo() {
+    return {
+      title:
+        this.page && this.page.title
+          ? this.page.title
+          : "Innovation and Digital Services",
+    };
+  },
   data() {
     return {
       contentLoading: true,

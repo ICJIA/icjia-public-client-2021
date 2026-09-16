@@ -87,6 +87,9 @@
 
 <script>
 export default {
+  metaInfo: {
+    title: "Page Not Found",
+  },
   created() {},
   mounted() {
     window.plausible("404", { props: { path: document.location.pathname } });

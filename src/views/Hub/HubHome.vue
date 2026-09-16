@@ -24,10 +24,34 @@
           >
         </v-row>
       </v-container>
-      <div v-if="!hubLoading">
+      <div
+        v-if="!hubLoading"
+        class="hub-slideshow"
+        @mouseenter="slideshowHovered = true"
+        @mouseleave="slideshowHovered = false"
+        @focusin="slideshowFocused = true"
+        @focusout="onSlideshowFocusOut"
+      >
+        <!-- WCAG 2.2.2 Pause, Stop, Hide: the slideshow advances on its own,
+             so it needs a control to stop it. It also pauses while the pointer
+             is over it or keyboard focus is inside it, and does not start
+             rotating at all when the visitor's system asks for reduced
+             motion (the Play button starts it). -->
+        <v-container class="py-0">
+          <v-row>
+            <v-col cols="12" class="text-right py-1">
+              <v-btn small outlined @click="slideshowPaused = !slideshowPaused">
+                <v-icon left small aria-hidden="true">{{
+                  slideshowPaused ? "mdi-play" : "mdi-pause"
+                }}</v-icon>
+                {{ slideshowPaused ? "Play slideshow" : "Pause slideshow" }}
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
         <v-carousel
           height="650"
-          :cycle="true"
+          :cycle="slideshowCycling"
           role="region"
           aria-label="Latest research articles slideshow"
         >
@@ -230,6 +254,7 @@ import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
 import { renderToHtml } from "@/services/Markdown";
 import NProgress from "@/services/Progress";
 import dayjs from "@/plugins/dayjs";
+import { prefersReducedMotion } from "@/utils/motion";
 import {
   getHubApplications,
   getHubArticlesForBanner,
@@ -237,6 +262,9 @@ import {
 } from "@/services/ResearchHub";
 
 export default {
+  metaInfo: {
+    title: "Research Hub",
+  },
   sync: false,
   data() {
     return {
@@ -249,7 +277,19 @@ export default {
       appModel: null,
       datasetModel: null,
       page: null,
+      slideshowPaused: prefersReducedMotion(),
+      slideshowHovered: false,
+      slideshowFocused: false,
     };
+  },
+  computed: {
+    slideshowCycling() {
+      return (
+        !this.slideshowPaused &&
+        !this.slideshowHovered &&
+        !this.slideshowFocused
+      );
+    },
   },
   async mounted() {
     NProgress.start();
@@ -284,6 +324,11 @@ export default {
     });
   },
   methods: {
+    onSlideshowFocusOut(e) {
+      if (!e.currentTarget.contains(e.relatedTarget)) {
+        this.slideshowFocused = false;
+      }
+    },
     isItNew(articleDate) {
       const now = dayjs(new Date());
       const end = dayjs(articleDate); // another date

@@ -41,6 +41,9 @@ import { getUnifiedTags } from "@/utils/content";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import _ from "lodash";
 export default {
+  metaInfo: {
+    title: "Required Forms",
+  },
   data() {
     return {
       viewToggle: "all",

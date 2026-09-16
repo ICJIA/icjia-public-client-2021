@@ -3,7 +3,11 @@
 </template>
 
 <script>
-export default {};
+export default {
+  metaInfo: {
+    title: "Sandbox 2",
+  },
+};
 </script>
 
 <style lang="scss" scoped></style>

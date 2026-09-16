@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import { scrollBehavior } from "@/utils/motion";
+
 export default {
   methods: {
     onSkip(e) {
@@ -28,7 +30,7 @@ export default {
       // Use native scroll so we don't depend on Vuetify's goTo resolving
       // across route changes or dialog contexts.
       try {
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        target.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
       } catch (_err) {
         target.scrollIntoView();
       }

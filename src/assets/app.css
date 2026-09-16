@@ -654,3 +654,20 @@ a[href^="#fnref"],
   text-align: center;
   vertical-align: middle;
 }
+
+/* Reduced motion. Visitors whose operating system asks for less motion get
+   instant scrolling and no animated transitions — including Vuetify's menu,
+   dialog, expansion and progress-bar animations. The JavaScript scrolls
+   (skip link, anchor links, news list) check the same setting through
+   src/utils/motion.js, and the Research Hub slideshow does not rotate on
+   its own. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

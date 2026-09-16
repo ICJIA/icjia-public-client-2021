@@ -82,6 +82,9 @@ import _ from "lodash";
 import NProgress from "@/services/Progress";
 import { EventBus } from "@/event-bus";
 export default {
+  metaInfo: {
+    title: "Research Hub Web Applications",
+  },
   name: "Apps",
   data() {
     return {

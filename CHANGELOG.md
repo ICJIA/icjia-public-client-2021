@@ -82,6 +82,44 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.67] - 2026-09-16
+
+### fix(accessibility) — Page titles, page-change announcements, a pausable slideshow, reduced motion
+
+Four fixes toward full WCAG 2.1 Level AA conformance, each verified in a browser.
+
+- **Every page has a title that says what it is (WCAG 2.4.2, Level A).** 23 views set no
+  `metaInfo` title, so 26 routes — News, the Research Hub home and its Articles, Web Applications,
+  Datasets and staff pages, both forms, IRB, Innovation and Digital Services, InfoNet, Rules and
+  Required Forms, Search, the 404 page and the internal admin, status and sandbox pages — all read
+  "ICJIA | Illinois Criminal Justice Information Authority". Each now has a title matching its
+  heading; CMS-driven pages use the content's own title with a descriptive fallback. A sweep of
+  all 46 static routes on a local build found no generic title remaining.
+- **Screen readers hear the new page's title on navigation.** `#route-announcer` read
+  `document.title` on a fixed 300 ms timer, before vue-meta had set the new title — after a menu
+  navigation it announced "ICJIA". It now waits for the title to settle on the new page's own
+  value (a `MutationObserver` on `<head>`, with a 3 s fallback so every navigation is announced).
+  Verified across five navigations: each announced exactly once, matching `document.title`.
+- **The Research Hub slideshow can be paused (WCAG 2.2.2, Level A).** It advanced on its own with
+  no way to stop it. A visible "Pause slideshow" / "Play slideshow" button now controls it; it
+  also pauses while the pointer is over it or keyboard focus is inside it, and it does not rotate
+  on its own when the operating system asks for reduced motion. Verified: advances unattended;
+  holds after Pause, while hovered, and while focused; resumes after Play; starts paused under
+  reduced motion.
+- **Reduced motion is respected.** Nothing checked `prefers-reduced-motion`. A stylesheet rule now
+  removes animated transitions for visitors who ask for less motion, and the skip link, anchor
+  links and the news list scroll instantly for them (`src/utils/motion.js`).
+
+The accessibility statement no longer gives a conformance label. It states the goal — full
+conformance with WCAG 2.1 Level AA, the standard IITAA 2.1 and ADA Title II name — and that the
+site undergoes ongoing testing against the WCAG 2.1 Level A and AA success criteria, with issues
+corrected as testing finds them. It lists the two new measures and hand testing of keyboard use,
+focus visibility and page-change announcements.
+
+`vue-cli-service lint` reports no errors on every changed file.
+
+---
+
 ## [1.5.66] - 2026-09-16
 
 ### docs(accessibility) — The statement uses W3C's exact conformance label

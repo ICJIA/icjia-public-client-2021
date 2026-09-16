@@ -12,24 +12,20 @@
             to State of Illinois websites.
           </p>
 
-          <h2>Conformance status</h2>
+          <h2>Accessibility standard</h2>
           <p>
-            The ICJIA website is <strong>partially conformant</strong> with the
+            Our goal is for this website to fully conform to the
             <a
               href="https://www.w3.org/TR/WCAG21/"
               target="_blank"
               rel="noopener noreferrer"
               >Web Content Accessibility Guidelines (WCAG) 2.1</a
             >
-            at <strong>Level AA</strong>. Partially conformant means that some
-            parts of the content do not fully conform to the accessibility
-            standard. We work to find and correct these, and our goal is full
-            conformance with WCAG 2.1 Level AA.
+            at <strong>Level AA</strong>. The site undergoes ongoing testing
+            against the WCAG 2.1 Level A and Level AA success criteria, and we
+            correct the issues that testing finds.
           </p>
-          <p>
-            WCAG 2.1 Level AA is the standard these pages are working toward,
-            and the one named by:
-          </p>
+          <p>WCAG 2.1 Level AA is the standard named by:</p>
           <ul>
             <li>
               the
@@ -74,6 +70,10 @@
               can be navigated with a keyboard, including its drop-down menus;
             </li>
             <li>
+              respects the operating-system “reduce motion” setting, and lets
+              visitors pause the Research Hub slideshow;
+            </li>
+            <li>
               provides a “skip to main content” link so keyboard and
               screen-reader users can bypass repeated navigation; and
             </li>
@@ -96,7 +96,11 @@
             <li>
               automated checks with <strong>axe-core</strong> and
               <strong>Lighthouse</strong> during development, including axe-core
-              scans of every page listed in the site’s sitemap; and
+              scans of every page listed in the site’s sitemap;
+            </li>
+            <li>
+              testing by hand of keyboard use, focus visibility and page-change
+              announcements; and
             </li>
             <li>
               ongoing site-wide monitoring with <strong>Siteimprove</strong>.

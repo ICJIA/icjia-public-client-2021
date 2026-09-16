@@ -258,10 +258,14 @@ import {
 } from "@/utils/content";
 import _ from "lodash";
 import dayjs from "@/plugins/dayjs";
+import { scrollBehavior } from "@/utils/motion";
 
 const ITEMS_PER_PAGE = 15;
 
 export default {
+  metaInfo: {
+    title: "News & Information",
+  },
   name: "News",
   data() {
     return {
@@ -346,7 +350,10 @@ export default {
         const el = this.$refs.newsList;
         if (el) {
           const top = el.getBoundingClientRect().top + window.pageYOffset - 130;
-          window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+          window.scrollTo({
+            top: Math.max(0, top),
+            behavior: scrollBehavior(),
+          });
         }
       });
     },

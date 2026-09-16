@@ -66,6 +66,9 @@ import axios from "axios";
 import NProgress from "@/services/Progress";
 // import { addButtonText, fixBlankTableHeadings } from "@/a11y";
 export default {
+  metaInfo: {
+    title: "Site Status",
+  },
   data() {
     return {
       alert: true,

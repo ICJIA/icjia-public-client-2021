@@ -212,6 +212,9 @@ import { EventBus } from "@/event-bus";
 import axios from "axios";
 
 export default {
+  metaInfo: {
+    title: "Grant Status Request",
+  },
   mixins: [validationMixin],
 
   head() {

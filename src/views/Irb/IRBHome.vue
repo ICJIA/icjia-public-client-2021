@@ -39,6 +39,14 @@ import { EventBus } from "@/event-bus";
 import NProgress from "@/services/Progress";
 
 export default {
+  metaInfo() {
+    return {
+      title:
+        this.content && this.content.title
+          ? this.content.title
+          : "Institutional Review Board",
+    };
+  },
   data() {
     return {
       contentLoading: true,

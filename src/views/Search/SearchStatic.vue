@@ -144,6 +144,9 @@ function arrayToList(array) {
   return array.join(", ").replace(/, ((?:.(?!, ))+)$/, " and $1");
 }
 export default {
+  metaInfo: {
+    title: "Search ICJIA",
+  },
   data() {
     return {
       sortSwitch: false,

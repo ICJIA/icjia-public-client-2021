@@ -7,6 +7,9 @@
 
 <script>
 export default {
+  metaInfo: {
+    title: "Admin Logout",
+  },
   created() {
     this.$store.dispatch("auth/logout");
   },

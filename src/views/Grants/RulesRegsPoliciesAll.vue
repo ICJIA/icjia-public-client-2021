@@ -156,6 +156,9 @@ import { getUnifiedTags } from "@/utils/content";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import _ from "lodash";
 export default {
+  metaInfo: {
+    title: "Rules, Regulations, and Policies",
+  },
   data() {
     return {
       viewToggle: "all",

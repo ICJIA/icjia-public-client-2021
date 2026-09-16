@@ -149,6 +149,9 @@ import { getUnifiedTags } from "@/utils/content";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import _ from "lodash";
 export default {
+  metaInfo: {
+    title: "ICJIA Meetings",
+  },
   data() {
     return {
       viewToggle: "all",

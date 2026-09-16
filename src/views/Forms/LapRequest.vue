@@ -178,6 +178,9 @@ import NProgress from "@/services/Progress";
 import axios from "axios";
 
 export default {
+  metaInfo: {
+    title: "Language Access Request",
+  },
   mixins: [validationMixin],
 
   head() {

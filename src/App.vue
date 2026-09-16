@@ -130,9 +130,48 @@ export default {
       this.bottomContextMenu = bottomContextMenu;
     },
     announceRoute() {
-      setTimeout(() => {
-        this.routeAnnouncement = document.title;
-      }, 300);
+      // vue-meta sets document.title only once the new page's metaInfo
+      // resolves — for CMS pages, after their content has loaded, which is
+      // often well past any fixed delay. The old 300 ms timer therefore
+      // announced the previous page's title or the bare "ICJIA" placeholder.
+      // Instead, wait for the title to settle on the new page's own value,
+      // with a fallback so every navigation is still announced.
+      const isHome = this.$route.path === "/";
+      if (this.titleObserver) this.titleObserver.disconnect();
+      clearTimeout(this.titleSettleTimer);
+      clearTimeout(this.titleFallbackTimer);
+
+      const announce = () => {
+        if (this.titleObserver) this.titleObserver.disconnect();
+        this.titleObserver = null;
+        clearTimeout(this.titleSettleTimer);
+        clearTimeout(this.titleFallbackTimer);
+        this.lastAnnouncedTitle = document.title;
+        // Clear first, so a live region hears a change even when two pages
+        // share a title.
+        this.routeAnnouncement = "";
+        this.$nextTick(() => {
+          this.routeAnnouncement = document.title;
+        });
+      };
+      const titleIsNew = () =>
+        document.title !== this.lastAnnouncedTitle &&
+        (isHome || document.title !== "ICJIA");
+      const onTitleChange = () => {
+        clearTimeout(this.titleSettleTimer);
+        if (titleIsNew()) this.titleSettleTimer = setTimeout(announce, 250);
+      };
+
+      if (typeof MutationObserver !== "undefined") {
+        this.titleObserver = new MutationObserver(onTitleChange);
+        this.titleObserver.observe(document.head, {
+          childList: true,
+          subtree: true,
+          characterData: true,
+        });
+      }
+      onTitleChange();
+      this.titleFallbackTimer = setTimeout(announce, 3000);
     },
     displayFooter() {
       this.$nextTick(() => {
@@ -252,6 +291,7 @@ export default {
 
   async mounted() {
     console.log("$myApp: ", this.$myApp);
+    this.lastAnnouncedTitle = document.title;
     this.checkForTopContextMenu();
     this.getBottomContextMenu();
     this.checkForDisclaimer();

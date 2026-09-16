@@ -78,6 +78,9 @@
 
 <script>
 export default {
+  metaInfo: {
+    title: "Sandbox",
+  },
   data() {
     return {};
   },

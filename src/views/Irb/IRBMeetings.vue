@@ -24,6 +24,9 @@ import { GET_MEETINGS_BY_CATEGORY_QUERY } from "@/graphql/meetings";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import { EventBus } from "@/event-bus.js";
 export default {
+  metaInfo: {
+    title: "IRB Meetings",
+  },
   data() {
     return {
       loading: true,

@@ -59,6 +59,12 @@ import { GET_SINGLE_PAGE_QUERY } from "@/graphql/page";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import { EventBus } from "@/event-bus.js";
 export default {
+  metaInfo() {
+    return {
+      title:
+        this.content && this.content.title ? this.content.title : "InfoNet",
+    };
+  },
   data() {
     return {
       loading: true,

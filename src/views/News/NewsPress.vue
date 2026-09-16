@@ -40,6 +40,9 @@ import { getUnifiedTags, getPublicationDate } from "@/utils/content";
 import _ from "lodash";
 
 export default {
+  metaInfo: {
+    title: "Press Releases",
+  },
   name: "News",
   data() {
     return {

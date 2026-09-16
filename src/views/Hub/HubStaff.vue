@@ -40,6 +40,9 @@ import { GET_SINGLE_UNIT_QUERY } from "@/graphql/units";
 import _ from "lodash";
 import BiographyCard from "../../components/BiographyCard.vue";
 export default {
+  metaInfo: {
+    title: "Research & Analysis Staff",
+  },
   components: { BiographyCard },
   data() {
     return {

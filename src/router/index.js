@@ -9,6 +9,7 @@ import { EventBus } from "@/event-bus";
 
 // Unit and content routes
 import { redirects } from "@/router/redirects";
+import { scrollBehavior } from "@/utils/motion";
 import { hub } from "@/router/hub";
 import { news } from "@/router/news";
 import { grants } from "@/router/grants";
@@ -74,7 +75,7 @@ const router = new VueRouter({
   //   - everything else still scrolls to top
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) return savedPosition;
-    if (to.hash) return { selector: to.hash, behavior: "smooth" };
+    if (to.hash) return { selector: to.hash, behavior: scrollBehavior() };
     if (from && to.path === from.path) return null;
     return { x: 0, y: 0 };
   },
