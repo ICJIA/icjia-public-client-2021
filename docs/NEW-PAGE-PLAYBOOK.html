@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Getting Eyes on a New Page</title>
+<meta name="description" content="Why a new page on icjia.illinois.gov needs outreach, not a front-page link: the site's own numbers, passive versus active discovery, and the launch playbook.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0d1321;
+    --bg-2: #131c2e;
+    --bg-3: #1b2740;
+    --line: #2a3752;
+    --ink: #eef2f8;
+    --ink-2: #b3bfd3;
+    --ink-3: #8593ad;
+    --gold: #f3bd4f;
+    --gold-ink: #0d1321;
+    --slate: #7a92ba;
+    --slate-dim: #3a4b6b;
+    --rose: #ff8a80;
+    --display: "Public Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --body: "Public Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --radius: 6px;
+    --gutter: clamp(16px, 4vw, 40px);
+  }
+  * { box-sizing: border-box; }
+  html { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--gold); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  a:hover { color: var(--ink); }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
+  ::selection { background: var(--gold); color: var(--gold-ink); }
+  code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.92em; }
+  strong { font-weight: 600; color: var(--ink); }
+  em { font-style: italic; }
+  p { margin: 0 0 1em; max-width: 68ch; }
+  ul, ol { margin: 0 0 1em; padding-left: 1.25em; max-width: 68ch; }
+  li { margin-bottom: 0.45em; }
+  li::marker { color: var(--gold); }
+  h1, h2, h3 { font-family: var(--display); line-height: 1.05; letter-spacing: -0.02em; text-wrap: balance; margin: 0; }
+  h1 { font-size: clamp(2.2rem, 5.5vw, 3.9rem); font-weight: 800; max-width: 18ch; }
+  h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); font-weight: 800; }
+  h3 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 0.4em; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding-inline: var(--gutter); }
+  .num { font-family: var(--display); font-weight: 800; font-variant-numeric: tabular-nums; line-height: 0.95; letter-spacing: -0.03em; }
+  .figure-note { color: var(--ink-3); font-size: 0.92rem; max-width: 60ch; }
+
+  /* ---------- masthead ---------- */
+  .masthead { padding-block: clamp(32px, 6vw, 64px) clamp(24px, 4vw, 40px); border-bottom: 1px solid var(--line); }
+  .masthead .from { color: var(--ink-3); font-size: 0.95rem; margin-bottom: 1.4em; }
+  .masthead .deck { font-size: clamp(1.15rem, 2vw, 1.4rem); color: var(--ink-2); max-width: 46ch; margin-top: 1.1em; }
+  .masthead .deck strong { color: var(--gold); }
+
+  /* ---------- sections ---------- */
+  section { padding-block: clamp(36px, 6vw, 72px); border-bottom: 1px solid var(--line); }
+  section:last-of-type { border-bottom: 0; }
+  .section-head { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.6em 3rem; margin-bottom: clamp(20px, 3vw, 36px); align-items: end; }
+  .section-head p { color: var(--ink-2); font-size: 1.12rem; margin: 0; }
+  @media (min-width: 860px) { .section-head { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); } }
+
+  /* ---------- hero: the real example ---------- */
+  .hero { display: grid; gap: 24px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+  @media (min-width: 860px) { .hero { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); } }
+  .panel { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(20px, 3vw, 32px); }
+  .panel-title { font-family: var(--display); font-weight: 600; font-size: 1.05rem; color: var(--ink-2); margin-bottom: 0.6em; }
+  .big { font-size: clamp(4.5rem, 13vw, 8.5rem); color: var(--gold); display: block; }
+  .big-label { font-size: 1.25rem; color: var(--ink); margin-top: 0.1em; }
+  .facts { list-style: none; padding: 0; margin: 1.2em 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; max-width: none; }
+  .facts li { background: var(--bg-3); border-radius: var(--radius); padding: 12px 14px; margin: 0; font-size: 0.98rem; color: var(--ink-2); }
+  .facts .num { font-size: 1.7rem; color: var(--ink); display: block; }
+  .none-list { list-style: none; padding: 0; margin: 1.2em 0 0; max-width: none; }
+  .none-list li { display: flex; gap: 10px; align-items: baseline; color: var(--ink-2); margin-bottom: 0.35em; }
+  .none-list .x { color: var(--rose); font-weight: 700; flex: 0 0 auto; font-family: var(--display); font-size: 1rem; }
+
+  /* comparison bars */
+  .compare { display: grid; gap: 18px; margin-top: 8px; }
+  .compare .row { display: grid; gap: 6px; }
+  .compare .label { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 1rem; color: var(--ink-2); }
+  .compare .label .num { font-size: 1.45rem; color: var(--ink); }
+  .compare .track { height: 22px; background: var(--bg-3); border-radius: 4px; overflow: hidden; }
+  .compare .fill { display: block; height: 100%; border-radius: 4px; background: var(--slate); min-width: 4px; }
+  .compare .fill.active { background: var(--gold); }
+  .compare .sub { color: var(--ink-3); font-size: 0.9rem; }
+
+  /* ---------- sources chart ---------- */
+  .chart-grid { display: grid; gap: 28px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+  @media (min-width: 860px) { .chart-grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); } }
+  .bars { display: grid; gap: 10px; }
+  .bar-row { display: grid; grid-template-columns: minmax(150px, 34%) minmax(0, 1fr) 4.2rem; align-items: center; gap: 12px; }
+  .bar-row .bar-label { color: var(--ink-2); font-size: 1rem; }
+  .bar-row .track { height: 26px; background: var(--bg-3); border-radius: 4px; overflow: hidden; }
+  .bar-row .fill { display: block; height: 100%; background: var(--slate); border-radius: 4px; min-width: 3px; }
+  .bar-row.hi .fill { background: var(--gold); }
+  .bar-row.hi .bar-label, .bar-row.hi .val { color: var(--ink); font-weight: 600; }
+  .bar-row .val { font-variant-numeric: tabular-nums; text-align: right; color: var(--ink-2); font-size: 1rem; }
+  @media (max-width: 520px) {
+    .bar-row { grid-template-columns: minmax(0, 1fr) 4.2rem; }
+    .bar-row .bar-label { grid-column: 1 / -1; margin-bottom: -4px; }
+  }
+  .chart-title { font-family: var(--display); font-weight: 600; font-size: 1.05rem; color: var(--ink-2); margin-bottom: 14px; }
+
+  .tiles { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+  .tile { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 18px 16px; }
+  .tile .num { font-size: 2.5rem; color: var(--gold); display: block; }
+  .tile .t { color: var(--ink-2); font-size: 1rem; margin-top: 6px; }
+  .dots { display: flex; gap: 6px; margin-bottom: 10px; }
+  .dots span { width: 22px; height: 22px; border-radius: 4px; background: var(--slate-dim); }
+  .dots span.on { background: var(--gold); }
+
+  /* ---------- passive / active ---------- */
+  .two { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 760px) { .two { grid-template-columns: 1fr 1fr; } }
+  .mode { border-radius: var(--radius); padding: clamp(20px, 3vw, 30px); border: 1px solid var(--line); background: var(--bg-2); }
+  .mode.active { border-color: var(--gold); box-shadow: inset 4px 0 0 var(--gold); }
+  .mode.passive { box-shadow: inset 4px 0 0 var(--slate); }
+  .mode h3 { font-size: 1.7rem; font-weight: 800; }
+  .mode.active h3 { color: var(--gold); }
+  .mode.passive h3 { color: var(--slate); }
+  .mode .tag { color: var(--ink-2); font-size: 1.05rem; margin-bottom: 1em; }
+  .mode ul { max-width: none; }
+  .mode li { color: var(--ink-2); }
+  .mode li strong { color: var(--ink); }
+  .bridge { margin-top: 20px; padding: 18px 22px; border-radius: var(--radius); background: var(--bg-3); border-left: 4px solid var(--gold); max-width: none; }
+  .bridge p { margin: 0; max-width: none; color: var(--ink); font-size: 1.08rem; }
+
+  /* ---------- front page: before / after ---------- */
+  .frames { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr); margin-block: 8px 24px; }
+  @media (min-width: 760px) { .frames { grid-template-columns: 1fr 1fr; } }
+  figure { margin: 0; }
+  figcaption { color: var(--ink-2); font-size: 0.98rem; margin-top: 12px; max-width: 48ch; }
+  figcaption strong { display: block; color: var(--ink); font-family: var(--display); font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+  .mock { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; aspect-ratio: 4 / 3; max-width: 100%; display: grid; gap: 8px; }
+  .mock .b { border-radius: 3px; }
+  .mock.carnival { grid-template-columns: repeat(6, 1fr); grid-auto-rows: minmax(0, 1fr); }
+  .mock.carnival .b { background: var(--slate-dim); }
+  .mock.carnival .b.r { background: var(--rose); opacity: 0.75; }
+  .mock.carnival .b.g { background: var(--gold); opacity: 0.7; }
+  .mock.carnival .b.s { background: var(--slate); }
+  .mock.slots { grid-template-columns: repeat(4, 1fr); grid-template-rows: auto 1fr 1fr auto; }
+  .mock.slots .b { background: var(--bg-3); border: 1px solid var(--line); position: relative; }
+  .mock.slots .b.label { display: flex; align-items: center; padding: 6px 8px; font-family: var(--display); font-weight: 600; font-size: 0.8rem; color: var(--ink-3); }
+  .mock.slots .b.news { border-color: var(--gold); box-shadow: inset 0 0 0 1px var(--gold); }
+  .mock.slots .b.news .pip { position: absolute; left: 8px; top: 8px; right: 8px; height: 6px; background: var(--gold); border-radius: 3px; }
+  .mock.slots .b.news .pip.two { top: 20px; opacity: 0.55; }
+  .mock.slots .b.news .pip.three { top: 32px; opacity: 0.3; }
+  .mock.slots .b.news .lbl { position: absolute; left: 8px; bottom: 6px; font-family: var(--display); font-weight: 600; font-size: 0.8rem; color: var(--gold); }
+  .why { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .why div { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
+  .why h3 { font-size: 1.15rem; }
+  .why p { color: var(--ink-2); margin: 0; font-size: 1rem; }
+  .answer { margin-top: 22px; padding: 20px 24px; border-radius: var(--radius); background: var(--gold); color: var(--gold-ink); max-width: none; }
+  .answer p { color: var(--gold-ink); margin: 0; max-width: none; font-size: 1.1rem; }
+  .answer strong { color: var(--gold-ink); }
+
+  /* ---------- playbook timeline ---------- */
+  .timeline { list-style: none; padding: 0; margin: 0; max-width: none; display: grid; gap: 0; counter-reset: step; }
+  .timeline li { display: grid; grid-template-columns: 3.4rem minmax(0, 1fr); gap: 16px; padding-block: 16px; border-top: 1px solid var(--line); margin: 0; }
+  .timeline li:last-child { border-bottom: 1px solid var(--line); }
+  .timeline .step { font-family: var(--display); font-weight: 800; font-size: 1.9rem; color: var(--gold); line-height: 1; padding-top: 2px; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  .timeline .when { font-family: var(--display); font-weight: 600; font-size: 0.92rem; color: var(--ink-3); }
+  .timeline .what { font-size: 1.15rem; font-weight: 700; color: var(--ink); margin: 2px 0 4px; letter-spacing: -0.01em; }
+  .timeline p { color: var(--ink-2); margin: 0; max-width: 70ch; font-size: 1rem; }
+
+  /* ---------- UTM ---------- */
+  .utm-grid { display: grid; gap: 24px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+  @media (min-width: 900px) { .utm-grid { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); } }
+  .link-anatomy { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; overflow-x: auto; }
+  .link-anatomy code { display: block; font-size: 1.05rem; line-height: 1.7; white-space: nowrap; color: var(--ink-2); }
+  .link-anatomy .k { color: var(--gold); }
+  .link-anatomy .v { color: var(--ink); font-weight: 600; }
+  .parts { list-style: none; padding: 0; margin: 14px 0 0; max-width: none; display: grid; gap: 8px; }
+  .parts li { display: grid; grid-template-columns: minmax(120px, 9rem) minmax(0, 1fr); gap: 12px; margin: 0; color: var(--ink-2); font-size: 1rem; }
+  .parts code { color: var(--gold); }
+  .mistake { border: 1px solid var(--rose); border-radius: var(--radius); padding: clamp(18px, 3vw, 26px); background: var(--bg-2); box-shadow: inset 4px 0 0 var(--rose); }
+  .mistake h3 { color: var(--rose); font-size: 1.35rem; }
+  .mistake .num { font-size: 2.8rem; color: var(--ink); display: block; margin-bottom: 0.1em; }
+  .mistake p, .mistake li { color: var(--ink-2); font-size: 1rem; }
+  .mistake ol { max-width: none; margin-bottom: 0; }
+  .mistake li strong { color: var(--ink); }
+
+  /* ---------- ask for ---------- */
+  .ask { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 760px) { .ask { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); } }
+  .ask .instead { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 24px; }
+  .ask .instead p { color: var(--ink-3); font-size: 1.05rem; margin: 0; max-width: none; }
+  .ask .instead .q { font-family: var(--display); font-size: 1.3rem; font-weight: 700; letter-spacing: -0.01em; color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--rose); text-decoration-thickness: 3px; margin-bottom: 0.4em; }
+  .checks { list-style: none; padding: 0; margin: 0; max-width: none; display: grid; gap: 10px; }
+  .checks li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; align-items: start; margin: 0; background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; color: var(--ink-2); font-size: 1rem; }
+  .checks li::before { content: ""; width: 20px; height: 20px; margin-top: 3px; border-radius: 4px; border: 2px solid var(--gold); background: linear-gradient(var(--gold), var(--gold)) center / 10px 10px no-repeat; }
+  .checks strong { color: var(--ink); }
+
+  /* ---------- other questions ---------- */
+  .faq { margin: 0; display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); max-width: none; }
+  @media (min-width: 760px) { .faq { grid-template-columns: 1fr 1fr; } }
+  .faq > div { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
+  .faq dt { font-family: var(--display); font-weight: 700; font-size: 1.15rem; color: var(--ink); margin-bottom: 0.4em; text-wrap: balance; letter-spacing: -0.01em; }
+  .faq dd { margin: 0; color: var(--ink-2); font-size: 1rem; }
+
+  /* ---------- footer ---------- */
+  footer { padding-block: 28px 56px; color: var(--ink-3); font-size: 0.9rem; border-top: 1px solid var(--line); }
+  footer p { max-width: 80ch; margin-bottom: 0.6em; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+  @media print {
+    :root { --bg: #ffffff; --bg-2: #f4f6fa; --bg-3: #e6eaf2; --line: #c9d1e0; --ink: #101828; --ink-2: #344054; --ink-3: #5b6b85; --gold: #9a6a00; --gold-ink: #ffffff; --slate: #5b7199; --slate-dim: #c5cfe0; --rose: #b42318; color-scheme: light; }
+    body { font-size: 12.5px; }
+    section { padding-block: 22px; break-inside: avoid; }
+    .masthead { padding-block: 16px; }
+    a { color: var(--ink); }
+    .answer { background: #fff3cd; color: var(--ink); border: 1px solid var(--gold); }
+    .answer p, .answer strong { color: var(--ink); }
+    .mock.carnival .b.g, .mock.carnival .b.r { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="from">A briefing from the ICJIA web team for new colleagues and managers. September 2026.</p>
+    <h1>I have a new page. How do I get people to see it?</h1>
+    <p class="deck">Not by putting it on the front page. Publishing makes a page <em>findable</em>. Outreach makes it <strong>found</strong>. It is the first question most new colleagues ask, and a good one. Here is what the site's own numbers say, and what to ask for instead.</p>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ 1. THE REAL EXAMPLE ============ -->
+<section aria-labelledby="h-example">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="h-example">What waiting looks like</h2>
+      <p>The Illinois Homicide Reporting dashboard went live on August 25, 2026. It is a state-mandated page with a live data dashboard and downloadable datasets. Nobody announced it. This is what passive discovery delivered.</p>
+    </div>
+    <div class="hero">
+      <div class="panel">
+        <div class="panel-title">icjia.illinois.gov/homicide, first 24 days</div>
+        <span class="big num">6</span>
+        <div class="big-label">people visited the page</div>
+        <ul class="facts">
+          <li><span class="num">7</span>visits</li>
+          <li><span class="num">12</span>page views</li>
+          <li><span class="num">3</span>came from Google, 1 from Yahoo</li>
+          <li><span class="num">3</span>typed the address or followed a sent link</li>
+        </ul>
+        <ul class="none-list">
+          <li><span class="x">No</span>news post, email, or social post</li>
+          <li><span class="x">No</span>menu item and no homepage link</li>
+          <li><span class="x">No</span>entry in the site's own search until September 17</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="panel-title">The same page, two ways</div>
+        <div class="compare">
+          <div class="row">
+            <div class="label"><span>Wait for people to find it</span><span class="num">6</span></div>
+            <div class="track" aria-hidden="true"><span class="fill" style="width: 5%"></span></div>
+            <div class="sub">visitors in 24 days, measured</div>
+          </div>
+          <div class="row">
+            <div class="label"><span>Send one CJ Dispatch email</span><span class="num">≈120</span></div>
+            <div class="track" aria-hidden="true"><span class="fill active" style="width: 100%"></span></div>
+            <div class="sub">visits in 48 hours, modeled conservatively: 4,000 subscribers, 30% open, 3% click</div>
+          </div>
+        </div>
+        <p class="figure-note" style="margin-top: 18px;">One email to people who asked to hear from us outperforms three weeks of waiting by roughly twenty to one. The email is a floor, not a ceiling: social posts, partner links, and a Research Hub article stack on top of it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. HOW PEOPLE ARRIVE ============ -->
+<section aria-labelledby="h-arrive">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="h-arrive">Nobody browses. People arrive.</h2>
+      <p>Over the last twelve months, 60,300 people made 144,600 visits to icjia.illinois.gov. They did not come in through the front door and look around. They landed on the one page that answered their question, read it, and left.</p>
+    </div>
+    <div class="chart-grid">
+      <div>
+        <div class="chart-title">Where visits come from, share of 144,600 visits</div>
+        <div class="bars">
+          <div class="bar-row hi"><span class="bar-label">A link someone sent, or a typed address</span><span class="track" aria-hidden="true"><span class="fill" style="width: 48%"></span></span><span class="val">48%</span></div>
+          <div class="bar-row"><span class="bar-label">Google</span><span class="track" aria-hidden="true"><span class="fill" style="width: 42%"></span></span><span class="val">42%</span></div>
+          <div class="bar-row"><span class="bar-label">Other search engines</span><span class="track" aria-hidden="true"><span class="fill" style="width: 2.4%"></span></span><span class="val">2.4%</span></div>
+          <div class="bar-row"><span class="bar-label">AI assistants (ChatGPT, Perplexity)</span><span class="track" aria-hidden="true"><span class="fill" style="width: 2.1%"></span></span><span class="val">2.1%</span></div>
+          <div class="bar-row"><span class="bar-label">Partner and government sites</span><span class="track" aria-hidden="true"><span class="fill" style="width: 1.7%"></span></span><span class="val">1.7%</span></div>
+          <div class="bar-row"><span class="bar-label">Social media</span><span class="track" aria-hidden="true"><span class="fill" style="width: 1.1%"></span></span><span class="val">1.1%</span></div>
+        </div>
+        <p class="figure-note" style="margin-top: 16px;">Analytics files the first bar under "Direct". Most of those visits begin on long interior addresses nobody types by hand: they are links people were sent in email, Teams, and documents, arriving with the sender's name stripped off. Sending links is the largest channel we have, and it is the one we do not measure.</p>
+      </div>
+      <div class="tiles">
+        <div class="tile">
+          <div class="dots" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span><span></span></div>
+          <span class="num">1 in 5</span>
+          <div class="t">visits starts on the homepage. Four in five land straight on an interior page.</div>
+        </div>
+        <div class="tile">
+          <span class="num">61%</span>
+          <div class="t">of visits read one page and leave. The menu is never opened.</div>
+        </div>
+        <div class="tile">
+          <span class="num">47%</span>
+          <div class="t">of all page views are Research Hub articles. Seven of the ten most-read pages are Hub articles.</div>
+        </div>
+        <div class="tile">
+          <span class="num">2×</span>
+          <div class="t">AI assistants now send almost twice the visits social media does, and they only cite pages with readable text.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. PASSIVE vs ACTIVE ============ -->
+<section aria-labelledby="h-modes">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="h-modes">Two kinds of discovery</h2>
+      <p>The website can only do one of them. Passive discovery is built into the site and runs on its own. Active discovery is done by people, on purpose, on a schedule. A page that only gets the first one is the homicide page above.</p>
+    </div>
+    <div class="two">
+      <div class="mode passive">
+        <h3>Passive</h3>
+        <p class="tag">The site waits for someone who is already looking.</p>
+        <ul>
+          <li><strong>Site search.</strong> The site's search index is regenerated every time the site is rebuilt, so a page is searchable from the next rebuild on. Pages built outside the content system, like the homicide dashboard, are listed once by the developer and then included in every rebuild.</li>
+          <li><strong>Search engines.</strong> Every rebuild also publishes a sitemap that tells Google and Bing what exists. Indexing takes days to weeks, and ranking depends heavily on how many other pages link to ours.</li>
+          <li><strong>Menus and context bars.</strong> A map of the agency for people who already know what they want.</li>
+          <li><strong>Homepage slots.</strong> News, funding, meetings, and jobs, filled automatically from the content system.</li>
+        </ul>
+        <p class="tag" style="margin: 0.6em 0 0;">Permanent, free, and compounding. Also slow, small, and blind to anyone who was not already searching.</p>
+      </div>
+      <div class="mode active">
+        <h3>Active</h3>
+        <p class="tag">We go to the people who should see it.</p>
+        <ul>
+          <li><strong>CJ Dispatch email.</strong> 4,000+ subscribers who chose to hear from us. Fastest and largest single push we have.</li>
+          <li><strong>Social posts.</strong> LinkedIn for practitioners, X for press, Facebook for the public. Reaches people who never search for us.</li>
+          <li><strong>Partner links.</strong> Links from idoc.illinois.gov alone sent 1,800 visits last year. ISP, ILETSB, and county partners can do the same for a page about their data.</li>
+          <li><strong>A Research Hub article.</strong> A short findings piece linking to the page, published in the channel that already carries half our readership.</li>
+          <li><strong>Press.</strong> A data release with a state mandate behind it is a story.</li>
+        </ul>
+        <p class="tag" style="margin: 0.6em 0 0;">Fast and measurable. Owned by Communications, not by the website.</p>
+      </div>
+    </div>
+    <div class="bridge">
+      <p><strong>Active feeds passive.</strong> Every email, post, and partner link creates a visit today and an inbound link that raises the page's search ranking for years. Outreach is how a page earns the passive traffic that later looks free.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. THE FRONT PAGE ============ -->
+<section aria-labelledby="h-front">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="h-front">Why "just put it on the front page" does not work</h2>
+      <p>It is the most common request from new colleagues, and it comes from a reasonable instinct: the front page must be where everyone looks. The numbers say otherwise, and the site's own history says why we stopped doing it.</p>
+    </div>
+    <div class="frames">
+      <figure>
+        <div class="mock carnival" aria-hidden="true">
+          <div class="b s" style="grid-column: span 4;"></div><div class="b r" style="grid-column: span 2; grid-row: span 2;"></div>
+          <div class="b g" style="grid-column: span 1;"></div><div class="b" style="grid-column: span 3;"></div>
+          <div class="b" style="grid-column: span 2; grid-row: span 2;"></div><div class="b r" style="grid-column: span 1;"></div><div class="b g" style="grid-column: span 3;"></div>
+          <div class="b s" style="grid-column: span 1;"></div><div class="b" style="grid-column: span 1;"></div><div class="b r" style="grid-column: span 2;"></div>
+          <div class="b" style="grid-column: span 3;"></div><div class="b g" style="grid-column: span 2;"></div><div class="b s" style="grid-column: span 1;"></div>
+          <div class="b r" style="grid-column: span 1;"></div><div class="b" style="grid-column: span 4;"></div><div class="b g" style="grid-column: span 1;"></div>
+        </div>
+        <figcaption><strong>Earlier versions of the site</strong>Every manager's page went on the front page. Banners, buttons, and announcements piled up in no order, each one shouting over the last. Nothing had a place, so nothing stood out, and the page read as unmaintained. It helped no one, including the people who asked for it.</figcaption>
+      </figure>
+      <figure>
+        <div class="mock slots" aria-hidden="true">
+          <div class="b label" style="grid-column: span 4;">Header and search</div>
+          <div class="b news" style="grid-column: span 2; grid-row: span 2;"><span class="pip"></span><span class="pip two"></span><span class="pip three"></span><span class="lbl">News</span></div>
+          <div class="b label" style="grid-column: span 2;">Funding</div>
+          <div class="b label" style="grid-column: span 2;">Meetings</div>
+          <div class="b label" style="grid-column: span 2;">Jobs</div>
+          <div class="b label" style="grid-column: span 2;">Research Hub</div>
+          <div class="b label" style="grid-column: span 4;">Footer</div>
+        </div>
+        <figcaption><strong>The current site</strong>Every kind of content has one fixed slot, filled automatically from the content system. Readers learn where things are and trust that the slot is current. A new page does not get a custom box. It gets announced through the News slot, which is what the slot is for.</figcaption>
+      </figure>
+    </div>
+    <div class="why">
+      <div>
+        <h3>A link almost nobody sees</h3>
+        <p>Only one visit in five starts on the homepage, and the homepage already carries dozens of links. A new one competes with all of them for a reader who, three times out of five, leaves after a single page.</p>
+      </div>
+      <div>
+        <h3>A menu is a map, not a billboard</h3>
+        <p>The menu describes how the agency is organized so that people who know what they want can get there. Every item added for visibility makes every other item harder to find, and a menu has never told anyone about something they did not know existed.</p>
+      </div>
+      <div>
+        <h3>Exceptions become the rule</h3>
+        <p>One custom box on the front page is a precedent. The next request cannot be refused, and within a year the front page is the carnival again. Fixed slots are the only rule that survives the next manager.</p>
+      </div>
+    </div>
+    <div class="answer">
+      <p><strong>The right way onto the front page:</strong> publish a news post about the page. It appears in the News slot as soon as it is published, stays while it is recent, and steps aside for the next item. That is the front page working as designed, and it takes twenty minutes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. THE PLAYBOOK ============ -->
+<section aria-labelledby="h-play">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="h-play">The launch playbook</h2>
+      <p>The order matters: the news post and the email create the first wave, social and partner links widen it, and the Hub article makes it last. Every step uses a channel that already exists.</p>
+    </div>
+    <ol class="timeline">
+      <li><span class="step">1</span><div><div class="when">Before launch</div><div class="what">Write the announcement once, in three lengths</div><p>A news post, an email item, and three social posts, each saying what the page answers and for whom. Build one tagged link per channel (see below). Send the tagged links to Communications with the copy.</p></div></li>
+      <li><span class="step">2</span><div><div class="when">Launch day</div><div class="what">Publish the news post and send CJ Dispatch</div><p>The post fills the homepage News slot and the news feed. The email reaches 4,000 subscribers within the hour. Expect the largest single day of traffic the page will ever have.</p></div></li>
+      <li><span class="step">3</span><div><div class="when">Week 1</div><div class="what">Post on LinkedIn, X, and Facebook, and ask partners to link</div><p>Three posts from three angles: the mandate, the headline finding, the county view. Ask the agencies whose data it is to link from their own sites. One partner link is worth more than a year of homepage placement.</p></div></li>
+      <li><span class="step">4</span><div><div class="when">Weeks 2 to 6</div><div class="what">Publish a Research Hub article about what the data shows</div><p>The Hub carries 47% of the site's page views, and its articles keep drawing readers for years. Google and AI assistants can quote an article; they cannot read a dashboard. Link the article to the page and the page to the article.</p></div></li>
+      <li><span class="step">5</span><div><div class="when">Every quarter</div><div class="what">Repeat with each data release</div><p>A new reporting period is a new announcement. Refresh the article's numbers, send the email, post again. Recurring content is what turns a page into a destination.</p></div></li>
+      <li><span class="step">6</span><div><div class="when">Always</div><div class="what">Tag every link, and read the numbers 30 days later</div><p>Tagged links are the only way to know which of the steps above worked. The readout takes ten minutes and decides what to do more of next time.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ 6. UTM ============ -->
+<section aria-labelledby="h-utm">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="h-utm">Tagged links: how we would know what worked</h2>
+      <p>A UTM tag is a short label on the end of a link that names where the link was posted. The page ignores it. Our analytics reads it and credits the visit to that channel. That is the entire technology, and it is free.</p>
+    </div>
+    <div class="utm-grid">
+      <div>
+        <div class="link-anatomy">
+          <code>icjia.illinois.gov/homicide<br>?<span class="k">utm_source</span>=<span class="v">cjdispatch</span><br>&amp;<span class="k">utm_medium</span>=<span class="v">email</span><br>&amp;<span class="k">utm_campaign</span>=<span class="v">homicide-sept2026</span></code>
+        </div>
+        <ul class="parts">
+          <li><code>utm_source</code><span>Where it was posted: cjdispatch, linkedin, facebook, x, or a partner such as idoc.</span></li>
+          <li><code>utm_medium</code><span>What kind of channel: email, social, referral.</span></li>
+          <li><code>utm_campaign</code><span>Which release: homicide-sept2026, then homicide-dec2026 for the next quarter.</span></li>
+        </ul>
+        <p class="figure-note" style="margin-top: 14px;">The rules are short. Tags go on links distributed outside the site: emails, posts, partner pages, printed QR codes. Never on the site's own internal links, which would corrupt the count. Use the same spelling every time so the reports add up.</p>
+        <p class="figure-note">With tags in place, the 30-day readout answers the questions a manager actually asks. How many visits did the email produce? Did LinkedIn or Facebook do better? Did the partner link matter? Should we send again next quarter? Without tags, every one of those answers is a guess.</p>
+      </div>
+      <div class="mistake">
+        <h3>Communications does not tag its links. That is a mistake.</h3>
+        <span class="num">99.9%</span>
+        <p>of last year's 144,600 visits carried no tag we created. Ninety carried an email tag, and five a social tag, nearly all from another agency's mailing system.</p>
+        <ol>
+          <li><strong>Our biggest channel is a black box.</strong> 48% of visits arrive as "Direct", where email, Teams, and app clicks land with their origin stripped. A tagged link keeps its credit because the label travels inside the link itself.</li>
+          <li><strong>Untagged campaigns cannot be improved.</strong> Every send and post so far is unmeasured, so nothing can be learned from it, and no one can show that the work produced anything.</li>
+          <li><strong>It costs nothing.</strong> A tag takes a minute to add and works in every channel we use. There is no budget, tool, or approval involved.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. WHAT TO ASK FOR ============ -->
+<section aria-labelledby="h-ask">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="h-ask">What to ask for instead</h2>
+      <p>Each item below is a channel that already exists and a person who already owns it. Together they take a few hours spread over a month. None of them changes the website.</p>
+    </div>
+    <div class="ask">
+      <div class="instead">
+        <div class="q">"Can we put a link on the front page?"</div>
+        <p>The request is really "I want people to see this." These are the things that make people see it.</p>
+      </div>
+      <ul class="checks">
+        <li><span><strong>A news post</strong> on launch day. It puts the page in the homepage News slot automatically.</span></li>
+        <li><span><strong>A CJ Dispatch email</strong> to the 4,000 people who asked to hear from us.</span></li>
+        <li><span><strong>Three social posts</strong> over the first week, LinkedIn first.</span></li>
+        <li><span><strong>Partner links</strong> from the agencies whose data the page presents.</span></li>
+        <li><span><strong>A Research Hub article</strong> about what the data shows, linking to the page.</span></li>
+        <li><span><strong>A tagged link for every channel</strong>, and a readout 30 days later.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. OTHER GOOD QUESTIONS ============ -->
+<section aria-labelledby="h-faq">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="h-faq">Other good questions</h2>
+      <p>Colleagues who joined after the site was built ask these often. Short answers here; the web team is glad to give longer ones.</p>
+    </div>
+    <dl class="faq">
+      <div>
+        <dt>Can we change the homepage or the menu for this?</dt>
+        <dd>Changes to the site's structure go through agency review and ship in scheduled releases. They are slow by design, and they are not what makes a page seen. Nothing in the playbook above changes the website.</dd>
+      </div>
+      <div>
+        <dt>Why not change the Research Hub while we are at it?</dt>
+        <dd>A findings article in the Hub is exactly right, and it needs no change to the Hub. A rebuilt Research Hub is complete and waiting on agency approval to launch. Until then, the current Hub keeps carrying half the site's readership, which is reason enough to publish there now.</dd>
+      </div>
+      <div>
+        <dt>The page could be better. Should we fix it first?</dt>
+        <dd>Improvements to a page ship in small releases as they are approved, and the site is audited against automated accessibility rules. Outreach does not need to wait for a better page. A page nobody visits is not improved by polishing.</dd>
+      </div>
+      <div>
+        <dt>Who does what?</dt>
+        <dd>The page owner writes the announcement and asks partners to link. The web team publishes the page and the news post and supplies the tagged links. Communications sends the email and posts to social. The web team pulls the numbers 30 days later.</dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Sources.</strong> Plausible Analytics for icjia.illinois.gov, twelve months ending September 17, 2026: 60,300 visitors, 144,600 visits, 457,300 page views. Source shares are shares of visits. Homicide page figures cover August 25 to September 17, 2026. Research Hub share is Hub page views over all page views. AI assistants are ChatGPT, Perplexity, and Copilot referrals combined; social is Facebook, LinkedIn, and X combined.</p>
+    <p><strong>Email model.</strong> 4,000 subscribers at 30% open and 3% click, at or below published 2026 government-sector email benchmarks, as in the August 2026 briefing "Publishing Isn't Promotion" (docs/PAGE-PROMOTION-STRATEGY), which carries the full outreach case and channel accounting.</p>
+    <p>Prepared by the ICJIA web team, September 2026.</p>
+  </div>
+</footer>
+
+</body>
+</html>

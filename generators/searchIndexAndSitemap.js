@@ -58,6 +58,47 @@ const posts = require("../public/api/posts.json");
 const events = require("../public/api/events.json");
 // const policies = require("../public/api/policies.json");
 
+// ── Hand-built routes (not Strapi content) ─────────────────────────────
+// Vue views with no CMS record behind them (src/router/*) never pass through
+// the per-type generators above, so they drop out of the search index and the
+// sitemap on every build unless listed here. Each entry is a search record in
+// the shape generateIndexPages produces; its fullPath also feeds the sitemap
+// below. Add new hand-built pages here.
+const manualPages = [
+  {
+    id: "homicide",
+    title: "Illinois Homicide Reporting",
+    altTitle: "illinois homicide reporting",
+    slug: "homicide",
+    category: "general",
+    summary:
+      "Homicide and firearm aggravated assault dashboard: offense and clearance data reported by Illinois law enforcement agencies through NIBRS, beginning in 2023, by county, agency, and reporting period, with a summary report and downloadable datasets, published under the Illinois Criminal Justice Information Act (20 ILCS 3930).",
+    // The site's Fuse settings score by position (location 0, distance 200,
+    // threshold 0.25), so only the first ~50 characters of a string field
+    // can match. Keep searchMeta short and put the rest in tags: each tag is
+    // matched on its own, from its first character.
+    searchMeta: "homicide dashboard clearance rates NIBRS",
+    tags: [
+      "homicide",
+      "homicide dashboard",
+      "homicide data",
+      "homicide reporting",
+      "clearance",
+      "clearances",
+      "clearance rate",
+      "aggravated assault",
+      "firearm",
+      "NIBRS",
+      "Illinois State Police",
+      "20 ILCS 3930",
+      "PA 104-0197",
+    ],
+    fullPath: "/homicide/",
+    imagePath: null,
+    contentType: "page",
+  },
+];
+
 let siteIndex = [
   ...biographies,
   ...hub,
@@ -70,9 +111,11 @@ let siteIndex = [
   ...posts,
   ...events,
   // ...policies,
+  ...manualPages,
 ];
 
-const manualIndex = ["/news/press/", "/homicide/", "/accessibility/"];
+// Sitemap-only paths: hand-built routes that have no search record.
+const manualIndex = ["/news/press/", "/accessibility/"];
 
 const dirpath = "./public/api";
 if (!fs.existsSync(dirpath)) fs.mkdirSync(dirpath);

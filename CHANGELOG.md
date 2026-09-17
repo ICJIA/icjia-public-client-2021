@@ -84,6 +84,50 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.76] - 2026-09-17
+
+### fix(search) — The Homicide Reporting page is in site search, and stays there on every build
+
+The Illinois Homicide Reporting page (`/homicide/`, added in 1.5.56) is a hand-built Vue view with no
+Strapi record, so it never reached `searchIndex.json`: the search index is assembled from the per-type
+CMS exports only. The sitemap already carried it through a hand-kept path list.
+`generators/searchIndexAndSitemap.js` now has a `manualPages` list of full search records for such
+routes, appended to the index on every build; each record's path also feeds the sitemap, so the
+sitemap-only list keeps just `/news/press/` and `/accessibility/`. The homicide record carries its
+topic terms as tags: the site's Fuse settings score by position (location 0, distance 200, threshold
+0.25), so only the first ~50 characters of a text field can match, while each tag matches from its
+first character.
+
+Measured on a local run of the generator against the current API exports: 2,431 search records
+(2,430 before), one for `/homicide/`; 2,433 sitemap URLs, no duplicates, `/homicide/` once. With the
+site's own search settings the page ranks first for "homicide", "homicide dashboard", "homicides",
+"clearance", "clearances", "NIBRS", "aggravated assault", and "ILCS 3930", and seventh of 56 for
+"firearm". Live production (1.5.75) has no record for `/homicide/`; it gains one at the next deploy.
+
+Note: the search index and sitemap regenerate only when the site is built and deployed. There is no
+scheduled rebuild on this site (archived copies of the homepage from July 17 and August 1 carry the
+July 6 build stamp; the production deploy has no functions or schedules), so CMS content published
+between deploys is not in site search until the next deploy.
+
+### docs — "Getting Eyes on a New Page" manager briefing
+
+New `docs/NEW-PAGE-PLAYBOOK.html`, a single self-contained dark-theme page for new colleagues and
+managers asking how to get people to a new page (prompted by the homicide dashboard, written for any
+page). It shows the
+page's own first 24 days from Plausible (6 visitors, 7 visits, 12 page views; no announcement, no
+menu item, no search entry); how visits reach the site (48% sent or typed links, 42% Google, 2.1% AI
+assistants, 1.1% social; 1 in 5 visits starts on the homepage; 61% one-page visits; Research Hub 47%
+of page views); passive versus active discovery; why a front-page link or menu item fails, with the
+earlier sites' unstructured front page set against the current fixed content slots; a six-step launch
+playbook; a UTM-tag explainer and the case that Communications should adopt tagging (99.9% of visits
+untagged); a checklist of what to ask for instead; and short answers to the other questions new
+colleagues ask (structural changes go through agency review; a rebuilt Research Hub awaits approval
+to launch; who does what). Prints in light. axe-core AA + best practices:
+0 violations. Twelve-month Plausible window ending September 17, 2026. Docs-only; no site code
+touched.
+
+---
+
 ## [1.5.75] - 2026-09-17
 
 ### fix(accessibility) — Current-page marks with a query, the slideshow's Play button, an empty dialog, "Load more" after a failure, loading indicators under reduced motion
