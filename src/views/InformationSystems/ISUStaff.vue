@@ -7,7 +7,7 @@
             <v-container v-if="unit">
               <v-row>
                 <v-col cols="12">
-                  <h1>Information Systems Unit Staff</h1>
+                  <h1>Innovation and Digital Services Staff</h1>
                   <div v-html="render(unit.summary)"></div
                 ></v-col>
                 <v-col class="text-left" cols="12">
@@ -42,7 +42,7 @@ import NProgress from "@/services/Progress";
 
 export default {
   metaInfo: {
-    title: "Information Systems Unit Staff",
+    title: "Innovation and Digital Services Staff",
   },
   data() {
     return {
@@ -105,7 +105,7 @@ export default {
       query: GET_BIOGRAPHIES_BY_UNIT_QUERY,
       variables() {
         return {
-          shortName: "ISU",
+          shortName: "IDS",
         };
       },
       error(error) {

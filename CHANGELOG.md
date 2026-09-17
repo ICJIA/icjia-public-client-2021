@@ -82,6 +82,23 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.72] - 2026-09-17
+
+### fix — The Innovation and Digital Services staff page lists its staff again
+
+- `/innovation-and-digital-services/isu-staff/` sent every visitor to "Page Not Found". The view
+  asked the CMS for the staff of the unit "ISU", the short name of the Information Systems Unit;
+  the unit is now Innovation and Digital Services, "IDS", so the query found no one, and the view
+  redirects to the 404 page when it finds no staff. It now asks for "IDS", and its heading and
+  title are "Innovation and Digital Services Staff", after the unit's name in the CMS.
+
+Checked on a local build: the page stays at its address and lists all 8 staff the CMS has for
+"IDS"; its tab title is "ICJIA | Innovation and Digital Services Staff", announced 0.5 seconds after
+an in-app navigation; axe-core reports no violations at 1,280 and 375 px; and nothing scrolls
+sideways at 375 or 320 px.
+
+---
+
 ## [1.5.71] - 2026-09-17
 
 ### fix(accessibility) — Contrast under the mouse, grouped table rows, the Events calendar by keyboard, quieter search announcements, focus clear of the sticky bars, reduced motion, page titles
