@@ -49,8 +49,8 @@
 
       <template v-slot:item.isCancelled="{ item }">
         <div v-if="item.isCancelled" style="color: #f00; font-weight: 900">
-          <v-chip label small color="red" class="mr-2" style="margin-top: 0px">
-            <span style="color: #fff !important; font-weight: 400">
+          <v-chip label small class="mr-2" style="margin-top: 0px">
+            <span style="color: #000000 !important; font-weight: 700">
               CANCELLED
             </span>
           </v-chip>

@@ -84,6 +84,28 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.79] - 2026-09-17
+
+### fix: "NEW!" and "CANCELLED" chips show their text again
+
+The "NEW!" chip on the homepage Employment tab rendered as an empty outlined box. Since 1.5.9 a
+site-wide rule standardizes every chip to black text on a white fill with a dark border (WCAG
+1.4.3), overriding any `color` a template gives the chip. Four templates still gave their chip a
+navy or red fill and painted the text white with an inline `!important`, which the rule cannot
+override, so the text was white on white: the Employment "NEW!" chip on the homepage
+(`HomeTabbed.vue`), the "CANCELLED" chip in meeting tables (`MeetingTable.vue`), and the "NEW!"
+chips on the Research Hub home (`HubHome.vue`) and the News listing (`News.vue`). Each now follows
+the pattern the homepage News column and news cards already use: no chip colour, black bold text.
+Verified on the live homepage before the change (chip fill white, text white; the news column's
+chip black on white) and in the unit suite after it.
+
+New `tests/unit/chips.spec.js` reads every template under `src/components` and `src/views` and
+fails if a chip paints its text white without opting out of the standard with
+`text-color="white"`. It failed on the four files above before the fix and passes after it. Mocha:
+458 passing, 6 pending (pre-existing skipped stubs); lint clean on the changed files.
+
+---
+
 ## [1.5.78] - 2026-09-17
 
 ### fix(search) — Browsers pick up a rebuilt search index on their next visit

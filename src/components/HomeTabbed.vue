@@ -174,14 +174,8 @@
                 </span>
 
                 <h2 class="mt-2" style="font-size: 1.1em">
-                  <v-chip
-                    v-if="isItNew(job)"
-                    label
-                    small
-                    color="#0D4474"
-                    class="mr-2"
-                  >
-                    <span style="color: #fff !important; font-weight: 400">
+                  <v-chip v-if="isItNew(job)" label small class="mr-2">
+                    <span style="color: #000000 !important; font-weight: 700">
                       NEW!
                     </span> </v-chip
                   ><router-link :to="job.fullPath" class="card-title-link">{{

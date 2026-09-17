@@ -193,14 +193,13 @@
                                 v-if="isItNew(item)"
                                 label
                                 x-small
-                                color="#0D4474"
                                 class="mr-2"
                                 style="margin-top: -1px"
                               >
                                 <span
                                   style="
-                                    color: #fff !important;
-                                    font-weight: 400;
+                                    color: #000000 !important;
+                                    font-weight: 700;
                                   "
                                   >NEW!</span
                                 >
