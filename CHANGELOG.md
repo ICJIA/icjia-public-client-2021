@@ -84,6 +84,30 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.74] - 2026-09-17
+
+### fix — "Load more" on Research Hub Articles loads more articles
+
+- `/researchhub/articles` shows 42 articles and a "Load more" button. The button fetched nothing:
+  since 1.5.0 replaced vue-apollo with a fetch shim that runs each query once, when the page is
+  created, changing the page's `start` no longer sent a new query. Each click sent no request and
+  added no article, while the counts beside the list went on rising, to "Showing: 294 of 256
+  articles"; the other 214 articles could be reached only through search. The button now fetches
+  the next 42 and adds them, as the Events page already does when its date range changes; the
+  counts stop at the number of articles ("Showing all 256 articles" once all are shown), and the
+  button goes away when there are no more.
+- **Focus moves to the first new article (WCAG 2.4.3, Level A).** The button is disabled while
+  articles load, so keyboard focus fell to the page; it now moves to the first article added.
+
+Checked in the grid view at 1,280 px and the list view at 375 px, five presses by keyboard and one
+click each: on the live site (1.5.73), 0 requests and 42 articles after every press; on a local
+build, 1 request and 42 more articles per press, 256 in all, each title once, focus on the first
+new article 145 to 221 px from the top of the window, below the header and context bar, and the
+button gone. axe-core reports no violations with all 256 shown, and nothing scrolls sideways.
+Unit tests: 457 passing, 6 pending.
+
+---
+
 ## [1.5.73] - 2026-09-17
 
 ### fix(accessibility) — Enter in search, focus after paging, the translate dialog and context bars on phones, headings and links on cards, pages at 320 px, reduced motion everywhere

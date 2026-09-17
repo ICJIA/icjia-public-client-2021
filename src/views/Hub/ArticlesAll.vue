@@ -15,7 +15,7 @@
       <v-row v-if="!initialLoad" style="margin-top: -25px">
         <v-col cols="12" md="6" class="hidden-sm-and-down">
           <div style="font-weight: 900; font-size: 12px">
-            Showing: {{ start + articleLimit }} of {{ articleCount }} articles
+            Showing: {{ shownCount }} of {{ articleCount }} articles
           </div>
         </v-col>
         <v-col cols="12" md="6" class="hidden-sm-and-down">
@@ -56,6 +56,7 @@
         <v-col
           v-for="(item, index) in hubArticles"
           :key="index"
+          :data-article-index="index"
           cols="12"
           md="4"
           class="flex-container"
@@ -69,7 +70,12 @@
         </v-col>
       </v-row>
       <v-row dense v-else>
-        <v-col v-for="(item, index) in hubArticles" :key="index" cols="12">
+        <v-col
+          v-for="(item, index) in hubArticles"
+          :key="index"
+          :data-article-index="index"
+          cols="12"
+        >
           <HubCard
             :item="item"
             :orientation="orientation"
@@ -78,8 +84,12 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="start + articleLimit <= articleCount && !initialLoad">
-        <v-col cols="12" class="text-center">
+      <v-row v-if="!initialLoad">
+        <v-col
+          v-if="start + articleLimit < articleCount"
+          cols="12"
+          class="text-center"
+        >
           <v-btn
             @click="loadMore()"
             :loading="$apollo.loading"
@@ -89,9 +99,8 @@
         </v-col>
         <v-col cols="12" class="text-center"
           ><div style="font-size: 10px; font-weight: 900; margin-top: -15px">
-            <span v-if="start + articleLimit <= articleCount"
-              >Showing {{ start + articleLimit }} of
-              {{ articleCount }} articles</span
+            <span v-if="shownCount < articleCount"
+              >Showing {{ shownCount }} of {{ articleCount }} articles</span
             >
             <span v-else>Showing all {{ articleCount }} articles</span>
           </div></v-col
@@ -111,6 +120,7 @@ import dayjs from "@/plugins/dayjs";
 import _ from "lodash";
 import NProgress from "@/services/Progress";
 import { EventBus } from "@/event-bus";
+import { runQuery } from "@/gql-client";
 export default {
   metaInfo: {
     title: "Research Hub Articles",
@@ -133,6 +143,17 @@ export default {
       // which threw away state on every visit.
       orientation: this.$route.query.view === "list" ? "list" : "grid",
     };
+  },
+
+  computed: {
+    // The last group can be short: 265 articles in groups of 42 end at 265,
+    // not 294.
+    shownCount() {
+      const upTo = this.start + this.articleLimit;
+      return this.articleCount == null
+        ? upTo
+        : Math.min(upTo, this.articleCount);
+    },
   },
 
   watch: {
@@ -161,8 +182,39 @@ export default {
       this.resize();
       NProgress.done();
     },
+    // The fetch shim (mixins/apollo-shim.js) runs each query once, on
+    // created(), and does not run it again when its variables change, so
+    // changing `start` alone fetched nothing and "Load more" did nothing.
+    // Fetch the next group here and feed it through the initial load's
+    // handler, as EventsAll's toggleRange does. The button is disabled while
+    // loading, which drops keyboard focus, so focus then moves to the first
+    // new article (WCAG 2.4.3).
     loadMore() {
+      const firstNew = this.hubArticles.length;
       this.start = this.start + this.articleLimit;
+      this.$apollo.loading = true;
+      runQuery(
+        GET_ARTICLE_GROUP_QUERY,
+        { articleLimit: this.articleLimit, start: this.start },
+        "no-cache",
+        this.$options.apollo.articles.context.uri
+      )
+        .then((r) => {
+          this.$options.apollo.articles.result.call(this, r);
+          this.$nextTick(() => {
+            const col = this.$el.querySelector(
+              `[data-article-index="${firstNew}"]`
+            );
+            const link = col && col.querySelector("a[href]");
+            if (link) link.focus();
+          });
+        })
+        .catch((err) => {
+          this.error = JSON.stringify(err && err.message ? err.message : err);
+        })
+        .finally(() => {
+          this.$apollo.loading = false;
+        });
     },
   },
   mounted() {
