@@ -29,7 +29,7 @@
             v-for="(item, index) in contextMenu[0].items"
             :key="index"
             :to="item.path"
-            exact
+            exact-path
             @click="onLinkClick(item.path)"
           >
             {{ item.label }}
@@ -38,7 +38,7 @@
           <ContextNavLink
             style="background: #11568e !important; color: #fff !important"
             to="/search"
-            exact
+            exact-path
             @click="onLinkClick('/search')"
           >
             Search</ContextNavLink

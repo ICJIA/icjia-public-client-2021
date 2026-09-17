@@ -24,19 +24,14 @@
           >
         </v-row>
       </v-container>
-      <div
-        v-if="!hubLoading"
-        class="hub-slideshow"
-        @mouseenter="slideshowHovered = true"
-        @mouseleave="slideshowHovered = false"
-        @focusin="slideshowFocused = true"
-        @focusout="onSlideshowFocusOut"
-      >
+      <div v-if="!hubLoading" class="hub-slideshow">
         <!-- WCAG 2.2.2 Pause, Stop, Hide: the slideshow advances on its own,
              so it needs a control to stop it. It also pauses while the pointer
-             is over it or keyboard focus is inside it, and does not start
-             rotating at all when the visitor's system asks for reduced
-             motion (the Play button starts it). -->
+             is over the carousel or keyboard focus is inside it, and does not
+             start rotating at all when the visitor's system asks for reduced
+             motion (the Play button starts it). The button sits outside the
+             carousel's hover and focus handlers: inside them, focusing the
+             button paused the slideshow while its label said "Pause". -->
         <v-container class="py-0">
           <v-row>
             <v-col cols="12" class="text-right py-1">
@@ -54,6 +49,10 @@
           :cycle="slideshowCycling"
           role="region"
           aria-label="Latest research articles slideshow"
+          @mouseenter.native="slideshowHovered = true"
+          @mouseleave.native="slideshowHovered = false"
+          @focusin.native="slideshowFocused = true"
+          @focusout.native="onSlideshowFocusOut"
         >
           <v-carousel-item
             v-for="(article, i) in articles"

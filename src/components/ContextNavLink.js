@@ -6,9 +6,11 @@ import { VTab } from "vuetify/lib";
 // tab panels, and a click ran a router push (WCAG 1.3.1, 4.1.2). This keeps
 // v-tab's look and its place in the scrolling bar (active underline, arrows,
 // centring on the current link) but renders a real link: given `to` and
-// `exact`, v-tab renders a router-link, whose href opens in a new tab like
-// any link, and which marks the link to the current page with
-// aria-current="page".
+// `exact-path`, v-tab renders a router-link, whose href opens in a new tab
+// like any link, and which marks the link to the current page with
+// aria-current="page". `exact-path` compares the path alone, as the bars'
+// currentLink does: with `exact`, a query such as ?view=list unmarked the
+// current link.
 export default VTab.extend({
   name: "context-nav-link",
 

@@ -884,4 +884,21 @@ a[href^="#fnref"],
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  /* Loading indicators keep their motion, at Vuetify's own durations: the
+     rule above froze spinners and skeleton loaders at one frame, which reads
+     as a stalled page. The movement is small and stays within the control. */
+  .v-progress-circular--indeterminate > svg,
+  .v-progress-circular--indeterminate .v-progress-circular__overlay {
+    animation-duration: 1.4s !important;
+    animation-iteration-count: infinite !important;
+  }
+  .v-progress-linear__indeterminate .long,
+  .v-progress-linear__indeterminate .short {
+    animation-duration: 2.2s !important;
+    animation-iteration-count: infinite !important;
+  }
+  .v-skeleton-loader__bone::after {
+    animation-duration: 1.5s !important;
+    animation-iteration-count: infinite !important;
+  }
 }

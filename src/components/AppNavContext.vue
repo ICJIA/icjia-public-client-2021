@@ -113,7 +113,7 @@
             v-for="(item, index) in contextMenu[0].items"
             :key="index"
             :to="item.path"
-            exact
+            exact-path
             @click="onLinkClick(item.path)"
           >
             {{ item.label }}

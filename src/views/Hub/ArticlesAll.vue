@@ -96,6 +96,13 @@
             :disabled="$apollo.loading"
             >Load more
           </v-btn>
+          <p
+            v-if="loadMoreFailed"
+            role="alert"
+            class="error white--text d-inline-block px-3 py-1 mt-3 mb-0"
+          >
+            The articles could not be loaded. Try again.
+          </p>
         </v-col>
         <v-col cols="12" class="text-center"
           ><div style="font-size: 10px; font-weight: 900; margin-top: -15px">
@@ -136,6 +143,7 @@ export default {
       articleLimit: 42,
       articleCount: null,
       view: "grid",
+      loadMoreFailed: false,
       initialLoad: true,
       masonry: null,
       // Initialize from URL so deep links and back-navigations restore
@@ -186,20 +194,24 @@ export default {
     // created(), and does not run it again when its variables change, so
     // changing `start` alone fetched nothing and "Load more" did nothing.
     // Fetch the next group here and feed it through the initial load's
-    // handler, as EventsAll's toggleRange does. The button is disabled while
-    // loading, which drops keyboard focus, so focus then moves to the first
-    // new article (WCAG 2.4.3).
+    // handler, as EventsAll's toggleRange does. `start` moves only once the
+    // group has arrived: a failed request leaves the count and the button
+    // as they were, says so, and the next press asks for the same group. The
+    // button is disabled while loading, which drops keyboard focus, so focus
+    // then moves to the first new article (WCAG 2.4.3).
     loadMore() {
       const firstNew = this.hubArticles.length;
-      this.start = this.start + this.articleLimit;
+      const start = this.start + this.articleLimit;
+      this.loadMoreFailed = false;
       this.$apollo.loading = true;
       runQuery(
         GET_ARTICLE_GROUP_QUERY,
-        { articleLimit: this.articleLimit, start: this.start },
+        { articleLimit: this.articleLimit, start },
         "no-cache",
         this.$options.apollo.articles.context.uri
       )
         .then((r) => {
+          this.start = start;
           this.$options.apollo.articles.result.call(this, r);
           this.$nextTick(() => {
             const col = this.$el.querySelector(
@@ -209,8 +221,8 @@ export default {
             if (link) link.focus();
           });
         })
-        .catch((err) => {
-          this.error = JSON.stringify(err && err.message ? err.message : err);
+        .catch(() => {
+          this.loadMoreFailed = true;
         })
         .finally(() => {
           this.$apollo.loading = false;

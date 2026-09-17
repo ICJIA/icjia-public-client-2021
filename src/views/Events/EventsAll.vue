@@ -15,7 +15,10 @@
     >
       <v-row class="fill-height" v-if="display">
         <v-col>
-          <div v-if="$apollo.error" class="text-center error apollo">
+          <div
+            v-if="$apollo.error"
+            class="text-center error apollo white--text"
+          >
             {{ error }}
           </div>
 
@@ -154,7 +157,7 @@
                    inside, and closes with Escape or Close, returning focus to
                    the entry. It used to be a menu (role "menu") that focus
                    never reached. -->
-              <v-menu
+              <DetailsMenu
                 v-model="selectedOpen"
                 :close-on-content-click="false"
                 :activator="selectedElement"
@@ -177,7 +180,7 @@
                     :key="`${selectedEvent.fullPath}|${selectedEvent.name}`"
                   ></EventCard>
                 </v-card>
-              </v-menu>
+              </DetailsMenu>
             </v-sheet>
           </div>
           <div v-show="display === 'list'">
@@ -223,7 +226,20 @@ import {
   onMenuKeydown,
 } from "@/utils/menuButton";
 import { keepFocusWithin } from "@/utils/focus";
+import { VMenu } from "vuetify/lib";
+
+// The entry details' popup. VMenu gives its popup content the `role` it is
+// passed, but Vue also copies that attribute onto the component's root
+// element, an empty <div class="v-menu"> that stays in the page: an unnamed,
+// empty dialog on every calendar view. With inheritAttrs off, the root gets
+// nothing and the content still reads the role from $attrs.
+const DetailsMenu = VMenu.extend({
+  name: "details-menu",
+  inheritAttrs: false,
+});
+
 export default {
+  components: { DetailsMenu },
   watch: {
     // The details dialog takes focus when it opens. Closed from inside it
     // (Close, or Escape), focus goes back to the entry that opened it.

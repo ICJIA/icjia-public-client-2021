@@ -84,6 +84,55 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.75] - 2026-09-17
+
+### fix(accessibility) — Current-page marks with a query, the slideshow's Play button, an empty dialog, "Load more" after a failure, loading indicators under reduced motion
+
+Six small fixes from a review of releases 1.5.65 to 1.5.74. Each was measured on the live site
+(1.5.74) before the change and on a local build after it.
+
+- **The context bars keep the current page marked on an address with a query (WCAG 4.1.2, Level
+  A).** Since 1.5.70 the bars' links mark the current page with `aria-current="page"` and the
+  underline. They compared the whole address, so on Research Hub Articles in list view
+  (`?view=list`), and after switching views, the ARTICLES link lost both. The links now compare the
+  path alone, as the bars do: marked with and without the query, and after switching views.
+- **The Research Hub slideshow's Play/Pause button says what the slideshow is doing.** The
+  slideshow pauses while the pointer is over it or keyboard focus is inside it (1.5.67), and the
+  button sat inside that region: with focus on the button the slideshow stood still while the button
+  read "Pause slideshow", and pressing Play changed the label but not the motion until focus left.
+  The hover and focus rules now apply to the carousel alone. With focus on the button and the
+  slideshow playing, the second slide is rendered within 8 seconds (before: not until focus left).
+- **The Events calendar no longer leaves an empty dialog in the page.** The entry-details popup's
+  `role="dialog"` (1.5.71) was also copied onto the popup component's root element, an empty
+  `<div>` that stays in the page in every calendar view: an unnamed, empty dialog for a screen
+  reader listing dialogs, which axe-core does not flag because it has no size. The root gets no
+  attributes now; the popup content keeps its role, name and modal state, and opens, holds focus
+  and closes by keyboard as before (axe-core: 0 violations with it open, at 1,280 and 375 px).
+- **"Load more" on Research Hub Articles keeps its place when a request fails.** 1.5.74 counted a
+  group as shown before it arrived: when the request failed, the button re-enabled with the count
+  raised ("Showing: 84 of 256" over 42 articles) and no message, and the next press fetched the
+  group after the missing one, so 42 articles were never shown. The count now moves only when the
+  group arrives; a failure leaves the count and the button as they were, shows "The articles could
+  not be loaded. Try again." as an alert, and the next press asks for the same group (42 articles
+  and "Showing: 42" after a failed press, 84 after the retry).
+- **Loading indicators keep moving when the system asks for reduced motion.** The rule that
+  shortens every animation for those visitors (1.5.67) also froze the spinners and skeleton loaders
+  at one frame while a page fetched its content, which reads as a stalled page. They now run at
+  Vuetify's own durations (skeleton loader: 0.00001 s once → 1.5 s, repeating); every other
+  animation and transition is still cut short.
+- **The Events page's error message is readable.** Its box uses the theme's error colour as its
+  background, which 1.5.69 darkened to #b00020 for form errors; its text would have been dark on
+  dark red, 2.8:1 (WCAG 1.4.3, Level AA). It is white, 7.33:1, as the site's other error boxes are.
+
+Regression checks: axe-core 4.13 (WCAG 2.0 and 2.1, Level A and AA) on the Research Hub home,
+articles in grid and list view, an article, Events in list and calendar view with an entry's
+details open, About and Funding Opportunities, at 1,280 and 375 px: 0 violations in 18 runs. The
+calendar's checks from 1.5.71 (entries, view menu, details dialog and its focus handling) give the
+same results. `vue-cli-service lint --no-fix` reports no problems in the changed files; mocha unit
+tests: 457 passing, 6 pending (unchanged).
+
+---
+
 ## [1.5.74] - 2026-09-17
 
 ### fix — "Load more" on Research Hub Articles loads more articles
