@@ -45,7 +45,7 @@
     "dompurify": "^3.4.7",
     "jsdom": "^25.0.1",
     "linkedom": "^0.18.12",
-    "markdown-it": "^12.2.0",
+    "markdown-it": "^14.2.0",
     "markdown-it-anchor": "^8.3.1",
     "markdown-it-attrs": "^4.0.0",
     "markdown-it-footnote": "^3.0.3",
