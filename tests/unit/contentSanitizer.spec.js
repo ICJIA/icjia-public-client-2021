@@ -14,6 +14,7 @@ import {
   fixCmsContrast,
   sanitizeContent,
   deepSanitize,
+  wrapCmsTables,
 } from "@/utils/contentSanitizer";
 import { renderToHtml } from "@/services/Markdown";
 
@@ -202,6 +203,77 @@ describe("fixCmsTables — tables authored without <th>", () => {
       "<tbody><tr><td>Adams County</td><td>Central</td></tr></tbody></table>";
     const { out } = headersOf(fixCmsTables(html));
     expect(out["Central"]).to.deep.equal(["Region", "Adams County"]);
+  });
+});
+
+describe("wrapCmsTables — tables scroll sideways in their own region", () => {
+  const parse = (html) => new DOMParser().parseFromString(html, "text/html");
+
+  it("wraps a table in a focusable region named by its column headers", () => {
+    const doc = parse(
+      wrapCmsTables(
+        "<p>Intro</p><table><thead><tr><th>Date</th><th>Location</th></tr></thead>" +
+          "<tbody><tr><td>May 1</td><td>Chicago</td></tr></tbody></table>"
+      )
+    );
+    const region = doc.querySelector(".table-scroll");
+    expect(region).to.not.equal(null);
+    expect(region.getAttribute("role")).to.equal("region");
+    expect(region.getAttribute("tabindex")).to.equal("0");
+    expect(region.getAttribute("aria-label")).to.equal("Table: Date, Location");
+    expect(region.firstElementChild.tagName).to.equal("TABLE");
+  });
+
+  it("names the region by the table's caption", () => {
+    const doc = parse(
+      wrapCmsTables(
+        "<table><caption>Awards by region</caption><tr><th>Region</th></tr>" +
+          "<tr><td>Cook</td></tr></table>"
+      )
+    );
+    const region = doc.querySelector(".table-scroll");
+    const caption = doc.querySelector("caption");
+    expect(caption.id).to.match(/^cms-table-caption-\d+$/);
+    expect(region.getAttribute("aria-labelledby")).to.equal(caption.id);
+    expect(region.hasAttribute("aria-label")).to.equal(false);
+  });
+
+  it("names the region by a Research Hub caption above the table", () => {
+    const doc = parse(
+      wrapCmsTables(
+        '<div class="article-table"><p class="article-caption article-caption--h4">Table 1</p>' +
+          "<table><tr><td>Methadone</td><td>Naltrexone</td></tr></table>" +
+          '<p class="article-caption article-caption--h6">Source: SAMHSA</p></div>'
+      )
+    );
+    const region = doc.querySelector(".table-scroll");
+    const label = doc.getElementById(region.getAttribute("aria-labelledby"));
+    expect(label.textContent).to.equal("Table 1");
+  });
+
+  it("falls back to 'Table' when there is nothing to name it by", () => {
+    const doc = parse(
+      wrapCmsTables("<table><tr><td>1</td><td>2</td></tr></table>")
+    );
+    expect(
+      doc.querySelector(".table-scroll").getAttribute("aria-label")
+    ).to.equal("Table");
+  });
+
+  it("leaves layout tables and tables inside tables alone, and wraps once", () => {
+    const html =
+      '<table role="presentation"><tr><td>Layout</td></tr></table>' +
+      "<table><tr><th>Outer</th></tr><tr><td><table><tr><th>Inner</th></tr>" +
+      "<tr><td>1</td></tr></table></td></tr></table>";
+    const doc = parse(wrapCmsTables(wrapCmsTables(html)));
+    const regions = doc.querySelectorAll(".table-scroll");
+    expect(regions.length).to.equal(1);
+    expect(regions[0].getAttribute("aria-label")).to.equal("Table: Outer");
+  });
+
+  it("returns HTML without a table unchanged", () => {
+    const html = "<p>No tables here</p>";
+    expect(wrapCmsTables(html)).to.equal(html);
   });
 });
 

@@ -5,6 +5,7 @@
     style="z-index: 999999"
     width="60%"
     aria-label="Translation options"
+    @keydown="keepFocusInDialog"
   >
     <!-- Exposed as a modal dialog named by its title (WCAG 4.1.2). Close is
          shown at every width: it used to be hidden below 960 px, where
@@ -12,6 +13,7 @@
          failed and let focus leave the open dialog (WCAG 2.4.3). -->
     <v-card
       class=""
+      ref="dialogCard"
       role="dialog"
       aria-modal="true"
       aria-labelledby="translate-dialog-title"
@@ -150,6 +152,32 @@ export default {
     //     }
     //   });
     // },
+    // Tab from the last link wraps to Close, and Shift+Tab from Close to the
+    // last link (WCAG 2.4.3). Vuetify pulls focus back only after it has left
+    // the dialog: Tab from the last link stopped once outside the page first,
+    // and Shift+Tab from Close went to the dialog's outer container and then
+    // straight back to Close, so the languages and links could not be
+    // reached backwards.
+    keepFocusInDialog(event) {
+      if (event.key !== "Tab" || !this.$refs.dialogCard) return;
+      const card = this.$refs.dialogCard.$el;
+      const focusable = Array.from(
+        card.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => !el.disabled && el.getClientRects().length > 0);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+      if (event.shiftKey && (active === first || !card.contains(active))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    },
     // The two links in the dialog lead to other pages. Close the dialog
     // without sending focus back to the button that opened it, which belongs
     // to the page being left; the route change moves focus as usual.

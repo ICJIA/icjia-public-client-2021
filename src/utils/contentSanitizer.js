@@ -1359,6 +1359,89 @@ function fixCmsFigureTableCaptions(html) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// wrapCmsTables (not a pipeline plugin: renderToHtml runs it once, on the
+// finished HTML)
+// A wide CMS table made a phone-width page scroll sideways, up to 896 px at
+// 320 px (WCAG 1.4.10). Each table now sits in a region that scrolls sideways
+// on its own. The region takes keyboard focus, so it can be scrolled without
+// a mouse, and is named by the table's caption, by the caption a Research Hub
+// article places above the table (p.article-caption, see
+// fixCmsFigureTableCaptions), or else by its column headers. Layout tables
+// (role="presentation") and tables inside other tables are left as they are.
+// ═══════════════════════════════════════════════════════════════════
+
+let tableRegionCounter = 0;
+
+function tableRegionLabelElement(table) {
+  const caption = Array.from(table.children).find(
+    (child) => child.tagName === "CAPTION" && child.textContent.trim()
+  );
+  if (caption) return caption;
+  const container = table.closest(".article-table");
+  if (!container) return null;
+  // compareDocumentPosition: 4 means the table follows the caption.
+  return (
+    Array.from(container.querySelectorAll(".article-caption")).find(
+      (p) => p.textContent.trim() && p.compareDocumentPosition(table) & 4
+    ) || null
+  );
+}
+
+function tableRegionLabel(table) {
+  const row = table.querySelector("tr");
+  const headers = row
+    ? Array.from(row.querySelectorAll("th"))
+        .map((th) => th.textContent.replace(/\s+/g, " ").trim())
+        .filter(Boolean)
+        .join(", ")
+    : "";
+  if (!headers) return "Table";
+  return `Table: ${
+    headers.length > 100 ? `${headers.slice(0, 99).trim()}…` : headers
+  }`;
+}
+
+function wrapCmsTables(html) {
+  if (!html || typeof html !== "string") return html;
+  if (html.indexOf("<table") === -1) return html;
+
+  let doc;
+  try {
+    doc = new DOMParser().parseFromString(html, "text/html");
+  } catch (_e) {
+    return html;
+  }
+  const tables = Array.from(doc.querySelectorAll("table")).filter(
+    (table) =>
+      !/^(presentation|none)$/.test(table.getAttribute("role") || "") &&
+      !(table.parentElement && table.parentElement.closest("table")) &&
+      !(
+        table.parentElement &&
+        table.parentElement.classList.contains("table-scroll")
+      )
+  );
+  if (!tables.length) return html;
+
+  tables.forEach((table) => {
+    const region = doc.createElement("div");
+    region.setAttribute("class", "table-scroll");
+    region.setAttribute("role", "region");
+    region.setAttribute("tabindex", "0");
+    const label = tableRegionLabelElement(table);
+    if (label) {
+      if (!label.id) label.id = `cms-table-caption-${tableRegionCounter++}`;
+      region.setAttribute("aria-labelledby", label.id);
+    } else {
+      region.setAttribute("aria-label", tableRegionLabel(table));
+    }
+    table.parentNode.insertBefore(region, table);
+    region.appendChild(table);
+  });
+
+  return doc.body.innerHTML;
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // Pipeline registry
 // ═══════════════════════════════════════════════════════════════════
 
@@ -1485,6 +1568,10 @@ export {
   fixCmsSameHrefLinkLabels,
   unwrapBrokenLinks,
   fixCmsEmptyTableCells,
+  // Also used outside the plugin list: renderToHtml wraps tables once, and
+  // the runtime table repair in src/a11y reuses the header heuristic.
+  wrapCmsTables,
+  fixSimpleTable,
   // Expose data for external inspection
   MISSPELLINGS,
   APOSTROPHES,

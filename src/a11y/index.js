@@ -1,3 +1,5 @@
+import { fixSimpleTable } from "@/utils/contentSanitizer";
+
 // Fix Vuetify empty buttons
 const fixButtonText = function (myClass, myText) {
   const myButtons = document.getElementsByClassName(myClass);
@@ -735,6 +737,11 @@ const fixLabelInName = function () {
     'button[aria-label], a[aria-label], [role="button"][aria-label], [role="link"][aria-label]'
   );
   redundantCarriers.forEach((el) => {
+    // A button that is itself a Vuetify icon (a data table's expand button)
+    // draws its glyph as generated content. Without the aria-label, that
+    // icon-font character joins the accessible name ahead of the words
+    // ("<glyph> Toggle details for …"), so the label stays (WCAG 4.1.2).
+    if (el.classList.contains("v-icon")) return;
     const label = norm(el.getAttribute("aria-label"));
     const visible = norm(el.innerText || el.textContent);
     if (!label || !visible) return;
@@ -1154,142 +1161,19 @@ const fixTableCellContext = function () {
     normalizeRaggedRows(table);
     // Always run the simple-table pass first — it promotes row-label
     // <td>s to <th scope="row"> and ensures <th scope="col"> on the
-    // header row. Then always run the complex-table pass to assign
+    // header row. It is the content pipeline's own fixSimpleTable
+    // (src/utils/contentSanitizer.js), so a table repaired here gets the
+    // same header decisions as one repaired while rendering: 1.5.69 fixed
+    // the pipeline's heuristic for tables without <th>, and the copy that
+    // used to live in this file still made every first-column label a row
+    // header. Then always run the complex-table pass to assign
     // explicit id/headers attributes on every cell. This satisfies
     // SiteImprove sia-r46 "No data cells assigned to table header"
     // across all tables, not just those with rowspan/colspan.
-    fixSimpleTable(table);
+    fixSimpleTable(document, table);
     fixComplexTable(table, tableIndex);
   });
 };
-
-// Promote every <td> in a row to <th scope="col">, preserving attributes.
-// Used for header rows that were rendered as styled <td> cells by a CMS.
-// Skips "No data" filler cells — they are corner/spacer positions (e.g.
-// the intersection of row headers and column headers in a two-level
-// header), not semantic column headers. Leaving them as <td> avoids
-// creating orphan <th> cells that axe `th-has-data-cells` and
-// SiteImprove sia-r46 would flag.
-function promoteRowTdsToColumnHeaders(row) {
-  row.querySelectorAll("td").forEach((td) => {
-    const sr = td.querySelector(".sr-only");
-    if (sr && sr.textContent.trim() === "No data") return;
-    const th = document.createElement("th");
-    th.innerHTML = td.innerHTML;
-    for (const attr of td.attributes) {
-      th.setAttribute(attr.name, attr.value);
-    }
-    if (!th.getAttribute("scope")) th.setAttribute("scope", "col");
-    td.parentNode.replaceChild(th, td);
-  });
-  row.querySelectorAll("th").forEach((th) => {
-    if (!th.getAttribute("scope")) th.setAttribute("scope", "col");
-  });
-}
-
-// Heuristic for detecting a column-header row that was rendered as
-// <td> cells. Two strong signals: bgcolor styling (Word/Excel-style
-// export), and a row of uniformly short bold cells. "No data" filler
-// cells are ignored when evaluating the bold-and-short signal.
-function isLikelyHeaderRow(row) {
-  const cells = Array.from(row.querySelectorAll("td, th"));
-  if (cells.length < 2) return false;
-  if (cells.some((c) => c.hasAttribute("bgcolor"))) return true;
-  const nonFiller = cells.filter((c) => {
-    const sr = c.querySelector(".sr-only");
-    return !(sr && sr.textContent.trim() === "No data");
-  });
-  if (nonFiller.length < 2) return false;
-  const allBolded = nonFiller.every((c) => c.querySelector("strong, b"));
-  if (!allBolded) return false;
-  const avgLen =
-    nonFiller.reduce((a, c) => a + (c.textContent || "").trim().length, 0) /
-    nonFiller.length;
-  return avgLen < 15;
-}
-
-// Simple tables: add scope="col" to column headers, scope="row" to row headers
-function fixSimpleTable(table) {
-  // Anything inside <thead> is a column header by definition. Some CMS
-  // exports wrap header cells in <td> — promote those to <th scope="col">.
-  table.querySelectorAll("thead tr").forEach(promoteRowTdsToColumnHeaders);
-
-  // Two-level / styled-td header pattern: CMS tables sometimes render
-  // column headers as the first <tbody> row using styled <td> cells
-  // (bgcolor, or all-bolded short text). Promote that row if it looks
-  // like headers AND the row after it looks like a data row.
-  const firstTbodyRow = table.querySelector("tbody tr");
-  let promotedFirstTbody = false;
-  if (firstTbodyRow && !firstTbodyRow.querySelector("th")) {
-    if (isLikelyHeaderRow(firstTbodyRow)) {
-      const next = firstTbodyRow.nextElementSibling;
-      const nextFirst = next ? next.querySelector("td, th") : null;
-      const nextText = nextFirst ? (nextFirst.textContent || "").trim() : "";
-      if (nextText && !/^\d+[\d,.%$]*$/.test(nextText)) {
-        promoteRowTdsToColumnHeaders(firstTbodyRow);
-        promotedFirstTbody = true;
-      }
-    }
-  }
-
-  // Find column headers — in <thead>, or first row if no <thead>
-  let headerRow = table.querySelector("thead tr");
-  if (!headerRow) {
-    // No <thead>: check if first row contains <th> elements
-    const firstRow = table.querySelector("tr");
-    if (firstRow && firstRow.querySelector("th")) {
-      headerRow = firstRow;
-    }
-  }
-  if (headerRow) {
-    headerRow.querySelectorAll("th").forEach((th) => {
-      if (!th.getAttribute("scope")) {
-        th.setAttribute("scope", "col");
-      }
-    });
-  }
-
-  // Row headers: first cell in each body row that is <th>, or convert <td>
-  // to <th> when the first cell contains non-numeric label text
-  const bodyRows = table.querySelectorAll("tbody tr");
-  const rows = bodyRows.length ? bodyRows : table.querySelectorAll("tr");
-  rows.forEach((row) => {
-    // Skip the header row we already handled
-    if (row === headerRow) return;
-    if (promotedFirstTbody && row === firstTbodyRow) return;
-    const firstCell = row.querySelector("td:first-child, th:first-child");
-    if (!firstCell) return;
-    if (firstCell.tagName === "TH") {
-      if (!firstCell.getAttribute("scope")) {
-        firstCell.setAttribute("scope", "row");
-      }
-    } else {
-      // Convert <td> to <th scope="row"> if it looks like a label.
-      // Skip cells whose only content is the "No data" filler span
-      // inserted by fixEmptyContainers / fixCmsEmptyTableCells —
-      // those are placeholders for genuinely empty cells, not row
-      // labels, and promoting them creates phantom header rows.
-      const srOnly = firstCell.querySelector(".sr-only");
-      if (srOnly && srOnly.textContent.trim() === "No data") return;
-      // Don't promote the sole cell of a single-cell row. Such rows
-      // are visual continuations of the previous row's data (already
-      // spanned across all columns by normalizeRaggedRows), not row
-      // labels. Promoting them creates orphan headers that SiteImprove
-      // sia-r46 flags as "no data cells assigned".
-      if (row.querySelectorAll("th, td").length < 2) return;
-      const text = (firstCell.textContent || "").trim();
-      if (text.length > 0 && !/^\d+[\d,.%$]*$/.test(text)) {
-        const th = document.createElement("th");
-        th.innerHTML = firstCell.innerHTML;
-        for (const attr of firstCell.attributes) {
-          th.setAttribute(attr.name, attr.value);
-        }
-        th.setAttribute("scope", "row");
-        firstCell.parentNode.replaceChild(th, firstCell);
-      }
-    }
-  });
-}
 
 // Complex tables (rowspan/colspan): generate unique IDs on <th> cells and
 // explicit headers attributes on <td> cells to satisfy sia-r77.

@@ -18,7 +18,7 @@
                 hide-details
               ></v-text-field>
             </v-card-title>
-            <v-data-table
+            <DataTable
               :headers="headers"
               :items="publications"
               :search="search"
@@ -150,7 +150,7 @@
                 >
                   <PublicationCard :item="item"></PublicationCard>
                 </td> </template
-            ></v-data-table>
+            ></DataTable>
           </v-card>
           <div class="mt-5" style="font-size: 12px; text-align: center">
             Individual publications are also available for download from the
@@ -177,6 +177,7 @@
 <script>
 import NProgress from "@/services/Progress";
 import { fixExpandButtons, fixNestedInteractive } from "@/a11y";
+import DataTable from "@/components/DataTable";
 import { getPublicationType } from "@/lib/utils";
 import { deepSanitize } from "@/utils/contentSanitizer";
 import { EventBus } from "@/event-bus";
@@ -186,6 +187,7 @@ import axios from "axios";
 
 export default {
   name: "Publications",
+  components: { DataTable },
   metaInfo() {
     return {
       title: "Publications",

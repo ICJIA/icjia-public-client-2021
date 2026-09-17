@@ -134,6 +134,52 @@ describe("Markdown rendering — footnotes", () => {
     const html = renderToHtml(md);
     expect(html).to.include("footnote");
   });
+
+  const parse = (html) => new DOMParser().parseFromString(html, "text/html");
+
+  it("gives hand-written copies of a reference their own id, so the back-link returns to the generated citation", () => {
+    // The shape of the opioid article: a table written in HTML cites
+    // id="fnref1", and markdown-it-footnote numbers the first footnote cited
+    // in the text 1 as well.
+    const md =
+      '<table><tr><td>Methadone<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup></td>' +
+      "<td>Naltrexone</td></tr><tr><td>Full agonist</td><td>Antagonist</td></tr></table>\n\n" +
+      "Cited in the text.[^a]\n\n[^a]: The footnote.";
+    const doc = parse(renderToHtml(md));
+    expect(doc.querySelectorAll('[id="fnref1"]').length).to.equal(1);
+    const generated = doc.getElementById("fnref1");
+    expect(generated.closest("table")).to.equal(null);
+    const copy = doc.querySelector("table .footnote-ref a");
+    expect(copy.id).to.equal("fnref1-2");
+    expect(copy.getAttribute("href")).to.equal("#fn1");
+    const backlink = doc.querySelector(".footnote-backref");
+    expect(backlink.getAttribute("href")).to.equal("#fnref1");
+    expect(doc.querySelectorAll("[data-footnote-ref]").length).to.equal(0);
+  });
+
+  it("keeps markdown-it-footnote's ids for a footnote cited twice", () => {
+    const md = "One.[^a] Two.[^a]\n\n[^a]: The footnote.";
+    const doc = parse(renderToHtml(md));
+    expect(doc.getElementById("fnref1")).to.not.equal(null);
+    expect(doc.getElementById("fnref1:1")).to.not.equal(null);
+    const backlinks = Array.from(doc.querySelectorAll(".footnote-backref"));
+    expect(backlinks.map((a) => a.getAttribute("href"))).to.deep.equal([
+      "#fnref1",
+      "#fnref1:1",
+    ]);
+  });
+});
+
+describe("Markdown rendering — wide tables", () => {
+  it("puts a table in a focusable region named by its headers", () => {
+    const md = "| Col A | Col B |\n|---|---|\n| val 1 | val 2 |";
+    const doc = new DOMParser().parseFromString(renderToHtml(md), "text/html");
+    const region = doc.querySelector("table").parentElement;
+    expect(region.classList.contains("table-scroll")).to.equal(true);
+    expect(region.getAttribute("role")).to.equal("region");
+    expect(region.getAttribute("tabindex")).to.equal("0");
+    expect(region.getAttribute("aria-label")).to.equal("Table: Col A, Col B");
+  });
 });
 
 describe("Markdown rendering — images and figures", () => {

@@ -320,11 +320,13 @@ footer.dark-surface a:hover {
   padding-top: 25px;
   height: 0;
 }
+/* The frame fills the wrapper. It used to start 15 px in and carry 25 px of
+   padding past its full width, which ran 40 px beyond the wrapper and made
+   a 320 px page scroll sideways (WCAG 1.4.10). */
 .videoWrapper iframe {
   position: absolute;
   top: 0;
-  left: 15px;
-  padding-right: 25px;
+  left: 0;
   width: 100%;
   height: 100%;
 }
@@ -483,6 +485,57 @@ details[open] summary ~ * {
 .v-application .title-search--card {
   margin: 0 8px 12px 0;
   text-align: right;
+}
+
+/* Links in CMS text are underlined (WCAG 1.4.1). github-markdown.css removes
+   the underline inside .markdown-body, which left links in pages and news
+   posts told apart from the text around them by colour and bold weight only,
+   and bold also marks names in the same paragraphs. The underline goes on
+   hover, as it does for links everywhere else on the site; Research Hub
+   articles already work this way. Links with a class of their own (buttons,
+   chips, card titles, footnote back-links) keep their styles. */
+.markdown-body p a[href]:not([class]),
+.markdown-body li a[href]:not([class]),
+.markdown-body td a[href]:not([class]),
+.markdown-body dd a[href]:not([class]) {
+  text-decoration: underline;
+}
+.markdown-body p a[href]:not([class]):hover,
+.markdown-body li a[href]:not([class]):hover,
+.markdown-body td a[href]:not([class]):hover,
+.markdown-body dd a[href]:not([class]):hover {
+  text-decoration: none;
+}
+
+/* Wide content in CMS text (WCAG 1.4.10). A table scrolls sideways inside
+   its own region, which takes keyboard focus and is named by the table's
+   caption or column headers (the content pipeline adds the wrapper, see
+   wrapCmsTables in src/utils/contentSanitizer.js); images and embedded
+   frames shrink to the column. At 320 px the page itself used to scroll
+   sideways, up to 1,036 px. */
+.table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  /* Holds absolutely positioned descendants too: the visually hidden "No
+     data" text in empty cells (.sr-only) would otherwise sit outside the
+     scrolling region and widen the page. Vuetify's own table scroller has
+     the same leak. */
+  position: relative;
+  /* A region taller than the window is scrolled to the top of the window
+     when it takes focus, under the fixed header and the sticky context bar
+     (161 px), which then hid the links in the table's first row. */
+  scroll-margin-top: 170px;
+}
+.v-data-table > .v-data-table__wrapper {
+  position: relative;
+}
+#article-view .article-body img {
+  max-width: 100%;
+  height: auto;
+}
+.markdown-body iframe,
+#article-view .article-body iframe {
+  max-width: 100%;
 }
 
 .page {
@@ -662,7 +715,10 @@ a[target="_blank"]::after {
 
 /* On dark surfaces, the default blue ring has poor contrast. Switch to a
    yellow outline + thin dark inner shadow. Opt a surface in with the
-   `dark-surface` class — do NOT select by element type.
+   `dark-surface` class — do NOT select by element type. The breadcrumb bar
+   (#0a3a60) carries it too: selectors matching its inline background style
+   never matched the rendered style attribute, so its links and Translate
+   button kept the blue ring at 1.91:1; yellow is 8.73:1 there.
 
    This used to include `header.v-app-bar :focus-visible`, which assumed
    every app bar is dark. Three are rendered and only one is:
@@ -674,18 +730,17 @@ a[target="_blank"]::after {
    those four surfaces failed. AppNavContextBottom and AppFooter now carry
    `dark-surface`; every other surface falls through to the blue ring.
 
-   The .v-tab / .v-list-item selectors below are not redundant. The blue
-   rule for those components further down this file has the same
+   The .v-btn / .v-tab / .v-list-item selectors below are not redundant.
+   The blue rule for those components further down this file has the same
    specificity as `.dark-surface :focus-visible` (0,2,0) and comes later,
    so it would win the tie and put a 1.33:1 blue ring on the dark context
-   bar's tabs. The explicit selectors are (0,3,0) and win regardless of
-   order. */
+   bar's tabs (and a 1.91:1 one on the breadcrumb bar's Translate button).
+   The explicit selectors are (0,3,0) and win regardless of order. */
 .dark-surface :focus-visible,
+.dark-surface .v-btn:focus-visible,
 .dark-surface .v-tab:focus-visible,
 .dark-surface .v-list-item:focus-visible,
-.dark-surface .v-list-group__header:focus-visible,
-[style*="background: #0A3A60"] :focus-visible,
-[style*="background:#0A3A60"] :focus-visible {
+.dark-surface .v-list-group__header:focus-visible {
   outline: 2px solid #ffdd00 !important;
   outline-offset: 2px !important;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.7) !important;
@@ -697,6 +752,46 @@ a[target="_blank"]::after {
 .v-list-group__header:focus-visible {
   outline: 2px solid #1565c0 !important;
   outline-offset: 2px !important;
+}
+
+/* Tabs and the links in the context bars draw their ring inside the tab
+   (WCAG 1.4.11). A tab bar clips everything outside its own 35 or 48 px
+   height, and each tab paints over its neighbour's edge, so a ring drawn
+   outside the tab showed on the page as nothing at all on the first tab and
+   as a 2 px sliver on the others. 4 px in keeps the ring clear of the active
+   tab's 2 px underline. On the dark bars Vuetify's focus tint is dropped, so
+   the yellow ring sits on the bar's own blue (5.68:1) rather than on a
+   lightened blue (2.65:1). */
+.v-tab:focus-visible,
+.dark-surface .v-tab:focus-visible {
+  outline-offset: -4px !important;
+  box-shadow: none !important;
+}
+.dark-surface .v-tab:focus::before {
+  opacity: 0 !important;
+}
+
+/* Buttons over a photograph get a two-colour ring (W3C technique C40): white
+   between two navy bands, so one of the colours stands out from whatever
+   part of the photo is behind it. The single blue ring measured 1.91:1 on
+   the home page banner and 2.08:1 on the slideshow arrows. White on the navy
+   is 9.8:1. */
+.v-application .splash-button:focus-visible,
+.v-application .v-window__prev .v-btn:focus-visible,
+.v-application .v-window__next .v-btn:focus-visible {
+  outline: 2px solid #fff !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 6px #0d4474 !important;
+}
+
+/* Items in drop-down menus and select lists. Moving through a list with the
+   arrow keys only tinted the item light grey, 1.37:1 against the white
+   menu; the item now also gets the blue ring, drawn inside the item so the
+   menu's edge cannot clip it (5.75:1 against white). */
+.v-menu__content .v-list-item:focus-visible,
+.v-list-item.v-list-item--highlighted {
+  outline: 2px solid #1565c0 !important;
+  outline-offset: -2px !important;
 }
 
 /* Vuetify text/select/textarea inputs have their own focus indicator —

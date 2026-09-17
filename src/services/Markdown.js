@@ -1,5 +1,5 @@
 import DOMPurify from "dompurify";
-import { sanitizeContent } from "@/utils/contentSanitizer";
+import { sanitizeContent, wrapCmsTables } from "@/utils/contentSanitizer";
 // const config = require("@/config/config.json");
 // import { EventBus } from "@/event-bus.js";
 // const namedHeaders = require("markdown-it-named-headers");
@@ -55,6 +55,42 @@ let md = require("markdown-it")({
   .use(require("markdown-it-multimd-table"), mdMultimdTableOpts)
   .use(require("markdown-it-implicit-figures"), mdImplicitFigureOpts)
   .use(require("markdown-it-attrs"), mdAttrs);
+
+// Footnote references markdown-it-footnote generates are marked while
+// rendering, so fixDuplicateFootnoteRefIds can tell them from hand-written
+// HTML that copies their markup. The mark is removed again there.
+const renderFootnoteRef = md.renderer.rules.footnote_ref;
+md.renderer.rules.footnote_ref = (tokens, idx, options, env, slf) =>
+  renderFootnoteRef(tokens, idx, options, env, slf).replace(
+    "<a ",
+    "<a data-footnote-ref "
+  );
+
+// A CMS body can hold hand-written HTML that repeats a generated footnote
+// reference, id included: Table 1 of "Addressing Opioid Use Disorders in
+// Corrections" carries id="fnref22" to "fnref24", and so does the generated
+// citation of footnote 22 in the text. Ids were duplicated, and the
+// footnote's back-link returned to the table instead of to the citation it
+// belongs to. Any other element with a generated reference's id now gets a
+// unique one ("fnref22-2"); its link and its target are unchanged.
+const fixDuplicateFootnoteRefIds = function (html) {
+  if (html.indexOf("data-footnote-ref") === -1) return html;
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const generated = Array.from(doc.querySelectorAll("a[data-footnote-ref]"));
+  const refIds = new Set(generated.map((a) => a.id).filter(Boolean));
+  const taken = new Set(
+    Array.from(doc.querySelectorAll("[id]")).map((el) => el.id)
+  );
+  doc.querySelectorAll("[id]").forEach((el) => {
+    if (el.hasAttribute("data-footnote-ref") || !refIds.has(el.id)) return;
+    let n = 2;
+    while (taken.has(`${el.id}-${n}`)) n++;
+    el.id = `${el.id}-${n}`;
+    taken.add(el.id);
+  });
+  generated.forEach((a) => a.removeAttribute("data-footnote-ref"));
+  return doc.body.innerHTML;
+};
 
 const fixTableHeaders = function (html) {
   const doc = new DOMParser().parseFromString(html, "text/html");
@@ -175,7 +211,11 @@ const renderToHtml = function (markdown) {
       "frameborder",
     ],
   });
-  return sanitizeContent(fixImageLinks(fixTableHeaders(sanitized)));
+  return wrapCmsTables(
+    fixDuplicateFootnoteRefIds(
+      sanitizeContent(fixImageLinks(fixTableHeaders(sanitized)))
+    )
+  );
 };
 
 const parseHeadings = function (markdown) {

@@ -82,6 +82,145 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.70] - 2026-09-17
+
+### fix(accessibility) — Focus rings on every bar, content at every width, menus and tooltips, phone table sorting, links, tables and dialogs
+
+Fixes toward full WCAG 2.1 Level AA conformance. Each was measured with the same scripts before the
+change (the live site, 1.5.69) and after it (a local build): focused and unfocused pixels, Chrome's
+accessibility tree, keyboard and mouse walks, page widths at 320 and 640 px, and screenshots
+compared pixel by pixel.
+
+- **Focus rings reach 3:1 on the breadcrumb bar, the link bars, the home page banner, the slideshow
+  and in menus (WCAG 1.4.11, Level AA).**
+  - The dark breadcrumb bar ("ICJIA »", the section link, "Translate this site") kept the blue
+    ring, 1.91:1 against its #0a3a60. It now has the yellow ring of the site's other dark bars,
+    7.77 to 8.05:1 measured from pixels.
+  - The section and bottom bars clip anything drawn outside a link, and each link paints over its
+    neighbour's edge, so the first link of each bar showed no ring at all and the others a 2 px
+    sliver. Rings are now drawn inside the link: 620 ring pixels at 6.45:1 on the first grey-bar
+    link and 452 at 5.68:1 on the first blue-bar link, and on the blue bar a focused link is no
+    longer lightened under its ring. The home page's Funding, Meetings and Employment tabs use the
+    same inset ring.
+  - "Apply for funding" and "Grant Status Request" on the banner photo (1.91:1) and the slideshow's
+    previous and next buttons (2.08:1 and 2.21:1) have a two-colour ring, white between navy bands
+    (W3C technique C40), so one colour stands out from any part of the photo: 779 to 885 pixels on
+    the banner buttons and 235 to 301 on the arrows now change by 3:1 or more, where none did.
+  - Moving through a drop-down menu or a select list with the arrow keys only tinted the item light
+    grey, 1.38:1. The item now also has a blue ring inside its edge, 6.83:1.
+- **Content stays available at narrow widths and at 200% zoom (1.4.10, 1.4.4, AA).**
+  - Dataset pages hid their whole Variables table below 960 px. It shows at every width, in a
+    region that scrolls sideways on its own and takes keyboard focus; the sampled dataset page's
+    main text at 320 px went from 1,473 to 7,039 characters.
+  - Research Hub articles offered their PDF only in the contents column, which is hidden below
+    960 px. The download buttons now also show under the byline below 960 px (the opioid, housing
+    and juvenile justice articles checked at 320 and 640 px).
+  - The home page's Funding / Meetings / Employment bar ran 461 px wide at 320 px, and the page
+    scrolled sideways to reach Employment. The bar now scrolls within itself and shows its arrows,
+    Tab scrolls each tab into view, and the page is 320 px wide.
+  - On both forms the request field's instruction was its label, one line that could not wrap: at
+    320 px only 198 of its 509 px (537 on the Language Access Request form) showed, and at 640 by
+    512 px, which stands for 200% zoom, 23 and 51 px were still cut off. The instruction is now a
+    paragraph above the field, which wraps and is the field's description (`aria-describedby`), and
+    the field has the short label "Request details", which is also its accessible name. At 320 px
+    the forms no longer scroll sideways (565 and 593 px wide before).
+- **Wide tables, charts and embedded frames fit a phone (1.4.10).** A table in a CMS page or
+  article now sits in a region that scrolls sideways on its own, takes keyboard focus (its ring is
+  5.75:1) and is named by the table's caption or column headers; images in articles shrink to the
+  column, and embedded frames to the page. Page width at 320 px: the stigma article 896 → 320 px,
+  the 2024 housing report 895 → 320, the opioid article 591 → 320, Meeting Schedules 573 → 320, the
+  juvenile justice charts 768 → 320, the funded programs map 1,036 → 320 and the IRB video page
+  323 → 320; none of them scrolls sideways at 640 px either (five did). At 1,280 px, article images
+  wider than the text column (up to 867 px) now fit it, and the IRB video fills its frame instead of
+  starting 15 px in and running past it.
+- **The header search button has no tooltip (1.4.13, AA).** Its "Search ICJIA" tooltip stayed
+  visible after Escape while the pointer rested on the button, vanished when the pointer moved onto
+  it, and covered "PARTNERS". It only repeated the button's name, so it is gone, and the button no
+  longer announces itself as a menu button. Hovering and focusing every control in the header and
+  the context bars shows no tooltip, and no other component the site renders uses one.
+- **Tables sort both ways from the keyboard on a phone (2.1.1, 4.1.2, A).** Below 600 px the column
+  headers of Publications, Meetings and Required Forms give way to a "Sort by" select, and the chip
+  that reverses the sort took no focus and had no role or name, so only a mouse could use it. The
+  chip is now a button that Tab reaches: Enter or Space changes the sort as a click does, and its
+  name gives the column and the state ("Date: Sorted descending. Activate to remove sorting.").
+  When a press removes the sorting, focus moves to "Sort by". Verified on all three tables through
+  descending, unsorted, a column chosen from "Sort by" with the keyboard, ascending and descending
+  again, with the rows re-sorted at each step; mouse clicks sort as before.
+- **Card names are their titles (2.5.3, A).** The News page's featured card was a link named by all
+  of its text except its visible "Read" button, and each Employment job card was a `role="link"`
+  block named by up to 981 characters starting with the job type. Each card's title is now its
+  link, and a click anywhere else on the card still opens the page: 8 label-in-name mismatches on
+  News and Employment at 1,280 and 375 before, 0 after.
+- **One header rule for tables (1.3.1, A).** The runtime table repair in `src/a11y/index.js` kept
+  its own copy of `fixSimpleTable`, which the 1.5.69 fix did not reach; for a table without header
+  cells it still made the first column row headers, whatever it held. It now calls the content
+  pipeline's function. Unit tests run five kinds of table through both paths and compare every
+  cell's headers. In the browser, every cell of 16 tables on 6 pages (1,539 cells: the opioid
+  article's three tables, including Table 1, the stigma and housing reports, Meeting Schedules, a
+  news post's award table and the dataset Variables table that only this path repairs) has the
+  same headers before and after.
+- **The translate dialog holds focus in both directions (2.4.3, A).** Tab from its last link
+  stopped once outside the dialog before wrapping to Close, and Shift+Tab from Close went to the
+  dialog's outer container and straight back to Close, so the languages and links could not be
+  reached backwards: 2 of 60 Tab stops and 22 of 60 Shift+Tab stops fell outside the dialog, at
+  1,280 and at 375 px. Tab and Shift+Tab now wrap within it: 0 of 60 either way, at both widths.
+- **"Skip to main content" also passes the breadcrumb and section links.** It moved focus to
+  `<main>`, which holds both context bars, so the next Tab reached "ICJIA »". It now moves focus to
+  the page content, scrolled to just below the fixed header and context bar, and the next Tab
+  reaches the content's first control (About, a Research Hub article and Publications, at 1,280
+  and 375 px).
+- **Links in CMS text are underlined (1.4.1).** Links in pages and news posts were set apart from
+  the text around them by colour and bold only, and bold also marks names in the same paragraphs.
+  They are underlined, and the underline goes on hover, as it does elsewhere on the site and in
+  Research Hub articles: 0 of 13 links underlined on Privacy, FOIA, Contact and the Language
+  Services announcement before, 13 of 13 after.
+- **Context navigation is made of links (1.3.1, 4.1.2).** The section and bottom bars exposed their
+  22 links as tabs (`role="tab"`, `aria-selected`) in tab lists with no tab panels, and each was a
+  `<div>`. They are links (`<a href>`) in their named navigation landmarks, the link to the current
+  page has `aria-current="page"`, and the bars look, scroll and centre on the current page as
+  before. Enter and clicks follow them as before, and a click on the current page's link still
+  returns to the top.
+- **The drop-down menus follow the menu button pattern (4.1.2, 2.1.1).** Vuetify kept focus on the
+  button and pointed at the highlighted item with `aria-activedescendant`, which a button does not
+  support (axe: 1 violation in each open menu before). In the header's drop-downs and the home
+  page's MENU, Enter, Space or Down Arrow now opens the menu and moves focus to its first item (Up
+  Arrow, to the last); the arrow keys, Home and End move through the items, Escape closes the menu
+  and returns focus to the button, and Tab closes it and moves on. Mouse clicks open menus and
+  follow items as before, without moving focus.
+- **Footnote references have unique ids.** In the opioid article, Table 1's hand-written citations
+  repeat the ids `fnref22` to `fnref24` of the article's generated citations, so each was on the
+  page twice, and the back-links of footnotes 22 to 24 returned to the table instead of to the
+  citations they belong to. The copies now get their own ids (`fnref22-2` and so on) and keep their
+  links: no duplicate ids, and each back-link returns to its citation. Unit tests cover it.
+- **Expand buttons' names no longer start with an icon character (4.1.2).** `fixLabelInName()`
+  removed the "Toggle details for …" label from the Publications table's expand buttons, whose
+  chevron is generated text, so each name began with a private-use character: 150 of 150 at 1,280
+  and 375 px before, 0 after.
+
+**Correction.** 1.5.65 said the keyboard focus rings meet 3:1 "on every bar". The ring colours did,
+but the rings were drawn outside each tab, where the bars clip them: the first tab of each bar
+showed no ring at all and the others a 2 px sliver, and the dark breadcrumb bar, which that release
+did not cover, kept a blue ring at 1.91:1. Both are fixed above.
+
+Regression checks: axe-core 4.13 (WCAG 2.0 and 2.1, Level A and AA) on the 26 pages this release
+touches at 1,280 and 375 px, plus the open translate dialog, open menus, both forms' error states
+and sorted tables: 0 violations in 67 runs (3 before, all `aria-activedescendant` on an open menu's
+button). Full-page keyboard walks of the home page, the opioid article, a search for "violence" and
+both forms at 1,280 and 375 px, with focus measured from pixels: 2,072 stops, and every one changes
+by 3:1 or more when focused. For the empty Grant Status request type that holds against the
+untouched field (2,006 and 1,174 pixels at the two widths, as on 1.5.69): the walk compares a stop
+with the same spot once focus has left it, and leaving that field shows its error state. Screenshots
+of 25 pages at both widths, compared pixel by pixel: 19 are identical, 2 differ only further down,
+where article images now fit the column, and 29 change as intended: link underlines in CMS text, the
+forms' instructions, the IRB video, and at 375 px the home page's tab arrows, the Variables table,
+article download buttons and images, and a table and the map fitting the page. Mouse checks of the
+menus, context links, breadcrumb, translate dialog, table sorting at both widths, expand buttons,
+cards, home tabs, banner buttons and slideshow arrows give the same results as before.
+`vue-cli-service lint --no-fix` reports no problems on every changed file; mocha unit tests: 410
+passing, 6 pending (385 before).
+
+---
+
 ## [1.5.69] - 2026-09-16
 
 ### fix(accessibility) — Table sorting, titles and names, selected states, headings, alt text, table headers, forms and status messages

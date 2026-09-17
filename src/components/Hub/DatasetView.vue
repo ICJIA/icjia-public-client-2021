@@ -76,9 +76,20 @@
         </BasePropDisplay>
       </v-col>
 
-      <div v-if="dataset.variables" class="hidden-sm-and-down py-6">
-        <h2 class="mb-4 font-weight-light">Variables</h2>
-        <div ref="variables" class="variables-table font-lato small"></div>
+      <!-- Shown at every width: below 960 px the whole data dictionary used
+           to be hidden (WCAG 1.4.10). The table scrolls sideways inside its
+           own region, which takes keyboard focus. -->
+      <div v-if="dataset.variables" class="py-6">
+        <h2 id="dataset-variables-heading" class="mb-4 font-weight-light">
+          Variables
+        </h2>
+        <div
+          ref="variables"
+          class="variables-table table-scroll font-lato small"
+          role="region"
+          aria-labelledby="dataset-variables-heading"
+          tabindex="0"
+        ></div>
       </div>
 
       <BaseInfoBlock v-if="dataset.funding">

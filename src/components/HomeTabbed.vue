@@ -396,16 +396,12 @@ export default {
   height: auto !important;
 }
 
-/* Tab navigation */
+/* Tab navigation. The tab bar keeps Vuetify's own clipping: with its
+   wrapper forced to overflow, the three tabs ran 461 px wide at 320 px and
+   the page scrolled sideways to reach EMPLOYMENT (WCAG 1.4.10). Clipped, the
+   bar scrolls within itself and shows its arrows when the tabs do not fit;
+   a tab reached with the keyboard scrolls into view. */
 * >>> .v-tabs {
-  overflow: visible !important;
-}
-
-* >>> .v-slide-group__wrapper {
-  overflow: visible !important;
-}
-
-* >>> .v-slide-group__content {
   overflow: visible !important;
 }
 

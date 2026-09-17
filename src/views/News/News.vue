@@ -9,14 +9,19 @@
             </v-col>
           </v-row>
 
-          <!-- Featured Post (most recent) -->
+          <!-- Featured Post (most recent). Its title is the card's link, so
+               the link's name is the title (WCAG 2.5.3): as a link, the whole
+               card was named by all its text except the "Read" button, which
+               is hidden from assistive technology. A click anywhere else on
+               the card still opens the post. -->
           <v-row v-if="featured" class="mb-6">
             <v-col cols="12">
               <v-card
                 outlined
                 elevation="2"
-                :to="featured.fullPath"
-                class="featured-card"
+                class="featured-card hover title-link-card"
+                ripple
+                @click.native="onCardClick($event, featured.fullPath)"
               >
                 <v-row no-gutters>
                   <v-col
@@ -76,7 +81,11 @@
                         >
                       </div>
                       <h2 class="featured-title mt-2 mb-3">
-                        {{ featured.title }}
+                        <router-link
+                          :to="featured.fullPath"
+                          class="card-title-link"
+                          >{{ featured.title }}</router-link
+                        >
                       </h2>
                       <p v-if="featured.summary" class="featured-summary">
                         {{ featured.summary }}
@@ -264,6 +273,7 @@ import {
 import _ from "lodash";
 import dayjs from "@/plugins/dayjs";
 import { scrollBehavior } from "@/utils/motion";
+import { isClickOnLink } from "@/utils/focus";
 
 const ITEMS_PER_PAGE = 15;
 
@@ -343,6 +353,10 @@ export default {
     },
   },
   methods: {
+    onCardClick(e, fullPath) {
+      if (isClickOnLink(e)) return;
+      this.$router.push(fullPath);
+    },
     isItNew(item) {
       const now = dayjs(new Date());
       const end = dayjs(item.publicationDate || item.published_at);
@@ -414,6 +428,8 @@ export default {
 .featured-card {
   overflow: hidden;
   transition: box-shadow 0.2s;
+  // The card's text keeps the weight it had when the whole card was a link.
+  font-weight: 900;
   &:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
   }

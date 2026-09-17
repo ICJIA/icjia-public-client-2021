@@ -18,7 +18,10 @@ import {
   fixAriaHiddenFocus,
   fixEmptyAriaLabel,
   fixInlineColorContrast,
+  fixLabelInName,
+  fixTableCellContext,
 } from "@/a11y/index";
+import { fixCmsTables } from "@/utils/contentSanitizer";
 
 // Helper: reset document body between tests
 beforeEach(() => {
@@ -573,5 +576,116 @@ describe("fixInlineColorContrast()", () => {
       '<div><p id="t" style="color: #bbbbbb">Template text</p></div>';
     fixInlineColorContrast();
     expect(colorOf("t")).to.equal("rgb(187, 187, 187)");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// fixTableCellContext: the runtime table repair uses the content pipeline's
+// header heuristic (src/utils/contentSanitizer.js fixSimpleTable), so both
+// paths reach the same header decisions.
+// ---------------------------------------------------------------------------
+describe("fixTableCellContext() — the content pipeline's header decisions", () => {
+  // Header text each data cell is associated with, via headers="…".
+  const headersOf = (root) => {
+    const out = {};
+    root.querySelectorAll("td").forEach((td) => {
+      const text = td.textContent.trim();
+      if (!text) return;
+      out[text] = (td.getAttribute("headers") || "")
+        .split(/\s+/)
+        .filter(Boolean)
+        .map((id) => root.querySelector(`[id="${id}"]`).textContent.trim());
+    });
+    return out;
+  };
+  const runtime = (html) => {
+    document.body.innerHTML = `<div class="article-body">${html}</div>`;
+    fixTableCellContext();
+    return document.body;
+  };
+  const pipeline = (html) =>
+    new DOMParser().parseFromString(fixCmsTables(html), "text/html").body;
+
+  const TABLES = {
+    // Table 1 of "Addressing Opioid Use Disorders in Corrections": a header
+    // row styled only by class, and no row labels.
+    classStyledHeaderRow:
+      '<table><tbody><tr><td class="tg-0lax shaded bold">Methadone</td>' +
+      '<td class="tg-0lax shaded bold">Buprenorphine</td>' +
+      '<td class="tg-0lax shaded bold">Naltrexone</td></tr>' +
+      "<tr><td>Full agonist</td><td>Partial agonist</td><td>Antagonist</td></tr>" +
+      "<tr><td>Taken daily</td><td>Taken twice</td><td>Injectable</td></tr>" +
+      "</tbody></table>",
+    blankCorner:
+      "<table><tbody><tr><td><strong> </strong></td><td><strong>n</strong></td>" +
+      "<td><strong>Percent</strong></td></tr>" +
+      "<tr><td>Northern</td><td>10</td><td>27.8</td></tr>" +
+      "<tr><td>Central</td><td>16</td><td>44.4</td></tr></tbody></table>",
+    twoRowGroupHeaders:
+      '<table><tbody><tr><td rowspan="2"></td><td colspan="2">Initial</td>' +
+      '<td colspan="2">Sporadic</td></tr>' +
+      "<tr><td>n</td><td>Percent</td><td>n</td><td>Percent</td></tr>" +
+      "<tr><td>Sanctions</td><td>18</td><td>47%</td><td>21</td><td>57%</td></tr>" +
+      "</tbody></table>",
+    labelsBesideNumbers:
+      "<table><tbody><tr><td><b>Region</b></td><td><b>2019</b></td><td><b>2020</b></td></tr>" +
+      "<tr><td>Cook</td><td>2,062</td><td>2,475</td></tr>" +
+      "<tr><td>Collar</td><td>1,104</td><td>998</td></tr></tbody></table>",
+    // The Research Hub dataset "Variables" table, which only this runtime
+    // path repairs: an authored header row, and names in the first column.
+    authoredHeaderRow:
+      "<table><thead><tr><th>Name</th><th>Type</th><th>Definition</th></tr></thead>" +
+      "<tbody><tr><td>year</td><td>integer</td><td>The year events were reported</td></tr>" +
+      "<tr><td>county</td><td>string</td><td>County name</td></tr></tbody></table>",
+  };
+
+  Object.entries(TABLES).forEach(([name, html]) => {
+    it(`associates the same headers as the content pipeline: ${name}`, () => {
+      const expected = headersOf(pipeline(html));
+      const actual = headersOf(runtime(html));
+      expect(Object.keys(actual).length).to.be.greaterThan(0);
+      expect(actual).to.deep.equal(expected);
+    });
+  });
+
+  it("gives the opioid table column headers and no row headers, and keeps them on a second pass", () => {
+    const body = runtime(TABLES.classStyledHeaderRow);
+    fixTableCellContext();
+    expect(body.querySelectorAll('th[scope="col"]').length).to.equal(3);
+    expect(body.querySelectorAll('th[scope="row"]').length).to.equal(0);
+    const headers = headersOf(body);
+    expect(headers["Partial agonist"]).to.deep.equal(["Buprenorphine"]);
+    expect(headers["Injectable"]).to.deep.equal(["Naltrexone"]);
+  });
+
+  it("still makes the first column row headers under an authored header row", () => {
+    const headers = headersOf(runtime(TABLES.authoredHeaderRow));
+    expect(headers["integer"]).to.deep.equal(["Type", "year"]);
+    expect(headers["County name"]).to.deep.equal(["Definition", "county"]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// fixLabelInName: icon buttons
+// ---------------------------------------------------------------------------
+describe("fixLabelInName() — icon buttons", () => {
+  it("keeps the aria-label of a button that is itself an icon", () => {
+    // A data table's expand button: the glyph is generated content of the
+    // button, and would join the accessible name if the label went.
+    document.body.innerHTML =
+      '<button class="v-icon mdi mdi-chevron-down v-data-table__expand-icon" aria-label="Toggle details for Budget">' +
+      '<span class="sr-only">Toggle details for Budget</span></button>';
+    fixLabelInName();
+    expect(
+      document.querySelector("button").getAttribute("aria-label")
+    ).to.equal("Toggle details for Budget");
+  });
+
+  it("still removes an aria-label that repeats a button's visible text", () => {
+    document.body.innerHTML =
+      '<button class="v-btn" aria-label="Download">Download</button>';
+    fixLabelInName();
+    expect(document.querySelector("button").hasAttribute("aria-label")).to.be
+      .false;
   });
 });

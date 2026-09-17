@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-data-table
+    <DataTable
       :headers="showByDate ? policyHeadersFull : policyHeadersSimple"
       :items="items"
       item-key="title"
@@ -124,7 +124,7 @@
           ></v-text-field>
         </v-sheet>
       </template>
-    </v-data-table>
+    </DataTable>
   </div>
 </template>
 
@@ -134,6 +134,7 @@ import NProgress from "@/services/Progress";
 // eslint-disable-next-line no-unused-vars
 import { EventBus } from "@/event-bus";
 import { fixExpandButtons } from "@/a11y";
+import DataTable from "@/components/DataTable";
 import slug from "slug";
 import { renderToHtml } from "@/services/Markdown";
 // eslint-disable-next-line no-unused-vars
@@ -141,6 +142,7 @@ import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 // import _ from "lodash";
 import dayjs from "@/plugins/dayjs";
 export default {
+  components: { DataTable },
   data() {
     return {
       search: "",

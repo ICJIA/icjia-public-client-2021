@@ -56,15 +56,35 @@ describe("SkipLink component", () => {
     expect(wrapper.element.tagName).to.equal("NAV");
   });
 
-  it("links to #main-content via href (not router-link)", () => {
+  it("links to #content via href (not router-link)", () => {
     // The v1.5.3 rewrite switched from <router-link to="#content"> to a
-    // plain <a href="#main-content"> so the skip action doesn't trigger a
-    // Vue Router navigation — hash-only navigation should stay within
-    // the current route and let the @click handler manage focus.
+    // plain <a href> so the skip action doesn't trigger a Vue Router
+    // navigation — hash-only navigation should stay within the current
+    // route and let the @click handler manage focus. The target is #content
+    // (v1.5.70), not #main-content: main also holds the breadcrumb bar and
+    // the section links, which the skip link now passes as well.
     const router = new VueRouter();
     const wrapper = shallowMount(SkipLink, { localVue, vuetify, router });
     const link = wrapper.find("#skip-to-content");
-    expect(link.attributes("href")).to.equal("#main-content");
+    expect(link.attributes("href")).to.equal("#content");
+  });
+
+  it("moves focus to #content when activated", async () => {
+    const router = new VueRouter();
+    const content = document.createElement("div");
+    content.id = "content";
+    content.setAttribute("tabindex", "-1");
+    document.body.appendChild(content);
+    const wrapper = shallowMount(SkipLink, {
+      localVue,
+      vuetify,
+      router,
+      attachTo: document.body,
+    });
+    await wrapper.find("#skip-to-content").trigger("click");
+    expect(document.activeElement).to.equal(content);
+    wrapper.destroy();
+    content.remove();
   });
 });
 

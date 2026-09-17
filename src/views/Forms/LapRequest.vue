@@ -129,17 +129,31 @@
               <v-container>
                 <v-row>
                   <v-col cols="12">
+                    <!-- The instruction is a paragraph, tied to the field as
+                         its description, and the field has a short label. As
+                         the label it was one line that could not wrap: at
+                         320 px only its first 198 of 509 px showed, and some
+                         was lost at 200% zoom (WCAG 1.4.10, 1.4.4). -->
+                    <p :id="instructionsId('comment')" class="mt-3 mb-2">
+                      Please provide as much detail as possible about your
+                      language access request.
+                    </p>
                     <v-textarea
                       v-model="comment"
                       auto-grow
                       filled
-                      label="Please provide as much detail as possible about your language access request."
+                      label="Request details"
                       rows="10"
-                      class="mt-3"
                       @click="clearAxiosError"
                       ref="comment"
                       required
-                      v-bind="fieldState('comment', commentErrors)"
+                      v-bind="
+                        fieldState(
+                          'comment',
+                          commentErrors,
+                          instructionsId('comment')
+                        )
+                      "
                       :error-messages="commentErrors"
                       @input="$v.comment.$touch()"
                       @change="$v.comment.$touch()"
@@ -320,15 +334,23 @@ export default {
     },
   },
   methods: {
-    // Validation state for a field's input: aria-invalid, and
-    // aria-describedby pointing at its error message, while it has an error.
-    fieldState(field, errors) {
-      return errors.length
-        ? { "aria-invalid": "true", "aria-describedby": this.errorId(field) }
-        : {};
+    // Validation state for a field's input: aria-invalid while it has an
+    // error, and aria-describedby pointing at its instructions, if it has
+    // any, and at its error message.
+    fieldState(field, errors, instructions) {
+      const describedBy = [instructions, errors.length && this.errorId(field)]
+        .filter(Boolean)
+        .join(" ");
+      return {
+        ...(errors.length ? { "aria-invalid": "true" } : {}),
+        ...(describedBy ? { "aria-describedby": describedBy } : {}),
+      };
     },
     errorId(field) {
       return `lap-request-${field}-error`;
+    },
+    instructionsId(field) {
+      return `lap-request-${field}-instructions`;
     },
     getFieldData(v) {
       //console.log("value: ", v);

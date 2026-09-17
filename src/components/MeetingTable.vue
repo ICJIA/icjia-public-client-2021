@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-data-table
+    <DataTable
       :headers="meetingHeaders"
       :items="items"
       :single-expand="true"
@@ -121,7 +121,7 @@
           ></v-text-field>
         </v-sheet>
       </template>
-    </v-data-table>
+    </DataTable>
     <!-- <div v-if="showDisclaimer">
       <p class="text-center mt-2" style="font-size: 11px; font-weight: 700">
         For meeting materials prior to {{ $myApp.config.archiveDate }} please
@@ -140,11 +140,13 @@ import NProgress from "@/services/Progress";
 // eslint-disable-next-line no-unused-vars
 import { EventBus } from "@/event-bus";
 import { fixExpandButtons, fixDataTableHeaders } from "@/a11y";
+import DataTable from "@/components/DataTable";
 import slug from "slug";
 import { renderToHtml } from "@/services/Markdown";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import _ from "lodash";
 export default {
+  components: { DataTable },
   data() {
     return {
       search: "",

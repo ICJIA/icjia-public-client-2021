@@ -114,6 +114,34 @@
             </v-btn>
           </div>
 
+          <!-- The download buttons also live in the contents column, which
+               is hidden below 960 px, where they were the page's only way to
+               the PDF (WCAG 1.4.10). Below 960 px they show here instead. -->
+          <div
+            v-if="article.mainfile || article.extrafile"
+            class="hidden-md-and-up mb-4"
+          >
+            <v-btn
+              v-if="article.mainfile"
+              class="article-download mr-2"
+              @click="downloadHelper('main')"
+              :aria-label="'Download ' + (article.mainfiletype || 'article')"
+            >
+              <template>{{ article.mainfiletype }}</template>
+              <v-icon>mdi-download</v-icon>
+            </v-btn>
+
+            <v-btn
+              v-if="article.extrafile"
+              class="article-download"
+              @click="downloadHelper('extra')"
+              aria-label="Download appendix"
+            >
+              <template>{{ "appendix" }}</template>
+              <v-icon>mdi-download</v-icon>
+            </v-btn>
+          </div>
+
           <v-divider></v-divider>
 
           <div

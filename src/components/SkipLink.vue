@@ -1,7 +1,7 @@
 <template>
   <nav aria-label="Skip navigation">
     <a
-      href="#main-content"
+      href="#content"
       class="skiplink"
       id="skip-to-content"
       @click="onSkip"
@@ -24,15 +24,30 @@ export default {
       // header menu instead of into the main content. Fix: scroll to
       // #content, then programmatically move focus there. #content has
       // tabindex="-1" in App.vue so focus() actually takes effect.
+      //
+      // The target is #content, the page's own content, not <main>: main
+      // also holds the breadcrumb bar and the section links, which a
+      // keyboard user would otherwise still have to Tab through.
       if (e) e.preventDefault();
-      const target = document.getElementById("main-content");
+      const target = document.getElementById("content");
       if (!target) return;
-      // Use native scroll so we don't depend on Vuetify's goTo resolving
-      // across route changes or dialog contexts.
+      // The fixed header and the sticky context bar cover the top of the
+      // window, so the content is scrolled to just below them. Native
+      // scrolling, so we don't depend on Vuetify's goTo resolving across
+      // route changes or dialog contexts.
+      const covered = ["header.v-app-bar", "#context-bar"]
+        .map((selector) => document.querySelector(selector))
+        .filter(Boolean)
+        .reduce(
+          (max, el) => Math.max(max, el.getBoundingClientRect().bottom),
+          0
+        );
+      const top =
+        target.getBoundingClientRect().top + window.pageYOffset - covered;
       try {
-        target.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
+        window.scrollTo({ top: Math.max(0, top), behavior: scrollBehavior() });
       } catch (_err) {
-        target.scrollIntoView();
+        window.scrollTo(0, Math.max(0, top));
       }
       // Focus without scrolling again — the scroll above handles it.
       // preventScroll is supported in all evergreen browsers.
@@ -41,7 +56,7 @@ export default {
       // the location bar reflects the anchor and the Back button works
       // as users expect.
       if (window.history && window.history.replaceState) {
-        window.history.replaceState(null, "", "#main-content");
+        window.history.replaceState(null, "", "#content");
       }
     },
   },

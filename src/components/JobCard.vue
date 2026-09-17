@@ -1,12 +1,14 @@
 <template>
   <div>
+    <!-- On a clickable card the title is the card's link, so the link's name
+         is the title (WCAG 2.5.3): the whole card was a role="link" element
+         named by all of its text, up to 981 characters, starting with the
+         job type and date. A click anywhere else on the card still opens the
+         listing. -->
     <v-card
       :elevation="elevation"
       class="pt-8 px-3"
-      @click="isClickable ? routeTo(item.fullPath) : null"
-      :tabindex="isClickable ? 0 : undefined"
-      :role="isClickable ? 'link' : undefined"
-      @keydown.enter="isClickable ? routeTo(item.fullPath) : null"
+      @click.native="onCardClick"
       color="#fff"
       style="border: 1px solid #ddd"
       :class="{ card: isClickable }"
@@ -79,7 +81,13 @@
             font-size: 22px;
           "
         >
-          {{ item.title }}
+          <router-link
+            v-if="isClickable && item.fullPath"
+            :to="item.fullPath"
+            class="card-title-link"
+            >{{ item.title }}</router-link
+          >
+          <template v-else>{{ item.title }}</template>
         </h2>
         <div v-if="openSearch === true && !isClickable" class="title-search">
           <router-link :to="searchLink(item.title)"
@@ -190,6 +198,7 @@ import { renderToHtml } from "@/services/Markdown";
 import { searchLocation } from "@/utils/search";
 import { isRelatedContent, getProperCategory } from "@/utils/content";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
+import { isClickOnLink } from "@/utils/focus";
 export default {
   mounted() {
     attachInternalLinks(this);
@@ -207,6 +216,10 @@ export default {
   methods: {
     getCategory(category) {
       return getProperCategory(this.$myApp.config.maps.employment, category);
+    },
+    onCardClick(e) {
+      if (!this.isClickable || isClickOnLink(e)) return;
+      this.routeTo(this.item.fullPath);
     },
     routeTo(fullPath) {
       if (!fullPath) return;

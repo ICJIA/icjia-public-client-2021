@@ -64,6 +64,9 @@
         style="display: inline-block"
       >
         <span v-if="menu.children.length && menu.children" class="d-flex">
+          <!-- A menu button (src/utils/menuButton.js): opened from the
+               keyboard, focus moves into the menu, and Vuetify's
+               aria-activedescendant on the button is no longer used. -->
           <v-menu
             bottom
             offset-y
@@ -71,6 +74,8 @@
             transition="scale-transition"
             :nudge-left="menu.nudgeLeft ? menu.nudgeLeft : '0px'"
             style="z-index: 500"
+            disable-keys
+            :ref="`menu-${index}`"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -80,13 +85,20 @@
                 v-bind="attrs"
                 v-on="on"
                 style="font-weight: 900 !important; font-size: 16px"
+                @click="onMenuButtonClick($event, menuRef(index))"
+                @keydown="onMenuButtonKeydown($event, menuRef(index))"
               >
                 {{ menu.main }}<v-icon>mdi-menu-down</v-icon>
                 <!-- <v-icon right small>arrow_drop_down</v-icon> -->
               </v-btn>
             </template>
 
-            <v-list nav dense elevation="2">
+            <v-list
+              nav
+              dense
+              elevation="2"
+              @keydown.native="onMenuKeydown($event, menuRef(index))"
+            >
               <span
                 v-for="(child, index) in menu.children"
                 :key="`child-${index}`"
@@ -134,23 +146,19 @@
         </span>
       </span>
 
-      <v-tooltip left>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            text
-            small
-            v-bind="attrs"
-            v-on="on"
-            class="navItem"
-            style="font-weight: 900 !important; font-size: 16px"
-            @click="openSearchModal()"
-          >
-            <span class="sr-only">Search ICJIA</span>
-            <v-icon color="black" style="font-size: 30px">mdi-magnify</v-icon>
-          </v-btn>
-        </template>
-        <span>Search ICJIA</span>
-      </v-tooltip>
+      <!-- No tooltip: it only repeated the button's name, could not be
+           dismissed with Escape while the pointer rested on the button, and
+           disappeared when the pointer moved onto it (WCAG 1.4.13). -->
+      <v-btn
+        text
+        small
+        class="navItem"
+        style="font-weight: 900 !important; font-size: 16px"
+        @click="openSearchModal()"
+      >
+        <span class="sr-only">Search ICJIA</span>
+        <v-icon color="black" style="font-size: 30px">mdi-magnify</v-icon>
+      </v-btn>
     </v-app-bar>
   </div>
 </template>
@@ -158,8 +166,21 @@
 <script>
 import { EventBus } from "@/event-bus";
 import { goToSearch } from "@/utils/search";
+import {
+  onMenuButtonClick,
+  onMenuButtonKeydown,
+  onMenuKeydown,
+} from "@/utils/menuButton";
 export default {
   methods: {
+    onMenuButtonClick,
+    onMenuButtonKeydown,
+    onMenuKeydown,
+    // A ref inside v-for is an array.
+    menuRef(index) {
+      const ref = this.$refs[`menu-${index}`];
+      return Array.isArray(ref) ? ref[0] : ref;
+    },
     toggleSidebar() {
       EventBus.$emit("toggleSidebar");
     },

@@ -45,7 +45,10 @@
       {{ title }}
     </h2>
     <v-spacer></v-spacer>
-    <v-menu v-if="menuItems && menuItems.length > 1">
+    <!-- A menu button (src/utils/menuButton.js): opened from the keyboard,
+         focus moves into the menu, and Vuetify's aria-activedescendant on the
+         button is no longer used. -->
+    <v-menu v-if="menuItems && menuItems.length > 1" disable-keys ref="menu">
       <template v-slot:activator="{ on, attrs }">
         <v-btn
           text
@@ -53,13 +56,15 @@
           v-bind="attrs"
           v-on="on"
           style="margin-right: 0px !important; font-weight: 900"
+          @click="onMenuButtonClick($event, $refs.menu)"
+          @keydown="onMenuButtonKeydown($event, $refs.menu)"
         >
           MENU
           <v-icon right>mdi-dots-vertical</v-icon>
         </v-btn>
       </template>
 
-      <v-list>
+      <v-list @keydown.native="onMenuKeydown($event, $refs.menu)">
         <div v-for="(item, idx) in menuItems" :key="`menu-${idx}`">
           <v-list-item :to="item.url" v-if="item.type != 'external'">
             <v-list-item-title class="hover">{{
@@ -86,7 +91,17 @@
 </template>
 
 <script>
+import {
+  onMenuButtonClick,
+  onMenuButtonKeydown,
+  onMenuKeydown,
+} from "@/utils/menuButton";
 export default {
+  methods: {
+    onMenuButtonClick,
+    onMenuButtonKeydown,
+    onMenuKeydown,
+  },
   props: {
     title: {
       type: String,
