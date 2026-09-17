@@ -10,7 +10,9 @@ import VDataTableHeaderMobile from "vuetify/lib/components/VDataTable/VDataTable
 // does, and its name says how the table is sorted and what the next press
 // does, in the words the column headers use at wider widths ("Date: Sorted
 // descending. Activate to remove sorting."). When a press removes the
-// sorting the chip goes away, and focus moves to the "Sort by" select.
+// sorting the chip goes away, and focus moves to the "Sort by" select. The
+// select's name includes the column chosen ("Sort by Date"), as other
+// selects' names include their value: it was "Sort by" whatever the choice.
 // Everything else is v-data-table's own. Used by PublicationsAll,
 // MeetingTable and RequiredFormTable.
 const DataTableHeaderMobile = VDataTableHeaderMobile.extend({
@@ -36,7 +38,7 @@ const DataTableHeaderMobile = VDataTableHeaderMobile.extend({
       }
       const sort = () => this.$emit("sort", props.item.value);
 
-      return this.$createElement(
+      const chip = this.$createElement(
         VChip,
         {
           staticClass: "sortable",
@@ -84,12 +86,49 @@ const DataTableHeaderMobile = VDataTableHeaderMobile.extend({
           ),
         ]
       );
+      // The column's name as the select's chosen value, in hidden text:
+      // fixNestedInteractive (src/a11y) adds a select's values to its name.
+      const value = this.$createElement(
+        "span",
+        { staticClass: "v-select__selection sr-only" },
+        [props.item.text]
+      );
+      return [chip, value];
     },
   },
 });
 
 export default VDataTable.extend({
   name: "data-table",
+
+  created() {
+    // More rows per page push the footer down the page, and with it the
+    // "Rows per page" select holding focus: on Meetings, 100 rows left focus
+    // on the select below the window (WCAG 2.4.7). Chosen from the keyboard,
+    // the select is scrolled back into view. Chosen with a mouse or a finger,
+    // the page stays where it was.
+    this.$on("update:items-per-page", () => {
+      const active = document.activeElement;
+      if (!active || !active.closest(".v-data-footer")) return;
+      if (!this.$el.contains(active) || this.lastInput !== "keyboard") return;
+      this.$nextTick(() => active.scrollIntoView({ block: "nearest" }));
+    });
+  },
+
+  mounted() {
+    // How the table was last used. The select's menu is outside the table,
+    // but the key or pointer press that opened it was inside.
+    this.$el.addEventListener(
+      "keydown",
+      () => (this.lastInput = "keyboard"),
+      true
+    );
+    this.$el.addEventListener(
+      "pointerdown",
+      () => (this.lastInput = "pointer"),
+      true
+    );
+  },
 
   methods: {
     genHeaders(props) {

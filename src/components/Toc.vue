@@ -11,6 +11,8 @@
     }"
     style=""
   >
+    <!-- A heading is not a control (WCAG 2.1.1, 4.1.2): a click on it
+         scrolled to the top of the page, which a keyboard could not do. -->
     <h3
       style="
         margin-left: -3px;
@@ -19,8 +21,7 @@
         margin-top: 0;
       "
       ref="anchor"
-      class="mb-4 hover"
-      @click="$vuetify.goTo(0, goToOptions())"
+      class="mb-4"
       v-if="tocHeading.length"
     >
       {{ tocHeading | upperCase }}
@@ -79,7 +80,6 @@ export default {
     },
   },
   methods: {
-    goToOptions,
     // Scroll to the section and move keyboard focus to its heading, so the
     // next Tab continues from the section and not from the table of contents
     // (WCAG 2.4.3). The link's default jump is prevented: in this app a hash

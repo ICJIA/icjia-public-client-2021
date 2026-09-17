@@ -651,6 +651,22 @@ a[target="_blank"]::after {
   color: #ffffff !important;
 }
 
+/* A chip's text wraps when the chip is wider than its column (WCAG 1.4.10).
+   Button text stays on one line, and at 320 px the tag "IDOT - Illinois
+   Department of Transportation" made the Research Hub home and apps pages
+   341 px wide. A chip that fits is unchanged. */
+.v-btn.chip {
+  max-width: 100%;
+  height: auto !important;
+  padding-top: 3px !important;
+  padding-bottom: 3px !important;
+  white-space: normal;
+}
+.v-btn.chip .v-btn__content {
+  flex-shrink: 1;
+  text-align: center;
+}
+
 /* Deadline/Expired chips (BaseCardExpandable) opt out of the b/w
    standardization via text-color="white" → .white--text. The Vuetify
    green.darken-4 / red.darken-4 background provides >7:1 contrast
@@ -658,6 +674,19 @@ a[target="_blank"]::after {
    axe-core reads it directly at the span level. */
 .v-chip.v-chip.white--text .v-chip__content {
   color: #ffffff !important;
+}
+
+/* A context bar's link is never wider than the bar (WCAG 1.4.10), and wraps
+   onto a second line instead. At 375 px "Composition & Membership", "Death in
+   Custody Reporting", "Rules, Regulations, Policies" and "Institutional Review
+   Board" were wider than the space between the scroll arrows, so part of each
+   could never be shown. */
+.context .v-slide-group__wrapper {
+  container-type: inline-size;
+}
+.context .v-tab {
+  max-width: min(360px, 100cqw);
+  line-height: 1;
 }
 
 /* Context tab bar — paint solid bg on the tabs wrapper so contrast auditors

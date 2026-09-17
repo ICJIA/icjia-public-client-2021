@@ -6,6 +6,7 @@
           <h1 v-if="publication" class="sr-only">{{ publication.title }}</h1>
           <PublicationCard
             :item="publication"
+            :linkTitle="false"
             class="mt-8"
             v-if="publication"
           ></PublicationCard>

@@ -1,11 +1,10 @@
 <template>
   <div class="">
     <v-card class="px-5 py-5 markdown-body reduce-90" :color="color">
-      <h2
-        @click="routeTo(item)"
-        class="policy-title"
-        style="border: none; font-size: 26px"
-      >
+      <!-- A heading is not a control (WCAG 2.1.1, 4.1.2). A click on the
+           title led to /grants/policies/<slug>, a page the site does not
+           have, and a keyboard could not use it. -->
+      <h2 class="policy-title" style="border: none; font-size: 26px">
         {{ item.title }}
       </h2>
 
@@ -80,11 +79,6 @@ export default {
       const duration = end.diff(start, "days");
       return `${duration}`;
     },
-    routeTo(item) {
-      this.$router.push(`/grants/policies/${item.slug}`).catch((err) => {
-        this.$vuetify.goTo(0);
-      });
-    },
     render(content) {
       return renderToHtml(content);
     },
@@ -131,10 +125,5 @@ export default {
 .meeting-date {
   font-size: 14px;
   font-weight: 400;
-}
-.policy-title:hover,
-.meeting-title:hover {
-  cursor: pointer;
-  text-decoration: underline;
 }
 </style>

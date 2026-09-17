@@ -1,30 +1,39 @@
 <template>
   <div class="markdown-body">
+    <!-- The title is the card's link, and a click anywhere else on the card
+         still opens the page. The whole card was a focusable <div> with
+         role="link" (WCAG 4.1.2), as tall as 700 px at 375 px: too tall to
+         fit below the sticky bars, so focus left its top under the context
+         bar. -->
     <v-card
       color="white"
       v-if="item"
       class="mb-5"
+      :class="{ 'title-link-card hover': isClickable }"
       elevation="1"
-      @click="isClickable ? $router.push(item.fullPath) : null"
-      :tabindex="isClickable ? 0 : undefined"
-      :role="isClickable ? 'link' : undefined"
-      @keydown.enter.self="isClickable ? $router.push(item.fullPath) : null"
+      :ripple="isClickable"
+      @click.native="onCardClick"
     >
-      <!-- .self: Enter on the card itself opens the page. Enter on a control
-           inside it (the Close button of the calendar's details, a tag) does
-           only what that control does. -->
-      <!-- tag="div": Vuetify's default <header> is left out of the card's
-           accessible name, so the name started with the date and omitted the
-           title (WCAG 2.5.3). -->
-      <v-toolbar :color="item.color" dark elevation="0" tag="div">
-        <v-toolbar-title
-          v-html="item.name"
-          v-if="item.name"
-          style="font-weight: 700"
-        >
-        </v-toolbar-title>
-
-        <v-toolbar-title v-html="item.title" v-else style="font-weight: 700">
+      <!-- tag="div": Vuetify's default <header> is not wanted around the
+           title. dark-surface: the yellow focus ring used on dark bars
+           (WCAG 1.4.11). -->
+      <v-toolbar
+        :color="item.color"
+        dark
+        elevation="0"
+        tag="div"
+        class="dark-surface"
+      >
+        <v-toolbar-title style="font-weight: 700">
+          <component :is="titleTag" class="event-card-title">
+            <router-link
+              v-if="isClickable"
+              :to="item.fullPath"
+              class="card-title-link"
+              ><span v-html="item.name || item.title"></span
+            ></router-link>
+            <span v-else v-html="item.name || item.title"></span>
+          </component>
         </v-toolbar-title>
 
         <v-spacer></v-spacer>
@@ -179,6 +188,7 @@ import { renderToHtml } from "@/services/Markdown";
 import { isRelatedContent } from "@/utils/content";
 import { getProperCategory } from "@/utils/content";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
+import { isClickOnLink } from "@/utils/focus";
 export default {
   data() {
     return {
@@ -194,6 +204,10 @@ export default {
     attachSearchEvents(this);
   },
   methods: {
+    onCardClick(e) {
+      if (!this.isClickable || isClickOnLink(e)) return;
+      this.$router.push(this.item.fullPath);
+    },
     isWithinOneDay(eventStart, eventEnd) {
       let start = dayjs(eventStart);
       let end = dayjs(eventEnd);
@@ -305,6 +319,11 @@ export default {
       type: Boolean,
       default: true,
     },
+    // "h1" where the card is the page's item (EventsSingle).
+    titleTag: {
+      type: String,
+      default: "div",
+    },
     showColor: {
       type: Boolean,
       default: true,
@@ -317,4 +336,14 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+/* The title keeps the toolbar title's look when it is the page's heading. */
+.markdown-body .event-card-title {
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+</style>

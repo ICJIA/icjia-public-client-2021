@@ -97,9 +97,11 @@
               <!-- <a href="javascript:void(0);" @click="openSearch(author.title)">{{
                 author.title
               }}</a> -->
-              <router-link :to="'/search/' + author.title">{{
-                author.title
-              }}</router-link>
+              <router-link
+                :to="'/search/' + author.title"
+                class="article-author"
+                >{{ author.title }}</router-link
+              >
             </span>
 
             <span v-if="article.date">
@@ -439,6 +441,13 @@ export default {
 </script>
 
 <style>
+/* An author's name is one box, which moves to the next line whole. At 375 px
+   a name that did not fit at the end of a line ("Tyler Marcheschi", "Jessica
+   Reichert") broke across two lines, and the box around it took in the name
+   before it or the print button. */
+.article-author {
+  display: inline-block;
+}
 .article-figure {
   margin-left: auto !important;
   margin-right: auto !important;

@@ -20,7 +20,7 @@
                 :class="{ 'right-rule': index < items.length - 1 }"
                 @click="
                   $router.push(item.fullPath).catch((err) => {
-                    $vuetify.goTo(0);
+                    $vuetify.goTo(0, goToOptions());
                   })
                 "
               >
@@ -87,7 +87,7 @@
                 class="hover"
                 @click="
                   $router.push(item.fullPath).catch((err) => {
-                    $vuetify.goTo(0);
+                    $vuetify.goTo(0, goToOptions());
                   })
                 "
               >
@@ -150,6 +150,7 @@
 
 <script>
 import dayjs from "@/plugins/dayjs";
+import { goToOptions } from "@/utils/motion";
 export default {
   computed: {
     getRibbonSize() {
@@ -157,6 +158,7 @@ export default {
     },
   },
   methods: {
+    goToOptions,
     getHeight() {
       if (this.$vuetify.breakpoint.smAndDown) {
         return 550;

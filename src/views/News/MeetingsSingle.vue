@@ -5,9 +5,16 @@
         <v-container v-if="meeting">
           <v-row>
             <v-col>
-              <h1>ICJIA Meetings</h1>
+              <!-- The meeting's title is the page's heading (WCAG 1.3.1,
+                   2.4.6); the section's name leads the page as on a news
+                   post or funding notice. -->
+              <div style="font-weight: 900; font-size: 18px; color: #222">
+                ICJIA Meetings
+              </div>
               <MeetingCard
                 :item="meeting"
+                titleTag="h1"
+                :linkTitle="false"
                 class="mx-2 my-4"
                 :key="meeting.title"
               ></MeetingCard>

@@ -10,9 +10,11 @@ This site is audited with two complementary tools — **axe-core** (industry-sta
 
 Managers and stakeholders reviewing audit results should understand these differences before drawing conclusions from either tool's output.
 
+> **Correction (September 2026): a clean automated run does not mean a page meets WCAG 2.1 AA.** Automated tools, axe-core and SiteImprove alike, find only part of the failures a page can have, and many success criteria can only be judged by a person. Whether a page conforms is decided by testing it by hand against every Level A and AA success criterion: with the keyboard alone, at phone widths and high zoom, and with a screen reader. Evaluations by hand in September 2026 found failures that axe-core had not reported. Below, "zero violations" means that no automated rule failed, not that the pages conform.
+
 ### For stakeholders — the short version
 
-- **axe-core score: 2,377 / 2,377 pages pass WCAG 2.1 AA with zero violations** (most recent full-site audit, May 6 2026; the prior April 14 2026 audit on 2,367 URLs was equally clean). axe-core is the open-source engine used by Google Lighthouse, Microsoft, pa11y, and most accessibility consultancies.
+- **axe-core score: 2,377 / 2,377 pages with zero violations of its WCAG 2.1 AA rules** (most recent full-site audit, May 6 2026; the prior April 14 2026 audit on 2,367 URLs was equally clean). axe-core is the open-source engine used by Google Lighthouse, Microsoft, pa11y, and most accessibility consultancies.
 - **SiteImprove reports a lower score** because (a) it applies proprietary rules that are stricter than the published WCAG and W3C ACT Rules, and (b) its remote crawler cannot fully execute the JavaScript that renders this Single Page Application. Both limitations are architectural to SiteImprove and documented by the vendor itself.
 - **SiteImprove cannot be integrated into the build process.** There is no CLI, API, or local runner. Every SiteImprove flag must be manually reviewed after deployment, and results can lag days or weeks behind the live code.
 - **Every new SiteImprove report is triaged on arrival.** If axe-core also flags the issue, it is fixed in code. If axe-core is clean and the flag matches a known stricter-than-spec rule, it is logged as a false positive with W3C/ACT Rules citations and verification evidence.
@@ -79,6 +81,146 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 2. If axe-core also flags it, remediate in code and document the fix in a CHANGELOG entry.
 3. If axe-core is clean and the pattern matches a stricter-than-spec rule, add an entry to [docs/SITEIMPROVE-FALSE-POSITIVES.md](docs/SITEIMPROVE-FALSE-POSITIVES.md) and mark the occurrences as Accepted in the SiteImprove inspector with the comment supplied in the table.
 4. Stale-cache flags clear on the next SiteImprove recrawl — no action needed beyond waiting.
+
+---
+
+## [1.5.73] - 2026-09-17
+
+### fix(accessibility) — Enter in search, focus after paging, the translate dialog and context bars on phones, headings and links on cards, pages at 320 px, reduced motion everywhere
+
+Fixes toward full WCAG 2.1 Level AA conformance: what the September 17 evaluation recorded as
+advisories, which a stricter reviewer could score or which made the site harder to use. Each was
+measured with the same scripts before the change (the live site, 1.5.72) and after it (a local
+build): keyboard and mouse walks, focus rings and page widths from pixels, Chrome's accessibility
+tree and event listeners, scroll positions frame by frame, and screenshots compared pixel by pixel.
+
+- **Enter in the search field searches in place.** Enter submitted the page's form, which loaded the
+  page again ("/search/violence?"): a filter chosen from the chips was dropped ("Articles", 55 of
+  286 results, went back to all 286), and so were words typed since the page loaded ("violence
+  prevention" went back to "violence"). Enter no longer loads a page. It runs at once a search still
+  waiting for typing to pause, leaves the chosen filter in place when the words have not changed,
+  and the status region announces the result as soon as it is ready, even when it repeats the last
+  announcement: the filtered result again at once, and 94 results for "violence prevention" a
+  quarter of a second after Enter.
+- **Research Hub figures are not Tab stops.** Every figure took focus and did nothing: Tab stopped
+  on 16 figures in the 2024 housing report (of 76 stops before the footer), 25 in the juvenile
+  justice report (of 176), 10 in the synthetic-drug study (of 186), 4 in the survey of jails and 2
+  in the DART evaluation. Now none (60, 151 and 176 stops). The runtime repair that set their
+  `tabindex` to 0, `fixFigureTabindex`, is removed with its tests.
+- **Focus moves with the page (WCAG 2.4.3, Level A; 2.4.7, AA).**
+  - News: choosing page 2 scrolled to the list and left focus on the page's button, 1,604 px down a
+    900 px window (3,540 px at 375 px). Focus now moves to the new page's first heading ("Earlier"),
+    262 px from the top, and the next Tab reaches its first post. A category filter left the button
+    just pressed under the header and context bar, 86 px from the top; the page now stops with the
+    filters 170 px down, and the button stays in view (182 px). The list lands 96 px lower than
+    before.
+  - Publications: "Next page" scrolled back to the table and left focus on the button, 8,067 px
+    down. Focus now moves to the new page's first row, 472 px down; the next Tab reaches its details
+    button. A page change from sorting or searching leaves focus where it is.
+  - Meetings: 100 rows per page, chosen from the keyboard, left focus on the "Rows per page" select
+    4,119 px down a 900 px window; the select is now scrolled back into view (868 px). Chosen with
+    the mouse, the page stays where it was, as before.
+- **The translate dialog fits a phone (WCAG 1.4.10, Level AA).** At 320 px it was 192 px wide: its
+  title broke inside "Translation", and "Chinese (Traditional)" and "Chinese (Simplified)" lost
+  their last letters; at 375 px (225 px wide) the title broke too. Below 600 px the dialog now fills
+  the screen: at 320 and 375 px its title is on one line and nothing is cut off. Focus still moves
+  to Close, Tab and Shift+Tab stay inside (0 of 30 stops outside), and Escape and Close return focus
+  to the button that opened it. Wider windows are unchanged (768 px at 1,280 px).
+- **A context bar's link reached by Tab is shown whole.** The bars scrolled a link at their right
+  edge 40% of its width further than needed, which pushed a link wider than about 70% of the bar
+  past the other edge. At 375 px, Tab left links partly hidden, and partly under a scroll arrow, in
+  5 of the 6 bars tried: 3 links in About, 4 in Grant Resources, 2 in Research, 1 in News and 2 in
+  the blue bar at the bottom ("Composition & Membership" 52% shown, "Funding Opportunities" 65%,
+  "Staff Organization" 80%). The bars now scroll a focused link fully into view, moving as little as
+  they can, and a link wider than the space between the arrows ("Composition & Membership", "Death
+  in Custody Reporting", "Rules, Regulations, Policies", "Institutional Review Board") wraps onto
+  two lines. Every link in those bars is shown whole when Tab reaches it, at 375 and 1,280 px. The
+  arrows scroll the bars as before.
+- **Names and hints.** The search field's placeholder, "Search" in #9e9e9e (2.68:1, WCAG 1.4.3,
+  Level AA), repeated the label and is removed; the label stays in view. The phone-width "Sort by"
+  select was named "Sort by" whatever the column chosen (4.1.2, Level A); its name now includes the
+  column, "Sort by Date", and follows a new choice ("Sort by Type"), on Publications, Meetings and
+  Required Forms.
+- **Pages fit a 320 px window (WCAG 1.4.10, Level AA).** At 320 by 256 px, four pages scrolled
+  sideways: the Research Hub home and apps pages were 341 px wide (the tag "IDOT - Illinois
+  Department of Transportation", a button whose text could not wrap), the page-not-found page 335 px
+  ("Innovation and Digital Services »") and the results for "violence" 346 px (a WebEx address in a
+  meeting's summary). The tag, the link and the address now wrap: all 32 pages this release touches
+  are 320 px wide.
+- **Event and meeting pages lead with their own title (WCAG 1.3.1, Level A; 2.4.6, AA).** An event's
+  page had one heading, "ICJIA Events", and the event's name was not a heading; a meeting's page had
+  "ICJIA Meetings" as its main heading. The event's name and the meeting's title are now each page's
+  main heading, in the look they had, and the section's name leads the page as it does on a funding
+  notice, without being a heading.
+- **Form text.** A stray "." after the Grant Status and Language Access Request forms is removed,
+  and the "Request details" field's error says "Request details are required", in the field's own
+  words; it said "Comment is required" (3.3.1, Level A).
+- **Search results are headings (1.3.1, Level A).** Result titles were links in bold text. Each of
+  the 284 results for "violence" now has its title as a heading below the page's "Search ICJIA", so
+  a screen reader can move from result to result.
+- **A biography's name is its link (2.4.4, Level A).** The whole card was the link, so the link's
+  name was the whole biography: on Composition and Membership 21 names ran 468 to 2,088 characters,
+  on Staff 54 names ran over 150 characters and up to 2,333, and on Staff and Research & Analysis
+  Staff a card's name had "(opens in new tab)" part way through, from a link in its text, which was
+  nested in the card's link. On a biography's own page the card, 2,319 characters, linked to the
+  page itself. The person's name is now the link (none of the names is over 150 characters on the
+  five staff, board and biography pages checked; nothing is nested), a click anywhere else on a card
+  still opens the biography, and the biography page's card is not a link.
+- **Headings are not controls (2.1.1, 4.1.2, Level A).** A click on a meeting's title (in the
+  meetings table and on the meeting's page), on a publication's title (in the publications table and
+  on its page) or on a contents list's "Contents" heading did something a keyboard could not do:
+  open the page, or scroll to the top. In the tables the title is now a link inside the heading,
+  reached by Tab and opened with Enter; on the item's own page the title links nowhere, and
+  "Contents" is a heading only. The required-forms card, which the forms table does not show at
+  present, loses the same kind of handler, which led to a page the site does not have. On the six
+  pages checked no heading has a click handler, and nothing inside one does except those links.
+- **The breadcrumb's links are links (WCAG 4.1.2, Level A).** "ICJIA" and the section's name were
+  `<span>`s with `role="link"`, opened by a click or Enter but not, for example, in a new tab. They
+  are links now, named "ICJIA" (the "»" after it was part of the name) and by the section, with the
+  same look and the same yellow focus ring (7.77:1 to 8.05:1). The section's link on the section's
+  own page still returns to the top. On grants pages the section's link, "Federal and State Grants
+  Unit" ("FSGU" on phones), led to the home page: its address, /grants/fsgu-home/, redirected to a
+  page removed in 2023. It now leads to Funding Opportunities, as /grants does.
+- **Every scripted scroll respects reduced motion.** The Publications table's scroll back to its top
+  on a page change still took 24 steps over 0.58 seconds with the operating system's "reduce motion"
+  setting on; it now jumps in one frame, and without the setting it scrolls as before (22 steps).
+  Every other scroll started in script now takes the same setting, including the scroll to the top
+  that runs when a link leads to the page already shown.
+- **Focus is not covered at 375 px.** In keyboard walks at 375 px through a search for "violence",
+  the jails survey, the DART evaluation and the Events list, 14 stops took focus mostly covered: 9
+  search tags and 2 authors' names that broke across two lines, whose box took in the next tag,
+  another name or the print button, and 3 Events cards, each one focusable box up to 700 px tall,
+  which the browser centred with its top under the context bar. Tags and authors' names are now one
+  box each, and an event card's title is its link (a click anywhere else on the card still opens the
+  page, and in the calendar's details focus moves to the title): 0 of those stops is covered now, at
+  375 or 1,280 px.
+- **The note on automated tools at the top of this file** now says that a clean automated run is not
+  a WCAG 2.1 AA result, and that whether a page conforms is decided by testing it by hand against
+  every Level A and AA success criterion.
+
+Regression checks: axe-core 4.13 (WCAG 2.0 and 2.1, Level A and AA) on the 32 pages this release
+touches and the one-character search, at 1,280 and 375 px, and in 15 states (the translate dialog
+open, a News page chosen, a meeting and a publication expanded in their tables, Publications' second
+page, a search after Enter with a filter chosen, the phone "Sort by" changed, and the Events
+calendar's details open): 0 violations in 81 runs, and in 12 more after the last changes. Keyboard
+walks with focus measured from pixels on 22 of those pages, at 1,280 and 375 px, and in the Events
+calendar (46 walks, 4,728 stops): every stop changes by 3:1 or more when focused, apart from 7 where
+the walks' comparison does not apply, as on 1.5.72 (a stop is compared with the same spot after
+focus is taken away; two Vuetify selects keep their look then, and an empty required select shows
+its error). The Events calendar's checks (walks in its Month, Week and Day views, its view menu,
+details dialog, day buttons, contrast, axe and mouse) give the same results as on 1.5.71. At 320 by
+256 px all 32 pages are 320 px wide (4 were wider). Mouse checks give the same results as on 1.5.72:
+card bodies and titles open their pages, calendar entries open their details, chips filter and tags
+search, the context bars' arrows scroll them, dialogs open and close, and rows per page leave the
+page where it was; except as described above: News's list stops 96 px lower in the window, a title
+on its own item's page and "Contents" no longer respond to a click, and a figure no longer takes
+focus when clicked. Screenshots of the 32 pages at both widths (the first 9,000 px of each),
+compared pixel by pixel with the local build before the changes: 38 of the 64 captures are
+identical; the others differ as described above (event and meeting pages, the search field and
+results, the two forms, authors' names at 375 px, and the wrapped links in context bars at 375 px),
+apart from one that differs by 34 pixels in a context bar's underline, which the development server
+draws a few pixels apart from one load to the next. `vue-cli-service lint --no-fix` reports no
+problems in the changed files; mocha unit tests: 457 passing, 6 pending (438 before).
 
 ---
 

@@ -121,7 +121,7 @@
 
           <!-- Category Filters. aria-pressed exposes the selected filter,
                which is otherwise shown only by its fill (WCAG 4.1.2). -->
-          <v-row class="mb-2">
+          <v-row class="mb-2" ref="filters">
             <v-col cols="12">
               <v-btn
                 small
@@ -152,7 +152,7 @@
 
           <!-- Grouped News List -->
           <div ref="newsList">
-            <transition name="fade" mode="out-in">
+            <transition name="fade" mode="out-in" @after-enter="focusList">
               <div :key="activeCategory + '-' + currentPage">
                 <div v-for="group in groupedNews" :key="group.label">
                   <v-row>
@@ -252,6 +252,7 @@
                 :total-visible="7"
                 circle
                 color="#0D4474"
+                @input="focusListWhenShown = true"
               ></v-pagination>
             </v-col>
           </v-row>
@@ -273,7 +274,7 @@ import {
 import _ from "lodash";
 import dayjs from "@/plugins/dayjs";
 import { scrollBehavior } from "@/utils/motion";
-import { isClickOnLink } from "@/utils/focus";
+import { isClickOnLink, moveFocusTo } from "@/utils/focus";
 
 const ITEMS_PER_PAGE = 15;
 
@@ -288,6 +289,7 @@ export default {
       allNews: null,
       activeCategory: "all",
       currentPage: 1,
+      focusListWhenShown: false,
       getProperCategory,
     };
   },
@@ -364,17 +366,31 @@ export default {
       const days = duration.asDays();
       return days <= this.$myApp.config.daysToShowNew;
     },
+    // The filters and the start of the list come into view, the filters 170
+    // px from the top: clear of the fixed header and the context bar (161
+    // px). The list used to stop at 130 px, which left the filter button just
+    // pressed under the bars.
     scrollToList() {
       this.$nextTick(() => {
-        const el = this.$refs.newsList;
+        const el = this.$refs.filters;
         if (el) {
-          const top = el.getBoundingClientRect().top + window.pageYOffset - 130;
+          const top = el.getBoundingClientRect().top + window.pageYOffset - 170;
           window.scrollTo({
             top: Math.max(0, top),
             behavior: scrollBehavior(),
           });
         }
       });
+    },
+    // After a page is chosen, once it is shown, focus moves to its first
+    // heading ("This Month", "Earlier"), the start of the page's news: it
+    // stayed on the page's button, which the scroll had left below the
+    // window (WCAG 2.4.3).
+    focusList() {
+      if (!this.focusListWhenShown) return;
+      this.focusListWhenShown = false;
+      const list = this.$refs.newsList;
+      moveFocusTo(list && list.querySelector(".group-heading"));
     },
     resetToLatest() {
       this.activeCategory = "all";

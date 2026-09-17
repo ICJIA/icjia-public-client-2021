@@ -2,14 +2,19 @@
   <div>
     <!-- The title is the result's link (WCAG 2.1.1, 4.1.2): the card used to
          be a <div> with a click handler, which a keyboard cannot reach. A
-         click anywhere else on the card still opens the result. -->
+         click anywhere else on the card still opens the result. The title is
+         a heading, below the page's "Search ICJIA", so a screen reader can
+         move from result to result (WCAG 1.3.1); it was a bold <div>. -->
     <div
       style="background: #fff; border: 1px solid #ccc; border-radius: 4px"
       class="px-3 py-3 mb-3 card"
       @click="onCardClick"
       elevation="2"
     >
-      <div style="font-size: 14px">
+      <!-- A long address breaks at the card's edge (WCAG 1.4.10): a WebEx
+           link in a meeting's summary made the results for "violence" 346 px
+           wide at 320 px. -->
+      <div style="font-size: 14px; overflow-wrap: break-word">
         <!-- ------------------------------------------------
                 Default 
                 -----------------------------------------------  -->
@@ -92,7 +97,7 @@
             </span>
           </div>
           <div style="height: 10px"></div>
-          <div
+          <h2
             style="font-size: 16px; font-weight: bold; display: inline"
             class="mt-2 mb-2"
             v-if="item.title"
@@ -108,7 +113,7 @@
             <router-link v-else :to="item.fullPath" class="card-title-link"
               ><span v-html="item.title"></span
             ></router-link>
-          </div>
+          </h2>
         </div>
         <div v-if="item.abstract" v-html="truncate(item.abstract)"></div>
         <div
@@ -134,6 +139,7 @@ import { EventBus } from "@/event-bus";
 import { getProperCategory } from "@/utils/content";
 import { goToSearch, openInNewTab, searchLocation } from "@/utils/search";
 import { isClickOnLink } from "@/utils/focus";
+import { goToOptions } from "@/utils/motion";
 import DOMPurify from "dompurify";
 import { renderToHtml } from "@/services/Markdown";
 import dayjs from "@/plugins/dayjs";
@@ -253,7 +259,7 @@ export default {
       }
       EventBus.$emit("closeSearch");
       this.$router.push(path).catch(() => {
-        this.$vuetify.goTo(0);
+        this.$vuetify.goTo(0, goToOptions());
       });
     },
   },
@@ -279,7 +285,13 @@ export default {
 </script>
 
 <style>
+/* Each tag is one box. As inline text a tag that did not fit on its line
+   broke onto the next as two pieces, and its padding overlapped the lines
+   above and below: at 375 px the middle of 9 focused tags was a neighbouring
+   tag. */
 .search-tag {
+  display: inline-block;
+  margin-top: 6px;
   background: #eee;
   border-radius: 25px;
   font-family: "Lato", sans-serif !important;

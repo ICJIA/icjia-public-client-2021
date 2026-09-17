@@ -33,10 +33,13 @@ const mdAttrs = {
   allowedAttributes: [],
 };
 
+// Figures take no tabindex: a figure is not a control, and with one every
+// Research Hub figure was a Tab stop that did nothing (16 on the 2024 housing
+// report, 25 on the juvenile justice report).
 const mdImplicitFigureOpts = {
   dataType: false, // <figure data-type="image">, default: false
   figcaption: false, // <figcaption>alternative text</figcaption>, default: false
-  tabindex: true, // <figure tabindex="1+n">..., default: false
+  tabindex: false, // <figure tabindex="1+n">..., default: false
   link: false, // <a href="img.png"><img src="img.png"></a>, default: false
 };
 

@@ -114,6 +114,7 @@
 
 <script>
 /* eslint-disable vue/no-use-v-if-with-v-for */
+import { goToOptions } from "@/utils/motion";
 export default {
   data() {
     return {
@@ -128,7 +129,7 @@ export default {
     test(id) {
       //console.log("click: ", id);
       const test = document.getElementById(id);
-      this.$vuetify.goTo(test, { offset: 10 });
+      this.$vuetify.goTo(test, goToOptions({ offset: 10 }));
     },
   },
   computed: {

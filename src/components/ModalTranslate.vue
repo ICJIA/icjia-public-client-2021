@@ -1,9 +1,14 @@
 <template>
+  <!-- Below 600 px the dialog fills the screen (WCAG 1.4.10). At 60% of a
+       320 px window it was 192 px wide: its title broke inside "Translation",
+       and "Chinese (Traditional)" and "Chinese (Simplified)" lost their last
+       letters. -->
   <v-dialog
     v-model="translate"
     ref="translateTop"
     style="z-index: 999999"
     width="60%"
+    :fullscreen="$vuetify.breakpoint.xsOnly"
     aria-label="Translation options"
     @keydown="keepFocusInDialog"
   >
@@ -18,7 +23,8 @@
       aria-modal="true"
       aria-labelledby="translate-dialog-title"
     >
-      <v-card-title class="text-h5 grey lighten-2">
+      <!-- Words wrap whole: a card title breaks them anywhere. -->
+      <v-card-title class="text-h5 grey lighten-2" style="word-break: normal">
         <v-spacer class="hidden-md-and-up"></v-spacer>
         <span id="translate-dialog-title">Website Translation Options</span
         ><v-spacer></v-spacer

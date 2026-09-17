@@ -28,7 +28,7 @@
                 lazy-src="@/assets/i2iSmall-transparent.png"
                 width="125"
                 alt="i2i logo"
-                @click="$vuetify.goTo(0)"
+                @click="$vuetify.goTo(0, goToOptions())"
               />
             </center>
             <h1
@@ -62,14 +62,14 @@
               dark
               class="mt-6"
               color="blue darken-4"
-              @click="$vuetify.goTo('#about', { offset: 20 })"
+              @click="$vuetify.goTo('#about', goToOptions({ offset: 20 }))"
               >Learn More</v-btn
             >&nbsp;&nbsp;
             <v-btn
               class="mt-6"
               outlined
               color="white"
-              @click="$vuetify.goTo('#contact', { offset: 20 })"
+              @click="$vuetify.goTo('#contact', goToOptions({ offset: 20 }))"
               >Contact</v-btn
             >
           </v-col>
@@ -83,6 +83,7 @@
 </template>
 
 <script>
+import { goToOptions } from "@/utils/motion";
 export default {
   computed: {
     // Prefer Strapi's pre-sized "large" (1000px); fall back when it's absent
@@ -102,6 +103,8 @@ export default {
     },
   },
   methods: {
+    // The buttons' scrolls jump when reduced motion is requested.
+    goToOptions,
     // Strapi's alt text, or empty: a placeholder such as "ICJIA Internet news
     // item image" describes nothing (WCAG 1.1.1).
     getAltText() {

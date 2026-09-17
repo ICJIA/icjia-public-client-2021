@@ -15,7 +15,7 @@
           <h1 style="font-weight: 700; font-size: 48px; margin: 0" class="mt-0">
             404 | Page not found
           </h1>
-          <div class="mt-12">
+          <div class="mt-12 not-found-links">
             <v-btn text color="grey darken-4" dark to="/" class="mr-2"
               >ICJIA Home&nbsp;&raquo;</v-btn
             >
@@ -97,4 +97,16 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+/* The links wrap their text in a narrow window (WCAG 1.4.10): "Innovation
+   and Digital Services »" made the page 335 px wide at 320 px. */
+.not-found-links .v-btn {
+  max-width: 100%;
+  height: auto !important;
+  min-height: 36px;
+  white-space: normal;
+}
+.not-found-links .v-btn ::v-deep .v-btn__content {
+  flex-shrink: 1;
+}
+</style>

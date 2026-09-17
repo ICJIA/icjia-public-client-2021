@@ -271,6 +271,7 @@
 import { EventBus } from "@/event-bus";
 import { goToSearch, openInNewTab } from "@/utils/search";
 import { isClickOnLink } from "@/utils/focus";
+import { goToOptions } from "@/utils/motion";
 import { getProperCategory } from "@/utils/content";
 import DOMPurify from "dompurify";
 import { renderToHtml } from "@/services/Markdown";
@@ -374,7 +375,7 @@ export default {
       }
       EventBus.$emit("closeSearch");
       this.$router.push(path).catch(() => {
-        this.$vuetify.goTo(0);
+        this.$vuetify.goTo(0, goToOptions());
       });
     },
   },

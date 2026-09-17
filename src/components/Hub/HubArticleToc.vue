@@ -27,11 +27,12 @@
 </template>
 
 <script>
+import { goToOptions } from "@/utils/motion";
 export default {
   methods: {
     scrollTo(id) {
       //console.log(id);
-      this.$vuetify.goTo(`#${id}`);
+      this.$vuetify.goTo(`#${id}`, goToOptions());
     },
   },
   props: {

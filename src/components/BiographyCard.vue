@@ -1,16 +1,21 @@
 <template>
   <div>
-    <!-- The whole card links to the biography. The name inside it is a plain
-         heading (WCAG 4.1.2): it used to be a focusable heading that ran a
-         search, nested in the card link. The search is the separate link
-         after the card. -->
+    <!-- The name is the link to the biography (WCAG 2.4.4), and a click
+         anywhere else on the card still opens it. The whole card was the
+         link, so its name was the whole biography (up to 2,333 characters),
+         with "(opens in new tab)" from a link in the text part way through;
+         on the biography's own page it linked to itself. There, the card is
+         not a link at all. The name used to be a focusable heading that ran a
+         search; the search is the separate link after the card. -->
     <v-card
-      :to="`/about/biographies/${item.slug}`"
       elevation="1"
-      class="mb-2 py-8 px-2"
+      class="mb-2 py-8 px-2 biography-card"
+      :class="{ 'title-link-card hover': showName }"
       style="border: 1px solid #ddd"
       v-if="item"
       :color="color"
+      :ripple="showName"
+      @click.native="onCardClick"
     >
       <div class="d-flex flex-no-wrap">
         <v-avatar
@@ -32,8 +37,10 @@
             class="text-h5 author-name hover ml-3"
             style="cursor: pointer"
           >
-            {{ item.fullName }}<span v-if="item.suffix">,&nbsp;</span
-            >{{ item.suffix }}
+            <router-link :to="biographyPath" class="card-title-link"
+              >{{ item.fullName }}<span v-if="item.suffix">,&nbsp;</span
+              >{{ item.suffix }}</router-link
+            >
           </h2>
 
           <v-card-subtitle style="margin-top: -10px">
@@ -80,8 +87,18 @@
 <script>
 import { renderToHtml } from "@/services/Markdown";
 import { searchLocation } from "@/utils/search";
+import { isClickOnLink } from "@/utils/focus";
 export default {
+  computed: {
+    biographyPath() {
+      return `/about/biographies/${this.item.slug}`;
+    },
+  },
   methods: {
+    onCardClick(e) {
+      if (!this.showName || isClickOnLink(e)) return;
+      this.$router.push(this.biographyPath);
+    },
     searchLink(name) {
       // Was: EventBus.$emit("search", { query: name }) — opened the modal.
       // Users asked to land on /search so they could see all hits for the
@@ -124,6 +141,16 @@ export default {
 .unit-title:hover {
   text-decoration: none;
   cursor: pointer;
+}
+/* A biography card is no longer a link; its text keeps the colours it had
+   as one. */
+.biography-card .v-card__text {
+  color: #000 !important;
+}
+.biography-card .v-card__subtitle,
+.biography-card .author-name,
+.biography-card .author-name:hover {
+  color: #222 !important;
 }
 /* Vuetify :to prop turns v-card into an <a> tag, causing text color
    to inherit from link styles (white/transparent on certain states).

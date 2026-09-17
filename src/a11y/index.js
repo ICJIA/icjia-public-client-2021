@@ -124,17 +124,6 @@ const fixTableRowKeyboard = function () {
   });
 };
 
-// Fix positive tabindex on figures from markdown-it-implicit-figures
-const fixFigureTabindex = function () {
-  const figures = document.querySelectorAll("figure[tabindex]");
-  figures.forEach((fig) => {
-    const val = parseInt(fig.getAttribute("tabindex"), 10);
-    if (val > 0) {
-      fig.setAttribute("tabindex", "0");
-    }
-  });
-};
-
 // Fix grey v-chip contrast — Vuetify "grey" chips with white text fail AA
 const fixChipContrast = function () {
   const chips = document.querySelectorAll(".v-chip");
@@ -1060,7 +1049,6 @@ export {
   fixExpandButtons,
   fixCarouselArrows,
   fixTableRowKeyboard,
-  fixFigureTabindex,
   fixChipContrast,
   fixHeadingOrder,
   fixEmptyTableHeaders,

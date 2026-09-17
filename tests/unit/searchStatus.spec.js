@@ -29,11 +29,19 @@ const makeSearch = (state = {}) => {
       vm.written.push(value);
     },
   });
-  ["resultStatus", "announceStatus", "announceOnce", "announceResults"].forEach(
-    (name) => {
-      vm[name] = SearchStatic.methods[name].bind(vm);
-    }
-  );
+  [
+    "resultStatus",
+    "announceStatus",
+    "announceOnce",
+    "announceResults",
+    "onSearchSubmit",
+  ].forEach((name) => {
+    vm[name] = SearchStatic.methods[name].bind(vm);
+  });
+  // The debounced search and announcement, as calls recorded.
+  vm.calls = [];
+  vm.debouncedSearch = { flush: () => vm.calls.push("search now") };
+  vm.debouncedAnnounce = { cancel: () => vm.calls.push("announce cancelled") };
   return vm;
 };
 const results = (n) => Array.from({ length: n }, (_, i) => ({ item: { i } }));
@@ -104,5 +112,49 @@ describe("Search status announcements", () => {
     vm.searchedQuery = "violence";
     vm.announceResults();
     expect(vm.written.length).to.equal(4);
+  });
+});
+
+// Enter in the field submitted the form, which reloaded the page and lost
+// the chosen filter; now it runs the search in place.
+describe("Search field — Enter", () => {
+  it("runs a search waiting for typing to pause, and announces it when done", () => {
+    const vm = makeSearch({
+      query: "violence prevention",
+      searchedQuery: "violence",
+    });
+    vm.onSearchSubmit();
+    expect(vm.calls).to.deep.equal(["search now", "announce cancelled"]);
+    expect(vm.announceWhenSearched).to.equal(true);
+    expect(vm.written).to.deep.equal([]);
+  });
+
+  it("announces the result of a finished search at once, even when it repeats", () => {
+    const vm = makeSearch({
+      query: "violence",
+      searchedQuery: "violence",
+      queryResults: results(4),
+      filteredResults: results(1),
+      lastAnnounced: "1 of 4 results for “violence”",
+    });
+    vm.onSearchSubmit();
+    expect(vm.written).to.deep.equal(["", "1 of 4 results for “violence”"]);
+    // The query is not searched again, which would reset the chosen filter.
+    expect(vm.announceWhenSearched).to.equal(false);
+  });
+
+  it("asks for more characters after one", () => {
+    const vm = makeSearch({ query: "d" });
+    vm.onSearchSubmit();
+    expect(vm.written).to.deep.equal([
+      "",
+      "Keep typing — search starts at 2 characters.",
+    ]);
+  });
+
+  it("says nothing for an empty field", () => {
+    const vm = makeSearch({ query: "" });
+    vm.onSearchSubmit();
+    expect(vm.written).to.deep.equal([]);
   });
 });

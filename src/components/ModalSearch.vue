@@ -61,6 +61,7 @@ import DOMPurify from "dompurify";
 import Fuse from "fuse.js";
 import _ from "lodash";
 import NProgress from "@/services/Progress";
+import { goToOptions } from "@/utils/motion";
 function arrayToList(array) {
   return array.join(", ").replace(/, ((?:.(?!, ))+)$/, " and $1");
 }
@@ -201,7 +202,7 @@ export default {
     route(path) {
       this.searchModal = false;
       this.$router.push(path).catch((err) => {
-        this.$vuetify.goTo(0);
+        this.$vuetify.goTo(0, goToOptions());
       });
     },
     async instantSearch() {

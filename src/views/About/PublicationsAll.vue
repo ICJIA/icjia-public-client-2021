@@ -180,6 +180,8 @@ import { fixExpandButtons, fixNestedInteractive } from "@/a11y";
 import DataTable from "@/components/DataTable";
 import { getPublicationType } from "@/lib/utils";
 import { deepSanitize } from "@/utils/contentSanitizer";
+import { moveFocusTo } from "@/utils/focus";
+import { goToOptions } from "@/utils/motion";
 import { EventBus } from "@/event-bus";
 import _ from "lodash";
 import dayjs from "@/plugins/dayjs";
@@ -250,7 +252,19 @@ export default {
       setTimeout(fixExpandButtons, 2000);
       setTimeout(fixNestedInteractive, 2000);
       console.log("a11y expand button: hacky fix (paginate)");
-      this.$vuetify.goTo("#pubTable", { offset: 350 });
+      // Paged from the table's footer, focus moves to the new page's first
+      // row, where the table scrolls back to: it stayed on "Next page", some
+      // 8,000 px below the window (WCAG 2.4.3). A page change from sorting
+      // or searching leaves focus where it is. The table jumps back when
+      // reduced motion is requested.
+      const active = document.activeElement;
+      const fromFooter = Boolean(active && active.closest(".v-data-footer"));
+      this.$vuetify.goTo("#pubTable", goToOptions({ offset: 350 }));
+      if (fromFooter) {
+        this.$nextTick(() =>
+          moveFocusTo(this.$el.querySelector("#pubTable tbody tr"))
+        );
+      }
     },
     tableLoading(newValue) {
       console.log("table loading: ", newValue);

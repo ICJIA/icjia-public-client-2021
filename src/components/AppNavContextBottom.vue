@@ -12,7 +12,7 @@
       >
         <!-- Links, not tabs (ContextNavLink): the current page's link is
              active and has aria-current="page". -->
-        <v-tabs
+        <ContextNavTabs
           show-arrows
           centered
           center-active
@@ -43,7 +43,7 @@
           >
             Search</ContextNavLink
           >
-        </v-tabs>
+        </ContextNavTabs>
       </v-app-bar>
     </nav>
   </div>
@@ -52,9 +52,10 @@
 <script>
 import { EventBus } from "@/event-bus";
 import ContextNavLink from "@/components/ContextNavLink";
+import ContextNavTabs from "@/components/ContextNavTabs";
 import { goToOptions } from "@/utils/motion";
 export default {
-  components: { ContextNavLink },
+  components: { ContextNavLink, ContextNavTabs },
   data() {
     return {
       contextDrawer: true,

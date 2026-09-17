@@ -23,35 +23,27 @@
         }"
       >
         <!-- <v-spacer class="hidden-md-and-up"></v-spacer> -->
+        <!-- Real links (WCAG 4.1.2): they were <span>s with role="link" and
+             click and Enter handlers, which a link's other ways of opening,
+             such as a new tab, did not reach. The separator is left out of
+             the first link's name. -->
         <span>
-          <span
-            style="font-weight: 700"
-            class="hover"
-            role="link"
-            tabindex="0"
-            @click="$router.push('/')"
-            @keydown.enter="$router.push('/')"
-            >ICJIA &nbsp;&raquo;&nbsp;</span
+          <router-link to="/" class="breadcrumb-link">ICJIA</router-link
+          ><span style="font-weight: 700" aria-hidden="true">
+            &nbsp;&raquo;&nbsp;</span
+          ><router-link
+            :to="contextMenu[0].defaultPath"
+            class="breadcrumb-link hidden-sm-and-down"
+            @click.native="onSectionClick"
           >
-          <span
-            style="font-weight: 700"
-            class="hover hidden-sm-and-down"
-            role="link"
-            tabindex="0"
-            @click="routeToPage(contextMenu[0].defaultPath)"
-            @keydown.enter="routeToPage(contextMenu[0].defaultPath)"
+            {{ contextMenu[0].label }}</router-link
           >
-            {{ contextMenu[0].label }}</span
+          <router-link
+            :to="contextMenu[0].defaultPath"
+            class="breadcrumb-link hidden-md-and-up"
+            @click.native="onSectionClick"
           >
-          <span
-            style="font-weight: 700"
-            class="hover hidden-md-and-up"
-            role="link"
-            tabindex="0"
-            @click="routeToPage(contextMenu[0].defaultPath)"
-            @keydown.enter="routeToPage(contextMenu[0].defaultPath)"
-          >
-            {{ contextMenu[0].shortLabel }}</span
+            {{ contextMenu[0].shortLabel }}</router-link
           >
           <span
             style="
@@ -105,7 +97,7 @@
       <v-app-bar height="35" scroll-threshold="0" color="#eee">
         <!-- Links, not tabs (ContextNavLink): the current page's link is
              active and has aria-current="page". -->
-        <v-tabs
+        <ContextNavTabs
           show-arrows
           centered
           center-active
@@ -146,7 +138,7 @@
               </v-list-item>
             </v-list>
           </v-menu>
-        </v-tabs>
+        </ContextNavTabs>
       </v-app-bar>
     </nav>
   </div>
@@ -155,9 +147,10 @@
 <script>
 import { EventBus } from "@/event-bus";
 import ContextNavLink from "@/components/ContextNavLink";
+import ContextNavTabs from "@/components/ContextNavTabs";
 import { goToOptions } from "@/utils/motion";
 export default {
-  components: { ContextNavLink },
+  components: { ContextNavLink, ContextNavTabs },
   props: {
     data() {
       return {
@@ -213,10 +206,14 @@ export default {
       if (path && path === this.currentLink)
         this.$vuetify.goTo(0, goToOptions());
     },
-    routeToPage(page) {
-      this.$router.push(page).catch(() => {
+    // The section's link, on the section's page, scrolls back to the top, as
+    // it did before it was a link (at once, when reduced motion is
+    // requested).
+    onSectionClick() {
+      const { route } = this.$router.resolve(this.contextMenu[0].defaultPath);
+      const here = this.$route.path.replace(/\/?$/, "/");
+      if (route.path.replace(/\/?$/, "/") === here)
         this.$vuetify.goTo(0, goToOptions());
-      });
     },
   },
   data() {
@@ -232,4 +229,13 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+/* The breadcrumb links keep the look of the text they replaced, at rest and
+   under the mouse: white on the bar's blue, 11.75:1. */
+.v-application a.breadcrumb-link,
+.v-application a.breadcrumb-link:hover {
+  color: #fff !important;
+  font-weight: 700;
+  text-decoration: none;
+}
+</style>

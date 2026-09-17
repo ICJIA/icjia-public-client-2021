@@ -7,7 +7,6 @@ import { expect } from "chai";
 import {
   fixBlankTableHeadings,
   fixExpandButtons,
-  fixFigureTabindex,
   fixHeadingOrder,
   fixEmptyTableHeaders,
   fixFootnoteTargetSize,
@@ -94,35 +93,6 @@ describe("fixExpandButtons()", () => {
     expect(btn.getAttribute("aria-label")).to.equal(
       "Toggle details for Budget Committee Meeting"
     );
-  });
-});
-
-// ---------------------------------------------------------------------------
-// fixFigureTabindex
-// ---------------------------------------------------------------------------
-describe("fixFigureTabindex()", () => {
-  it("replaces positive tabindex with 0", () => {
-    document.body.innerHTML = '<figure tabindex="3">content</figure>';
-    fixFigureTabindex();
-    expect(document.querySelector("figure").getAttribute("tabindex")).to.equal(
-      "0"
-    );
-  });
-
-  it("leaves tabindex=0 unchanged", () => {
-    document.body.innerHTML = '<figure tabindex="0">content</figure>';
-    fixFigureTabindex();
-    expect(document.querySelector("figure").getAttribute("tabindex")).to.equal(
-      "0"
-    );
-  });
-
-  it("does not add tabindex to figures without one", () => {
-    document.body.innerHTML = "<figure>content</figure>";
-    fixFigureTabindex();
-    // querySelectorAll("figure[tabindex]") won't match, so nothing changes
-    expect(document.querySelector("figure").hasAttribute("tabindex")).to.be
-      .false;
   });
 });
 

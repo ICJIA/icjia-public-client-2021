@@ -5,13 +5,22 @@
         <v-container>
           <v-row>
             <v-col class="markdown-body">
-              <h1 v-if="event">ICJIA Events</h1>
+              <!-- The event's name is the page's heading (WCAG 1.3.1, 2.4.6).
+                   The section's name, which was the only heading, leads the
+                   page as on a news post or funding notice. -->
+              <div
+                v-if="event"
+                style="font-weight: 900; font-size: 18px; color: #222"
+              >
+                ICJIA Events
+              </div>
               <EventCard
                 v-if="event"
                 :item="event"
                 :showClose="false"
                 :showURL="false"
                 :isClickable="false"
+                titleTag="h1"
                 class="mt-8"
               ></EventCard>
               <div class="mt-5 text-right">

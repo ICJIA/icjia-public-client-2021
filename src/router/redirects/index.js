@@ -7,8 +7,15 @@ const redirects = [
     },
   },
   {
+    // The Federal and State Grants Unit's home, and the grants breadcrumb's
+    // link. The route named "FSGUHome" was removed in 2023, when /grants
+    // began to lead to Funding Opportunities, and this redirect went to the
+    // home page instead.
     path: "/grants/fsgu-home/",
-    redirect: { name: "FSGUHome" },
+    // eslint-disable-next-line no-unused-vars
+    redirect: (route) => {
+      return "/grants/funding";
+    },
   },
   {
     path: "/researchhub/hub-home/",

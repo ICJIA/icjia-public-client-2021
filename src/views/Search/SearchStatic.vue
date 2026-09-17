@@ -4,14 +4,22 @@
       <h1>Search ICJIA</h1>
       <v-sheet color="#fff" class="px-3 py-1" style="min-height: 100vh">
         <div class="">
-          <v-form class="pl-2 mt-4" style="margin-top: -15px">
+          <!-- Enter in the field runs the search in place. It submitted the
+               form, which reloaded the page ("/search/violence?") and lost
+               the chosen filter and anything typed since the page loaded. -->
+          <v-form
+            class="pl-2 mt-4"
+            style="margin-top: -15px"
+            @submit.prevent="onSearchSubmit"
+          >
+            <!-- No placeholder: it repeated the label, which stays in view,
+                 in #9e9e9e, 2.68:1 (WCAG 1.4.3). -->
             <v-text-field
               ref="textfield"
               clearable
               autofocus
               v-model="query"
               label="Search"
-              placeholder="Search"
               aria-label="Search ICJIA"
               @input="onQueryInput"
               style="font-weight: 900"
@@ -149,6 +157,7 @@ import DOMPurify from "dompurify";
 import Fuse from "fuse.js";
 import _ from "lodash";
 import NProgress from "@/services/Progress";
+import { goToOptions } from "@/utils/motion";
 function arrayToList(array) {
   return array.join(", ").replace(/, ((?:.(?!, ))+)$/, " and $1");
 }
@@ -383,6 +392,23 @@ export default {
       this.debouncedSearch();
       this.debouncedAnnounce();
     },
+    // Enter: a search still waiting for typing to pause runs now, and the
+    // result is announced as soon as it is ready, even when it repeats the
+    // last announcement. The query is not searched again, which would reset
+    // the chosen filter.
+    onSearchSubmit() {
+      this.debouncedSearch.flush();
+      this.debouncedAnnounce.cancel();
+      const query = this.query || "";
+      if (!query.length) return;
+      if (query.length < 2) {
+        this.announceStatus(KEEP_TYPING);
+      } else if (this.searchedQuery !== query) {
+        this.announceWhenSearched = true;
+      } else {
+        this.announceStatus(this.resultStatus());
+      }
+    },
     // A second after the last keystroke: announce the result for the query in
     // the field, or, if its search is still running, as soon as it is done.
     announceResults() {
@@ -498,7 +524,7 @@ export default {
     route(path) {
       this.searchModal = false;
       this.$router.push(path).catch((err) => {
-        this.$vuetify.goTo(0);
+        this.$vuetify.goTo(0, goToOptions());
       });
     },
     async instantSearch() {

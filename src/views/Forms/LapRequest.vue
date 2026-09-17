@@ -216,7 +216,6 @@
                   The form has errors.
                 </div>
               </div>
-              .
             </form>
           </v-card>
         </v-col>
@@ -311,7 +310,8 @@ export default {
     commentErrors() {
       const errors = [];
       if (!this.$v.comment.$dirty) return errors;
-      !this.$v.comment.required && errors.push("Comment is required");
+      // In the words of the field's label, "Request details" (WCAG 3.3.1).
+      !this.$v.comment.required && errors.push("Request details are required");
       return errors;
     },
     languageErrors() {

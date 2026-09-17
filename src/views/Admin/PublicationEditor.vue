@@ -320,6 +320,7 @@ api.interceptors.response.use((response) => {
 });
 import { getPublicationType } from "@/lib/utils";
 import _ from "lodash";
+import { goToOptions } from "@/utils/motion";
 export default {
   name: "Publications",
   metaInfo: {
@@ -420,7 +421,7 @@ export default {
       }
       this.fetchSinglePublication(id);
       this.fetchAllPublications();
-      this.$vuetify.goTo(0, { duration: 10 });
+      this.$vuetify.goTo(0, goToOptions({ duration: 10 }));
       // this.$vuetify.goTo(0, { duration: 10 });
     },
     async saveAndVerify(id) {
@@ -450,7 +451,7 @@ export default {
       }
       this.fetchSinglePublication(id);
       this.fetchAllPublications();
-      this.$vuetify.goTo(0, { duration: 10 });
+      this.$vuetify.goTo(0, goToOptions({ duration: 10 }));
       // this.$vuetify.goTo(0, { duration: 10 });
     },
     notify(msg) {
@@ -460,7 +461,7 @@ export default {
     },
     cancel() {
       this.singlePublication = null;
-      this.$vuetify.goTo(0, { duration: 10 });
+      this.$vuetify.goTo(0, goToOptions({ duration: 10 }));
     },
     // eslint-disable-next-line no-unused-vars
     async unpublish(id) {
@@ -487,7 +488,7 @@ export default {
       }
       this.fetchAllPublications();
       this.singlePublication = null;
-      this.$vuetify.goTo(0, { duration: 10 });
+      this.$vuetify.goTo(0, goToOptions({ duration: 10 }));
     },
     checkArticleURL() {
       let url = this.$refs.articleURL.value;

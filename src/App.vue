@@ -64,7 +64,6 @@ import {
   fixExpandButtons,
   fixCarouselArrows,
   fixTableRowKeyboard,
-  fixFigureTabindex,
   fixChipContrast,
   fixHeadingOrder,
   fixEmptyTableHeaders,
@@ -192,7 +191,6 @@ export default {
         fixExpandButtons();
         fixCarouselArrows();
         fixTableRowKeyboard();
-        fixFigureTabindex();
         fixChipContrast();
         fixEmptyTableHeaders();
         fixLinksInTextBlocks();
@@ -216,7 +214,6 @@ export default {
         fixAriaHiddenFocus();
         // Delayed fixes for CMS content that loads asynchronously
         setTimeout(() => {
-          fixFigureTabindex();
           fixHeadingOrder();
           fixFootnoteTargetSize();
           fixEmptyTableHeaders();

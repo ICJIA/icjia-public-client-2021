@@ -57,6 +57,7 @@ import { renderToHtml } from "@/services/Markdown";
 import dayjs from "@/plugins/dayjs";
 import _ from "lodash";
 import { isRelatedContent } from "@/utils/content";
+import { goToOptions } from "@/utils/motion";
 export default {
   // write function to create human readable date in javascript
 
@@ -82,7 +83,7 @@ export default {
     },
     routeTo(item) {
       this.$router.push(`/grants/policies/${item.slug}`).catch((err) => {
-        this.$vuetify.goTo(0);
+        this.$vuetify.goTo(0, goToOptions());
       });
     },
     render(content) {

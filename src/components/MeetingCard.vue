@@ -8,17 +8,24 @@
       THIS MEETING IS CANCELLED
     </div>
     <v-card class="px-5 py-5 markdown-body reduce-90" :color="color">
-      <h2
-        @click="routeTo(item)"
+      <!-- A heading is not a control (WCAG 2.1.1, 4.1.2): a click on the
+           title opened the meeting, and a keyboard could not. In the meetings
+           table the title is a link inside the heading; on the meeting's own
+           page it is the page's heading and links nowhere. -->
+      <component
+        :is="titleTag"
         class="meeting-title"
-        v-if="item.isCancelled"
-        style="text-decoration: line-through"
+        :class="{ 'meeting-title--link': linkTitle }"
+        :style="item.isCancelled ? 'text-decoration: line-through' : null"
       >
-        {{ item.title }}
-      </h2>
-      <h2 @click="routeTo(item)" class="meeting-title" v-else>
-        {{ item.title }}
-      </h2>
+        <router-link
+          v-if="linkTitle"
+          :to="`/news/meetings/${item.slug}`"
+          class="card-title-link"
+          >{{ item.title }}</router-link
+        >
+        <template v-else>{{ item.title }}</template>
+      </component>
 
       <div v-if="!item.isCancelled">
         <span v-html="displayDate(item.start, item.end)"></span>
@@ -89,11 +96,6 @@ export default {
     };
   },
   methods: {
-    routeTo(item) {
-      this.$router.push(`/news/meetings/${item.slug}`).catch((err) => {
-        this.$vuetify.goTo(0);
-      });
-    },
     render(content) {
       return renderToHtml(content);
     },
@@ -124,6 +126,9 @@ export default {
   },
   props: {
     color: { type: String, default: "white" },
+    // The meeting's own page: its title is the page's heading, not a link.
+    titleTag: { type: String, default: "h2" },
+    linkTitle: { type: Boolean, default: true },
     item: {
       type: Object,
       default: () => ({}),
@@ -137,8 +142,19 @@ export default {
   font-size: 14px;
   font-weight: 400;
 }
-.meeting-title:hover {
+.meeting-title--link:hover {
   cursor: pointer;
   text-decoration: underline;
+}
+/* On the meeting's page the title is an h1 with the look of the h2 it was
+   (github-markdown.css). */
+.markdown-body h1.meeting-title {
+  font-size: 1.6em;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 16px;
+  padding-bottom: 0.3em;
+  border-bottom-color: #eaecef;
+  color: #000;
 }
 </style>

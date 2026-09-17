@@ -194,6 +194,19 @@ describe("Markdown rendering — images and figures", () => {
     const html = renderToHtml("![My description](https://example.com/img.png)");
     expect(html).to.include('alt="My description"');
   });
+
+  it("does not make figures Tab stops", () => {
+    const html = renderToHtml(
+      "![One](https://example.com/1.png)\n\n![Two](https://example.com/2.png)"
+    );
+    const figures = new DOMParser()
+      .parseFromString(html, "text/html")
+      .querySelectorAll("figure");
+    expect(figures.length).to.equal(2);
+    figures.forEach((figure) =>
+      expect(figure.hasAttribute("tabindex")).to.equal(false)
+    );
+  });
 });
 
 describe("Markdown rendering — typographer", () => {

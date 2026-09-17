@@ -17,15 +17,13 @@
         class="mb-3 mt-2 px-3"
         v-if="item && item.title"
       >
-        <span
-          class="item-title"
-          @click.stop.prevent="
-            $router.push(item.fullPath).catch((err) => {
-              $vuetify.goTo(0);
-            })
-          "
-          >{{ item.title }}</span
-        >
+        <!-- The title is a link (WCAG 2.1.1, 4.1.2): it was a <span> that
+             opened the publication on a click, which a keyboard cannot do.
+             On the publication's own page it links nowhere. -->
+        <router-link v-if="linkTitle" :to="item.fullPath" class="item-title">{{
+          item.title
+        }}</router-link>
+        <template v-else>{{ item.title }}</template>
       </h2>
       <div v-if="item.summary && item.summary.length" class="px-3">
         {{ item.summary }}
@@ -127,13 +125,18 @@ export default {
       type: Object,
       default: () => {},
     },
+    linkTitle: {
+      type: Boolean,
+      default: true,
+    },
   },
 };
 </script>
 
 <style scoped>
 .item-title {
-  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
 }
 .item-title:hover {
   text-decoration: underline;
