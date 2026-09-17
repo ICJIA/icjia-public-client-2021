@@ -8,8 +8,11 @@
       @click="isClickable ? $router.push(item.fullPath) : null"
       :tabindex="isClickable ? 0 : undefined"
       :role="isClickable ? 'link' : undefined"
-      @keydown.enter="isClickable ? $router.push(item.fullPath) : null"
+      @keydown.enter.self="isClickable ? $router.push(item.fullPath) : null"
     >
+      <!-- .self: Enter on the card itself opens the page. Enter on a control
+           inside it (the Close button of the calendar's details, a tag) does
+           only what that control does. -->
       <!-- tag="div": Vuetify's default <header> is left out of the card's
            accessible name, so the name started with the date and omitted the
            title (WCAG 2.5.3). -->

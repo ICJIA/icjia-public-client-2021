@@ -3868,5 +3868,9 @@
 </template>
 
 <script>
-export default {};
+export default {
+  metaInfo: {
+    title: "Material Colors",
+  },
+};
 </script>

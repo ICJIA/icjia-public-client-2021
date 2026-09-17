@@ -52,6 +52,7 @@
 <script>
 import { EventBus } from "@/event-bus";
 import ContextNavLink from "@/components/ContextNavLink";
+import { goToOptions } from "@/utils/motion";
 export default {
   components: { ContextNavLink },
   data() {
@@ -92,9 +93,11 @@ export default {
     },
 
     // A click on the link to the page already shown scrolls back to the top,
-    // as it did when the links pushed the route themselves.
+    // as it did when the links pushed the route themselves (at once, when
+    // reduced motion is requested).
     onLinkClick(path) {
-      if (path && path === this.currentLink) this.$vuetify.goTo(0);
+      if (path && path === this.currentLink)
+        this.$vuetify.goTo(0, goToOptions());
     },
   },
   props: {

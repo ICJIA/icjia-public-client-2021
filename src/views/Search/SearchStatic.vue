@@ -13,13 +13,15 @@
               label="Search"
               placeholder="Search"
               aria-label="Search ICJIA"
-              @input="debouncedSearch"
+              @input="onQueryInput"
               style="font-weight: 900"
             />
             <!-- The result count and the no-results and keep-typing messages
                  are status messages (WCAG 4.1.3). This region repeats the text
-                 shown below once each search has run, so it is announced once
-                 per search rather than on every keystroke. -->
+                 shown below once typing has paused for a second and the
+                 results for the query have arrived, and not again while the
+                 message is unchanged; a filter chip's result is announced at
+                 once. -->
             <div class="sr-only" role="status" aria-live="polite">
               {{ statusMessage }}
             </div>
@@ -150,6 +152,7 @@ import NProgress from "@/services/Progress";
 function arrayToList(array) {
   return array.join(", ").replace(/, ((?:.(?!, ))+)$/, " and $1");
 }
+const KEEP_TYPING = "Keep typing — search starts at 2 characters.";
 export default {
   metaInfo: {
     title: "Search ICJIA",
@@ -193,6 +196,9 @@ export default {
       fuse: null,
       searchSeq: 0,
       statusMessage: "",
+      lastAnnounced: "",
+      searchedQuery: null,
+      announceWhenSearched: false,
       resultNumber: "s",
       arrayToList,
       getProperCategory,
@@ -204,6 +210,9 @@ export default {
     // pause instead of one per keystroke. 250ms is the sweet spot —
     // fast enough to feel live, slow enough to skip mid-word work.
     this.debouncedSearch = _.debounce(this.instantSearch, 250);
+    // The result is announced a second after the last keystroke, not after
+    // every search: typing slowly announced a count after each key.
+    this.debouncedAnnounce = _.debounce(this.announceResults, 1000);
     // let searchURL;
     // if (process.env.NODE_ENV === "development") {
     //   searchURL = "/.netlify/functions/search";
@@ -229,6 +238,7 @@ export default {
     // before getFuse resolved.
     if (this.$route.params.query) {
       this.query = decodeURIComponent(this.$route.params.query);
+      this.announceWhenSearched = true;
       this.instantSearch();
       this.filterResults(null);
     }
@@ -298,6 +308,7 @@ export default {
         const decoded = decodeURIComponent(next);
         if (decoded === this.query) return;
         this.query = decoded;
+        this.announceWhenSearched = true;
         this.instantSearch();
       } else {
         // Header search icon (or footer / context bar) was clicked
@@ -306,6 +317,8 @@ export default {
         this.queryResults = [];
         this.filteredResults = [];
         this.contentSelected = "No filter";
+        this.statusMessage = "";
+        this.lastAnnounced = "";
         this.focusSearchInput();
       }
     },
@@ -343,20 +356,51 @@ export default {
       // After the filter has been applied.
       this.$nextTick(() => this.announceStatus(this.resultStatus()));
     },
-    // The text of the visible summary or no-results message.
+    // The text of the visible summary or no-results message. The query is
+    // trimmed, as it is for the search, so a trailing space is not a new
+    // message.
     resultStatus() {
       const count = this.queryResults.length;
-      if (!count) return `No results for “${this.query}”.`;
+      const query = (this.query || "").trim();
+      if (!count) return `No results for “${query}”.`;
       return `${this.filteredResults.length} of ${count} result${
         count === 1 ? "" : "s"
-      } for “${this.query}”`;
+      } for “${query}”`;
     },
-    // Cleared first, so a message that repeats the last one is still heard.
+    // Cleared first, so a message that repeats the last one is still heard:
+    // a filter chip's result is announced at once, every time.
     announceStatus(message) {
+      this.lastAnnounced = message;
       this.statusMessage = "";
       this.$nextTick(() => {
         this.statusMessage = message;
       });
+    },
+    // Typing: search shortly after each keystroke, and announce the result
+    // once typing has paused (WCAG 4.1.3).
+    onQueryInput() {
+      this.announceWhenSearched = false;
+      this.debouncedSearch();
+      this.debouncedAnnounce();
+    },
+    // A second after the last keystroke: announce the result for the query in
+    // the field, or, if its search is still running, as soon as it is done.
+    announceResults() {
+      const query = this.query || "";
+      if (!query.length) return;
+      if (query.length < 2) {
+        this.announceOnce(KEEP_TYPING);
+      } else if (this.searchedQuery !== query) {
+        this.announceWhenSearched = true;
+      } else {
+        this.announceOnce(this.resultStatus());
+      }
+    },
+    // Not repeated while the message is unchanged.
+    announceOnce(message) {
+      if (message === this.lastAnnounced) return;
+      this.lastAnnounced = message;
+      this.statusMessage = message;
     },
     prettifyType(t) {
       // Map raw contentType strings (e.g. "article") to display labels
@@ -460,10 +504,14 @@ export default {
     async instantSearch() {
       if (!this.query || !this.query.length) {
         this.statusMessage = "";
+        this.lastAnnounced = "";
         return;
       }
       if (this.query.length < 2) {
-        this.announceStatus("Keep typing — search starts at 2 characters.");
+        if (this.announceWhenSearched) {
+          this.announceWhenSearched = false;
+          this.announceOnce(KEEP_TYPING);
+        }
         return;
       }
       if (!this.fuse) return;
@@ -481,8 +529,12 @@ export default {
       this.contentItems = uniques;
       this.filterResults(null);
       this.contentSelected = "No filter";
-      // Once the filter reset above has been applied.
-      this.$nextTick(() => this.announceStatus(this.resultStatus()));
+      this.searchedQuery = this.query;
+      if (this.announceWhenSearched) {
+        this.announceWhenSearched = false;
+        // Once the filter reset above has been applied.
+        this.$nextTick(() => this.announceOnce(this.resultStatus()));
+      }
       //iterate through all queryresults
     },
     displayHeadings(headings) {
@@ -579,8 +631,10 @@ export default {
   text-align: center;
 }
 
-.filter-chip--active .filter-chip__count,
-.filter-chip:hover .filter-chip__count {
+/* Only the active chip's count gets the light tint. On a hovered chip it
+   turned the badge behind the white count to #4887ce, 3.73:1 (WCAG 1.4.3);
+   the count keeps its dark tint over the hover blue instead. */
+.filter-chip--active .filter-chip__count {
   background: rgba(255, 255, 255, 0.22);
 }
 
@@ -608,9 +662,10 @@ export default {
   text-decoration: underline;
 }
 
+/* #777 was 4.48:1 on white (WCAG 1.4.3); #666 is 5.74:1. */
 .search-empty--hint {
   font-size: 13px;
-  color: #777;
+  color: #666;
   font-style: italic;
 }
 </style>

@@ -206,6 +206,453 @@ describe("fixCmsTables — tables authored without <th>", () => {
   });
 });
 
+describe("fixCmsTables — rows grouped under a label spanning them", () => {
+  // The four Research Hub tables whose values were announced under other
+  // rows' headers or without their group, as authored in the CMS (width,
+  // valign and Word styles left out; they play no part in the decisions).
+  const td = (content, attrs = "") =>
+    `<td${attrs ? " " + attrs : ""}>${content}</td>`;
+  const tr = (...cells) => `<tr>${cells.join("")}</tr>`;
+  const p = (text) => `<p>${text}</p>`;
+  const b = (text) => `<p><strong>${text}</strong></p>`;
+
+  // "Addressing Opioid Use Disorders in Corrections", Table 3.
+  const opioidTable3 =
+    '<table align="center" class="tg"><tbody>' +
+    tr(
+      td(b("&nbsp;")),
+      td(b("Medication"), 'class="tg-0lax"'),
+      td(b("n"), 'class="tg-0lax"'),
+      td(b("Percent"), 'class="tg-0lax"')
+    ) +
+    tr(
+      td(
+        p("Moderately or extremely open to offering MAT"),
+        'class="tg-0lax shaded" rowspan="3"'
+      ),
+      td(p("methadone"), 'class="tg-0lax shaded"'),
+      td(p("6"), 'class="tg-0lax shaded"'),
+      td(p("16.7%"), 'class="tg-0lax shaded"')
+    ) +
+    tr(td(p("buprenorphine")), td(p("8")), td(p("22.1%"))) +
+    tr(td(p("naltrexone")), td(p("9")), td(p("25.0%"))) +
+    tr(
+      td(
+        p("May consider or definitely considering expanding MAT"),
+        'class="tg-0lax" rowspan="3"'
+      ),
+      td(p("methadone")),
+      td(p("3")),
+      td(p("8.3%"))
+    ) +
+    tr(td(p("buprenorphine")), td(p("5")), td(p("13.8%"))) +
+    tr(td(p("naltrexone")), td(p("7")), td(p("19.4%"))) +
+    tr(
+      td(p("Likely or very likely to introduce MAT"), 'colspan="2"'),
+      td(p("8")),
+      td(p("22.1%"))
+    ) +
+    tr(
+      td(p("Likely or very likely to expand MAT"), 'colspan="2"'),
+      td(p("6")),
+      td(p("16.7%"))
+    ) +
+    tr(
+      td(
+        p("Interested or Extremely interested in training on MAT"),
+        'colspan="2"'
+      ),
+      td(p("8")),
+      td(p("22.1%"))
+    ) +
+    "</tbody></table>";
+
+  // "Law Enforcement Response to Mental Health Crisis Incidents".
+  const bg = (color) => `bgcolor="${color}"`;
+  const group = (label, n, rows) =>
+    rows
+      .map((row, i) =>
+        tr(
+          ...(i === 0
+            ? [
+                td(
+                  b(label) + b(`(n=${n})`),
+                  `rowspan="${rows.length}" ${bg("#4F81BD")}`
+                ),
+              ]
+            : []),
+          ...row.map((text) => td(p(text), bg("#D0D8E8")))
+        )
+      )
+      .join("");
+  const mentalHealthTable =
+    "<table><tbody>" +
+    tr(
+      td("", bg("#4F81BD")),
+      td("", bg("#4F81BD")),
+      td(b("n"), bg("#4F81BD")),
+      td(b("Percent"), bg("#4F81BD"))
+    ) +
+    group("Department Type", 44, [
+      ["Municipal Police Departments", "25", "56.8%"],
+      ["Sheriff’s Offices", "16", "36.4%"],
+      ["Other", "3", "6.8%"],
+    ]) +
+    group("Region", 44, [
+      ["South", "4", "9.1%"],
+      ["Central", "17", "38.6%"],
+      ["North", "6", "13.6%"],
+      ["Collar", "11", "25.0%"],
+      ["Cook", "6", "13.6%"],
+    ]) +
+    group("Rurality", 56, [
+      ["Mostly Urban", "27", "48.2%"],
+      ["Mostly Rural", "24", "42.9%"],
+      ["Completely Rural", "5", "8.9%"],
+    ]) +
+    tr(
+      td(b("Counties Represented"), `colspan="2" ${bg("#4F81BD")}`),
+      td(p("28"), bg("#E9EDF4")),
+      td(p("27.5%"), bg("#E9EDF4"))
+    ) +
+    "</tbody></table>";
+
+  // "Youth Development: An Overview of Related Factors and Interventions".
+  const textGroup = (label, rows) =>
+    rows
+      .map((row, i) =>
+        tr(
+          ...(i === 0 ? [td(label, `rowspan="${rows.length}"`)] : []),
+          ...row.map((text) => td(text))
+        )
+      )
+      .join("");
+  const youthTable =
+    "<table><thead><tr><th>Domain</th><th>Risk Factors</th>" +
+    "<th>Protective Factors</th></tr></thead><tbody>" +
+    textGroup("Family", [
+      [
+        "Inconsistent/harsh punishment",
+        "Reliable support and discipline from caregivers",
+      ],
+      [
+        "Lack of parental supervision/monitoring",
+        "Adequate socioeconomic resources",
+      ],
+      ["Low levels of family bonding", "High levels of family bonding"],
+      ["High levels of family conflict", "Adequate parental supervision"],
+    ]) +
+    textGroup("School/Community", [
+      [
+        "Negative relationships with peers and teachers",
+        "Positive relationships with peers and teachers",
+      ],
+      [
+        "Involvement with antisocial activities and antisocial peers",
+        "Involvement with prosocial activities and prosocial peers",
+      ],
+      [
+        "Poor school performance/engagement",
+        "Positive school performance/engagement",
+      ],
+    ]) +
+    "</tbody></table>";
+
+  // "Individual and Community Trauma": the Setting / Overall Goal table,
+  // whose goal spans the rows of its setting too, and the Developmental
+  // Domain / Reaction table, whose group rows hold a single cell.
+  const traumaSettingsTable =
+    "<table><thead><tr><th>Setting</th><th>Overall Goal</th><th>Strategies</th>" +
+    "<th>Potential Application</th></tr></thead><tbody>" +
+    tr(
+      td("Physical", 'rowspan="2"'),
+      td(
+        "Safe spaces with cultural expression, quality housing, and availability of healthy products.",
+        'rowspan="2"'
+      ),
+      td(
+        "Reclaiming, improving, and maintaining the physical space of the community."
+      ),
+      td("Physically improving outdoor spaces and buildings.")
+    ) +
+    tr(
+      td("Creating safer public spaces."),
+      td(
+        "Increasing and maintaining parks, quality housing, and reliable public transportation."
+      )
+    ) +
+    tr(
+      td("Social-Cultural", 'rowspan="2"'),
+      td(
+        "Counter community trauma symptoms, support connection and healing, and establish norms that encourage healthy behaviors.",
+        'rowspan="2"'
+      ),
+      td("Rebuild social relationships, social networks, and social support."),
+      td("Utilizing restorative justice within the community.")
+    ) +
+    tr(
+      td("Promote social norms that encourage healthy behaviors."),
+      td("Implementing positive youth development programming.")
+    ) +
+    "</tbody></table>";
+  const traumaReactionsTable =
+    "<table><thead><tr><th>Developmental Domain</th><th>Reaction</th></tr></thead><tbody>" +
+    tr(
+      td("Emotional", 'rowspan="2"'),
+      td(
+        "Difficulties regulating emotions such as anger, anxiety, shame, and sadness."
+      )
+    ) +
+    tr(
+      td(
+        "Numbness, or detaching emotions from thoughts, behaviors, and memories."
+      )
+    ) +
+    tr(
+      td("Physical", 'rowspan="2"'),
+      td("Bodily symptoms or dysfunctions that result from emotional distress.")
+    ) +
+    tr(td("Changes in the brain development and neurological functioning.")) +
+    "</tbody></table>";
+
+  const parse = (html) => new DOMParser().parseFromString(html, "text/html");
+  const text = (el) => el.textContent.replace(/\s+/g, " ").trim();
+  // Each cell's row, tag, scope and the header text its headers="…" name.
+  const cellsOf = (html) => {
+    const doc = parse(html);
+    const out = [];
+    Array.from(doc.querySelectorAll("tr")).forEach((row, r) =>
+      Array.from(row.children).forEach((cell) =>
+        out.push({
+          r,
+          tag: cell.tagName,
+          scope: cell.getAttribute("scope"),
+          colspan: cell.getAttribute("colspan"),
+          text: text(cell),
+          headers: (cell.getAttribute("headers") || "")
+            .split(/\s+/)
+            .filter(Boolean)
+            .map((id) => text(doc.getElementById(id))),
+        })
+      )
+    );
+    return out;
+  };
+  const at = (cells, r, value) =>
+    cells.find((c) => c.r === r && c.text === value);
+  // On the table's grid: values under a row header of another row, values
+  // missing a row header of their own row (their group's included), values
+  // missing their column header.
+  const gridCheck = (html) => {
+    const doc = parse(html);
+    const rows = Array.from(doc.querySelectorAll("tr"));
+    const slots = rows.map(() => []);
+    const pos = new Map();
+    rows.forEach((row, r) => {
+      let c = 0;
+      Array.from(row.children).forEach((cell) => {
+        while (slots[r][c]) c++;
+        const rs = cell.rowSpan || 1;
+        const cs = cell.colSpan || 1;
+        pos.set(cell, { r, c, rs, cs });
+        for (let i = 0; i < rs && r + i < rows.length; i++)
+          for (let j = 0; j < cs; j++) slots[r + i][c + j] = cell;
+        c += cs;
+      });
+    });
+    const all = rows.flatMap((row) => Array.from(row.children));
+    const ths = all.filter((cell) => cell.tagName === "TH");
+    const covers = (h, r) =>
+      r >= pos.get(h).r && r < pos.get(h).r + pos.get(h).rs;
+    const result = { values: 0, foreign: 0, missingRow: 0, missingCol: 0 };
+    all
+      .filter((cell) => cell.tagName === "TD" && text(cell))
+      .forEach((cell) => {
+        result.values++;
+        const where = pos.get(cell);
+        const headers = (cell.getAttribute("headers") || "")
+          .split(/\s+/)
+          .filter(Boolean)
+          .map((id) => doc.getElementById(id));
+        const rowHeader = (h) => h.getAttribute("scope") === "row";
+        if (headers.some((h) => rowHeader(h) && !covers(h, where.r)))
+          result.foreign++;
+        const own = ths.filter(
+          (h) => rowHeader(h) && covers(h, where.r) && pos.get(h).c < where.c
+        );
+        if (own.some((h) => !headers.includes(h))) result.missingRow++;
+        const cols = ths.filter(
+          (h) =>
+            h.getAttribute("scope") === "col" &&
+            pos.get(h).r < where.r &&
+            where.c >= pos.get(h).c &&
+            where.c < pos.get(h).c + pos.get(h).cs
+        );
+        if (cols.length && !cols.some((h) => headers.includes(h)))
+          result.missingCol++;
+      });
+    return result;
+  };
+
+  const TABLES = {
+    opioidTable3,
+    mentalHealthTable,
+    youthTable,
+    traumaSettingsTable,
+    traumaReactionsTable,
+  };
+  Object.entries(TABLES).forEach(([name, html]) => {
+    it(`gives every value its own row's headers and its group, and no other row's: ${name}`, () => {
+      // Twice: later passes of the pipeline must keep the decisions.
+      const once = fixCmsTables(html);
+      const check = gridCheck(once);
+      expect(check.values).to.be.greaterThan(0);
+      expect(check).to.include({ foreign: 0, missingRow: 0, missingCol: 0 });
+      expect(
+        cellsOf(fixCmsTables(once)).map((c) => [c.tag, c.scope, c.headers])
+      ).to.deep.equal(cellsOf(once).map((c) => [c.tag, c.scope, c.headers]));
+    });
+  });
+
+  it("makes methadone a row header in both groups, like buprenorphine and naltrexone", () => {
+    const cells = cellsOf(fixCmsTables(opioidTable3));
+    [1, 4].forEach((r) =>
+      expect(at(cells, r, "methadone")).to.include({ tag: "TH", scope: "row" })
+    );
+    expect(at(cells, 2, "buprenorphine")).to.include({
+      tag: "TH",
+      scope: "row",
+    });
+    expect(at(cells, 1, "6").headers).to.deep.equal([
+      "n",
+      "methadone",
+      "Moderately or extremely open to offering MAT",
+    ]);
+    expect(at(cells, 2, "8").headers).to.deep.equal([
+      "n",
+      "buprenorphine",
+      "Moderately or extremely open to offering MAT",
+    ]);
+    expect(at(cells, 5, "5").headers).to.deep.equal([
+      "n",
+      "buprenorphine",
+      "May consider or definitely considering expanding MAT",
+    ]);
+    expect(at(cells, 6, "19.4%").headers).to.deep.equal([
+      "Percent",
+      "naltrexone",
+      "May consider or definitely considering expanding MAT",
+    ]);
+    // A label spanning two columns is still the row's only row header.
+    expect(at(cells, 7, "22.1%").headers).to.deep.equal([
+      "Percent",
+      "Likely or very likely to introduce MAT",
+    ]);
+  });
+
+  it("gives the mental health survey's counts their department type, region or rurality", () => {
+    const cells = cellsOf(fixCmsTables(mentalHealthTable));
+    expect(at(cells, 2, "16").headers).to.deep.equal([
+      "n",
+      "Sheriff’s Offices",
+      "Department Type(n=44)",
+    ]);
+    expect(at(cells, 8, "13.6%").headers).to.deep.equal([
+      "Percent",
+      "Cook",
+      "Region(n=44)",
+    ]);
+    expect(at(cells, 9, "Mostly Urban")).to.include({
+      tag: "TH",
+      scope: "row",
+    });
+  });
+
+  it("keeps text beside text as data under its column, in its group", () => {
+    const cells = cellsOf(fixCmsTables(youthTable));
+    const risk = at(cells, 2, "Lack of parental supervision/monitoring");
+    expect(risk.tag).to.equal("TD");
+    expect(risk.headers).to.deep.equal(["Risk Factors", "Family"]);
+    expect(
+      at(cells, 2, "Adequate socioeconomic resources").headers
+    ).to.deep.equal(["Protective Factors", "Family"]);
+    expect(
+      at(cells, 5, "Negative relationships with peers and teachers").headers
+    ).to.deep.equal(["Risk Factors", "School/Community"]);
+  });
+
+  it("does not take a group's goal or another row's strategy for a header", () => {
+    const cells = cellsOf(fixCmsTables(traumaSettingsTable));
+    expect(at(cells, 2, "Creating safer public spaces.")).to.deep.include({
+      tag: "TD",
+      headers: ["Strategies", "Physical"],
+    });
+    expect(
+      at(
+        cells,
+        3,
+        "Rebuild social relationships, social networks, and social support."
+      ).headers
+    ).to.deep.equal(["Strategies", "Social-Cultural"]);
+  });
+
+  it("does not widen the single-cell rows of a group into a column the table does not have", () => {
+    const cells = cellsOf(fixCmsTables(traumaReactionsTable));
+    const numbness = at(
+      cells,
+      2,
+      "Numbness, or detaching emotions from thoughts, behaviors, and memories."
+    );
+    expect(numbness.colspan).to.equal(null);
+    expect(numbness.headers).to.deep.equal(["Reaction", "Emotional"]);
+  });
+
+  it("still widens a continuation row, without the row headers above it", () => {
+    // The shape of the NOFO timeline tables: a date carried onto a row of its own.
+    const html =
+      "<table><thead><tr><th>Task</th><th>Date</th></tr></thead><tbody>" +
+      tr(td("Applications due"), td("April 23, 2024")) +
+      tr(td("Performance Period"), td("July 1, 2024 to")) +
+      tr(td("June 30, 2025")) +
+      "</tbody></table>";
+    const cells = cellsOf(fixCmsTables(html));
+    expect(at(cells, 3, "June 30, 2025")).to.deep.include({
+      tag: "TD",
+      colspan: "2",
+      headers: ["Task", "Date"],
+    });
+  });
+
+  it("does not give an empty first cell the row headers above it", () => {
+    // The shape of the regression tables: a row of standard errors under
+    // each estimate.
+    const html =
+      "<table><thead><tr><th>Predictor Variables</th><th>ARI Program Completion Model</th></tr></thead><tbody>" +
+      tr(td("Sex"), td("")) +
+      tr(td("Male"), td("Reference")) +
+      tr(td("Female"), td("-.097")) +
+      tr(td(""), td("(.908)")) +
+      "</tbody></table>";
+    const doc = parse(fixCmsTables(html));
+    const blank = doc.querySelectorAll("tr")[4].children[0];
+    const named = (blank.getAttribute("headers") || "")
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((id) => text(doc.getElementById(id)));
+    expect(named).to.not.include("Female");
+    expect(named).to.not.include("Sex");
+  });
+
+  it("keeps the decisions through the content pipeline a Research Hub article takes", () => {
+    const markdown = `Intro\n\n${opioidTable3}\n`;
+    const html = sanitizeContent(renderToHtml(deepSanitize(markdown)));
+    const check = gridCheck(html);
+    expect(check).to.include({ foreign: 0, missingRow: 0, missingCol: 0 });
+    const cells = cellsOf(html);
+    expect(at(cells, 4, "methadone")).to.include({ tag: "TH", scope: "row" });
+  });
+});
+
 describe("wrapCmsTables — tables scroll sideways in their own region", () => {
   const parse = (html) => new DOMParser().parseFromString(html, "text/html");
 

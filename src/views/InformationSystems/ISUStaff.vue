@@ -41,6 +41,9 @@ import _ from "lodash";
 import NProgress from "@/services/Progress";
 
 export default {
+  metaInfo: {
+    title: "Information Systems Unit Staff",
+  },
   data() {
     return {
       page: null,

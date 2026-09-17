@@ -295,6 +295,17 @@ footer.dark-surface a:hover {
   box-shadow: none !important;
 }
 
+/* The fixed header (90 px) and the sticky context bar (71 px) cover the top
+   of the window. When the browser scrolls something in the page's content
+   into view, as it does for the element Tab moves focus to, it keeps it at
+   least 9 px below them if it fits: a contents entry, a footnote's back-link
+   or a link at 320 by 256 px could take focus entirely under the bars (WCAG
+   2.4.11). The header and its menus, which are outside #content, are
+   unaffected. */
+#content * {
+  scroll-margin-top: 170px;
+}
+
 .event-search-anchor {
   font-weight: bold;
 }

@@ -32,6 +32,7 @@
 
 <script>
 import { moveFocusTo } from "@/utils/focus";
+import { goToOptions } from "@/utils/motion";
 export default {
   mounted() {
     const disclaimer = document.querySelector("#disclaimer");
@@ -57,11 +58,13 @@ export default {
   methods: {
     // Scroll to the section and move keyboard focus to its heading (WCAG
     // 2.4.3). The link's default jump is prevented: in this app a hash change
-    // is a route change, which would re-render the article.
+    // is a route change, which would re-render the article. The heading
+    // lands below the fixed header and the context bar; the page jumps
+    // there when reduced motion is requested.
     scrollTo(id) {
       const target = id && document.getElementById(id);
       if (!target) return;
-      this.$vuetify.goTo(target, { offset: 80 });
+      this.$vuetify.goTo(target, goToOptions({ offset: 80 }));
       moveFocusTo(target);
     },
   },

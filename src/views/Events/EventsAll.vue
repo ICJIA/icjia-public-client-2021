@@ -28,7 +28,12 @@
           </div>
 
           <div v-show="display === 'calendar'">
-            <v-sheet height="64" elevation="3" v-if="!$apollo.loading">
+            <v-sheet
+              height="64"
+              elevation="3"
+              v-if="!$apollo.loading"
+              class="calendar-toolbar"
+            >
               <v-toolbar flat color="white">
                 <v-btn
                   outlined
@@ -61,27 +66,37 @@
                   $refs.calendar.title
                 }}</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-menu bottom right>
+                <!-- A menu button (src/utils/menuButton.js), like the header
+                     drop-downs: opened from the keyboard, focus moves into
+                     the menu, and choosing a view returns focus to the
+                     button. Each item says whether it is the view shown. -->
+                <v-menu bottom right disable-keys ref="viewMenu">
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
                       outlined
                       color="grey darken-2"
                       v-bind="attrs"
                       v-on="on"
+                      @click="onMenuButtonClick($event, $refs.viewMenu)"
+                      @keydown="onMenuButtonKeydown($event, $refs.viewMenu)"
                     >
                       <span>{{ typeToLabel[type] }}</span>
                       <v-icon right>mdi-menu-down</v-icon>
                     </v-btn>
                   </template>
-                  <v-list>
-                    <v-list-item @click="type = 'day'">
-                      <v-list-item-title>Day</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item @click="type = 'week'">
-                      <v-list-item-title>Week</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item @click="type = 'month'">
-                      <v-list-item-title>Month</v-list-item-title>
+                  <v-list
+                    @keydown.native="onMenuKeydown($event, $refs.viewMenu)"
+                  >
+                    <v-list-item
+                      v-for="view in ['day', 'week', 'month']"
+                      :key="view"
+                      role="menuitemradio"
+                      :aria-checked="type === view ? 'true' : 'false'"
+                      @click="setView(view)"
+                    >
+                      <v-list-item-title>{{
+                        typeToLabel[view]
+                      }}</v-list-item-title>
                     </v-list-item>
                   </v-list>
                 </v-menu>
@@ -98,24 +113,68 @@
                 @change="change"
                 @click:event="showEvent"
                 @click:more="viewDay"
-                @click:date="viewDay"
-              ></v-calendar>
+              >
+                <!-- Each entry is a button, named by its text and its date,
+                     so a keyboard reaches and opens it (WCAG 2.1.1, 4.1.2).
+                     The entry's box still takes the click, as before. -->
+                <template v-slot:event="{ event, eventSummary }">
+                  <button type="button" class="calendar-entry pl-1">
+                    <span v-html="eventSummary()"></span
+                    ><span class="sr-only"> {{ entryDates(event) }}</span>
+                  </button>
+                </template>
+                <!-- Day numbers are named by the full date, which contains
+                     the number shown ("Wednesday, September 30, 2026"), in
+                     text a screen reader reads and the page does not show. -->
+                <template v-slot:day-label="day">
+                  <v-btn
+                    fab
+                    depressed
+                    small
+                    :color="day.present ? 'primary' : 'transparent'"
+                    @click.stop="viewDay(day)"
+                    ><span aria-hidden="true">{{ dayNumber(day, true) }}</span
+                    ><span class="sr-only">{{
+                      dayName(day, true)
+                    }}</span></v-btn
+                  >
+                </template>
+                <template v-slot:day-label-header="day">
+                  <v-btn
+                    fab
+                    depressed
+                    :color="day.present ? 'primary' : 'transparent'"
+                    @click.stop="viewDay(day)"
+                    ><span aria-hidden="true">{{ dayNumber(day) }}</span
+                    ><span class="sr-only">{{ dayName(day) }}</span></v-btn
+                  >
+                </template>
+              </v-calendar>
+              <!-- An entry's details: a dialog that takes focus, keeps Tab
+                   inside, and closes with Escape or Close, returning focus to
+                   the entry. It used to be a menu (role "menu") that focus
+                   never reached. -->
               <v-menu
                 v-model="selectedOpen"
                 :close-on-content-click="false"
                 :activator="selectedElement"
                 offset-x
+                role="dialog"
+                ref="details"
               >
                 <v-card
                   color="grey lighten-4"
                   min-width="250px"
                   flat
                   style="z-index: 9999 !important"
+                  @keydown.native="keepFocusInDetails"
                 >
+                  <!-- Keyed by the entry, not anew on every render, so the
+                       element holding focus in the dialog is not replaced. -->
                   <EventCard
                     :item="selectedEvent"
                     @clicked="selectedOpen = false"
-                    :key="nanoid()"
+                    :key="`${selectedEvent.fullPath}|${selectedEvent.name}`"
                   ></EventCard>
                 </v-card>
               </v-menu>
@@ -158,8 +217,33 @@ import { EventBus } from "@/event-bus";
 import { getUnifiedTags } from "@/utils/content";
 import { buildEventWheres } from "@/utils/eventsRange";
 import { runQuery } from "@/gql-client";
+import {
+  onMenuButtonClick,
+  onMenuButtonKeydown,
+  onMenuKeydown,
+} from "@/utils/menuButton";
+import { keepFocusWithin } from "@/utils/focus";
 export default {
-  watch: {},
+  watch: {
+    // The details dialog takes focus when it opens. Closed from inside it
+    // (Close, or Escape), focus goes back to the entry that opened it.
+    selectedOpen(open) {
+      if (open) {
+        this.focusDetails();
+        return;
+      }
+      const content = this.$refs.details && this.$refs.details.$refs.content;
+      const active = document.activeElement;
+      const fromInside =
+        !active ||
+        active === document.body ||
+        (content && content.contains(active));
+      const entry = this.selectedElement;
+      if (fromInside && entry && typeof entry.focus === "function") {
+        this.$nextTick(() => entry.focus());
+      }
+    },
+  },
   name: "Events",
   metaInfo: {
     title: "Events",
@@ -168,6 +252,7 @@ export default {
     if (this.$refs.calendar) {
       this.$refs.calendar.checkChange();
     }
+    this.decorateCalendar();
   },
 
   updated() {
@@ -175,6 +260,7 @@ export default {
     if (this.$refs.calendar) {
       this.$refs.calendar.checkChange();
     }
+    this.decorateCalendar();
   },
   data: () => ({
     nanoid,
@@ -224,14 +310,158 @@ export default {
       // only split list vs calendar visibility.
       return newItems;
     },
-    async change() {
+    async change({ start, end } = {}) {
       //console.log("change here");
+      // The dates shown, for the name of the hours (not reactive: nothing
+      // on the page renders it).
+      this.shownRange = { start: start && start.date, end: end && end.date };
       await this.$nextTick();
+      this.decorateCalendar();
     },
 
+    // A day number or a "more" link opens that day. The control pressed is
+    // gone once the Day view renders, so focus moves to the Day view's own
+    // day button, named by the date (WCAG 2.4.3); it used to fall to the
+    // page.
     viewDay({ date }) {
       this.focus = date;
       this.type = "day";
+      this.$nextTick(() =>
+        this.focusRendered(() => {
+          const cal = this.$refs.calendar && this.$refs.calendar.$el;
+          const days = cal
+            ? cal.querySelectorAll(".v-calendar-daily_head-day-label .v-btn")
+            : [];
+          // The Day view has rendered once a single day is shown.
+          return days.length === 1 ? days[0] : null;
+        })
+      );
+    },
+    // The Month, Week or Day menu: show the view, and return focus to the
+    // menu button (menu button pattern).
+    setView(view) {
+      this.type = view;
+      const menu = this.$refs.viewMenu;
+      const button = menu && menu.getActivator && menu.getActivator();
+      if (button) this.$nextTick(() => button.focus());
+    },
+    onMenuButtonClick,
+    onMenuButtonKeydown,
+    onMenuKeydown,
+    // Focus an element once it has rendered.
+    focusRendered(find, attempts = 20) {
+      const el = find();
+      if (el) {
+        el.focus();
+      } else if (attempts > 0) {
+        setTimeout(() => this.focusRendered(find, attempts - 1), 25);
+      }
+    },
+    // A day button shows its number, or on the first of the month in the
+    // Month view "Sep 1", as Vuetify's own did. Its name is the full date,
+    // which contains that visible label (WCAG 2.5.3): "Friday, September 4,
+    // 2026", "Tuesday, Sep 1, 2026".
+    dayNumber(day, monthOnFirst = false) {
+      return monthOnFirst && day.day === 1
+        ? dayjs(day.date).format("MMM D")
+        : String(day.day);
+    },
+    dayName(day, monthOnFirst = false) {
+      return dayjs(day.date).format(
+        monthOnFirst && day.day === 1
+          ? "dddd, MMM D, YYYY"
+          : "dddd, MMMM D, YYYY"
+      );
+    },
+    // An entry's date, or its first and last dates, in words: "on Friday,
+    // September 4, 2026", "from Friday, September 4, 2026 to Monday, …".
+    entryDates(event) {
+      const zone = this.$myApp.config.timezone;
+      const start = dayjs(event.start).tz(zone);
+      const end = dayjs(event.end).tz(zone);
+      const format = "dddd, MMMM D, YYYY";
+      if (end.format("YYYY-MM-DD") !== start.format("YYYY-MM-DD")) {
+        return `from ${start.format(format)} to ${end.format(format)}`;
+      }
+      return `on ${start.format(format)}`;
+    },
+    keepFocusInDetails(event) {
+      const content = this.$refs.details && this.$refs.details.$refs.content;
+      keepFocusWithin(event, content);
+    },
+    // Once the details are shown: name the dialog by the entry and move focus
+    // into it.
+    focusDetails(attempts = 20) {
+      const menu = this.$refs.details;
+      const content = menu && menu.$refs.content;
+      const shown =
+        content && window.getComputedStyle(content).display !== "none";
+      if (!this.selectedOpen) return;
+      if (!shown) {
+        if (attempts > 0) {
+          setTimeout(() => this.focusDetails(attempts - 1), 25);
+        }
+        return;
+      }
+      content.setAttribute("aria-modal", "true");
+      content.setAttribute(
+        "aria-label",
+        String(this.selectedEvent.name || this.selectedEvent.title || "")
+          .replace(/<[^>]*>/g, "")
+          .trim() || "Event details"
+      );
+      const first = content.querySelector(
+        '[tabindex="0"], button, a[href], [href]'
+      );
+      if (first) first.focus();
+    },
+    // What the calendar renders without slots: the "N more" links, and the
+    // scrolling hours of the Week and Day views. The links become buttons
+    // named with their day; the hours take focus, with a name, so they can
+    // be scrolled from the keyboard (WCAG 2.1.1, 4.1.2).
+    decorateCalendar() {
+      const cal = this.$refs.calendar && this.$refs.calendar.$el;
+      if (!cal || !cal.querySelectorAll) return;
+      cal.querySelectorAll(".v-event-more").forEach((more) => {
+        if (!more.hasAttribute("role")) {
+          more.setAttribute("role", "button");
+          more.setAttribute("tabindex", "0");
+          more.addEventListener("keydown", (event) => {
+            if (event.key !== "Enter" && event.key !== " ") return;
+            event.preventDefault();
+            more.click();
+          });
+          // Its text ("2 more") changes when the calendar is resized.
+          more.addEventListener("focus", () => this.nameMoreLink(more));
+        }
+        this.nameMoreLink(more);
+      });
+      const hours = cal.querySelector(".v-calendar-daily__scroll-area");
+      if (hours) {
+        const { start, end } = this.shownRange || {};
+        const day = "dddd, MMMM D, YYYY";
+        const dates =
+          start && end && start !== end
+            ? `${dayjs(start).format("MMMM D")} to ${dayjs(end).format(
+                "MMMM D, YYYY"
+              )}`
+            : start
+            ? dayjs(start).format(day)
+            : "";
+        hours.setAttribute("tabindex", "0");
+        hours.setAttribute("role", "region");
+        hours.setAttribute("aria-label", `Hours${dates ? ", " + dates : ""}`);
+      }
+    },
+    nameMoreLink(more) {
+      const date = more.getAttribute("data-date");
+      const text = (more.textContent || "").trim();
+      if (date && text) {
+        more.setAttribute(
+          "aria-label",
+          `${text} on ${dayjs(date).format("dddd, MMMM D, YYYY")}`
+        );
+      }
     },
     toggleEventView(val) {
       this.display = val;
@@ -272,7 +502,12 @@ export default {
         // this.$vuetify.goTo(`#page-top`);
         this.selectedEvent = event;
         this.selectedID = event.id;
-        this.selectedElement = nativeEvent.target;
+        // The entry's button: the details open beside it, and focus returns
+        // to it when they close.
+        this.selectedElement =
+          (nativeEvent.target.closest &&
+            nativeEvent.target.closest(".calendar-entry")) ||
+          nativeEvent.target;
         setTimeout(() => (this.selectedOpen = true), 10);
         //this.$vuetify.goTo(`#event-title-${this.selectedID}`);
       };
@@ -544,5 +779,63 @@ export default {
 .theme--light.v-calendar-weekly .v-calendar-weekly__head-weekday {
   color: #000 !important;
   background-color: #fff !important;
+}
+/* The Week and Day views' names of past days were Vuetify's 38% black,
+   #9e9e9e on white, 2.68:1 (WCAG 1.4.3); black, as in the Month view. */
+.theme--light.v-calendar-daily
+  .v-calendar-daily_head-day.v-past
+  .v-calendar-daily_head-weekday {
+  color: #000 !important;
+}
+
+/* An entry's button keeps the look of the entry's text. Its box clips
+   anything drawn outside it, so the focus ring is drawn inside, in white,
+   which stands out from every entry colour (4.6:1 to 13.2:1). */
+.v-calendar .calendar-entry {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+  font: inherit;
+  line-height: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.v-calendar .calendar-entry:focus-visible {
+  outline: 2px solid #fff !important;
+  outline-offset: -3px !important;
+}
+/* A day button's name is its full date in hidden text; the buttons' capitals
+   are not wanted there. */
+.v-calendar .v-btn .sr-only {
+  text-transform: none;
+}
+/* "N more" and the hours scroll inside boxes that clip, so their rings are
+   drawn inside too (blue on white, 5.75:1). */
+.v-calendar .v-event-more:focus-visible,
+.v-calendar .v-calendar-daily__scroll-area:focus-visible {
+  outline-offset: -2px !important;
+}
+
+/* Below 400 px the toolbar wraps onto a second line: the view button was cut
+   to "MO" at 320 px, with its focus ring, and its arrow at 375 px. */
+@media (max-width: 400px) {
+  .calendar-toolbar.v-sheet {
+    height: auto !important;
+  }
+  .calendar-toolbar .v-toolbar,
+  .calendar-toolbar .v-toolbar__content {
+    height: auto !important;
+  }
+  .calendar-toolbar .v-toolbar__content {
+    flex-wrap: wrap;
+    row-gap: 4px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
 }
 </style>

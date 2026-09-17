@@ -20,7 +20,7 @@
       "
       ref="anchor"
       class="mb-4 hover"
-      @click="$vuetify.goTo(0)"
+      @click="$vuetify.goTo(0, goToOptions())"
       v-if="tocHeading.length"
     >
       {{ tocHeading | upperCase }}
@@ -49,6 +49,7 @@
 
 <script>
 import { moveFocusTo } from "@/utils/focus";
+import { goToOptions } from "@/utils/motion";
 export default {
   data() {
     return {
@@ -78,14 +79,17 @@ export default {
     },
   },
   methods: {
+    goToOptions,
     // Scroll to the section and move keyboard focus to its heading, so the
     // next Tab continues from the section and not from the table of contents
     // (WCAG 2.4.3). The link's default jump is prevented: in this app a hash
-    // change is a route change, which would re-render the page.
+    // change is a route change, which would re-render the page. The heading
+    // lands below the fixed header and the context bar; the page jumps
+    // there when reduced motion is requested.
     scrollTo(id) {
       const target = id && document.getElementById(id);
       if (!target) return;
-      this.$vuetify.goTo(target, { offset: 88 });
+      this.$vuetify.goTo(target, goToOptions({ offset: 88 }));
       moveFocusTo(target);
     },
     setToc() {
@@ -220,9 +224,12 @@ ul.toc-list a.toc-link:hover {
     border-left: 0px solid #ccc;
   } */
 
+  /* Dark text on a mid grey that still shows against the shaded phone panel
+     (#eee): #000 is 15.46:1 on #ddd and the current entry (#0d4474) 7.38:1.
+     White on #aaa was 2.32:1 (WCAG 1.4.3). */
   ul.toc-list li:hover {
-    color: #fff;
-    background: #aaa;
+    color: #000;
+    background: #ddd;
   }
 }
 </style>

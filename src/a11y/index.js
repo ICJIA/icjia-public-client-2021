@@ -1,4 +1,8 @@
-import { fixSimpleTable } from "@/utils/contentSanitizer";
+import {
+  fixComplexTable,
+  fixSimpleTable,
+  normalizeRaggedRows,
+} from "@/utils/contentSanitizer";
 
 // Fix Vuetify empty buttons
 const fixButtonText = function (myClass, myText) {
@@ -1086,45 +1090,9 @@ export {
 //   1. Simple tables: scope="col" on column headers, scope="row" on row headers
 //   2. Tables without <thead>: treats first row of <th> as column headers
 //   3. Complex tables with rowspan/colspan: uses explicit id/headers attributes
-// CMS authors sometimes emit a single-cell row in a multi-column
-// table as visual continuation of the previous row's data. If that
-// lone cell is <th>, fixComplexTable will assign it an id, creating
-// an orphan header with no data cells referencing it — SiteImprove
-// sia-r46 flags that. Convert single-cell rows to <td colspan="N">
-// so they remain data, governed by the column headers above.
-const normalizeRaggedRows = function (table) {
-  const allRows = Array.from(table.querySelectorAll("tr"));
-  if (allRows.length < 2) return;
-  let maxCols = 0;
-  allRows.forEach((row) => {
-    let count = 0;
-    row.querySelectorAll("th, td").forEach((cell) => {
-      count += parseInt(cell.getAttribute("colspan") || "1", 10);
-    });
-    if (count > maxCols) maxCols = count;
-  });
-  if (maxCols < 2) return;
-  allRows.forEach((row) => {
-    const cells = row.querySelectorAll("th, td");
-    if (cells.length !== 1) return;
-    const cell = cells[0];
-    const currentSpan = parseInt(cell.getAttribute("colspan") || "1", 10);
-    if (currentSpan >= maxCols) return;
-    if (cell.tagName === "TH") {
-      const td = document.createElement("td");
-      td.innerHTML = cell.innerHTML;
-      for (const attr of cell.attributes) {
-        if (attr.name === "scope" || attr.name === "id") continue;
-        td.setAttribute(attr.name, attr.value);
-      }
-      td.setAttribute("colspan", String(maxCols));
-      cell.parentNode.replaceChild(td, cell);
-    } else {
-      cell.setAttribute("colspan", String(maxCols));
-    }
-  });
-};
-
+// Single-cell rows in a multi-column table (a visual continuation of the
+// previous row) are normalized to <td colspan="N"> by the content pipeline's
+// normalizeRaggedRows, which this repair shares.
 const fixTableCellContext = function () {
   const tables = document.querySelectorAll(
     ".article-body table, .markdown-body table"
@@ -1158,7 +1126,7 @@ const fixTableCellContext = function () {
     });
     // Normalize single-cell continuation rows before any promotion or
     // header/id attribution runs.
-    normalizeRaggedRows(table);
+    normalizeRaggedRows(document, table);
     // Always run the simple-table pass first — it promotes row-label
     // <td>s to <th scope="row"> and ensures <th scope="col"> on the
     // header row. It is the content pipeline's own fixSimpleTable
@@ -1169,115 +1137,10 @@ const fixTableCellContext = function () {
     // header. Then always run the complex-table pass to assign
     // explicit id/headers attributes on every cell. This satisfies
     // SiteImprove sia-r46 "No data cells assigned to table header"
-    // across all tables, not just those with rowspan/colspan.
+    // across all tables, not just those with rowspan/colspan. That pass is
+    // the pipeline's fixComplexTable too, with this repair's own "tbl" ids,
+    // so rows grouped under a label spanning them get the same headers here.
     fixSimpleTable(document, table);
-    fixComplexTable(table, tableIndex);
+    fixComplexTable(document, table, tableIndex, "tbl");
   });
 };
-
-// Complex tables (rowspan/colspan): generate unique IDs on <th> cells and
-// explicit headers attributes on <td> cells to satisfy sia-r77.
-function fixComplexTable(table, tableIndex) {
-  const prefix = "tbl" + tableIndex + "-";
-  // Collect all rows in order
-  const allRows = table.querySelectorAll("tr");
-  const numCols = getColumnCount(table);
-
-  // Build a grid that maps each (row, col) to the <th> that owns it,
-  // accounting for rowspan/colspan.
-  const headerGrid = []; // headerGrid[row][col] = th id
-  const cellGrid = []; // cellGrid[row][col] = element (for rowspan tracking)
-
-  // Initialize grids
-  allRows.forEach(() => {
-    headerGrid.push(new Array(numCols).fill(null));
-    cellGrid.push(new Array(numCols).fill(null));
-  });
-
-  // Fill cellGrid to track which cell occupies each position
-  let thCounter = 0;
-  allRows.forEach((row, rowIdx) => {
-    let colIdx = 0;
-    const cells = row.querySelectorAll("th, td");
-    cells.forEach((cell) => {
-      // Find next available column
-      while (colIdx < numCols && cellGrid[rowIdx][colIdx] !== null) colIdx++;
-      const rs = parseInt(cell.getAttribute("rowspan") || "1", 10);
-      const cs = parseInt(cell.getAttribute("colspan") || "1", 10);
-
-      // Assign ID to <th> elements. Keep any existing scope attr —
-      // scope and id/headers can coexist and some scanners accept
-      // either as a programmatic header-to-cell association.
-      if (cell.tagName === "TH") {
-        if (!cell.getAttribute("id")) {
-          const id = prefix + "h" + thCounter++;
-          cell.setAttribute("id", id);
-        }
-      }
-
-      // Fill grid for all positions this cell spans
-      for (let r = 0; r < rs && rowIdx + r < allRows.length; r++) {
-        for (let c = 0; c < cs && colIdx + c < numCols; c++) {
-          cellGrid[rowIdx + r][colIdx + c] = cell;
-        }
-      }
-      colIdx += cs;
-    });
-  });
-
-  // For each <td>, find all <th> cells that share a row or column position
-  allRows.forEach((row, rowIdx) => {
-    let colIdx = 0;
-    const cells = row.querySelectorAll("th, td");
-    cells.forEach((cell) => {
-      while (colIdx < numCols && cellGrid[rowIdx][colIdx] !== cell) colIdx++;
-      if (cell.tagName === "TD") {
-        const cs = parseInt(cell.getAttribute("colspan") || "1", 10);
-        const headerIds = new Set();
-        // Collect column headers: scan upward in same column(s). Include
-        // every <th> above, not just the closest — in a two-level header
-        // (group header spanning several sub-headers) data cells need to
-        // reference both levels, otherwise the group header becomes an
-        // orphan that sia-r46 / axe `th-has-data-cells` flags.
-        for (let c = colIdx; c < colIdx + cs && c < numCols; c++) {
-          let lastSeen = null;
-          for (let r = rowIdx - 1; r >= 0; r--) {
-            const above = cellGrid[r][c];
-            if (
-              above &&
-              above !== lastSeen &&
-              above.tagName === "TH" &&
-              above.getAttribute("id")
-            ) {
-              headerIds.add(above.getAttribute("id"));
-              lastSeen = above;
-            }
-          }
-        }
-        // Collect row headers: scan leftward in same row
-        for (let c = colIdx - 1; c >= 0; c--) {
-          const left = cellGrid[rowIdx][c];
-          if (left && left.tagName === "TH" && left.getAttribute("id")) {
-            headerIds.add(left.getAttribute("id"));
-            break;
-          }
-        }
-        if (headerIds.size) {
-          cell.setAttribute("headers", [...headerIds].join(" "));
-        }
-      }
-      colIdx += parseInt(cell.getAttribute("colspan") || "1", 10);
-    });
-  });
-}
-
-// Count the number of columns in a table by examining the first row
-function getColumnCount(table) {
-  const firstRow = table.querySelector("tr");
-  if (!firstRow) return 0;
-  let count = 0;
-  firstRow.querySelectorAll("th, td").forEach((cell) => {
-    count += parseInt(cell.getAttribute("colspan") || "1", 10);
-  });
-  return count;
-}

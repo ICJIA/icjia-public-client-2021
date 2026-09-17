@@ -322,6 +322,9 @@ import { getPublicationType } from "@/lib/utils";
 import _ from "lodash";
 export default {
   name: "Publications",
+  metaInfo: {
+    title: "Publication List Checker",
+  },
   data() {
     return {
       sortBy: "publicationDate",

@@ -22,6 +22,31 @@ export function moveFocusTo(el) {
 }
 
 /**
+ * Keep Tab and Shift+Tab inside an open dialog or popup: Tab from its last
+ * focusable element goes to the first, and Shift+Tab from the first (or from
+ * outside it) to the last (WCAG 2.4.3). For a keydown listener.
+ */
+export function keepFocusWithin(event, container) {
+  if (!event || event.key !== "Tab" || !container) return;
+  const focusable = Array.from(
+    container.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    )
+  ).filter((el) => !el.disabled && el.getClientRects().length > 0);
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  const active = document.activeElement;
+  if (event.shiftKey && (active === first || !container.contains(active))) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && active === last) {
+    event.preventDefault();
+    first.focus();
+  }
+}
+
+/**
  * True when a click on a card landed on a link inside it: the card's title
  * link, or a tag or category link. The link handles the click itself. A click
  * anywhere else on the card still opens the card's page, as it did when the

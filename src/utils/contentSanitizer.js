@@ -370,37 +370,48 @@ function ensureTableStructure(doc, table) {
 // table into <td colspan="N"> so the cell is semantically data, not a
 // header, and gets properly associated with the column headers above
 // via the usual headers="..." assignment.
+//
+// A row whose other columns are taken by cells spanning down from the rows
+// above (a label with rowspan, in the rows of its group) is not a
+// continuation row: its one cell already fills the row, and a colspan would
+// add a column the table does not have.
 function normalizeRaggedRows(doc, table) {
   const allRows = Array.from(table.querySelectorAll("tr"));
   if (allRows.length < 2) return;
   let maxCols = 0;
-  allRows.forEach((row) => {
+  const coveredFromAbove = allRows.map(() => 0);
+  allRows.forEach((row, rowIdx) => {
     let count = 0;
     row.querySelectorAll("th, td").forEach((cell) => {
-      count += parseInt(cell.getAttribute("colspan") || "1", 10);
+      const cs = cellSpan(cell, "colspan");
+      count += cs;
+      for (let r = 1; r < cellSpan(cell, "rowspan"); r++) {
+        if (rowIdx + r < allRows.length) coveredFromAbove[rowIdx + r] += cs;
+      }
     });
     if (count > maxCols) maxCols = count;
   });
   if (maxCols < 2) return;
 
-  allRows.forEach((row) => {
+  allRows.forEach((row, rowIdx) => {
     const cells = row.querySelectorAll("th, td");
     if (cells.length !== 1) return;
     const cell = cells[0];
     const currentSpan = parseInt(cell.getAttribute("colspan") || "1", 10);
-    if (currentSpan >= maxCols) return;
+    const span = maxCols - coveredFromAbove[rowIdx];
+    if (currentSpan >= span) return;
     if (cell.tagName === "TH") {
-      // Downgrade to <td colspan="maxCols">
+      // Downgrade to <td colspan="span">
       const td = doc.createElement("td");
       td.innerHTML = cell.innerHTML;
       for (const attr of cell.attributes) {
         if (attr.name === "scope" || attr.name === "id") continue;
         td.setAttribute(attr.name, attr.value);
       }
-      td.setAttribute("colspan", String(maxCols));
+      td.setAttribute("colspan", String(span));
       cell.parentNode.replaceChild(td, cell);
     } else {
-      cell.setAttribute("colspan", String(maxCols));
+      cell.setAttribute("colspan", String(span));
     }
   });
 }
@@ -474,12 +485,16 @@ function looksBold(cell) {
 
 // Text labels in the first column beside numbers in the other columns.
 function labelsBesideNumbers(rows) {
+  return labelCellsBesideNumbers(rows.map((row) => Array.from(row.children)));
+}
+
+// The same test on rows given as arrays of cells, first cell the label.
+function labelCellsBesideNumbers(cellRows) {
   let rowCount = 0;
   let labels = 0;
   let values = 0;
   let numbers = 0;
-  rows.forEach((row) => {
-    const cells = Array.from(row.children);
+  cellRows.forEach((cells) => {
     if (cells.length < 2) return;
     rowCount++;
     const label = cellText(cells[0]);
@@ -585,11 +600,18 @@ function fixSimpleTable(doc, table) {
   // scope="row" on first cell of each body row (or promote <td> to <th>)
   const bodyRows = table.querySelectorAll("tbody tr");
   const rows = bodyRows.length ? bodyRows : table.querySelectorAll("tr");
+  const { position } = tableGrid(table);
   rows.forEach((row) => {
     if (row === headerRow) return;
     if (promotedFirstTbody && row === firstTbodyRow) return;
     const firstCell = row.querySelector("td:first-child, th:first-child");
     if (!firstCell) return;
+    // In the rows of a group after its first, the first column is taken by
+    // the group's label, which spans down from the first row, and the row's
+    // first cell sits in the next column. That column is decided for the
+    // whole group at once (labelGroupItems), not row by row.
+    const at = position.get(firstCell);
+    if (at && at.col > 0) return;
     if (firstCell.tagName === "TH") {
       if (!firstCell.getAttribute("scope"))
         firstCell.setAttribute("scope", "row");
@@ -597,29 +619,106 @@ function fixSimpleTable(doc, table) {
     }
     // The first column does not label the rows (inferHeaderRows).
     if (!rowHeaders) return;
-    // Skip cells whose only content is the "No data" filler —
-    // they're placeholders for empty cells, not row labels.
-    const srOnly = firstCell.querySelector(".sr-only");
-    if (srOnly && srOnly.textContent.trim() === "No data") return;
     // Don't promote the sole cell of a single-cell row. Such rows are
     // visual continuations of the previous row's data (handled by
     // normalizeRaggedRows into <td colspan="N">), not row labels.
     if (row.querySelectorAll("th, td").length < 2) return;
-    const text = (firstCell.textContent || "").trim();
-    if (text.length > 0 && !/^\d+[\d,.%$]*$/.test(text)) {
-      const th = doc.createElement("th");
-      th.innerHTML = firstCell.innerHTML;
-      for (const attr of firstCell.attributes) {
-        th.setAttribute(attr.name, attr.value);
-      }
-      th.setAttribute("scope", "row");
-      firstCell.parentNode.replaceChild(th, firstCell);
+    promoteRowLabel(doc, firstCell);
+  });
+  if (rowHeaders) labelGroupItems(doc, table);
+}
+
+// Make a label cell a row header: a <td> holding text becomes
+// <th scope="row">, and a <th> without a scope gets scope="row". Cells whose
+// only content is the "No data" filler (placeholders for empty cells) and
+// numbers are not row labels and are left alone.
+function promoteRowLabel(doc, cell) {
+  if (cell.tagName === "TH") {
+    if (!cell.getAttribute("scope")) cell.setAttribute("scope", "row");
+    return;
+  }
+  const srOnly = cell.querySelector(".sr-only");
+  if (srOnly && srOnly.textContent.trim() === "No data") return;
+  const text = (cell.textContent || "").trim();
+  if (text.length > 0 && !/^\d+[\d,.%$]*$/.test(text)) {
+    const th = doc.createElement("th");
+    th.innerHTML = cell.innerHTML;
+    for (const attr of cell.attributes) {
+      th.setAttribute(attr.name, attr.value);
     }
+    th.setAttribute("scope", "row");
+    cell.parentNode.replaceChild(th, cell);
+  }
+}
+
+// Where each cell sits on the table's grid, counting the rows and columns
+// that cells spanning from above or from the left take up.
+function tableGrid(table) {
+  const rows = Array.from(table.querySelectorAll("tr"));
+  const slots = rows.map(() => []);
+  const position = new Map();
+  rows.forEach((row, rowIdx) => {
+    let col = 0;
+    row.querySelectorAll("th, td").forEach((cell) => {
+      while (slots[rowIdx][col]) col++;
+      const rowspan = Math.max(1, cellSpan(cell, "rowspan") || 1);
+      const colspan = Math.max(1, cellSpan(cell, "colspan") || 1);
+      position.set(cell, { row: rowIdx, col, rowspan, colspan });
+      for (let r = 0; r < rowspan && rowIdx + r < rows.length; r++) {
+        for (let c = 0; c < colspan; c++) slots[rowIdx + r][col + c] = cell;
+      }
+      col += colspan;
+    });
+  });
+  return { rows, slots, position };
+}
+
+// Rows grouped under a label in the first column that spans them
+// (rowspan), like "Moderately or extremely open to offering MAT" over
+// methadone, buprenorphine and naltrexone. The next column holds either
+// each row's own label, beside the row's numbers, or data. It is decided
+// once for the whole group, so every row of the group gets the same kind of
+// cell there: the group's first row used to keep a data cell in that column
+// ("methadone") while the other rows' cells, being their rows' first cells,
+// became row headers, whatever they held (WCAG 1.3.1).
+function labelGroupItems(doc, table) {
+  const { rows, slots, position } = tableGrid(table);
+  rows.forEach((row, rowIdx) => {
+    const label = slots[rowIdx][0];
+    if (!label || label.closest("thead")) return;
+    const at = position.get(label);
+    if (at.row !== rowIdx || at.rowspan < 2) return;
+    // A blank corner or a column header spanning the header rows does not
+    // label a group of body rows.
+    if (label.getAttribute("role") === "presentation") return;
+    if (/^col/.test(label.getAttribute("scope") || "")) return;
+    const column = (cell) => (position.get(cell) || { col: -1 }).col;
+    const groupRows = rows
+      .slice(rowIdx, rowIdx + at.rowspan)
+      .map((groupRow) =>
+        Array.from(groupRow.querySelectorAll("th, td")).filter(
+          (cell) => column(cell) >= at.colspan
+        )
+      );
+    const items = groupRows
+      .map((cells) => cells[0])
+      .filter((cell) => cell && column(cell) === at.colspan);
+    const itemsLabelRows =
+      items.length === groupRows.length &&
+      items.every((cell) => position.get(cell).rowspan === 1) &&
+      labelCellsBesideNumbers(groupRows);
+    if (itemsLabelRows) items.forEach((cell) => promoteRowLabel(doc, cell));
   });
 }
 
-function fixComplexTable(doc, table, tableIndex) {
-  const prefix = "cmstbl" + tableIndex + "-";
+// A header cell that labels its own row, or the rows it spans (a group),
+// and not the cells below it.
+const isRowHeader = (cell) => /^row/.test(cell.getAttribute("scope") || "");
+
+// idPrefix: the runtime repair in src/a11y uses its own ("tbl"), so ids it
+// adds never collide with the pipeline's.
+function fixComplexTable(doc, table, tableIndex, idPrefix = "cmstbl") {
+  const prefix = idPrefix + tableIndex + "-";
   const allRows = table.querySelectorAll("tr");
   if (!allRows.length) return;
   const numCols = getColumnCount(table);
@@ -668,7 +767,10 @@ function fixComplexTable(doc, table, tableIndex) {
         const headerIds = new Set();
         // Include every <th> above, not just the closest — group headers
         // (multi-row column headers) otherwise become orphan <th> cells
-        // that sia-r46 and axe `th-has-data-cells` flag.
+        // that sia-r46 and axe `th-has-data-cells` flag. A row header above
+        // is not a column header: it labels its own row, and the rows of a
+        // group or an empty cell below it were announced under the row
+        // headers of earlier rows (WCAG 1.3.1).
         for (let c = colIdx; c < colIdx + cs && c < numCols; c++) {
           let lastSeen = null;
           for (let r = rowIdx - 1; r >= 0; r--) {
@@ -677,18 +779,28 @@ function fixComplexTable(doc, table, tableIndex) {
               above &&
               above !== lastSeen &&
               above.tagName === "TH" &&
-              above.getAttribute("id")
+              above.getAttribute("id") &&
+              !isRowHeader(above)
             ) {
               headerIds.add(above.getAttribute("id"));
               lastSeen = above;
             }
           }
         }
+        // Row headers: the nearest header cell to the left, and further left
+        // any header that spans several rows, the label of the group the row
+        // belongs to. The scan used to stop at the nearest one, so the values
+        // of a group lost their group.
+        let nearest = null;
         for (let c = colIdx - 1; c >= 0; c--) {
           const left = cellGrid[rowIdx][c];
-          if (left && left.tagName === "TH" && left.getAttribute("id")) {
+          if (!left || left === nearest || left.tagName !== "TH") continue;
+          if (!left.getAttribute("id")) continue;
+          if (!nearest) {
+            nearest = left;
             headerIds.add(left.getAttribute("id"));
-            break;
+          } else if (cellSpan(left, "rowspan") > 1) {
+            headerIds.add(left.getAttribute("id"));
           }
         }
         if (headerIds.size) {
@@ -1569,9 +1681,12 @@ export {
   unwrapBrokenLinks,
   fixCmsEmptyTableCells,
   // Also used outside the plugin list: renderToHtml wraps tables once, and
-  // the runtime table repair in src/a11y reuses the header heuristic.
+  // the runtime table repair in src/a11y reuses the header heuristic and
+  // the header assignment.
   wrapCmsTables,
   fixSimpleTable,
+  fixComplexTable,
+  normalizeRaggedRows,
   // Expose data for external inspection
   MISSPELLINGS,
   APOSTROPHES,

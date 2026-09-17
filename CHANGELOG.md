@@ -82,6 +82,167 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.71] - 2026-09-17
+
+### fix(accessibility) — Contrast under the mouse, grouped table rows, the Events calendar by keyboard, quieter search announcements, focus clear of the sticky bars, reduced motion, page titles
+
+Fixes toward full WCAG 2.1 Level AA conformance. Each was measured with the same scripts before the
+change (the live site, 1.5.70) and after it (a local build): computed styles and pixels in every
+state, Chrome's accessibility tree, keyboard and mouse walks, live-region transcripts, scroll
+positions, and screenshots compared pixel by pixel.
+
+- **Text keeps 4.5:1 under the mouse, in search and in contents lists (WCAG 1.4.3, Level AA).**
+  - "Keep typing — search starts at 2 characters." was #777 on white, 4.48:1 (axe: 4.47:1). It is
+    #666, 5.74:1, from computed styles and from pixels at 1,280 and 375 px.
+  - The contents entry under the mouse in a Research Hub article was #1873cd on its grey hover tint,
+    4.40:1 (4.41:1 in pixels), on all 18 entries of the 2024 housing report and the DART evaluation.
+    The entry under the mouse and the current entry are now the site's link blue, #1565c0: 5.26:1 on
+    the hover tint (5.27:1 in pixels) and 5.75:1 on white. No entry is below 4.5:1 at rest, under
+    the mouse, with keyboard focus or as the current entry, alone or combined.
+  - The count on a search filter chip under the mouse was white on #4887ce, 3.73:1 (3.77:1 in
+    pixels), on every unselected chip for "violence" and "grant" at 1,280 px and for "violence" at
+    375 px (28). The count keeps its own dark tint over the hover blue: 6.52:1 (6.50:1). The chips'
+    labels and counts at rest, under the mouse, with keyboard focus and selected, alone or combined,
+    are all 5.75:1 or more.
+  - On standard pages with a contents list, such as Privacy, the entry under the mouse at 1,024 px
+    wide and below was white on #aaa, 2.32:1, and the current entry #0d4474 on #aaa, 4.31:1. Both
+    are now dark text on #ddd, which still shows against the shaded panel phones use: 15.46:1 and
+    7.38:1. Wider than 1,024 px nothing changes (black on #eee, 18.10:1).
+- **Rows grouped under a label keep their headers (1.3.1, Level A).**
+  - Some CMS tables without header cells group rows under a label that spans them. Table 3 of
+    "Addressing Opioid Use Disorders in Corrections" lists methadone, buprenorphine and naltrexone
+    under "Moderately or extremely open to offering MAT", and again under "May consider or
+    definitely considering expanding MAT". The table repair announced the second "methadone" under
+    the row headers "naltrexone" and "buprenorphine" of the group above, left "methadone" a data
+    cell in both groups, and left 8 of the table's figures without their group: "buprenorphine, n,
+    8" in one group read like "buprenorphine, n, 5" in the other.
+  - The repair in `src/utils/contentSanitizer.js`, which the runtime repair in `src/a11y/index.js`
+    now calls instead of keeping its own copies, takes only column headers from above a cell (a row
+    header labels its own row); gives each value every row header to its left that covers its row,
+    the group's label included; and decides the column beside a group label for the whole group: row
+    headers when they label figures, data otherwise. It no longer widens the one-cell rows of a
+    group into a column the table does not have.
+  - In the browser every value of Table 3 carries its column, its medication and its group: values
+    under another row's headers and values missing their group went from 1 and 8 to 0 and 0, and
+    "methadone" is a row header in both groups. So do the three other Research Hub tables built this
+    way: the mental health crisis survey (2 and 16 before), the youth development overview (2 and 9)
+    and one of the community trauma tables (2 and 7); in the last two, text beside text is now data
+    under its column, in its group. Within a group the cells of that column now also look alike
+    (header cells are bold, data cells are not; the first row of each group was the only one in
+    regular type): "methadone" and the first rows of the mental health survey are bold like the rows
+    below them, and in the youth overview and the trauma table, whose cells there are data, every
+    row is in regular type (their tables are 72 and 48 px shorter at 1,280 px).
+  - All 264 tables in the CMS pages, news posts, meetings, grants, units, events and Research Hub
+    articles went through the pipeline before and after: 17 change. Besides those four, the other
+    community trauma table loses 10 column spans the table does not have (its headers were already
+    right), and in 12 tables an empty cell, or a date carried onto a row of its own, no longer gets
+    the row headers of the rows above it (as many as 54 on one cell), only its column headers: the
+    Adult Redeploy Illinois outcomes study, the naloxone and probation-client surveys, two tables of
+    the transitional housing evaluation, the domestic violence prosecution article and six funding
+    notices. The 16 tables whose every cell 1.5.70 compared (1,539 cells) are unchanged apart from
+    Table 3. Unit tests build the four tables from their CMS markup and run them through both
+    repairs.
+- **The Events calendar works from the keyboard (2.1.1, 2.4.3, 4.1.2, Level A; 1.4.3, AA).** Its
+  Month, Week and Day views could be used with a mouse only.
+  - A Tab walk from the Calendar View button reached none of the calendar's entries: 0 of 7 in the
+    Month view, 0 of 1 in the Week and Day views. Each entry is now a button named by its text and
+    its date ("OPEN: Grant Accountant … on Friday, September 4, 2026"), reached in order among the
+    days: the walks have 46 stops in the Month view (39 before), 13 in Week (12) and 7 in Day (6),
+    at 1,280 and 375 px. Enter or Space opens the entry's details, as a click does. An entry's text
+    that does not fit now ends in an ellipsis.
+  - The details were a menu (role "menu", axe `aria-required-children`) that focus never entered and
+    Escape did not close. They are a dialog named by the entry: focus moves into it, Tab and
+    Shift+Tab stay inside, and Escape shuts it and returns focus to the entry (9 of 9 entries at
+    each width), with no axe violation while it is open. Enter on its Close button also opened the
+    entry's page (2 of 2 tried at each width); it now only closes the dialog, and focus returns to
+    the entry. A click opens it beside the entry and a click elsewhere closes it, as before.
+  - Day numbers were named "30", "Sep 1" and so on; each is named by its full date, which contains
+    the number shown ("Wednesday, September 30, 2026"). Enter on a day number in the Month view
+    opened the Day view and left focus on the page; focus now moves to the Day view's own day
+    button. The "1 more" link a day shows when its entries do not fit (10 of them in September 2026
+    in a window 300 px tall) had no role or name and could not be reached by Tab; it is a button,
+    named with its day when it takes focus ("1 more on Wednesday, September 2, 2026"), and Enter
+    opens that day the same way.
+  - The Month/Week/Day menu kept focus on its button and pointed at the highlighted item with
+    `aria-activedescendant`, which a button does not support (axe `aria-allowed-attr` once an arrow
+    key had opened it). It follows the menu button pattern of the site's drop-downs (1.5.70): Enter,
+    Space or an arrow key moves focus into the menu, Escape and Tab close it, choosing a view
+    returns focus to the button, and each item says whether its view is the one shown.
+  - The hours of the Week and Day views scroll in a box that had no name and showed no change when
+    it took focus (axe `scrollable-region-focusable`). It is a named region ("Hours, September 13 to
+    September 19, 2026") that takes focus and shows a ring inside its edge.
+  - The names of past days in the Week view were #9e9e9e on white, 2.68:1 (axe `color-contrast`, 4
+    elements). They are black, as in the Month view, 21:1.
+  - Every stop of the walks changes by 3:1 or more when focused (at least 199 pixels): an entry
+    shows a white ring inside its colour, 4.6:1 to 13.2:1. axe: 2 failing rules in the Week view and
+    1 in the Day view at each width before, none after.
+  - Below 400 px the calendar's toolbar wraps onto a second line. The view button was cut off at 375
+    px, and at 320 px down to "MO", with its focus ring; nothing in the toolbar is cut off now.
+- **Search results are announced once typing pauses (4.1.3, Level AA).** The status region added in
+  1.5.69 spoke after every search, and a search runs a quarter of a second after a keystroke, so
+  someone typing slowly heard a new count after almost every key: typing "violence" with a key every
+  0.95 seconds gave 8 announcements, in 15 changes to the region. The result is now announced a
+  second after the last keystroke, once the search for the query in the field has finished, and not
+  again while it is unchanged: the same typing gives 1 announcement, 1.0 seconds after the last key;
+  typing "domestic violence" quickly gives 1, as before; and deleting and retyping the last letter
+  of "grant" announces nothing new (it repeated the count). "Keep typing" is said a second after a
+  first character too (0.25 seconds before). Choosing a filter chip, by keyboard or mouse, is still
+  announced at once (within 0.3 seconds), every time.
+- **Focus lands clear of the fixed header and the context bar (WCAG 2.2 2.4.11, Level AA).** The
+  header (90 px) and the sticky context bar (71 px) cover the top of the window.
+  - A footnote reached from its reference, and the reference reached back from the footnote, stopped
+    21 px under the context bar: all 45 footnotes and 42 references tried in five Research Hub
+    articles at 1,280, 375 and 320 by 256 px were partly covered, most of each reference. They now
+    stop 9 px below the bars, like the sections reached from a contents list (which were already
+    clear, and still are): none is covered, and every reference, and every footnote that fits in the
+    window, is wholly in view.
+  - Where Tab itself scrolls the page, the browser now brings the focused element in the page's
+    content at least 9 px below the bars, when it fits there. Tabbing into the contents list of a
+    funding notice at 1,280 px left 3 of its entries under the context bar, 2 of them entirely; none
+    now. A footnote's back-link reached by Tab was under the bars in 11 of 42 tries (10 of 14 at 320
+    by 256 px, 5 of them entirely); none now. At 320 by 256 px, which stands for 400% zoom, the
+    first 40 Tab stops on About left 6 links under the bars, and on the 2024 housing report 19; none
+    now (and none on those pages, the Grant Status form and the funding notice at 375 and 1,280 px).
+    Tab through the bars themselves scrolls nothing, and the header's menus are unaffected.
+- **Contents lists, footnotes and the context bars respect reduced motion.** The accessibility
+  statement says the site respects the operating system's "reduce motion" setting, and 1.5.67 made
+  the skip link, anchor links and the News list jump instead of scrolling. A contents entry, a
+  footnote reference or back-link, and a context bar's link to the page already shown still scrolled
+  for 0.4 to 0.5 seconds through 22 to 30 positions with the setting on. They now jump, in the first
+  frame, to the same place (footnotes and references to the place given above), at 1,280 and at 320
+  by 256 px. Without the setting they scroll as before.
+- **Views without a title of their own (2.4.2, Level A).** Four routed views set no title, so their
+  tabs kept the site's default, "ICJIA | Illinois Criminal Justice Information Authority": the
+  Information Systems Unit staff view and the three admin views behind the sign-in. Each now takes
+  its title from its heading: "Information Systems Unit Staff", "Site Information", "Publication
+  List Checker" and "Material Colors".
+
+Regression checks: axe-core 4.13 (WCAG 2.0 and 2.1, Level A and AA) on the 28 pages this release
+touches at 1,280 and 375 px, the one-character search, and the calendar's Month, Week and Day views,
+with its menu and an entry's details open, and from a "more" link: 0 violations in 78 runs (on
+1.5.70, 9 runs had violations: the search hint at both widths, and in the calendar `color-contrast`,
+`scrollable-region-focusable`, `aria-required-children` and `aria-allowed-attr`). Keyboard walks
+with focus measured from pixels, on a search for "violence", the opioid and DART articles, and the
+Events page in its list and calendar views at 1,280 and 375 px: 2,333 stops, every one changing by
+3:1 or more when focused. (The walks compare each stop with the same spot after focus is taken away,
+which a Vuetify select ignores; the Events page's "Show events from" field was measured against the
+field before it took focus: 489 pixels at 5.6:1, as on 1.5.70.) Screenshots of 28 pages at both
+widths, of every table on 17 pages and of the calendar's views at 1,280, 375 and 320 px, compared
+pixel by pixel, change only as described above: 53 of the 56 page captures (the first 9,000 px of
+each) are identical, About's on a second capture (its tabs' underline was first caught
+mid-animation), and the other 3 differ in the grouped tables of the youth overview and the mental
+health survey; 71 of the 78 tables are identical, and the other 7 are views of the four grouped
+tables; the calendar differs in its entries' trailing ellipsis, the past weekday names and the
+toolbar's second line. Mouse checks give the same results as before: contents entries land where
+they did, filter chips filter, a context bar's link to the page shown returns to the top, and in the
+calendar a click opens an entry's details beside it and a click elsewhere closes them, a day number
+opens the Day view, and the view menu changes the view; a footnote and its reference now land 30 px
+lower, clear of the context bar. Menus in the header and select lists open from the keyboard without
+scrolling the page. `vue-cli-service lint --no-fix` reports no problems on every changed file; mocha
+unit tests: 438 passing, 6 pending (410 before).
+
+---
+
 ## [1.5.70] - 2026-09-17
 
 ### fix(accessibility) — Focus rings on every bar, content at every width, menus and tooltips, phone table sorting, links, tables and dialogs

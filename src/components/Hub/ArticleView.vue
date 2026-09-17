@@ -222,6 +222,7 @@ import { createMarkdownUtils, initMarkdownIt } from "@/utils/markdownIt";
 import { EventBus } from "@/event-bus";
 import { goToSearch, searchLocation } from "@/utils/search";
 import { moveFocusTo } from "@/utils/focus";
+import { goToOptions } from "@/utils/motion";
 
 export default {
   sync: false,
@@ -413,13 +414,17 @@ export default {
       // Footnote references and back-links scroll to their target and move
       // keyboard focus there, so the next Tab continues from the footnote or
       // the reference instead of jumping back (WCAG 2.4.3). The default jump
-      // is prevented: in this app a hash change is a route change.
+      // is prevented: in this app a hash change is a route change. The
+      // target lands 9 px below the fixed header and the context bar, as the
+      // contents entries' sections do; with the old offset it stopped 21 px
+      // under the context bar. The page jumps there when reduced motion is
+      // requested.
       this._footnoteClickHandler = (e) => {
         e.preventDefault();
         const hash = (e.currentTarget.getAttribute("href") || "").split("#");
         const target = document.getElementById(decodeURIComponent(hash.pop()));
         if (!target) return;
-        this.$vuetify.goTo(target, { offset: 50 });
+        this.$vuetify.goTo(target, goToOptions({ offset: 80 }));
         moveFocusTo(target);
       };
       this._footnoteNodes = Array.from(

@@ -257,14 +257,17 @@
   color: #000;
   width: 100%;
 }
+/* The entry under the mouse and the current entry are #1565c0, the site's
+   link blue: 5.27:1 on the hover tint, 5.75:1 on white. #1873cd was 4.41:1
+   on the hover tint (WCAG 1.4.3). */
 #article-toc .toc-item:hover {
   background: rgba(0, 0, 0, 0.04);
-  color: #1873cd;
-  border-left: 1px solid #1873cd;
+  color: #1565c0;
+  border-left: 1px solid #1565c0;
 }
 #article-toc .toc-item-active {
-  color: #1873cd !important;
-  border-left: 1px solid #1873cd !important;
+  color: #1565c0 !important;
+  border-left: 1px solid #1565c0 !important;
 }
 /* TOC entries are links (v1.5.68); keep the look they had as <div>s. */
 #article-toc a.toc-item {
@@ -273,7 +276,7 @@
   text-decoration: none;
 }
 #article-toc a.toc-item:hover {
-  color: #1873cd !important;
+  color: #1565c0 !important;
   text-decoration: none;
 }
 /* dataset view */

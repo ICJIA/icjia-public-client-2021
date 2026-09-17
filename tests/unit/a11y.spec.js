@@ -648,6 +648,73 @@ describe("fixTableCellContext() — the content pipeline's header decisions", ()
     });
   });
 
+  // Rows grouped under a label spanning them (1.5.71): Table 3 of the opioid
+  // article and the youth development overview, in part. The same value can
+  // appear twice, so cells are compared in order.
+  const GROUPED = {
+    labelsBesideNumbers:
+      "<table><tbody><tr><td><p><strong>&nbsp;</strong></p></td>" +
+      "<td><p><strong>Medication</strong></p></td><td><p><strong>n</strong></p></td>" +
+      "<td><p><strong>Percent</strong></p></td></tr>" +
+      '<tr><td rowspan="3"><p>Moderately or extremely open to offering MAT</p></td>' +
+      "<td><p>methadone</p></td><td><p>6</p></td><td><p>16.7%</p></td></tr>" +
+      "<tr><td><p>buprenorphine</p></td><td><p>8</p></td><td><p>22.1%</p></td></tr>" +
+      "<tr><td><p>naltrexone</p></td><td><p>9</p></td><td><p>25.0%</p></td></tr>" +
+      '<tr><td rowspan="2"><p>May consider or definitely considering expanding MAT</p></td>' +
+      "<td><p>methadone</p></td><td><p>3</p></td><td><p>8.3%</p></td></tr>" +
+      "<tr><td><p>buprenorphine</p></td><td><p>5</p></td><td><p>13.8%</p></td></tr>" +
+      '<tr><td colspan="2"><p>Likely or very likely to introduce MAT</p></td>' +
+      "<td><p>8</p></td><td><p>22.1%</p></td></tr></tbody></table>",
+    textBesideText:
+      "<table><thead><tr><th>Domain</th><th>Risk Factors</th><th>Protective Factors</th></tr></thead>" +
+      '<tbody><tr><td rowspan="2">Family</td><td>Inconsistent/harsh punishment</td>' +
+      "<td>Reliable support and discipline from caregivers</td></tr>" +
+      "<tr><td>Lack of parental supervision/monitoring</td>" +
+      "<td>Adequate socioeconomic resources</td></tr></tbody></table>",
+  };
+  // Cells with text only: the blank corner is demoted by the pipeline alone.
+  const orderedHeadersOf = (root) =>
+    Array.from(root.querySelectorAll("th, td"))
+      .filter((cell) => cell.textContent.trim())
+      .map((cell) => [
+        cell.tagName,
+        cell.getAttribute("scope"),
+        cell.textContent.trim(),
+        (cell.getAttribute("headers") || "")
+          .split(/\s+/)
+          .filter(Boolean)
+          .map((id) => root.querySelector(`[id="${id}"]`).textContent.trim()),
+      ]);
+
+  Object.entries(GROUPED).forEach(([name, html]) => {
+    it(`associates the same headers as the content pipeline, in rows grouped under a label: ${name}`, () => {
+      const expected = orderedHeadersOf(pipeline(html));
+      const actual = orderedHeadersOf(runtime(html));
+      expect(actual.length).to.be.greaterThan(0);
+      expect(actual).to.deep.equal(expected);
+    });
+  });
+
+  it("gives a group's values their item and their group at runtime too", () => {
+    const cells = orderedHeadersOf(runtime(GROUPED.labelsBesideNumbers));
+    const find = (text, n = 0) => cells.filter((c) => c[2] === text)[n];
+    expect(find("methadone", 1).slice(0, 2)).to.deep.equal(["TH", "row"]);
+    expect(find("3")[3]).to.deep.equal([
+      "n",
+      "methadone",
+      "May consider or definitely considering expanding MAT",
+    ]);
+    const text = orderedHeadersOf(runtime(GROUPED.textBesideText));
+    const risk = text.find(
+      (c) => c[2] === "Lack of parental supervision/monitoring"
+    );
+    expect(risk.slice(0, 2)).to.deep.equal(["TD", null]);
+    expect(risk[3]).to.deep.equal(["Risk Factors", "Family"]);
+    expect(
+      text.find((c) => c[2] === "Adequate socioeconomic resources")[3]
+    ).to.deep.equal(["Protective Factors", "Family"]);
+  });
+
   it("gives the opioid table column headers and no row headers, and keeps them on a second pass", () => {
     const body = runtime(TABLES.classStyledHeaderRow);
     fixTableCellContext();

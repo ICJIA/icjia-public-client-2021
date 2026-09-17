@@ -16,3 +16,11 @@ export function prefersReducedMotion() {
 export function scrollBehavior() {
   return prefersReducedMotion() ? "auto" : "smooth";
 }
+
+/**
+ * Settings for Vuetify's $vuetify.goTo(): the page jumps instead of scrolling
+ * for 500 ms when reduced motion is requested.
+ */
+export function goToOptions(options = {}) {
+  return prefersReducedMotion() ? { ...options, duration: 0 } : options;
+}
