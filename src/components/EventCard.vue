@@ -10,7 +10,10 @@
       :role="isClickable ? 'link' : undefined"
       @keydown.enter="isClickable ? $router.push(item.fullPath) : null"
     >
-      <v-toolbar :color="item.color" dark elevation="0">
+      <!-- tag="div": Vuetify's default <header> is left out of the card's
+           accessible name, so the name started with the date and omitted the
+           title (WCAG 2.5.3). -->
+      <v-toolbar :color="item.color" dark elevation="0" tag="div">
         <v-toolbar-title
           v-html="item.name"
           v-if="item.name"

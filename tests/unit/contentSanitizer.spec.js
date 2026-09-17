@@ -13,7 +13,9 @@ import {
   fixCmsSameHrefLinkLabels,
   fixCmsContrast,
   sanitizeContent,
+  deepSanitize,
 } from "@/utils/contentSanitizer";
+import { renderToHtml } from "@/services/Markdown";
 
 describe("fixCmsTables — simple tables", () => {
   it("promotes <td> first cell to <th scope=row> when label is non-numeric", () => {
@@ -103,8 +105,103 @@ describe("fixCmsTables — orphan headers", () => {
       "<tbody><tr><td>Illinois</td><td>42</td></tr></tbody></table>";
     const out = fixCmsTables(html);
     // The empty header becomes a presentational <td>, not an orphan <th>.
-    expect(out).to.match(/<td[^>]*role="presentation"[^>]*><\/td>|<td[^>]*><\/td>/);
+    expect(out).to.match(
+      /<td[^>]*role="presentation"[^>]*><\/td>|<td[^>]*><\/td>/
+    );
     expect(out).to.not.match(/<th[^>]*>\s*<\/th>/);
+  });
+});
+
+describe("fixCmsTables — tables authored without <th>", () => {
+  // Header text each data cell is associated with, via headers="…".
+  const headersOf = (html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const out = {};
+    doc.querySelectorAll("td").forEach((td) => {
+      const text = td.textContent.trim();
+      if (!text) return;
+      out[text] = (td.getAttribute("headers") || "")
+        .split(/\s+/)
+        .filter(Boolean)
+        .map((id) => doc.getElementById(id).textContent.trim());
+    });
+    return { doc, out };
+  };
+
+  it("promotes a header row styled only by class, and keeps the first column as data", () => {
+    // The shape of Table 1 in "Addressing Opioid Use Disorders in Corrections".
+    const html =
+      '<table><tbody><tr><td class="tg-0lax shaded bold">Methadone</td>' +
+      '<td class="tg-0lax shaded bold">Buprenorphine</td>' +
+      '<td class="tg-0lax shaded bold">Naltrexone</td></tr>' +
+      "<tr><td>Full agonist</td><td>Partial agonist</td><td>Antagonist</td></tr>" +
+      "<tr><td>Taken daily</td><td>Taken twice</td><td>Injectable</td></tr>" +
+      "</tbody></table>";
+    // Twice: later passes of the pipeline must keep the decision.
+    const { doc, out } = headersOf(fixCmsTables(fixCmsTables(html)));
+    expect(doc.querySelectorAll('th[scope="col"]').length).to.equal(3);
+    expect(doc.querySelectorAll('th[scope="row"]').length).to.equal(0);
+    expect(out["Full agonist"]).to.deep.equal(["Methadone"]);
+    expect(out["Partial agonist"]).to.deep.equal(["Buprenorphine"]);
+    expect(out["Injectable"]).to.deep.equal(["Naltrexone"]);
+  });
+
+  it("keeps row headers when the header row has a blank corner", () => {
+    const html =
+      "<table><tbody><tr><td><strong> </strong></td><td><strong>n</strong></td>" +
+      "<td><strong>Percent</strong></td></tr>" +
+      "<tr><td>Northern</td><td>10</td><td>27.8</td></tr>" +
+      "<tr><td>Central</td><td>16</td><td>44.4</td></tr></tbody></table>";
+    const { doc, out } = headersOf(fixCmsTables(html));
+    expect(doc.querySelectorAll('th[scope="col"]').length).to.equal(2);
+    expect(out["16"]).to.deep.equal(["n", "Central"]);
+    expect(out["44.4"]).to.deep.equal(["Percent", "Central"]);
+  });
+
+  it("reads a two-row header with group headers, and keeps row headers", () => {
+    // The shape of the drug-testing table: blank corner over two rows,
+    // group headers spanning two columns, then n / Percent.
+    const html =
+      '<table><tbody><tr><td rowspan="2"></td><td colspan="2">Initial</td>' +
+      '<td colspan="2">Sporadic</td></tr>' +
+      "<tr><td>n</td><td>Percent</td><td>n</td><td>Percent</td></tr>" +
+      "<tr><td>Sanctions</td><td>18</td><td>47%</td><td>21</td><td>57%</td></tr>" +
+      "</tbody></table>";
+    const { doc, out } = headersOf(fixCmsTables(fixCmsTables(html)));
+    expect(doc.querySelectorAll('th[scope="col"]').length).to.equal(6);
+    expect(out["47%"]).to.deep.equal(["Percent", "Initial", "Sanctions"]);
+    expect(out["21"]).to.deep.equal(["n", "Sporadic", "Sanctions"]);
+  });
+
+  it("keeps row headers when text labels sit beside numbers", () => {
+    const html =
+      "<table><tbody><tr><td><b>Region</b></td><td><b>2019</b></td><td><b>2020</b></td></tr>" +
+      "<tr><td>Cook</td><td>2,062</td><td>2,475</td></tr>" +
+      "<tr><td>Collar</td><td>1,104</td><td>998</td></tr></tbody></table>";
+    const { out } = headersOf(fixCmsTables(html));
+    expect(out["2,475"]).to.deep.equal(["2020", "Cook"]);
+  });
+
+  it("keeps the decision through the content pipeline a CMS body takes", () => {
+    // API responses are deep-sanitized before the markdown is rendered, and
+    // the rendered HTML is sanitized again: the header row is inferred on the
+    // first pass, and the later passes must not add row headers.
+    const markdown =
+      "Intro\n\n" +
+      '<table><tbody><tr><td class="bold">Methadone</td><td class="bold">Naltrexone</td></tr>' +
+      "<tr><td>Full agonist</td><td>Antagonist</td></tr></tbody></table>\n";
+    const html = sanitizeContent(renderToHtml(deepSanitize(markdown)));
+    const { doc, out } = headersOf(html);
+    expect(doc.querySelectorAll('th[scope="row"]').length).to.equal(0);
+    expect(out["Antagonist"]).to.deep.equal(["Naltrexone"]);
+  });
+
+  it("still gives row headers to a table with an authored header row", () => {
+    const html =
+      "<table><thead><tr><th>Housing authority</th><th>Region</th></tr></thead>" +
+      "<tbody><tr><td>Adams County</td><td>Central</td></tr></tbody></table>";
+    const { out } = headersOf(fixCmsTables(html));
+    expect(out["Central"]).to.deep.equal(["Region", "Adams County"]);
   });
 });
 

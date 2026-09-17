@@ -442,6 +442,98 @@ function isLikelyHeaderRow(row) {
   return avgLen < 15;
 }
 
+// ── Tables authored without any <th> (WCAG 1.3.1) ──────────────────────
+// A CMS table with no header cells at all used to get row headers from its
+// first column, whatever that column held, and no column headers. In a table
+// whose header row is styled only by class (the opioid article's Table 1,
+// "Methadone | Buprenorphine | Naltrexone") every fact was then announced
+// under a "row header" from the Methadone column. Such a table now gets its
+// header row as column headers, and row headers only when its first column
+// really labels the rows. The decision is made once, on the first pass, and
+// kept on the table as data-row-headers="none": later passes see <th> cells
+// and cannot tell an inferred header row from an authored one.
+const NO_ROW_HEADERS_ATTR = "data-row-headers";
+const NUMBER_RX = /^[$(<>~+\-–]*[\d.,]+%?\)?\*?$/;
+
+const cellText = (cell) => {
+  const sr = cell.querySelector(".sr-only");
+  if (sr && sr.textContent.trim() === "No data") return "";
+  return (cell.textContent || "").trim();
+};
+const cellSpan = (cell, name) => parseInt(cell.getAttribute(name) || "1", 10);
+
+// Bold by <strong>/<b>, by a "bold" class, or by an inline font-weight.
+function looksBold(cell) {
+  if (cell.querySelector("strong, b")) return true;
+  if (/(^|\s)bold(\s|$)/i.test(cell.getAttribute("class") || "")) return true;
+  const m = (cell.getAttribute("style") || "").match(
+    /font-weight\s*:\s*([^;]+)/i
+  );
+  return !!m && (/bold/i.test(m[1]) || parseInt(m[1], 10) >= 600);
+}
+
+// Text labels in the first column beside numbers in the other columns.
+function labelsBesideNumbers(rows) {
+  let rowCount = 0;
+  let labels = 0;
+  let values = 0;
+  let numbers = 0;
+  rows.forEach((row) => {
+    const cells = Array.from(row.children);
+    if (cells.length < 2) return;
+    rowCount++;
+    const label = cellText(cells[0]);
+    if (label && !NUMBER_RX.test(label)) labels++;
+    cells.slice(1).forEach((cell) => {
+      const text = cellText(cell);
+      if (!text) return;
+      values++;
+      if (NUMBER_RX.test(text)) numbers++;
+    });
+  });
+  return (
+    rowCount > 0 &&
+    values > 0 &&
+    labels >= 0.8 * rowCount &&
+    numbers >= 0.8 * values
+  );
+}
+
+// For a table with no <th>: promote a styled or spanned first row (plus the
+// rows its first cell spans) to column headers, and mark the table when its
+// first column does not label the rows.
+function inferHeaderRows(doc, table) {
+  const rows = Array.from(table.querySelectorAll("tr"));
+  if (rows.length < 2) return;
+  const first = Array.from(rows[0].children);
+  if (first.length < 2) return;
+  const corner = first[0];
+  const filled = first.filter((cell) => cellText(cell));
+  const styled =
+    first.some((cell) => cell.hasAttribute("bgcolor")) ||
+    (filled.length >= 2 && filled.every(looksBold));
+  const spanned =
+    !cellText(corner) ||
+    cellSpan(corner, "rowspan") > 1 ||
+    first.some((cell) => cellSpan(cell, "colspan") > 1);
+  if (!styled && !spanned) return;
+
+  const headerCount = Math.min(
+    Math.max(cellSpan(corner, "rowspan"), 1),
+    rows.length - 1
+  );
+  const firstColumnLabelsRows =
+    !cellText(corner) || // a blank corner above the row labels
+    (headerCount > 1 && cellSpan(corner, "rowspan") >= headerCount) ||
+    first.slice(1).some((cell) => cellSpan(cell, "colspan") > 1) ||
+    labelsBesideNumbers(rows.slice(headerCount));
+
+  rows
+    .slice(0, headerCount)
+    .forEach((row) => promoteRowTdsToColumnHeaders(doc, row));
+  if (!firstColumnLabelsRows) table.setAttribute(NO_ROW_HEADERS_ATTR, "none");
+}
+
 function fixSimpleTable(doc, table) {
   // Strip stale headers attrs from <td> cells — simple tables use scope,
   // and CMS-authored headers="..." often reference non-TH ids (axe
@@ -456,6 +548,10 @@ function fixSimpleTable(doc, table) {
   table
     .querySelectorAll("thead tr")
     .forEach((row) => promoteRowTdsToColumnHeaders(doc, row));
+
+  // No header cells at all: find the header row, if any (see above).
+  if (!table.querySelector("th")) inferHeaderRows(doc, table);
+  const rowHeaders = table.getAttribute(NO_ROW_HEADERS_ATTR) !== "none";
 
   // Two-level / styled-td header pattern: the first <tbody> row may
   // actually be column headers rendered as styled <td> cells. Promote
@@ -499,6 +595,8 @@ function fixSimpleTable(doc, table) {
         firstCell.setAttribute("scope", "row");
       return;
     }
+    // The first column does not label the rows (inferHeaderRows).
+    if (!rowHeaders) return;
     // Skip cells whose only content is the "No data" filler —
     // they're placeholders for empty cells, not row labels.
     const srOnly = firstCell.querySelector(".sr-only");

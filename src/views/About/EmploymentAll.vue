@@ -35,16 +35,32 @@
                     Employment Opportunities
                   </h2>
                   <div class="text-left">
+                    <!-- aria-pressed exposes the selected option, which is
+                         otherwise shown only by style (WCAG 4.1.2). -->
                     <v-btn-toggle
                       mandatory
                       v-model="toggle_jobStatus"
                       class="mb-10"
                     >
-                      <v-btn small elevation="1" class="button-weight">
+                      <v-btn
+                        small
+                        elevation="1"
+                        class="button-weight"
+                        :aria-pressed="
+                          toggle_jobStatus === 0 ? 'true' : 'false'
+                        "
+                      >
                         Current
                       </v-btn>
 
-                      <v-btn small elevation="1" class="button-weight">
+                      <v-btn
+                        small
+                        elevation="1"
+                        class="button-weight"
+                        :aria-pressed="
+                          toggle_jobStatus === 1 ? 'true' : 'false'
+                        "
+                      >
                         Expired
                       </v-btn>
                     </v-btn-toggle>

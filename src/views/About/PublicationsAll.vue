@@ -39,6 +39,22 @@
               :items-per-page="150"
               id="pubTable"
             >
+              <!-- Sortable column headers hold a real button (WCAG 2.1.1): the
+                   header cell sorted on a mouse click only. The button's click
+                   reaches the header cell, so Vuetify sorts exactly as before and
+                   keeps aria-sort on the cell. -->
+              <template
+                v-for="header in sortableHeaders"
+                v-slot:[`header.${header.value}`]
+              >
+                <button
+                  :key="header.value"
+                  type="button"
+                  class="table-sort-button"
+                >
+                  {{ header.text }}
+                </button>
+              </template>
               <template v-slot:item.publicationDate="{ item }">
                 <div
                   style="
@@ -88,13 +104,18 @@
                   class="my-2"
                   v-if="item.localArticlePath && item.localArticlePath.length"
                 >
+                  <!-- A hidden title makes each "Web Article" and "Download PDF"
+                       name unique ("Download PDF: <title>") and keeps the visible
+                       words first (WCAG 2.4.4, 2.5.3). -->
                   <span class=""
                     ><v-btn
                       outlined
                       x-small
                       color="blue darken-4"
                       @click="registerArticleView(item)"
-                      >Web Article</v-btn
+                      >Web Article<span class="sr-only"
+                        >: {{ item.title }}</span
+                      ></v-btn
                     ></span
                   >
                 </div>
@@ -108,7 +129,9 @@
                       rel="noopener noreferrer"
                       x-small
                       @click="registerDownload(item)"
-                      >Download PDF<v-icon right>mdi-download</v-icon></v-btn
+                      >Download PDF<span class="sr-only"
+                        >: {{ item.title }}</span
+                      ><v-icon right>mdi-download</v-icon></v-btn
                     ></span
                   >
                   <span v-else
@@ -205,7 +228,20 @@ export default {
       ],
     };
   },
+  computed: {
+    sortableHeaders() {
+      return this.headers.filter((header) => header.sortable !== false);
+    },
+  },
   watch: {
+    // Sorting re-renders the rows, which drops the names fixExpandButtons
+    // gave the expand buttons; name them again once the rows are back.
+    sortBy() {
+      this.$nextTick(fixExpandButtons);
+    },
+    sortDesc() {
+      this.$nextTick(fixExpandButtons);
+    },
     page(newValue) {
       console.log("paginate: ", newValue);
 

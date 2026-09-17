@@ -35,6 +35,9 @@
       >{{ displayAuthors(item.authors) }}</v-card-text
     >
 
+    <!-- Thumbnails repeat the card's title: decorative, with their loading
+         spinners hidden too, so neither adds to the card's name (WCAG 1.1.1,
+         2.5.3). -->
     <div v-if="!textOnly">
       <v-img
         v-if="item.image"
@@ -45,10 +48,15 @@
         :ref="'img_' + item.id"
         @error="errorHandler"
         style="border: 1px solid #fafafa"
-        alt="ICJIA News image"
+        alt=""
         @load="resize"
         ><template #placeholder>
-          <v-row class="fill-height ma-0" align="center" justify="center">
+          <v-row
+            class="fill-height ma-0"
+            align="center"
+            justify="center"
+            aria-hidden="true"
+          >
             <v-progress-circular
               indeterminate
               color="blue darken-3"
@@ -67,10 +75,15 @@
         :ref="'img_' + item.id"
         @error="errorHandler"
         style="border: 1px solid #fafafa"
-        alt="ICJIA News image"
+        alt=""
         @load="resize"
         ><template #placeholder>
-          <v-row class="fill-height ma-0" align="center" justify="center">
+          <v-row
+            class="fill-height ma-0"
+            align="center"
+            justify="center"
+            aria-hidden="true"
+          >
             <v-progress-circular
               indeterminate
               color="blue darken-3"
@@ -90,10 +103,15 @@
         :ref="'img_' + item.id"
         @error="errorHandler"
         style="border: 1px solid #fafafa"
-        alt="ICJIA News image"
+        alt=""
         @load="resize"
         ><template #placeholder>
-          <v-row class="fill-height ma-0" align="center" justify="center">
+          <v-row
+            class="fill-height ma-0"
+            align="center"
+            justify="center"
+            aria-hidden="true"
+          >
             <v-progress-circular
               indeterminate
               color="blue darken-3"

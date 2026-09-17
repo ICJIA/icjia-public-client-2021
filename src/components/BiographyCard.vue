@@ -1,5 +1,9 @@
 <template>
   <div>
+    <!-- The whole card links to the biography. The name inside it is a plain
+         heading (WCAG 4.1.2): it used to be a focusable heading that ran a
+         search, nested in the card link. The search is the separate link
+         after the card. -->
     <v-card
       :to="`/about/biographies/${item.slug}`"
       elevation="1"
@@ -22,24 +26,15 @@
           ></v-img>
         </v-avatar>
         <span>
-          <v-tooltip top v-if="showName">
-            <template v-slot:activator="{ on, attrs }">
-              <h2
-                :id="item.slug ? `bio-${item.slug}` : undefined"
-                class="text-h5 author-name hover ml-3"
-                style="cursor: pointer"
-                tabindex="0"
-                @click.stop.prevent="search(item.fullName)"
-                @keydown.enter.stop.prevent="search(item.fullName)"
-                v-bind="attrs"
-                v-on="on"
-              >
-                {{ item.fullName }}<span v-if="item.suffix">,&nbsp;</span
-                >{{ item.suffix }}
-              </h2>
-            </template>
-            <span>Search ICJIA for {{ item.fullName }}</span>
-          </v-tooltip>
+          <h2
+            v-if="showName"
+            :id="item.slug ? `bio-${item.slug}` : undefined"
+            class="text-h5 author-name hover ml-3"
+            style="cursor: pointer"
+          >
+            {{ item.fullName }}<span v-if="item.suffix">,&nbsp;</span
+            >{{ item.suffix }}
+          </h2>
 
           <v-card-subtitle style="margin-top: -10px">
             <span
@@ -74,31 +69,24 @@
         </span>
       </div>
     </v-card>
+    <div v-if="item && showName" class="title-search title-search--card">
+      <router-link :to="searchLink(item.fullName)"
+        >Search ICJIA for {{ item.fullName }}</router-link
+      >
+    </div>
   </div>
 </template>
 
 <script>
 import { renderToHtml } from "@/services/Markdown";
-import { goToSearch } from "@/utils/search";
+import { searchLocation } from "@/utils/search";
 export default {
-  mounted() {
-    // Vuetify's v-tooltip injects aria-expanded AND aria-haspopup="true" onto
-    // the activator via v-bind="attrs". On these <h2> author names that yields
-    // ARIA the heading role does not support — SiteImprove sia-r18 "ARIA
-    // attribute unsupported or prohibited" (WCAG 4.1.2) on /about/composition-
-    // and-membership/ and /about/units/*. Strip both; the tooltip still works.
-    const els = document.getElementsByClassName("author-name");
-    for (let i = 0, len = els.length; i < len; ++i) {
-      els[i].removeAttribute("aria-expanded");
-      els[i].removeAttribute("aria-haspopup");
-    }
-  },
   methods: {
-    search(name) {
+    searchLink(name) {
       // Was: EventBus.$emit("search", { query: name }) — opened the modal.
       // Users asked to land on /search so they could see all hits for the
       // name, open a specific one in a new tab, and come back here.
-      goToSearch(this.$router, { query: name, type: "general" });
+      return searchLocation({ query: name, type: "general" });
     },
     render(content) {
       return renderToHtml(content);

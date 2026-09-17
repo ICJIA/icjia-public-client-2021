@@ -16,6 +16,13 @@
               @input="debouncedSearch"
               style="font-weight: 900"
             />
+            <!-- The result count and the no-results and keep-typing messages
+                 are status messages (WCAG 4.1.3). This region repeats the text
+                 shown below once each search has run, so it is announced once
+                 per search rather than on every keystroke. -->
+            <div class="sr-only" role="status" aria-live="polite">
+              {{ statusMessage }}
+            </div>
             <!--
               Filter toolbar — replaces the heavy navy panel + select that
               used to live here. Pattern: a quiet single-line summary
@@ -185,6 +192,7 @@ export default {
       searchInput: this.$refs.textfield,
       fuse: null,
       searchSeq: 0,
+      statusMessage: "",
       resultNumber: "s",
       arrayToList,
       getProperCategory,
@@ -332,6 +340,23 @@ export default {
     },
     selectChip(chip) {
       this.contentSelected = chip.value === null ? "No filter" : chip.value;
+      // After the filter has been applied.
+      this.$nextTick(() => this.announceStatus(this.resultStatus()));
+    },
+    // The text of the visible summary or no-results message.
+    resultStatus() {
+      const count = this.queryResults.length;
+      if (!count) return `No results for “${this.query}”.`;
+      return `${this.filteredResults.length} of ${count} result${
+        count === 1 ? "" : "s"
+      } for “${this.query}”`;
+    },
+    // Cleared first, so a message that repeats the last one is still heard.
+    announceStatus(message) {
+      this.statusMessage = "";
+      this.$nextTick(() => {
+        this.statusMessage = message;
+      });
     },
     prettifyType(t) {
       // Map raw contentType strings (e.g. "article") to display labels
@@ -433,9 +458,14 @@ export default {
       });
     },
     async instantSearch() {
-      if (!this.query) return;
-      if (!this.query.length) return;
-      if (this.query.length < 2) return;
+      if (!this.query || !this.query.length) {
+        this.statusMessage = "";
+        return;
+      }
+      if (this.query.length < 2) {
+        this.announceStatus("Keep typing — search starts at 2 characters.");
+        return;
+      }
       if (!this.fuse) return;
       // Sequence guard discards stale worker responses if the user types
       // faster than the worker can reply.
@@ -451,6 +481,8 @@ export default {
       this.contentItems = uniques;
       this.filterResults(null);
       this.contentSelected = "No filter";
+      // Once the filter reset above has been applied.
+      this.$nextTick(() => this.announceStatus(this.resultStatus()));
       //iterate through all queryresults
     },
     displayHeadings(headings) {

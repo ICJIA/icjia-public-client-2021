@@ -18,12 +18,24 @@
                 style="margin-top: 0px"
                 v-if="content"
               >
+                <!-- aria-pressed exposes the selected option, which is
+                     otherwise shown only by style (WCAG 4.1.2). -->
                 <v-btn-toggle v-model="toggle_nofoStatus" mandatory>
-                  <v-btn small elevation="1" class="button-weight">
+                  <v-btn
+                    small
+                    elevation="1"
+                    class="button-weight"
+                    :aria-pressed="toggle_nofoStatus === 0 ? 'true' : 'false'"
+                  >
                     Current
                   </v-btn>
 
-                  <v-btn small elevation="1" class="button-weight">
+                  <v-btn
+                    small
+                    elevation="1"
+                    class="button-weight"
+                    :aria-pressed="toggle_nofoStatus === 1 ? 'true' : 'false'"
+                  >
                     Expired
                   </v-btn>
                 </v-btn-toggle>

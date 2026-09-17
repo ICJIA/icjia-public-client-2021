@@ -1,14 +1,26 @@
 <template>
   <div>
     <div>
+      <!-- aria-pressed exposes the selected view, which is otherwise shown
+           only by style (WCAG 4.1.2). -->
       <v-btn-toggle v-model="icon" v-if="!listViewOnly">
-        <v-btn value="list" small elevation="1">
+        <v-btn
+          value="list"
+          small
+          elevation="1"
+          :aria-pressed="icon === 'list' ? 'true' : 'false'"
+        >
           <span class="button-weight">List View</span>
 
           <v-icon right small>mdi-format-list-bulleted</v-icon>
         </v-btn>
 
-        <v-btn value="calendar" small elevation="1">
+        <v-btn
+          value="calendar"
+          small
+          elevation="1"
+          :aria-pressed="icon === 'calendar' ? 'true' : 'false'"
+        >
           <span class="button-weight">Calendar View</span>
 
           <v-icon right small> calendar_today </v-icon>

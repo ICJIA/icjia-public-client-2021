@@ -7,7 +7,6 @@
       :height="splashHeight"
       class="mb-5"
       style="border: 1px solid #aaa"
-      aria-label="ICJIA Internet news item image"
       :alt="getAltText()"
       ><template v-slot:placeholder>
         <v-row class="fill-height ma-0" align="center" justify="center">
@@ -103,12 +102,10 @@ export default {
     },
   },
   methods: {
+    // Strapi's alt text, or empty: a placeholder such as "ICJIA Internet news
+    // item image" describes nothing (WCAG 1.1.1).
     getAltText() {
-      if (this.splash.alternativeText) {
-        return this.splash.alternativeText;
-      } else {
-        return "ICJIA Internet news item image";
-      }
+      return this.splash.alternativeText || "";
     },
   },
   props: {

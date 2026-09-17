@@ -18,6 +18,18 @@
       :items-per-page="25"
       style="border: 1px solid #eee; background: #fff"
     >
+      <!-- Sortable column headers hold a real button (WCAG 2.1.1): the header
+           cell sorted on a mouse click only. The button's click reaches the
+           header cell, so Vuetify sorts exactly as before and keeps aria-sort
+           on the cell. -->
+      <template
+        v-for="header in sortableHeaders"
+        v-slot:[`header.${header.value}`]
+      >
+        <button :key="header.value" type="button" class="table-sort-button">
+          {{ header.text }}
+        </button>
+      </template>
       <template v-slot:item.start="{ item }">
         <div
           style="width: 110px; font-size: 14px; font-weight: 700; color: #222"
@@ -155,6 +167,21 @@ export default {
         { text: "Attachments", align: "center", value: "attachments" },
       ],
     };
+  },
+  computed: {
+    sortableHeaders() {
+      return this.meetingHeaders.filter((header) => header.sortable !== false);
+    },
+  },
+  watch: {
+    // Sorting re-renders the rows, which drops the names fixExpandButtons
+    // gave the expand buttons; name them again once the rows are back.
+    sortBy() {
+      this.$nextTick(fixExpandButtons);
+    },
+    sortDesc() {
+      this.$nextTick(fixExpandButtons);
+    },
   },
   mounted() {
     attachInternalLinks(this);

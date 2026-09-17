@@ -8,8 +8,16 @@
               <div class="markdown-body mb-10 page-heading">
                 <h1>ICJIA Meetings</h1>
 
+                <!-- aria-pressed exposes the selected view, which is
+                     otherwise shown only by style (WCAG 4.1.2). -->
                 <v-btn-toggle v-model="viewToggle" mandatory>
-                  <v-btn value="all" small elevation="1" aria-label="By date">
+                  <v-btn
+                    value="all"
+                    small
+                    elevation="1"
+                    aria-label="By date"
+                    :aria-pressed="viewToggle === 'all' ? 'true' : 'false'"
+                  >
                     <span class="button-weight">By date</span>
 
                     <span class="mdi mdi-calendar" aria-hidden="true"> </span>
@@ -19,6 +27,7 @@
                     elevation="1"
                     small
                     aria-label="By category"
+                    :aria-pressed="viewToggle === 'category' ? 'true' : 'false'"
                   >
                     <span class="button-weight">By category</span>
 

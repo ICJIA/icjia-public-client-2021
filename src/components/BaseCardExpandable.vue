@@ -58,16 +58,14 @@
           </v-chip>
         </div>
       </div>
+      <!-- The title is a plain heading (WCAG 4.1.2); it used to be a focusable
+           heading that ran a search or opened the item. Where it opened the
+           item, the title is now a link inside the heading; where it ran a
+           search, the search is the separate link below it. -->
       <div style="margin-top: 35px">
         <h2
-          @click.stop.prevent="
-            openSearch === true ? search(item.title) : routeTo(item.fullPath)
-          "
-          @keydown.enter.stop.prevent="
-            openSearch === true ? search(item.title) : routeTo(item.fullPath)
-          "
-          tabindex="0"
-          class="hover program-title"
+          class="program-title"
+          :class="{ hover: openSearch !== true }"
           style="
             line-height: 1.3em;
             margin: 0;
@@ -75,7 +73,13 @@
             font-size: 22px;
           "
         >
-          {{ item.title }}
+          <router-link
+            v-if="openSearch !== true"
+            :to="item.fullPath"
+            class="card-title-link"
+            >{{ item.title }}</router-link
+          >
+          <template v-else>{{ item.title }}</template>
         </h2>
         <span v-if="showLink">
           |
@@ -83,6 +87,11 @@
             >link</v-icon
           ></span
         >
+        <div v-if="openSearch === true" class="title-search">
+          <router-link :to="searchLink(item.title)"
+            >Search ICJIA for {{ item.title }}</router-link
+          >
+        </div>
       </div>
       <div
         v-if="item.start && item.end"
@@ -139,7 +148,7 @@ const addOneDayToDate = function (date) {
   return newDate;
 };
 import { renderToHtml } from "@/services/Markdown";
-import { goToSearch } from "@/utils/search";
+import { searchLocation } from "@/utils/search";
 import { isRelatedContent } from "@/utils/content";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 export default {
@@ -156,17 +165,11 @@ export default {
     };
   },
   methods: {
-    routeTo(fullPath) {
-      if (!fullPath) return;
-      this.$router.push(fullPath).catch(() => {
-        this.$vuetify.goTo(0);
-      });
-    },
     render(content) {
       return renderToHtml(content);
     },
-    search(name) {
-      goToSearch(this.$router, { query: name, type: "general" });
+    searchLink(name) {
+      return searchLocation({ query: name, type: "general" });
     },
   },
   props: {
@@ -223,7 +226,7 @@ export default {
 .link {
   text-decoration: none;
 }
-.program-title:hover,
+.program-title.hover:hover,
 .link:hover {
   text-decoration: underline;
 }

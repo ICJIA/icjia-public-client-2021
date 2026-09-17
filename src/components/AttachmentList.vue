@@ -22,15 +22,17 @@
     </h3>
 
     <div class="">
+      <!-- Sorting is off (WCAG 2.1.1): the sortable headers worked with a
+           mouse only, and a short list of attachments does not need
+           re-sorting. Each table keeps the order it used to show by default. -->
       <v-data-table
         v-if="!hideUpdated"
         dense
         :headers="headers"
-        :items="attachments"
+        :items="attachmentsByDate"
         hide-default-footer
         :items-per-page="-1"
-        :sort-by.sync="sortBy"
-        :sort-desc.sync="sortDesc"
+        disable-sort
         class="elevation-0"
       >
         <template v-slot:item.updated_at="{ item }">
@@ -59,11 +61,10 @@
         v-if="hideUpdated"
         dense
         :headers="slimHeaders"
-        :items="attachments"
+        :items="attachmentsByName"
         hide-default-footer
         :items-per-page="-1"
-        :sort-by.sync="slimSortBy"
-        :sort-desc.sync="slimSortDesc"
+        disable-sort
         class="elevation-0"
       >
         <template v-slot:item.size="{ item }">
@@ -100,16 +101,13 @@ function niceBytes(x) {
 }
 
 import _ from "lodash";
+import { sortItems } from "vuetify/lib/util/helpers";
 // eslint-disable-next-line no-unused-vars
 import dayjs from "@/plugins/dayjs";
 export default {
   data() {
     return {
       attachments: null,
-      sortBy: "updated_at",
-      sortDesc: true,
-      slimSortBy: "name",
-      slimSortDesc: false,
 
       niceBytes,
       headers: [
@@ -134,6 +132,29 @@ export default {
         { text: "Size", value: "size" },
       ],
     };
+  },
+  computed: {
+    // The orders the tables used to sort into by default (newest first, or
+    // by file name when Last Updated is hidden), using Vuetify's own
+    // comparator so the rows appear in exactly the same order.
+    attachmentsByDate() {
+      if (!this.attachments) return [];
+      return sortItems(
+        [...this.attachments],
+        ["updated_at"],
+        [true],
+        this.$vuetify.lang.current
+      );
+    },
+    attachmentsByName() {
+      if (!this.attachments) return [];
+      return sortItems(
+        [...this.attachments],
+        ["name"],
+        [false],
+        this.$vuetify.lang.current
+      );
+    },
   },
   methods: {
     fileUrl(url) {

@@ -64,12 +64,14 @@
           </v-chip>
         </div>
       </div>
+      <!-- The title is a plain heading (WCAG 4.1.2); a click on it used to run
+           a search or repeat the card's own click. On a clickable card the
+           card still opens the listing; where the title ran a search, the
+           search is the separate link below it. -->
       <div style="margin-top: -30px">
         <h2
-          @click.stop.prevent="
-            openSearch === true ? search(item.title) : routeTo(item.fullPath)
-          "
-          class="hover program-title"
+          class="program-title"
+          :class="{ hover: isClickable }"
           style="
             line-height: 1.3em;
             margin: 0;
@@ -79,6 +81,11 @@
         >
           {{ item.title }}
         </h2>
+        <div v-if="openSearch === true && !isClickable" class="title-search">
+          <router-link :to="searchLink(item.title)"
+            >Search ICJIA for {{ item.title }}</router-link
+          >
+        </div>
       </div>
       <span class="mb-8" style="color: #222; font-size: 14px; font-weight: 400">
         Posted {{ item.start | format }}</span
@@ -180,7 +187,7 @@ const addOneDayToDate = function (date) {
   return newDate;
 };
 import { renderToHtml } from "@/services/Markdown";
-import { goToSearch } from "@/utils/search";
+import { searchLocation } from "@/utils/search";
 import { isRelatedContent, getProperCategory } from "@/utils/content";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 export default {
@@ -208,8 +215,8 @@ export default {
     render(content) {
       return renderToHtml(content);
     },
-    search(name) {
-      goToSearch(this.$router, { query: name, type: "general" });
+    searchLink(name) {
+      return searchLocation({ query: name, type: "general" });
     },
   },
   props: {
@@ -262,7 +269,7 @@ export default {
 .link {
   text-decoration: none;
 }
-.program-title:hover,
+.program-title.hover:hover,
 .link:hover {
   text-decoration: underline;
 }

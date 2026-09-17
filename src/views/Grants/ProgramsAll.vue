@@ -22,15 +22,32 @@
                 class="mb-6 page-heading"
                 style="margin-top: -25px"
               >
+                <!-- aria-pressed exposes the selected options, which are
+                     otherwise shown only by style (WCAG 4.1.2). -->
                 <v-btn-toggle v-model="toggle_category" mandatory class="mb-4">
-                  <v-btn small elevation="1" class="button-weight">
+                  <v-btn
+                    small
+                    elevation="1"
+                    class="button-weight"
+                    :aria-pressed="toggle_category === 0 ? 'true' : 'false'"
+                  >
                     All Programs
                   </v-btn>
 
-                  <v-btn small elevation="1" class="button-weight">
+                  <v-btn
+                    small
+                    elevation="1"
+                    class="button-weight"
+                    :aria-pressed="toggle_category === 1 ? 'true' : 'false'"
+                  >
                     Federal
                   </v-btn>
-                  <v-btn small elevation="1" class="button-weight">
+                  <v-btn
+                    small
+                    elevation="1"
+                    class="button-weight"
+                    :aria-pressed="toggle_category === 2 ? 'true' : 'false'"
+                  >
                     State
                   </v-btn>
                 </v-btn-toggle>
@@ -39,11 +56,21 @@
                   >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span
                 >
                 <v-btn-toggle v-model="toggle_status" mandatory class="mb-4">
-                  <v-btn small elevation="1" class="button-weight">
+                  <v-btn
+                    small
+                    elevation="1"
+                    class="button-weight"
+                    :aria-pressed="toggle_status === 0 ? 'true' : 'false'"
+                  >
                     Current
                   </v-btn>
 
-                  <v-btn small elevation="1" class="button-weight">
+                  <v-btn
+                    small
+                    elevation="1"
+                    class="button-weight"
+                    :aria-pressed="toggle_status === 1 ? 'true' : 'false'"
+                  >
                     Archived
                   </v-btn>
                 </v-btn-toggle>

@@ -57,6 +57,13 @@ a:hover {
   text-decoration: none;
 }
 
+/* Footer links stay white on hover (WCAG 1.4.3): the black above is 2.10:1 on
+   the footer's #0d4474, white is 10.02:1. Hover still shows as the underline
+   going away. */
+footer.dark-surface a:hover {
+  color: #fff !important;
+}
+
 .info-card:hover,
 .event-card:hover,
 .news-card:hover {
@@ -446,6 +453,36 @@ details[open] summary ~ * {
    was a Vuetify link card (.v-card--link). */
 .title-link-card .v-chip {
   cursor: pointer;
+}
+
+/* Sort buttons in data-table headers (WCAG 2.1.1). The header text is a real
+   button so sorting works from the keyboard; it looks exactly like the text it
+   replaces, and its click reaches the header cell, which sorts as before. */
+.v-application .table-sort-button {
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: inherit;
+  margin: 0;
+  padding: 0;
+  text-align: inherit;
+  text-transform: inherit;
+}
+
+/* "Search ICJIA for …" links (WCAG 4.1.2). Staff and board names, program
+   titles and a job title were headings that ran this search when clicked;
+   they are plain headings now, and the search is this separate link. Under a
+   biography card, which is itself a link, it sits just outside the card. */
+.v-application .title-search {
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 8px;
+}
+.v-application .title-search--card {
+  margin: 0 8px 12px 0;
+  text-align: right;
 }
 
 .page {

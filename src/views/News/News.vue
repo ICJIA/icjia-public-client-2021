@@ -25,6 +25,9 @@
                     md="6"
                     class="featured-img-col"
                   >
+                    <!-- Card images repeat the card's title: decorative
+                         unless Strapi has alt text, and the loading spinner
+                         stays out of the card's name (WCAG 1.1.1, 2.5.3). -->
                     <v-img
                       :src="`https://agency.icjia-api.cloud${
                         featured.splash.formats.medium
@@ -37,9 +40,7 @@
                       max-height="320"
                       contain
                       position="center center"
-                      :alt="
-                        featured.splash.alternativeText || 'Featured news image'
-                      "
+                      :alt="featured.splash.alternativeText || ''"
                       class="grey lighten-4"
                     >
                       <template #placeholder>
@@ -47,6 +48,7 @@
                           class="fill-height ma-0"
                           align="center"
                           justify="center"
+                          aria-hidden="true"
                         >
                           <v-progress-circular
                             indeterminate
@@ -108,7 +110,8 @@
             </v-col>
           </v-row>
 
-          <!-- Category Filters -->
+          <!-- Category Filters. aria-pressed exposes the selected filter,
+               which is otherwise shown only by its fill (WCAG 4.1.2). -->
           <v-row class="mb-2">
             <v-col cols="12">
               <v-btn
@@ -116,6 +119,7 @@
                 :outlined="activeCategory !== 'all'"
                 :color="activeCategory === 'all' ? '#0D4474' : ''"
                 :dark="activeCategory === 'all'"
+                :aria-pressed="activeCategory === 'all' ? 'true' : 'false'"
                 class="mr-2 mb-2"
                 @click="resetToLatest"
                 >All</v-btn
@@ -127,6 +131,9 @@
                 :outlined="activeCategory !== cat.category"
                 :color="activeCategory === cat.category ? '#0D4474' : ''"
                 :dark="activeCategory === cat.category"
+                :aria-pressed="
+                  activeCategory === cat.category ? 'true' : 'false'
+                "
                 class="mr-2 mb-2"
                 @click="selectCategory(cat.category)"
                 >{{ cat.label }}</v-btn
@@ -167,9 +174,7 @@
                               height="90"
                               contain
                               position="center center"
-                              :alt="
-                                item.splash.alternativeText || 'News thumbnail'
-                              "
+                              :alt="item.splash.alternativeText || ''"
                               class="news-thumb grey lighten-4"
                             ></v-img>
                           </v-col>

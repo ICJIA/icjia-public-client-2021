@@ -17,6 +17,7 @@ import {
   fixDataTableHeaders,
   fixAriaHiddenFocus,
   fixEmptyAriaLabel,
+  fixInlineColorContrast,
 } from "@/a11y/index";
 
 // Helper: reset document body between tests
@@ -71,6 +72,25 @@ describe("fixExpandButtons()", () => {
     fixExpandButtons("custom-expand", "Show details");
     const btn = document.querySelector(".custom-expand");
     expect(btn.getAttribute("aria-label")).to.equal("Show details");
+  });
+
+  it("names a row's button from the row, and does not repeat itself when run again", () => {
+    // Tables re-run it after sorting, when the buttons already carry a label.
+    document.body.innerHTML =
+      '<table><tbody><tr><td><button class="v-data-table__expand-icon"></button></td>' +
+      "<td>Budget Committee Meeting</td><td>Aug 27, 2026</td></tr></tbody></table>";
+    // jsdom has no layout, so innerText falls back to textContent
+    document.querySelectorAll("td").forEach((td) => {
+      Object.defineProperty(td, "innerText", {
+        get: () => td.textContent,
+      });
+    });
+    fixExpandButtons();
+    fixExpandButtons();
+    const btn = document.querySelector("button");
+    expect(btn.getAttribute("aria-label")).to.equal(
+      "Toggle details for Budget Committee Meeting"
+    );
   });
 });
 
@@ -476,5 +496,82 @@ describe("fixEmptyAriaLabel()", () => {
     const div = document.querySelector("div");
     expect(div.hasAttribute("aria-label")).to.be.false;
     expect(div.textContent).to.equal("Plain");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// fixInlineColorContrast
+// ---------------------------------------------------------------------------
+describe("fixInlineColorContrast()", () => {
+  const colorOf = (id) => document.getElementById(id).style.color;
+
+  it("resets a low-contrast colour on the page background, through transparent wrappers", () => {
+    // Transparent ancestors used to count as a dark background, so this
+    // element was skipped.
+    document.body.innerHTML =
+      '<div class="markdown-body"><div><div><p id="t" style="color: #bbbbbb">Light grey, 1.99:1</p></div></div></div>';
+    fixInlineColorContrast();
+    expect(colorOf("t")).to.equal("rgb(0, 0, 0)");
+  });
+
+  it("resets a low-contrast colour on an opaque background of its own section", () => {
+    document.body.innerHTML =
+      '<div class="markdown-body"><div style="background-color: #fafafa"><span id="t" style="color: #999999">Grey, 2.72:1</span></div></div>';
+    fixInlineColorContrast();
+    expect(colorOf("t")).to.equal("rgb(0, 0, 0)");
+  });
+
+  it("leaves colours that meet 4.5:1 unchanged", () => {
+    document.body.innerHTML =
+      '<div class="markdown-body"><p id="blue" style="color: #1565c0">Blue, 5.75:1</p><p id="grey" style="color: #444444">Grey, 9.74:1</p></div>';
+    fixInlineColorContrast();
+    expect(colorOf("blue")).to.equal("rgb(21, 101, 192)");
+    expect(colorOf("grey")).to.equal("rgb(68, 68, 68)");
+  });
+
+  it("uses white for low-contrast text on a dark background and keeps white text there", () => {
+    document.body.innerHTML =
+      '<div class="markdown-body" style="background-color: #0d4474"><span id="dark" style="color: #1a1a1a">Near-black, 1.74:1</span><span id="white" style="color: #ffffff">White, 10.02:1</span></div>';
+    fixInlineColorContrast();
+    expect(colorOf("dark")).to.equal("rgb(255, 255, 255)");
+    expect(colorOf("white")).to.equal("rgb(255, 255, 255)");
+  });
+
+  it("applies 3:1 to large text and 4.5:1 to other text", () => {
+    document.body.innerHTML =
+      '<div class="markdown-body"><h2 id="large" style="color: #8a8a8a; font-size: 24px">Large, 3.46:1</h2><p id="small" style="color: #8a8a8a; font-size: 16px">Small, 3.46:1</p></div>';
+    fixInlineColorContrast();
+    expect(colorOf("large")).to.equal("rgb(138, 138, 138)");
+    expect(colorOf("small")).to.equal("rgb(0, 0, 0)");
+  });
+
+  it("leaves text over an image alone", () => {
+    document.body.innerHTML =
+      '<div class="markdown-body"><div class="v-image"><div class="v-responsive__content"><h2 id="t" style="color: #ffffff">White over a photo</h2></div></div></div>';
+    fixInlineColorContrast();
+    expect(colorOf("t")).to.equal("rgb(255, 255, 255)");
+  });
+
+  it("leaves elements that set their own background alone", () => {
+    document.body.innerHTML =
+      '<div class="markdown-body"><span id="t" style="background: #ffff00; color: #ffffff">Author-set pair</span></div>';
+    fixInlineColorContrast();
+    expect(colorOf("t")).to.equal("rgb(255, 255, 255)");
+  });
+
+  it("keeps an !important colour important", () => {
+    document.body.innerHTML =
+      '<div class="markdown-body"><p id="t" style="color: #cccccc !important">Pale grey</p></div>';
+    fixInlineColorContrast();
+    const el = document.getElementById("t");
+    expect(el.style.color).to.equal("rgb(0, 0, 0)");
+    expect(el.style.getPropertyPriority("color")).to.equal("important");
+  });
+
+  it("ignores content outside the CMS containers", () => {
+    document.body.innerHTML =
+      '<div><p id="t" style="color: #bbbbbb">Template text</p></div>';
+    fixInlineColorContrast();
+    expect(colorOf("t")).to.equal("rgb(187, 187, 187)");
   });
 });

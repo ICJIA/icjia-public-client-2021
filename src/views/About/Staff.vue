@@ -31,15 +31,25 @@
                 <h2 v-if="staffToggle === 1">ICJIA Staff by Unit</h2>
                 <h2 v-else>All ICJIA Staff</h2>
 
+                <!-- aria-pressed exposes the selected option, which is
+                     otherwise shown only by style (WCAG 4.1.2). -->
                 <v-btn-toggle
                   v-model="staffToggle"
                   mandatory
                   style="margin-top: 5px"
                 >
-                  <v-btn small class="button-weight" elevation="1"
+                  <v-btn
+                    small
+                    class="button-weight"
+                    elevation="1"
+                    :aria-pressed="staffToggle === 0 ? 'true' : 'false'"
                     >All Staff
                   </v-btn>
-                  <v-btn small class="button-weight" elevation="1"
+                  <v-btn
+                    small
+                    class="button-weight"
+                    elevation="1"
+                    :aria-pressed="staffToggle === 1 ? 'true' : 'false'"
                     >Staff By Unit
                   </v-btn>
                 </v-btn-toggle>

@@ -82,6 +82,120 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.69] - 2026-09-16
+
+### fix(accessibility) — Table sorting, titles and names, selected states, headings, alt text, table headers, forms and status messages
+
+Fixes toward full WCAG 2.1 Level AA conformance. Each was measured with the same scripts before the
+change (the live site, 1.5.68) and after it (a local build): Chrome's accessibility tree, keyboard and
+mouse walks, computed styles and pixels, and screenshots compared pixel by pixel. No form data was
+sent: the tests answered both forms' requests inside the browser.
+
+- **Tables sort from the keyboard (WCAG 2.1.1, Level A).** On Publications, Meetings and Required
+  Forms a sortable column header sorted on a mouse click only; nothing in the header row could take
+  focus. Each sortable header's text is now a button. Enter or Space sorts, focus stays on the
+  button, and the header cell keeps its `aria-sort` (none, ascending, descending, verified in that
+  order). A Tab from the heading above the table reaches the first sort button in 2 to 5 presses,
+  and mouse clicks sort exactly as before. Sorting also left the row expand buttons without names
+  (axe `button-name` after one sort: 112 on Publications, 23 on Meetings); they are named again once
+  the rows are back. Attachment tables on meeting, funding, program and news pages no longer offer
+  sorting, which a short list of files does not need; they keep the order they showed by default,
+  verified row by row on 45 tables (295 rows).
+- **App and dataset pages have their own titles (2.4.2, A).** All 5 Research Hub app pages and all 5
+  dataset pages were titled "ICJIA | Illinois Criminal Justice Information Authority". Each now uses
+  the app's or dataset's title, and following a card to one announces it at about +0.5 s (the
+  generic title at +3 s before). A sweep of a real page of every other dynamic template (news,
+  meetings, events, publications, programs, funding notices, jobs, staff and board, units,
+  Research Hub articles, and pages under /about, /grants, /researchhub,
+  /innovation-and-digital-services and /irb) found no generic title.
+- **"Download PDF" and "Web Article" name their publication (2.4.4, A).** Each Publications page had
+  143 links named only "Download PDF" and 130 buttons named only "Web Article". Each name now adds
+  the title for assistive technology, "Download PDF: <title>", with the visible words first (2.5.3);
+  nothing on screen changes. After: 143 of 143 and 130 of 130 names include the title.
+- **Selected filters and views are exposed (4.1.2, A).** The chosen option was shown only by its
+  fill or outline. The News category filters, the Events list and calendar views, the Research Hub
+  Articles, Apps and Datasets list and grid views, the sort buttons above "Related Web Content" on
+  program pages, and the Funding, Programs, Employment, Staff and Meetings toggles now carry
+  `aria-pressed`. Chrome reported no pressed state on any of them before; after, the pressed state
+  follows the selection on all 11 pages.
+- **Names and titles are headings, not controls (4.1.2, A).** Board and staff names and program
+  titles were focusable headings that ran a site search on Enter or click, and each name sat inside
+  its card's link: 141 focusable headings on Composition, Staff, Programs, a program page and
+  Funding Opportunities, 0 after. They are plain headings. The search is a separate link, "Search
+  ICJIA for David Olson", after each biography card (outside the card's link) and under each program
+  title, and leads to the same search page; the name's hover tooltip went with the old control. A
+  funding notice's title is a link to the notice, as its click was. A job page's title, which ran a
+  search on a mouse click only, has the same kind of link under it.
+- **No placeholder alt text (1.1.1, A).** Card thumbnails and splash images without Strapi alt text
+  were named "News post image", "ICJIA News image", "research content image", "News thumbnail",
+  "Featured news image" or "ICJIA Internet news item image": 82 images on 8 pages, 0 after.
+  Thumbnails beside their card's title are decorative now (`alt=""`), and so are their loading
+  spinners; splash images use Strapi's alt text or none. Alt text set in Strapi is kept.
+- **Tables without header cells (1.3.1, A).** The content pipeline gave a CMS table that had no
+  `<th>` row headers from its first column, whatever it held. In "Addressing Opioid Use Disorders in
+  Corrections", Table 1 lost its header row ("Methadone | Buprenorphine | Naltrexone", bold by class
+  only) and announced "Partial agonist" under the row header "Full agonist". `fixSimpleTable` in
+  `src/utils/contentSanitizer.js` now promotes such a table's styled or spanned first row, or rows,
+  to column headers, and adds row headers only when the first column labels the rows: a blank
+  corner, a label spanning the header rows, grouped columns beside it, or text beside numbers. In
+  the browser Table 1 now announces each fact under its medication, and the two-row headers of
+  "A Study of Drug Testing Practices in Probation" and "The Impact of Employment Restriction Laws on
+  Illinois Convicted Felons" are now column headers. All 264 tables in the CMS pages, news posts,
+  meetings, grants, units, events and Research Hub articles were run through the same pipeline
+  before and after: only those three tables' headers change. The stigma and housing articles, the
+  Meeting Schedules page and a news post's award table read exactly as before. Unit tests cover the
+  new cases and a second pass through the pipeline.
+- **Personal details carry autocomplete tokens (1.3.5, AA).** First name, last name, name, e-mail,
+  phone and requested language on both forms have `given-name`, `family-name`, `name`, `email`,
+  `tel` and `language`: 8 fields, none before.
+- **Hover and error colours meet 4.5:1 (1.4.3, AA).** Footer links turned black on hover, 2.10:1 on
+  the footer's blue; they stay white on hover (10.02:1) and still change, losing their underline.
+  Form error messages and field labels in error were #ff5252 (3.19:1) and "The form has errors."
+  #ff0000 (4.00:1); all are #b00020 now, 7.33:1 from computed styles and from pixels. It is the
+  Vuetify theme's `error` colour, so the site's error boxes put white text on it.
+- **Status messages are announced (4.1.3, AA).** Search results had no live region. A polite one now
+  repeats the result count ("100 of 100 results for “domestic violence”"), "No results for …" or
+  "Keep typing …" once per search, when typing pauses, and again when a filter chip is chosen:
+  typing "domestic violence", 17 keystrokes, gives one announcement. On both forms a successful
+  send moves focus to the confirmation, which is a status message; focus used to fall to the page
+  when the Submit button disappeared. Submitting with errors announces "The form has errors." and
+  moves focus to the first field that needs fixing.
+- **Form errors are tied to their fields.** A field with an error has `aria-invalid` and
+  `aria-describedby` pointing at its message, which Chrome reports as the field's description. Both
+  forms say "All fields are required." before anything is sent, and every field is marked required
+  (3 of 12 were not). "Lanaguage is required" now reads "Language is required".
+- **Hand-set text colours in CMS content are corrected where they lack contrast.**
+  `fixInlineColorContrast()` in `src/a11y/index.js` read any transparent ancestor as a dark
+  background and skipped nearly all content, so the colour reset the accessibility statement
+  describes did not happen. It now measures a hand-set colour against the background the text is
+  drawn on, and below 4.5:1 (3:1 for large text) sets black, or white on a dark background; text
+  over an image is left alone. On a test fixture it corrected the 4 failing samples of 9 (none
+  before) and left the 5 others alone. On the 37 pages this release touches it changed none of 935
+  hand-coloured elements. Unit tests cover it.
+- **Card names contain the card's text, title first (2.5.3, A).** Event cards left their title out
+  of their accessible name: Vuetify renders the title bar as a `<header>`, which Chrome skips there.
+  Research Hub and Press card names contained the placeholder image name, and a Research Hub card
+  ran "Contributors" into the next word. Comparing visible text with
+  accessible names on 14 pages at 1,280 and 375: the 14 mismatches in Research Hub and event cards
+  are gone, along with 106 more on the Articles, Apps and Press pages.
+
+Regression checks: axe-core 4.13 (WCAG 2.0 and 2.1, Level A and AA) on the 37 pages this release
+touches at 1,280 and 375, plus form error states, a search with no results, the calendar view, a
+news filter and three sorted tables: 0 violations in 88 runs (6 had violations before: contrast in
+the two forms' error states at both widths, and unnamed expand buttons after sorting). The new
+sort buttons and search and title links show a focus change of 3:1 or more. Screenshots of the 37
+pages at both widths, compared pixel by pixel: 18 pages are identical, 3 differ only in a tab
+underline (up to 34 pixels), and 16 change as intended: the search links, "All fields are
+required.", attachment tables without a sort arrow (and without the phone-width "Sort by" menu),
+Table 1's header row, and on Meeting Schedules the placeholder text shown in place of the splash
+image. Mouse
+clicks on cards, titles, filters, toggles, sort headers and table buttons, and both forms up to the
+intercepted request, give the same results in 23 of 26 checks; the other 3 are the intended ones (a
+click on a name or program or job title no longer runs a search). `vue-cli-service lint --no-fix`
+reports no problems on every changed file; mocha unit tests: 301 passing, 6 pending.
+
+---
+
 ## [1.5.68] - 2026-09-16
 
 ### fix(accessibility) — Keyboard access to cards, search results, the menu, dialogs, contents and footnotes

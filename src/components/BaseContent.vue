@@ -4,7 +4,7 @@
       <v-container>
         <v-row>
           <v-col class="text-center">
-            <div class="apollo error">
+            <div class="apollo error white--text">
               {{ error }}
             </div>
           </v-col>

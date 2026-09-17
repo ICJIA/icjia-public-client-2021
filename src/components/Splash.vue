@@ -29,12 +29,10 @@ export default {
     },
   },
   methods: {
+    // Strapi's alt text, or empty: a placeholder such as "ICJIA Internet news
+    // item image" describes nothing (WCAG 1.1.1).
     getAltText() {
-      if (this.splash.alternativeText) {
-        return this.splash.alternativeText;
-      } else {
-        return "ICJIA Internet news item image";
-      }
+      return this.splash.alternativeText || "";
     },
   },
   props: {

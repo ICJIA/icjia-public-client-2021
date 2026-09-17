@@ -49,6 +49,9 @@
       style="font-weight: 700; color: #222; font-size: 12px; margin-top: -25px"
       >{{ displayAuthors(item.authors) }}</v-card-text
     >
+    <!-- Thumbnails repeat the card's title: decorative, with their loading
+         spinners hidden too, so neither adds to the card's name (WCAG 1.1.1,
+         2.5.3). -->
     <div v-if="item.splash">
       <v-img
         :src="`https://agency.icjia-api.cloud${item.splash.formats.small.url}`"
@@ -59,10 +62,15 @@
         :ref="'img_' + item.id"
         @error="errorHandler(item.id)"
         style="border: 1px solid #fafafa"
-        alt="ICJIA News image"
+        alt=""
         @load="resize"
         ><template #placeholder>
-          <v-row class="fill-height ma-0" align="center" justify="center">
+          <v-row
+            class="fill-height ma-0"
+            align="center"
+            justify="center"
+            aria-hidden="true"
+          >
             <v-progress-circular
               indeterminate
               color="blue darken-3"
@@ -74,17 +82,21 @@
     </div>
 
     <v-img
-      aria-label="News post image"
       src="/icjia-half-splash-thumb-v2.jpg"
       width="100%"
       contain
       class=""
       style="border: 0px solid #fafafa"
-      alt="ICJIA Intranet image"
+      alt=""
       v-else
     >
       <template v-slot:placeholder>
-        <v-row class="fill-height ma-0" align="center" justify="center">
+        <v-row
+          class="fill-height ma-0"
+          align="center"
+          justify="center"
+          aria-hidden="true"
+        >
           <v-progress-circular
             indeterminate
             aria-label="Progress bar: Loading"

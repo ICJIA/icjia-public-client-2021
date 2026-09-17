@@ -31,6 +31,12 @@
                       access to important information about ICJIA programs,
                       benefits, and activities.
                     </p>
+                    <!-- Required fields are stated before the form is sent.
+                         Fields carry autocomplete tokens for personal details
+                         (WCAG 1.3.5), and aria-invalid and aria-describedby
+                         point at a field's error while it has one (fieldState,
+                         errorId). -->
+                    <p class="mb-0">All fields are required.</p>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -40,11 +46,17 @@
                       class="heavy"
                       :error-messages="nameErrors"
                       label="Name"
+                      autocomplete="name"
                       required
+                      v-bind="fieldState('name', nameErrors)"
                       @input="$v.name.$touch()"
                       @blur="$v.name.$touch()"
                       @click="clearAxiosError"
-                    ></v-text-field>
+                    >
+                      <template v-slot:message="{ message }">
+                        <span :id="errorId('name')">{{ message }}</span>
+                      </template>
+                    </v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -57,11 +69,17 @@
                       class="heavy"
                       :error-messages="emailErrors"
                       label="E-mail"
+                      autocomplete="email"
                       required
+                      v-bind="fieldState('email', emailErrors)"
                       @input="$v.email.$touch()"
                       @blur="$v.email.$touch()"
                       @click="clearAxiosError"
-                    ></v-text-field>
+                    >
+                      <template v-slot:message="{ message }">
+                        <span :id="errorId('email')">{{ message }}</span>
+                      </template>
+                    </v-text-field>
                   </v-col>
 
                   <v-col cols="12" md="6">
@@ -70,11 +88,17 @@
                       class="heavy"
                       :error-messages="phoneErrors"
                       label="Phone number"
+                      autocomplete="tel"
                       required
+                      v-bind="fieldState('phone', phoneErrors)"
                       @input="$v.phone.$touch()"
                       @blur="$v.phone.$touch()"
                       @click="clearAxiosError"
-                    ></v-text-field>
+                    >
+                      <template v-slot:message="{ message }">
+                        <span :id="errorId('phone')">{{ message }}</span>
+                      </template>
+                    </v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -87,11 +111,17 @@
                       class="heavy"
                       :error-messages="languageErrors"
                       label="Requested Language"
+                      autocomplete="language"
                       required
+                      v-bind="fieldState('language', languageErrors)"
                       @input="$v.language.$touch()"
                       @blur="$v.language.$touch()"
                       @click="clearAxiosError"
-                    ></v-text-field>
+                    >
+                      <template v-slot:message="{ message }">
+                        <span :id="errorId('language')">{{ message }}</span>
+                      </template>
+                    </v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -108,11 +138,17 @@
                       class="mt-3"
                       @click="clearAxiosError"
                       ref="comment"
+                      required
+                      v-bind="fieldState('comment', commentErrors)"
                       :error-messages="commentErrors"
                       @input="$v.comment.$touch()"
                       @change="$v.comment.$touch()"
                       @blur="$v.comment.$touch()"
-                    ></v-textarea>
+                    >
+                      <template v-slot:message="{ message }">
+                        <span :id="errorId('comment')">{{ message }}</span>
+                      </template>
+                    </v-textarea>
                     <!-- <div v-if="formData">
                       {{ formData }}
                     </div> -->
@@ -132,25 +168,39 @@
                 </span>
               </div>
 
-              <div v-if="!showSubmit" class="text-center" style="color: green">
+              <!-- After sending, focus moves to the confirmation, a status
+                   message (WCAG 4.1.3). It replaces the Submit button, and
+                   focus used to be lost with the button. -->
+              <div
+                v-if="!showSubmit"
+                ref="successMessage"
+                role="status"
+                tabindex="-1"
+                class="text-center"
+                style="color: green"
+              >
                 {{ successMessage }}
               </div>
-              <div
-                v-if="showAxiosError"
-                style="color: red; font-size: 14px"
-                class="mt-10 text-center"
-              >
-                <b style="font-size: 20px">SUPPORT REQUEST NOT SENT</b>
-                <br />
-                <br />
-                {{ axiosError }}
-              </div>
-              <div
-                v-if="$v.$anyError"
-                style="color: red; font-weight: bold"
-                class="mt-5 text-center"
-              >
-                The form has errors.
+              <!-- Errors are announced as they appear (WCAG 4.1.3). Error text
+                   is #b00020, 7.33:1 on white (WCAG 1.4.3). -->
+              <div role="status">
+                <div
+                  v-if="showAxiosError"
+                  style="color: #b00020; font-size: 14px"
+                  class="mt-10 text-center"
+                >
+                  <b style="font-size: 20px">SUPPORT REQUEST NOT SENT</b>
+                  <br />
+                  <br />
+                  {{ axiosError }}
+                </div>
+                <div
+                  v-if="$v.$anyError"
+                  style="color: #b00020; font-weight: bold"
+                  class="mt-5 text-center"
+                >
+                  The form has errors.
+                </div>
               </div>
               .
             </form>
@@ -253,7 +303,7 @@ export default {
     languageErrors() {
       const errors = [];
       if (!this.$v.language.$dirty) return errors;
-      !this.$v.language.required && errors.push("Lanaguage is required");
+      !this.$v.language.required && errors.push("Language is required");
       return errors;
     },
 
@@ -270,6 +320,16 @@ export default {
     },
   },
   methods: {
+    // Validation state for a field's input: aria-invalid, and
+    // aria-describedby pointing at its error message, while it has an error.
+    fieldState(field, errors) {
+      return errors.length
+        ? { "aria-invalid": "true", "aria-describedby": this.errorId(field) }
+        : {};
+    },
+    errorId(field) {
+      return `lap-request-${field}-error`;
+    },
     getFieldData(v) {
       //console.log("value: ", v);
       this[v.refName] = v.value;
@@ -287,6 +347,13 @@ export default {
     async submit() {
       this.$v.$touch();
       this.showAxiosError = false;
+      if (!this.isSuccess) {
+        // Take the user to the first field that needs fixing.
+        this.$nextTick(() => {
+          const field = this.$el.querySelector('form [aria-invalid="true"]');
+          if (field) field.focus();
+        });
+      }
       if (this.isSuccess) {
         NProgress.start();
         this.showLoader = true;
@@ -341,6 +408,9 @@ export default {
       this.showLoader = false;
       NProgress.done();
       this.reload();
+      this.$nextTick(() => {
+        if (this.$refs.successMessage) this.$refs.successMessage.focus();
+      });
     },
     clear() {
       this.$v.$reset();

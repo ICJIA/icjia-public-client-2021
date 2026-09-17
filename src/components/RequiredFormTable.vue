@@ -14,6 +14,18 @@
       :items-per-page="100"
       style="border: 1px solid #eee; background: #fff"
     >
+      <!-- Sortable column headers hold a real button (WCAG 2.1.1): the header
+           cell sorted on a mouse click only. The button's click reaches the
+           header cell, so Vuetify sorts exactly as before and keeps aria-sort
+           on the cell. -->
+      <template
+        v-for="header in sortableHeaders"
+        v-slot:[`header.${header.value}`]
+      >
+        <button :key="header.value" type="button" class="table-sort-button">
+          {{ header.text }}
+        </button>
+      </template>
       <template v-slot:item.published_at="{ item }">
         <a
           :href="fileUrl(item.attachments[0])"
@@ -151,6 +163,14 @@ export default {
         // { text: "Published", value: "published_at" },
       ],
     };
+  },
+  computed: {
+    sortableHeaders() {
+      const headers = this.showByDate
+        ? this.policyHeadersFull
+        : this.policyHeadersSimple;
+      return headers.filter((header) => header.sortable !== false);
+    },
   },
   mounted() {
     // attachInternalLinks(this);

@@ -29,8 +29,15 @@
                 </v-row>
               </v-container> -->
 
+              <!-- Required fields are stated before the form is sent. Fields
+                   carry autocomplete tokens for personal details (WCAG 1.3.5),
+                   and aria-invalid and aria-describedby point at a field's
+                   error while it has one (fieldState, errorId). -->
               <v-container>
                 <v-row>
+                  <v-col cols="12" md="12">
+                    <p class="mb-0">All fields are required.</p>
+                  </v-col>
                   <v-col cols="12" md="12">
                     <v-select
                       :items="subjects"
@@ -39,13 +46,20 @@
                       v-model="subject"
                       class="heavy"
                       aria-label="Select Type of Request"
+                      required
+                      v-bind="fieldState('subject', subjectErrors)"
                       :error-messages="subjectErrors"
                       @input="$v.subject.$touch()"
                       @change="$v.subject.$touch()"
                       @blur="$v.subject.$touch()"
-                    ></v-select>
-                  </v-col> </v-row
-              ></v-container>
+                    >
+                      <template v-slot:message="{ message }">
+                        <span :id="errorId('subject')">{{ message }}</span>
+                      </template>
+                    </v-select>
+                  </v-col>
+                </v-row></v-container
+              >
 
               <v-container
                 ><v-row>
@@ -57,11 +71,18 @@
                       label="Grant Number"
                       aria-label="Grant Number"
                       required
+                      v-bind="fieldState('number', numberErrors)"
                       @input="$v.number.$touch()"
                       @blur="$v.number.$touch()"
                       @click="clearAxiosError"
-                    ></v-text-field> </v-col></v-row
-              ></v-container>
+                    >
+                      <template v-slot:message="{ message }">
+                        <span :id="errorId('number')">{{ message }}</span>
+                      </template>
+                    </v-text-field>
+                  </v-col></v-row
+                ></v-container
+              >
 
               <v-container>
                 <v-row>
@@ -72,11 +93,17 @@
                       :error-messages="firstNameErrors"
                       label="First Name"
                       aria-label="First Name"
+                      autocomplete="given-name"
                       required
+                      v-bind="fieldState('firstName', firstNameErrors)"
                       @input="$v.firstName.$touch()"
                       @blur="$v.firstName.$touch()"
                       @click="clearAxiosError"
-                    ></v-text-field>
+                    >
+                      <template v-slot:message="{ message }">
+                        <span :id="errorId('firstName')">{{ message }}</span>
+                      </template>
+                    </v-text-field>
                   </v-col>
 
                   <v-col cols="12" md="6">
@@ -86,11 +113,17 @@
                       :error-messages="lastNameErrors"
                       label="Last Name"
                       aria-label="Last Name"
+                      autocomplete="family-name"
                       required
+                      v-bind="fieldState('lastName', lastNameErrors)"
                       @input="$v.lastName.$touch()"
                       @blur="$v.lastName.$touch()"
                       @click="clearAxiosError"
-                    ></v-text-field>
+                    >
+                      <template v-slot:message="{ message }">
+                        <span :id="errorId('lastName')">{{ message }}</span>
+                      </template>
+                    </v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -103,11 +136,17 @@
                       class="heavy"
                       :error-messages="emailErrors"
                       label="E-mail"
+                      autocomplete="email"
                       required
+                      v-bind="fieldState('email', emailErrors)"
                       @input="$v.email.$touch()"
                       @blur="$v.email.$touch()"
                       @click="clearAxiosError"
-                    ></v-text-field>
+                    >
+                      <template v-slot:message="{ message }">
+                        <span :id="errorId('email')">{{ message }}</span>
+                      </template>
+                    </v-text-field>
                   </v-col>
 
                   <v-col cols="12" md="6">
@@ -116,11 +155,17 @@
                       class="heavy"
                       :error-messages="phoneErrors"
                       label="Phone number"
+                      autocomplete="tel"
                       required
+                      v-bind="fieldState('phone', phoneErrors)"
                       @input="$v.phone.$touch()"
                       @blur="$v.phone.$touch()"
                       @click="clearAxiosError"
-                    ></v-text-field>
+                    >
+                      <template v-slot:message="{ message }">
+                        <span :id="errorId('phone')">{{ message }}</span>
+                      </template>
+                    </v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -137,11 +182,17 @@
                       class="mt-3"
                       @click="clearAxiosError"
                       ref="comment"
+                      required
+                      v-bind="fieldState('comment', commentErrors)"
                       :error-messages="commentErrors"
                       @input="$v.comment.$touch()"
                       @change="$v.comment.$touch()"
                       @blur="$v.comment.$touch()"
-                    ></v-textarea>
+                    >
+                      <template v-slot:message="{ message }">
+                        <span :id="errorId('comment')">{{ message }}</span>
+                      </template>
+                    </v-textarea>
                     <!-- <div v-if="formData">
                       {{ formData }}
                     </div> -->
@@ -161,27 +212,41 @@
                 </span>
               </div>
 
-              <div v-if="!showSubmit" class="text-center" style="color: green">
+              <!-- After sending, focus moves to the confirmation, a status
+                   message (WCAG 4.1.3). It replaces the Submit button, and
+                   focus used to be lost with the button. -->
+              <div
+                v-if="!showSubmit"
+                ref="successMessage"
+                role="status"
+                tabindex="-1"
+                class="text-center"
+                style="color: green"
+              >
                 {{ successMessage }}
               </div>
-              <div
-                v-if="showAxiosError"
-                style="color: red; font-size: 14px"
-                class="mt-10 text-center"
-              >
-                <b style="font-size: 20px"
-                  >ERROR: GRANT STATUS REQUEST NOT SENT</b
+              <!-- Errors are announced as they appear (WCAG 4.1.3). Error text
+                   is #b00020, 7.33:1 on white (WCAG 1.4.3). -->
+              <div role="status">
+                <div
+                  v-if="showAxiosError"
+                  style="color: #b00020; font-size: 14px"
+                  class="mt-10 text-center"
                 >
-                <br />
-                <br />
-                {{ axiosError }}
-              </div>
-              <div
-                v-if="$v.$anyError"
-                style="color: red; font-weight: bold"
-                class="mt-5 text-center"
-              >
-                The form has errors.
+                  <b style="font-size: 20px"
+                    >ERROR: GRANT STATUS REQUEST NOT SENT</b
+                  >
+                  <br />
+                  <br />
+                  {{ axiosError }}
+                </div>
+                <div
+                  v-if="$v.$anyError"
+                  style="color: #b00020; font-weight: bold"
+                  class="mt-5 text-center"
+                >
+                  The form has errors.
+                </div>
               </div>
               .
             </form>
@@ -322,6 +387,16 @@ export default {
     },
   },
   methods: {
+    // Validation state for a field's input: aria-invalid, and
+    // aria-describedby pointing at its error message, while it has an error.
+    fieldState(field, errors) {
+      return errors.length
+        ? { "aria-invalid": "true", "aria-describedby": this.errorId(field) }
+        : {};
+    },
+    errorId(field) {
+      return `grant-status-${field}-error`;
+    },
     getFieldData(v) {
       this[v.refName] = v.value;
     },
@@ -337,6 +412,13 @@ export default {
     async submit() {
       this.$v.$touch();
       this.showAxiosError = false;
+      if (!this.isSuccess) {
+        // Take the user to the first field that needs fixing.
+        this.$nextTick(() => {
+          const field = this.$el.querySelector('form [aria-invalid="true"]');
+          if (field) field.focus();
+        });
+      }
       if (this.isSuccess) {
         NProgress.start();
         this.showLoader = true;
@@ -400,6 +482,9 @@ export default {
       this.showLoader = false;
       NProgress.done();
       this.reload();
+      this.$nextTick(() => {
+        if (this.$refs.successMessage) this.$refs.successMessage.focus();
+      });
     },
     clear() {
       this.$v.$reset();

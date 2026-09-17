@@ -20,15 +20,27 @@
         </v-col>
         <v-col cols="12" md="6" class="hidden-sm-and-down">
           <div class="text-right">
+            <!-- aria-pressed exposes the selected view, which is otherwise
+                 shown only by style (WCAG 4.1.2). -->
             <v-btn-toggle v-model="orientation">
-              <v-btn value="list" small aria-label="List view">
+              <v-btn
+                value="list"
+                small
+                aria-label="List view"
+                :aria-pressed="orientation === 'list' ? 'true' : 'false'"
+              >
                 <span>List</span>
 
                 <span aria-hidden="true" class="mdi mdi-format-list-bulleted">
                 </span>
               </v-btn>
 
-              <v-btn value="grid" small aria-label="Grid view">
+              <v-btn
+                value="grid"
+                small
+                aria-label="Grid view"
+                :aria-pressed="orientation === 'grid' ? 'true' : 'false'"
+              >
                 <span>Grid</span>
 
                 <span class="mdi mdi-view-module" aria-hidden="true"> </span>

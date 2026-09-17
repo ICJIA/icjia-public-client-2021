@@ -17,18 +17,24 @@
       <v-container fluid>
         <v-row>
           <v-col cols="12" md="4">
+            <!-- Thumbnails repeat the card's title: decorative, loading
+                 spinner included (WCAG 1.1.1). -->
             <v-img
-              aria-label="News post image"
               :src="`${getImage(item.splash.formats)}`"
               width="100%"
               class=""
               style="border: 0px solid #fafafa; max-height: 200px !important"
-              alt="ICJIA Intranet image"
+              alt=""
               contain
               v-if="item.splash"
             >
               <template v-slot:placeholder>
-                <v-row class="fill-height ma-0" align="center" justify="center">
+                <v-row
+                  class="fill-height ma-0"
+                  align="center"
+                  justify="center"
+                  aria-hidden="true"
+                >
                   <v-progress-circular
                     indeterminate
                     aria-label="Progress bar: Loading"
@@ -38,16 +44,20 @@
               </template>
             </v-img>
             <v-img
-              aria-label="News post image"
               src="/icjia-half-splash-thumb-v2.jpg"
               width="100%"
               class=""
               style="border: 0px solid #fafafa"
-              alt="ICJIA Intranet image"
+              alt=""
               v-else
             >
               <template v-slot:placeholder>
-                <v-row class="fill-height ma-0" align="center" justify="center">
+                <v-row
+                  class="fill-height ma-0"
+                  align="center"
+                  justify="center"
+                  aria-hidden="true"
+                >
                   <v-progress-circular
                     indeterminate
                     aria-label="Progress bar: Loading"

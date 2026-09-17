@@ -26,6 +26,13 @@ api.interceptors.response.use((response) => {
   return sanitizeResponse(response);
 });
 export default {
+  // The page title is the dataset's own title (WCAG 2.4.2); until it loads,
+  // the site default applies.
+  metaInfo() {
+    return {
+      title: this.dataset && this.dataset.title ? this.dataset.title : null,
+    };
+  },
   watch: {
     // eslint-disable-next-line no-unused-vars
     $route(to, from) {

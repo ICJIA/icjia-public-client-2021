@@ -3,14 +3,44 @@
     <h2 v-if="title" class="ml-4">{{ title }}</h2>
     <div class="ml-4" v-if="queryResults && queryResults.length > 2">
       <!-- <span style="font-size: 12px; font-weight: 900">SORT BY:</span> -->
+      <!-- aria-pressed exposes the selected options, which are otherwise
+           shown only by style (WCAG 4.1.2). -->
       <v-btn-toggle v-model="toggle_sort" mandatory class="mb-4">
-        <v-btn small elevation="1" class="button-weight"> Title </v-btn>
-        <v-btn small elevation="1" class="button-weight"> Date </v-btn>
+        <v-btn
+          small
+          elevation="1"
+          class="button-weight"
+          :aria-pressed="toggle_sort === 0 ? 'true' : 'false'"
+        >
+          Title
+        </v-btn>
+        <v-btn
+          small
+          elevation="1"
+          class="button-weight"
+          :aria-pressed="toggle_sort === 1 ? 'true' : 'false'"
+        >
+          Date
+        </v-btn>
       </v-btn-toggle>
       &nbsp;&nbsp;
       <v-btn-toggle v-model="toggle_direction" mandatory class="mb-4">
-        <v-btn small elevation="1" class="button-weight"> Ascending </v-btn>
-        <v-btn small elevation="1" class="button-weight"> Descending </v-btn>
+        <v-btn
+          small
+          elevation="1"
+          class="button-weight"
+          :aria-pressed="toggle_direction === 0 ? 'true' : 'false'"
+        >
+          Ascending
+        </v-btn>
+        <v-btn
+          small
+          elevation="1"
+          class="button-weight"
+          :aria-pressed="toggle_direction === 1 ? 'true' : 'false'"
+        >
+          Descending
+        </v-btn>
       </v-btn-toggle>
     </div>
     <div v-for="(result, index) in queryResults" :key="index" class="px-3 mt-6">

@@ -48,9 +48,13 @@ const getRowContextLabel = function (button) {
     const text = strongEl.innerText.trim();
     if (text) return text.length > 80 ? text.slice(0, 77) + "…" : text;
   }
-  // Fallback: pick the cell with the longest text that isn't purely a date or number
+  // Fallback: pick the cell with the longest text that isn't purely a date or number.
+  // The button's own cell is skipped: it holds the label this function wrote
+  // on an earlier run, which would otherwise be repeated ("Toggle details for
+  // Toggle details for …") when the rows are named again after sorting.
   let best = "";
   row.querySelectorAll("td").forEach((td) => {
+    if (td.contains(button)) return;
     const text = td.innerText.trim();
     if (!text || /^[\d\s/,.-]+$/.test(text)) return;
     if (text.length > best.length) best = text;
@@ -249,41 +253,103 @@ const fixEmptyContainers = function () {
 };
 
 // Fix inline color styles in CMS content that fail WCAG AA contrast.
-// Strapi authors sometimes use "color: red" or other low-contrast inline
-// colors. Replace with black (#000) to guarantee maximum contrast.
+// Strapi authors sometimes set a text colour by hand ("color: #999"). Where
+// that colour is below 4.5:1 (3:1 for large text) against the background the
+// text is drawn on, it becomes black, or white on a dark background. Colours
+// that already meet the ratio are left alone.
+//
+// The background is the first ancestor with an opaque background colour, with
+// any semi-transparent backgrounds on the way blended over it, or the page's
+// white when there is none. Text over a background image cannot be measured
+// and is left alone. (This used to read a transparent ancestor,
+// rgba(0, 0, 0, 0), as a dark background and skip the element, which skipped
+// nearly all content.)
+const parseRgb = function (value) {
+  const m = (value || "").match(
+    /^rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)(?:[\s,/]+([\d.]+)(%?))?\s*\)$/i
+  );
+  if (!m) return null;
+  let alpha = m[4] === undefined ? 1 : parseFloat(m[4]);
+  if (m[5]) alpha /= 100;
+  return [+m[1], +m[2], +m[3], alpha];
+};
+
+const relativeLuminance = function ([r, g, b]) {
+  const channel = (c) => {
+    c /= 255;
+    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  };
+  return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+};
+
+const contrastRatio = function (a, b) {
+  const la = relativeLuminance(a);
+  const lb = relativeLuminance(b);
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+};
+
+// Composite a colour with alpha over an opaque one.
+const blendOver = function (top, bottom) {
+  return [0, 1, 2].map((i) => top[i] * top[3] + bottom[i] * (1 - top[3]));
+};
+
+// The opaque colour an element's text is drawn on, or null when a background
+// image (a CSS image or a Vuetify v-img) is behind it.
+const backgroundBehind = function (el) {
+  const layers = [];
+  for (let node = el; node && node.nodeType === 1; node = node.parentElement) {
+    if (node.classList.contains("v-image")) return null;
+    const style = window.getComputedStyle(node);
+    const image = style.backgroundImage;
+    if (image && image !== "none") return null;
+    const color = parseRgb(style.backgroundColor);
+    if (color && color[3] > 0) {
+      layers.push(color);
+      if (color[3] >= 1) break;
+    }
+  }
+  return layers
+    .reverse()
+    .reduce((below, layer) => blendOver(layer, below), [255, 255, 255]);
+};
+
+const isLargeText = function (el) {
+  const style = window.getComputedStyle(el);
+  const size = parseFloat(style.fontSize) || 0;
+  const weight =
+    style.fontWeight === "bold" ? 700 : parseInt(style.fontWeight, 10) || 400;
+  return size >= 24 || (size >= 18.66 && weight >= 700);
+};
+
 const fixInlineColorContrast = function () {
   const containers = document.querySelectorAll(
     ".article-body, .markdown-body, .v-card__text"
   );
-  // Check if an element or any ancestor has a dark background
-  const onDarkBackground = (el) => {
-    let node = el.parentElement;
-    while (node && node !== document.body) {
-      const bg = window.getComputedStyle(node).backgroundColor;
-      const rgb = bg.match(/\d+/g);
-      if (rgb && rgb.length >= 3) {
-        const lum =
-          (0.2126 * +rgb[0] + 0.7152 * +rgb[1] + 0.0722 * +rgb[2]) / 255;
-        if (lum < 0.4) return true;
-      }
-      node = node.parentElement;
-    }
-    return false;
-  };
   containers.forEach((container) => {
-    // Skip disclaimer and overlays — they use white text on dark backgrounds intentionally
+    // Skip the disclaimer and overlays: they set their own colour pairs
     if (container.closest("#disclaimer")) return;
     container.querySelectorAll("[style]").forEach((el) => {
       if (el.closest("#disclaimer") || el.closest(".v-overlay")) return;
       // Skip chips — they have intentional background+text color pairings
       if (el.closest(".v-chip") || el.classList.contains("v-chip")) return;
       const style = el.getAttribute("style") || "";
-      if (/color\s*:/i.test(style) && !/background/i.test(style)) {
-        // Skip elements on dark backgrounds — white text is intentional there
-        if (onDarkBackground(el)) return;
-        // Strip any inline color declaration, let inherited #000 apply
-        el.style.color = "#000";
+      // A text colour set by hand, without a background set with it
+      if (!/(^|;)\s*color\s*:/i.test(style) || /background/i.test(style)) {
+        return;
       }
+      const background = backgroundBehind(el);
+      const text = parseRgb(window.getComputedStyle(el).color);
+      if (!background || !text) return;
+      const color = blendOver(text, background);
+      const required = isLargeText(el) ? 3 : 4.5;
+      if (contrastRatio(color, background) >= required) return;
+      const black = contrastRatio([0, 0, 0], background);
+      const white = contrastRatio([255, 255, 255], background);
+      el.style.setProperty(
+        "color",
+        black >= white ? "#000" : "#fff",
+        el.style.getPropertyPriority("color")
+      );
     });
   });
 };

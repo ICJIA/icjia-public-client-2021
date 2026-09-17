@@ -10,15 +10,16 @@
       @click.native="onCardClick"
       ripple
     >
+      <!-- Thumbnails repeat the card's title: decorative, loading spinner
+           included (WCAG 1.1.1). -->
       <v-img
         :src="item.splash"
         :lazy-src="item.thumbnail"
-        aria-label="research content image"
         width="100%"
         height="250"
         class=""
         style="border: 0px solid #fafafa"
-        alt="research content image"
+        alt=""
         v-if="type === 'article'"
       >
         <!-- <v-chip
@@ -43,7 +44,12 @@
         > -->
 
         <template v-slot:placeholder>
-          <v-row class="fill-height ma-0" align="center" justify="center">
+          <v-row
+            class="fill-height ma-0"
+            align="center"
+            justify="center"
+            aria-hidden="true"
+          >
             <v-progress-circular
               indeterminate
               aria-label="Progress bar: Loading"
@@ -55,16 +61,20 @@
 
       <v-img
         :src="item.image"
-        aria-label="ResearchHub content image"
         width="100%"
         height="250"
         class=""
         style="border: 0px solid #fafafa"
-        alt="ResearchHub content image"
+        alt=""
         v-if="type === 'app'"
       >
         <template v-slot:placeholder>
-          <v-row class="fill-height ma-0" align="center" justify="center">
+          <v-row
+            class="fill-height ma-0"
+            align="center"
+            justify="center"
+            aria-hidden="true"
+          >
             <v-progress-circular
               indeterminate
               aria-label="Progress bar: Loading"
