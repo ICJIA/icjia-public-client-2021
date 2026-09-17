@@ -81,11 +81,7 @@ const manualPages = [
     tags: [
       "homicide",
       "homicide dashboard",
-      "homicide data",
-      "homicide reporting",
       "clearance",
-      "clearances",
-      "clearance rate",
       "aggravated assault",
       "firearm",
       "NIBRS",

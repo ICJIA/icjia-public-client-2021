@@ -84,6 +84,27 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.78] - 2026-09-17
+
+### fix(search) — Browsers pick up a rebuilt search index on their next visit
+
+`searchIndex.json` was served with `max-age=3600, stale-while-revalidate=86400`, so a browser that
+had fetched the index kept using it for an hour and, for a day after that, still showed the stale
+copy on the next visit while fetching the new one in the background. A visitor who had searched the
+site the day before could not find a page published since, which is what happened with the
+Homicide Reporting page after 1.5.76: first result on the live site in a fresh browser, absent in a
+browser holding the old index. The file is now `max-age=0, must-revalidate`: browsers check on
+every visit, the ETag check is a 304 when nothing changed, and the 2.9 MB file only downloads again
+after a deploy. This also lets the nightly rebuild (1.5.77) reach returning visitors.
+
+The Homicide Reporting search record's tags are trimmed from thirteen to nine (the result card shows
+every tag as a chip; other results carry two to six). With the Fuse build the site serves, the page
+still ranks first for "homicide", "homicides", "homicide dashboard", "homicide data", "homicide
+reporting", "clearance", "clearances", "clearance rate", "NIBRS", "aggravated assault", "ILCS 3930",
+"104-0197" and "Illinois State Police", and seventh for "firearm".
+
+---
+
 ## [1.5.77] - 2026-09-17
 
 ### ci — Nightly production rebuild (GitHub Actions)
