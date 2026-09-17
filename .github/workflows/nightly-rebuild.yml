@@ -1,0 +1,44 @@
+name: Nightly rebuild
+
+# Rebuilds the production site (Vue 2, branch main) once a night. The search
+# index, sitemap and RSS feeds are generated at build time from the CMS, so
+# content published between code pushes is not in site search until the
+# site is rebuilt. Netlify has no scheduled-build setting; this POSTs the
+# site's build hook, which can do exactly one thing: enqueue a production
+# build of main. Cost: ~30 builds a month of a few minutes each.
+#
+# Setup: Netlify -> Site configuration -> Build & deploy -> Build hooks
+# (branch main); store the hook URL as the NETLIFY_BUILD_HOOK_URL repository
+# secret. Manual run available any time from the Actions tab.
+on:
+  schedule:
+    - cron: "0 5 * * *" # 05:00 UTC = midnight Central (CDT) / 11 pm (CST)
+  workflow_dispatch: {} # run on demand from the Actions tab
+
+# Least privilege: nothing in the repo is read or written.
+permissions: {}
+
+concurrency:
+  group: nightly-rebuild
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trigger the Netlify build hook
+        env:
+          HOOK_URL: ${{ secrets.NETLIFY_BUILD_HOOK_URL }}
+        run: |
+          if [ -z "$HOOK_URL" ]; then
+            echo "::error::NETLIFY_BUILD_HOOK_URL secret is not set"
+            exit 1
+          fi
+          status=$(curl -sS -o /dev/null -w '%{http_code}' -X POST -d '{}' \
+            "${HOOK_URL}?trigger_title=Nightly+rebuild")
+          echo "Netlify responded with HTTP $status"
+          case "$status" in
+            200|201|204) echo "Production build enqueued." ;;
+            *) echo "::error::Build hook call failed (HTTP $status)"; exit 1 ;;
+          esac

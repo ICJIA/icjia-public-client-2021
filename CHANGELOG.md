@@ -84,6 +84,23 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.77] - 2026-09-17
+
+### ci — Nightly production rebuild (GitHub Actions)
+
+New `.github/workflows/nightly-rebuild.yml`: at 05:00 UTC (midnight Central) it POSTs the site's
+Netlify build hook ("Nightly rebuild for search", branch `main`, created October 2021 for exactly
+this purpose), which enqueues one production build, so the search index, sitemap and RSS feeds
+pick up CMS content published since the last push. Whatever called that hook nightly in the past
+had stopped: the site did not rebuild between the July 6 and August 2 pushes. The job reads nothing
+from the repo (`permissions: {}`), fails loudly if the `NETLIFY_BUILD_HOOK_URL` secret is missing
+or Netlify answers with anything but success, and can be run by hand from the Actions tab. About
+30 builds a month. The hook URL is stored as a repository secret. `docs/nightly-rebuild.md` now
+leads with this setup; its Netlify scheduled-function design applies to the undeployed Astro
+branch.
+
+---
+
 ## [1.5.76] - 2026-09-17
 
 ### fix(search) — The Homicide Reporting page is in site search, and stays there on every build

@@ -1,5 +1,17 @@
 # Nightly full rebuild
 
+## Current setup: Vue site on `main` (GitHub Actions, since v1.5.77)
+
+`.github/workflows/nightly-rebuild.yml` runs at 05:00 UTC (midnight Central) and POSTs the site's
+Netlify build hook ("Nightly rebuild for search", branch `main`, created October 2021), which
+enqueues one production build. The hook URL lives in the `NETLIFY_BUILD_HOOK_URL` repository
+secret (GitHub → Settings → Secrets and variables → Actions). Run it by hand from the Actions tab
+(workflow_dispatch); disable it there too (Actions → Nightly rebuild → "…" → Disable workflow).
+To rotate the hook: Netlify → Site configuration → Build & deploy → Build hooks, then update the
+secret. GitHub pauses scheduled workflows after 60 days without repository activity.
+
+## Astro branch design (not deployed): Netlify scheduled function
+
 A Netlify **scheduled function** (`astro/netlify/functions/nightly-rebuild.mjs`) triggers a
 full site build every night at **~midnight US Central** (cron `0 5 * * *` UTC), so the
 build-time artifacts refresh daily **without a code push**:
