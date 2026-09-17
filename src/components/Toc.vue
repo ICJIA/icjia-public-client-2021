@@ -27,15 +27,20 @@
     </h3>
     <div class="divider" v-if="toc.length">
       <ul class="toc-list">
-        <li
-          v-for="(item, index) in toc"
-          :key="index"
-          @click="scrollTo(item.id)"
-          class="tocListItem"
-        >
-          <span :id="`scrollTo-${item.id}`" class="tocItem">{{
-            item.text
-          }}</span>
+        <!-- Each entry is a real link to its section (WCAG 2.1.1); it used to
+             be an <li> with a click handler, which a keyboard cannot reach.
+             The href carries the page's path because index.html sets
+             <base href="/">, which would resolve a bare "#id" to the home
+             page. -->
+        <li v-for="(item, index) in toc" :key="index" class="tocListItem">
+          <a
+            :href="`${$route.path}#${item.id}`"
+            class="toc-link"
+            @click.prevent="scrollTo(item.id)"
+            ><span :id="`scrollTo-${item.id}`" class="tocItem">{{
+              item.text
+            }}</span></a
+          >
         </li>
       </ul>
     </div>
@@ -43,6 +48,7 @@
 </template>
 
 <script>
+import { moveFocusTo } from "@/utils/focus";
 export default {
   data() {
     return {
@@ -72,10 +78,15 @@ export default {
     },
   },
   methods: {
+    // Scroll to the section and move keyboard focus to its heading, so the
+    // next Tab continues from the section and not from the table of contents
+    // (WCAG 2.4.3). The link's default jump is prevented: in this app a hash
+    // change is a route change, which would re-render the page.
     scrollTo(id) {
-      //console.log(id);
-
-      this.$vuetify.goTo(`#${id}`, { offset: 88 });
+      const target = id && document.getElementById(id);
+      if (!target) return;
+      this.$vuetify.goTo(target, { offset: 88 });
+      moveFocusTo(target);
     },
     setToc() {
       this.$nextTick(() => {
@@ -184,6 +195,18 @@ ul.toc-list li {
 ul.toc-list li:hover {
   color: #000;
   background: #eee;
+}
+
+/* The link fills its list item, so the whole row stays clickable, and keeps
+   the entry's own look. */
+ul.toc-list a.toc-link,
+ul.toc-list a.toc-link:hover {
+  display: block;
+  margin: -2px -5px;
+  padding: 2px 5px;
+  color: inherit !important;
+  font-weight: inherit;
+  text-decoration: none;
 }
 
 .tocListItem {

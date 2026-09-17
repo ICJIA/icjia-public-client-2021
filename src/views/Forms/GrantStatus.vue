@@ -103,7 +103,6 @@
                       class="heavy"
                       :error-messages="emailErrors"
                       label="E-mail"
-                      aria-label="Email"
                       required
                       @input="$v.email.$touch()"
                       @blur="$v.email.$touch()"
@@ -117,7 +116,6 @@
                       class="heavy"
                       :error-messages="phoneErrors"
                       label="Phone number"
-                      aria-label="Phone"
                       required
                       @input="$v.phone.$touch()"
                       @blur="$v.phone.$touch()"
@@ -139,7 +137,6 @@
                       class="mt-3"
                       @click="clearAxiosError"
                       ref="comment"
-                      aria-label="Request"
                       :error-messages="commentErrors"
                       @input="$v.comment.$touch()"
                       @change="$v.comment.$touch()"

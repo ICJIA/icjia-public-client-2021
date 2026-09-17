@@ -406,6 +406,48 @@ details[open] summary ~ * {
   text-decoration: underline;
 }
 
+/* Category and tag links (WCAG 2.1.1). These run a search and used to be
+   <span>s with a click handler, which a keyboard cannot reach. As real links
+   they keep the look of the text they replace: the generic link colour,
+   weight and underline are held off. !important on the decoration because
+   fixLinksInTextBlocks() in src/a11y adds an inline underline to links
+   inside .v-card__text. */
+.v-application a.category {
+  color: #0e4471;
+  font-weight: inherit;
+  text-decoration: none !important;
+}
+.v-application a.category:hover {
+  color: #000;
+  text-decoration: underline !important;
+}
+/* On a news post the category starts a line of text of the same weight, so
+   colour alone would mark it as a link (WCAG 1.4.1): it is underlined, like
+   other links on the site, and loses the underline on hover. */
+.v-application a.category.category--underline {
+  text-decoration: underline !important;
+}
+.v-application a.category.category--underline:hover {
+  text-decoration: none !important;
+}
+
+/* Card title links (WCAG 2.1.1, 1.3.1, 4.1.2). Home, search-result and
+   "Related Web Content" cards used to be clickable <div>s that a keyboard
+   could not open. Each card's title is now a real link, and a click anywhere
+   else on the card still opens the same page. The link looks exactly like
+   the title it wraps, at rest and on hover. */
+.v-application a.card-title-link,
+.v-application a.card-title-link:hover {
+  color: inherit !important;
+  font-weight: inherit !important;
+  text-decoration: none !important;
+}
+/* Chips in those cards keep the pointer cursor they had while the whole card
+   was a Vuetify link card (.v-card--link). */
+.title-link-card .v-chip {
+  cursor: pointer;
+}
+
 .page {
   min-height: 100vh !important;
 }

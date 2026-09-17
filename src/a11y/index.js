@@ -350,22 +350,59 @@ const fixOverlayContainer = function () {
   window._overlayObserver.observe(document.body, { childList: true });
 };
 
-// Fix nested-interactive: Vuetify v-select in data-table footer renders
-// div[role="button"] wrapping a focusable <input>, which nests interactive controls.
-// Remove the role and clean up ARIA attributes that depend on it.
-// Uses MutationObserver because Vuetify re-renders these after async data loads.
-// Once the observer is installed, subsequent calls are no-ops.
+// Fix nested-interactive without breaking selects. Vuetify 2's v-select (and
+// v-autocomplete / v-combobox) puts its popup semantics on the wrapper,
+// div.v-input__slot[role="button"][aria-haspopup="listbox"][aria-expanded]
+// [aria-owns], around the focusable read-only <input>: an interactive control
+// nested inside a button (axe nested-interactive, SiteImprove). This function
+// used to delete those wrapper attributes, which also deleted the only role,
+// state and value the select had: a screen reader met a blank read-only text
+// field (WCAG 4.1.2). Instead, the semantics now move to the input that
+// takes focus:
+//   - the wrapper keeps no role, so nothing interactive is nested;
+//   - the input becomes role="combobox" with aria-haspopup="listbox",
+//     aria-expanded kept in step with the menu, and aria-controls;
+//   - the chosen value, which Vuetify shows in .v-select__selection and not
+//     in the input, follows the input's own label in its accessible name
+//     (aria-labelledby: the input itself, then the selection), for example
+//     "Show events from time range Past 12 months".
+// Uses a MutationObserver because Vuetify re-renders these after async data
+// loads and whenever the menu opens or closes. Once the observer is
+// installed, subsequent calls are no-ops.
+const SELECT_INPUT_SLOTS = ".v-select > .v-input__control > .v-input__slot";
+
 const fixNestedInteractive = function () {
   if (window._nestedInteractiveObserver) return;
+  // Write only on change: each write is a mutation this observer also sees.
+  const setAttr = (el, name, value) => {
+    if (el.getAttribute(name) !== value) el.setAttribute(name, value);
+  };
   const fix = () => {
-    const selects = document.querySelectorAll(
-      'div[role="button"][aria-haspopup="listbox"]'
-    );
-    selects.forEach((el) => {
-      el.removeAttribute("role");
-      el.removeAttribute("aria-expanded");
-      el.removeAttribute("aria-haspopup");
-      el.removeAttribute("aria-owns");
+    document.querySelectorAll(SELECT_INPUT_SLOTS).forEach((slot) => {
+      const input = slot.querySelector(
+        ".v-select__selections > input:not([type='hidden'])"
+      );
+      if (!input) return;
+      // Vuetify rewrites aria-expanded on the wrapper whenever the menu
+      // opens or closes; aria-owns is written once.
+      const expanded = slot.getAttribute("aria-expanded");
+      const owns = slot.getAttribute("aria-owns");
+      ["role", "aria-haspopup", "aria-expanded", "aria-owns"].forEach((name) =>
+        slot.removeAttribute(name)
+      );
+      setAttr(input, "role", "combobox");
+      setAttr(input, "aria-haspopup", "listbox");
+      if (expanded !== null) setAttr(input, "aria-expanded", expanded);
+      else if (!input.hasAttribute("aria-expanded"))
+        setAttr(input, "aria-expanded", "false");
+      if (owns) setAttr(input, "aria-controls", owns);
+      if (!input.id) return;
+      const ids = [input.id];
+      slot.querySelectorAll(".v-select__selection").forEach((selection, i) => {
+        if (!selection.id) selection.id = `${input.id}-selection-${i}`;
+        ids.push(selection.id);
+      });
+      setAttr(input, "aria-labelledby", ids.join(" "));
     });
   };
   fix();
@@ -374,7 +411,7 @@ const fixNestedInteractive = function () {
     childList: true,
     subtree: true,
     attributes: true,
-    attributeFilter: ["role"],
+    attributeFilter: ["role", "aria-expanded", "aria-owns", "aria-haspopup"],
   });
 };
 
@@ -1026,7 +1063,10 @@ const fixTableCellContext = function () {
     // (Vuetify clones header rows for the expand-detail row) and produces the
     // self-referencing `headers="tbl0-h0"` attribute that axe `td-headers-attr`
     // and SiteImprove flag.
-    if (table.closest(".v-data-table") || table.classList.contains("v-data-table")) {
+    if (
+      table.closest(".v-data-table") ||
+      table.classList.contains("v-data-table")
+    ) {
       return;
     }
     // Skip tables the render-time content pipeline (contentSanitizer's

@@ -13,20 +13,25 @@
         class="pa-0"
         dense
       >
-        <div
+        <!-- A real link to the section (WCAG 2.1.1); it used to be a <div>
+             with a click handler, which a keyboard cannot reach. The href
+             carries the page's path: index.html sets <base href="/">. -->
+        <a
+          :href="`${$route.path}#${heading.id}`"
           class="font-lato toc-item pl-6 hover"
           :class="{ 'toc-item-active': heading.id === activeHeading }"
-          @click="scrollTo(heading.id)"
+          @click.prevent="scrollTo(heading.id)"
           style="font-size: 14px"
         >
           {{ heading.innerText }}
-        </div>
+        </a>
       </v-list-item>
     </v-list>
   </div>
 </template>
 
 <script>
+import { moveFocusTo } from "@/utils/focus";
 export default {
   mounted() {
     const disclaimer = document.querySelector("#disclaimer");
@@ -50,9 +55,14 @@ export default {
     observer.observe(disclaimer);
   },
   methods: {
+    // Scroll to the section and move keyboard focus to its heading (WCAG
+    // 2.4.3). The link's default jump is prevented: in this app a hash change
+    // is a route change, which would re-render the article.
     scrollTo(id) {
-      //console.log(id);
-      this.$vuetify.goTo(`#${id}`, { offset: 80 });
+      const target = id && document.getElementById(id);
+      if (!target) return;
+      this.$vuetify.goTo(target, { offset: 80 });
+      moveFocusTo(target);
     },
   },
   props: {

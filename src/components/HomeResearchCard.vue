@@ -1,10 +1,14 @@
 <template>
   <div>
+    <!-- The title is the card's link (WCAG 2.1.1, 4.1.2); the card used to be a
+         focusable <div> that ignored Enter. A click anywhere else on the card
+         still opens the page. -->
     <v-card
-      class="grid-item markdown-body hover card mr-1 ml-1 px-3 py-1 flex-grow-1"
+      class="grid-item markdown-body hover card mr-1 ml-1 px-3 py-1 flex-grow-1 title-link-card"
       elevation="0"
       color="#fff"
-      @click="routeTo(item)"
+      @click.native="onCardClick"
+      ripple
     >
       <v-img
         :src="item.splash"
@@ -95,7 +99,9 @@
                 >NEW!</span
               >
             </v-chip>
-            {{ item.title }}
+            <router-link :to="item.fullPath" class="card-title-link">
+              {{ item.title }}
+            </router-link>
           </div></v-card-text
         >
         <v-card-text
@@ -123,6 +129,7 @@
 <script>
 const arrford = require("arrford");
 import dayjs from "@/plugins/dayjs";
+import { isClickOnLink } from "@/utils/focus";
 export default {
   props: {
     item: {
@@ -151,6 +158,10 @@ export default {
       } else {
         return false;
       }
+    },
+    onCardClick(e) {
+      if (isClickOnLink(e)) return;
+      this.routeTo(this.item);
     },
     routeTo(item) {
       console.log(item);

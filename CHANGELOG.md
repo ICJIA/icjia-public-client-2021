@@ -82,6 +82,92 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.68] - 2026-09-16
+
+### fix(accessibility) — Keyboard access to cards, search results, the menu, dialogs, contents and footnotes
+
+Fixes toward full WCAG 2.1 Level AA conformance. Each was measured with the same scripts before the
+change (the live site, 1.5.67) and after it (a local build): keyboard walks, Chrome's accessibility
+tree, and screenshots compared pixel by pixel.
+
+- **Search results open from the keyboard (WCAG 2.1.1, 1.3.1, 4.1.2, Level A).** Results were `div`s
+  with a click handler: a search for "violence" listed 286 results and a Tab walk reached none of
+  them. Each result's title is now a link named by the title. It opens the result in a new tab, as a
+  click on the card does, and a click anywhere else on the card still opens it. After: a Tab walk
+  reaches all 284 results (the local search index is a few weeks older than the live one).
+- **Home and "Related Web Content" cards are links (2.1.1, 1.3.1, 4.1.2).** The news, funding,
+  meeting, employment, click-through and research cards on the home page, and the related-content
+  cards on program and biography pages, took keyboard focus as generic elements with no link role
+  and ignored Enter and Space. Each card's title is now its link; a click anywhere else on a card still
+  opens the same page, and chips and buttons stay outside the link. Verified for all seven card
+  types: role "link", named by the title, and Enter opens the page a mouse click opens.
+- **Category, content-type and tag chips are links (2.1.1)** on home news cards, news posts,
+  Research Hub articles and search results. They were `span`s a keyboard could not reach; the links
+  lead to the same search pages a click did. On a news post the category is now underlined: it
+  starts a line of text of the same weight, and colour alone would mark it as a link (1.4.1).
+- **The Research Hub slideshow link has a name and a visible focus indicator (4.1.2, 2.4.7).** The
+  slide was a focusable element with no role and an empty name, and focusing it changed 0 pixels
+  because its outline was clipped. The article title is now the link, with the yellow ring used on
+  dark surfaces: on focus 7,785 pixels change at 3:1 or more (about 10:1). A click anywhere on the
+  slide still opens the article; Pause/Play and pausing on hover and on focus behave as before.
+- **The mobile menu, below 960 px (2.4.3, 4.1.2, 2.1.1).** Opening it left focus on MENU, and the
+  next Tab went to the page hidden behind the menu. Focus now moves to the first menu item as soon
+  as the menu can take it; Tab and Shift+Tab stay inside, and Escape closes the menu and returns
+  focus to MENU. The menu is a modal dialog named "Site menu", and MENU has `aria-controls` and an
+  `aria-expanded` that follows the menu however it closes (it stayed "true" after Escape or a click
+  on the backdrop). Enter on a link in the menu now follows the link: focus used to return to MENU
+  as the menu closed, so the same keypress pressed MENU and reopened the menu. Verified at 375 and
+  800 px: 0 of 30 Tab and 0 of 30 Shift+Tab stops outside the open menu.
+- **The translate dialog (2.4.3, 4.1.2, 2.1.1).** Below 960 px its Close button was hidden.
+  Vuetify's focus trap sends focus to the first button, so focus left the open dialog (at 375 px, 22
+  of 60 Tab and Shift+Tab stops landed on the page behind it) and Escape stopped working. Close now
+  shows at every width. The dialog is exposed as a modal dialog named "Website Translation Options"
+  (it was an unnamed container), focus moves to Close when it opens, and Escape closes it and
+  returns focus to the button that opened it. Its links "this online form" and "language services
+  announcement" were `a` elements without an `href`; they are real links now. Verified at 1,280 and
+  375 px: no stops on the page behind, and both links reached and followed by keyboard.
+- **Drop-down selects expose their role, state and value (4.1.2).** The Grant Status request type,
+  the Events date range and the tables' rows-per-page selects read as blank read-only text fields:
+  `fixNestedInteractive()` in `src/a11y/index.js` deleted the select's popup semantics to avoid a
+  nested-interactive warning. It now moves them to the focusable input instead: role combobox,
+  `aria-expanded` kept in step with the menu, `aria-controls`, and the chosen value in the name.
+  After choosing, Chrome reports "Show events from time range Past 12 months", "Select Type of
+  Request Payment status/updates" and "Rows per page: 250". Nothing is nested, and axe reports no
+  violations with a select open or changed (1 and 2 before). `tests/unit/a11y.spec.js` covers the
+  new behaviour.
+- **Form fields are named by their visible labels (2.5.3).** `aria-label` overrides named "Phone
+  number" "Phone", "E-mail" "Email", and both long request instructions "Request". They are removed:
+  every field on the Grant Status and Language Access Request forms is named by its visible label (4
+  mismatches before).
+- **Tables of contents work from the keyboard (2.1.1, 2.4.3).** The CONTENTS list on standard pages
+  and the Research Hub TABLE OF CONTENTS were list items and `div`s with click handlers, not reached
+  in 80 and 60 Tabs. Entries are now links to their sections, reached at the 22nd and 18th Tab.
+  Following one scrolls to the section and moves focus to its heading; the scroll positions match
+  what a mouse click gave before.
+- **Footnote links move focus (2.4.3).** Enter on a footnote reference scrolled the page about
+  21,000 px but left focus on the reference, so the next Tab jumped back. Focus now moves to the
+  footnote, the next Tab reaches its links and back-link, and the back-link returns focus to the
+  reference.
+
+**Correction.** 1.5.67 said the page-change announcement waits for the new page's own title. On
+slower pages it did not: going from News or About to a Research Hub article, it announced the site's
+default title, "ICJIA | Illinois Criminal Justice Information Authority", after about 300 ms, and
+never the article's title, because only the bare "ICJIA" counted as a placeholder. Both placeholders
+now count as not yet settled, and the 3 s fallback is kept. Verified: the two article titles are
+announced at +911 and +780 ms, and a meeting page's title at +431 ms.
+
+Regression checks: axe-core 4.13 (WCAG 2.0 and 2.1, Level A and AA) on 25 page and state runs,
+including the open menu and dialog and the select states: 0 violations after (3 before, all in the
+select states). A keyboard walk with focus measured from pixels shows a change of 3:1 or more on
+every new link on the home, Research Hub and search pages. Screenshots of 12 page and width
+combinations compared pixel by pixel show no change apart from the news-post category underline, and
+the new links keep the colour, weight, decoration and cursor of the elements they replace, at rest
+and on hover. Mouse clicks on cards, results and chips open the same pages as before.
+`vue-cli-service lint --no-fix` reports no problems on every changed file; mocha unit tests: 285
+passing, 6 pending.
+
+---
+
 ## [1.5.67] - 2026-09-16
 
 ### fix(accessibility) — Page titles, page-change announcements, a pausable slideshow, reduced motion

@@ -16,14 +16,18 @@
         <v-tab-item :style="`background: #fff !important; `">
           <div style="height: 15px; background: #fff !important"></div>
 
+          <!-- Each card's title is its link (WCAG 2.1.1, 4.1.2); the cards
+               used to be focusable <div>s that ignored Enter. A click anywhere
+               else on a card still opens its page. -->
           <v-card
             min-height="150"
-            class="test py-3 px-8 hover card"
+            class="test py-3 px-8 hover card title-link-card"
             v-for="(grant, index) in grants"
             :key="`funding-${index}`"
             elevation="0"
             :class="{ 'rule-top': index > 0 }"
-            @click="routeTo(grant.fullPath)"
+            @click.native="onCardClick($event, grant.fullPath)"
+            ripple
           >
             <div class="text-right"></div>
             <div>
@@ -62,7 +66,9 @@
                     NEW!
                   </span>
                 </v-chip> -->
-                {{ grant.title }}
+                <router-link :to="grant.fullPath" class="card-title-link">{{
+                  grant.title
+                }}</router-link>
               </h2>
 
               <p style="font-size: 0.9em" class="mt-2">{{ grant.summary }}</p>
@@ -76,9 +82,10 @@
             <div v-for="(meeting, index) in meetings" :key="`meeting-${index}`">
               <v-card
                 elevation="0"
-                class="px-8 py-8 hover card"
+                class="px-8 py-8 hover card title-link-card"
                 :class="{ 'rule-top': index > 0 }"
-                @click="routeTo(meeting.fullPath)"
+                @click.native="onCardClick($event, meeting.fullPath)"
+                ripple
               >
                 <span style="font-weight: 700; font-size: 0.9em; color: #000">
                   MEETING
@@ -103,14 +110,18 @@
                   style="font-size: 1.1em"
                   v-if="!meeting.isCancelled"
                 >
-                  {{ meeting.title }}
+                  <router-link :to="meeting.fullPath" class="card-title-link">{{
+                    meeting.title
+                  }}</router-link>
                 </h2>
                 <h2
                   class="mt-2"
                   style="font-size: 1.1em; text-decoration: line-through"
                   v-else
                 >
-                  {{ meeting.title }}
+                  <router-link :to="meeting.fullPath" class="card-title-link">{{
+                    meeting.title
+                  }}</router-link>
                 </h2>
                 <p
                   style="font-size: 0.9em"
@@ -136,9 +147,10 @@
             >
               <v-card
                 elevation="0"
-                class="px-8 py-8 hover card"
+                class="px-8 py-8 hover card title-link-card"
                 :class="{ 'rule-top': index > 0 }"
-                @click="routeTo(job.fullPath)"
+                @click.native="onCardClick($event, job.fullPath)"
+                ripple
               >
                 <span style="font-weight: 700; font-size: 14px; color: #000">
                   Employment Opportunity
@@ -172,7 +184,9 @@
                     <span style="color: #fff !important; font-weight: 400">
                       NEW!
                     </span> </v-chip
-                  >{{ job.title }}
+                  ><router-link :to="job.fullPath" class="card-title-link">{{
+                    job.title
+                  }}</router-link>
                 </h2>
 
                 <p style="font-size: 0.9em" class="mt-2">{{ job.summary }}</p>
@@ -212,6 +226,7 @@ const addOneDayToDate = function (date) {
   return newDate;
 };
 import dayjs from "@/plugins/dayjs";
+import { isClickOnLink } from "@/utils/focus";
 export default {
   computed: {
     tabViewHeight() {
@@ -282,6 +297,10 @@ export default {
         category = "Request for Information";
       }
       return category;
+    },
+    onCardClick(e, fullPath) {
+      if (isClickOnLink(e)) return;
+      this.routeTo(fullPath);
     },
     routeTo(fullPath) {
       //console.log(fullPath);

@@ -6,13 +6,21 @@
     width="60%"
     aria-label="Translation options"
   >
-    <v-card class="">
+    <!-- Exposed as a modal dialog named by its title (WCAG 4.1.2). Close is
+         shown at every width: it used to be hidden below 960 px, where
+         Vuetify's focus trap, which sends focus to the first button, then
+         failed and let focus leave the open dialog (WCAG 2.4.3). -->
+    <v-card
+      class=""
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="translate-dialog-title"
+    >
       <v-card-title class="text-h5 grey lighten-2">
         <v-spacer class="hidden-md-and-up"></v-spacer>
-        Website Translation Options<v-spacer></v-spacer
-        ><v-btn small @click="translate = false" class="hidden-sm-and-down"
-          >Close</v-btn
-        >
+        <span id="translate-dialog-title">Website Translation Options</span
+        ><v-spacer></v-spacer
+        ><v-btn small ref="closeButton" @click="translate = false">Close</v-btn>
       </v-card-title>
       <v-card-text class="mt-3">
         <v-container fluid>
@@ -113,12 +121,16 @@
             benefits, and activities. <br />
             <br />If you need additional language access assistance, please fill
             out
-            <a @click.stop.prevent="closeModal()">this online form.</a>
+            <router-link to="/forms/lap-request/" @click.native="followLink"
+              >this online form.</router-link
+            >
             <br />
             <br />
             For more information on ICJIA's language access plan, please see our
-            <a @click.stop.prevent="closeModalLAP()"
-              >language services announcement</a
+            <router-link
+              to="/news/language-services-announcement/"
+              @click.native="followLink"
+              >language services announcement</router-link
             >.
           </v-card-text>
         </div>
@@ -138,17 +150,13 @@ export default {
     //     }
     //   });
     // },
-    closeModal() {
+    // The two links in the dialog lead to other pages. Close the dialog
+    // without sending focus back to the button that opened it, which belongs
+    // to the page being left; the route change moves focus as usual.
+    followLink() {
+      const dialog = this.$refs.translateTop;
+      if (dialog) dialog.previousActiveElement = null;
       this.translate = false;
-      this.$router.push("/forms/lap-request/").catch(() => {
-        this.$vuetify.goTo(0);
-      });
-    },
-    closeModalLAP() {
-      this.translate = false;
-      this.$router.push("/news/language-services-announcement/").catch(() => {
-        this.$vuetify.goTo(0);
-      });
     },
     googleTranslate(lang) {
       console.log(lang);
@@ -159,6 +167,18 @@ export default {
         lang;
       this.translate = false;
       window.open(url);
+    },
+  },
+  watch: {
+    // Vuetify focuses the dialog's outer container, which is outside the
+    // dialog role and has no name. Move focus to Close, inside the dialog,
+    // once Vuetify has done that, so the dialog's role and name are announced.
+    translate(isOpen) {
+      if (!isOpen) return;
+      setTimeout(() => {
+        const close = this.$refs.closeButton && this.$refs.closeButton.$el;
+        if (this.translate && close) close.focus();
+      }, 0);
     },
   },
   mounted() {

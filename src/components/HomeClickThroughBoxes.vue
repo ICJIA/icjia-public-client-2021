@@ -8,14 +8,19 @@
           v-for="(box, index) in boxes"
           :key="`box-${index}`"
         >
+          <!-- The title is the box's link (WCAG 2.1.1, 4.1.2); the box used to
+               be a focusable <div> that ignored Enter. A click anywhere else
+               on the box still follows it. dark-surface gives the link the
+               yellow focus ring used on dark backgrounds. -->
           <v-card
             dark
             :height="getHeight()"
-            class="elevation-0 px-8 pt-11 box text-center hover"
+            class="elevation-0 px-8 pt-11 box text-center hover dark-surface title-link-card"
             style="margin-bottom: 3px"
             color="#0E4471"
             :class="{ mr1: index > -1 && index < boxes.length - 1 }"
-            @click="routeToURL(box)"
+            @click.native="onCardClick($event, box)"
+            ripple
           >
             <v-btn
               color="blue darken-3"
@@ -33,7 +38,23 @@
               box.icon
             }}</v-icon>
             <v-icon style="font-size: 70px" dark v-else>people</v-icon>
-            <h2 class="text-center box-head mt-3">{{ box.title }}</h2>
+            <h2 class="text-center box-head mt-3">
+              <a
+                v-if="box.url && isExternal(box.url)"
+                :href="box.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="card-title-link"
+                >{{ box.title }}</a
+              >
+              <router-link
+                v-else-if="box.url"
+                :to="box.url"
+                class="card-title-link"
+                >{{ box.title }}</router-link
+              >
+              <template v-else>{{ box.title }}</template>
+            </h2>
 
             <v-card-text
               class="px-2 mt-1 font-weight-light box-text text-center"
@@ -50,6 +71,7 @@
 
 <script>
 import dayjs from "@/plugins/dayjs";
+import { isClickOnLink } from "@/utils/focus";
 export default {
   computed: {
     getBoxSize() {
@@ -77,8 +99,7 @@ export default {
         return false;
       }
     },
-    routeToURL(box) {
-      if (!box.url) return null;
+    isExternal(url) {
       const checkDomain = function (url) {
         if (url.indexOf("//") === 0) {
           url = location.protocol + url;
@@ -88,14 +109,18 @@ export default {
           .replace(/([a-z])?:\/\//, "$1")
           .split("/")[0];
       };
-
-      const isExternal = function (url) {
-        return (
-          (url.indexOf(":") > -1 || url.indexOf("//") > -1) &&
-          checkDomain(location.href) !== checkDomain(url)
-        );
-      };
-      if (isExternal(box.url)) {
+      return (
+        (url.indexOf(":") > -1 || url.indexOf("//") > -1) &&
+        checkDomain(location.href) !== checkDomain(url)
+      );
+    },
+    onCardClick(e, box) {
+      if (isClickOnLink(e)) return;
+      this.routeToURL(box);
+    },
+    routeToURL(box) {
+      if (!box.url) return null;
+      if (this.isExternal(box.url)) {
         window.open(box.url, "noopener,resizable,scrollbars").focus();
       } else {
         this.$router.push(box.url);

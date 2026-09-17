@@ -108,7 +108,6 @@
                       class="mt-3"
                       @click="clearAxiosError"
                       ref="comment"
-                      aria-label="Request"
                       :error-messages="commentErrors"
                       @input="$v.comment.$touch()"
                       @change="$v.comment.$touch()"

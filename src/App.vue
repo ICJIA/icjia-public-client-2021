@@ -154,9 +154,17 @@ export default {
           this.routeAnnouncement = document.title;
         });
       };
+      // While a page loads, vue-meta shows a placeholder: the bare "ICJIA", or
+      // this component's default "ICJIA | Illinois Criminal Justice
+      // Information Authority". Neither is the new page's title, so wait
+      // past both (1.5.67 waited past only the first, and slower pages
+      // announced the default title). A page whose title really is the
+      // default is still announced by the fallback below.
+      const { title: defaultTitle, titleTemplate } = this.$options.metaInfo;
+      const placeholders = [titleTemplate(""), titleTemplate(defaultTitle)];
       const titleIsNew = () =>
         document.title !== this.lastAnnouncedTitle &&
-        (isHome || document.title !== "ICJIA");
+        (isHome || !placeholders.includes(document.title));
       const onTitleChange = () => {
         clearTimeout(this.titleSettleTimer);
         if (titleIsNew()) this.titleSettleTimer = setTimeout(announce, 250);

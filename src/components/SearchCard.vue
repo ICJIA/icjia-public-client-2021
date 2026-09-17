@@ -1,9 +1,12 @@
 <template>
   <div>
+    <!-- The title is the result's link (WCAG 2.1.1, 4.1.2): the card used to
+         be a <div> with a click handler, which a keyboard cannot reach. A
+         click anywhere else on the card still opens the result. -->
     <div
       style="background: #fff; border: 1px solid #ccc; border-radius: 4px"
       class="px-3 py-3 mb-3 card"
-      @click="route(item.fullPath)"
+      @click="onCardClick"
       elevation="2"
     >
       <div style="font-size: 14px">
@@ -16,27 +19,52 @@
               style="font-weight: 700"
               v-if="item.contentType"
               class="search-content-type"
-              @click.prevent.stop="click($event)"
             >
-              <span v-if="item.category && item.contentType === 'news'"
+              <router-link
+                v-if="item.category && item.contentType === 'news'"
+                :to="
+                  searchFor(
+                    getProperCategory($myApp.config.maps.news, item.category)
+                  )
+                "
+                class="search-chip-link"
                 >{{
                   getProperCategory(
                     $myApp.config.maps.news,
                     item.category
                   ).toUpperCase()
                 }}
-              </span>
-              <span v-if="item.category && item.contentType === 'meeting'">{{
-                getProperCategory(
-                  $myApp.config.maps.meetings,
-                  item.category
-                ).toUpperCase()
-              }}</span>
-              <span v-if="item.category && item.contentType === 'program'">{{
-                item.category.toUpperCase()
-              }}</span>
-              <span v-if="item.contentType !== 'news'">
-                {{ item.contentType.toUpperCase() }}</span
+              </router-link>
+              <router-link
+                v-if="item.category && item.contentType === 'meeting'"
+                :to="
+                  searchFor(
+                    getProperCategory(
+                      $myApp.config.maps.meetings,
+                      item.category
+                    )
+                  )
+                "
+                class="search-chip-link"
+                >{{
+                  getProperCategory(
+                    $myApp.config.maps.meetings,
+                    item.category
+                  ).toUpperCase()
+                }}</router-link
+              >
+              <router-link
+                v-if="item.category && item.contentType === 'program'"
+                :to="searchFor(item.category)"
+                class="search-chip-link"
+                >{{ item.category.toUpperCase() }}</router-link
+              >
+              <router-link
+                v-if="item.contentType !== 'news'"
+                :to="searchFor(item.contentType)"
+                class="search-chip-link"
+              >
+                {{ item.contentType.toUpperCase() }}</router-link
               >
             </span>
             <span v-if="item.publicationDate"
@@ -67,9 +95,20 @@
           <div
             style="font-size: 16px; font-weight: bold; display: inline"
             class="mt-2 mb-2"
-            v-html="item.title"
             v-if="item.title"
-          ></div>
+          >
+            <a
+              v-if="isStatic"
+              :href="item.fullPath"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="card-title-link"
+              v-html="item.title"
+            ></a>
+            <router-link v-else :to="item.fullPath" class="card-title-link"
+              ><span v-html="item.title"></span
+            ></router-link>
+          </div>
         </div>
         <div v-if="item.abstract" v-html="truncate(item.abstract)"></div>
         <div
@@ -77,13 +116,13 @@
           v-html="truncate(item.summary)"
           class="mt-2 mb-2"
         ></div>
-        <span
+        <router-link
           v-for="tag of item.tags"
           :key="tag"
+          :to="searchFor(tag)"
           class="px-2 py-1 mr-3 search-tag lato"
-          @click.prevent.stop="click($event)"
           >{{ tag }}
-        </span>
+        </router-link>
       </div>
     </div>
   </div>
@@ -93,7 +132,8 @@
 /* eslint-disable no-unused-vars */
 import { EventBus } from "@/event-bus";
 import { getProperCategory } from "@/utils/content";
-import { goToSearch, openInNewTab } from "@/utils/search";
+import { goToSearch, openInNewTab, searchLocation } from "@/utils/search";
+import { isClickOnLink } from "@/utils/focus";
 import DOMPurify from "dompurify";
 import { renderToHtml } from "@/services/Markdown";
 import dayjs from "@/plugins/dayjs";
@@ -170,9 +210,18 @@ export default {
         console.log("relative: ", url);
       }
     },
-    click(e) {
-      const query = e.target.innerText.trim().toLowerCase();
-      goToSearch(this.$router, { query, type: "general" });
+    // Search for a chip's text, as its old click handler did with the
+    // chip's rendered (upper-cased) text: lower case, spaces collapsed.
+    searchFor(text) {
+      const query = String(text || "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toLowerCase();
+      return searchLocation({ query, type: "general" });
+    },
+    onCardClick(e) {
+      if (isClickOnLink(e)) return;
+      this.route(this.item.fullPath);
     },
     // download(result) {
     //   let download = `${path}`;
@@ -243,6 +292,21 @@ export default {
 .search-tag:hover {
   background: #ddd;
   text-decoration: underline;
+}
+/* The chips are links now; keep their chip look (see app.css). */
+.v-application a.search-tag {
+  color: #000;
+  text-decoration: none;
+}
+.v-application a.search-tag:hover {
+  color: #000;
+  text-decoration: underline;
+}
+.v-application a.search-chip-link,
+.v-application a.search-chip-link:hover {
+  color: inherit;
+  font-weight: inherit;
+  text-decoration: none;
 }
 .search-content-type {
   color: #000;

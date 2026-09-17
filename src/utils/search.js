@@ -19,17 +19,20 @@
  */
 
 /**
- * Navigate to the static /search page with a pre-filled query.
+ * The router location of the static /search page for a query.
  *
- * @param {VueRouter} router  The component's $router instance.
- * @param {object}    opts    { query, type, filter } — `type` is a
- *                            content-type filter (e.g. "article",
- *                            "biography", "news"). `filter` is accepted
- *                            as an alias for `type` for call-site
- *                            compatibility with older EventBus payloads.
+ * Tag, category and content-type chips render as real links to this
+ * location (WCAG 2.1.1: a <span> with a click handler cannot be reached
+ * or activated by keyboard), and goToSearch() pushes the same location,
+ * so a link and a programmatic search always land on the same URL.
+ *
+ * @param {object} opts  { query, type, filter } — `type` is a
+ *                       content-type filter (e.g. "article",
+ *                       "biography", "news"). `filter` is accepted
+ *                       as an alias for `type` for call-site
+ *                       compatibility with older EventBus payloads.
  */
-export function goToSearch(router, opts) {
-  if (!router) return;
+export function searchLocation(opts) {
   const query = ((opts && opts.query) || "").toString().trim();
   const filter = (opts && (opts.filter || opts.type)) || null;
   // Blank query lands on the bare /search page so the user can start
@@ -44,7 +47,18 @@ export function goToSearch(router, opts) {
   if (filter && query) {
     target.query = { filter };
   }
-  router.push(target).catch((err) => {
+  return target;
+}
+
+/**
+ * Navigate to the static /search page with a pre-filled query.
+ *
+ * @param {VueRouter} router  The component's $router instance.
+ * @param {object}    opts    See searchLocation().
+ */
+export function goToSearch(router, opts) {
+  if (!router) return;
+  router.push(searchLocation(opts)).catch((err) => {
     // vue-router 3 throws on redundant navigations (same route). That's
     // benign here — user re-clicked the same tag. Swallow it silently.
     if (err && err.name !== "NavigationDuplicated") {

@@ -65,23 +65,22 @@
             <v-card height="100%">
               <v-row no-gutters>
                 <v-col md="12" cols="12">
+                  <!-- The article title is the slide's link (WCAG 4.1.2): the
+                       image used to be a focusable <div> with no role or name.
+                       A click anywhere else on the slide still opens the
+                       article. The link sits inside the overlay, where its
+                       focus ring is not clipped (WCAG 2.4.7); dark-surface
+                       makes that ring yellow against the dark overlay. -->
                   <v-img
                     v-if="article && article.splash"
                     :src="article.splash"
                     alt=""
                     height="650"
                     class="hover"
-                    tabindex="0"
-                    role="link"
-                    @click="
-                      $router.push(`/researchhub/articles/${article.slug}`)
-                    "
-                    @keydown.enter="
-                      $router.push(`/researchhub/articles/${article.slug}`)
-                    "
+                    @click="onSlideClick($event, article)"
                   >
                     <v-overlay absolute :opacity="0.7">
-                      <div class="text-center px-5">
+                      <div class="text-center px-5 dark-surface">
                         <div
                           class="text-center px-12"
                           style="min-width: 350px; max-width: 850px"
@@ -124,7 +123,11 @@
                             role="heading"
                             aria-level="2"
                           >
-                            {{ article.title }}
+                            <router-link
+                              :to="`/researchhub/articles/${article.slug}`"
+                              class="card-title-link"
+                              >{{ article.title }}</router-link
+                            >
                           </p>
 
                           <div
@@ -255,6 +258,7 @@ import { renderToHtml } from "@/services/Markdown";
 import NProgress from "@/services/Progress";
 import dayjs from "@/plugins/dayjs";
 import { prefersReducedMotion } from "@/utils/motion";
+import { isClickOnLink } from "@/utils/focus";
 import {
   getHubApplications,
   getHubArticlesForBanner,
@@ -324,6 +328,10 @@ export default {
     });
   },
   methods: {
+    onSlideClick(e, article) {
+      if (isClickOnLink(e)) return;
+      this.$router.push(`/researchhub/articles/${article.slug}`);
+    },
     onSlideshowFocusOut(e) {
       if (!e.currentTarget.contains(e.relatedTarget)) {
         this.slideshowFocused = false;

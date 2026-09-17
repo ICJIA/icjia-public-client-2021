@@ -1,10 +1,15 @@
 <template>
   <div>
+    <!-- The title is the card's link (WCAG 2.1.1, 4.1.2). The card used to be
+         a focusable <div> with a click handler that ignored Enter. A click
+         anywhere else on the card still opens the page; the author, unit and
+         tag controls stay outside the link. -->
     <v-card
       elevation="1"
       color="#fff"
-      @click="route(item.fullPath)"
-      class="hover px-4 py-3 mb-2 card"
+      @click.native="onCardClick"
+      ripple
+      class="hover px-4 py-3 mb-2 card title-link-card"
       v-if="item"
     >
       <div style="font-size: 14px">
@@ -24,8 +29,11 @@
           <h3
             style="font-size: 16px; font-weight: bold; margin: 0"
             class="mt-2"
-            v-html="item.title"
-          ></h3>
+          >
+            <router-link :to="item.fullPath" class="card-title-link"
+              ><span v-html="item.title"></span
+            ></router-link>
+          </h3>
         </div>
         <!-- ------------------------------------------------
            Hub Articles 
@@ -40,8 +48,11 @@
           <h3
             style="font-size: 16px; font-weight: bold; margin: 0"
             class="mt-2"
-            v-html="item.title"
-          ></h3>
+          >
+            <router-link :to="item.fullPath" class="card-title-link"
+              ><span v-html="item.title"></span
+            ></router-link>
+          </h3>
           <div v-if="item.authors" class="mt-1">
             <span
               style="font-size: 12px"
@@ -72,11 +83,11 @@
           </div> -->
 
           <div v-if="item.fullName" class="mt-1">
-            <h3
-              style="font-size: 16px; font-weight: bold; margin: 0"
-              class=""
-              v-html="item.fullName"
-            ></h3>
+            <h3 style="font-size: 16px; font-weight: bold; margin: 0" class="">
+              <router-link :to="item.fullPath" class="card-title-link"
+                ><span v-html="item.fullName"></span
+              ></router-link>
+            </h3>
 
             <div v-if="item.position">
               <span
@@ -110,8 +121,11 @@
           <h3
             style="font-size: 16px; font-weight: bold; margin: 0"
             class="mt-2"
-            v-html="item.title"
-          ></h3>
+          >
+            <router-link :to="item.fullPath" class="card-title-link"
+              ><span v-html="item.title"></span
+            ></router-link>
+          </h3>
         </div>
         <!-- ------------------------------------------------
            Events 
@@ -128,8 +142,11 @@
           <h3
             style="font-size: 16px; font-weight: bold; margin: 0"
             class="mt-2"
-            v-html="item.title"
-          ></h3>
+          >
+            <router-link :to="item.fullPath" class="card-title-link"
+              ><span v-html="item.title"></span
+            ></router-link>
+          </h3>
         </div>
 
         <!-- ------------------------------------------------
@@ -152,8 +169,11 @@
           <h3
             style="font-size: 16px; font-weight: bold; margin: 0"
             class="mt-2"
-            v-html="item.title"
-          ></h3>
+          >
+            <router-link :to="item.fullPath" class="card-title-link"
+              ><span v-html="item.title"></span
+            ></router-link>
+          </h3>
         </div>
         <!-- ------------------------------------------------
            Funding 
@@ -177,8 +197,11 @@
           <h3
             style="font-size: 16px; font-weight: bold; margin: 0"
             class="mt-2"
-            v-html="item.title"
-          ></h3>
+          >
+            <router-link :to="item.fullPath" class="card-title-link"
+              ><span v-html="item.title"></span
+            ></router-link>
+          </h3>
         </div>
         <!-- ------------------------------------------------
            Page 
@@ -193,9 +216,12 @@
           <h3
             style="font-size: 16px; font-weight: bold; margin: 0"
             class="mt-2"
-            v-html="item.title"
             v-if="item.title"
-          ></h3>
+          >
+            <router-link :to="item.fullPath" class="card-title-link"
+              ><span v-html="item.title"></span
+            ></router-link>
+          </h3>
         </div>
         <!-- ------------------------------------------------
            Default 
@@ -209,9 +235,12 @@
           <h3
             style="font-size: 16px; font-weight: bold; margin: 0"
             class="mt-2"
-            v-html="item.title"
             v-if="item.title"
-          ></h3>
+          >
+            <router-link :to="item.fullPath" class="card-title-link"
+              ><span v-html="item.title"></span
+            ></router-link>
+          </h3>
         </div>
       </div>
       <v-card-text
@@ -241,6 +270,7 @@
 /* eslint-disable no-unused-vars */
 import { EventBus } from "@/event-bus";
 import { goToSearch, openInNewTab } from "@/utils/search";
+import { isClickOnLink } from "@/utils/focus";
 import { getProperCategory } from "@/utils/content";
 import DOMPurify from "dompurify";
 import { renderToHtml } from "@/services/Markdown";
@@ -329,6 +359,10 @@ export default {
         ""
       );
       return cleanExt.substring(1);
+    },
+    onCardClick(e) {
+      if (isClickOnLink(e)) return;
+      this.route(this.item.fullPath);
     },
     route(path) {
       // Mirror SearchCard: when rendered on the static /search page, open

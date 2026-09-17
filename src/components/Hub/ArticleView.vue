@@ -59,13 +59,13 @@
                 article.categories
               }}</span> -->
               <span v-if="item.categories && item.categories.length">
-                <span
+                <router-link
                   v-for="(category, index) in item.categories"
                   :key="index"
                   class="mr-1 category"
                   style="font-size: 14px; font-weight: 900"
-                  @click.prevent.stop="categoryClick($event)"
-                  >{{ category.toUpperCase() }}</span
+                  :to="categorySearch(category)"
+                  >{{ category.toUpperCase() }}</router-link
                 >
               </span>
 
@@ -192,7 +192,8 @@ import DOMPurify from "dompurify";
 import { format } from "@/utils/itemFormatter";
 import { createMarkdownUtils, initMarkdownIt } from "@/utils/markdownIt";
 import { EventBus } from "@/event-bus";
-import { goToSearch } from "@/utils/search";
+import { goToSearch, searchLocation } from "@/utils/search";
+import { moveFocusTo } from "@/utils/focus";
 
 export default {
   sync: false,
@@ -282,11 +283,10 @@ export default {
     openSearch(item) {
       goToSearch(this.$router, { query: item, type: "hub" });
     },
-    categoryClick(e) {
-      goToSearch(this.$router, {
-        query: e.target.innerText.toLowerCase(),
-        type: "hub",
-      });
+    // Categories are links to a search for the category (WCAG 2.1.1); they
+    // used to be <span>s with a click handler.
+    categorySearch(category) {
+      return searchLocation({ query: category.toLowerCase(), type: "hub" });
     },
     async downloadHelper(type) {
       await this.downloader(type);
@@ -382,11 +382,17 @@ export default {
   async mounted() {
     EventBus.$emit("context-label", this.item.title);
     await this.$nextTick(() => {
+      // Footnote references and back-links scroll to their target and move
+      // keyboard focus there, so the next Tab continues from the footnote or
+      // the reference instead of jumping back (WCAG 2.4.3). The default jump
+      // is prevented: in this app a hash change is a route change.
       this._footnoteClickHandler = (e) => {
         e.preventDefault();
-        this.$vuetify.goTo(`#${e.target.href.split("#").pop()}`, {
-          offset: 50,
-        });
+        const hash = (e.currentTarget.getAttribute("href") || "").split("#");
+        const target = document.getElementById(decodeURIComponent(hash.pop()));
+        if (!target) return;
+        this.$vuetify.goTo(target, { offset: 50 });
+        moveFocusTo(target);
       };
       this._footnoteNodes = Array.from(
         this.$el.querySelectorAll('[id*="fnref"], .footnote-backref')

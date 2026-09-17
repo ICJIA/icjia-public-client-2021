@@ -10,6 +10,7 @@
           cursor: pointer;
         "
         @click="toggleSidebar()"
+        aria-controls="site-menu"
         :aria-expanded="sidebarOpen ? 'true' : 'false'"
       >
         <span class="v-icon mdi mdi-menu" aria-hidden="true"></span>

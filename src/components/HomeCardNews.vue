@@ -1,13 +1,18 @@
 <template>
   <div>
+    <!-- The title is the card's link (WCAG 2.1.1, 4.1.2); the card used to be a
+         focusable <div> that ignored Enter. A click anywhere else on the card
+         still opens the post. The category is its own link, outside the
+         title link. -->
     <v-card
-      class="ml-1 pt-1 hover card"
+      class="ml-1 pt-1 hover card title-link-card"
       elevation="0"
       color="#fff"
       min-height="150"
       :class="{ 'rule-top': index && index > 0 }"
       style="overflow-y: none"
-      @click="routeTo(item.fullPath)"
+      @click.native="onCardClick"
+      ripple
     >
       <v-container fluid>
         <v-row>
@@ -61,11 +66,11 @@
                 font-weight: 400;
               "
             >
-              <span
+              <router-link
                 style="font-weight: 700"
                 class="category"
-                @click.stop.prevent="
-                  search(
+                :to="
+                  searchLink(
                     getProperCategory($myApp.config.maps.news, item.category)
                   )
                 "
@@ -74,7 +79,7 @@
                     $myApp.config.maps.news,
                     item.category
                   ).toUpperCase()
-                }}</span
+                }}</router-link
               >&nbsp;|&nbsp;{{ item.publicationDate | format }}
             </v-card-text>
 
@@ -98,7 +103,9 @@
                     <span style="color: #000000 !important; font-weight: 700"
                       >NEW!</span
                     > </v-chip
-                  >{{ item.title }}
+                  ><router-link :to="item.fullPath" class="card-title-link">{{
+                    item.title
+                  }}</router-link>
                 </h2>
               </div></v-card-text
             >
@@ -118,7 +125,8 @@
 </template>
 
 <script>
-import { goToSearch } from "@/utils/search";
+import { searchLocation } from "@/utils/search";
+import { isClickOnLink } from "@/utils/focus";
 import { getProperCategory } from "@/utils/content";
 import dayjs from "@/plugins/dayjs";
 export default {
@@ -165,8 +173,12 @@ export default {
         return "180px;";
       }
     },
-    search(name) {
-      goToSearch(this.$router, { query: name, type: "general" });
+    searchLink(name) {
+      return searchLocation({ query: name, type: "general" });
+    },
+    onCardClick(e) {
+      if (isClickOnLink(e)) return;
+      this.routeTo(this.item.fullPath);
     },
     routeTo(fullPath) {
       //console.log(fullPath);

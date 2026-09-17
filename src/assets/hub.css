@@ -266,6 +266,16 @@
   color: #1873cd !important;
   border-left: 1px solid #1873cd !important;
 }
+/* TOC entries are links (v1.5.68); keep the look they had as <div>s. */
+#article-toc a.toc-item {
+  display: block;
+  font-weight: inherit;
+  text-decoration: none;
+}
+#article-toc a.toc-item:hover {
+  color: #1873cd !important;
+  text-decoration: none;
+}
 /* dataset view */
 #dataset-view .variables-table {
   margin-left: auto;

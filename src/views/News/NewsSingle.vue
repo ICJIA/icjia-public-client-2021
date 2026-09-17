@@ -11,11 +11,11 @@
           <v-row>
             <v-col cols="12" :md="news.showTOC ? 8 : 12">
               <div style="font-weight: 900">
-                <span
-                  class="category"
+                <router-link
+                  class="category category--underline"
                   style="font-size: 16px"
-                  @click="search(getCategory(news.category))"
-                  >{{ getCategory(news.category).toUpperCase() }}</span
+                  :to="searchLink(getCategory(news.category))"
+                  >{{ getCategory(news.category).toUpperCase() }}</router-link
                 >
                 |
                 {{ news.publicationDate | format }}
@@ -78,7 +78,7 @@ import {
 } from "@/utils/content";
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 import { EventBus } from "@/event-bus";
-import { goToSearch } from "@/utils/search";
+import { searchLocation } from "@/utils/search";
 export default {
   data() {
     return {
@@ -146,8 +146,10 @@ export default {
     NProgress.start();
   },
   methods: {
-    search(name) {
-      goToSearch(this.$router, { query: name, type: "general" });
+    // The category is a link to a search for it (WCAG 2.1.1); it used to be
+    // a <span> with a click handler.
+    searchLink(name) {
+      return searchLocation({ query: name, type: "general" });
     },
     getCategory(category) {
       return getProperCategory(this.$myApp.config.maps.news, category);

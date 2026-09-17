@@ -241,24 +241,86 @@ describe("fixOverlayContainer()", () => {
 describe("fixNestedInteractive()", () => {
   // fixNestedInteractive uses MutationObserver internally; skip if unavailable
   const hasMO = typeof MutationObserver !== "undefined";
-
-  it("removes role=button from v-select wrapper", function () {
-    if (!hasMO) return this.skip();
-    document.body.innerHTML =
-      '<div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-1"><input type="text"></div>';
+  // The observer is installed once per window and later calls are no-ops, so
+  // reset it: each test then gets the synchronous first pass.
+  const run = () => {
+    if (window._nestedInteractiveObserver) {
+      window._nestedInteractiveObserver.disconnect();
+      delete window._nestedInteractiveObserver;
+    }
     fixNestedInteractive();
-    const el = document.querySelector("div");
+  };
+  // Vuetify 2.5 v-select markup (wrapper attributes as Vuetify renders them)
+  const vSelect = (selection) =>
+    '<div class="v-input v-select"><div class="v-input__control">' +
+    '<div class="v-input__slot" role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-1">' +
+    '<div class="v-select__slot"><label for="input-1">Show events from</label>' +
+    '<div class="v-select__selections">' +
+    (selection ? `<div class="v-select__selection">${selection}</div>` : "") +
+    '<input id="input-1" aria-label="Show events from time range" readonly type="text">' +
+    '</div><input type="hidden"></div></div></div></div>';
+
+  it("removes role=button and the popup state from the v-select wrapper", function () {
+    if (!hasMO) return this.skip();
+    document.body.innerHTML = vSelect("Past 12 months");
+    run();
+    const el = document.querySelector(".v-input__slot");
     expect(el.hasAttribute("role")).to.be.false;
     expect(el.hasAttribute("aria-expanded")).to.be.false;
     expect(el.hasAttribute("aria-haspopup")).to.be.false;
     expect(el.hasAttribute("aria-owns")).to.be.false;
   });
 
-  it("does not affect div[role=button] without aria-haspopup=listbox", function () {
+  it("moves the select's role and popup state to the focusable input", function () {
+    if (!hasMO) return this.skip();
+    document.body.innerHTML = vSelect("Past 12 months");
+    run();
+    const input = document.querySelector("#input-1");
+    expect(input.getAttribute("role")).to.equal("combobox");
+    expect(input.getAttribute("aria-haspopup")).to.equal("listbox");
+    expect(input.getAttribute("aria-expanded")).to.equal("false");
+    expect(input.getAttribute("aria-controls")).to.equal("list-1");
+  });
+
+  it("names the input by its own label, then the chosen value", function () {
+    if (!hasMO) return this.skip();
+    document.body.innerHTML = vSelect("Past 12 months");
+    run();
+    const input = document.querySelector("#input-1");
+    const selection = document.querySelector(".v-select__selection");
+    expect(selection.id).to.equal("input-1-selection-0");
+    expect(input.getAttribute("aria-labelledby")).to.equal(
+      "input-1 input-1-selection-0"
+    );
+  });
+
+  it("names an input with no value by its own label only", function () {
+    if (!hasMO) return this.skip();
+    document.body.innerHTML = vSelect(null);
+    run();
+    expect(
+      document.querySelector("#input-1").getAttribute("aria-labelledby")
+    ).to.equal("input-1");
+  });
+
+  it("keeps aria-expanded in step when Vuetify rewrites it on the wrapper", async function () {
+    if (!hasMO) return this.skip();
+    document.body.innerHTML = vSelect("Past 12 months");
+    run();
+    const slot = document.querySelector(".v-input__slot");
+    slot.setAttribute("aria-expanded", "true");
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(
+      document.querySelector("#input-1").getAttribute("aria-expanded")
+    ).to.equal("true");
+    expect(slot.hasAttribute("aria-expanded")).to.be.false;
+  });
+
+  it("does not affect div[role=button] outside a v-select", function () {
     if (!hasMO) return this.skip();
     document.body.innerHTML =
       '<div role="button" aria-haspopup="menu">Toggle</div>';
-    fixNestedInteractive();
+    run();
     const el = document.querySelector("div");
     expect(el.getAttribute("role")).to.equal("button");
   });
