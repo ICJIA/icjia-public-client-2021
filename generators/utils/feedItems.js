@@ -45,10 +45,27 @@ function applyBy(end) {
   return `<p><strong>Apply by:</strong> ${text}</p>`;
 }
 
+// Plausible cannot see a feed being read: readers request the file and run no
+// scripts. Campaign tags on an item's link let it count the visits that come
+// from a feed (Sources: rss; Campaigns: the feed's name). Only the link is
+// tagged. The item's id stays as it was, or readers would show every item
+// again as new.
+function campaignLink(url, feedName) {
+  const joiner = url.includes("?") ? "&" : "?";
+  return `${url}${joiner}utm_source=rss&utm_medium=feed&utm_campaign=${feedName}`;
+}
+
+// The year the feed was built; it said 2021 until 2026.
+function copyrightLine(now = new Date()) {
+  return `All rights reserved ${now.getFullYear()}, Illinois Criminal Justice Information Authority`;
+}
+
 module.exports = {
   FEED_SIZE,
   allRecords,
   plainTitle,
   newestItems,
   applyBy,
+  campaignLink,
+  copyrightLine,
 };

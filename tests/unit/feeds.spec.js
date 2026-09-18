@@ -19,6 +19,8 @@ const {
   plainTitle,
   newestItems,
   applyBy,
+  campaignLink,
+  copyrightLine,
 } = require("../../generators/utils/feedItems");
 
 describe("Feeds: the newest records, not the first hundred", () => {
@@ -105,5 +107,70 @@ describe("Feeds: a job is dated by its posting date", () => {
     expect(source).to.include(
       "content: applyBy(job.end) + generateFullContent(job)"
     );
+  });
+});
+
+// v1.5.90: what makes the feeds findable and countable.
+describe("Feeds: found by readers, counted in Plausible", () => {
+  // Plausible cannot see a feed being read (readers run no scripts). Tagged
+  // links let it count the visits that come from one. Only the link is
+  // tagged: the item's id stays as it was, or readers would show every item
+  // again as new.
+  it("tags an item's link with the feed it came from", () => {
+    expect(campaignLink("https://icjia.illinois.gov/news/x/", "news")).to.equal(
+      "https://icjia.illinois.gov/news/x/?utm_source=rss&utm_medium=feed&utm_campaign=news"
+    );
+    expect(
+      campaignLink("https://icjia.illinois.gov/news/x/?a=1", "news")
+    ).to.equal(
+      "https://icjia.illinois.gov/news/x/?a=1&utm_source=rss&utm_medium=feed&utm_campaign=news"
+    );
+  });
+
+  it("dates the copyright line by the year of the build", () => {
+    expect(copyrightLine(new Date("2026-09-18"))).to.equal(
+      "All rights reserved 2026, Illinois Criminal Justice Information Authority"
+    );
+    expect(copyrightLine()).to.include(String(new Date().getFullYear()));
+  });
+
+  it("every generator tags links but not ids, names itself, and dates its copyright", () => {
+    for (const [name, file] of [
+      ["News", "news"],
+      ["Funding", "funding"],
+      ["Meetings", "meetings"],
+      ["Employment", "employment"],
+    ]) {
+      const source = fs
+        .readFileSync(
+          path.join(process.cwd(), `generators/generateRSS${name}.mjs`),
+          "utf8"
+        )
+        .replace(/\s+/g, " ");
+      expect(source, name).to.match(
+        new RegExp(`link: campaignLink\\(\\s*\`[^,]+,\\s*"${file}"\\s*\\)`)
+      );
+      expect(source, name).to.match(/ id: `\$\{config\.api\.baseClient\}\//);
+      expect(source, name).to.not.match(/ id: campaignLink/);
+      expect(source, name).to.include(
+        `rss: config.api.baseClient + "/${file}-rss2.xml"`
+      );
+      expect(source, name).to.include("copyright: copyrightLine()");
+      expect(source, name).to.not.include("All rights reserved 2021");
+    }
+  });
+
+  it("the site's pages name the four feeds in their head", () => {
+    const html = fs.readFileSync(
+      path.join(process.cwd(), "public/index.html"),
+      "utf8"
+    );
+    for (const file of ["news", "funding", "meetings", "employment"]) {
+      expect(html, file).to.match(
+        new RegExp(
+          `<link\\s+rel="alternate"\\s+type="application/rss\\+xml"\\s+title="[^"]+"\\s+href="https://icjia\\.illinois\\.gov/${file}-rss2\\.xml"\\s*/>`
+        )
+      );
+    }
   });
 });

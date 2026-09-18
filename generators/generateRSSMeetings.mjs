@@ -5,7 +5,13 @@ import { Feed } from "feed";
 import axios from "axios";
 import fs from "fs-extra";
 import { renderToHtml } from "./utils/Markdown.mjs";
-import { allRecords, plainTitle, newestItems } from "./utils/feedItems.js";
+import {
+  allRecords,
+  plainTitle,
+  newestItems,
+  campaignLink,
+  copyrightLine,
+} from "./utils/feedItems.js";
 const config = JSON.parse(fs.readFileSync("./src/config/config.json"));
 
 let feed = new Feed({
@@ -16,11 +22,13 @@ let feed = new Feed({
   language: "en", // optional, used only in RSS 2.0, possible values: http://www.w3.org/TR/REC-html40/struct/dirlang.html#langcodes
   image: `${config.api.baseClient}/icjia-logo.png`,
   favicon: `${config.api.baseClient}/favicon.ico`,
-  copyright:
-    "All rights reserved 2021, Illinois Criminal Justice Information Authority",
+  copyright: copyrightLine(),
   updated: new Date(), // optional, default = today
   generator: "Feed for Node.js", // optional, default = 'Feed for Node.js'
   feedLinks: {
+    // The RSS file names itself (atom:link rel="self"), as the W3C validator
+    // recommends.
+    rss: config.api.baseClient + "/meetings-rss2.xml",
     json: config.api.baseClient + "/meetings-json1.json",
     atom: config.api.baseClient + "/meetings-atom.xml",
   },
@@ -54,7 +62,10 @@ const init = async () => {
       title: plainTitle(`[${meeting.category.toUpperCase()}] ${meeting.title}`),
       date: new Date(meeting.start),
       id: `${config.api.baseClient}/news/meetings/${meeting.slug}/`,
-      link: `${config.api.baseClient}/news/meetings/${meeting.slug}/`,
+      link: campaignLink(
+        `${config.api.baseClient}/news/meetings/${meeting.slug}/`,
+        "meetings"
+      ),
       description: renderToHtml(meeting.summary),
       content: generateFullContent(meeting),
       image: `${config.api.baseClient}/icjia-logo.png`,

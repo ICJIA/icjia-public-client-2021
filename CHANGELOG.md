@@ -84,6 +84,39 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.90] - 2026-09-18
+
+### feat(feeds): readers can find the feeds, Plausible can count visits from them, and the RSS files name themselves
+
+Four follow-ups to 1.5.89, which got the feeds carrying new items again.
+
+- **Feed autodiscovery.** The site's pages had no `<link rel="alternate">` for the feeds, so a
+  reader given `icjia.illinois.gov` found nothing. `public/index.html` now names the four RSS
+  feeds (news, funding, meetings, employment) in its head; the page shells written after the build
+  are copies of it and carry them too.
+- **Campaign tags on item links.** Plausible cannot see a feed being read: readers request the
+  file and run no scripts, so the feeds' use was invisible (in 12 months, 26 views of the RSS page
+  and no visit from a reader). Every item's link now ends
+  `?utm_source=rss&utm_medium=feed&utm_campaign=news` (or `funding`, `meetings`, `employment`), so
+  a visit from a feed appears in Plausible under Sources as "rss" and under Campaigns by feed.
+  Only the link is tagged. The item's id (RSS `guid`, Atom `id`, JSON `id`) is unchanged, so
+  readers will not show items again as new. A tagged address opens the same page, and the page's
+  canonical address leaves the tags out.
+- **The RSS files name themselves** (`atom:link rel="self"`, from `feedLinks.rss`), which the W3C
+  Feed Validation Service recommends; it was the one warning on the RSS files.
+- **The copyright line** said 2021; it takes the year of the build.
+
+Checked by generating the feeds from the live CMS: in all twelve files, 50 of 50 links tagged and
+50 of 50 ids untagged, the ampersands escaped in the XML, the self link present in the four RSS
+files, the copyright 2026, all well-formed. A tagged news address was opened on the live site: the
+post loaded and its canonical address had no tags.
+
+Four new tests (`tests/unit/feeds.spec.js`: the tagged link, the copyright year, all four
+generators tag links but not ids and name themselves, the four feeds in the page head). Mocha: 539
+passing, 6 pending (pre-existing skipped stubs); lint clean on the changed files.
+
+---
+
 ## [1.5.89] - 2026-09-18
 
 ### fix(feeds): the RSS, Atom and JSON feeds carry the newest items again; plain-text titles; an image that exists; jobs dated by posting date

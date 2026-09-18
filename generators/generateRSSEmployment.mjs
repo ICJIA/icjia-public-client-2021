@@ -10,6 +10,8 @@ import {
   plainTitle,
   newestItems,
   applyBy,
+  campaignLink,
+  copyrightLine,
 } from "./utils/feedItems.js";
 const config = JSON.parse(fs.readFileSync("./src/config/config.json"));
 
@@ -21,11 +23,13 @@ let feed = new Feed({
   language: "en", // optional, used only in RSS 2.0, possible values: http://www.w3.org/TR/REC-html40/struct/dirlang.html#langcodes
   image: `${config.api.baseClient}/icjia-logo.png`,
   favicon: `${config.api.baseClient}/favicon.ico`,
-  copyright:
-    "All rights reserved 2021, Illinois Criminal Justice Information Authority",
+  copyright: copyrightLine(),
   updated: new Date(), // optional, default = today
   generator: "Feed for Node.js", // optional, default = 'Feed for Node.js'
   feedLinks: {
+    // The RSS file names itself (atom:link rel="self"), as the W3C validator
+    // recommends.
+    rss: config.api.baseClient + "/employment-rss2.xml",
     json: config.api.baseClient + "/employment-json1.json",
     atom: config.api.baseClient + "/employment-atom.xml",
   },
@@ -57,7 +61,10 @@ const init = async () => {
     feed.addItem({
       title: plainTitle(`[${job.category.toUpperCase()}] ${job.title}`),
       id: `${config.api.baseClient}/about/employment/${job.slug}/`,
-      link: `${config.api.baseClient}/about/employment/${job.slug}/`,
+      link: campaignLink(
+        `${config.api.baseClient}/about/employment/${job.slug}/`,
+        "employment"
+      ),
       description: applyBy(job.end) + renderToHtml(job.summary),
       content: applyBy(job.end) + generateFullContent(job),
       // The posting date. It was the closing date, which dated a new posting
