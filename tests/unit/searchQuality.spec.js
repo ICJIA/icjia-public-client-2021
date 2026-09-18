@@ -127,6 +127,45 @@ describe("Site search: several words, in any order", () => {
     expect(results[0]).to.not.have.property("score");
   });
 
+  // Typing "task force trafic" sends "task", "task fo", "task force t"...; without
+  // a memory every keystroke searched every word again (v1.5.84).
+  const counted = (records) => {
+    const fuse = build(records);
+    const original = fuse.search.bind(fuse);
+    fuse.calls = [];
+    fuse.search = (query) => {
+      fuse.calls.push(query);
+      return original(query);
+    };
+    return fuse;
+  };
+
+  it("remembers each word's results, so a longer query only searches its new word", () => {
+    const fuse = counted(sample.records);
+    searchAll(fuse, "task force");
+    expect(fuse.calls).to.deep.equal(["task force", "task", "force"]);
+    fuse.calls.length = 0;
+    const paths = searchAll(fuse, "task force trafic").map(
+      (r) => r.item.fullPath
+    );
+    expect(fuse.calls).to.deep.equal(["task force trafic", "trafic"]);
+    const fresh = searchAll(build(sample.records), "task force trafic").map(
+      (r) => r.item.fullPath
+    );
+    expect(paths, "same results with and without the memory").to.deep.equal(
+      fresh
+    );
+  });
+
+  it("forgets the oldest words once it holds eighty", () => {
+    const fuse = counted(sample.records);
+    searchAll(fuse, "homicide reporting");
+    for (let i = 0; i < 80; i++) searchAll(fuse, `word${i} filler${i}`);
+    fuse.calls.length = 0;
+    searchAll(fuse, "homicide reporting");
+    expect(fuse.calls).to.include("homicide");
+  });
+
   it("the search worker orders results exactly as the app does", () => {
     const worker = fs.readFileSync(
       path.join(process.cwd(), "public/searchWorker.js"),
@@ -146,11 +185,14 @@ describe("Site search: several words, in any order", () => {
     );
     const ours = build(sample.records);
     for (const query of [
+      "task force",
       "task force trafic",
       "police reform",
+      "reform police",
       "use of force",
       "homicide",
       "annual report custody",
+      "task force trafic",
     ]) {
       expect(
         api.searchAll(theirs, query).map((r) => r.item.fullPath),
@@ -223,6 +265,32 @@ describe("Site search: long text is matched only at its opening", () => {
   it("does not match the same word deep in a summary", () => {
     expect(filler.length).to.be.greaterThan(SEARCH_HEAD_LENGTH);
     expect(paths).to.not.include("/buried/");
+  });
+});
+
+describe("Site search: a release reaches people who have searched before", () => {
+  // The index and the worker are not content-hashed. Cached for an hour, with
+  // a day of stale-while-revalidate, a browser kept running the previous
+  // release's worker against the new app: after v1.5.83 it still searched by
+  // phrase only, and after v1.5.76 it could not find a newly indexed page.
+  const toml = fs.readFileSync(
+    path.join(process.cwd(), "netlify.toml"),
+    "utf8"
+  );
+  const cacheRule = (file) => {
+    const block = toml
+      .split("[[headers]]")
+      .find((b) => b.includes(`for = "${file}"`));
+    return (block.match(/Cache-Control = "([^"]*)"/) || [])[1];
+  };
+
+  it("browsers revalidate the search index and the search worker on every visit", () => {
+    expect(cacheRule("/searchIndex.json")).to.equal(
+      "public, max-age=0, must-revalidate"
+    );
+    expect(cacheRule("/searchWorker.js")).to.equal(
+      "public, max-age=0, must-revalidate"
+    );
   });
 });
 

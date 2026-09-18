@@ -149,6 +149,28 @@ function searchWords(query) {
   return Array.from(new Set(kept.length ? kept : all)).slice(0, 6);
 }
 
+// Typing "task force trafic" sends a query per keystroke, and each one would
+// search every word again. The index does not change during a visit, so each
+// word's results are remembered (the newest eighty words per index).
+const WORD_MEMORY = new WeakMap();
+const WORD_MEMORY_SIZE = 80;
+
+function wordHits(fuse, word) {
+  let memory = WORD_MEMORY.get(fuse);
+  if (!memory) {
+    memory = new Map();
+    WORD_MEMORY.set(fuse, memory);
+  }
+  let hits = memory.get(word);
+  if (!hits) {
+    hits = new Map(fuse.search(word).map((r) => [r.refIndex, r]));
+    memory.set(word, hits);
+    if (memory.size > WORD_MEMORY_SIZE)
+      memory.delete(memory.keys().next().value);
+  }
+  return hits;
+}
+
 // Fuse matches a query as one phrase. A query of several words is also matched
 // word by word: a record qualifies when every word matches somewhere in it, in
 // any order and in any field, each word allowing for a typo. Order of results:
@@ -162,7 +184,7 @@ function searchAll(fuse, query) {
 
   let every = null; // refIndex -> { result, score }
   for (const word of words) {
-    const hits = new Map(fuse.search(word).map((r) => [r.refIndex, r]));
+    const hits = wordHits(fuse, word);
     if (every === null) {
       every = new Map();
       hits.forEach((r, ref) => every.set(ref, { result: r, score: r.score }));

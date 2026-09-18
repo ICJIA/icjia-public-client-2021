@@ -99,12 +99,15 @@
     Cache-Control = "public, max-age=0, must-revalidate"
 
 # Search worker + Fuse.js loaded by the worker. Both live at the root and
-# aren't content-hashed, but they only change on a code release. Give them
-# a short max-age + stale-while-revalidate so most users get the cached copy.
+# aren't content-hashed. The worker changes with the app: it must be
+# revalidated on every visit (a 304 when unchanged), or a browser that has
+# searched before keeps running the previous release's worker against the new
+# app for up to a day. After 1.5.83 such a browser still searched by phrase
+# only (1.5.84). Fuse.js changes only when the library is upgraded.
 [[headers]]
   for = "/searchWorker.js"
   [headers.values]
-    Cache-Control = "public, max-age=3600, stale-while-revalidate=86400"
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 [[headers]]
   for = "/fuse.min.js"

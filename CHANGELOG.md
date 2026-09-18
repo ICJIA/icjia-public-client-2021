@@ -84,6 +84,37 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.84] - 2026-09-18
+
+### fix(search): a new release of the search worker reaches browsers that have searched before; typing a long query is faster
+
+`searchWorker.js` is not content-hashed and was served with `max-age=3600,
+stale-while-revalidate=86400`, so a browser that had used the search kept running the previous
+release's worker for an hour, and for a day after that still started with the stale copy. The app
+bundle is hashed and always current, so the two disagreed. Seen on the live site after 1.5.83, in a
+browser that had searched earlier in the day: the page highlighted the search terms (new app) but
+"task force trafic" returned one unrelated result (old worker, phrase only); the cached copy of the
+worker lacked the new code and a fresh copy had it, and with the fresh copy the same page returned
+26 results led by the task force's meeting, schedule and report. It is the defect fixed for
+`searchIndex.json` in 1.5.78. The worker is now `max-age=0, must-revalidate`: checked on every
+visit, a 304 when unchanged. `fuse.min.js` keeps its day-long cache; it changes only when the
+library is upgraded. A test reads `netlify.toml` and requires both the index and the worker to be
+revalidated.
+
+**Word memory.** Typing "task force trafic meeting" sends a query per keystroke, and each one
+searched every word again. The index does not change during a visit, so each word's results are
+now remembered (the newest eighty words, per index, in the worker's memory only: nothing is stored
+on the device, and it is gone when the page is closed or reloaded). Measured in Chrome with the
+real worker files, typing that query keystroke by keystroke: median 262 ms per keystroke before,
+162 ms after; slowest 564 ms before, 278 ms after; 5.8 s of searching in all before, 3.5 s after.
+Results are unchanged: fourteen sample queries on the live index returned identical results with
+and without the memory, and a test requires it. One-word searches are unaffected.
+
+Two new tests (a longer query searches only its new word; the memory stays bounded). Mocha: 489
+passing, 6 pending (pre-existing skipped stubs); lint clean on the changed files.
+
+---
+
 ## [1.5.83] - 2026-09-18
 
 ### fix(search): words in any order, with typos, and search terms highlighted in the results
