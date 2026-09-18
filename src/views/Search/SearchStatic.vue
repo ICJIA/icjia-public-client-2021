@@ -104,7 +104,12 @@
 
             <!-- Query vars: {{ $route.query.filter }} -->
 
-            <div v-if="query && query.length" class="mt-12 mb-12">
+            <div
+              v-if="query && query.length"
+              class="mt-12 mb-12"
+              @focusin="noteResult"
+              @click.capture="noteResult"
+            >
               <div
                 v-for="(result, index) in visibleResults"
                 :key="index"
@@ -185,6 +190,12 @@ import Fuse from "fuse.js";
 import _ from "lodash";
 import NProgress from "@/services/Progress";
 import { goToOptions } from "@/utils/motion";
+import { searchLocation } from "@/utils/search";
+import {
+  historyKey,
+  keepSearchView,
+  keptSearchView,
+} from "@/utils/searchReturn";
 function arrayToList(array) {
   return array.join(", ").replace(/, ((?:.(?!, ))+)$/, " and $1");
 }
@@ -233,6 +244,11 @@ export default {
       // True while a search that came from the address (a link, a reload) is
       // running: its ?filter= is applied. A typed search clears the filter.
       searchFromRoute: false,
+      // This page's history entry, noted while it is the current one: by the
+      // time the page is destroyed the browser is on the next entry.
+      entryKey: null,
+      // The result that last had focus or was clicked: Back returns to it.
+      lastResultIndex: null,
       queryResults: [],
       filteredResults: [],
       resultsPerPage: RESULTS_PER_PAGE,
@@ -251,6 +267,7 @@ export default {
     };
   },
   async created() {
+    this.entryKey = historyKey();
     NProgress.start();
     // Debounce the input handler so typing fires one Fuse search per
     // pause instead of one per keystroke. 250ms is the sweet spot —
@@ -289,6 +306,17 @@ export default {
       this.instantSearch();
       this.filterResults(null);
     }
+  },
+  // Leaving for another page, or for another search: the view is kept now,
+  // while it can still be read. By beforeDestroy the results have left the
+  // document and the browser has pulled the scroll position in.
+  beforeRouteLeave(to, from, next) {
+    this.keepView();
+    next();
+  },
+  beforeRouteUpdate(to, from, next) {
+    this.keepView();
+    next();
   },
   mounted() {
     // Always land with the cursor in the search input. The HTML5
@@ -428,8 +456,66 @@ export default {
     },
     selectChip(chip) {
       this.contentSelected = chip.value === null ? "No filter" : chip.value;
+      this.syncAddress();
       // After the filter has been applied.
       this.$nextTick(() => this.announceStatus(this.resultStatus()));
+    },
+    // Writes the search on the page (query and filter chip) into the address,
+    // so Back, a reload, a bookmark and a shared link all return to it. The
+    // browser's replaceState, not the router: a new route would rebuild this
+    // page while the visitor is typing (App.vue keys the view by its address)
+    // and add a history entry for every search. The router's state object is
+    // kept, so the entry keeps its key and its saved scroll position.
+    syncAddress() {
+      const query = (this.searchedQuery || "").trim();
+      const filter =
+        query && this.contentSelected !== "No filter"
+          ? this.contentSelected
+          : null;
+      const href = this.$router.resolve(searchLocation({ query, filter })).href;
+      if (href === window.location.pathname + window.location.search) return;
+      window.history.replaceState(window.history.state, "", href);
+    },
+    // Leaving the page: what the address cannot say is kept for this history
+    // entry (src/utils/searchReturn.js).
+    keepView() {
+      const query = (this.searchedQuery || "").trim();
+      if (!query) return;
+      keepSearchView(this.entryKey, {
+        query,
+        shownCount: this.shownCount,
+        scrollY: window.scrollY,
+        focusIndex: this.lastResultIndex,
+      });
+    },
+    // The router moves focus to the page before it asks this page to leave
+    // for another search, so the result in use is noted as focus and clicks
+    // land in the list.
+    noteResult(event) {
+      const target = event.target;
+      const result =
+        target && target.closest && target.closest("[data-result-index]");
+      this.lastResultIndex = result ? Number(result.dataset.resultIndex) : null;
+    },
+    // Back (or Forward) to a search left from this history entry: as many
+    // results showing, the page scrolled to the same place, focus on the
+    // result that was opened (WCAG 2.4.3). After the filter's watcher, which
+    // starts the list again from the first fifty.
+    restoreView() {
+      const query = (this.searchedQuery || "").trim();
+      const view = keptSearchView(this.entryKey, query);
+      if (!view) return;
+      this.$nextTick(() => {
+        this.shownCount = view.shownCount;
+        this.$nextTick(() => {
+          window.scrollTo(0, view.scrollY);
+          if (view.focusIndex === null) return;
+          const link = this.$el.querySelector(
+            `[data-result-index="${view.focusIndex}"] a.card-title-link`
+          );
+          if (link) link.focus({ preventScroll: true });
+        });
+      });
     },
     // The text of the visible summary or no-results message. The query is
     // trimmed, as it is for the search, so a trailing space is not a new
@@ -616,6 +702,9 @@ export default {
       if (!this.query || !this.query.length) {
         this.statusMessage = "";
         this.lastAnnounced = "";
+        // The box was cleared: so is the search in the address.
+        this.searchedQuery = null;
+        this.syncAddress();
         return;
       }
       if (this.query.length < 2) {
@@ -641,6 +730,8 @@ export default {
       this.contentSelected = fromRoute ? this.routeFilter() : "No filter";
       this.filterResults(null);
       this.searchedQuery = this.query;
+      if (fromRoute) this.restoreView();
+      else this.syncAddress();
       if (this.announceWhenSearched) {
         this.announceWhenSearched = false;
         // Once the filter reset above has been applied.

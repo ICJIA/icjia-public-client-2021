@@ -84,6 +84,66 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.87] - 2026-09-18
+
+### feat(search): Back returns to the search as it was left; results open in the same tab; the search is in the address
+
+Reported: the search "disappears" once a result is clicked. Reproduced on the live site: a typed
+query lived only in the search box (the address stayed `/search/`), a result opened in a new tab
+(so there was no way "back" to the list from it), and after a tag link in the same tab, Back
+returned to `/search/` with an empty box and no results. The page is rebuilt for every address
+(`App.vue` keys the routed view by its address, and nothing is kept alive), so whatever was not in
+the address was lost. A search that arrived with its query in the address came back; a typed one
+did not.
+
+- **The search on the page is in the address.** When a typed search has arrived, and when a filter
+  chip is chosen, the address becomes `/search/violence` or `/search/violence?filter=publication`
+  (`SearchStatic.syncAddress`). Back, a reload, a bookmark and a shared link all return to that
+  search, filter included (filters in an address have worked since 1.5.85). It uses the browser's
+  `replaceState`, not the router: a new route would rebuild the page while the visitor is typing,
+  and add a history entry for every search. The router's state object is kept, so the history
+  entry keeps its key. Clearing the box returns the address to `/search`.
+- **A result opens in the same tab** (`SearchCard.vue`; it was a new tab, chosen in April so the
+  list would not be lost). The title is a router link on the search page as in the dialog; a click
+  elsewhere on the card follows it; Ctrl or Command with the click still opens a new tab. The
+  related-content lists (`SearchCardAlt.vue`) are unchanged.
+- **Back returns to the search as it was left.** What the address cannot say is kept per history
+  entry, in memory for the visit, for the newest twenty entries (`src/utils/searchReturn.js`): how
+  many results were showing, how far the page was scrolled, and which result was in use. On Back
+  (or Forward) the search runs again from the address, as many results are shown, the page scrolls
+  to the same place, and keyboard focus returns to the opened result's title link (WCAG 2.4.3).
+  Nothing is stored on the device. It lasts until the box is cleared or the tab is closed; after a
+  reload the query and filter come back from the address, from the top of the list.
+
+Two things found while testing in the browser, both fixed before release. The view was first kept
+in `beforeDestroy`, by which time the results had left the document and the browser had pulled the
+scroll position in: a page left at 9,172 px was kept as 370. It is now kept in the
+`beforeRouteLeave` and `beforeRouteUpdate` guards, while it can still be read. And the router's
+`beforeEach` moves focus to the page before a search-to-search navigation reaches the search page,
+so the result in use is noted as focus and clicks land in the list (`noteResult`), not read at
+leaving time.
+
+Checked in the running app (local dev server, real worker and index): typed "violence" (address
+`/search/violence`, no new history entry), chose Publications (`?filter=publication`), pressed
+"Show more results" (91 cards), opened result 60 from 9,172 px, and pressed Back: the same address,
+"violence" in the box, Publications selected, 91 cards, 9,172 px, focus on result 60. The same
+after a tag link in result 45 and Back (6,903 px, focus on result 45), and Forward returned to the
+tag's search. Clearing the box gave `/search`; a fresh load of `/search/violence?filter=publication`
+gave the query, the chip and the first 50 results. No console errors. axe-core (WCAG A and AA, with
+best practices) found nothing on the results page but the development server's own overlay frame.
+
+Known and unchanged: with a typed search on the page the router still believes it is on the
+address it last navigated to, so the header's search icon does nothing there when that address was
+`/search` (as before this release); clearing the box starts over.
+
+Eighteen new tests (`tests/unit/searchReturn.spec.js`: the kept views, the address for a typed
+search, a chip, a cleared box and an unchanged address, when the address is written, keeping and
+restoring the view, noting the result in use, the guards, and same-tab results with Ctrl or
+Command opening a new tab). Mocha: 525 passing, 6 pending (pre-existing skipped stubs); lint clean
+on the changed files.
+
+---
+
 ## [1.5.86] - 2026-09-18
 
 ### fix(search): typing in the search box no longer lags; results are shown fifty at a time

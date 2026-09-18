@@ -114,6 +114,7 @@ describe("Search page: the shortest query", () => {
       },
     });
     vm.filterResults = SearchStatic.methods.filterResults;
+    vm.syncAddress = () => {}; // the address: tests/unit/searchReturn.spec.js
     await SearchStatic.methods.instantSearch.call(vm);
     return { asked, found: vm.queryResults.length };
   };

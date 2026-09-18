@@ -102,15 +102,7 @@
             class="mt-2 mb-2"
             v-if="item.title"
           >
-            <a
-              v-if="isStatic"
-              :href="item.fullPath"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="card-title-link"
-              v-html="highlight(item.title)"
-            ></a>
-            <router-link v-else :to="item.fullPath" class="card-title-link"
+            <router-link :to="item.fullPath" class="card-title-link"
               ><span v-html="highlight(item.title)"></span
             ></router-link>
           </h2>
@@ -235,6 +227,11 @@ export default {
     },
     onCardClick(e) {
       if (isClickOnLink(e)) return;
+      // As on the title link, Ctrl or Command with the click opens a new tab.
+      if (e.metaKey || e.ctrlKey) {
+        openInNewTab(this.item.fullPath);
+        return;
+      }
       this.route(this.item.fullPath);
     },
     // download(result) {
@@ -256,16 +253,12 @@ export default {
       return cleanExt.substring(1);
     },
     route(path) {
-      // When the card is rendered on the static /search page we open the
-      // destination in a new tab so users keep their result list intact
-      // (the #1 complaint about the old modal was losing the result set
-      // the moment they clicked a hit). When rendered inside the modal
-      // we keep the legacy same-tab navigation + close-modal behavior.
-      if (this.isStatic) {
-        openInNewTab(path);
-        return;
-      }
-      EventBus.$emit("closeSearch");
+      // A result opens in this tab. On the /search page that used to be a new
+      // tab, to keep the result list (the #1 complaint about the old modal
+      // was losing it the moment a hit was clicked); since v1.5.87 the search
+      // page returns to the list on Back, as it was left. Inside the modal
+      // the dialog is closed first, as before.
+      if (!this.isStatic) EventBus.$emit("closeSearch");
       this.$router.push(path).catch(() => {
         this.$vuetify.goTo(0, goToOptions());
       });

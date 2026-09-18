@@ -9,9 +9,13 @@
  *
  * The new flow:
  *   - Click a tag / name / category → navigate to /search/:query (same tab)
- *   - Click a result card on /search → open the target in a new tab
- *     (handled in SearchCard/SearchCardAlt when isStatic=true)
- *   - Back from a same-tab navigation → keep-alive restores results
+ *   - Click a result card on /search → the result opens in the same tab
+ *     (v1.5.87; it was a new tab). SearchCardAlt's related-content lists
+ *     still open a new tab when isStatic=true.
+ *   - Back → the search page returns to the search as it was left: the query
+ *     and filter are in the address (SearchStatic.syncAddress), and the rest
+ *     is kept per history entry (src/utils/searchReturn.js). There is no
+ *     keep-alive: the page is rebuilt and the search is run again.
  *
  * This module is intentionally a tiny helper (no Vue dependency) so it's
  * importable from any component — container or presentational — without
