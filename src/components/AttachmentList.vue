@@ -4,7 +4,10 @@
       <h2 v-if="label && label.length" id="attachments">{{ label }}</h2>
       <h2 v-else class="" id="attachments">Attachments</h2>
     </div>
-    <h3
+    <!-- The same label at the level its place calls for (headingTag): h3 in a
+         card under an h2, h2 under a page's h1. -->
+    <component
+      :is="headingTag"
       v-if="!useSecondLevelHeading"
       style="
         font-weight: 900;
@@ -19,7 +22,7 @@
     >
       <span v-if="label && label.length">{{ label }}</span>
       <span v-else>Attachments</span>
-    </h3>
+    </component>
 
     <div class="">
       <!-- Sorting is off (WCAG 2.1.1): the sortable headers worked with a
@@ -174,6 +177,20 @@ export default {
         /* analytics failure must never block downloads */
       }
     },
+    // Below 600 px v-data-table stacks each row's cells, each under its own
+    // label, and drops the header row. With sorting off there is then no
+    // header cell at all, and the table's cells have no headers (WCAG 1.3.1;
+    // axe and Lighthouse: td-has-header). Stacked, it is a list of labelled
+    // values ("Filename: notice.pdf"), not a grid: it is marked
+    // presentational, and is a table again when the header row is back.
+    markStackedTables() {
+      if (!this.$el || !this.$el.querySelectorAll) return;
+      this.$el.querySelectorAll("table").forEach((table) => {
+        if (table.querySelector(".v-data-table__mobile-table-row"))
+          table.setAttribute("role", "presentation");
+        else table.removeAttribute("role");
+      });
+    },
     isItUpdated(item) {
       const created = dayjs(this.baseItemPublished);
       const updated = dayjs(item.updated_at); // another date
@@ -188,11 +205,26 @@ export default {
   },
   mounted() {
     this.attachments = _.orderBy(this.items, "name", "asc");
+    // Once the table has been drawn.
+    this.$nextTick(() => this.$nextTick(this.markStackedTables));
+  },
+  watch: {
+    // The table stacks, and unstacks, as the window's width crosses 600 px.
+    "$vuetify.breakpoint.width"() {
+      this.$nextTick(this.markStackedTables);
+    },
   },
   props: {
     label: {
       type: String,
       default: null,
+    },
+    // The level of the small uppercase label (not of the plain h2 that
+    // useSecondLevelHeading gives).
+    headingTag: {
+      type: String,
+      default: "h3",
+      validator: (tag) => ["h2", "h3", "h4"].includes(tag),
     },
     baseItemPublished: {
       type: String,

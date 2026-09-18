@@ -340,4 +340,10 @@ export default {
   color: #000;
   text-decoration: underline;
 }
+/* A 24 px touch target (WCAG 2.2 SC 2.5.8): the label is 15 px high. Vertical
+   padding on an inline box enlarges the target without moving a line, and the
+   label has no background or border for it to show. */
+.category[role="button"] {
+  padding: 5px 0;
+}
 </style>

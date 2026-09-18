@@ -84,6 +84,69 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.94] - 2026-09-18
+
+### fix(accessibility): three findings from auditing the pages changed on 17 and 18 September with axecap and lightcap
+
+The pages touched by the last two days' releases (1.5.70 to 1.5.93) were audited on the live site:
+27 addresses with axecap (axe-core 4.13.0, WCAG A and AA with best practices; the front page and
+the search at phone width too) and 30 runs of lightcap's accessibility audit over the same
+addresses (Lighthouse 13.4.0; seven of them at phone width). The front page, the search (plain, filtered to the Research Hub, with a partner site
+first), the homicide page, a funding notice, the news, meetings, events, publications and
+employment lists, the two forms, the staff pages, DICRA, drones, RSS, a missing page, and one
+meeting, event, publication, article and news post. Lighthouse accessibility was 100 with no
+issues everywhere except as below; the full Lighthouse audit of the front page, the search and
+the homicide page gave accessibility 100 and SEO 100 (best practices 100, and 81 on the homicide
+page for a deprecation inside the embedded Tableau dashboard).
+
+Three findings were real and are fixed at their source. None came from the search, feed, menu or
+link work of the two days; all three are older and were on pages that work touched.
+
+- **Attachments at phone width had a table with no header cells** (Lighthouse `td-has-header`,
+  WCAG 1.3.1, critical; every page with attachments). Below 600 px `v-data-table` stacks each
+  row's cells under their own labels and drops the header row. The meetings and publications
+  tables keep one header cell there, their "Sort by" control; the attachments table has had
+  sorting off since 1.5.69, so nothing was left. Stacked, it is a list of labelled values
+  ("Filename: notice.pdf"), not a grid: `AttachmentList.vue` marks the table presentational while
+  it is stacked, and a table again when the header row is back (`markStackedTables`, on mount and
+  when the window's width changes). Nothing changes on screen.
+- **Research Hub cards: the category buttons were a 15 px touch target** (Lighthouse
+  `target-size`, WCAG 2.2 SC 2.5.8; the Hub's home and articles pages scored 96). They are plain
+  coloured text with no background or border, so 5 px of vertical padding on the inline box makes
+  the target 25 px. Measured against the live page: the label's text, the cards' positions and
+  the cards' heights are identical, and 5 px still separate the button from the next target.
+- **A meeting's own page rendered "Attachments" as an h3 under the page's h1** (axe
+  `heading-order`), until the runtime accessibility pass re-levelled it about a second later;
+  axecap, run as the page appears, reported it every time. `MeetingCard.vue` knows where it is
+  (`titleTag`), so the list's label is an h2 there and an h3 under a card's h2 in the meetings
+  list (`headingTag`, new in `AttachmentList.vue`). It is the same label at another level: the
+  plain h2 of `useSecondLevelHeading` would have changed how the page looks. Computed style and
+  height match the live page.
+
+Reported, not changed:
+
+- The runtime accessibility pass (`src/a11y`) finishes half a second to a second after a page is
+  drawn. Run as the page appears, axecap caught the publications table with its 150 row-expand
+  buttons still unnamed, and a news post whose editor had used h4 headings under the h1; both
+  pass once settled. (That pass turns three sibling h4s into h2, h3 and h4, which satisfies the
+  rule and is not what the editor meant; levelling CMS headings in the render pipeline would be
+  better.)
+- Lighthouse performance was measured while the machine was indexing and backing up, so its
+  timings (front page 31, search 63) are not reliable, and this site has scored in the 50s at
+  phone width since 1.3.4x for reasons in the framework. Measured directly on the live front
+  page: largest contentful paint at 1.0 to 1.3 s (the banner's image), and a layout shift of 0.45
+  (desktop) and 0.82 (phone) that comes from the news and tabbed blocks under the banner
+  replacing their loading state. The banner and its new search box are not among the elements
+  that shift.
+
+Eight new tests (`attachmentListStacked.spec.js` 4, `hubCardTargetSize.spec.js` 2,
+`meetingAttachmentsHeading.spec.js` 2). Mocha: 568 passing, 6 pending (pre-existing skipped
+stubs); lint clean on the changed files. Verified locally with lightcap and axecap before
+release: the funding notice and the meeting at phone width 100 with no issues (the notice had 1
+critical), the Hub's two pages 100 (from 96), the meeting's page 0 axe violations as it appears.
+
+---
+
 ## [1.5.93] - 2026-09-18
 
 ### fix(menu): Illinois Heals leaves the Partners menu; the 2024-2029 JAG plan is titled as the plan titles itself

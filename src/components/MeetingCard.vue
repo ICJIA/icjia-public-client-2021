@@ -51,12 +51,17 @@
             <template>{{ tag }}</template>
           </BasePropChip>
         </BasePropDisplay>
+        <!-- The heading follows the title: h2 under the page's h1 on the
+             meeting's own page, h3 under a card's h2 in the list. It was always
+             h3, a skipped level on the meeting's page until the runtime pass
+             re-levelled it. -->
         <AttachmentList
           :items="item.attachments"
           v-if="item.attachments && item.attachments.length"
           class="mt-8 pl-3"
           :key="item.slug"
           :baseItemPublished="item.published_at"
+          :headingTag="titleTag === 'h1' ? 'h2' : 'h3'"
         ></AttachmentList>
         <RelatedList
           :content="item"
