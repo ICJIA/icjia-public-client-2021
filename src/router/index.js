@@ -27,6 +27,7 @@ import { forms } from "@/router/forms";
 import { singles } from "@/router/singles";
 import { homicide } from "@/router/homicide";
 import { accessibility } from "@/router/accessibility";
+import { canonicalUrl } from "@/utils/canonical";
 
 // import { preview } from "@/router/preview";
 Vue.use(VueRouter);
@@ -109,10 +110,7 @@ router.afterEach((routeTo, routeFrom) => {
   // Update rel=canonical to match current route
   const canonical = document.querySelector('link[rel="canonical"]');
   if (canonical) {
-    canonical.setAttribute(
-      "href",
-      "https://icjia.illinois.gov" + routeTo.fullPath
-    );
+    canonical.setAttribute("href", canonicalUrl(routeTo.path));
   }
 });
 

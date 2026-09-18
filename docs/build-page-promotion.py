@@ -29,7 +29,7 @@ EYEBROW = "ICJIA Web Team · Briefing · Updated September 18, 2026 · For discu
 STANDFIRST = ("A new page needs an audience, and the natural first idea is to put it on the front page. "
     "Our own analytics say the audience will not come from there, or from any other passive placement: "
     "a bigger front-page feature, a menu link, a news item. It comes when we push: the **CJ Dispatch** list, "
-    "**social channels**, and a **Research Hub article**. This briefing uses the Homicide Reporting dashboard "
+    "**social channels**, a **press release**, and a **Research Hub article**. This briefing uses the Homicide Reporting dashboard "
     "as its example. The evidence and the playbook apply to every new page.")
 DATANOTE = ("**About the numbers:** every figure comes from Plausible, the website's analytics tool: a "
     "privacy-friendly counterpart to Google Analytics that we run on our own server. It counts visits and shows "
@@ -97,9 +97,9 @@ SECTIONS = [
     ("p", "**What the front page can do, and how to use it.** It reaches insiders: staff, grantees, board members, partner agencies. It tells them the page is official and current. And it will catch the few front-page visitors who are browsing for research. So the answer to \"can it go on the front page?\" is **yes, in the place built for it.** A **news post** appears in the front page's News column the moment it is published, with a NEW badge, and steps aside as newer items arrive. No redesign, no exception, no precedent. (The three featured boxes lower on the page are the other designated spot, but all three are working task links. Request Grant Status alone drew 505 front-page visitors last year, and trading one away would cost more than it returned.) Expect from it what it can deliver: about 30 visits a month. It reaches the 19, not the 74."),
     ("p", "**What reaches the 74.** Everything in the rest of this briefing:"),
     ("table", ("If the goal is…", "The tool that works"), [
-      ("\"People in the field should know this exists.\"", "A CJ Dispatch email and LinkedIn, X, and Facebook posts: the only channels that reach people who are not already on our site."),
+      ("\"People in the field should know this exists.\"", "A CJ Dispatch email, a press release, and LinkedIn, X, and Facebook posts: the channels that reach people who are not already on our site."),
       ("\"People on our website should see it.\"", "A short callout inside the most-read related Research Hub articles (the site's real front door, ≈41,000 readers a year), plus the news post."),
-      ("\"It should be easy to find later.\"", "A place in its section's menu, the site's search, and the page index that search engines read."),
+      ("\"It should be easy to find later.\"", "A place in its section's menu (the Research menu lists the statutory reports together), the site's search, and the page index that search engines read."),
       ("\"Partners and leadership should see that it is official.\"", "The front-page news post, links from partner agencies' data pages, and a press release."),
       ("\"We should be able to show that it worked.\"", "Tagged links and a 30-day readout."),
     ]),
@@ -112,7 +112,7 @@ SECTIONS = [
       ("Typical menu-reached page", "e.g. /about/dicra", 20, "3 / day", False),
       ("Best single news post of the year", "front-page news item", 12, "≈2 / day", False),
     ], "Average visitors per day, 12 months (Plausible); /homicide since its August 25 launch."),
-    ("p", "**What about a new top-level menu item?** It is the same request in a different place, with the same limit: a menu can only be seen by someone already on the site, and three visits in five never open a second page. A menu is a map of the agency, organized so that people who know what they want can get to it. It has never told anyone about something they did not know existed. The dashboard does belong on the map, inside the Research section where someone looking for data will look, and putting it there is part of day one. A top-level slot of its own is the carnival again, one level up: every item added for visibility makes every other item harder to find."),
+    ("p", "**What about a new top-level menu item?** It is the same request in a different place, with the same limit: a menu can only be seen by someone already on the site, and three visits in five never open a second page. A menu is a map of the agency, organized so that people who know what they want can get to it. It has never told anyone about something they did not know existed. The dashboard does belong on the map, and it is there: the Research menu lists the three statutory reports (Death in Custody, Drone, and Homicide Reporting) in a section of their own, where someone looking for data will look. A top-level slot of its own is the carnival again, one level up: every item added for visibility makes every other item harder to find."),
     ("p", "The Homicide Reporting page has a second, structural problem. Its centerpiece, the interactive dashboard, is drawn on our page by another website (the state's Tableau server). To Google and to ChatGPT that window is effectively invisible: our page contains almost no text they can read, so they have little to index or quote. Google has begun to send a trickle (38 visitors in the first 25 days), but search will not build this audience on its own."),
     ("p", "There *is* a smart version of on-site promotion. It just isn't the menu. Visitors enter through articles, so promote where they land: the ten most-read Hub articles logged **≈41,000 readers** last year. A \"New: Illinois Homicide Clearance Dashboard\" callout inside the most-read related articles puts the page at the site's real front door. Note its limit: on-site placement can only *convert* traffic we already have. It cannot *create* traffic. That is what the push channels are for."),
   ]),
@@ -122,11 +122,14 @@ SECTIONS = [
        "4,000+ subscribers who chose to hear from us. At a deliberately conservative 30% open and 3% click, at or below published government-sector benchmarks (30–47% open, 2–4% click), one send produces **≈1,200 reads** and **≈120 visits** within two days. If past sends drove clicks, our analytics never saw them: email clicks arrive with no origin information and get filed under \"Direct.\"",
        "One email ≈ what the page drew in its entire first month, delivered in 48 hours."),
       ("Compounding · Weeks", "Social: LinkedIn, X, Facebook",
-       "Social's *credited* share is about 2% of visitors, ≈1,400 people last year, and it has sat in that range since tracking began in 2021. Credited is a floor: a link tapped inside the Facebook or LinkedIn app often arrives with no origin information. But the pattern is clear: we rarely push. The practitioner audience lives on LinkedIn, where posts get re-shared by partner agencies and picked up by local press. Social's unique value is reach. It is the one channel that finds people who never search for us.",
-       "Small as measured, larger in truth, and the only channel with new reach. Tagged links make its real yield visible."),
+       "Social's *credited* share is about 2% of visitors, ≈1,400 people last year, and it has sat in that range since tracking began in 2021. Credited is a floor: a link tapped inside the Facebook or LinkedIn app often arrives with no origin information. But the pattern is clear: we rarely push. The practitioner audience lives on LinkedIn, where posts get re-shared by partner agencies and picked up by local press. Social's value is reach: it finds people who never search for us.",
+       "Small as measured, larger in truth. Tagged links make its real yield visible."),
       ("Durable · Quarters", "Research Hub article",
        "A short findings piece (what the clearance data actually shows) published in the channel that already carries 47% of our pageviews, linking to the dashboard. It also gives search engines and AI assistants what the dashboard cannot: readable text to find, index, and quote.",
        "Hub articles compound: our top article still drew 5,900 visitors last year. Refresh it with each quarterly release."),
+      ("Earned reach · Launch week", "Press release and reporter outreach",
+       "The press is the audience a front page cannot reach at all, and a state-mandated data release is a story. A short release through Communications, plus a direct note to the reporters who cover crime data and to the legislators who sponsored the mandate, puts the page in front of people who write about it and link to it. News outlets are almost absent from our traffic today: the only one among our top fifty sources is Patch, with 56 visitors last year. We rarely pitch.",
+       "A news story reaches readers no placement on our site can, and its link keeps raising the page in search."),
     ]),
     ("evidence", "Why \"2% from social\" is a floor: what \"Direct\" is hiding", [
       "**48% of all visits are \"Direct\"**: clicks that arrive with no information about where they came from. Seven in ten of them begin on interior pages, mostly long article addresses nobody types by hand. Those are followed links whose origin got lost in transit.",
@@ -139,16 +142,18 @@ SECTIONS = [
       ("Front-page news post", "3–4 sentences and a link", "15 minutes"),
       ("CJ Dispatch item", "≈100 words and a link", "30 minutes"),
       ("Four social posts", "1–2 sentences each, plus a chart image", "30 minutes"),
+      ("Press release", "300–400 words built from the Summary Report's headline findings, plus a two-sentence note to reporters", "1 hour, with Communications"),
       ("Emails asking partner agencies to link", "3 sentences", "15 minutes"),
       ("Research Hub article", "600–800 words: a plain-language version of the Summary Report's findings, with two charts", "about a day"),
     ]),
-    ("p", "That is roughly a day and a half of writing, once, then about an hour for each quarterly data release. The web team can draft the news post, the Dispatch item, and the social posts from the existing page text, for the page's owners to check for accuracy. The Hub article needs its authors' voice and judgment about what the data shows, and the Summary Report is already its outline. It is also the piece that keeps paying: Hub articles are read for years, and it is the only item on this list that gives Google and AI assistants something to read."),
+    ("p", "That is under two days of writing, once, then about an hour for each quarterly data release. The web team can draft the news post, the Dispatch item, and the social posts from the existing page text, for the page's owners to check for accuracy. The press release is Communications' to issue, from findings the page's owners supply. The Hub article needs its authors' voice and judgment about what the data shows, and the Summary Report is already its outline. It is also the piece that keeps paying: Hub articles are read for years, and it is the only item on this list that gives Google and AI assistants something to read."),
   ]),
   ("The playbook", "Launch sequence for any new page", [
     ("steps", [
       ("Day 1", "Findability floor.", "A place in its section's menu, the site's search, and the page index that search engines read (the sitemap). Don't mistake it for promotion."),
       ("Week 1", "Research Hub article.", "Three or four key findings in plain language, a chart or two, and a prominent link to the live page."),
       ("Week 1", "CJ Dispatch feature.", "Lead item or dedicated send, linking to the article and the page."),
+      ("Week 1", "Press release.", "Issued by Communications the same day as the Dispatch send, with a direct note to the reporters who cover crime data and to the sponsoring legislators. Use a tagged link."),
       ("Weeks 1–4", "Social push.", "Launch post on LinkedIn, X, and Facebook, then one stat-of-the-week per week for a month."),
       ("Week 1", "Front-page news post.", "This is the front-page placement. It appears in the News column, with a NEW badge, the moment it is published. Post it the same day as the Dispatch send, so front-page visitors see a consistent story."),
       ("Weeks 1–2", "In-article callouts.", "Add a short \"New: …\" promo to the most-read related Hub articles, the site's real front door (≈41,000 readers a year across the top ten)."),
@@ -169,14 +174,15 @@ SECTIONS = [
 BOTTOM = [
   "**A menu item files the page. A front-page item shows it to people who already know us. Outreach announces it.** Do all three. Only one creates traffic.",
   "Left alone, /homicide draws about five visitors a day, our own staff among them, and a front-page feature would add about one more. With the playbook it gets hundreds of qualified visitors in week one, durable search and AI discovery through the Hub article, and a measured result we can show: a sequence we can repeat, on schedule, for every new page.",
-  "Ranked honestly: the **Dispatch send** is the surest immediate win, the **Hub article** is the one that keeps paying, and **social** multiplies both and is the only channel that reaches people who never search for us. No single channel is \"the key.\" The sequence is.",
-  "**This is not a \"no.\"** For the Homicide Reporting page, the web team has built the page, made it accessible, put it in the site's search (it is the first result for \"homicide\") and in the index search engines read, and set the site to rebuild every night so search stays current. The front page will carry the news post the day it is written. What this briefing asks for is the rest of the launch: the part that reaches the 74 visits in 100 who never see the front page.",
+  "Ranked honestly: the **Dispatch send** is the surest immediate win, and the **Hub article** is the one that keeps paying. **Social** and the **press release** multiply both, and they are the channels that reach people who never search for us. No single channel is \"the key.\" The sequence is.",
+  "**This is not a \"no.\"** For the Homicide Reporting page, the web team has built the page, made it accessible, listed it in the Research menu with the other statutory reports, put it in the site's search (it is the first result for \"homicide\") and in the index search engines read, given it its own title, description, and link preview, marked it up for Google's dataset search, and set the site to rebuild every night so search stays current. The front page will carry the news post the day it is written. What this briefing asks for is the rest of the launch: the part that reaches the 74 visits in 100 who never see the front page.",
 ]
 NOTES = [
   "**Data:** ICJIA's own analytics (Plausible, self-hosted at plausible.icjia.cloud) for icjia.illinois.gov, 12 months ending September 18, 2026: 60,300 visitors, 144,600 visits, 457,300 pageviews. First written August 26, 2026; revised and re-measured September 18, 2026.",
   "**Front-page figures:** of 144,600 visits, 37,300 included the front page and 27,500 began there (21,100 people). Of the visits that began there, 67% viewed nothing else and 79% arrived with no referring site. \"Where front-page visitors click\" counts people who began a visit on the front page and later viewed that page; \"funding\" combines two forms of the same address. The front-page counts are generous: since March 2026, front-page arrivals have doubled while three in four leave immediately, a pattern typical of automated checks (site monitors, accessibility scanners) rather than readers.",
   "**/homicide:** August 25 to September 18, 2026, both forms of its address: 123 visitors, 180 visits, 368 pageviews; 93 visitors arrived with no referring site and 38 from Google (a visitor can appear under more than one source). The count includes ICJIA staff building, reviewing, and demonstrating the page.",
   "**Earlier front pages:** Internet Archive copies of www.icjia.state.il.us, the agency's earlier website (its front page lived at /public/index.cfm from 1999 to 2015). \"Links on the page\" counts every link in each archived page's code, menus included; today's figure is the 53 links displayed plus the 37 in the site's menus. The content-area comparison (106 links in January 2019, 24 today) counts links between the navigation menu and the footer. Redesign dates are approximate, read from the archive. The 2019 image is rendered from the archive's copy of the page with its slide photos loaded, because the archive serves them too slowly for a direct capture. Banner blindness: Nielsen Norman Group eyetracking studies (2007, 2018).",
+  "**Press referrals:** among the top fifty sources of visits over the 12 months, the only news outlet is Patch (56 visitors).",
   "**Email projections:** 4,000 subscribers × 30% open × 3% click-through. Published 2026 government-sector benchmarks run 30–47% open and 2–4% click (Constant Contact benchmark reports; WebFX industry benchmarks). The model deliberately sits at the bottom of those ranges.",
   "**Social accounting (sitewide):** credited social over the 12 months is about 1,420 visitors and 1,590 visits: Facebook ≈1,060 visitors (including its mobile-app addresses), LinkedIn 278, X 81. That is 2.4% of visitors and 1.1% of visits, and the credited share has not been materially higher since tracking began in 2021. It is a lower bound; see \"what Direct is hiding,\" above. UTM tagging in use today: 98% of visits carry no tag, and the tagged visits we can attribute number 90 from email and 5 from social, all year.",
   "Prepared by the ICJIA web team.",
@@ -290,7 +296,7 @@ def html_blocks(blocks):
             cards = []
             for kicker, title, body, payoff in b[1]:
                 cards.append(f'      <div class="card">\n        <div class="card-kicker">{inline(kicker)}</div>\n        <h3>{inline(title)}</h3>\n        <p>{inline(body)}</p>\n        <p class="payoff">{inline(payoff)}</p>\n      </div>')
-            o.append('    <div class="cards">\n' + "\n".join(cards) + "\n    </div>")
+            o.append(f'    <div class="cards{" four" if len(cards) == 4 else ""}">\n' + "\n".join(cards) + "\n    </div>")
         elif k == "steps":
             o.append('    <div class="steps">\n' + "\n".join(
                 f'      <div class="step">\n        <div class="step-when">{inline(when)}</div>\n        <div class="step-what"><strong>{inline(title)}</strong> {inline(text)}</div>\n      </div>' for when, title, text in b[1]) + "\n    </div>")

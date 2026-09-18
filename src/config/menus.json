@@ -106,6 +106,24 @@
                     "divider": true
                 },
                 {
+                    "section": "Statutory Reporting"
+                },
+                {
+                    "title": "Death in Custody Reporting",
+                    "link": "/about/dicra/"
+                },
+                {
+                    "title": "Drone Reporting",
+                    "link": "/innovation-and-digital-services/drone/"
+                },
+                {
+                    "title": "Homicide Reporting",
+                    "link": "/homicide/"
+                },
+                {
+                    "divider": true
+                },
+                {
                     "section": "InfoNet"
                 },
                 {

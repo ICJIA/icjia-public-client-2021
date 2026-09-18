@@ -84,6 +84,51 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.81] - 2026-09-18
+
+### feat: statutory reports in the Research menu; hand-built pages get their own head tags and dataset markup
+
+**Research menu.** The three reports ICJIA is required by statute to publish were in no menu: Death
+in Custody Reporting and Drone Reporting appeared only in context bars, and Homicide Reporting
+nowhere. The Research menu has a new "Statutory Reporting" section linking all three
+(`/about/dicra/`, `/innovation-and-digital-services/drone/`, `/homicide/`), in the desktop menu and
+the phone sidebar, which read the same `menus.json`.
+
+**Page shells.** The site is a single-page app, so without JavaScript every address serves the same
+`index.html`. Google runs the scripts; link previews (LinkedIn, Facebook, Teams, Slack) and crawlers
+that do not (Bing, DuckDuckGo, AI assistants) saw the homepage's title, description, canonical
+address and preview tags for every page, measured on live `/homicide` and on a Research Hub article.
+After the build, `generators/generatePageShells.js` writes an `index.html` into each hand-built
+page's folder in `dist`: the same app shell with the page's own title, description, canonical
+address, Open Graph and Twitter tags. Netlify serves a real file before the single-page fallback, so
+the page loads as before. The generator stops the build if `index.html` no longer has a tag it must
+replace. The list of hand-built pages moved to `generators/manualPages.js`, which now feeds the
+search index, the sitemap and the shells from one place; the `shell` data never reaches
+`searchIndex.json`.
+
+**Dataset markup.** The Homicide Reporting shell carries schema.org `Dataset` markup (name,
+description, keywords, publisher, Illinois, 2023 onward) so the page is eligible for Google Dataset
+Search. Its downloads are listed from the page's folder at build time, so the quarterly refresh needs
+no extra edit.
+
+**One canonical address.** `/homicide` and `/homicide/` each declared themselves canonical, because
+the router wrote the address as visited. It now writes the slash-terminated address without a query,
+the form `sitemap.xml` already lists, for every route (`src/utils/canonical.js`).
+
+**Briefings.** "Publishing Isn't Promotion" and "Getting Eyes on a New Page" add a press release to
+the outreach plan: a fourth channel card, a playbook step, a row in the writing table, and the one
+news outlet among the top fifty traffic sources (Patch, 56 visitors) as evidence that the press is
+an unused channel. They also record the new menu section.
+
+New `tests/unit/pageShells.spec.js` (8 tests) covers the shell's tags, the Dataset block and its
+download list, the failure when a tag is missing, the page list, the canonical helper and the menu
+section; they failed before the change. Mocha: 466 passing, 6 pending (pre-existing skipped stubs);
+lint clean on the changed files. A dry run against a local build wrote `dist/homicide/index.html`
+with the page's own tags and left the homepage shell unchanged. Both briefings: axe-core AA + best
+practices, 0 violations; the Word file has 0 field codes.
+
+---
+
 ## [1.5.80] - 2026-09-18
 
 ### docs — "Put it on the front page": the promotion briefing answers the front-page question

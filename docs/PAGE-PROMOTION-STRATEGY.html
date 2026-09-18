@@ -425,6 +425,8 @@
   .stats.three { grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); margin-top: 1.2rem; }
   .stat-label strong { color: var(--ink); }
   .bar-name a { color: inherit; }
+  .cards.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (max-width: 44rem) { .cards.four { grid-template-columns: minmax(0, 1fr); } }
   .stats.six { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   @media (max-width: 40rem) { .stats.six { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   .eras { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; margin: 1.2rem 0 0.4rem; }
@@ -439,7 +441,7 @@
   <header>
     <p class="eyebrow">ICJIA Web Team · Briefing · Updated September 18, 2026 · <strong>For discussion</strong></p>
     <h1>Publishing isn't <span class="kn">promotion</span></h1>
-    <p class="standfirst measure">A new page needs an audience, and the natural first idea is to put it on the front page. Our own analytics say the audience will not come from there, or from any other passive placement: a bigger front-page feature, a menu link, a news item. It comes when we push: the <strong>CJ Dispatch</strong> list, <strong>social channels</strong>, and a <strong>Research Hub article</strong>. This briefing uses the Homicide Reporting dashboard as its example. The evidence and the playbook apply to every new page.</p>
+    <p class="standfirst measure">A new page needs an audience, and the natural first idea is to put it on the front page. Our own analytics say the audience will not come from there, or from any other passive placement: a bigger front-page feature, a menu link, a news item. It comes when we push: the <strong>CJ Dispatch</strong> list, <strong>social channels</strong>, a <strong>press release</strong>, and a <strong>Research Hub article</strong>. This briefing uses the Homicide Reporting dashboard as its example. The evidence and the playbook apply to every new page.</p>
     <p class="datanote measure"><strong>About the numbers:</strong> every figure comes from Plausible, the website's analytics tool: a privacy-friendly counterpart to Google Analytics that we run on our own server. It counts visits and shows where each one came from, without cookies and without tracking individual people. These are measured numbers, not estimates, for the 12 months ending September 18, 2026.</p>
     <div class="stats six">
       <div class="stat hot">
@@ -642,9 +644,9 @@
           <tr><th scope="col">If the goal is…</th><th scope="col">The tool that works</th></tr>
         </thead>
         <tbody>
-          <tr><td class="goal">"People in the field should know this exists."</td><td>A CJ Dispatch email and LinkedIn, X, and Facebook posts: the only channels that reach people who are not already on our site.</td></tr>
+          <tr><td class="goal">"People in the field should know this exists."</td><td>A CJ Dispatch email, a press release, and LinkedIn, X, and Facebook posts: the channels that reach people who are not already on our site.</td></tr>
           <tr><td class="goal">"People on our website should see it."</td><td>A short callout inside the most-read related Research Hub articles (the site's real front door, ≈41,000 readers a year), plus the news post.</td></tr>
-          <tr><td class="goal">"It should be easy to find later."</td><td>A place in its section's menu, the site's search, and the page index that search engines read.</td></tr>
+          <tr><td class="goal">"It should be easy to find later."</td><td>A place in its section's menu (the Research menu lists the statutory reports together), the site's search, and the page index that search engines read.</td></tr>
           <tr><td class="goal">"Partners and leadership should see that it is official."</td><td>The front-page news post, links from partner agencies' data pages, and a press release.</td></tr>
           <tr><td class="goal">"We should be able to show that it worked."</td><td>Tagged links and a 30-day readout.</td></tr>
         </tbody>
@@ -675,7 +677,7 @@
       </div>
     </div>
     <p class="bars-caption">Average visitors per day, 12 months (Plausible); /homicide since its August 25 launch.</p>
-    <p class="measure"><strong>What about a new top-level menu item?</strong> It is the same request in a different place, with the same limit: a menu can only be seen by someone already on the site, and three visits in five never open a second page. A menu is a map of the agency, organized so that people who know what they want can get to it. It has never told anyone about something they did not know existed. The dashboard does belong on the map, inside the Research section where someone looking for data will look, and putting it there is part of day one. A top-level slot of its own is the carnival again, one level up: every item added for visibility makes every other item harder to find.</p>
+    <p class="measure"><strong>What about a new top-level menu item?</strong> It is the same request in a different place, with the same limit: a menu can only be seen by someone already on the site, and three visits in five never open a second page. A menu is a map of the agency, organized so that people who know what they want can get to it. It has never told anyone about something they did not know existed. The dashboard does belong on the map, and it is there: the Research menu lists the three statutory reports (Death in Custody, Drone, and Homicide Reporting) in a section of their own, where someone looking for data will look. A top-level slot of its own is the carnival again, one level up: every item added for visibility makes every other item harder to find.</p>
     <p class="measure">The Homicide Reporting page has a second, structural problem. Its centerpiece, the interactive dashboard, is drawn on our page by another website (the state's Tableau server). To Google and to ChatGPT that window is effectively invisible: our page contains almost no text they can read, so they have little to index or quote. Google has begun to send a trickle (38 visitors in the first 25 days), but search will not build this audience on its own.</p>
     <p class="measure">There <em>is</em> a smart version of on-site promotion. It just isn't the menu. Visitors enter through articles, so promote where they land: the ten most-read Hub articles logged <strong>≈41,000 readers</strong> last year. A "New: Illinois Homicide Clearance Dashboard" callout inside the most-read related articles puts the page at the site's real front door. Note its limit: on-site placement can only <em>convert</em> traffic we already have. It cannot <em>create</em> traffic. That is what the push channels are for.</p>
   </section>
@@ -683,7 +685,7 @@
   <section>
     <div class="sec-num">The active path</div>
     <h2>What deliberate outreach delivers</h2>
-    <div class="cards">
+    <div class="cards four">
       <div class="card">
         <div class="card-kicker">Highest yield · 48 hours</div>
         <h3>CJ Dispatch (Constant Contact)</h3>
@@ -693,14 +695,20 @@
       <div class="card">
         <div class="card-kicker">Compounding · Weeks</div>
         <h3>Social: LinkedIn, X, Facebook</h3>
-        <p>Social's <em>credited</em> share is about 2% of visitors, ≈1,400 people last year, and it has sat in that range since tracking began in 2021. Credited is a floor: a link tapped inside the Facebook or LinkedIn app often arrives with no origin information. But the pattern is clear: we rarely push. The practitioner audience lives on LinkedIn, where posts get re-shared by partner agencies and picked up by local press. Social's unique value is reach. It is the one channel that finds people who never search for us.</p>
-        <p class="payoff">Small as measured, larger in truth, and the only channel with new reach. Tagged links make its real yield visible.</p>
+        <p>Social's <em>credited</em> share is about 2% of visitors, ≈1,400 people last year, and it has sat in that range since tracking began in 2021. Credited is a floor: a link tapped inside the Facebook or LinkedIn app often arrives with no origin information. But the pattern is clear: we rarely push. The practitioner audience lives on LinkedIn, where posts get re-shared by partner agencies and picked up by local press. Social's value is reach: it finds people who never search for us.</p>
+        <p class="payoff">Small as measured, larger in truth. Tagged links make its real yield visible.</p>
       </div>
       <div class="card">
         <div class="card-kicker">Durable · Quarters</div>
         <h3>Research Hub article</h3>
         <p>A short findings piece (what the clearance data actually shows) published in the channel that already carries 47% of our pageviews, linking to the dashboard. It also gives search engines and AI assistants what the dashboard cannot: readable text to find, index, and quote.</p>
         <p class="payoff">Hub articles compound: our top article still drew 5,900 visitors last year. Refresh it with each quarterly release.</p>
+      </div>
+      <div class="card">
+        <div class="card-kicker">Earned reach · Launch week</div>
+        <h3>Press release and reporter outreach</h3>
+        <p>The press is the audience a front page cannot reach at all, and a state-mandated data release is a story. A short release through Communications, plus a direct note to the reporters who cover crime data and to the legislators who sponsored the mandate, puts the page in front of people who write about it and link to it. News outlets are almost absent from our traffic today: the only one among our top fifty sources is Patch, with 56 visitors last year. We rarely pitch.</p>
+        <p class="payoff">A news story reaches readers no placement on our site can, and its link keeps raising the page in search.</p>
       </div>
     </div>
     <div class="evidence">
@@ -722,12 +730,13 @@
           <tr><td class="goal">Front-page news post</td><td>3–4 sentences and a link</td><td>15 minutes</td></tr>
           <tr><td class="goal">CJ Dispatch item</td><td>≈100 words and a link</td><td>30 minutes</td></tr>
           <tr><td class="goal">Four social posts</td><td>1–2 sentences each, plus a chart image</td><td>30 minutes</td></tr>
+          <tr><td class="goal">Press release</td><td>300–400 words built from the Summary Report's headline findings, plus a two-sentence note to reporters</td><td>1 hour, with Communications</td></tr>
           <tr><td class="goal">Emails asking partner agencies to link</td><td>3 sentences</td><td>15 minutes</td></tr>
           <tr><td class="goal">Research Hub article</td><td>600–800 words: a plain-language version of the Summary Report's findings, with two charts</td><td>about a day</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="measure">That is roughly a day and a half of writing, once, then about an hour for each quarterly data release. The web team can draft the news post, the Dispatch item, and the social posts from the existing page text, for the page's owners to check for accuracy. The Hub article needs its authors' voice and judgment about what the data shows, and the Summary Report is already its outline. It is also the piece that keeps paying: Hub articles are read for years, and it is the only item on this list that gives Google and AI assistants something to read.</p>
+    <p class="measure">That is under two days of writing, once, then about an hour for each quarterly data release. The web team can draft the news post, the Dispatch item, and the social posts from the existing page text, for the page's owners to check for accuracy. The press release is Communications' to issue, from findings the page's owners supply. The Hub article needs its authors' voice and judgment about what the data shows, and the Summary Report is already its outline. It is also the piece that keeps paying: Hub articles are read for years, and it is the only item on this list that gives Google and AI assistants something to read.</p>
   </section>
 
   <section>
@@ -745,6 +754,10 @@
       <div class="step">
         <div class="step-when">Week 1</div>
         <div class="step-what"><strong>CJ Dispatch feature.</strong> Lead item or dedicated send, linking to the article and the page.</div>
+      </div>
+      <div class="step">
+        <div class="step-when">Week 1</div>
+        <div class="step-what"><strong>Press release.</strong> Issued by Communications the same day as the Dispatch send, with a direct note to the reporters who cover crime data and to the sponsoring legislators. Use a tagged link.</div>
       </div>
       <div class="step">
         <div class="step-when">Weeks 1–4</div>
@@ -787,8 +800,8 @@
     <h2>The bottom line</h2>
     <p><strong>A menu item files the page. A front-page item shows it to people who already know us. Outreach announces it.</strong> Do all three. Only one creates traffic.</p>
     <p>Left alone, /homicide draws about five visitors a day, our own staff among them, and a front-page feature would add about one more. With the playbook it gets hundreds of qualified visitors in week one, durable search and AI discovery through the Hub article, and a measured result we can show: a sequence we can repeat, on schedule, for every new page.</p>
-    <p>Ranked honestly: the <strong>Dispatch send</strong> is the surest immediate win, the <strong>Hub article</strong> is the one that keeps paying, and <strong>social</strong> multiplies both and is the only channel that reaches people who never search for us. No single channel is "the key." The sequence is.</p>
-    <p><strong>This is not a "no."</strong> For the Homicide Reporting page, the web team has built the page, made it accessible, put it in the site's search (it is the first result for "homicide") and in the index search engines read, and set the site to rebuild every night so search stays current. The front page will carry the news post the day it is written. What this briefing asks for is the rest of the launch: the part that reaches the 74 visits in 100 who never see the front page.</p>
+    <p>Ranked honestly: the <strong>Dispatch send</strong> is the surest immediate win, and the <strong>Hub article</strong> is the one that keeps paying. <strong>Social</strong> and the <strong>press release</strong> multiply both, and they are the channels that reach people who never search for us. No single channel is "the key." The sequence is.</p>
+    <p><strong>This is not a "no."</strong> For the Homicide Reporting page, the web team has built the page, made it accessible, listed it in the Research menu with the other statutory reports, put it in the site's search (it is the first result for "homicide") and in the index search engines read, given it its own title, description, and link preview, marked it up for Google's dataset search, and set the site to rebuild every night so search stays current. The front page will carry the news post the day it is written. What this briefing asks for is the rest of the launch: the part that reaches the 74 visits in 100 who never see the front page.</p>
   </div>
   </main>
 
@@ -797,6 +810,7 @@
     <p><strong>Front-page figures:</strong> of 144,600 visits, 37,300 included the front page and 27,500 began there (21,100 people). Of the visits that began there, 67% viewed nothing else and 79% arrived with no referring site. "Where front-page visitors click" counts people who began a visit on the front page and later viewed that page; "funding" combines two forms of the same address. The front-page counts are generous: since March 2026, front-page arrivals have doubled while three in four leave immediately, a pattern typical of automated checks (site monitors, accessibility scanners) rather than readers.</p>
     <p><strong>/homicide:</strong> August 25 to September 18, 2026, both forms of its address: 123 visitors, 180 visits, 368 pageviews; 93 visitors arrived with no referring site and 38 from Google (a visitor can appear under more than one source). The count includes ICJIA staff building, reviewing, and demonstrating the page.</p>
     <p><strong>Earlier front pages:</strong> Internet Archive copies of www.icjia.state.il.us, the agency's earlier website (its front page lived at /public/index.cfm from 1999 to 2015). "Links on the page" counts every link in each archived page's code, menus included; today's figure is the 53 links displayed plus the 37 in the site's menus. The content-area comparison (106 links in January 2019, 24 today) counts links between the navigation menu and the footer. Redesign dates are approximate, read from the archive. The 2019 image is rendered from the archive's copy of the page with its slide photos loaded, because the archive serves them too slowly for a direct capture. Banner blindness: Nielsen Norman Group eyetracking studies (2007, 2018).</p>
+    <p><strong>Press referrals:</strong> among the top fifty sources of visits over the 12 months, the only news outlet is Patch (56 visitors).</p>
     <p><strong>Email projections:</strong> 4,000 subscribers × 30% open × 3% click-through. Published 2026 government-sector benchmarks run 30–47% open and 2–4% click (Constant Contact benchmark reports; WebFX industry benchmarks). The model deliberately sits at the bottom of those ranges.</p>
     <p><strong>Social accounting (sitewide):</strong> credited social over the 12 months is about 1,420 visitors and 1,590 visits: Facebook ≈1,060 visitors (including its mobile-app addresses), LinkedIn 278, X 81. That is 2.4% of visitors and 1.1% of visits, and the credited share has not been materially higher since tracking began in 2021. It is a lower bound; see "what Direct is hiding," above. UTM tagging in use today: 98% of visits carry no tag, and the tagged visits we can attribute number 90 from email and 5 from social, all year.</p>
     <p>Prepared by the ICJIA web team.</p>
