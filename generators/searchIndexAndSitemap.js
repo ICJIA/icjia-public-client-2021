@@ -65,6 +65,13 @@ const manualPages = require("./manualPages").map(
   ({ shell, ...record }) => record
 );
 
+// ── The Partners menu: the agency's other sites and its plans ──────────
+// Built from src/config/menus.json; see ./partnerLinks.js. They point off this
+// site, so they are in the search index and not in the sitemap.
+const partnerLinks = require("./partnerLinks").partnerRecords(
+  require("../src/config/menus.json")
+);
+
 let siteIndex = [
   ...biographies,
   ...hub,
@@ -78,6 +85,7 @@ let siteIndex = [
   ...events,
   // ...policies,
   ...manualPages,
+  ...partnerLinks,
 ];
 
 // Sitemap-only paths: hand-built routes that have no search record.
@@ -98,12 +106,14 @@ const writeStream = createWriteStream("./public/sitemap.xml");
 let sitemapCounter = 0;
 sitemap.pipe(writeStream);
 
-siteIndex.forEach((item) => {
-  let url = `${config.api.baseClient}${item.fullPath}`;
-  url += url.endsWith("/") ? "" : "/";
-  sitemap.write({ url, changefreq: "weekly", priority: 0.3 });
-  sitemapCounter++;
-});
+siteIndex
+  .filter((item) => !item.external)
+  .forEach((item) => {
+    let url = `${config.api.baseClient}${item.fullPath}`;
+    url += url.endsWith("/") ? "" : "/";
+    sitemap.write({ url, changefreq: "weekly", priority: 0.3 });
+    sitemapCounter++;
+  });
 
 manualIndex.forEach((path) => {
   let url = `${config.api.baseClient}${path}`;

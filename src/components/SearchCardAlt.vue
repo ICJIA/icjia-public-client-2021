@@ -237,7 +237,18 @@
             class="mt-2"
             v-if="item.title"
           >
-            <router-link :to="item.fullPath" class="card-title-link"
+            <a
+              v-if="isExternal"
+              :href="item.fullPath"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="card-title-link"
+              ><span v-html="item.title"></span
+              ><v-icon small right color="black" aria-hidden="true"
+                >mdi-open-in-new</v-icon
+              ><span class="sr-only"> (opens in a new tab)</span></a
+            >
+            <router-link v-else :to="item.fullPath" class="card-title-link"
               ><span v-html="item.title"></span
             ></router-link>
           </h3>
@@ -283,6 +294,13 @@ export default {
     return {
       getProperCategory,
     };
+  },
+  computed: {
+    // A record for another site (the Partners menu's links) carries its whole
+    // address, and opens in a new tab.
+    isExternal() {
+      return /^https?:\/\//i.test((this.item && this.item.fullPath) || "");
+    },
   },
   methods: {
     isItExpired(expiration) {
@@ -369,7 +387,7 @@ export default {
       // Mirror SearchCard: when rendered on the static /search page, open
       // the hit in a new tab so users keep their result list. When used
       // inside the modal, keep the legacy same-tab + close-modal behavior.
-      if (this.isStatic) {
+      if (this.isStatic || this.isExternal) {
         openInNewTab(path);
         return;
       }

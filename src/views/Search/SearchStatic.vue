@@ -595,6 +595,8 @@ export default {
         employment: "Job Listings",
         dataset: "Datasets",
         "web application": "Web Applications",
+        "partner site": "Partner Sites",
+        plan: "Plans",
         app: "Apps",
         publication: "Publications",
       };

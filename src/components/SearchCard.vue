@@ -102,7 +102,20 @@
             class="mt-2 mb-2"
             v-if="item.title"
           >
-            <router-link :to="item.fullPath" class="card-title-link"
+            <!-- A result on another site (the Partners menu's links) opens in
+                 a new tab and says so, as the menu's links do. -->
+            <a
+              v-if="isExternal"
+              :href="item.fullPath"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="card-title-link"
+              ><span v-html="highlight(item.title)"></span
+              ><v-icon small right color="black" aria-hidden="true"
+                >mdi-open-in-new</v-icon
+              ><span class="sr-only"> (opens in a new tab)</span></a
+            >
+            <router-link v-else :to="item.fullPath" class="card-title-link"
               ><span v-html="highlight(item.title)"></span
             ></router-link>
           </h2>
@@ -146,6 +159,12 @@ export default {
     return {
       getProperCategory,
     };
+  },
+  computed: {
+    // A record for another site carries its whole address.
+    isExternal() {
+      return /^https?:\/\//i.test((this.item && this.item.fullPath) || "");
+    },
   },
   methods: {
     isWithinOneDay(eventStart, eventEnd) {
@@ -259,6 +278,11 @@ export default {
       // page returns to the list on Back, as it was left. Inside the modal
       // the dialog is closed first, as before.
       if (!this.isStatic) EventBus.$emit("closeSearch");
+      // Another site: a new tab, as its title link opens.
+      if (this.isExternal) {
+        openInNewTab(path);
+        return;
+      }
       this.$router.push(path).catch(() => {
         this.$vuetify.goTo(0, goToOptions());
       });

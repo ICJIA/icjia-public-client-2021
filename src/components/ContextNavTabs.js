@@ -15,6 +15,18 @@ const ContextTabsBar = VTabsBar.extend({
   name: "context-tabs-bar",
 
   methods: {
+    // A bar that is gone does not measure itself. App.vue rebuilds the bars
+    // for every address, and Vuetify measures a bar in the next animation
+    // frame: on a first load the bar built for the router's start address "/"
+    // is destroyed when the real address arrives, and the measurement already
+    // queued ran on it. With no current link to select, Vuetify's
+    // scrollIntoView reads this.$refs.wrapper, which no longer exists
+    // ("Cannot read properties of undefined (reading 'getBoundingClientRect')",
+    // the dev server's red overlay on about one load in twenty).
+    scrollIntoView() {
+      if (!this.$refs.wrapper) return;
+      VTabsBar.options.methods.scrollIntoView.call(this);
+    },
     // Vuetify's handler, with revealOffset (src/utils/slideGroup.js). Widths
     // are read now: fonts that load after the bar is measured change them.
     onFocusin(e) {
@@ -32,6 +44,9 @@ const ContextTabsBar = VTabsBar.extend({
     },
   },
 });
+
+// Exported for tests/unit/contextBarDestroyed.spec.js.
+export { ContextTabsBar };
 
 export default VTabs.extend({
   name: "context-nav-tabs",

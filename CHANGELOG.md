@@ -84,6 +84,71 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.92] - 2026-09-18
+
+### feat(search): the Partners menu's sites and plans are in the search, and rank first; fix: a context bar that is gone no longer measures itself
+
+**The Partners menu in the search.** The Partners dropdown links to the agency's other sites (R3,
+Adult Redeploy Illinois, i2i, SPAC...) and to its plans, and none of them was in the site search: a
+search for "R3" found 62 news items, notices and publications about R3, and not the R3 site.
+
+- `generators/partnerLinks.js` builds a search record for every link in that dropdown (11 today)
+  from `src/config/menus.json` itself, so a link added to the menu is searchable at the next build
+  with nothing else to remember. The menu's section headings name the kind of record: "Websites"
+  gives `partner site` (filter chip "Partner Sites"), "Plans and Initiatives" gives `plan`
+  ("Plans"). A link nobody has described is still found by its title.
+- **They rank first**, without a change to the ranking code. The search favours a short field that
+  matches exactly, so each record carries the name people type ("R3", "ARI", "SPAC", "IFVCC",
+  "DVFR", "i2i", "VPP", "SCIP", "JAG") as its whole `searchMeta` and `altTitle` and as a tag, with
+  the longer names as tags and a description that follows the site's own. With the names folded
+  into one longer keyword field, "R3" ranked 6th of 63 and "ARI" 19th of 51 (behind every Maria:
+  "ari" is inside the name). As built, on the live index with the worker's own code, 20 of 22
+  searches put the record first and all 22 in the first three: "R3", "r3 website", "restore
+  reinvest renew", "ARI", "adult redeploy illinois", "illinois heals", "SPAC", "IFVCC", "DVFR",
+  "VPP", "violence prevention plan", "SCIP" first; "i2i" second, after the i2i graduation news;
+  "JAG strategic plan" finds the 2019-2024 plan first and the 2024-2029 plan second.
+- Everyday searches are undisturbed: of thirty ("homicide", "funding", "jobs", "police reform",
+  "violence prevention"...), the first five results are unchanged for 26; the four that changed
+  are where these records belong ("sentencing", "website", "plan", "strategic plan").
+- The records point off this site (`external: true`). They are left out of the sitemap, which
+  lists this site's pages (2,443 addresses, none off-site). In a result card the title opens in a
+  new tab, with the menu's open-in-new icon and "(opens in a new tab)" for screen readers, as does
+  a click on the card; every other result still opens in this tab (1.5.87). The related-content
+  lists (`SearchCardAlt.vue`) do the same, since a program page may now list its partner site.
+
+Two things noticed and left for you: `http://ilheals.com` now shows "Site Archived" (the record's
+description says so; the link is still in the menu), and the menu titles one plan "Justice Research
+Grant Strategic Plan" where the plan is the Justice Assistance Grant (JAG) plan.
+
+**A context bar that is gone no longer measures itself.** Found while taking a screenshot: the dev
+server's red overlay, "Cannot read properties of undefined (reading 'getBoundingClientRect')", from
+Vuetify's `VSlideGroup.scrollIntoView`, on about one load in twenty (three of three in the
+screenshot tool's browser). `App.vue` rebuilds the context bars for every address, and Vuetify
+measures a bar in the next animation frame. On a first load the app renders once for the router's
+start address "/", builds the bottom bar for it, and destroys that bar when the real address
+arrives; the measurement already queued then ran on the dead bar. With no current link to select,
+Vuetify's code reads `this.$refs.wrapper`, which no longer exists. A probe in the bar caught it:
+destroyed, no wrapper ref, 12 items, none selected, created for "/" while the route was
+`/search/R3`. The bars have been able to have no selected link since 2021, so the race is old; the
+overlay that shows it came with the Vue CLI 5 upgrade (1.5.64). The production build did not show
+it in 20 loads. `ContextTabsBar` (`src/components/ContextNavTabs.js`) now returns from
+`scrollIntoView` when its wrapper is gone: 0 errors in 30 loads in the browser that reproduced it.
+
+Checked in the running app (local dev server, the index rebuilt locally): "R3", "ARI" and "SPAC"
+show their partner site first, with the new-tab link, the icon and the "Partner Sites" chip; a
+click on the card opened `https://r3.illinois.gov/` in a new tab and left the search in place; the
+chip wrote `?filter=partner%20site` into the address. axe-core (WCAG A and AA, with best practices)
+found 0 violations on the results page.
+
+Twelve new tests (`tests/unit/partnerLinks.spec.js`, 10: a record per menu link, its kind by
+section, the words people type, a link nobody has described, the ranking, the sitemap, new-tab
+results on the search page and in related-content lists, the filter chips;
+`tests/unit/contextBarDestroyed.spec.js`, 2). One older test now says what is true: only a result
+on another site opens a new tab. Mocha: 558 passing, 6 pending (pre-existing skipped stubs); lint
+clean on the changed files.
+
+---
+
 ## [1.5.91] - 2026-09-18
 
 ### fix(content): links typed without https:// or mailto: work, on the site and in the feeds

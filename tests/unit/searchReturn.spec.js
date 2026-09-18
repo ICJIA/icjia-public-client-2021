@@ -255,12 +255,17 @@ describe("Search page: Back returns to the search as it was left", () => {
 });
 
 describe("A result opens in the same tab", () => {
-  it("the title is a router link, with no new tab", () => {
+  // Only a result on another site (the Partners menu's links, v1.5.92) opens a
+  // new tab; tests/unit/partnerLinks.spec.js covers those.
+  it("the title of a result on this site is a router link, with no new tab", () => {
     const card = source("src/components/SearchCard.vue");
-    const template = card.slice(0, card.indexOf("<script>"));
-    expect(template).to.not.include('target="_blank"');
-    expect(template.replace(/\s+/g, " ")).to.include(
-      '<router-link :to="item.fullPath" class="card-title-link"'
+    const template = card
+      .slice(0, card.indexOf("<script>"))
+      .replace(/\s+/g, " ");
+    expect(template.match(/target="_blank"/g) || []).to.have.length(1);
+    expect(template).to.match(/<a v-if="isExternal"[^>]*target="_blank"/);
+    expect(template).to.include(
+      '<router-link v-else :to="item.fullPath" class="card-title-link"'
     );
   });
 
