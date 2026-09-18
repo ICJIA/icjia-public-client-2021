@@ -84,6 +84,40 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.88] - 2026-09-18
+
+### feat(home): a search box in the front page's banner
+
+Search was reachable only through a magnifier icon in the header, and about 2% of visitors opened
+the search page; "I can't find anything on the site" usually came from people who had not found the
+search. The banner (`HomeSplashV2.vue`) now has a search field with a Search button, on its own
+row between the agency's description and the two task buttons, in the buttons' navy. Earlier
+versions of the site had a visible search box; this one takes no content slot and adds no link.
+
+- Enter or the button sends the visitor to the search page with the query (`goToSearch`, as every
+  search link does); with an empty box it opens the search page. The search runs there. The front
+  page loads none of the search files (index, worker, library): checked by watching the requests.
+- One form with `role="search"`, a real `<label>` ("Search ICJIA", visually hidden), a native
+  `type="search"` field and a submit button. The placeholder is #595959 on white (7:1; the
+  browser's default grey does not reach 4.5:1), the field has a visible focus outline, the text is
+  16 px (no zoom on focus on a phone), and the button is 40 px high. Keyboard order: the field,
+  Search, then "Apply for funding".
+- Measured at 320, 768 and 1280 px: the panel stays inside the 600 px banner (at 320 px it is
+  508 px high, with 46 px above and below), and the page does not scroll sideways. At 320 px the
+  field is 129 px wide beside the 95 px button.
+
+Checked in the running app (local dev server): typing "homicide dashboard" and pressing Enter
+landed on `/search/homicide dashboard` with "Illinois Homicide Reporting" first; Search with an
+empty box opened `/search`. axe-core (WCAG A and AA, with best practices) found 0 violations on the
+front page. Screenshots at desktop and phone widths were reviewed before release.
+
+Three new tests (`tests/unit/homeSearch.spec.js`: the query goes to the search page as search
+links send it, an empty box opens the search page, one labelled search form with a submit
+button). Mocha: 528 passing, 6 pending (pre-existing skipped stubs); lint clean on the changed
+files.
+
+---
+
 ## [1.5.87] - 2026-09-18
 
 ### feat(search): Back returns to the search as it was left; results open in the same tab; the search is in the address

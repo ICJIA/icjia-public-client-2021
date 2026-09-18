@@ -66,6 +66,34 @@
             of criminal justice. ICJIA works to ensure the criminal justice
             system in Illinois is efficient, effective, and equitable.
           </div>
+          <!-- Search was only a magnifier icon in the header. The visitor is
+               sent to the search page: the search index is not loaded here. -->
+          <form
+            role="search"
+            class="splash-search mt-6"
+            @submit.prevent="search"
+          >
+            <label for="splash-search-input" class="sr-only"
+              >Search ICJIA</label
+            >
+            <input
+              id="splash-search-input"
+              v-model="query"
+              type="search"
+              placeholder="Search ICJIA"
+              autocomplete="off"
+              class="splash-search__input"
+            />
+            <v-btn
+              type="submit"
+              dark
+              depressed
+              color="#0d4474"
+              height="40"
+              class="splash-button splash-search__button"
+              >Search</v-btn
+            >
+          </form>
           <div class="mt-7 hidden-md-and-up text-center">
             <v-btn
               dark
@@ -109,7 +137,16 @@
 </template>
 
 <script>
+import { goToSearch } from "@/utils/search";
 export default {
+  data() {
+    return { query: "" };
+  },
+  methods: {
+    search() {
+      goToSearch(this.$router, { query: this.query });
+    },
+  },
   props: {
     slider: {
       type: Object,
@@ -135,5 +172,37 @@ export default {
 .splash-button:hover {
   background-color: #092f51 !important;
   color: #fff !important;
+}
+
+/* The banner's search box: one row, the field taking the room the button
+   leaves, at every width down to 320 px. */
+.splash-search {
+  display: flex;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.splash-search__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 40px;
+  padding: 0 12px;
+  font-size: 16px;
+  color: #000;
+  background: #fff;
+  border: 1px solid #fff;
+  border-radius: 4px 0 0 4px;
+}
+/* 7:1 on white; the browser's default placeholder grey does not reach 4.5:1. */
+.splash-search__input::placeholder {
+  color: #595959;
+  opacity: 1;
+}
+.splash-search__input:focus-visible {
+  outline: 3px solid #ffdd57;
+  outline-offset: 1px;
+}
+.splash-search__button {
+  border-radius: 0 4px 4px 0 !important;
 }
 </style>
