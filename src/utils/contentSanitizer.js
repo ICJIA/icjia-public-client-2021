@@ -1380,6 +1380,10 @@ function fixCmsEmptyTableCells(html) {
 // ═══════════════════════════════════════════════════════════════════
 
 import { isBrokenUrl } from "./brokenLinks";
+// PLUGIN: repairLinksInHtml (src/utils/linkRepair.js). A link typed without
+// its https:// or mailto: is read by the browser as an address on this site.
+// It runs before unwrapBrokenLinks, which judges a link by its full address.
+import { repairLinksInHtml } from "./linkRepair";
 
 function unwrapBrokenLinks(html) {
   if (!html || typeof html !== "string") return html;
@@ -1571,6 +1575,7 @@ const htmlPlugins = [
   fixCmsLinkAltText,
   fixCmsDuplicateLinkText,
   fixCmsSameHrefLinkLabels,
+  repairLinksInHtml,
   unwrapBrokenLinks,
   fixCmsTables,
   fixCmsEmptyTableCells,

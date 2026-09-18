@@ -4,6 +4,8 @@ import MarkdownItAnchor from "markdown-it-anchor";
 import MarkdownItFootnote from "markdown-it-footnote";
 import MarkdownItLinkAttributes from "markdown-it-link-attributes";
 import MarkdownItAttrs from "markdown-it-attrs";
+// Links typed without https:// or mailto: are repaired, as they are on the site.
+import { repairLinksInHtml } from "../../src/utils/linkRepair.js";
 
 const mdAnchorOpts = {
   level: 2,
@@ -54,7 +56,7 @@ let md = new MarkdownIt({
   .use(MarkdownItAttrs, mdAttrs);
 
 const renderToHtml = function (markdown) {
-  return md.render(markdown);
+  return repairLinksInHtml(md.render(markdown));
 };
 
 export { renderToHtml };

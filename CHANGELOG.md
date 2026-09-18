@@ -84,6 +84,55 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.91] - 2026-09-18
+
+### fix(content): links typed without https:// or mailto: work, on the site and in the feeds
+
+Found by the W3C validator's warning on the funding feed. An editor types
+`[Euna](il.amplifund.com/Public/...)`, or links an email address to itself, and the browser reads
+the address as one on this site. On the newest funding notice (NOFO 3785-0726, i2i Capacity
+Building) the main "LINK TO APPLY" was right, and two "Euna" links in the text went to
+`https://icjia.illinois.gov/il.amplifund.com/...`, which is nothing.
+
+A survey of the CMS (about 1,065 records in nine collections; the publications endpoint did not
+answer a request for all 1,113) found 15 such links in 11 records: 7 bare email addresses, 3 web
+addresses without `https://`, and 5 that cannot be repaired by rule. The first two kinds are now
+repaired as the content is rendered (`src/utils/linkRepair.js`):
+
+- a web address whose host ends in a common top-level domain (`com`, `org`, `net`, `gov`, `edu`,
+  `us`, `info`, `mil`, `io`, `co`) gets `https://`; the list keeps `report.final.pdf` and
+  `packet.zip` file names;
+- a bare email address gets `mailto:`;
+- every other address is left as typed: anything with a scheme, site addresses (`/grants/`),
+  fragments, queries, `./` and `../` paths, and the five found that no rule can repair.
+
+One function serves both renderers, so they cannot drift: the site's content pipeline
+(`contentSanitizer.js`, before `unwrapBrokenLinks`, which judges a link by its full address) and
+the feed generators' markdown renderer (`generators/utils/Markdown.mjs`), which runs in Node. It is
+CommonJS and uses no DOM for that reason. Only the `href` of an `<a>` is touched; an image's `src`
+and the page's text are not.
+
+Checked on real pages, local build against the live site: the funding notice's three AmpliFund
+links all go to `https://il.amplifund.com/...` (live: two of three went to this site); a news
+post's `ILGovAlliance.org` goes to `https://ilgovalliance.org/` (live: this site); a grant's
+`CJA.SACF@Illinois.gov` is `mailto:` (live: this site). The feeds, regenerated from the live CMS,
+have no link without a scheme (the funding feed had five).
+
+Left for the CMS, because where they should point is not known: three bare file names in two 2021
+funding notices (`2021-clepd`: `CLEPDNOFOPacket.zip`,
+`5ILCS820CLEPDSubstanceUseDisorderTreatmentAct.pdf`; `2021-dpa`:
+`TechinicalAssistanceRecordingPPTSlides.DPA.pdf`), a placeholder `link` in
+`voca-lead-entity-sa-program-nofo-1745-2441`, and a mistyped `lhttps://r3.illinois.gov/` in the
+news post `join-our-volunteer-reviewer-pool`. The typed links themselves are also worth correcting
+in the CMS; the repair is a net under them.
+
+Seven new tests (`tests/unit/linkRepair.spec.js`: web addresses, email addresses, everything left
+as typed including the five found, links repaired in a page and nothing else, nothing to repair,
+the site's pipeline and its order, the feeds' renderer). Mocha: 546 passing, 6 pending
+(pre-existing skipped stubs); lint clean on the changed files.
+
+---
+
 ## [1.5.90] - 2026-09-18
 
 ### feat(feeds): readers can find the feeds, Plausible can count visits from them, and the RSS files name themselves
