@@ -162,6 +162,9 @@ function arrayToList(array) {
   return array.join(", ").replace(/, ((?:.(?!, ))+)$/, " and $1");
 }
 const KEEP_TYPING = "Keep typing — search starts at 2 characters.";
+// Research Hub pages send their author and tag searches here with ?filter=hub.
+// "hub" is not a content type: it stands for the three types the Hub publishes.
+const HUB_TYPES = ["article", "web application", "dataset"];
 export default {
   metaInfo: {
     title: "Search ICJIA",
@@ -198,6 +201,9 @@ export default {
         "employment",
       ],
       contentSelected: "No filter",
+      // True while a search that came from the address (a link, a reload) is
+      // running: its ?filter= is applied. A typed search clears the filter.
+      searchFromRoute: false,
       queryResults: [],
       filteredResults: [],
       content: "",
@@ -248,6 +254,7 @@ export default {
     if (this.$route.params.query) {
       this.query = decodeURIComponent(this.$route.params.query);
       this.announceWhenSearched = true;
+      this.searchFromRoute = true;
       this.instantSearch();
       this.filterResults(null);
     }
@@ -269,7 +276,8 @@ export default {
   },
   computed: {
     // Unique content-type chips for the toolbar, sorted by count desc.
-    // "All" leads, then each contentType present in current results.
+    // "All" leads, then the Research Hub and its types, then each other
+    // contentType present in current results.
     // Hidden when no results yet so the empty toolbar doesn't flash.
     availableFilterChips() {
       if (!this.queryResults.length) return [];
@@ -278,15 +286,31 @@ export default {
         const t = (r.item && r.item.contentType) || "other";
         counts[t] = (counts[t] || 0) + 1;
       }
+      const chip = (t) => ({
+        value: t,
+        label: this.prettifyType(t),
+        count: counts[t],
+      });
       const chips = Object.keys(counts)
-        .map((t) => ({
-          value: t,
-          label: this.prettifyType(t),
-          count: counts[t],
-        }))
+        .filter((t) => !HUB_TYPES.includes(t))
+        .map(chip)
         .sort((a, b) => b.count - a.count);
+      // The Research Hub chip, then the Hub's own types side by side, in the
+      // order of the Research menu.
+      const hubTypes = HUB_TYPES.filter((t) => counts[t]).map(chip);
+      const hub = hubTypes.length
+        ? [
+            {
+              value: "hub",
+              label: "Research Hub",
+              count: hubTypes.reduce((n, c) => n + c.count, 0),
+            },
+            ...hubTypes,
+          ]
+        : [];
       return [
         { value: null, label: "No filter", count: this.queryResults.length },
+        ...hub,
         ...chips,
       ];
     },
@@ -318,6 +342,7 @@ export default {
         if (decoded === this.query) return;
         this.query = decoded;
         this.announceWhenSearched = true;
+        this.searchFromRoute = true;
         this.instantSearch();
       } else {
         // Header search icon (or footer / context bar) was clicked
@@ -332,13 +357,10 @@ export default {
       }
     },
     "$route.query.filter"(next) {
-      // Optional ?filter=article|news|... param sets the dropdown so
-      // tag clicks from the news section land filtered to news, etc.
+      // Optional ?filter=hub|article|news|... selects that filter chip, so
+      // a tag or author link from the Research Hub lands on Hub content.
       if (!next) return;
-      const idx = this.contentValues.indexOf(next);
-      if (idx >= 0 && this.contentItems[idx] !== this.contentSelected) {
-        this.contentSelected = this.contentItems[idx];
-      }
+      this.contentSelected = this.routeFilter();
     },
   },
   methods: {
@@ -359,6 +381,14 @@ export default {
       // contentType string and matches contentSelected directly.
       if (chip.value === null) return this.contentSelected === "No filter";
       return chip.value === this.contentSelected;
+    },
+    // The filter named in the address, when the results offer it as a chip.
+    routeFilter() {
+      const wanted = this.$route.query.filter;
+      const offered = this.availableFilterChips.some(
+        (chip) => chip.value !== null && chip.value === wanted
+      );
+      return offered ? wanted : "No filter";
     },
     selectChip(chip) {
       this.contentSelected = chip.value === null ? "No filter" : chip.value;
@@ -442,6 +472,7 @@ export default {
         news: "News",
         employment: "Job Listings",
         dataset: "Datasets",
+        "web application": "Web Applications",
         app: "Apps",
         publication: "Publications",
       };
@@ -452,6 +483,10 @@ export default {
       this.filter = this.contentSelected;
       if (this.filter === "No filter") {
         this.filteredResults = this.queryResults;
+      } else if (this.filter === "hub") {
+        this.filteredResults = this.queryResults.filter((result) =>
+          HUB_TYPES.includes(result.item.contentType)
+        );
       } else {
         this.filteredResults = _.filter(this.queryResults, [
           "item.contentType",
@@ -528,6 +563,8 @@ export default {
       });
     },
     async instantSearch() {
+      const fromRoute = this.searchFromRoute;
+      this.searchFromRoute = false;
       if (!this.query || !this.query.length) {
         this.statusMessage = "";
         this.lastAnnounced = "";
@@ -553,8 +590,8 @@ export default {
       const uniques = [...new Set(contentTypes.map((item) => item))].sort();
       uniques.unshift("No filter");
       this.contentItems = uniques;
+      this.contentSelected = fromRoute ? this.routeFilter() : "No filter";
       this.filterResults(null);
-      this.contentSelected = "No filter";
       this.searchedQuery = this.query;
       if (this.announceWhenSearched) {
         this.announceWhenSearched = false;

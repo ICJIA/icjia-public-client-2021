@@ -1491,6 +1491,141 @@
    "contentType": "article",
    "date": "2025-09-05T00:00:00.000Z",
    "fullPath": "/researchhub/articles/coltons-task-force-a-2025-illinois-domestic-violence-task-force-report/"
+  },
+  {
+   "title": "Illinois Death in Custody Dashboard",
+   "summary": "An interactive dashboard for reviewing trends for Illinois Death in Custody Reports",
+   "tags": [
+    "DICRA - Death in Custody Reporting Act"
+   ],
+   "categories": [
+    "corrections",
+    "law enforcement"
+   ],
+   "contentType": "web application",
+   "date": "2026-01-12T00:00:00.000Z",
+   "fullPath": "/researchhub/apps/illinois-death-in-custody-dashboard/"
+  },
+  {
+   "title": "Death in Custody Reports",
+   "summary": "Illinois Death in Custody Data\n\nThe Illinois Reporting of Deaths in Custody Act requires the Illinois Criminal Justice Information Authority to publish death in custody data. This data table was created to comply with this requirement. With few exceptions, the data was provided to ICJIA by partnering State of Illinois government agencies. Specifically, ICJIA receives death in custody information from the following Illinois government agencies, who in turn receive information from local agencies with reportable incidents: (1) Illinois State Police (incidents involving local law enforcement agencies), (2) Illinois Department of Corrections (incidents occurring at county jails or state adult prisons), (3) Illinois Department of Juvenile Justice (incidents occurring at state-operated Youth Centers). In some instances, these agencies were already collecting death in custody information independent from state and federal reporting requirements. For example, prior to enactment of the Illinois Reporting of Deaths in Custody Act, the Illinois State Police was collecting similar information on \"arrest-related deaths\" pursuant to the Illinois Uniform Crime Reporting Act (50 ILCS 709/5-12(1)).",
+   "tags": [
+    "DICRA - Death in Custody Reporting Act"
+   ],
+   "categories": [
+    "corrections",
+    "law enforcement"
+   ],
+   "contentType": "dataset",
+   "date": "2025-12-31T00:00:00.000Z",
+   "fullPath": "/researchhub/datasets/death-in-custody-reports/"
+  },
+  {
+   "title": "Illinois Juvenile Justice Data Dashboard",
+   "summary": "This dashboard visualizes Illinois juvenile justice data from the years 2017 to 2022. This dashboard will be updated with 2023 and 2024 data upon availability of all data sources. In this dashboard, “juvenile” or “youth” refers to an individual under the age of 18. Users can filter the dashboard by five different juvenile justice system points—arrest, detention, informal probation, transfer to adult court, and confinement. Annual trends by data point are available in the dashboard, as well as a breakdown by county type (rural vs. urban). Arrest information is protected per our data sharing agreement with the Illinois State Police. Specific modifications have been made to arrest data. For more details, click here: https://icjia.illinois.gov/arrestexplorer/docs/#data-privacy-and-precision.\n",
+   "tags": [
+    "youth",
+    "covid-19",
+    "trends"
+   ],
+   "categories": [
+    "courts"
+   ],
+   "contentType": "web application",
+   "date": "2025-05-13T00:00:00.000Z",
+   "fullPath": "/researchhub/apps/illinois-juvenile-justice-data-dashboard-2025/"
+  },
+  {
+   "title": "IDOT Traffic Stops Dashboard",
+   "summary": "Public Act 101-0024 ensured the permanent collection of Illinois traffic and pedestrian stop data by police departments. Each year, police departments submit their data to the Illinois Department of Transportation (IDOT). Per a Data Sharing Agreement, IDOT shares this data with ICJIA on an annual basis.\n\nThe purpose of this dashboard is to visualize Illinois traffic stop information. This dashboard contains Illinois traffic stop data from the year data collection began, 2004, to the most recent year of data we have received from IDOT—please refer to the “last updated” date. The information contained in this dashboard represents what was reported by the police officer as occurring during the stop. The dashboard can be filtered by different demographics—gender, race, age—as well as year, county, and police agency. Users can also view information about the stop itself, such as the day, time, and police shift it occurred, the reason for stop and result of stop, as well as if a search was conducted and contraband was found.",
+   "tags": [
+    "IDOT - Illinois Department of Transportation",
+    "Racial Disparity",
+    "Traffic Stops"
+   ],
+   "categories": [
+    "law enforcement"
+   ],
+   "contentType": "web application",
+   "date": "2024-11-18T00:00:00.000Z",
+   "fullPath": "/researchhub/apps/idot-traffics-stops-dashboard/"
+  },
+  {
+   "title": "Illinois Juvenile Justice Data Dashboard",
+   "summary": "This dataset contains Illinois juvenile justice data from the years 2017 to 2022. This dataset will continue to be updated with additional data upon availability of all data sources. The dataset includes five different juvenile justice system points—arrest, detention, informal probation, transfer to adult court, and confinement. The dataset also includes the year of the event, the race/ethnicity of the individual, the county where it occurred, the geographic region of that county, and the rural/urban designation for that county. Arrest information is protected per our data sharing agreement with the Illinois State Police. Specific modifications have been made to arrest data. For more details, click here: https://icjia.illinois.gov/arrestexplorer/docs/#data-privacy-and-precision",
+   "tags": [
+    "youth",
+    "covid-19",
+    "trends"
+   ],
+   "categories": [
+    "courts"
+   ],
+   "contentType": "dataset",
+   "date": "2022-12-31T00:00:00.000Z",
+   "fullPath": "/researchhub/datasets/illinois-juvenile-justice-data-dashboard-dataset/"
+  },
+  {
+   "title": "Arrest Explorer",
+   "summary": "Arrest Explorer provides a summary view of arrests recorded in the Illinois State Police's Criminal History Record Information Database",
+   "tags": [
+    "CHRI"
+   ],
+   "categories": [
+    "law enforcement"
+   ],
+   "contentType": "web application",
+   "date": "2022-06-29T00:00:00.000Z",
+   "fullPath": "/researchhub/apps/arrest-explorer/"
+  },
+  {
+   "title": "Parole Explorer",
+   "summary": "Parole Explorer allows reviewing parole population datasets from IDOC.",
+   "tags": [],
+   "categories": [],
+   "contentType": "web application",
+   "date": "2022-06-28T00:00:00.000Z",
+   "fullPath": "/researchhub/apps/parole-explorer/"
+  },
+  {
+   "title": "Illinois Uniform Crime Reports (UCR) Index Crime Offense",
+   "summary": "Index offenses include Violent Index offenses (murder, criminal sexual assault, robbery, aggravated battery/assault) and Property Index offenses (burglary, theft, motor vehicle theft, arson). ICJIA uses the latest data published in Crime in Illinois by the Illinois State Police and the latest population estimates are sourced from Center for Disease Control / U.S. Census Bureau Bridged Race Population Estimates ( https://wonder.cdc.gov/bridged-race-population.html )",
+   "tags": [
+    "index crime"
+   ],
+   "categories": [
+    "crimes"
+   ],
+   "contentType": "dataset",
+   "date": "2020-12-31T00:00:00.000Z",
+   "fullPath": "/researchhub/datasets/illinois-uniform-crime-reports-ucr-index-crime-offense/"
+  },
+  {
+   "title": "Illinois Uniform Crime Reports (UCR) Index Crime Arrest",
+   "summary": "Index arrests include Violent Index offenses (murder, criminal sexual assault, robbery, aggravated battery/assault) and Property Index arrests (burglary, theft, motor vehicle theft, arson).  ICJIA uses the latest data published in Crime in Illinois by the Illinois State Police and the latest population estimates are sourced from Center for Disease Control / U.S. Census Bureau Bridged Race Population Estimates ( https://wonder.cdc.gov/bridged-race-population.html )",
+   "tags": [
+    "index crime",
+    "arrest"
+   ],
+   "categories": [
+    "crimes"
+   ],
+   "contentType": "dataset",
+   "date": "2020-12-31T00:00:00.000Z",
+   "fullPath": "/researchhub/datasets/illinois-uniform-crime-reports-ucr-index-crime-arrest/"
+  },
+  {
+   "title": "Illinois Uniform Crime Reports (UCR) Hate Crime Offense",
+   "summary": "Hate crimes tabulates all offenses classified as likely hate crimes by law enforcement agencies. ICJIA uses the latest data published in Crime in Illinois by the Illinois State Police and the latest population estimates are sourced from Center for Disease Control / U.S. Census Bureau Bridged Race Population Estimates ( https://wonder.cdc.gov/bridged-race-population.html )",
+   "tags": [
+    "hate"
+   ],
+   "categories": [
+    "crimes"
+   ],
+   "contentType": "dataset",
+   "date": "2020-12-31T00:00:00.000Z",
+   "fullPath": "/researchhub/datasets/illinois-uniform-crime-reports-ucr-hate-crime-offense/"
   }
  ]
 }

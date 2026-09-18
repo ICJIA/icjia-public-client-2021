@@ -193,6 +193,8 @@ describe("Site search: several words, in any order", () => {
       "homicide",
       "annual report custody",
       "task force trafic",
+      "detention",
+      "burglary theft",
     ]) {
       expect(
         api.searchAll(theirs, query).map((r) => r.item.fullPath),
@@ -234,6 +236,25 @@ describe("Site search: listing pages that have no CMS record", () => {
       .map(([query, fullPath]) => [query, rank(query, fullPath)])
       .filter(([, r]) => r === 0 || r > 3);
     expect(missed, "not in the first three results").to.deep.equal([]);
+  });
+});
+
+describe("Site search: Research Hub apps and datasets are searched in full", () => {
+  // There are only ten of them, they carry few tags, and what they hold is
+  // named deep in their descriptions ("detention", "burglary", "IDOC").
+  const found = (query) =>
+    searchAll(build(sample.records), query)
+      .slice(0, 10)
+      .map((r) => `${r.item.contentType}: ${r.item.title.trim()}`);
+
+  it("finds an app or a dataset by a word deep in its description", () => {
+    expect(found("detention")).to.include(
+      "dataset: Illinois Juvenile Justice Data Dashboard"
+    );
+    expect(found("burglary").join(" | ")).to.match(
+      /dataset: Illinois Uniform Crime Reports/
+    );
+    expect(found("idoc")).to.include("web application: Parole Explorer");
   });
 });
 

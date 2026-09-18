@@ -84,6 +84,72 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.85] - 2026-09-18
+
+### feat(search): a Research Hub filter on the search page; the Hub's web applications and datasets are searched by their full descriptions
+
+**The Research Hub filter.** Research Hub pages (article and dataset tags, categories, the Research
+& Analysis staff list) send their searches to the search page with `?filter=hub`. That never did
+anything, for two reasons: "hub" is not a content type, so no result matched it; and the search
+page reset its filter to "No filter" at the end of every search, so no filter in an address ever
+applied, `?filter=news` included. Both are fixed in `SearchStatic.vue`:
+
+- A **Research Hub** chip follows "No filter" whenever the results hold anything from the Hub. It
+  covers the three types the Hub publishes: articles, web applications and datasets. Their own
+  chips sit right after it, side by side and in the order of the Research menu (Articles, Web
+  Applications, Datasets), because they are the Hub's parts; the other types follow, largest
+  first, as before. "web application" is now labelled "Web Applications". A search for "law
+  enforcement" reads: No filter 152, Research Hub 64, Articles 59, Web Applications 3, Datasets 2,
+  Publications 66, Funding 10, and so on.
+- A search that comes from the address (a link, a reload, the back button) applies the filter named
+  there, when the results offer that filter. If they do not (a Hub link whose results hold nothing
+  from the Hub, or a value that is not a filter, such as `general`), everything is shown rather
+  than an empty list. A search typed into the box still clears the filter, as before.
+- The watcher for `?filter=` compared the address's raw value against the labels of a select that
+  was removed long ago; it now selects the chip. (`App.vue` keys the routed view by its full
+  address, so in practice each search address builds a fresh page and the filter is applied on
+  creation.)
+
+Three pages that are not part of the Hub had copied the `type: "hub"` hint and would have been
+wrongly narrowed to Hub content once it worked: news card categories (`NewsCard.vue`), grants staff
+names (`GrantsStaff.vue`) and board member names (`CompositionAndMembership.vue`). They now send
+`type: "general"`, the value every other unfiltered search link uses.
+
+**Full descriptions for web applications and datasets.** Long text is matched only in its first 60
+characters (1.5.82), which suits 2,400 abstracts and summaries but starves the Hub's ten web
+applications and datasets: they carry zero to three tags, no search keywords, and what they hold is
+named deep in descriptions of up to 2,058 characters. "burglary" returned nothing, though both
+Uniform Crime Reports datasets list it; "detention" and "arrests by county" missed the Juvenile
+Justice Data Dashboard. For these two content types the whole description is now searched
+(`FULL_TEXT_TYPES` in `src/utils/searchFields.js`, mirrored in `public/searchWorker.js`). On the
+live index (2,451 records), with the worker's own code: "burglary" 0 results before, 2 after (the
+two UCR datasets); "detention" 13 to 15; "arrests by county" 10 to 13; "idoc" 7 to 8 (Parole
+Explorer). A match in a long description scores below a title or tag match, so the additions land
+at the end of the list: the broadest word tried, "police", gained 8 results at positions 144 to
+155 of 155, and "homicide", "funding", "violence" and "victim" gained none. For eleven everyday
+searches all other content came back in the same order as before.
+
+Checked in the running app (local dev server, real worker and index): the "Law Enforcement"
+category link on a Hub article opened `/search/law enforcement?filter=hub` with Research Hub
+selected, 64 of 152 results, all articles, web applications and datasets; `detention?filter=hub`
+showed 4 of 15, including the dashboard found only through its description; `burglary?filter=hub`
+showed the two datasets with "burglary" highlighted; `budget committee?filter=hub` (nothing from
+the Hub) and `?filter=general` showed everything; `?filter=news` selected News; chip clicks were
+announced ("4 of 15 results for ..."); typing a new query over a Hub link cleared the filter. No
+console errors or Vue warnings.
+
+Not changed: adding tags and search keywords to the ten app and dataset records in the CMS would
+still rank them higher than a description match can.
+
+Ten new tests (`tests/unit/searchFilters.spec.js`: the chip and its count, the Hub's types grouped
+beside it, no chip without Hub results, the Hub filter, single-type and no filter, the address's
+filter, which pages send the hint; `searchQuality.spec.js`: words deep in an app's or dataset's
+description, with the ten records added to the sample, and two more queries in the worker-parity
+check). Mocha: 499 passing, 6 pending (pre-existing skipped stubs); lint clean on the changed
+files.
+
+---
+
 ## [1.5.84] - 2026-09-18
 
 ### fix(search): a new release of the search worker reaches browsers that have searched before; typing a long query is faster

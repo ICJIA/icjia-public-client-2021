@@ -6,12 +6,18 @@
 // matching whole abstracts multiplied the results for common words several
 // times over without putting better pages first.
 //
+// The Research Hub's web applications and datasets are the exception
+// (v1.5.85): their descriptions are searched in full. There are about ten of
+// them, they carry few tags, and what they hold ("detention", "burglary") is
+// named deep in the description.
+//
 // The search normally runs in public/searchWorker.js, which cannot import this
 // file and carries the same code; tests/unit/searchQuality.spec.js checks that
 // the two order results identically. This copy serves the in-process fallback
 // and the tests.
 export const SEARCH_HEAD_LENGTH = 60;
 export const HEAD_FIELDS = ["summary", "abstract"];
+export const FULL_TEXT_TYPES = ["web application", "dataset"];
 // Words that carry no meaning in a search: "how do I apply for a grant" is a
 // search for "apply" and "grant".
 const STOP_WORDS =
@@ -27,7 +33,9 @@ export function searchOptions(Fuse, options) {
     getFn(record, path) {
       const value = read(record, path);
       const name = Array.isArray(path) ? path.join(".") : path;
-      return HEAD_FIELDS.includes(name) && typeof value === "string"
+      return HEAD_FIELDS.includes(name) &&
+        typeof value === "string" &&
+        !FULL_TEXT_TYPES.includes(record.contentType)
         ? value.slice(0, SEARCH_HEAD_LENGTH)
         : value;
     },

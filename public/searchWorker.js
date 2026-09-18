@@ -111,12 +111,15 @@ function deepSanitize(obj) {
 // How a record is read. Short fields (title, tags, names, search keywords) are
 // matched anywhere in the field; long text is matched only within its opening
 // characters, so a common word in 2,000 abstracts does not swamp the results.
+// The Research Hub's web applications and datasets are the exception: there are
+// about ten of them and their descriptions are searched in full.
 // A query of several words is also matched word by word (searchAll, below).
 // Mirrors src/utils/searchFields.js, which this file cannot import;
 // tests/unit/searchQuality.spec.js checks that the two order results identically.
 // ---------------------------------------------------------------------------
 const SEARCH_HEAD_LENGTH = 60;
 const HEAD_FIELDS = ["summary", "abstract"];
+const FULL_TEXT_TYPES = ["web application", "dataset"];
 // Words that carry no meaning in a search: "how do I apply for a grant" is a
 // search for "apply" and "grant".
 const STOP_WORDS =
@@ -131,7 +134,9 @@ function searchOptions(options) {
     getFn(record, path) {
       const value = read(record, path);
       const name = Array.isArray(path) ? path.join(".") : path;
-      return HEAD_FIELDS.includes(name) && typeof value === "string"
+      return HEAD_FIELDS.includes(name) &&
+        typeof value === "string" &&
+        !FULL_TEXT_TYPES.includes(record.contentType)
         ? value.slice(0, SEARCH_HEAD_LENGTH)
         : value;
     },
