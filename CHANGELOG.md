@@ -84,6 +84,44 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.83] - 2026-09-18
+
+### fix(search): words in any order, with typos, and search terms highlighted in the results
+
+**Several words, in any order.** Fuse matches a query as one phrase, so "task force trafic" looked
+for that run of characters and found nothing useful, although every word is in the titles of the
+Traffic and Pedestrian Stop task force's meetings and reports. A query of several words is now also
+matched word by word: a record qualifies when every meaningful word matches somewhere in it, in any
+order and in any field, each word still allowing for a typo. Filler words are ignored ("how do I
+apply for a grant" searches for "apply" and "grant"). Results are ordered: records that contain the
+query as typed, then records that match every word (a title holding more of the words first, then
+best combined score), then loose phrase matches. A loose phrase match is no longer promoted on its
+own: "reform police" resembles "Force Polic-ies", and Fuse favours short fields, so one exact tag
+could outrank a title holding every word. One-word searches are unchanged. The code is in
+`src/utils/searchFields.js` and mirrored in `public/searchWorker.js`; a test runs both on the same
+queries and requires identical order. Scores are used for ranking and removed from the results, as
+before.
+
+On the live index, with the worker's own code: "task force trafic" returns 26 results led by the
+task force's meeting, schedule and report (before: 1 unrelated result); "trafic task force
+meeting" leads with its meetings; "reform police" and "police reform" both lead with the police
+reform article; "budget committee 2024" leads with 2024 meetings (before: a 2021 meeting);
+"reichert opioid" finds 15 articles (before: 0); "how do I apply for a grant" finds 32 (before: 0).
+A query of several words takes 100 to 200 ms in the worker, against about 35 ms for one word.
+
+**Highlighting.** The result card marks the search terms in its title and summary
+(`src/utils/highlight.js`): each meaningful word, in any order, including the word a misspelled
+term matched ("trafic" marks "Traffic"). The card renders CMS text as HTML, so the highlighter
+works on text nodes only: tags and attributes are untouched, escaped text stays escaped, and the
+only markup added is `<mark class="search-hit">`, black on pale yellow (18:1), with the system
+Mark colours under forced colours.
+
+New tests: five for multi-word search and worker parity in `tests/unit/searchQuality.spec.js`, and
+`tests/unit/highlight.spec.js` (7). Mocha: 486 passing, 6 pending (pre-existing skipped stubs); lint
+clean on the changed files.
+
+---
+
 ## [1.5.82] - 2026-09-18
 
 ### fix(search): the site search matches words anywhere in a title, and puts title matches first

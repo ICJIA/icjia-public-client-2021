@@ -18,6 +18,8 @@ import Fuse from "fuse.js";
 import config from "@/config/config.json";
 import {
   searchOptions,
+  searchAll,
+  searchWords,
   SEARCH_HEAD_LENGTH,
   HEAD_FIELDS,
 } from "@/utils/searchFields";
@@ -67,6 +69,94 @@ describe("Site search: words anywhere in a title", () => {
       .slice(0, 5)
       .some((r) => /use of force/i.test(r.item.title));
     expect(useOfForce, "a use-of-force title in the first five").to.equal(true);
+  });
+});
+
+describe("Site search: several words, in any order", () => {
+  // Fuse matches a query as one phrase, so "task force trafic" looked for that
+  // run of characters and found nothing, although every word is in the titles
+  // of the Traffic and Pedestrian Stop task force's meetings and reports.
+  const titles = (query, records = sample.records) =>
+    searchAll(build(records), query).map((r) => r.item.title.trim());
+
+  it("finds titles that contain every word, whatever the order, allowing a typo", () => {
+    const top = titles("task force trafic").slice(0, 3);
+    expect(top.length).to.equal(3);
+    top.forEach((title) => expect(title).to.match(/traffic/i));
+    expect(titles("reform police")[0]).to.match(/police reform/i);
+  });
+
+  it("still puts an exact phrase first", () => {
+    expect(titles("police reform")[0]).to.match(/police reform/i);
+    expect(titles("funding opportunities")[0]).to.equal(
+      "Funding Opportunities"
+    );
+  });
+
+  it("matches words across fields, and ignores filler words in a question", () => {
+    const records = sample.records.concat([
+      {
+        title: "Widget recidivism study",
+        fullPath: "/w/",
+        contentType: "article",
+        authors: [{ title: "Jane Roe" }],
+      },
+      {
+        title: "Apply now for violence prevention grants",
+        fullPath: "/g/",
+        contentType: "news",
+      },
+    ]);
+    expect(titles("roe recidivism", records)).to.include(
+      "Widget recidivism study"
+    );
+    expect(titles("how do I apply for a grant", records)).to.include(
+      "Apply now for violence prevention grants"
+    );
+    expect(searchWords("How do I apply for a grant?")).to.deep.equal([
+      "apply",
+      "grant",
+    ]);
+  });
+
+  it("leaves one-word searches as they were, and returns no scores", () => {
+    const fuse = build(sample.records);
+    const plain = fuse.search("homicide").map((r) => r.item.fullPath);
+    const results = searchAll(fuse, "homicide");
+    expect(results.map((r) => r.item.fullPath)).to.deep.equal(plain);
+    expect(results[0]).to.not.have.property("score");
+  });
+
+  it("the search worker orders results exactly as the app does", () => {
+    const worker = fs.readFileSync(
+      path.join(process.cwd(), "public/searchWorker.js"),
+      "utf8"
+    );
+    const start = worker.indexOf("const SEARCH_HEAD_LENGTH");
+    const end = worker.indexOf("// Message dispatcher");
+    const source = worker.slice(start, worker.lastIndexOf("// ----", end));
+    // eslint-disable-next-line no-new-func
+    const api = new Function(
+      "Fuse",
+      `${source}\nreturn { searchOptions, searchAll };`
+    )(Fuse);
+    const theirs = new Fuse(
+      sample.records,
+      api.searchOptions(config.search.site)
+    );
+    const ours = build(sample.records);
+    for (const query of [
+      "task force trafic",
+      "police reform",
+      "use of force",
+      "homicide",
+      "annual report custody",
+    ]) {
+      expect(
+        api.searchAll(theirs, query).map((r) => r.item.fullPath),
+        query
+      ).to.deep.equal(searchAll(ours, query).map((r) => r.item.fullPath));
+    }
   });
 });
 

@@ -108,17 +108,20 @@
               target="_blank"
               rel="noopener noreferrer"
               class="card-title-link"
-              v-html="item.title"
+              v-html="highlight(item.title)"
             ></a>
             <router-link v-else :to="item.fullPath" class="card-title-link"
-              ><span v-html="item.title"></span
+              ><span v-html="highlight(item.title)"></span
             ></router-link>
           </h2>
         </div>
-        <div v-if="item.abstract" v-html="truncate(item.abstract)"></div>
+        <div
+          v-if="item.abstract"
+          v-html="highlight(truncate(item.abstract))"
+        ></div>
         <div
           v-else-if="item.summary"
-          v-html="truncate(item.summary)"
+          v-html="highlight(truncate(item.summary))"
           class="mt-2 mb-2"
         ></div>
         <router-link
@@ -135,6 +138,7 @@
 
 <script>
 /* eslint-disable no-unused-vars */
+import { highlightHtml } from "@/utils/highlight";
 import { EventBus } from "@/event-bus";
 import { getProperCategory } from "@/utils/content";
 import { goToSearch, openInNewTab, searchLocation } from "@/utils/search";
@@ -188,6 +192,10 @@ export default {
     },
     render(content) {
       return renderToHtml(content);
+    },
+    // Marks the search terms in a title or summary (src/utils/highlight.js).
+    highlight(html) {
+      return this.query ? highlightHtml(html, this.query) : html;
     },
     truncate(string, maxWords = 50) {
       var strippedString = string.trim();
@@ -285,6 +293,20 @@ export default {
 </script>
 
 <style>
+/* A search term found in a result's title or summary. Black on pale yellow is
+   18:1; the hover rule keeps it readable when the title link turns black. */
+.search-hit {
+  background-color: #fff2a8;
+  color: #000000;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+@media (forced-colors: active) {
+  .search-hit {
+    background-color: Mark;
+    color: MarkText;
+  }
+}
 /* Each tag is one box. As inline text a tag that did not fit on its line
    broke onto the next as two pieces, and its padding overlapped the lines
    above and below: at 375 px the middle of 9 focused tags was a neighbouring

@@ -5,7 +5,7 @@ import menus from "@/config/menus.json";
 import Fuse from "fuse.js";
 import { deepSanitize } from "@/utils/contentSanitizer";
 import { createSearchClient, workersAvailable } from "@/services/searchClient";
-import { searchOptions } from "@/utils/searchFields";
+import { searchOptions, searchAll } from "@/utils/searchFields";
 
 // Lazy search loader.
 //
@@ -37,7 +37,7 @@ const buildInProcessFuse = async () => {
   // Wrap so the shape matches the worker-backed client (async search).
   return {
     usingWorker: false,
-    search: (q) => Promise.resolve(inner.search(q)),
+    search: (q) => Promise.resolve(searchAll(inner, q)),
   };
 };
 
