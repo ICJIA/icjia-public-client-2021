@@ -4,8 +4,8 @@
 import { Feed } from "feed";
 import axios from "axios";
 import fs from "fs-extra";
-import _ from "lodash";
 import { renderToHtml } from "./utils/Markdown.mjs";
+import { allRecords, plainTitle, newestItems } from "./utils/feedItems.js";
 const config = JSON.parse(fs.readFileSync("./src/config/config.json"));
 
 let feed = new Feed({
@@ -32,7 +32,7 @@ let feed = new Feed({
 });
 
 const init = async () => {
-  const grants = await axios.get(`${config.api.base}/grants`);
+  const grants = await axios.get(allRecords(config.api.base, "grants"));
   const generateFullContent = (item) => {
     const body = renderToHtml(item.body);
     let attachments = "";
@@ -49,18 +49,17 @@ const init = async () => {
   };
   grants.data.forEach((grant) => {
     feed.addItem({
-      title: `<h2>${grant.title}</h2>`,
+      title: plainTitle(grant.title),
       id: `${config.api.baseClient}/grants/funding/${grant.slug}/`,
       link: `${config.api.baseClient}/grants/funding/${grant.slug}/`,
       description: renderToHtml(grant.summary),
       content: generateFullContent(grant),
       date: new Date(grant.start),
-      image: `https://agency.icjia-api.cloud/uploads/state_seal_color_e3ae3b7180.png`,
+      image: `${config.api.baseClient}/icjia-logo.png`,
     });
   });
 
-  let sortedItems = _.sortBy(feed.items, "date").reverse();
-  feed.items = sortedItems;
+  feed.items = newestItems(feed.items);
 
   await fs.writeFile("./public/funding-rss2.xml", feed.rss2());
   await fs.writeFile("./public/funding-atom.xml", feed.atom1());

@@ -4,8 +4,8 @@
 import { Feed } from "feed";
 import axios from "axios";
 import fs from "fs-extra";
-import _ from "lodash";
 import { renderToHtml } from "./utils/Markdown.mjs";
+import { allRecords, plainTitle, newestItems } from "./utils/feedItems.js";
 const config = JSON.parse(fs.readFileSync("./src/config/config.json"));
 
 let feed = new Feed({
@@ -32,7 +32,7 @@ let feed = new Feed({
 });
 
 const init = async () => {
-  const meetings = await axios.get(`${config.api.base}/meetings`);
+  const meetings = await axios.get(allRecords(config.api.base, "meetings"));
   const generateFullContent = (item) => {
     const body = renderToHtml(item.body);
     // iterate through attachments
@@ -51,18 +51,17 @@ const init = async () => {
   meetings.data.forEach((meeting) => {
     //console.log(new Date(meeting.start));
     feed.addItem({
-      title: `<h2>[${meeting.category.toUpperCase()}] ${meeting.title}</h2>`,
+      title: plainTitle(`[${meeting.category.toUpperCase()}] ${meeting.title}`),
       date: new Date(meeting.start),
       id: `${config.api.baseClient}/news/meetings/${meeting.slug}/`,
       link: `${config.api.baseClient}/news/meetings/${meeting.slug}/`,
       description: renderToHtml(meeting.summary),
       content: generateFullContent(meeting),
-      image: `https://agency.icjia-api.cloud/uploads/state_seal_color_e3ae3b7180.png`,
+      image: `${config.api.baseClient}/icjia-logo.png`,
     });
   });
 
-  let sortedItems = _.sortBy(feed.items, "date").reverse();
-  feed.items = sortedItems;
+  feed.items = newestItems(feed.items);
 
   await fs.writeFile("./public/meetings-rss2.xml", feed.rss2());
   await fs.writeFile("./public/meetings-atom.xml", feed.atom1());

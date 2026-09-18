@@ -4,8 +4,8 @@
 import { Feed } from "feed";
 import axios from "axios";
 import fs from "fs-extra";
-import _ from "lodash";
 import { renderToHtml } from "./utils/Markdown.mjs";
+import { allRecords, plainTitle, newestItems } from "./utils/feedItems.js";
 const config = JSON.parse(fs.readFileSync("./src/config/config.json"));
 
 let feed = new Feed({
@@ -32,7 +32,7 @@ let feed = new Feed({
 });
 
 const init = async () => {
-  const posts = await axios.get(`${config.api.base}/posts`);
+  const posts = await axios.get(allRecords(config.api.base, "posts"));
   const generateFullContent = (item) => {
     const body = renderToHtml(item.body);
     // iterate through attachments
@@ -55,7 +55,7 @@ const init = async () => {
         : post.published_at;
 
     feed.addItem({
-      title: `<h2>${post.title}</h2>`,
+      title: plainTitle(post.title),
       id: `${config.api.baseClient}/news/${post.slug}/`,
       link: `${config.api.baseClient}/news/${post.slug}/`,
       description: renderToHtml(post.summary),
@@ -68,8 +68,7 @@ const init = async () => {
     });
   });
 
-  let sortedItems = _.sortBy(feed.items, "date").reverse();
-  feed.items = sortedItems;
+  feed.items = newestItems(feed.items);
 
   await fs.writeFile("./public/news-rss2.xml", feed.rss2());
   await fs.writeFile("./public/news-atom.xml", feed.atom1());

@@ -84,6 +84,67 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.89] - 2026-09-18
+
+### fix(feeds): the RSS, Atom and JSON feeds carry the newest items again; plain-text titles; an image that exists; jobs dated by posting date
+
+The four feeds (news, funding, meetings, employment; twelve files) were rebuilt on every deploy,
+were well-formed, and had said nothing new for years. Each generator asked the CMS for its
+collection with no parameters, and Strapi v3 answers that with 100 records, lowest id first. Once a
+collection passed 100 records, no new record reached its feed. On 2026-09-18, in feeds built that
+morning:
+
+| Feed | Records in the CMS | Newest in the CMS | Newest in the feed |
+|---|---|---|---|
+| News | 201 | 2026-09-16 | 2025-01-31 |
+| Funding | 110 | 2026-08-03 | 2026-03-12 |
+| Meetings | 300 | 2026-09-14 | 2023-04-13 |
+| Employment | 227 | 2026-09-25 | 2023-03-27 |
+
+- The generators now request the whole collection (`?_limit=-1`, the REST spelling of the GraphQL
+  `limit` key), sort it themselves (a news post can override its date, so the CMS cannot sort it),
+  and keep the newest 50 items: a feed is for what is new, not the archive. The files are smaller:
+  news 265 KB to 99 KB, funding 916 KB to 458 KB, meetings 141 KB to 80 KB, employment 214 KB to
+  123 KB. An item with no usable date is left out; the feed library throws on one, and with every
+  record now read that would have failed the site's build.
+- Item titles were wrapped in `<h2>` tags, which readers show as text ("&lt;h2&gt;GRANT
+  OPPORTUNITY...&lt;/h2&gt;"). Titles are plain text.
+- Funding, meeting and employment items carried a state seal image from the CMS that now returns
+  404 (300 items). They carry the site's own logo, which exists.
+- An employment item was dated by the posting's closing date, so a new posting appeared to be
+  published in the future, and one added today with an early deadline sat below older postings
+  with later ones. It is dated by its posting date (`start`, which all 227 jobs have and which is
+  the CMS's publish date for nearly all of them; `published_at` otherwise). The closing date,
+  which the item's date used to show, now leads the item in words: "Apply by: September 25, 2026".
+  The feed's first item is the newest posting (2026-09-11), and no item is dated in the future.
+- Every feed is newest first, which is what a feed-to-email digest, a "latest news" widget or an
+  automation takes "the latest" from, and what makes the cut at 50 keep the right items. News is
+  ordered by its date or date override, funding by its start date, meetings by the meeting's date
+  (upcoming meetings lead), employment by posting date.
+- Shared code is in `generators/utils/feedItems.js` (CommonJS, so the unit tests can load it; an
+  `.mjs` helper does not load under the test runner). The `lodash` import it replaced is gone from
+  the four generators.
+
+Checked by generating the feeds from the live CMS: 50 items in each of the twelve files, newest
+first, the newest item the CMS's newest in all four, no markup in any title, no dead image, RSS,
+Atom and JSON agreeing, all well-formed. Item links were checked against the site's addresses
+before the change (100 of 100 in each feed) and their form is unchanged, as are the items' ids, so
+readers will not see duplicates. Subscribers will receive, once, the items published since their
+feed stopped.
+
+Not changed, and worth a decision: meeting items are dated by the meeting's date, so an upcoming
+meeting is dated in the future; the site's pages have no feed autodiscovery links in their head; item links carry no campaign tags, so visits from feeds
+cannot be told apart in Plausible (which cannot see feed requests at all: readers do not run
+scripts). In the last 12 months Plausible recorded 26 views of the RSS page across its four
+address forms, and no visits from a feed reader.
+
+Seven new tests (`tests/unit/feeds.spec.js`: the whole collection is requested, the newest fifty
+newest first, an undated item is dropped, plain-text titles, all four generators use them with an
+image that exists, the closing date in words, the employment feed dated by posting date). Mocha:
+535 passing, 6 pending (pre-existing skipped stubs); lint clean on the changed files.
+
+---
+
 ## [1.5.88] - 2026-09-18
 
 ### feat(home): a search box in the front page's banner

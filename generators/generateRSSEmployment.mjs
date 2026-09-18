@@ -4,8 +4,13 @@
 import { Feed } from "feed";
 import axios from "axios";
 import fs from "fs-extra";
-import _ from "lodash";
 import { renderToHtml } from "./utils/Markdown.mjs";
+import {
+  allRecords,
+  plainTitle,
+  newestItems,
+  applyBy,
+} from "./utils/feedItems.js";
 const config = JSON.parse(fs.readFileSync("./src/config/config.json"));
 
 let feed = new Feed({
@@ -32,7 +37,7 @@ let feed = new Feed({
 });
 
 const init = async () => {
-  const jobs = await axios.get(`${config.api.base}/jobs`);
+  const jobs = await axios.get(allRecords(config.api.base, "jobs"));
   const generateFullContent = (item) => {
     const body = renderToHtml(item.body);
     // iterate through attachments
@@ -50,18 +55,19 @@ const init = async () => {
 
   jobs.data.forEach((job) => {
     feed.addItem({
-      title: `<h2>[${job.category.toUpperCase()}] ${job.title}</h2>`,
+      title: plainTitle(`[${job.category.toUpperCase()}] ${job.title}`),
       id: `${config.api.baseClient}/about/employment/${job.slug}/`,
       link: `${config.api.baseClient}/about/employment/${job.slug}/`,
-      description: renderToHtml(job.summary),
-      content: generateFullContent(job),
-      date: new Date(job.end),
-      image: `https://agency.icjia-api.cloud/uploads/state_seal_color_e3ae3b7180.png`,
+      description: applyBy(job.end) + renderToHtml(job.summary),
+      content: applyBy(job.end) + generateFullContent(job),
+      // The posting date. It was the closing date, which dated a new posting
+      // in the future.
+      date: new Date(job.start || job.published_at),
+      image: `${config.api.baseClient}/icjia-logo.png`,
     });
   });
 
-  let sortedItems = _.sortBy(feed.items, "date").reverse();
-  feed.items = sortedItems;
+  feed.items = newestItems(feed.items);
 
   await fs.writeFile("./public/employment-rss2.xml", feed.rss2());
   await fs.writeFile("./public/employment-atom.xml", feed.atom1());
