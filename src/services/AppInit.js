@@ -5,6 +5,7 @@ import menus from "@/config/menus.json";
 import Fuse from "fuse.js";
 import { deepSanitize } from "@/utils/contentSanitizer";
 import { createSearchClient, workersAvailable } from "@/services/searchClient";
+import { searchOptions } from "@/utils/searchFields";
 
 // Lazy search loader.
 //
@@ -32,7 +33,7 @@ const buildInProcessFuse = async () => {
   const r = await fetch("/searchIndex.json");
   if (!r.ok) throw new Error(`searchIndex fetch failed: ${r.status}`);
   const records = deepSanitize(await r.json());
-  const inner = new Fuse(records, config.search.site);
+  const inner = new Fuse(records, searchOptions(Fuse, config.search.site));
   // Wrap so the shape matches the worker-backed client (async search).
   return {
     usingWorker: false,

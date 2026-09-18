@@ -150,19 +150,19 @@
             "findAllMatches": true,
             "minMatchCharLength": 2,
             "location": 0,
-            "threshold": 0.25,
+            "threshold": 0.2,
             "distance": 200,
             "useExtendedSearch": false,
-            "ignoreLocation": false,
+            "ignoreLocation": true,
             "ignoreFieldNorm": false,
             "keys": [
                 {
                     "name": "title",
-                    "weight": 1
+                    "weight": 5
                 },
                 {
                     "name": "searchMeta",
-                    "weight": 1
+                    "weight": 4
                 },
                 {
                     "name": "altTitle",
@@ -170,55 +170,51 @@
                 },
                 {
                     "name": "date",
-                    "weight": 2
+                    "weight": 1
                 },
                 {
                     "name": "fullName",
-                    "weight": 1
+                    "weight": 5
                 },
                 {
                     "name": "contentType",
-                    "weight": 2
+                    "weight": 1
                 },
                 {
                     "name": "authors.title",
-                    "weight": 1
-                },
-                {
-                    "name": "authors.description",
-                    "weight": 1
+                    "weight": 3
                 },
                 {
                     "name": "tags",
-                    "weight": 1
+                    "weight": 3
                 },
                 {
                     "name": "position",
-                    "weight": 2
-                },
-                {
-                    "name": "tagsAlt.title",
                     "weight": 1
                 },
                 {
-                    "name": "categories",
+                    "name": "tagsAlt.title",
                     "weight": 2
+                },
+                {
+                    "name": "categories",
+                    "weight": 1
                 },
                 {
                     "name": "category",
-                    "weight": 2
+                    "weight": 1
                 },
                 {
                     "name": "summary",
-                    "weight": 2
+                    "weight": 1.5
                 },
                 {
                     "name": "abstract",
-                    "weight": 2
+                    "weight": 1
                 },
                 {
                     "name": "unit.title",
-                    "weight": 2
+                    "weight": 1
                 }
             ]
         }

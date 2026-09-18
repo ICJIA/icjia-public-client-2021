@@ -108,6 +108,29 @@ function deepSanitize(obj) {
 }
 
 // ---------------------------------------------------------------------------
+// How a record is read. Short fields (title, tags, names, search keywords) are
+// matched anywhere in the field; long text is matched only within its opening
+// characters, so a common word in 2,000 abstracts does not swamp the results.
+// Mirrors src/utils/searchFields.js, which this file cannot import;
+// tests/unit/searchQuality.spec.js checks that the two agree.
+// ---------------------------------------------------------------------------
+const SEARCH_HEAD_LENGTH = 60;
+const HEAD_FIELDS = ["summary", "abstract"];
+
+function searchOptions(options) {
+  const read = Fuse.config.getFn;
+  return Object.assign({}, options, {
+    getFn(record, path) {
+      const value = read(record, path);
+      const name = Array.isArray(path) ? path.join(".") : path;
+      return HEAD_FIELDS.includes(name) && typeof value === "string"
+        ? value.slice(0, SEARCH_HEAD_LENGTH)
+        : value;
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Message dispatcher
 // ---------------------------------------------------------------------------
 self.addEventListener("message", async (e) => {
@@ -119,7 +142,7 @@ self.addEventListener("message", async (e) => {
       const res = await fetch(url);
       if (!res.ok) throw new Error(`searchIndex fetch failed: ${res.status}`);
       const records = deepSanitize(await res.json());
-      fuse = new Fuse(records, msg.fuseOptions || {});
+      fuse = new Fuse(records, searchOptions(msg.fuseOptions || {}));
       self.postMessage({ type: "READY" });
     } catch (err) {
       self.postMessage({ type: "ERROR", error: String(err && err.message) });

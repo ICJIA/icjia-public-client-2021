@@ -84,6 +84,55 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.82] - 2026-09-18
+
+### fix(search): the site search matches words anywhere in a title, and puts title matches first
+
+The search scored matches by position (`location: 0`, `distance: 200`, `threshold: 0.25`), so only
+the first 50 or so characters of any field could match, and body text was weighted twice as heavily
+as titles. Measured on the live index (2,441 records) with the Fuse build the site serves: a record
+was found by a distinctive word late in its title 27% of the time, and in the first ten results 15%
+of the time; "funding" put the Funding Opportunities page 111th; "police reform" led with the
+Privacy Policy, ahead of the site's third most-read article; "grant status" returned nothing.
+
+Now short fields (title, tags, names, search keywords) are matched anywhere in the field
+(`ignoreLocation: true`), more tightly (`threshold: 0.2`), and titles, names and keywords outweigh
+body text. Long text (summary, abstract) is still matched only within its opening 60 characters,
+which is what the old settings amounted to: matching whole abstracts found the same pages but
+multiplied the results for common words (NOFO 108 to 984, VOCA 27 to 452) without putting better
+pages first. That reader lives in `src/utils/searchFields.js` for the in-process fallback and is
+mirrored in `public/searchWorker.js`, which cannot import it; a test checks that the two agree.
+Ten hand-built pages that had no CMS record, and so were in neither the search index nor the
+sitemap, join both through `generators/manualPages.js`, which every build reads: News &
+Information, ICJIA Meetings, ICJIA Events, ICJIA Publications, Funded Programs, the Research Hub
+home and its Articles, Web Applications and Datasets listings, and the Grant Status Request form. The Meetings record names
+agendas, minutes and recordings, which the meeting records do attach (of 315 files and links on the
+150 most recent meetings: 150 agendas, 106 minutes, 43 recordings).
+
+Seven candidate settings were compared on 28 everyday tasks, a 300-record probe of late-title
+words, the result counts for ten broad terms, and speed. Chosen settings against the old ones:
+late-title words found 100% (27%), in the first ten 53% (15%); tasks passing 26 of 28 (23); result
+counts within a few percent of before (funding 229 against 202, NOFO 111 against 108, violence 297
+against 286); queries about three times faster, because less text is scanned. "funding" now leads
+with Funding Opportunities, "police reform" with the article, "grant status" with the form, and
+each listing page is the first result for its everyday name ("news", "meetings", "meeting minutes",
+"agendas", "events", "calendar", "publications", "programs", "funded programs", "research hub",
+"articles", "web applications", "dashboards", "datasets"). Misspellings still work ("homocide", "recidivsm", "traficking"). Driven through the
+real worker file in a browser: index ready in 0.3 s, queries answered in 70 to 110 ms.
+
+Not changed: the search is still word matching, so a question such as "how do I apply for a grant"
+finds nothing. The About landing page (`/about/`) needs no record: it renders the CMS page
+"about-the-authority", which is already in the index and is the first result for "about". That
+page's CMS title reads "About the the Illinois...", and it has no search keywords, so "about icjia"
+does not find it; both are edits in the CMS, not in code.
+
+New `tests/unit/searchQuality.spec.js` (8 tests) runs on a 74-record sample of the public index in
+`tests/unit/fixtures/`; five failed on the old settings and one before the listing pages were added.
+Mocha: 474 passing, 6 pending
+(pre-existing skipped stubs); lint clean on the changed files.
+
+---
+
 ## [1.5.81] - 2026-09-18
 
 ### feat: statutory reports in the Research menu; hand-built pages get their own head tags and dataset markup

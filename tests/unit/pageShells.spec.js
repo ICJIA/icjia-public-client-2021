@@ -108,6 +108,7 @@ describe("Hand-built page list", () => {
     expect(manualPages.length).to.be.greaterThan(0);
     for (const page of manualPages) {
       expect(page.fullPath, page.id).to.match(/^\/.*\/$/);
+      if (!page.shell) continue; // a search record only
       expect(page.shell.title, page.id).to.match(/^ICJIA \| /);
       expect(page.shell.description.length, page.id).to.be.within(70, 160);
     }

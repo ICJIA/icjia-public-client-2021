@@ -1,0 +1,1325 @@
+{
+ "note": "A sample of the public search index (icjia.illinois.gov/searchIndex.json, 2026-09-18), trimmed to the fields the search reads. Used by searchQuality.spec.js.",
+ "probes": [
+  [
+   "Reconnection",
+   "/researchhub/articles/evaluation-of-the-action-planning-process-to-develop-the-deflection-avenues-reconnection-team-dart-police-led-deflection-program-in-central-illinois/"
+  ],
+  [
+   "Stakeholder",
+   "/researchhub/articles/implementation-evaluation-of-a-program-to-assist-victims-of-violent-crime-staff-and-stakeholder-feedback/"
+  ],
+  [
+   "Traumatization",
+   "/researchhub/articles/mental-health-professionals-experiences-with-burnout-and-vicarious-traumatization-findings-from-the-illinois-heals-evaluation-study/"
+  ],
+  [
+   "Overdoses",
+   "/researchhub/articles/lake-county-illinois-deflection-program-evaluation-finds-reduced-overdoses-and-property-arrests/"
+  ],
+  [
+   "Collaborations",
+   "/researchhub/articles/balancing-data-privacy-with-access-to-health-services-and-research-facilitating-confidential-information-sharing-in-us-multi-system-collaborations/"
+  ],
+  [
+   "Following",
+   "/researchhub/articles/a-short-term-analysis-of-domestic-violence-and-sexual-assault-victim-services-following-the-illinois-covid-19-stay-at-home-order/"
+  ],
+  [
+   "Decedents",
+   "/researchhub/articles/an-analysis-of-risk-factors-for-suicide-among-justice-involved-illinois-violent-death-decedents/"
+  ],
+  [
+   "Intimate",
+   "/researchhub/articles/policies-and-programs-to-address-individuals-who-perpetrate-intimate-partner-violence/"
+  ],
+  [
+   "Underrepresented",
+   "/researchhub/articles/who-are-underserved-victims-of-domestic-violence-and-sexual-assault-underrepresented-victim-populations-and-barriers-to-service-seeking/"
+  ],
+  [
+   "Environments",
+   "/researchhub/articles/individual-and-community-trauma-individual-experiences-in-collective-environments/"
+  ],
+  [
+   "Medications",
+   "/researchhub/articles/probation-clients-barriers-to-access-and-use-of-opioid-use-disorder-medications/"
+  ],
+  [
+   "Prosecute",
+   "/researchhub/articles/criminal-justice-professionals-learn-promising-practices-to-prosecute-domestic-violence/"
+  ]
+ ],
+ "records": [
+  {
+   "title": "Funding Opportunities",
+   "altTitle": "funding opportunities",
+   "searchMeta": "funding",
+   "summary": "The Federal & State Grants Unit (FSGU) administers grant programs overseen by ICJIA. Authorized to receive and disburse grant money, ICJIA also is responsible for assuring compliance with federal and state regulations. ICJIA began administering federal grants in 1985, following the passage of the Justice Assistance Act and the Victims of Crime Act by Congress.",
+   "tags": [
+    "Funding",
+    "Amplifund"
+   ],
+   "tagsAlt": [
+    {
+     "title": "Funding",
+     "slug": "funding"
+    },
+    {
+     "title": "Amplifund",
+     "slug": "amplifund"
+    }
+   ],
+   "category": "grants",
+   "contentType": "page",
+   "fullPath": "/grants/funding/"
+  },
+  {
+   "title": "Illinois Homicide Reporting",
+   "altTitle": "illinois homicide reporting",
+   "searchMeta": "homicide dashboard clearance rates NIBRS",
+   "summary": "Homicide and firearm aggravated assault dashboard: offense and clearance data reported by Illinois law enforcement agencies through NIBRS, beginning in 2023, by county, agency, and reporting period, with a summary report and downloadable datasets, published under the Illinois Criminal Justice Information Act (20 ILCS 3930).",
+   "tags": [
+    "homicide",
+    "homicide dashboard",
+    "clearance",
+    "aggravated assault",
+    "firearm",
+    "NIBRS",
+    "Illinois State Police",
+    "20 ILCS 3930",
+    "PA 104-0197"
+   ],
+   "category": "general",
+   "contentType": "page",
+   "fullPath": "/homicide/"
+  },
+  {
+   "title": "Illinois Death in Custody Reporting",
+   "altTitle": "illinois death in custody reporting",
+   "searchMeta": "dicra reporting death deaths in custody report annual",
+   "summary": "Under the 2021 Illinois Reporting of Deaths in Custody Act (730 ILCS 210/Art. 3) and the federal Death in Custody Reporting Act of 2013 (DICRA), all Illinois law enforcement and correctional agencies are required to report any and all deaths of persons in their custody and arrest-related deaths. ",
+   "tags": [],
+   "category": "researchhub",
+   "contentType": "page",
+   "fullPath": "/researchhub/dicra/"
+  },
+  {
+   "title": "Drone Reporting for Law Enforcement Agencies",
+   "altTitle": "drone reporting for law enforcement agencies",
+   "searchMeta": "freedom drones",
+   "summary": "The use of drone technology by law enforcement practitioners may vary among departments and\njurisdictions, though information regarding specific uses and the extent of drone use among law\nenforcement is limited. Some potential uses of drone technology by law enforcement\npractitioners includes use in accident or crime scene investigation or to provide a tactical\nadvantage in dangerous situations.\n",
+   "tags": [],
+   "category": "innovation-and-digital-services",
+   "contentType": "page",
+   "fullPath": "/innovation-and-digital-services/drone/"
+  },
+  {
+   "title": "Freedom of Information Act (FOIA) Requests",
+   "altTitle": "freedom of information act (foia) requests",
+   "summary": "ICJIA’s statutory responsibilities fall under the categories of grants administration, research and analysis, policy and planning, and information systems and technology. Under the [Illinois Freedom of Information Act (5 ILCS 140) (FOIA), records in possession of public agencies may be accessed by the public upon written request.  ",
+   "tags": [],
+   "category": "about",
+   "contentType": "page",
+   "fullPath": "/about/foia/"
+  },
+  {
+   "title": "Employment",
+   "altTitle": "employment",
+   "searchMeta": "intern jobs internship intern help",
+   "summary": "Visit the State of Illinois web-based electronic hiring system for job opportunities in Illinois government. This system significantly expands access to state employment while increasing transparency, accessibility, accountability, and consistency in the state hiring process. The State provides job opportunities in a wide range of occupations and titles. The website will guide you through the state employment process",
+   "tags": [],
+   "category": "about",
+   "contentType": "page",
+   "fullPath": "/about/employment/"
+  },
+  {
+   "title": "Contact ICJIA",
+   "altTitle": "contact icjia",
+   "searchMeta": "foia lap language access request translation",
+   "summary": "How to contact the Illinois Criminal Justice Information Authority.",
+   "tags": [],
+   "category": "about",
+   "contentType": "page",
+   "fullPath": "/about/contact/"
+  },
+  {
+   "title": "Staff Organization",
+   "altTitle": "staff organization",
+   "summary": "While ICJIA members set priorities for the agency and monitor their progress, the day-to-day work is carried out by ICJIA staff, who come from a variety of backgrounds and disciplines.",
+   "tags": [],
+   "category": "about",
+   "contentType": "page",
+   "fullPath": "/about/icjia-staff/"
+  },
+  {
+   "title": "InfoNet",
+   "altTitle": "infonet",
+   "searchMeta": "data collection reporting sexual assault domestic violence",
+   "summary": "InfoNet is a web-based data collection and reporting system used by victim service providers in Illinois. The system is nationally recognized for facilitating standardized data collection and reporting at the statewide level. Initial development of InfoNet began in the mid-90s as a collaborative effort between the Illinois Criminal Justice Information Authority, the Illinois Coalition Against Sexual Assault, and the ",
+   "tags": [],
+   "category": "innovation-and-digital-services",
+   "contentType": "page",
+   "fullPath": "/innovation-and-digital-services/infonet/"
+  },
+  {
+   "title": "Institutional Review Board",
+   "altTitle": "institutional review board",
+   "searchMeta": "Office of Human Research Protections",
+   "summary": "The Institutional Review Board (IRB) is a committee formally appointed by the Director of the Illinois Criminal Justice Information Authority (ICJIA). The IRB works to protect the rights of human subjects involved in research by reviewing all research activities involving human subjects conducted by ICJIA staff. ICJIA's IRB always contains at least five members from varying backgrounds including at least one scientif",
+   "tags": [],
+   "category": "irb",
+   "contentType": "page",
+   "fullPath": "/irb/irb-home/"
+  },
+  {
+   "title": "Privacy Policy",
+   "altTitle": "privacy policy",
+   "searchMeta": "policy information IP address",
+   "summary": "For each visitor to our Web page, our Web server automatically recognizes the visitor’s IP address.",
+   "tags": [],
+   "category": "about",
+   "contentType": "page",
+   "fullPath": "/about/privacy/"
+  },
+  {
+   "title": "The Effectiveness and Implications of Police Reform: A Review of the Literature",
+   "summary": "Repeated and deadly encounters between law enforcement officers and Black Americans have given way to mounting calls for police reform. Reformers have proposed reallocating funds from policing to communities and social services, rethinking police use of force policies, and improving measures for officer accountability. This literature review briefly describes the impetus for police reform, reviews proposed police ref",
+   "tags": [
+    "legitimacy",
+    "SAFE-T"
+   ],
+   "authors": [
+    {
+     "title": "Emilee Green"
+    },
+    {
+     "title": "Brian Kuczynski"
+    },
+    {
+     "title": "Morgan McGuirk"
+    },
+    {
+     "title": "Jessica Reichert"
+    }
+   ],
+   "categories": [
+    "law enforcement"
+   ],
+   "contentType": "article",
+   "date": "2022-10-27T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/the-effectiveness-and-implications-of-police-reform-a-review-of-the-literature/"
+  },
+  {
+   "title": "The Effectiveness and Implications of Police Reform: A Review of the Literature",
+   "altTitle": "the effectiveness and implications of police reform: a review of the literature",
+   "summary": "Repeated and deadly encounters between law enforcement officers and Black Americans have given way to mounting calls for police reform. Reformers have proposed reallocating funds from policing to communities and social services, rethinking police use of force policies, and improving measures for officer accountability. This literature review briefly describes the impetus for police reform, reviews proposed police ref",
+   "tags": [
+    "legitimacy",
+    "safe-t"
+   ],
+   "contentType": "publication",
+   "fullPath": "/about/publications/the-effectiveness-and-implications-of-police-reform-a-review-of-the-literature/"
+  },
+  {
+   "title": "An Overview of Police Use of Force Policies and Research",
+   "summary": "Local police are expected to use the least amount of force necessary against citizens, both in self-defense and in defense of others. Although relatively rare, many incidents of excessive, and even lethal, force used by police have been documented, particularly in situations involving people of color. Specifically, Black Americans are more likely to be killed during a police encounter than White Americans. The public",
+   "tags": [
+    "reform",
+    "disparity"
+   ],
+   "authors": [
+    {
+     "title": "Emilee Green"
+    },
+    {
+     "title": "Orleana Peneff"
+    }
+   ],
+   "categories": [
+    "law enforcement"
+   ],
+   "contentType": "article",
+   "date": "2022-08-15T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/an-overview-of-police-use-of-force-policies-and-research/"
+  },
+  {
+   "title": "An Overview of Police Use of Force Policies and Research",
+   "altTitle": "an overview of police use of force policies and research",
+   "summary": "Local police are expected to use the least amount of force necessary against citizens, both in self-defense and in defense of others. Although relatively rare, many incidents of excessive, and even lethal, force used by police have been documented, particularly in situations involving people of color. Specifically, Black Americans are more likely to be killed during a police encounter than White Americans. The public",
+   "contentType": "publication",
+   "fullPath": "/about/publications/an-overview-of-police-use-of-force-policies-and-research/"
+  },
+  {
+   "title": "Understanding Police Officer Stress: A Review of the Literature",
+   "summary": "The nature of police work may at times involve stressful situations such as the threat of, and actual, physical harm and witnessing the human toll of violence. The stress of the job combined with organizational stressors may severely impact police officers and their work. Stress can lead to substance misuse and disorders, trauma, and suicide. Police departments can address officer stress through interventions, such a",
+   "tags": [
+    "law enforcement",
+    "PTSD",
+    "chronic stress",
+    "coping mechanism",
+    "burnout"
+   ],
+   "authors": [
+    {
+     "title": "H. Douglas Otto"
+    },
+    {
+     "title": "Alysson Gatens"
+    }
+   ],
+   "categories": [],
+   "contentType": "article",
+   "date": "2022-05-24T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/understanding-police-officer-stress-a-review-of-the-literature/"
+  },
+  {
+   "title": "Addressing Police Officer Stress: Programs and Practices",
+   "summary": "Due to the intense nature of police work, officers may experience stress-related psychological health problems. Mental health stigmas, masculine police culture that is aversive to change, fears of lack of confidentiality, and time commitment concerns create barriers to police willingness to seek treatment for stress-related issues. Nevertheless, many departments provide services to address these issues, such as couns",
+   "tags": [
+    "law enforcement",
+    "counseling",
+    "peer support",
+    "organizational support",
+    "training"
+   ],
+   "authors": [
+    {
+     "title": "H. Douglas Otto"
+    },
+    {
+     "title": "Alysson Gatens"
+    }
+   ],
+   "categories": [],
+   "contentType": "article",
+   "date": "2022-05-24T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/addressing-police-officer-stress-programs-and-practices/"
+  },
+  {
+   "title": "Victim Offender Overlap: Firearm Homicide Victims with and Without Criminal Records",
+   "summary": "In the United States, firearm homicide is a major public health concern. Certain populations are at greater risk for being a victim of firearm homicide, such as those with prior criminal justice involvement. The overlap between violent victimization and offense history, referred to as the victim-offender overlap, is empirically supported, but research is limited on the overlap of firearm homicide victimization and ju",
+   "tags": [
+    "firearm",
+    "homicide",
+    "victim",
+    "overlap",
+    "criminal record"
+   ],
+   "authors": [
+    {
+     "title": "Jessica Reichert, MS"
+    },
+    {
+     "title": "Maryann Mason, PhD"
+    }
+   ],
+   "categories": [
+    "victims"
+   ],
+   "contentType": "article",
+   "date": "2023-06-10T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/victim-offender-overlap-firearm-homicide-victims-with-and-without-criminal-records/"
+  },
+  {
+   "title": "The Victim-Offender Overlap: Examining the Relationship Between Victimization and Offending",
+   "summary": "The relationship between victimization and offending, also referred to as the victim-offender overlap, is widely documented. While crime victims do not always become offenders, most offenders have been victims. The victimization experience can produce negative physical, mental, and behavioral outcomes in individuals and some may go on to commit their own crimes. This article outlines leading theoretical explanations ",
+   "tags": [],
+   "authors": [
+    {
+     "title": "Caitlin DeLong"
+    },
+    {
+     "title": "Jessica Reichert"
+    }
+   ],
+   "categories": [
+    "victims"
+   ],
+   "contentType": "article",
+   "date": "2019-01-09T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/the-victim-offender-overlap-examining-the-relationship-between-victimization-and-offending/"
+  },
+  {
+   "title": "The 2021 SAFE-T Act: ICJIA Roles and Responsibilities",
+   "summary": "The 2021 Illinois Safety, Accountability, Fairness and Equity-Today (SAFE-T) Act enacts extensive reform impacting many areas of the criminal justice system, including pre-arrest diversion, policing, pretrial, sentencing, and corrections. The Illinois Criminal Justice Information Authority is tasked with implementing several of the Act’s provisions. These areas of the Act include policing, pretrial, and deaths in cus",
+   "tags": [
+    "SAFE-T Act",
+    "reform",
+    "legislation"
+   ],
+   "authors": [
+    {
+     "title": "Jessica Reichert"
+    },
+    {
+     "title": "Aaron Zivic"
+    },
+    {
+     "title": "Karen Sheley"
+    }
+   ],
+   "categories": [
+    "law enforcement"
+   ],
+   "contentType": "article",
+   "date": "2021-07-15T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/the-2021-safe-t-act-icjia-roles-and-responsibilities/"
+  },
+  {
+   "title": "Mental Illness and Violence: Is there a Link?",
+   "summary": "Many believe mental illness and violence are associated. Despite research showing the vast majority of individuals with mental illness are not violent, the dangerousness of mental illness is frequently exaggerated in the news and entertainment industries. Resultant stigma toward those with mental illness can greatly impact public policy and opinion. This literature review examines the links between mental illness and",
+   "tags": [
+    "disorder",
+    "stigma"
+   ],
+   "authors": [
+    {
+     "title": "Emilee Green"
+    }
+   ],
+   "categories": [
+    "other"
+   ],
+   "contentType": "article",
+   "date": "2020-05-04T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/mental-illness-and-violence-is-there-a-link/"
+  },
+  {
+   "title": "The Intersection of Homelessness and the Criminal Justice System",
+   "summary": "This article offers an overview of state and national homelessness including prevalence and causes of homelessness, criminal justice system contacts with the homeless, and recommendations to address homelessness with a focus on justice-involved populations.",
+   "tags": [
+    "homelessness"
+   ],
+   "authors": [
+    {
+     "title": "Christopher Mayer"
+    },
+    {
+     "title": "Jessica Reichert"
+    }
+   ],
+   "categories": [
+    "other"
+   ],
+   "contentType": "article",
+   "date": "2018-07-03T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/the-intersection-of-homelessness-and-the-criminal-justice-system/"
+  },
+  {
+   "title": "Gender Differences in Intimate Partner Violence Service Use",
+   "summary": "Although males experience intimate partner violence (IPV) at a rate only slightly lower than females, they are much less likely to receive formal victim services. We examined differences in males and females who received services for IPV victimization. Using InfoNet data web-based case management system used by domestic violence and sexual assault victims service providers in Illinois—we compared non-fatal male and f",
+   "tags": [
+    "InfoNet",
+    "Intimate Partner Violence",
+    "Domestic Violence",
+    "Gender",
+    "Victim Services"
+   ],
+   "authors": [
+    {
+     "title": "Caleb Schaffner, PhD"
+    },
+    {
+     "title": "Amanda L. Vasquez, MA"
+    },
+    {
+     "title": "Anne Kirkner, PhD"
+    }
+   ],
+   "categories": [
+    "victims"
+   ],
+   "contentType": "article",
+   "date": "2023-08-15T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/gender-differences-in-intimate-partner-violence-service-use/"
+  },
+  {
+   "title": "Trauma-Informed and Evidence-Based Practices and Programs to Address Trauma in Correctional Settings",
+   "summary": "The prevalence of trauma and posttraumatic stress disorder (PTSD) is higher among individuals in prison and jail than in the general population. Research has shown a connection between trauma and criminality due in part to the coping mechanisms of aggression and substance misuse after a traumatic event. While the corrections environment itself may cause or exacerbate PTSD symptoms in some individuals, facilities can ",
+   "tags": [
+    "trauma",
+    "evidence-informed practice"
+   ],
+   "authors": [
+    {
+     "title": "Sharyn Adams"
+    },
+    {
+     "title": "Jaclyn Houston-Kolnik"
+    },
+    {
+     "title": "Jessica Reichert"
+    }
+   ],
+   "categories": [
+    "corrections"
+   ],
+   "contentType": "article",
+   "date": "2017-07-25T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/trauma-informed-and-evidence-based-practices-and-programs-to-address-trauma-in-correctional-settings/"
+  },
+  {
+   "title": "The Juvenile Justice Reform Act",
+   "altTitle": "the juvenile justice reform act",
+   "contentType": "publication",
+   "fullPath": "/about/publications/the-juvenile-justice-reform-act/"
+  },
+  {
+   "title": "The Juvenile Justice Reform Act of 1998",
+   "altTitle": "the juvenile justice reform act of 1998",
+   "contentType": "publication",
+   "fullPath": "/about/publications/the-juvenile-justice-reform-act-of-1998/"
+  },
+  {
+   "title": "2023 Illinois Death in Custody Annual Report",
+   "summary": "The Illinois Criminal Justice Information Authority is required by both Illinois state legislation (730 ILCS 210/3-5) and federal legislation (34 U.S.C. § 60105) to collect, report, and publish specific data on deaths that occur among individuals in the custody of Illinois local and state law enforcement agencies or as a result of an officer’s use of force. This report summarizes the relevant trends related to Illino",
+   "tags": [
+    "jails",
+    "police",
+    "use of force",
+    "prisons"
+   ],
+   "authors": [
+    {
+     "title": "Karl Gruschow, Ph.D."
+    },
+    {
+     "title": "H. Douglas Otto, M.A."
+    }
+   ],
+   "categories": [
+    "law enforcement"
+   ],
+   "contentType": "article",
+   "date": "2024-02-16T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/2023-illinois-death-in-custody-annual-report/"
+  },
+  {
+   "title": "2022 Illinois Death in Custody Annual Report",
+   "summary": "The Illinois Criminal Justice Information Authority is required by both Illinois state legislation (730 ILCS 210/) and federal legislation (34 U.S.C. § 60105) to collect, report, and publish specific data on deaths that occur among individuals in custody of Illinois local and state law enforcement agencies or as a result of an officer’s use of force. This report summarizes the relevant trends related to Illinois in-c",
+   "tags": [
+    "Corrections",
+    "jails",
+    "prisons",
+    "police",
+    "use of force",
+    "sheriffs",
+    "medical",
+    "hospitals"
+   ],
+   "authors": [
+    {
+     "title": "H. Douglas Otto"
+    },
+    {
+     "title": "Timothy Lavery"
+    },
+    {
+     "title": "Karl Gruschow"
+    }
+   ],
+   "categories": [
+    "other"
+   ],
+   "contentType": "article",
+   "date": "2023-04-19T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/2022-illinois-death-in-custody-annual-report/"
+  },
+  {
+   "title": "2025 ILLINOIS DEATH IN CUSTODY ANNUAL REPORT",
+   "altTitle": "2025 illinois death in custody annual report",
+   "summary": "2025 ILLINOIS DEATH IN CUSTODY ANNUAL REPORT",
+   "contentType": "publication",
+   "fullPath": "/about/publications/2025-illinois-death-in-custody-annual-report/"
+  },
+  {
+   "title": "SFY25 Drone Surveillance Report",
+   "altTitle": "sfy25 drone surveillance report",
+   "summary": "The Illinois Freedom from Drones Surveillance Act (the Act) provides reporting requirements for\nlaw enforcement drone ownership and usage. The Act requires law enforcement agencies in the\nstate to report on drone ownership, usage, and policies to the Illinois Criminal Justice Information\nAuthority (ICJIA) [725 ILCS 167] (Appendix A). ICJIA must then use the reported information to\ncompile and publish an annual report",
+   "contentType": "publication",
+   "fullPath": "/about/publications/sfy-25-drone-surveillance-report/"
+  },
+  {
+   "title": "State Fiscal Year 2024 Illinois Freedom from Drone Surveillance Act Report (with Appendices)",
+   "altTitle": "state fiscal year 2024 illinois freedom from drone surveillance act report (with appendices)",
+   "summary": "The Freedom from Drone Surveillance Act [725 ILCS 167] prohibits Illinois law enforcement\nagencies from using drones to gather information except for specific exempted uses detailed in\nSection 15 of the Act1. Since June 16, 2023, law enforcement agencies in Illinois have been\nrequired to report individual drone flight details and agency policies for drone usage in addition\nto other details of drone ownership. The Ill",
+   "contentType": "publication",
+   "fullPath": "/about/publications/state-fiscal-year-2024-illinois-freedom-from-drone-surveillance-act-report-with-appendices/"
+  },
+  {
+   "title": "State Fiscal Year 2024 Illinois Freedom from Drone Surveillance Act Report (without Appendices)",
+   "altTitle": "state fiscal year 2024 illinois freedom from drone surveillance act report (without appendices)",
+   "summary": "The Freedom from Drone Surveillance Act [725 ILCS 167] prohibits Illinois law enforcement\nagencies from using drones to gather information except for specific exempted uses detailed in\nSection 15 of the Act1. Since June 16, 2023, law enforcement agencies in Illinois have been\nrequired to report individual drone flight details and agency policies for drone usage in addition\nto other details of drone ownership. The Ill",
+   "contentType": "publication",
+   "fullPath": "/about/publications/state-fiscal-year-2024-illinois-freedom-from-drone-surveillance-act-report-without-appendices/"
+  },
+  {
+   "title": "STATE FISCAL YEAR 2023 ILLINOIS FREEDOM FROM DRONE SURVEILLANCE ACT REPORT",
+   "altTitle": "state fiscal year 2023 illinois freedom from drone surveillance act report",
+   "searchMeta": "",
+   "summary": "STATE FISCAL YEAR 2023\nILLINOIS FREEDOM FROM DRONE\nSURVEILLANCE ACT REPORT",
+   "tags": [
+    "drone"
+   ],
+   "contentType": "publication",
+   "fullPath": "/about/publications/state-fiscal-year-2023-illinois-freedom-from-drone-surveillance-act-report/"
+  },
+  {
+   "title": "A Preliminary Outcome Evaluation of Lake County's Police Referral to Substance Use Disorder Treatment Program",
+   "summary": "Police officers often encounter people with substance use disorders and in need of treatment. Police pre-arrest diversion or “deflection” programs allow police departments to refer individuals to treatment, steering them away from traditional criminal justice system processing. This preliminary outcome evaluation examined A Way Out (AWO), a program in Lake County, Illinois, in which contact with police is initiated b",
+   "tags": [
+    "police",
+    "law enforcement",
+    "deflection",
+    "diversion",
+    "substance use disorders",
+    "opioid use disorders",
+    "substance misuse",
+    "drug",
+    "treatment",
+    "behavioral health"
+   ],
+   "authors": [
+    {
+     "title": "Jessica Reichert"
+    },
+    {
+     "title": "Lily Gleicher"
+    },
+    {
+     "title": "Sharyn Adams"
+    }
+   ],
+   "categories": [
+    "law enforcement"
+   ],
+   "contentType": "article",
+   "date": "2021-05-30T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/a-preliminary-outcome-evaluation-of-lake-county-illinois-police-referral-to-substance-use-disorder-treatment-program/"
+  },
+  {
+   "title": "A Preliminary Outcome Evaluation of Lake County's Police Referral to Substance Use Disorder Treatment Program",
+   "altTitle": "a preliminary outcome evaluation of lake county's police referral to substance use disorder treatment program",
+   "summary": "Police officers often encounter people with substance use disorders and in need of treatment. Police pre-arrest diversion or “deflection” programs allow police departments to refer individuals to treatment, steering them away from traditional criminal justice system processing. This preliminary outcome evaluation examined A Way Out (AWO), a program in Lake County, Illinois, in which contact with police is initiated b",
+   "contentType": "publication",
+   "fullPath": "/about/publications/a-preliminary-outcome-evaluation-of-lake-countys-police-referral-to-substance-use-disorder-treatment-program/"
+  },
+  {
+   "title": "Illinois Domestic Violence Fatality Review Committee: 2025 Annual Report",
+   "altTitle": "illinois domestic violence fatality review committee: 2025 annual report",
+   "summary": "The Domestic Violence Fatality Review Act created the Domestic Violence Fatality Review initiative, consisting of the Statewide Domestic Violence Fatality Review Committee (DVFRC) and regional review teams. Every year, the DVFRC submits an annual report to the Governor’s Office and General Assembly detailing its operations and activities over the past 12 months. The 2025 Annual Report outlines key DVFRC and regional ",
+   "tags": [
+    "domestic violence",
+    "fatality review"
+   ],
+   "contentType": "publication",
+   "fullPath": "/about/publications/illinois-domestic-violence-fatality-review-committee-2025-annual-report/"
+  },
+  {
+   "title": "2025 Task Force on Missing and Murdered Chicago Women Annual Report",
+   "altTitle": "2025 task force on missing and murdered chicago women annual report",
+   "summary": "The Task Force on Missing and Murdered Chicago Women Act created a task force, comprised of legislators, victim service providers, and criminal justice stakeholders, to examine five priority areas outlined in the Act: (a) systemic causes of violence against Chicago women and girls; (b) methods for tracking and collecting data on this violence; (c) policies and institutions related to the investigation and prosecution",
+   "tags": [
+    "missing and murdered women",
+    "victims",
+    "task force"
+   ],
+   "contentType": "publication",
+   "fullPath": "/about/publications/2025-task-force-on-missing-and-murdered-chicago-women-annual-report/"
+  },
+  {
+   "title": "ILLINOIS CRIMINAL JUSTICE INFORMATION AUTHORITY FISCAL YEAR 2025 ANNUAL REPORT",
+   "altTitle": "illinois criminal justice information authority fiscal year 2025 annual report",
+   "searchMeta": "SFY 25",
+   "summary": "ILLINOIS CRIMINAL JUSTICE\nINFORMATION AUTHORITY\nFISCAL YEAR 2025 ANNUAL REPORT",
+   "contentType": "publication",
+   "fullPath": "/about/publications/illinois-criminal-justice-information-authority-fiscal-year-2025-annual-report/"
+  },
+  {
+   "title": "Restore, Reinvest, and Renew (R3) Program",
+   "altTitle": "restore, reinvest, and renew (r3) program",
+   "searchMeta": "r3 restore reinvest renew cannabis eligible community areas program",
+   "summary": "As part of the legalization of adult-use cannabis in Illinois, the Cannabis Regulation and Tax Act established the R3 program to “directly address the impact of economic disinvestment, violence, and the historical overuse of the criminal justice responses to community and individual needs by providing resources to support local design and control of community-based responses to these impacts; to substantially reduce ",
+   "tags": [
+    "Cannabis",
+    "Restore, Reinvest, Renew (R3)"
+   ],
+   "tagsAlt": [
+    {
+     "title": "Cannabis",
+     "slug": "cannabis"
+    },
+    {
+     "title": "Restore, Reinvest, Renew (R3)",
+     "slug": "restore-reinvest-renew-r3"
+    }
+   ],
+   "category": "state",
+   "contentType": "program",
+   "fullPath": "/grants/programs/2021-01-28-restore-reinvest-renew-r3/"
+  },
+  {
+   "title": "Restore, Reinvest, and Renew Evaluation (R3E) ",
+   "altTitle": "restore, reinvest, and renew evaluation (r3e) ",
+   "searchMeta": "Restore Reinvest and Renew Evaluation program",
+   "summary": "The research principles undergirding the Restore, Reinvest, and Renew Evaluation (R3E)  program center on Community-Based Participatory Research (CBPR). A core component of these principles is sharing ownership of the research with the programs selected for evaluation. To better achieve this level of collaboration, ICJIA staff will work with programs to hire data entry clerks to bolster the collection, management, an",
+   "tags": [
+    "Funding",
+    "Community",
+    "Restore, Reinvest, Renew (R3)"
+   ],
+   "tagsAlt": [
+    {
+     "title": "Funding",
+     "slug": "funding"
+    },
+    {
+     "title": "Community",
+     "slug": "community"
+    },
+    {
+     "title": "Restore, Reinvest, Renew (R3)",
+     "slug": "restore-reinvest-renew-r3"
+    }
+   ],
+   "category": "state",
+   "contentType": "program",
+   "fullPath": "/grants/programs/restore-reinvest-and-renew-evaluation/"
+  },
+  {
+   "title": "Pritzker Administration Awards $3.5 Million in Restore, Reinvest, and Renew Program Grants in Response to Summer Violence",
+   "altTitle": "pritzker administration awards $3.5 million in restore, reinvest, and renew program grants in response to summer violence",
+   "searchMeta": "R3 r3 restore reinvest renew",
+   "summary": "\nCHICAGO— Using revenue generated from adult-use cannabis sales, the Illinois\nCriminal Justice Information Authority (ICJIA) today announced 21 grants totaling $3.5\nmillion to organizations offering young people and emerging adults (ages 10 to 25) prosocial activities that may reduce violence and victimization or provide increased street\nintervention this summer. Grant awards will support three months of programming,",
+   "tags": [
+    "Cannabis",
+    "Press Release",
+    "Restore, Reinvest, Renew (R3)"
+   ],
+   "tagsAlt": [
+    {
+     "title": "Cannabis",
+     "slug": "cannabis"
+    },
+    {
+     "title": "Press Release",
+     "slug": "press-release"
+    },
+    {
+     "title": "Restore, Reinvest, Renew (R3)",
+     "slug": "restore-reinvest-renew-r3"
+    }
+   ],
+   "category": "pressRelease",
+   "contentType": "news",
+   "fullPath": "/news/pritzker-administration-awards-3-5-million-in-restore-reinvest-and-renew-program-grants-in-response-to-summer-violence/"
+  },
+  {
+   "title": "Victims of Crime Act: Court-Appointed Special Advocate Victim Assistance Program",
+   "altTitle": "victims of crime act: court-appointed special advocate victim assistance program",
+   "searchMeta": "nofo notice funding",
+   "summary": "The Illinois Criminal Justice Information Authority is requesting proposals for grants to support Court Appointed Special Advocate (CASA) Programs across the state. Grants will be made with FFY19 Victims of Crime Act (VOCA) funds.",
+   "tags": [],
+   "category": "funding",
+   "contentType": "funding",
+   "fullPath": "/grants/funding/2020-casa/"
+  },
+  {
+   "title": "Victims of Crime Act: Law Enforcement/Prosecution Victim Assistance Program",
+   "altTitle": "victims of crime act: law enforcement/prosecution victim assistance program",
+   "searchMeta": "nofo notice funding",
+   "summary": "The Illinois Criminal Justice Information Authority is requesting proposals for grants to support the Law Enforcement/Prosecution Victim Assistance Program. Grants will be made with FFY19 Victims of Crime Act (VOCA) funds.",
+   "tags": [],
+   "category": "funding",
+   "contentType": "funding",
+   "fullPath": "/grants/funding/2020-voca-victim-assistance/"
+  },
+  {
+   "title": "R3 Assessment and Planning",
+   "altTitle": "r3 assessment and planning",
+   "searchMeta": "cannabis regulation tax act Restore, Reinvest, and Renew (R3) Program nofo notice funding",
+   "summary": "The Illinois Criminal Justice Information Authority is requesting proposals for grants for the Restore, Reinvest, and Renew (R3) program. Grants will be made with fiscal year 2021 funds made available to a trust fund established by The Cannabis Regulation and Tax Act. A total of $3,150,000 in funding is available through this solicitation for use over a period of approximately 9 months.",
+   "tags": [
+    "Cannabis",
+    "Restore, Reinvest, Renew (R3)"
+   ],
+   "tagsAlt": [
+    {
+     "title": "Cannabis",
+     "slug": "cannabis"
+    },
+    {
+     "title": "Restore, Reinvest, Renew (R3)",
+     "slug": "restore-reinvest-renew-r3"
+    }
+   ],
+   "category": "funding",
+   "contentType": "funding",
+   "fullPath": "/grants/funding/2020-r3-assessment-planning/"
+  },
+  {
+   "title": "Victims of Crime Act (VOCA) FFY18 Transitional Housing Program",
+   "altTitle": "victims of crime act (voca) ffy18 transitional housing program",
+   "searchMeta": "nofo notice funding",
+   "summary": "ICJIA is requesting proposals for FFY18 Victims of Crime Act grants to support the development or expansion of transitional housing and related costs. A total of $5 million in funding is available through this solicitation for use over a period of 12 months. ",
+   "tags": [],
+   "category": "funding",
+   "contentType": "funding",
+   "fullPath": "/grants/funding/2019-voca-ffy18-housing/"
+  },
+  {
+   "title": "Trauma Recovery Centers",
+   "altTitle": "trauma recovery centers",
+   "searchMeta": "nofo notice funding",
+   "summary": "The Illinois Criminal Justice Information Authority is requesting applications for state grants to establish and enhance trauma recovery centers.",
+   "tags": [],
+   "category": "funding",
+   "contentType": "funding",
+   "fullPath": "/grants/funding/2019-trauma-recovery/"
+  },
+  {
+   "title": "Violence Against Women Act Culturally Specific Victim Services (VAWACS)",
+   "altTitle": "violence against women act culturally specific victim services (vawacs)",
+   "searchMeta": "vawa vawacs nofo notice funding",
+   "summary": "The Illinois Criminal Justice Information Authority is requesting proposals for grants to support culturally specific victim services.",
+   "tags": [],
+   "category": "funding",
+   "contentType": "funding",
+   "fullPath": "/grants/funding/2020-vawacs/"
+  },
+  {
+   "title": "R3 Service Delivery",
+   "altTitle": "r3 service delivery",
+   "searchMeta": "cannabis regulation tax act Restore, Reinvest, and Renew (R3) Program nofo notice funding",
+   "summary": "The Illinois Criminal Justice Information Authority is requesting proposals for grants for the Restore, Reinvest, and Renew (R3) program. Grants will be made with fiscal year 2021 funds made available to a trust fund established by The Cannabis Regulation and Tax Act. A total of $28,350,000 in funding is available through this solicitation for use over a period of approximately 9 months.",
+   "tags": [
+    "Cannabis",
+    "Restore, Reinvest, Renew (R3)"
+   ],
+   "tagsAlt": [
+    {
+     "title": "Cannabis",
+     "slug": "cannabis"
+    },
+    {
+     "title": "Restore, Reinvest, Renew (R3)",
+     "slug": "restore-reinvest-renew-r3"
+    }
+   ],
+   "category": "funding",
+   "contentType": "funding",
+   "fullPath": "/grants/funding/2020-r3-service-delivery/"
+  },
+  {
+   "title": "Victims of Crime Act Multi-Victimization Program",
+   "altTitle": "victims of crime act multi-victimization program",
+   "searchMeta": "nofo notice funding",
+   "summary": "The Illinois Criminal Justice Information Authority is requesting proposals for grants to support Multi Victimization programs. Grants will be made with FFY19 Victims of Crime Act (VOCA) grant funds appropriated to the Illinois Criminal Justice Information Authority.",
+   "tags": [],
+   "category": "funding",
+   "contentType": "funding",
+   "fullPath": "/grants/funding/2020-voca-multi-victimization/"
+  },
+  {
+   "title": "Trauma Recovery Centers",
+   "altTitle": "trauma recovery centers",
+   "searchMeta": "nofo notice funding",
+   "summary": "The Illinois Criminal Justice Information Authority is requesting proposals for grants for the Restore, Reinvest, and Renew (R3) program. Grants will be made with fiscal year 2021 funds made available to a trust fund established by The Cannabis Regulation and Tax Act. A total of $28,350,000 in funding is available through this solicitation for use over a period of approximately 9 months.",
+   "tags": [],
+   "category": "funding",
+   "contentType": "funding",
+   "fullPath": "/grants/funding/2020-trauma-recovery/"
+  },
+  {
+   "title": "Safe From the Start SFY20",
+   "altTitle": "safe from the start sfy20",
+   "searchMeta": "nofo notice funding",
+   "summary": "The Illinois Criminal Justice Information Authority is requesting proposals for grants funding Safe From the Start site (SFS). Grants will be made with SFS state fiscal year 2020 funds. A total of $1,080,000 in funding is available through this solicitation for use over a period of 12 months. ",
+   "tags": [],
+   "category": "funding",
+   "contentType": "funding",
+   "fullPath": "/grants/funding/2019-sfsfy20/"
+  },
+  {
+   "title": "Uniform Statewide Crime Statistics Task Force: September, 8 2026",
+   "altTitle": "uniform statewide crime statistics task force: september, 8 2026",
+   "summary": "Public notice is hereby given that the Uniform Statewide Crime Statistics Task Force will conduct a public meeting on 9/8/26, at 1:00 PM CST on Webex. All interested parties are invited to attend and will be given the opportunity for public comment.",
+   "tags": [],
+   "category": "special",
+   "contentType": "meeting",
+   "fullPath": "/news/meetings/uniform-statewide-crime-statistics-task-force-september-8-2026/"
+  },
+  {
+   "title": "Missing and Murdered Chicago Women and Girls Task Force: September 14, 2026",
+   "altTitle": "missing and murdered chicago women and girls task force: september 14, 2026",
+   "summary": "Public notice is hereby given that the Missing and Murdered Chicago Women and Girls Task Force will conduct a public meeting on September 14, 2026, at 12 PM to 1:30 PM on Webex. All interested parties are invited to attend and will be given the opportunity for public comment.\nDate: September 14, 2026\nTime: 12 PM to 1:30 PM\nLocation: WebEx Meeting Link",
+   "tags": [],
+   "category": "special",
+   "contentType": "meeting",
+   "fullPath": "/news/meetings/missing-and-murdered-chicago-women-and-girls-task-force-september-14-2026/"
+  },
+  {
+   "title": "Firearms Prohibitors and Records Improvement Task Force: September 10, 2026",
+   "altTitle": "firearms prohibitors and records improvement task force: september 10, 2026",
+   "summary": "Public notice is hereby given that the Firearms Prohibitors and Records Improvement Task Force will conduct a public meeting on September 10, 2026, at 1:00 PM CST on Webex. All interested parties are invited to attend and will be given the opportunity for public comment.\nDate: 9/10/26 \nTime: 1:00 PM CST to 2:30 PM CST\nLocation: WebEx Meeting Link ",
+   "tags": [],
+   "category": "special",
+   "contentType": "meeting",
+   "fullPath": "/news/meetings/firearms-prohibitors-and-records-improvement-task-force-september-10-2026/"
+  },
+  {
+   "title": "Budget Committee Meeting August 27, 2026",
+   "altTitle": "budget committee meeting august 27, 2026",
+   "summary": "Illinois Criminal Justice Information Authority Budget Committee Meeting\n\nThursday, July 23, 2026\n10:00 a.m. to 12:00 p.m.\n\nTwo Locations:\n\n1.  Michael A. Bilandic Building\n160 N. LaSalle Street, Room N-502\nChicago, Illinois 60601 \n\n2.  ICJIA Offices\n524 South 2nd Street, Suite 220\nSpringfield, Illinois 62706",
+   "tags": [
+    "Funding",
+    "Meeting",
+    "Violence Prevention"
+   ],
+   "tagsAlt": [
+    {
+     "title": "Funding",
+     "id": "3",
+     "slug": "funding"
+    },
+    {
+     "title": "Meeting",
+     "id": "6",
+     "slug": "meeting"
+    },
+    {
+     "title": "Violence Prevention",
+     "id": "20",
+     "slug": "violence-prevention"
+    }
+   ],
+   "category": "budget",
+   "contentType": "meeting",
+   "fullPath": "/news/meetings/budget-committee-meeting-august-27-2026/"
+  },
+  {
+   "title": "Criminal Justice Specialist I (ARI & Public Safety Units) - Chicago Office - Req 58670",
+   "altTitle": "criminal justice specialist i (ari & public safety units) - chicago office - req 58670",
+   "searchMeta": "jobs help wanted",
+   "summary": "We are looking for a Grant Specialist I to work at the Illinois Criminal Justice Information Authority in the Federal and State Grants Unit (FSGU). FSGU offers a rich environment for a self-driven person desiring to enhance community-based programming and strengthen relationships with partner agencies. Grant Specialist I responsibilities include monitoring grantee performance, budgets, ensuring compliance with grant ",
+   "tags": [],
+   "contentType": "employment",
+   "fullPath": "/about/employment/criminal-justice-specialist-i-ari-and-public-safety-units-chicago-office-req-58670/"
+  },
+  {
+   "title": "Grant Specialist - (Chicago Office) - REQ: 57509 – 2 vacancies",
+   "altTitle": "grant specialist - (chicago office) - req: 57509 – 2 vacancies",
+   "searchMeta": "jobs help wanted",
+   "summary": "We are looking for a Grant Specialist I to work at the Illinois Criminal Justice Information Authority in the Federal and State Grants Unit (FSGU). FSGU offers a rich environment for a self-driven person desiring to enhance community-based programming and strengthen relationships with partner agencies. Grant Specialist I responsibilities include monitoring grantee performance, budgets, ensuring compliance with grant ",
+   "tags": [],
+   "contentType": "employment",
+   "fullPath": "/about/employment/grant-specialist-chicago-office-req-57509-2-vacancies/"
+  },
+  {
+   "title": "Grant Accountant - (Contractual) - REQ: 58438 – (Chicago Office)",
+   "altTitle": "grant accountant - (contractual) - req: 58438 – (chicago office)",
+   "searchMeta": "jobs help wanted",
+   "summary": "Information in this statement is NOT intended to be all-encompassing or to address all responsibilities of the position.\n\n \n\nThis position provides fiscal and administrative support for the R3 (Restore, Reinvest, Renew) program. The contractor will assist with processing grant-funded contracts and payments, ensuring compliance with State fiscal requirements and supporting timely program operations. The role works clo",
+   "tags": [],
+   "contentType": "employment",
+   "fullPath": "/about/employment/grant-accountant-contractual-req-58438-chicago-office/"
+  },
+  {
+   "title": "SPSA - Chief Accountability Officer (Chicago Office) – Req 58155",
+   "altTitle": "spsa - chief accountability officer (chicago office) – req 58155",
+   "searchMeta": "jobs help wanted",
+   "summary": "The Illinois Criminal Justice Information Authority is seeking a highly motivated individual to oversee compliance of ICJIA’s implementation and maintenance of the Illinois Grant Management System. This position manages day-to-day compliance with GATA and agency internal policies. This role will formulate and develop policies for monitoring and accountability of ICJIA’s programs. This includes developing and implemen",
+   "tags": [],
+   "contentType": "employment",
+   "fullPath": "/about/employment/spsa-chief-accountability-officer-chicago-office-req-58155/"
+  },
+  {
+   "title": "Webinar: The Pandemic's Impact on Illinois Criminal Justice and Victim Services",
+   "altTitle": "webinar: the pandemic's impact on illinois criminal justice and victim services",
+   "searchMeta": "webinar pandemic covid-19",
+   "summary": "Webinar: The Pandemic's Impact on Illinois Criminal Justice and Victim Services: Assessing Outcomes and Moving Forward",
+   "tags": [
+    "Webinar",
+    "Coronavirus",
+    "Covid-19"
+   ],
+   "tagsAlt": [
+    {
+     "title": "Webinar",
+     "slug": "webinar"
+    },
+    {
+     "title": "Coronavirus",
+     "slug": "coronavirus"
+    },
+    {
+     "title": "Covid-19",
+     "slug": "covid-19"
+    }
+   ],
+   "category": "news",
+   "contentType": "news",
+   "fullPath": "/news/webinar-the-pandemic-s-impact-on-illinois-criminal-justice-and-victim-services/"
+  },
+  {
+   "title": "Volunteer Opportunities",
+   "altTitle": "volunteer opportunities",
+   "searchMeta": "",
+   "summary": "The Illinois Criminal Justice Information Authority seeks individuals to participate in Restore, Reinvest, and Renew (R3) grant program application review.",
+   "tags": [
+    "Funding",
+    "Volunteer"
+   ],
+   "tagsAlt": [
+    {
+     "title": "Funding",
+     "slug": "funding"
+    },
+    {
+     "title": "Volunteer",
+     "slug": "volunteer"
+    }
+   ],
+   "category": "news",
+   "contentType": "news",
+   "fullPath": "/news/join-our-volunteer-reviewer-pool/"
+  },
+  {
+   "title": "ICJIA Celebrates Juneteenth: A Message from the Acting Executive Director",
+   "altTitle": "icjia celebrates juneteenth: a message from the acting executive director",
+   "searchMeta": "executive director dei diversity",
+   "summary": "Today ICJIA celebrates Juneteenth in commemoration of the Emancipation Proclamation signed in 1863 and for the freedom that finally came for those still enslaved by the confederates on June 19, 1865. On that day, some 2,000 Union troops arrived in Galveston Bay, Texas. The army announced that the more than 250,000 enslaved Black people in the state were free by executive decree. Upon their freedom, newly freed Black ",
+   "tags": [
+    "Diversity, Equity, and Inclusion (DEI)"
+   ],
+   "tagsAlt": [
+    {
+     "title": "Diversity, Equity, and Inclusion (DEI)",
+     "slug": "diversity-equity-and-inclusion"
+    }
+   ],
+   "category": "news",
+   "contentType": "news",
+   "fullPath": "/news/icjia-celebrates-juneteenth/"
+  },
+  {
+   "title": "Evaluation of the Action-Planning Process to Develop the Deflection Avenues Reconnection Team (DART) Police-Led Deflection Program in Central Illinois",
+   "summary": "The large number of Americans with substance use disorders and the rising number of drug overdose deaths have resulted in a need for innovative prevention and intervention strategies. The Deflection Avenues Reconnection Team (DART) program, operating in six counties in central Illinois, was developed to address these challenges. This deflection program allows law enforcement to refer individuals to community deflecti",
+   "tags": [
+    "law enforcement",
+    "deflection",
+    "action-planning"
+   ],
+   "authors": [
+    {
+     "title": "Alex Menninger"
+    },
+    {
+     "title": "Jessica Reichert"
+    }
+   ],
+   "categories": [
+    "other",
+    "law enforcement"
+   ],
+   "contentType": "article",
+   "date": "2026-04-21T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/evaluation-of-the-action-planning-process-to-develop-the-deflection-avenues-reconnection-team-dart-police-led-deflection-program-in-central-illinois/"
+  },
+  {
+   "title": "Implementation Evaluation of a Program to Assist Victims of Violent Crime: Staff and Stakeholder Feedback",
+   "summary": "Police are called to the scene of violent crimes that involve victims who may need, but may not be offered, supportive services. To address this, a police-led deflection program, the East St. Louis Community Engagement Team (CERT), was established in Illinois. While police deflection programs have traditionally helped individuals with substance use challenges, this program sought to assist victims of violent crime. S",
+   "tags": [
+    "law enforcement",
+    "police",
+    "deflection",
+    "evaluation"
+   ],
+   "authors": [
+    {
+     "title": "Alex Menninger"
+    },
+    {
+     "title": "Jessica Reichert"
+    },
+    {
+     "title": "Joshua Kirven"
+    },
+    {
+     "title": "Nancy Sullivan"
+    },
+    {
+     "title": "Rebecca Roberson"
+    },
+    {
+     "title": "Eva Ott Hill"
+    }
+   ],
+   "categories": [
+    "law enforcement"
+   ],
+   "contentType": "article",
+   "date": "2025-11-18T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/implementation-evaluation-of-a-program-to-assist-victims-of-violent-crime-staff-and-stakeholder-feedback/"
+  },
+  {
+   "title": "Mental Health Professionals' Experiences of Burnout and Vicarious Traumatization: Illinois HEALS Evaluation Study Findings",
+   "summary": "Mental health professionals are essential for the healing of children, youth, and families who have experienced victimization. In this study, researchers sought to better understand mental health professionals’ experiences with burnout and vicarious traumatization. Researchers examined interview data that they had gathered for a different, earlier study from five clinicians and clinical supervisors serving child and ",
+   "tags": [
+    "Victim Services",
+    "Vicarious Trauma"
+   ],
+   "authors": [
+    {
+     "title": "Erinne Smith"
+    },
+    {
+     "title": "Amanda L. Vasquez"
+    }
+   ],
+   "categories": [
+    "victims"
+   ],
+   "contentType": "article",
+   "date": "2025-05-19T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/mental-health-professionals-experiences-with-burnout-and-vicarious-traumatization-findings-from-the-illinois-heals-evaluation-study/"
+  },
+  {
+   "title": "Lake County Illinois Deflection Program Evaluation Finds Reduced Overdoses and Property Arrests: Research Brief",
+   "summary": "Due to the high number of Americans with substance use disorders and the opioid crisis, many law enforcement departments are rethinking how they address the needs of people with substance use issues. With police-based deflection programs, police officers make referrals to substance use disorder treatment and other services. The research team evaluated A Way Out, a Lake County Illinois deflection program, in which cit",
+   "tags": [
+    "deflection",
+    "diversion",
+    "law enforcement",
+    "police",
+    "overdose",
+    "opioid"
+   ],
+   "authors": [
+    {
+     "title": "Jessica Reichert"
+    },
+    {
+     "title": "Melissa Labriola"
+    },
+    {
+     "title": "Samuel Peterson"
+    },
+    {
+     "title": "Danielle Sobol"
+    }
+   ],
+   "categories": [
+    "law enforcement"
+   ],
+   "contentType": "article",
+   "date": "2023-06-26T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/lake-county-illinois-deflection-program-evaluation-finds-reduced-overdoses-and-property-arrests/"
+  },
+  {
+   "title": "Balancing Data Privacy with Access to Health Services and Research: Facilitating Confidential Information Sharing in U.S. Multi-System Collaborations",
+   "summary": "This article addresses data privacy issues as they relate to multi-system collaborations for pre-arrest deflection into treatment and services for those suffering from a substance use disorder. The authors explore how the United States’ data privacy regulations pose barriers to collaboration and care coordination, as well as how data privacy regulations affect researchers’ ability to evaluate the impact of interventi",
+   "tags": [
+    "deflection",
+    "data",
+    "privacy",
+    "sharing",
+    "HIPPA",
+    "research"
+   ],
+   "authors": [
+    {
+     "title": "Michele Worobiec"
+    },
+    {
+     "title": "Kelly C. Firesheets"
+    },
+    {
+     "title": "Jessica Reichert"
+    },
+    {
+     "title": "Jirka Taylor"
+    }
+   ],
+   "categories": [
+    "law enforcement"
+   ],
+   "contentType": "article",
+   "date": "2023-05-11T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/balancing-data-privacy-with-access-to-health-services-and-research-facilitating-confidential-information-sharing-in-us-multi-system-collaborations/"
+  },
+  {
+   "title": "A Short-Term Analysis of Domestic Violence and Sexual Assault Victim Services Following the Illinois COVID-19 Stay-at-Home Order",
+   "summary": "With the implementation of stay-at-home orders to slow COVID-19 transmission, researchers and victim service providers raised concerns about an increase in the amount and severity of domestic violence (DV) incidents. Using InfoNet—an online database used by Illinois domestic violence (DV) and sexual assault (SA) service providers—researchers explored data collected on victim services client volume, service needs, and",
+   "tags": [
+    "COVID-19",
+    "Victim Services",
+    "Domestic Violence",
+    "Sexual Assault",
+    "Pandemic",
+    "InfoNet"
+   ],
+   "authors": [
+    {
+     "title": "Caleb Schaffner, PHD"
+    },
+    {
+     "title": "Amanda L. Vasquez, MA"
+    },
+    {
+     "title": "Anne Kirkner, PHD"
+    }
+   ],
+   "categories": [
+    "victims"
+   ],
+   "contentType": "article",
+   "date": "2022-07-12T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/a-short-term-analysis-of-domestic-violence-and-sexual-assault-victim-services-following-the-illinois-covid-19-stay-at-home-order/"
+  },
+  {
+   "title": "An Analysis of Factors Associated with Suicide Among Justice-Involved Illinois Violent Death Decedents",
+   "summary": "Suicide is one of the leading causes of death in the United States both in the general population and among people involved in the justice system. Research suggests suicide rates among those detained in jail and prison have increased in recent years. For this reason, it is important to understand and identify potential suicide risk factors among justice-involved populations. This study utilized violent death and arre",
+   "tags": [
+    "public health",
+    "homicide",
+    "self-harm",
+    "demographics",
+    "cognitive behavioral therapy"
+   ],
+   "authors": [
+    {
+     "title": "H. Douglas Otto"
+    }
+   ],
+   "categories": [],
+   "contentType": "article",
+   "date": "2021-08-25T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/an-analysis-of-risk-factors-for-suicide-among-justice-involved-illinois-violent-death-decedents/"
+  },
+  {
+   "title": "Policies and Programs to Address Individuals Who Perpetrate Intimate Partner Violence",
+   "summary": "The criminal legal system has established policies and programs to address intimate partner violence, such as mandatory arrest policies, specialized courts, weapons bans, no drop prosecution, and orders of protection. Programs for people who perpetrate violence include batterer intervention programs and cognitive behavioral therapy. These programs attempt to address correlated issues, such as substance use disorders,",
+   "tags": [
+    "intimate partner violence",
+    "domestic violence",
+    "intimate partner violence programs",
+    "intimate partner violence policies",
+    "domestic violence programs",
+    "domestic violence policies",
+    "DV",
+    "IPV"
+   ],
+   "authors": [
+    {
+     "title": "Lily Gleicher, Ph.D."
+    },
+    {
+     "title": "Jacquelyn Gilbreath, MSW"
+    }
+   ],
+   "categories": [
+    "victims"
+   ],
+   "contentType": "article",
+   "date": "2021-05-11T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/policies-and-programs-to-address-individuals-who-perpetrate-intimate-partner-violence/"
+  },
+  {
+   "title": "Who are Underserved Victims of Domestic Violence and Sexual Assault? Underrepresented Victim Populations and Barriers to Service Seeking",
+   "summary": "Improving victim services for underserved populations is a Victims of Crime Act (VOCA) funding priority. While VOCA does not define who “underserved populations” are, it does provide guidelines state administering agencies (SAAs), the entities that distribute VOCA funding, should use to designate underserved victims within their states. These guidelines state SAAs must base their definitions on victim characteristics",
+   "tags": [
+    "GIS",
+    "Underserved",
+    "Transportation",
+    "Equity",
+    "Victims",
+    "Victimization",
+    "Victim Services",
+    "Sexual Assault",
+    "Domestic Violence",
+    "InfoNet"
+   ],
+   "authors": [
+    {
+     "title": "Karl Gruschow, Ph.D"
+    },
+    {
+     "title": "Amanda L. Vasquez, MA"
+    }
+   ],
+   "categories": [
+    "victims",
+    "crimes"
+   ],
+   "contentType": "article",
+   "date": "2020-10-15T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/who-are-underserved-victims-of-domestic-violence-and-sexual-assault-underrepresented-victim-populations-and-barriers-to-service-seeking/"
+  },
+  {
+   "title": "Individual and Community Trauma: Individual Experiences in Collective Environments",
+   "summary": "Trauma, which refers to an emotional response from circumstances deemed as harmful, can have negative, long-term impacts on an individual’s mental and physical health. This article examines the literature on how trauma experienced at the individual-level is influenced by trauma experienced at the community-level and summarizes how each is typically defined and addressed. While much of the focus has been on addressing",
+   "tags": [
+    "r3",
+    "community",
+    "trauma"
+   ],
+   "authors": [
+    {
+     "title": "Lauren Weisner"
+    }
+   ],
+   "categories": [
+    "other"
+   ],
+   "contentType": "article",
+   "date": "2020-07-15T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/individual-and-community-trauma-individual-experiences-in-collective-environments/"
+  },
+  {
+   "title": "Probation Clients’ Barriers to Access and Use of Opioid Use Disorder Medications",
+   "summary": "Some individuals on probation who have opioid use disorders (OUDs) cannot access effective, FDA-approved medications-methadone, buprenorphine, and naltrexone-to treat their disorders. This article shared finding from a survey of 26 Illinois probation department directors on how probation departments respond to clients with OUDs, focusing on the barriers to accessing OUD medications. The article noted that a majority ",
+   "tags": [
+    "probation",
+    "medication-assisted treatment",
+    "opioid",
+    "substance use"
+   ],
+   "authors": [
+    {
+     "title": "Jessica Reichert"
+    },
+    {
+     "title": "Lily Gleicher"
+    }
+   ],
+   "categories": [
+    "corrections"
+   ],
+   "contentType": "article",
+   "date": "2019-06-17T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/probation-clients-barriers-to-access-and-use-of-opioid-use-disorder-medications/"
+  },
+  {
+   "title": "Criminal Justice Professionals Learn Promising Practices to Prosecute Domestic Violence Cases",
+   "summary": "Illinois law enforcement agencies reported 118,160 domestic-related crimes in 2016. The Illinois Family Violence Coordinating Council developed and provided training for police and other criminal justice practitioners to improve knowledge about domestic violence and apply this knowledge to support evidence-based approaches to prosecution and orders of protection. This article presents findings from 28 training evalua",
+   "tags": [
+    "domestic violence"
+   ],
+   "authors": [
+    {
+     "title": "Lynne Mock"
+    }
+   ],
+   "categories": [
+    "law enforcement",
+    "courts",
+    "victims"
+   ],
+   "contentType": "article",
+   "date": "2018-10-19T00:00:00.000Z",
+   "fullPath": "/researchhub/articles/criminal-justice-professionals-learn-promising-practices-to-prosecute-domestic-violence/"
+  }
+ ]
+}
