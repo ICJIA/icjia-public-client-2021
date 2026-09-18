@@ -106,16 +106,43 @@
 
             <div v-if="query && query.length" class="mt-12 mb-12">
               <div
-                v-for="(result, index) in filteredResults"
+                v-for="(result, index) in visibleResults"
                 :key="index"
+                :data-result-index="index"
                 class="my-4"
               >
+                <!-- The cards highlight the query that produced these results,
+                     not the text being typed: given the live text, every card
+                     re-rendered on every keystroke. -->
                 <SearchCard
                   :item="result.item"
-                  :query="query"
+                  :query="searchedQuery"
                   :elevation="5"
                   :isStatic="true"
                 ></SearchCard>
+              </div>
+              <!-- Fifty results at a time: rendering every result froze the
+                   page when a long list arrived. As on the Research Hub's
+                   articles page, the count is shown and focus moves to the
+                   first new result (WCAG 2.4.3). -->
+              <div
+                v-if="visibleResults.length < filteredResults.length"
+                class="text-center mt-8"
+              >
+                <v-btn @click="showMore()">Show more results</v-btn>
+              </div>
+              <div
+                v-if="filteredResults.length > resultsPerPage"
+                class="text-center mt-3"
+                style="font-size: 12px; font-weight: 900"
+              >
+                <span v-if="visibleResults.length < filteredResults.length"
+                  >Showing {{ visibleResults.length }} of
+                  {{ filteredResults.length }} results</span
+                >
+                <span v-else
+                  >Showing all {{ filteredResults.length }} results</span
+                >
               </div>
               <!-- Empty state — was: silent empty list. Now tells the
                    user no hits matched and offers a recovery path. -->
@@ -165,6 +192,8 @@ const KEEP_TYPING = "Keep typing — search starts at 2 characters.";
 // Research Hub pages send their author and tag searches here with ?filter=hub.
 // "hub" is not a content type: it stands for the three types the Hub publishes.
 const HUB_TYPES = ["article", "web application", "dataset"];
+// Results are rendered this many at a time; "Show more results" adds as many.
+const RESULTS_PER_PAGE = 50;
 export default {
   metaInfo: {
     title: "Search ICJIA",
@@ -206,6 +235,8 @@ export default {
       searchFromRoute: false,
       queryResults: [],
       filteredResults: [],
+      resultsPerPage: RESULTS_PER_PAGE,
+      shownCount: RESULTS_PER_PAGE,
       content: "",
       searchInput: this.$refs.textfield,
       fuse: null,
@@ -275,6 +306,11 @@ export default {
     });
   },
   computed: {
+    // The results on the page: the first fifty of the filtered list, and
+    // fifty more for each "Show more results".
+    visibleResults() {
+      return this.filteredResults.slice(0, this.shownCount);
+    },
     // Unique content-type chips for the toolbar, sorted by count desc.
     // "All" leads, then the Research Hub and its types, then each other
     // contentType present in current results.
@@ -479,7 +515,19 @@ export default {
       if (map[t]) return map[t];
       return t.charAt(0).toUpperCase() + t.slice(1);
     },
+    showMore() {
+      const firstNew = this.shownCount;
+      this.shownCount += RESULTS_PER_PAGE;
+      this.$nextTick(() => {
+        const link = this.$el.querySelector(
+          `[data-result-index="${firstNew}"] a.card-title-link`
+        );
+        if (link) link.focus();
+      });
+    },
+    // New results, or another filter, start again from the first fifty.
     filterResults() {
+      this.shownCount = RESULTS_PER_PAGE;
       this.filter = this.contentSelected;
       if (this.filter === "No filter") {
         this.filteredResults = this.queryResults;

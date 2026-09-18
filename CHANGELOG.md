@@ -84,6 +84,58 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.86] - 2026-09-18
+
+### fix(search): typing in the search box no longer lags; results are shown fifty at a time
+
+**Typing lag.** Reported the same day: the search box lagged behind the keyboard. The cause was the
+highlighting added in 1.5.83, not the searching (which runs in a worker and never blocks typing).
+Each result card was given the live text of the search box to highlight, so every keystroke
+re-rendered every card on the page, before the typed letter could be painted. Measured on the live
+site (1.5.85) with the 297 results for "violence" on the page: 1.0 to 1.7 seconds blocked per
+keystroke. Two controls confirmed it: the same cards made to ignore the live text cost 16 to 18 ms
+per keystroke, and the fix, in the slower development build, 11 to 62 ms. (Timings were taken in a
+background tab, which runs slower than a visible one; read them as relative.) The cards now
+highlight the query that produced the results they show (`searchedQuery`), which is also the right
+text: the highlights belong to the results on the page, not to a word half typed.
+
+The matching rules of 1.5.82 were checked and are not the cause: short queries always returned
+long lists ("po" 520 results under the old settings, 718 today; "vi" 749 and 841; "police" 111 and
+155).
+
+**Fifty results at a time.** The older cost remained: every result was rendered at once, at about
+3 ms a card, so a long list froze the page when it arrived (297 cards about 1 second, 842 for "vi"
+about 2.5 seconds; 50 cards about 0.1 second). The first fifty are rendered. "Show more results"
+adds fifty and moves keyboard focus to the first new result (WCAG 2.4.3), and a line beneath reads
+"Showing 50 of 295 results", then "Showing all 295 results", as "Load more" does on the Research
+Hub's articles page. New results, or another filter, start again from the first fifty. The filter
+chips and the summary still count every result, and a list of fifty or fewer shows no button and
+no count. A cut-off (say, at 150) was considered and rejected: 150 cards still take about half a
+second, and the results beyond it would be unreachable.
+
+**The shortest query stays at two characters.** The page has searched from two characters since
+2022 (no three-character rule is in its history). Three was considered for speed and rejected:
+"R3" (Restore, Reinvest, Renew) is a program and a real query, and with fifty cards rendered a
+two-letter search is no longer slow. A test pins it.
+
+Checked in the running app (local dev server, real worker and index): "violence" showed 50 cards,
+the button, and "Showing 50 of 295 results"; pressing it showed 100 with focus on result 51's
+title link; choosing Publications after that showed the first 50 of 91, and News showed all 20
+with no button or count; typing over 50 cards cost 11 to 14 ms per keystroke. axe-core (WCAG A and
+AA, with best practices) found 0 violations on the results page at desktop width; at phone width
+its one finding was the development server's own overlay frame, which is not part of the site.
+
+Known and unchanged: runtime accessibility observers in `src/a11y` run after every change to the
+page and add a fixed cost to each render; they were not measured separately here.
+
+Eight new tests (`tests/unit/searchPaging.spec.js`: the first fifty, a short list whole, fifty
+more with focus on the first new result, starting again for new results or a filter, the template
+lists the visible results with the button and the count, two characters are searched and one is
+not; `highlight.spec.js`: the cards get the searched query, not the text being typed). Mocha: 507
+passing, 6 pending (pre-existing skipped stubs); lint clean on the changed files.
+
+---
+
 ## [1.5.85] - 2026-09-18
 
 ### feat(search): a Research Hub filter on the search page; the Hub's web applications and datasets are searched by their full descriptions

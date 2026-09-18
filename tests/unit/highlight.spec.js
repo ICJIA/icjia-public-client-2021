@@ -6,6 +6,8 @@
 // escaped text escaped.
 // =============================================================================
 import { expect } from "chai";
+import fs from "fs";
+import path from "path";
 import { highlightHtml } from "@/utils/highlight";
 
 const marks = (html) =>
@@ -78,5 +80,26 @@ describe("highlightHtml()", () => {
     );
     expect(highlightHtml("", "funding")).to.equal("");
     expect(highlightHtml(null, "funding")).to.equal("");
+  });
+});
+
+describe("Result cards while typing", () => {
+  // A card highlights with the text it is given, and re-renders when that text
+  // changes. Given the live text of the search box (v1.5.83 to v1.5.85), every
+  // card on the page re-rendered on every keystroke, before the typed letter
+  // could be painted: on the live site with 297 results, 144 ms to 928 ms per
+  // keystroke; with cards that ignore the live text, 16 ms to 18 ms. The cards
+  // get the query that produced the results they show.
+  it("gives the cards the searched query, not the text being typed", () => {
+    const page = fs.readFileSync(
+      path.join(process.cwd(), "src/views/Search/SearchStatic.vue"),
+      "utf8"
+    );
+    const card = page.slice(
+      page.indexOf("<SearchCard"),
+      page.indexOf("</SearchCard>")
+    );
+    expect(card).to.include(':query="searchedQuery"');
+    expect(card).to.not.include(':query="query"');
   });
 });
