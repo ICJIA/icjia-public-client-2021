@@ -84,6 +84,30 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.93] - 2026-09-18
+
+### fix(menu): Illinois Heals leaves the Partners menu; the 2024-2029 JAG plan is titled as the plan titles itself
+
+Two things noticed while putting the Partners menu into the search (1.5.92), and decided the same
+day.
+
+- **Illinois Heals** is removed from the Partners menu. `http://ilheals.com` now shows "Site
+  Archived". Its search record goes with it, because the records are built from the menu
+  (`generators/partnerLinks.js`); its description there is removed too. The menu now lists six
+  sites and four plans, and the search ten records for them.
+- The menu titled one plan "Illinois Edward Byrne Memorial Justice **Research** Grant Strategic
+  Plan 2024-2029". The plan, and the news post that announced it, say Justice **Assistance** Grant
+  (JAG). The title now matches, in the menu and in the search record built from it.
+
+The front page's search box keeps its Search button at phone width (129 px of field beside it at
+320 px): an icon-only button was offered in 1.5.88 and is not wanted.
+
+Two new tests (`tests/unit/partnerLinks.spec.js`: the menu and the records no longer list Illinois
+Heals; the plan's title). Mocha: 560 passing, 6 pending (pre-existing skipped stubs); lint clean on
+the changed files.
+
+---
+
 ## [1.5.92] - 2026-09-18
 
 ### feat(search): the Partners menu's sites and plans are in the search, and rank first; fix: a context bar that is gone no longer measures itself

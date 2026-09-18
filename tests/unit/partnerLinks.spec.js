@@ -3,7 +3,7 @@
 // The Partners menu in the site search (v1.5.92)
 //
 // The Partners dropdown links to the agency's other sites (R3, Adult Redeploy,
-// Illinois Heals...) and to its plans. None of them was in the search: a search
+// i2i...) and to its plans. None of them was in the search: a search
 // for "R3" found news and funding about R3 and not the R3 site. A record is now
 // built for every link in that dropdown, from the menu itself, so a link added
 // to the menu is searchable at the next build. They point off this site, so
@@ -45,7 +45,7 @@ describe("Partners menu: a search record for every link", () => {
   it("names a record by the menu section it sits under", () => {
     const type = (title) => records.find((r) => r.title === title).contentType;
     expect(type("Restore, Reinvest, Renew (R3)")).to.equal("partner site");
-    expect(type("Illinois Heals")).to.equal("partner site");
+    expect(type("Adult Redeploy Illinois")).to.equal("partner site");
     expect(type("Statewide Violence Prevention Plan: 2025-2029")).to.equal(
       "plan"
     );
@@ -90,6 +90,26 @@ describe("Partners menu: a search record for every link", () => {
   });
 });
 
+// v1.5.93: the Illinois Heals site was archived and left the menu, and one
+// plan's title said "Justice Research Grant" where the plan is the Justice
+// Assistance Grant (JAG) plan. The search records follow the menu.
+describe("Partners menu: what it lists", () => {
+  it("no longer lists the archived Illinois Heals site", () => {
+    expect(links.map((l) => l.title)).to.not.include("Illinois Heals");
+    expect(links.map((l) => l.link).join(" ")).to.not.include("ilheals");
+    expect(records.map((r) => r.title)).to.not.include("Illinois Heals");
+  });
+
+  it("titles the 2024-2029 JAG plan as the plan titles itself", () => {
+    expect(links.map((l) => l.title)).to.include(
+      "Illinois Edward Byrne Memorial Justice Assistance Grant Strategic Plan 2024-2029"
+    );
+    expect(links.map((l) => l.title).join(" ")).to.not.include(
+      "Justice Research Grant"
+    );
+  });
+});
+
 describe("Partners menu: the records rank high", () => {
   const fuse = new Fuse(
     sample.records.concat(records),
@@ -105,7 +125,6 @@ describe("Partners menu: the records rank high", () => {
     );
     expect(first("adult redeploy")).to.equal("Adult Redeploy Illinois");
     expect(first("ARI")).to.equal("Adult Redeploy Illinois");
-    expect(first("illinois heals")).to.equal("Illinois Heals");
     expect(first("i2i")).to.equal("Institute to Innovate (i2i)");
     expect(first("SPAC")).to.equal("Sentencing Policy and Advisory Council");
     expect(first("violence prevention plan")).to.equal(
@@ -151,7 +170,7 @@ describe("Partners menu: off-site results", () => {
     const is = (fullPath) =>
       SearchCard.computed.isExternal.call({ item: { fullPath } });
     expect(is("https://r3.illinois.gov/")).to.equal(true);
-    expect(is("http://ilheals.com")).to.equal(true);
+    expect(is("http://dvfr.illinois.gov")).to.equal(true);
     expect(is("/grants/programs/x/")).to.equal(false);
     expect(is(undefined)).to.equal(false);
     expect(

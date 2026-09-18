@@ -35,12 +35,6 @@ const WORDS = {
       "Family Violence Coordinating Councils, at the state and the local or circuit level, provide a forum to improve the institutional, professional and community response to family violence.",
     tags: ["family violence coordinating councils", "family violence"],
   },
-  "http://ilheals.com": {
-    short: "ilheals",
-    summary:
-      "Illinois HEALS (Helping Everyone Access Linked Systems) worked to connect children, youth and families who experienced victimization with services. The site has been archived.",
-    tags: ["illinois heals", "heals"],
-  },
   "http://i2i.illinois.gov": {
     short: "i2i",
     summary:

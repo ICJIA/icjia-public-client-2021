@@ -198,12 +198,6 @@
                     "external": true
                 },
                 {
-                    "title": "Illinois Heals",
-                    "link": "http://ilheals.com",
-                    "icon": "mdi-open-in-new",
-                    "external": true
-                },
-                {
                     "title": "Institute to Innovate (i2i)",
                     "link": "http://i2i.illinois.gov",
                     "icon": "mdi-open-in-new",
@@ -228,7 +222,7 @@
                     "section": "Plans and Initiatives"
                 },
                 {
-                    "title": "Illinois Edward Byrne Memorial Justice Research Grant Strategic Plan 2024-2029",
+                    "title": "Illinois Edward Byrne Memorial Justice Assistance Grant Strategic Plan 2024-2029",
                     "link": "https://researchhub.icjia-api.cloud/uploads/JAG%202024-29%20FINAL%20DRAFT%208-2024-240808T19411840.pdf",
                     "icon": "mdi-open-in-new",
                     "external": true
