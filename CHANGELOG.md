@@ -84,6 +84,53 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.80] - 2026-09-18
+
+### docs — "Put it on the front page": the promotion briefing answers the front-page question
+
+`docs/PAGE-PROMOTION-STRATEGY.{md,html,docx}` ("Publishing Isn't Promotion") gains a section for
+managers who expect a front-page feature or a new menu item to bring readers to a new page, in plain
+language and from the site's own Plausible numbers (12 months ending September 18, 2026): 74 of 100
+visits never see the front page, 19 start there, and 13 of those 19 leave without clicking;
+front-page visitors go on to funding (≈1,600 people), jobs, staff, grant status and contact, and
+about 390 to the Research Hub; a front-page feature for the homicide dashboard would add about 30
+visitors a month (130 if it matched funding), against ≈120 visits in 48 hours from one CJ Dispatch
+send. It covers why "make it bigger" fails (the audience, not the box, is the limit; banner
+blindness), what the front page can do (a news post in the News slot; the three featured boxes are
+working task links), why a top-level menu item is the same request, a goal-to-tool table of the
+alternatives, what the outreach writing takes (about a day and a half, most of it already written in
+the page and the Summary Report), and a closing "this is not a no" with what the web team has
+already done.
+
+The history is shown rather than asserted: six front pages from the Internet Archive (2000, 2005,
+2011, 2014, 2019, today) and link counts for twelve years from 1998, a saw-tooth in which each
+redesign cleared the front page and requests refilled it (13 links to 189; 119 to 131; 85 to 144;
+90 today, with 24 in the content area against 106 in January 2019). Thumbnails live in `docs/img/`;
+the Word file is built with `docs/pandoc-docx.lua` (no table-of-contents field; verified 0 field
+codes, 6 embedded images). The HTML version's accent and passive-bar colours were darkened for WCAG
+1.4.3 (3.5:1 to 5.4:1, and 2.4:1 to 4.5:1), and it gained main and footer landmarks; axe-core AA +
+best practices: 0 violations.
+
+The whole briefing was then reviewed for a longer shelf life and a wider audience than one page's
+owners. Every figure is now on one window (12 months ending September 18, 2026): 60,300 visitors,
+144,600 visits, 457,300 pageviews; Research Hub 47% of pageviews; 61% one-page visits; top ten Hub
+articles ≈41,000 readers; IDOC 1,500 visitors; credited social ≈1,420 visitors (2.4%). An
+unsupported projection (social growing to 5–10% of traffic) and a comparison of subscribers with
+site audience were removed, the homicide example is framed as one case of a general rule, and the
+text was tightened throughout. The three formats are now generated from one source,
+`docs/build-page-promotion.py`, so they cannot drift. The 2019 front-page image is rendered from
+the Internet Archive's copy of the page with its slide photos loaded (the archive serves them too
+slowly for a direct capture). The HTML embeds all six images, so the file is self-contained.
+
+**Correction.** `docs/NEW-PAGE-PLAYBOOK.html` (1.5.76) said the homicide page had 6 visitors in its
+first 24 days. That count matched only the address with a trailing slash; nearly all of the page's
+traffic is recorded as `/homicide`. The measured figures for August 25 to September 18 are 123
+visitors, 180 visits and 368 page views (93 visitors with no referring site, 38 from Google; ICJIA
+staff included). The playbook and this briefing now carry them. The argument is unchanged and the
+ratio is smaller: one email delivers in two days about what waiting delivered in a month.
+
+---
+
 ## [1.5.79] - 2026-09-17
 
 ### fix: "NEW!" and "CANCELLED" chips show their text again
