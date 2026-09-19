@@ -1,6 +1,6 @@
 {
   "name": "icjia-public-client",
-  "version": "1.5.96",
+  "version": "1.5.97",
   "private": true,
   "description": "ICJIA Public Website (2024)",
   "author": {
@@ -19,7 +19,7 @@
     "generate:feeds": "node ./generators/generateRSSNews.mjs && node ./generators/generateRSSFunding.mjs && node ./generators/generateRSSMeetings.mjs && node ./generators/generateRSSEmployment.mjs",
     "generate:images": "node ./generators/generateImagesHub",
     "generate:schema": "node ./generators/generateSchema.mjs",
-    "generate:search": "node ./generators/generateIndexHub && node ./generators/generateIndexUnits && node ./generators/generateIndexGrants && node ./generators/generateIndexPages && node ./generators/generateIndexMeetings && node ./generators/generateIndexEvents && node ./generators/generateIndexPosts && node ./generators/generateIndexJobs && node ./generators/generateIndexBiographies &&  node ./generators/generateIndexPublications && node ./generators/searchIndexAndSitemap",
+    "generate:search": "node ./generators/generateIndexHub && node ./generators/generateIndexUnits && node ./generators/generateIndexGrants && node ./generators/generateIndexPages && node ./generators/generateIndexMeetings && node ./generators/generateIndexEvents && node ./generators/generateIndexPosts && node ./generators/generateIndexJobs && node ./generators/generateIndexBiographies &&  node ./generators/generateIndexPublications && node ./generators/generateIndexPageLinks && node ./generators/searchIndexAndSitemap",
     "postbuild": "node ./generators/generateBuildInfo && node ./generators/generatePageShells",
     "test": "npx playwright test",
     "tests": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service test:unit --recursive --timeout 10000 --require ./tests/unit/setup.js",

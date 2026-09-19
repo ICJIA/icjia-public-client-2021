@@ -16,11 +16,14 @@ module.exports = [
     category: "general",
     summary:
       "Homicide and firearm aggravated assault dashboard: offense and clearance data reported by Illinois law enforcement agencies through NIBRS, beginning in 2023, by county, agency, and reporting period, with a summary report and downloadable datasets, published under the Illinois Criminal Justice Information Act (20 ILCS 3930).",
-    // The site's Fuse settings score by position (location 0, distance 200,
-    // threshold 0.25), so only the first ~50 characters of a string field
-    // can match. Keep searchMeta short and put the rest in tags: each tag is
-    // matched on its own, from its first character.
-    searchMeta: "homicide dashboard clearance rates NIBRS",
+    // Keywords are matched anywhere in the string (since v1.5.82; the search
+    // used to read only the first 50 or so characters). A tag is matched on
+    // its own, and an exact tag ranks well. "statutory reporting requirement"
+    // is shared with the Death in Custody and Drone pages
+    // (./pageKeywords.js): the three are the Research menu's "Statutory
+    // Reporting".
+    searchMeta:
+      "homicide dashboard clearance rates NIBRS statutory reporting requirement",
     tags: [
       "homicide",
       "homicide dashboard",
@@ -60,6 +63,29 @@ module.exports = [
     searchMeta: "request grant status",
     tags: ["grant status", "grant status request", "grants"],
     fullPath: "/forms/grant-status/",
+    imagePath: null,
+    contentType: "page",
+  },
+  {
+    // The CMS also has a page of this name, in the About section, with no
+    // body: it is left out of the index (./retiredPages.js).
+    id: "rules-regs-policies",
+    title: "Rules, Regulations, and Policies",
+    altTitle: "rules, regulations, and policies",
+    slug: "rules-regs-policies",
+    category: "grants",
+    summary:
+      "The rules, regulations and policies that govern ICJIA and its grants: the agency's rules in the Illinois Administrative Code, the federal regulations for grant awards (2 CFR 200, VOCA), and ICJIA policies and manuals to download.",
+    searchMeta: "rules regulations policies grant policies",
+    tags: [
+      "rules",
+      "regulations",
+      "policies",
+      "Illinois Administrative Code",
+      "2 CFR 200",
+      "grants",
+    ],
+    fullPath: "/grants/rules-regs-policies/",
     imagePath: null,
     contentType: "page",
   },

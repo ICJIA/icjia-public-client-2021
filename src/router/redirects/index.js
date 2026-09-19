@@ -18,6 +18,16 @@ const redirects = [
     },
   },
   {
+    // The CMS's "Rules, Regulations, Policies" page (About) has no body, and
+    // this address was blank. The page is the grants section's own view.
+    // Read before the About pages' route, /about/:slug (src/router/index.js).
+    path: "/about/policies/",
+    // eslint-disable-next-line no-unused-vars
+    redirect: (route) => {
+      return "/grants/rules-regs-policies/";
+    },
+  },
+  {
     path: "/researchhub/hub-home/",
     redirect: { name: "hubHome" },
   },

@@ -146,6 +146,51 @@ describe('Site search: "careers" finds the Employment page', () => {
   });
 });
 
+describe('Site search: "statutory" finds the three statutory reporting pages', () => {
+  // Death in custody, drones and homicides are reported because statutes
+  // require it, and the Research menu lists the three pages under "Statutory
+  // Reporting". None of them had the word: "statutory" found the FOIA page.
+  const STATUTORY = [
+    "/researchhub/dicra/",
+    "/innovation-and-digital-services/drone/",
+    "/homicide/",
+  ];
+  // The index as the generator assembles it: CMS records with the added words,
+  // and the hand-built pages from generators/manualPages.js.
+  const manualPages = require("../../generators/manualPages").map(
+    // eslint-disable-next-line no-unused-vars
+    ({ shell, ...page }) => page
+  );
+  const manualPaths = manualPages.map((page) => page.fullPath);
+  const records = addKeywords(
+    sample.records.filter((r) => !manualPaths.includes(r.fullPath))
+  ).concat(manualPages);
+  const fuse = new Fuse(records, searchOptions(Fuse, config.search.site));
+  const held = (query) =>
+    searchAll(fuse, query)
+      .filter((r) => !r.similar)
+      .map((r) => r.item.fullPath);
+
+  it("all three, for the word and for the menu's heading", () => {
+    ["statutory", "Statutory", "statutory reporting"].forEach((query) =>
+      expect(held(query), query).to.include.members(STATUTORY)
+    );
+  });
+
+  it("and for what they are: statutory requirements", () => {
+    ["statutory requirement", "statutory requirements"].forEach((query) =>
+      expect(held(query), query).to.include.members(STATUTORY)
+    );
+  });
+
+  it("they still lead their own searches", () => {
+    expect(held("drone")[0]).to.equal(STATUTORY[1]);
+    expect(held("homicide")[0]).to.equal(STATUTORY[2]);
+    expect(held("death in custody")[0]).to.equal(STATUTORY[0]);
+    expect(held("dicra")[0]).to.equal(STATUTORY[0]);
+  });
+});
+
 describe("Search index: the generator adds the words", () => {
   it("to the CMS pages, before the index is assembled", () => {
     const source = fs
@@ -155,6 +200,6 @@ describe("Search index: the generator adds the words", () => {
       )
       .replace(/\s+/g, " ");
     expect(source).to.include('require("./pageKeywords")');
-    expect(source).to.include("...addKeywords(pages),");
+    expect(source).to.include("addKeywords(pages");
   });
 });

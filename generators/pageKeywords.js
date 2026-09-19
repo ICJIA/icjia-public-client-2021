@@ -14,18 +14,66 @@ const KEYWORDS = {
   "/grants/funding/": "nofo nofos notice of funding opportunity",
   // "careers" found nothing at all: no page and no posting has the word.
   "/about/employment/": "careers",
+  // Reported because statutes require it, and listed in the Research menu
+  // under "Statutory Reporting"; "statutory" found neither. The third such
+  // page, /homicide/, is hand-built: its words are in ./manualPages.js.
+  "/researchhub/dicra/": "statutory reporting requirement",
+  "/innovation-and-digital-services/drone/": "statutory reporting requirement",
 };
 
-// The records, with the words added to the keywords of the pages named above.
-// Words a page already has are not added again.
-function addKeywords(records) {
+// Pages that are lists of links, and the CMS collections whose titles are the
+// links' names. The collections have no search records of their own, so
+// "time certification" and "language access plan" found nothing.
+// generateIndexPageLinks.js fetches the titles at build time, and
+// searchIndexAndSitemap.js adds them to each page's keywords. To make another
+// such page searchable by its links, name it here.
+const LINKED_COLLECTIONS = {
+  "/grants/required-forms/": ["requiredForms"],
+  "/grants/rules-regs-policies/": ["rules", "regulations", "policies"],
+};
+
+// Titles as keywords, tidied.
+function linkLabels(items) {
+  return (items || [])
+    .map((item) => (item && item.title ? item.title : ""))
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// What was fetched ({ collection: [{ title }] }), as keywords for each page.
+// A collection that was not fetched adds nothing.
+function labelsByPage(data) {
+  const labels = {};
+  Object.keys(LINKED_COLLECTIONS).forEach((fullPath) => {
+    const items = LINKED_COLLECTIONS[fullPath].reduce(
+      (all, name) => all.concat((data && data[name]) || []),
+      []
+    );
+    labels[fullPath] = linkLabels(items);
+  });
+  return labels;
+}
+
+// The records, with words added to the keywords of the pages named above, and
+// of the pages named in `more` (path: words). Words a page already has are not
+// added again.
+function addKeywords(records, more = {}) {
   return records.map((record) => {
-    const words = KEYWORDS[record.fullPath];
+    const words = [KEYWORDS[record.fullPath], more[record.fullPath]]
+      .filter(Boolean)
+      .join(" ");
     if (!words) return record;
     const own = (record.searchMeta || "").trim();
-    if (own.toLowerCase().includes(words)) return record;
+    if (own.toLowerCase().includes(words.toLowerCase())) return record;
     return { ...record, searchMeta: own ? `${own} ${words}` : words };
   });
 }
 
-module.exports = { KEYWORDS, addKeywords };
+module.exports = {
+  KEYWORDS,
+  LINKED_COLLECTIONS,
+  addKeywords,
+  linkLabels,
+  labelsByPage,
+};

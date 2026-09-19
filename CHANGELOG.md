@@ -84,6 +84,58 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.97] - 2026-09-19
+
+### feat(search): "statutory" finds the three statutory reporting pages, and the forms on Required Forms are found by name; fix: /about/policies/ was blank
+
+- **"statutory" finds Death in Custody Reporting, Drone Reporting and Homicide Reporting.** The
+  three are reported because statutes require it, and the Research menu lists them under
+  "Statutory Reporting", but none of the pages had the word: "statutory" found only the FOIA
+  page, and "statutory reporting" nothing. "statutory reporting requirement" is added to the
+  keywords of the two CMS pages in `generators/pageKeywords.js` and to the hand-built homicide
+  page's own keywords in `generators/manualPages.js` (whose comment still described the search as
+  reading the first 50 characters of a field; it has matched anywhere since 1.5.82). On an index
+  rebuilt locally, "statutory" returns the three pages and then FOIA; "statutory reporting" and
+  "statutory requirements" return the three. Each page still leads its own search ("drone",
+  "homicide", "dicra", "death in custody"). The menu itself is unchanged.
+- **/about/policies/ was blank.** The CMS has a page "Rules, Regulations, Policies" in the About
+  section with no body, and the About section's route (`/about/:slug`) drew it. It was also the
+  address the search and the sitemap held, while the page itself, the hand-built view at
+  `/grants/rules-regs-policies/` (Illinois Administrative Code rules, the federal grant
+  regulations, ICJIA policies to download), was in neither. Now:
+  - `/about/policies/` redirects to `/grants/rules-regs-policies/` (`src/router/redirects`, which
+    are read before the About route; a redirect that returns a path, with no side effect);
+  - the hand-built page has a search record (`generators/manualPages.js`) and is in the sitemap;
+  - the empty CMS record is left out of both (`generators/retiredPages.js`).
+  "policies", "rules" and "regulations" now lead with the page. Verified in the browser: the old
+  address lands on the page, with its three sections and its canonical address. Hiding or
+  unpublishing the empty page in the CMS would make the filter unnecessary.
+
+- **The links on Required Forms, and on Rules, Regulations, and Policies, are found by their
+  names.** `/grants/required-forms/` lists 21 forms to download ("100% Time Certification",
+  "Budget Revision Request", "Sole Source Justification"...), and `/grants/rules-regs-policies/`
+  7 rules, 2 regulations and 9 policies. The names come from CMS collections (`requiredForms`,
+  `rules`, `regulations`, `policies`) that have no search records: "time certification" and
+  "language access plan" found nothing. A new build step, `generators/generateIndexPageLinks.js`,
+  fetches the titles as the other index scripts fetch theirs (`generate:search`, before the index
+  is assembled), and `searchIndexAndSitemap.js` adds them to each page's keywords
+  (`LINKED_COLLECTIONS`, `labelsByPage()`, `linkLabels()` and a second argument to `addKeywords()`
+  in `generators/pageKeywords.js`; the hand-built pages now pass through `addKeywords()` too).
+  They are shown nowhere, a form or a policy added in the CMS is searchable at the next build, and
+  another page of links is one line in `LINKED_COLLECTIONS`. If the fetch fails, the index is built
+  without them (checked by removing the file). Run for real against the CMS and searched with the
+  worker's code: every form name tried returns Required Forms first ("time certification", "time
+  keeping", "budget revision", "sole source justification", "lobbying", "eeop", "uniform grant
+  agreement"), and every rule, regulation and policy tried returns its page first
+  ("administrative appeals", "witness protection", "conviction information", "voca regulations",
+  "grant funds recovery", "executive pay", "ffata", "language access plan", "pass-through
+  entity"); "conflict of interest", which is on both, returns both. A side effect of pages coming
+  first: Required Forms now also leads broad words that are in a form's name, "budget" (80
+  results; it was led by an article and the Budget Committee's meetings) and "civil rights".
+
+23 new tests (`requiredFormsSearch.spec.js` 13, `policiesPage.spec.js` 7, `pageKeywords.spec.js`
+3). Mocha: 644 passing, 6 pending (pre-existing skipped stubs); lint clean on the changed files.
+
 ## [1.5.96] - 2026-09-19
 
 ### fix(search): a search no longer opens another site by itself; "annual report" leads with the reports; "careers" finds the Employment page

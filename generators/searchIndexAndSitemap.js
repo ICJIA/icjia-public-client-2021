@@ -67,7 +67,20 @@ const manualPages = require("./manualPages").map(
 
 // ── Words people search for that a CMS page's keywords lack ────────────
 // "nofo" for the Funding Opportunities page; see ./pageKeywords.js.
-const { addKeywords } = require("./pageKeywords");
+const { addKeywords, labelsByPage } = require("./pageKeywords");
+
+// The names of the links on Required Forms and on Rules, Regulations, and
+// Policies, fetched by generateIndexPageLinks.js. The index is built without
+// them if that fetch failed.
+const pageLinks = labelsByPage(
+  fs.existsSync("./public/api/pageLinks.json")
+    ? JSON.parse(fs.readFileSync("./public/api/pageLinks.json", "utf8"))
+    : {}
+);
+
+// ── CMS records whose page is somewhere else ───────────────────────────
+// The empty "Rules, Regulations, Policies" page; see ./retiredPages.js.
+const { withoutRetired } = require("./retiredPages");
 
 // ── The Partners menu: the agency's other sites and its plans ──────────
 // Built from src/config/menus.json; see ./partnerLinks.js. They point off this
@@ -80,7 +93,7 @@ let siteIndex = [
   ...biographies,
   ...hub,
   ...grants,
-  ...addKeywords(pages),
+  ...withoutRetired(addKeywords(pages, pageLinks)),
   ...publications,
   ...units,
   ...jobs,
@@ -88,7 +101,7 @@ let siteIndex = [
   ...posts,
   ...events,
   // ...policies,
-  ...manualPages,
+  ...addKeywords(manualPages, pageLinks),
   ...partnerLinks,
 ];
 
