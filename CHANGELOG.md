@@ -84,6 +84,38 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.98] - 2026-09-19
+
+### fix(search): a former director's name led to a page he is not on
+
+A search for the former research director returned the Research & Analysis Unit's page, hours
+after he had been removed from the site and several builds later. The index is rebuilt from the
+CMS at every build, and it was: the name came from the CMS. "timothy lavery" is in that unit's
+**search keywords** field, and had been all along. The build strips staff names out of keywords
+before the index is published (`generators/utils/purifyStaffNames.js`), and it knows the names
+from the biographies, so a name is stripped only while its owner has a biography. Snapshots of
+the public index from 17 and 18 September show the unit's keywords without the name, and his
+biography present; when the biography was removed, the name stopped being recognised and
+reached the public index. He is the only person removed from the biographies since 17
+September, and that record was the only one whose keywords named him.
+
+- He is named in the module's list of former staff (`EXTRAS`), which exists for this. Checked by
+  refreshing the roster and the units from the CMS and rebuilding the index: the CMS still gives
+  the keywords with his name, the published keywords are "SAC statistical analysis center data
+  R&A", and searches for his name no longer return the unit's page. They still return the four
+  articles he wrote, as they should. The unit is still found by its own keywords.
+- The stripping can now be tested without the build's roster file: `blocklistFrom(bios)` builds
+  the list, and `purifyString` and `purifyRecord` accept one. The module had no tests.
+
+Reported, not changed: **this will happen again for whoever leaves next.** 16 CMS records name a
+current member of staff in their keywords (9 of the 10 unit pages, 6 pages, 1 program); each is
+hidden only while that person has a biography. Names in keywords do nothing for the search,
+since the build removes them on purpose: taking them out of those 16 records in the CMS ends the
+problem, and until then a name must be added to `EXTRAS` when a biography is removed.
+
+5 new tests (`purifyStaffNames.spec.js`). Mocha: 649 passing, 6 pending (pre-existing skipped
+stubs); lint clean on the changed files.
+
 ## [1.5.97] - 2026-09-19
 
 ### feat(search): "statutory" finds the three statutory reporting pages, and the forms on Required Forms are found by name; fix: /about/policies/ was blank

@@ -24,6 +24,12 @@ const path = require("path");
 // Extras blocklist: former/external staff names found in CMS searchMeta
 // that are not (or no longer) in the public biographies roster.
 // Add names here when SiteImprove/security scans surface new leaks.
+//
+// A name is stripped only while its owner has a biography: removing a
+// biography un-hides every keyword that names the person. "timothy lavery" had
+// been in the Research & Analysis Unit's keywords all along, and reached the
+// public index on the day his biography was removed (v1.5.98). When someone
+// leaves, add the name here, and take it out of the keywords in the CMS.
 const EXTRAS = [
   "Aisha Williams",
   "Alan Blackmon",
@@ -40,22 +46,19 @@ const EXTRAS = [
   "Ronnie Reichgelt",
   "Schweda",
   "Shai Hoffman",
+  "Timothy Lavery",
   "Zina Smith",
 ];
 
-// Build the name blocklist once on require
-let BLOCKLIST = null;
-
-function loadBlocklist() {
-  if (BLOCKLIST) return BLOCKLIST;
-
-  const bios = require(path.join(__dirname, "../../public/api/biographies.json"));
+// The names to strip: everyone in the roster (biographies.json) and EXTRAS.
+function blocklistFrom(bios) {
   const names = new Set();
 
   for (const bio of bios) {
     const { firstName, lastName, fullName } = bio;
     if (fullName && fullName.trim()) names.add(fullName.trim());
-    if (firstName && lastName) names.add(`${firstName.trim()} ${lastName.trim()}`);
+    if (firstName && lastName)
+      names.add(`${firstName.trim()} ${lastName.trim()}`);
     // Also add lastName alone (common in searchMeta like "Ratliff")
     if (lastName && lastName.trim().length > 2) names.add(lastName.trim());
   }
@@ -69,7 +72,17 @@ function loadBlocklist() {
   }
 
   // Sort longest-first so "Mary Ratliff" is matched before "Ratliff"
-  BLOCKLIST = [...names].sort((a, b) => b.length - a.length);
+  return [...names].sort((a, b) => b.length - a.length);
+}
+
+// Build the name blocklist once on require
+let BLOCKLIST = null;
+
+function loadBlocklist() {
+  if (BLOCKLIST) return BLOCKLIST;
+  BLOCKLIST = blocklistFrom(
+    require(path.join(__dirname, "../../public/api/biographies.json"))
+  );
   return BLOCKLIST;
 }
 
@@ -77,9 +90,8 @@ function loadBlocklist() {
  * Remove staff names from a single searchMeta string value.
  * Case-insensitive word-boundary matching. Leaves other keywords intact.
  */
-function purifyString(input) {
+function purifyString(input, blocklist = loadBlocklist()) {
   if (!input || typeof input !== "string") return input;
-  const blocklist = loadBlocklist();
   let out = input;
   for (const name of blocklist) {
     // Escape regex metacharacters in the name (none expected but defensive)
@@ -95,10 +107,10 @@ function purifyString(input) {
  * Purify a single CMS record: strips staff names from searchMeta.
  * Returns a new object — does not mutate.
  */
-function purifyRecord(record) {
+function purifyRecord(record, blocklist) {
   if (!record || typeof record !== "object") return record;
   if (!("searchMeta" in record)) return record;
-  return { ...record, searchMeta: purifyString(record.searchMeta) };
+  return { ...record, searchMeta: purifyString(record.searchMeta, blocklist) };
 }
 
 /**
@@ -106,10 +118,12 @@ function purifyRecord(record) {
  */
 function purifySearchMeta(records) {
   if (!Array.isArray(records)) return records;
-  return records.map(purifyRecord);
+  return records.map((record) => purifyRecord(record));
 }
 
 module.exports = {
+  EXTRAS,
+  blocklistFrom,
   purifySearchMeta,
   purifyRecord,
   purifyString,
