@@ -12,6 +12,8 @@
 // a word its editors did not think of.
 const KEYWORDS = {
   "/grants/funding/": "nofo nofos notice of funding opportunity",
+  // "careers" found nothing at all: no page and no posting has the word.
+  "/about/employment/": "careers",
 };
 
 // The records, with the words added to the keywords of the pages named above.

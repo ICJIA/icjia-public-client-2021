@@ -84,6 +84,49 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.96] - 2026-09-19
+
+### fix(search): a search no longer opens another site by itself; "annual report" leads with the reports; "careers" finds the Employment page
+
+- **A search for "i2i" opened i2i.illinois.gov by itself, and Back opened it again.** Six old
+  addresses on this site lead to the agency's other sites (`/i2i/`, `/spac/`, `/adultredeploy/`,
+  `/ifvcc/`, `/archive/`, `/intranet/`; `src/router/external/index.js`). Each was a `redirect`
+  function that set `window.location`. vue-router runs a route's redirect function whenever the
+  route is *resolved*, and a `<router-link>` resolves its target when it is drawn. Since 1.5.87 the
+  titles of search results are links, and the index has a CMS page whose address is `/i2i/`:
+  drawing its result card left the site, with no click, and Back drew the card again. Reproduced
+  locally (loading `/search/i2i` landed on i2i.illinois.gov) and pinned in a test against the old
+  code: drawing `<router-link to="/i2i/">` was enough. The six routes now leave from a
+  `beforeEnter` guard, which runs only when the address is really being opened, and the site stays
+  on the page it was showing (`next(false)`). Verified in the browser: the search for "i2i" stays
+  on its 8 results; choosing the i2i page opens i2i.illinois.gov; Back returns to the search and
+  stays; the old address `/i2i/`, opened directly, still forwards. **Drawing a link must never open
+  a page**: a test now fails if any redirect function in `src/router` touches `window`. The only
+  index record at one of these addresses is that page, so no other search was affected; any search
+  that drew its card was (since 1.5.87; since 1.5.95 it is the second result for "i2i").
+- **"annual report" leads with the reports.** With pages first (1.5.95), three pages that hold both
+  words came before 97 results titled "... Annual Report": About the Authority (CMS keywords
+  "latest annual report"), ICJIA Publications (tag "annual reports") and the Death in Custody page
+  (keywords "... report annual"). A general rule was tried and rejected: putting titles that
+  contain the typed phrase first also moved the Funding Opportunities page from 1st to 64th for
+  "notice of funding opportunity" and the Meetings page from 1st to 25th for "board meeting".
+  Nothing in the records tells the About page's keyword from the Funding page's, so the search is
+  named: `DOCUMENT_SEARCHES` in `src/utils/searchFields.js` (mirrored in the worker) lists
+  `["annual", "report"]`, and for a query with every word of an entry, singular or plural, posts
+  come before pages. "annual report", "annual reports", "icjia annual report" and "dicra annual
+  report" now lead with reports; the first page is the 99th result of 106. "report" alone, "board
+  meeting", "nofo" and "notice of funding opportunity" still lead with their pages.
+- **"careers" finds the Employment page.** The word was in no page and no posting, and found
+  nothing. One line in `generators/pageKeywords.js`. "career" finds it too.
+- **"employment" and "jobs" still find the page and every posting**, now pinned by a test. On an
+  index rebuilt locally: "employment" returns the Employment page first, then 246 more results,
+  among them all 224 postings in that index; "jobs" the page and the same 224.
+
+10 new tests (`externalRoutes.spec.js` 6, `searchSimilar.spec.js` 2, `pageKeywords.spec.js` 2),
+and "annual report" joins the queries on which the worker must order results exactly as the app
+does. Mocha: 621 passing, 6 pending (pre-existing skipped stubs); lint clean on the changed
+files.
+
 ## [1.5.95] - 2026-09-19
 
 ### feat(search): results that contain the typed words come first, similar spellings are folded away, pages come before posts, and "nofo" finds the Funding Opportunities page

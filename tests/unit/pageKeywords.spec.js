@@ -108,6 +108,44 @@ describe('Site search: "nofo" finds the Funding Opportunities page', () => {
   });
 });
 
+describe('Site search: "careers" finds the Employment page', () => {
+  const EMPLOYMENT = "/about/employment/";
+  const fuse = new Fuse(
+    addKeywords(sample.records),
+    searchOptions(Fuse, config.search.site)
+  );
+
+  it("which had no such word, and led nowhere", () => {
+    const plain = new Fuse(
+      sample.records,
+      searchOptions(Fuse, config.search.site)
+    );
+    expect(searchAll(plain, "careers")).to.deep.equal([]);
+    ["careers", "career", "Careers"].forEach((query) => {
+      const first = searchAll(fuse, query)[0];
+      expect(first.item.fullPath, query).to.equal(EMPLOYMENT);
+      expect(first, query).to.not.have.property("similar");
+    });
+  });
+
+  it('"employment" and "jobs" still find the page, then every posting', () => {
+    const postings = sample.records.filter(
+      (r) => r.contentType === "employment"
+    );
+    expect(postings.length).to.be.greaterThan(3);
+    ["employment", "jobs"].forEach((query) => {
+      const results = searchAll(fuse, query);
+      expect(results[0].item.fullPath, query).to.equal(EMPLOYMENT);
+      const found = results
+        .filter((r) => !r.similar)
+        .map((r) => r.item.fullPath);
+      postings.forEach((posting) =>
+        expect(found, `${query}: ${posting.title}`).to.include(posting.fullPath)
+      );
+    });
+  });
+});
+
 describe("Search index: the generator adds the words", () => {
   it("to the CMS pages, before the index is assembled", () => {
     const source = fs

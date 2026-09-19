@@ -34,6 +34,14 @@ const STOP_WORDS =
 // what a search is most often for: "jobs" is a search for the Employment page,
 // which was 218th of 228, behind every posting. They come before posts.
 export const PAGE_TYPES = ["page", "partner site", "plan"];
+// A search for a kind of document is not a search for a page: three pages hold
+// "annual report" in their keywords or tags (About the Authority: "latest
+// annual report") and came before 97 results titled "... Annual Report".
+// Nothing in the records tells such a page from the Funding Opportunities
+// page, which leads "notice of funding opportunity" by the same kind of
+// keyword, so the search is named here. For a query with every word of one of
+// these, singular or plural, posts come before pages.
+export const DOCUMENT_SEARCHES = [["annual", "report"]];
 
 export function searchOptions(Fuse, options) {
   const read = Fuse.config.getFn;
@@ -140,7 +148,8 @@ function recordText(fuse, result) {
 }
 
 // The results that hold every typed word, then the rest, marked similar. In
-// each group pages come before posts; otherwise the order given is kept.
+// each group pages come before posts (posts before pages when the search is
+// for a kind of document); otherwise the order given is kept.
 // Fuse's score cannot make this split: it multiplies over every field that
 // matched, so a biography one letter from the word in its title, its name and
 // its summary scores beside a page that holds the word.
@@ -152,13 +161,19 @@ function arrange(fuse, results, words) {
     const text = recordText(fuse, result);
     (tests.every((test) => test.test(text)) ? held : similar).push(result);
   });
+  const forDocuments = DOCUMENT_SEARCHES.some((phrase) =>
+    phrase.every((word) => words.includes(word) || words.includes(`${word}s`))
+  );
   const isPage = (result) => PAGE_TYPES.includes(result.item.contentType);
-  const pagesFirst = (list) =>
-    list.filter(isPage).concat(list.filter((result) => !isPage(result)));
-  return pagesFirst(held)
+  const byKind = (list) => {
+    const pages = list.filter(isPage);
+    const posts = list.filter((result) => !isPage(result));
+    return forDocuments ? posts.concat(pages) : pages.concat(posts);
+  };
+  return byKind(held)
     .map((result) => ({ item: result.item, refIndex: result.refIndex }))
     .concat(
-      pagesFirst(similar).map((result) => ({
+      byKind(similar).map((result) => ({
         item: result.item,
         refIndex: result.refIndex,
         similar: true,

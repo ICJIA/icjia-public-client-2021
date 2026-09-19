@@ -223,6 +223,43 @@ describe("Site search: pages come before individual posts", () => {
   });
 });
 
+describe('Site search: "annual report" is a search for the reports', () => {
+  // Pages come first for anything that holds the words, and three pages held
+  // "annual report" in their keywords or tags (About the Authority: "latest
+  // annual report"), ahead of 97 results titled "... Annual Report". Nothing in
+  // the records tells that page from the Funding Opportunities page, which
+  // leads "notice of funding opportunity" by the same kind of keyword, so the
+  // search is named: for it, results keep the search's own order.
+  const records = [
+    record("About the Authority", "page", {
+      searchMeta: "latest annual report",
+    }),
+    record("Publications and reports", "page", { tags: ["annual reports"] }),
+    record("SFY24 ICJIA Annual Report", "publication"),
+    record("ICJIA Releases FY21 Annual Report", "news"),
+  ];
+  const first = (query) => search(query, records)[0].item;
+
+  it("the reports lead, and the pages are still found", () => {
+    [
+      "annual report",
+      "annual reports",
+      "Annual Report",
+      "icjia annual report",
+    ].forEach((query) => {
+      expect(first(query).contentType, query).to.not.equal("page");
+      expect(first(query).title, query).to.match(/annual report/i);
+    });
+    expect(titles(search("annual report", records))).to.include(
+      "About the Authority"
+    );
+  });
+
+  it("a page still leads a search for one of the words", () => {
+    expect(first("reports").contentType).to.equal("page");
+  });
+});
+
 // The results page, its computed properties and methods run against a plain
 // object, as in tests/unit/searchPaging.spec.js.
 const results = (held, similar = 0) =>
@@ -512,6 +549,7 @@ describe("Site search: the worker marks and orders results as the app does", () 
       "use of force",
       "state's attorney",
       "grants",
+      "annual report",
     ]) {
       expect(shape(api.searchAll(theirs, query)), query).to.deep.equal(
         shape(searchAll(ours, query))
