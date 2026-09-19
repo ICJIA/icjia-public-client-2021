@@ -11,6 +11,12 @@
 // them, they carry few tags, and what they hold ("detention", "burglary") is
 // named deep in the description.
 //
+// Results that hold every typed word come first, and the rest are marked
+// similar (v1.5.95): the search allows a wrong letter in a word of five to nine
+// letters, anywhere, even across a space, so "drone" also returns "Sharone
+// Mitchell", "the Job Done" and "and One Time Supports". In each group the
+// site's pages come before individual posts.
+//
 // The search normally runs in public/searchWorker.js, which cannot import this
 // file and carries the same code; tests/unit/searchQuality.spec.js checks that
 // the two order results identically. This copy serves the in-process fallback
@@ -24,6 +30,10 @@ const STOP_WORDS =
   "a an and are at by can do for from how i in is of on or the to what where with".split(
     " "
   );
+// The site's pages, and the partner sites and plans of the Partners menu, are
+// what a search is most often for: "jobs" is a search for the Employment page,
+// which was 218th of 228, behind every posting. They come before posts.
+export const PAGE_TYPES = ["page", "partner site", "plan"];
 
 export function searchOptions(Fuse, options) {
   const read = Fuse.config.getFn;
@@ -74,16 +84,98 @@ function wordHits(fuse, word) {
   return hits;
 }
 
+// A test for one typed word: true of text in which the word begins a word, so
+// "drone" is held by "Drones" and "homic", still being typed, by "Homicide",
+// while "ari" is not held by "Maria". Two other forms of the word count, both
+// a letter or two away and so found by the search: "policy" is held by
+// "policies" (and not by "police"), and a typed plural by its singular as a
+// whole word ("drones" by "drone"; not "units" by "United"). A word in "ss",
+// "us" or "is" is singular already: "status" would look for "statu", and find
+// "statute".
+function heldBy(word) {
+  const literal = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const typed = word.replace(/[\u2018\u2019]/g, "'");
+  const forms = [literal(typed)];
+  if (typed.length >= 4 && /[^aeiou]y$/.test(typed))
+    forms.push(literal(`${typed.slice(0, -1)}ies`));
+  if (typed.length >= 4 && /s$/.test(typed) && !/(ss|us|is)$/.test(typed)) {
+    const singular = [typed.slice(0, -1)];
+    if (typed.endsWith("es")) singular.push(typed.slice(0, -2));
+    singular.forEach((form) => forms.push(`${literal(form)}(?![a-z0-9])`));
+  }
+  return new RegExp(`(^|[^a-z0-9])(${forms.join("|")})`);
+}
+
+// Everything the search reads in a record, in lower case, remembered per record
+// (the index does not change during a visit).
+const RECORD_TEXT = new WeakMap();
+
+function recordText(fuse, result) {
+  let texts = RECORD_TEXT.get(fuse);
+  if (!texts) {
+    texts = new Map();
+    RECORD_TEXT.set(fuse, texts);
+  }
+  let text = texts.get(result.refIndex);
+  if (text === undefined) {
+    const strings = [];
+    const keep = (value) => {
+      if (typeof value === "string") strings.push(value);
+    };
+    for (const key of fuse.options.keys) {
+      const value = fuse.options.getFn(
+        result.item,
+        typeof key === "string" ? key : key.name
+      );
+      if (Array.isArray(value)) value.forEach(keep);
+      else keep(value);
+    }
+    text = strings
+      .join("\n")
+      .toLowerCase()
+      .replace(/[\u2018\u2019]/g, "'");
+    texts.set(result.refIndex, text);
+  }
+  return text;
+}
+
+// The results that hold every typed word, then the rest, marked similar. In
+// each group pages come before posts; otherwise the order given is kept.
+// Fuse's score cannot make this split: it multiplies over every field that
+// matched, so a biography one letter from the word in its title, its name and
+// its summary scores beside a page that holds the word.
+function arrange(fuse, results, words) {
+  const tests = words.map(heldBy);
+  const held = [];
+  const similar = [];
+  results.forEach((result) => {
+    const text = recordText(fuse, result);
+    (tests.every((test) => test.test(text)) ? held : similar).push(result);
+  });
+  const isPage = (result) => PAGE_TYPES.includes(result.item.contentType);
+  const pagesFirst = (list) =>
+    list.filter(isPage).concat(list.filter((result) => !isPage(result)));
+  return pagesFirst(held)
+    .map((result) => ({ item: result.item, refIndex: result.refIndex }))
+    .concat(
+      pagesFirst(similar).map((result) => ({
+        item: result.item,
+        refIndex: result.refIndex,
+        similar: true,
+      }))
+    );
+}
+
 // Fuse matches a query as one phrase. A query of several words is also matched
 // word by word: a record qualifies when every word matches somewhere in it, in
 // any order and in any field, each word allowing for a typo. Order of results:
 // records that contain the query as typed, then records that match every word
-// (best combined score first), then records that match only as a loose phrase.
+// (best combined score first), then records that match only as a loose phrase;
+// and, over that order, arrange() above.
 export function searchAll(fuse, query) {
-  const bare = (result) => ({ item: result.item, refIndex: result.refIndex });
   const phrase = fuse.search(query);
   const words = searchWords(query);
-  if (words.length < 2) return phrase.map(bare);
+  if (words.length < 2) return arrange(fuse, phrase, words);
 
   let every = null; // refIndex -> { result, score }
   for (const word of words) {
@@ -138,9 +230,12 @@ export function searchAll(fuse, query) {
     .filter((entry) => !containsTyped(entry.result.item))
     .sort(byScore);
   const phraseOnly = phrase.filter((r) => !every.has(r.refIndex));
-  return exact
-    .concat(rest)
-    .map((entry) => entry.result)
-    .concat(phraseOnly)
-    .map(bare);
+  return arrange(
+    fuse,
+    exact
+      .concat(rest)
+      .map((entry) => entry.result)
+      .concat(phraseOnly),
+    words
+  );
 }

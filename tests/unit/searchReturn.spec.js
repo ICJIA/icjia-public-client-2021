@@ -151,6 +151,7 @@ describe("Search page: Back returns to the search as it was left", () => {
       entryKey: "entry-9",
       searchedQuery: "violence ",
       shownCount: 150,
+      showSimilar: true,
       lastResultIndex: 59,
     };
     window.scrollTo = () => {};
@@ -162,6 +163,7 @@ describe("Search page: Back returns to the search as it was left", () => {
     expect(keptSearchView("entry-9", "violence")).to.deep.equal({
       query: "violence",
       shownCount: 150,
+      showSimilar: true,
       scrollY: 4200,
       focusIndex: 59,
     });

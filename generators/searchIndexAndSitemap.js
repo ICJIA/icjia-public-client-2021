@@ -65,6 +65,10 @@ const manualPages = require("./manualPages").map(
   ({ shell, ...record }) => record
 );
 
+// ── Words people search for that a CMS page's keywords lack ────────────
+// "nofo" for the Funding Opportunities page; see ./pageKeywords.js.
+const { addKeywords } = require("./pageKeywords");
+
 // ── The Partners menu: the agency's other sites and its plans ──────────
 // Built from src/config/menus.json; see ./partnerLinks.js. They point off this
 // site, so they are in the search index and not in the sitemap.
@@ -76,7 +80,7 @@ let siteIndex = [
   ...biographies,
   ...hub,
   ...grants,
-  ...pages,
+  ...addKeywords(pages),
   ...publications,
   ...units,
   ...jobs,

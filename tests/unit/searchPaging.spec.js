@@ -26,11 +26,22 @@ const page = (state = {}) => {
     filteredResults: [],
     contentSelected: "No filter",
     shownCount: 50,
+    showSimilar: false,
     $route: { query: {} },
     ...state,
   };
-  Object.defineProperty(vm, "visibleResults", {
-    get: () => SearchStatic.computed.visibleResults.call(vm),
+  // visibleResults and what it is computed from (the similar results, folded
+  // away: tests/unit/searchSimilar.spec.js).
+  [
+    "wordResults",
+    "similarResults",
+    "similarOpen",
+    "listedResults",
+    "visibleResults",
+  ].forEach((name) => {
+    Object.defineProperty(vm, name, {
+      get: () => SearchStatic.computed[name].call(vm),
+    });
   });
   return vm;
 };
@@ -86,14 +97,17 @@ describe("Search page: results fifty at a time", () => {
     const template = source
       .slice(0, source.indexOf("<script>"))
       .replace(/\s+/g, " ");
-    expect(template).to.include('v-for="(result, index) in visibleResults"');
+    expect(template).to.include(
+      'v-for="(result, index) in visibleWordResults"'
+    );
     expect(template).to.not.include("in filteredResults");
+    expect(template).to.not.include("in listedResults");
     expect(template).to.include(':data-result-index="index"');
     expect(template).to.match(
       /@click="showMore\(\)"[^>]*>\s*Show more results/
     );
     expect(template).to.include(
-      "Showing {{ visibleResults.length }} of {{ filteredResults.length }}"
+      "Showing {{ visibleResults.length }} of {{ listedResults.length }}"
     );
   });
 });

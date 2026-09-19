@@ -59,6 +59,22 @@
                 <span class="search-toolbar__for">
                   for <em>&ldquo;{{ query }}&rdquo;</em>
                 </span>
+                <!-- How many of them hold the typed words: the rest are a
+                     letter away, or hold the word inside a longer one, and
+                     are listed after them, folded away. -->
+                <div
+                  v-if="similarResults.length"
+                  class="search-toolbar__groups"
+                >
+                  <span v-if="wordResults.length"
+                    ><strong>{{ wordResults.length }}</strong> contain{{
+                      wordResults.length === 1 ? "s" : ""
+                    }}
+                    {{ quotedWords }}</span
+                  >
+                  <span v-else>None contain {{ quotedWords }}</span>
+                  &middot; <strong>{{ similarResults.length }}</strong> similar
+                </div>
               </div>
 
               <div
@@ -111,7 +127,7 @@
               @click.capture="noteResult"
             >
               <div
-                v-for="(result, index) in visibleResults"
+                v-for="(result, index) in visibleWordResults"
                 :key="index"
                 :data-result-index="index"
                 class="my-4"
@@ -126,27 +142,73 @@
                   :isStatic="true"
                 ></SearchCard>
               </div>
+              <!-- Similar results: a letter away from a typed word ("Sharone",
+                   "the Job Done" for "drone"), or holding it inside a longer
+                   word. After the last result that holds the words, folded
+                   away until asked for (a disclosure: the button says whether
+                   it is open, and focus stays on it); open from the start when
+                   they are all there is, as for a misspelt word. -->
+              <div
+                v-if="
+                  similarResults.length &&
+                  visibleWordResults.length === wordResults.length
+                "
+                class="search-similar"
+              >
+                <h2 class="search-similar__title">
+                  Similar spellings and partial matches
+                </h2>
+                <p class="search-similar__note">{{ similarNote }}</p>
+                <v-btn
+                  v-if="wordResults.length"
+                  :aria-expanded="similarOpen ? 'true' : 'false'"
+                  aria-controls="search-similar-results"
+                  @click="toggleSimilar()"
+                >
+                  <template v-if="similarOpen">Hide similar results</template>
+                  <template v-else
+                    >Show {{ similarResults.length }} similar result{{
+                      similarResults.length === 1 ? "" : "s"
+                    }}</template
+                  >
+                </v-btn>
+              </div>
+              <div id="search-similar-results">
+                <div
+                  v-for="(result, index) in visibleSimilarResults"
+                  :key="wordResults.length + index"
+                  :data-result-index="wordResults.length + index"
+                  class="my-4"
+                >
+                  <SearchCard
+                    :item="result.item"
+                    :query="searchedQuery"
+                    :elevation="5"
+                    :isStatic="true"
+                  ></SearchCard>
+                </div>
+              </div>
               <!-- Fifty results at a time: rendering every result froze the
                    page when a long list arrived. As on the Research Hub's
                    articles page, the count is shown and focus moves to the
                    first new result (WCAG 2.4.3). -->
               <div
-                v-if="visibleResults.length < filteredResults.length"
+                v-if="visibleResults.length < listedResults.length"
                 class="text-center mt-8"
               >
                 <v-btn @click="showMore()">Show more results</v-btn>
               </div>
               <div
-                v-if="filteredResults.length > resultsPerPage"
+                v-if="listedResults.length > resultsPerPage"
                 class="text-center mt-3"
                 style="font-size: 12px; font-weight: 900"
               >
-                <span v-if="visibleResults.length < filteredResults.length"
+                <span v-if="visibleResults.length < listedResults.length"
                   >Showing {{ visibleResults.length }} of
-                  {{ filteredResults.length }} results</span
+                  {{ listedResults.length }} results</span
                 >
                 <span v-else
-                  >Showing all {{ filteredResults.length }} results</span
+                  >Showing all {{ listedResults.length }} results</span
                 >
               </div>
               <!-- Empty state — was: silent empty list. Now tells the
@@ -191,6 +253,7 @@ import _ from "lodash";
 import NProgress from "@/services/Progress";
 import { goToOptions } from "@/utils/motion";
 import { searchLocation } from "@/utils/search";
+import { searchWords } from "@/utils/searchFields";
 import {
   historyKey,
   keepSearchView,
@@ -253,6 +316,8 @@ export default {
       filteredResults: [],
       resultsPerPage: RESULTS_PER_PAGE,
       shownCount: RESULTS_PER_PAGE,
+      // Whether the similar results have been asked for.
+      showSimilar: false,
       content: "",
       searchInput: this.$refs.textfield,
       fuse: null,
@@ -334,10 +399,50 @@ export default {
     });
   },
   computed: {
-    // The results on the page: the first fifty of the filtered list, and
-    // fifty more for each "Show more results".
+    // The results that hold every typed word, and the rest, which the search
+    // marks similar and lists after them (src/utils/searchFields.js).
+    wordResults() {
+      return this.filteredResults.filter((result) => !result.similar);
+    },
+    similarResults() {
+      return this.filteredResults.filter((result) => result.similar);
+    },
+    // Similar results are folded away until asked for, unless they are all
+    // there is (a misspelt word).
+    similarOpen() {
+      return this.showSimilar || !this.wordResults.length;
+    },
+    listedResults() {
+      return this.similarOpen ? this.filteredResults : this.wordResults;
+    },
+    // The results on the page: the first fifty of the list, and fifty more
+    // for each "Show more results".
     visibleResults() {
-      return this.filteredResults.slice(0, this.shownCount);
+      return this.listedResults.slice(0, this.shownCount);
+    },
+    visibleWordResults() {
+      return this.visibleResults.filter((result) => !result.similar);
+    },
+    visibleSimilarResults() {
+      return this.visibleResults.filter((result) => result.similar);
+    },
+    // The words the results were searched for ("use of force": use, force),
+    // and as they are named on the page: “use” and “force”.
+    searchedWords() {
+      return searchWords(this.searchedQuery || this.query);
+    },
+    quotedWords() {
+      return this.arrayToList(this.searchedWords.map((word) => `“${word}”`));
+    },
+    similarNote() {
+      const count = this.similarResults.length;
+      const lacking =
+        this.searchedWords.length > 1
+          ? `every word (${this.quotedWords})`
+          : `the word ${this.quotedWords}`;
+      return count === 1
+        ? `This result does not contain ${lacking}. It matches a similar spelling, or part of a longer word.`
+        : `These ${count} results do not contain ${lacking}. They match a similar spelling, or part of a longer word.`;
     },
     // Unique content-type chips for the toolbar, sorted by count desc.
     // "All" leads, then the Research Hub and its types, then each other
@@ -484,6 +589,7 @@ export default {
       keepSearchView(this.entryKey, {
         query,
         shownCount: this.shownCount,
+        showSimilar: this.showSimilar,
         scrollY: window.scrollY,
         focusIndex: this.lastResultIndex,
       });
@@ -498,7 +604,8 @@ export default {
       this.lastResultIndex = result ? Number(result.dataset.resultIndex) : null;
     },
     // Back (or Forward) to a search left from this history entry: as many
-    // results showing, the page scrolled to the same place, focus on the
+    // results showing, similar ones too if they were, the page scrolled to the
+    // same place, focus on the
     // result that was opened (WCAG 2.4.3). After the filter's watcher, which
     // starts the list again from the first fifty.
     restoreView() {
@@ -506,6 +613,7 @@ export default {
       const view = keptSearchView(this.entryKey, query);
       if (!view) return;
       this.$nextTick(() => {
+        this.showSimilar = Boolean(view.showSimilar);
         this.shownCount = view.shownCount;
         this.$nextTick(() => {
           window.scrollTo(0, view.scrollY);
@@ -524,9 +632,21 @@ export default {
       const count = this.queryResults.length;
       const query = (this.query || "").trim();
       if (!count) return `No results for “${query}”.`;
-      return `${this.filteredResults.length} of ${count} result${
+      const status = `${this.filteredResults.length} of ${count} result${
         count === 1 ? "" : "s"
       } for “${query}”`;
+      // The two groups, when there are two.
+      const similar = this.similarResults.length;
+      if (!similar) return status;
+      const held = this.wordResults.length;
+      if (!held)
+        return `${status}. None contain ${this.quotedWords}; these are similar spellings and partial matches.`;
+      const results = `${similar} similar result${similar === 1 ? "" : "s"}`;
+      return `${status}. ${held} contain${held === 1 ? "s" : ""} ${
+        this.quotedWords
+      }; ${results} ${
+        this.showSimilar ? `follow${similar === 1 ? "s" : ""}` : "can be shown"
+      }.`;
     },
     // Cleared first, so a message that repeats the last one is still heard:
     // a filter chip's result is announced at once, every time.
@@ -603,6 +723,17 @@ export default {
       if (map[t]) return map[t];
       return t.charAt(0).toUpperCase() + t.slice(1);
     },
+    // Opens or folds the similar results. Opened, a page of them is shown
+    // whatever the count had reached: fifty results that hold the words would
+    // otherwise be followed by none.
+    toggleSimilar() {
+      this.showSimilar = !this.showSimilar;
+      if (this.showSimilar)
+        this.shownCount = Math.max(
+          this.shownCount,
+          this.wordResults.length + RESULTS_PER_PAGE
+        );
+    },
     showMore() {
       const firstNew = this.shownCount;
       this.shownCount += RESULTS_PER_PAGE;
@@ -613,9 +744,11 @@ export default {
         if (link) link.focus();
       });
     },
-    // New results, or another filter, start again from the first fifty.
+    // New results, or another filter, start again from the first fifty, with
+    // the similar results folded away.
     filterResults() {
       this.shownCount = RESULTS_PER_PAGE;
+      this.showSimilar = false;
       this.filter = this.contentSelected;
       if (this.filter === "No filter") {
         this.filteredResults = this.queryResults;
@@ -840,6 +973,36 @@ export default {
    the count keeps its dark tint over the hover blue instead. */
 .filter-chip--active .filter-chip__count {
   background: rgba(255, 255, 255, 0.22);
+}
+
+.search-toolbar__groups {
+  margin-top: 2px;
+}
+
+.search-toolbar__groups strong {
+  font-weight: 700;
+  color: #000;
+}
+
+/* The similar results' heading, note and button, between the two lists. */
+.search-similar {
+  margin: 40px 0 8px;
+  padding: 24px 16px 8px;
+  border-top: 1px solid #e6e6e6;
+  text-align: center;
+}
+
+.search-similar__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 6px;
+}
+
+.search-similar__note {
+  font-size: 14px;
+  color: #333;
+  margin: 0 0 16px;
 }
 
 .search-empty {

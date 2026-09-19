@@ -1626,6 +1626,32 @@
    "contentType": "dataset",
    "date": "2020-12-31T00:00:00.000Z",
    "fullPath": "/researchhub/datasets/illinois-uniform-crime-reports-ucr-hate-crime-offense/"
+  },
+  {
+   "title": "Sharone Mitchell",
+   "fullName": "Sharone Mitchell",
+   "altTitle": "sharone mitchell",
+   "searchMeta": "",
+   "summary": "Sharone Mitchell was sworn in as Cook County Public Defender in April 2021. Mr. Mitchell began his legal career in the Office of the Cook County Public Defender, first as a clerk in law school and later as an assistant public defender with assignments in the Civil, First Municipal, and Felony trial divisions.\n\nIn 2016, Mr. Mitchell joined the Illinois Justice Project, a policy reform organization dedicated to support",
+   "tags": [],
+   "contentType": "biography",
+   "fullPath": "/about/biographies/sharone-mitchell/"
+  },
+  {
+   "title": "New Ways to get the Job Done",
+   "altTitle": "new ways to get the job done",
+   "contentType": "publication",
+   "fullPath": "/about/publications/new-ways-to-get-the-job-done/"
+  },
+  {
+   "title": "Violence Prevention Planning and One Time Supports",
+   "altTitle": "violence prevention planning and one time supports",
+   "searchMeta": "vpp nofo notice funding",
+   "summary": "The Illinois Criminal Justice Information Authority is requesting proposals for grants Violence Prevention Planning and One Time Supports. Grants will be made with SFY 2020 Violence Prevention and Street Intervention funds. A total of $8,336,326 in funding is available through this solicitation for use over a period of 6 months. ",
+   "tags": [],
+   "category": "funding",
+   "contentType": "funding",
+   "fullPath": "/grants/funding/2019-violence-prevention-planning/"
   }
  ]
 }

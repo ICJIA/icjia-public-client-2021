@@ -119,11 +119,14 @@ describe("Site search: several words, in any order", () => {
     ]);
   });
 
-  it("leaves one-word searches as they were, and returns no scores", () => {
+  // A one-word search is one Fuse search. Its results are then arranged like
+  // any others: tests/unit/searchSimilar.spec.js.
+  it("returns what Fuse finds for a one-word search, and no scores", () => {
     const fuse = build(sample.records);
     const plain = fuse.search("homicide").map((r) => r.item.fullPath);
     const results = searchAll(fuse, "homicide");
-    expect(results.map((r) => r.item.fullPath)).to.deep.equal(plain);
+    expect(results.map((r) => r.item.fullPath)).to.have.members(plain);
+    expect(results.length).to.equal(plain.length);
     expect(results[0]).to.not.have.property("score");
   });
 

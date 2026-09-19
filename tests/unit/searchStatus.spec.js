@@ -19,6 +19,13 @@ const makeSearch = (state = {}) => {
     $nextTick: (fn) => fn(),
     ...state,
   };
+  // The two groups of results the message counts, when there are two
+  // (tests/unit/searchSimilar.spec.js).
+  ["wordResults", "similarResults"].forEach((name) => {
+    Object.defineProperty(vm, name, {
+      get: () => SearchStatic.computed[name].call(vm),
+    });
+  });
   // Every value written to the live region, in order.
   vm.written = [];
   let message = "";

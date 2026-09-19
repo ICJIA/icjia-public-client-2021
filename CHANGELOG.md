@@ -84,6 +84,92 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.95] - 2026-09-19
+
+### feat(search): results that contain the typed words come first, similar spellings are folded away, pages come before posts, and "nofo" finds the Funding Opportunities page
+
+A search for "drone" returned 21 results, and 14 of them had nothing to do with drones: "Sharone
+Mitchell", "New Ways to get the Job Done", "Violence Prevention Planning and One Time Supports",
+three articles by an author named Kroner, two on methadone. This is the search's tolerance for
+typing mistakes at work. A word of five to nine letters may be one letter off (threshold 0.2), and
+the match may sit anywhere, inside a longer word or across a space: "d One" is one letter from
+"drone". It is what lets "homocide" find the homicide pages.
+
+It was not only "drone". Of 70 everyday searches on the public index, 40 returned results that do
+not contain the typed word, a third of all results, and 28 ranked one of them above a result that
+does. They reached the first ten for "contact" ("Contractual" job postings from the fourth result;
+58 of 63), "forms" ("Reform", "Uniform"; from the fifth), "dicra" ("medications", "predictable")
+and "voca" ("Advocacy"); 125 of the 156 results for "policy" were about police or policing, 392
+of the 453 for "court" did not contain it (324 were counties), and 137 of the 156 for "events"
+were about prevention.
+
+**A confidence score was considered and rejected.** Fuse has a score, but it multiplies over
+every field that matched, so a biography that is one letter from the word in its title, its name
+and its summary (1.7e-6) scores beside a genuine drone report (3.9e-7). A percentage drawn from it
+would mislead. What can be checked is a fact: does the record contain the word?
+
+- **Results that contain every typed word come first; the rest are marked similar.** A word is
+  contained where it begins a word of the record, in the fields the search reads: "drone" in
+  "Drones", "homic", still being typed, in "Homicide"; but not "ari" in "Maria" nor "voca" in
+  "Advocacy". Two other forms of a word count, both near enough for the search to find them:
+  "policy" is contained in "policies" (and not in "police"), and a typed plural in its singular as
+  a whole word ("drones": "drone"; not "units": "United"). Words in "ss", "us" and "is" are left
+  alone ("status" is not "statute"), and a typeset apostrophe reads as a typed one. `arrange()` in
+  `src/utils/searchFields.js`, mirrored in `public/searchWorker.js`; a similar result carries
+  `similar: true`.
+- **Similar results are folded away.** The page lists the results that contain the words, then a
+  heading, "Similar spellings and partial matches", a sentence that says what they are ("These 14
+  results do not contain the word “drone”. They match a similar spelling, or part of a longer
+  word.") and a button, "Show 14 similar results". It is a disclosure: the button says whether it
+  is open (`aria-expanded`) and what it opens (`aria-controls`), and focus stays on it. The summary
+  line counts both groups ("7 contain “drone” · 14 similar"), and so does the status message read
+  to screen readers. When nothing contains the words (a misspelling), the similar results are
+  shown at once under the same heading, with no button. The label claims only what was checked:
+  that the word is not there, not that the page is unrelated.
+- **Fifty at a time runs on through the similar results**; opening them always shows a page of
+  them. A new search or another filter folds them away again. Back returns to the list as it was
+  left, similar results open if they were (`showSimilar` joins the kept view).
+- **Pages come before individual posts.** "jobs" is a search for the Employment page, and it was
+  218th of 228, behind every posting, each of which carries the keywords "jobs help wanted".
+  Within each group, records of type `page`, and the partner sites and plans of the Partners menu,
+  now come first, in the order the search gave them.
+- **"nofo" finds the Funding Opportunities page.** It found 110 funding notices and one job
+  posting, and not the page where the notices are listed: that page's keywords in the CMS are
+  "funding", and its text says "Notice of Funding Opportunity" further down than the search
+  reads. `generators/pageKeywords.js` adds "nofo nofos notice of funding opportunity" to the
+  page's keywords in the search index at every build, whatever the CMS holds (one entry per page,
+  by its path; the words are shown nowhere). With pages first, the page now leads "nofo", "nofos",
+  "NOFO" and "notice of funding opportunity", and the notices follow. Checked on an index rebuilt
+  locally by the generator itself, with the worker's code, and in the running app.
+
+A misspelling still finds what it meant: "juvanile" returns the same 214 records as "juvenile",
+none missing and none added, shown at once under the heading.
+
+On the public index, with the worker's own code: "jobs" 218th to 1st, "job" 224th to 1st, "staff"
+7th to 1st, "drone" 2nd to 1st, "dicra" and "death in custody" 3rd to 1st, "privacy" 3rd to 1st,
+"grants" 5th to 3rd, "irb" 7th to 4th, "i2i" 2nd to 1st; 23 other searches for a known page,
+article, person, partner site or plan are where they were. One moved down, as the rule says it
+should: for "annual report", three pages that contain both words (About the Authority, whose CMS
+keywords are "latest annual report", ICJIA Publications and one more) now precede the first
+annual report, which is fourth. Queries take 8 to 79 ms in Node, as before.
+
+Reported, not changed:
+
+- The related-content lists on program pages (`StaticSearch.vue`) use the same search and still
+  list every result, similar ones included, sorted by title or date.
+- "careers" finds nothing: the word is not in the Employment page's keywords in the CMS. It would
+  be one more line in `generators/pageKeywords.js`.
+
+43 new tests (`searchSimilar.spec.js` 33, `pageKeywords.spec.js` 10; three records that a search
+for "drone" also returns were added to the search fixture) and four older specs brought to the new contract (the paging,
+status and Back specs read the new computed properties; a one-word search is now arranged like
+any other). Mocha: 611 passing, 6 pending (pre-existing skipped stubs); lint clean on the changed
+files. Verified in the running app: folded, opened (focus stays on the button), a filter chip, a
+typed search, a misspelling, Back to an opened list (same scroll position, focus on the result
+that was opened), no console errors. axecap (WCAG A and AA with best practices): 0 violations,
+and lightcap accessibility 100 with no issues, for the folded list and the open one, on desktop
+and at phone width.
+
 ## [1.5.94] - 2026-09-18
 
 ### fix(accessibility): three findings from auditing the pages changed on 17 and 18 September with axecap and lightcap
