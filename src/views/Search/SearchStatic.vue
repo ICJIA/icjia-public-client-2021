@@ -304,7 +304,7 @@ const CHIP_GROUPS = [
   {
     key: "hub",
     values: ["hub", ...HUB_TYPES],
-    caption: "Research Hub includes Articles, Web Applications, and Datasets",
+    caption: "Research Hub includes Articles, Web Apps, and Datasets",
   },
   {
     key: "publications",
@@ -778,7 +778,10 @@ export default {
         news: "News",
         employment: "Job Listings",
         dataset: "Datasets",
-        "web application": "Web Applications",
+        // "Web Apps", as on the front page's research tabs: the full name
+        // made a chip 160 px wide, and at 320 px the Hub's chips took three
+        // rows. They take two.
+        "web application": "Web Apps",
         "partner site": "Partner Sites",
         plan: "Plans",
         app: "Apps",

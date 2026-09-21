@@ -84,6 +84,34 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.103] - 2026-09-21
+
+### style(search): the Web Applications chip reads "Web Apps"
+
+The chip "Web Applications" was 160 px wide, and at 320 px the Research Hub's four chips took
+three rows. It reads "Web Apps", as the front page's research tabs do, and is 106 px wide.
+
+- The Hub group's caption names its chips, so it follows: "Research Hub includes Articles, Web
+  Apps, and Datasets". The Research Hub's own pages keep "Web Applications" (heading, title,
+  menu): `prettifyType()` in `SearchStatic.vue` labels the chips only.
+- Measured like for like on one build, on `/search/arrests` (all four Hub chips and
+  Publications): at 320 px the Hub's chips take two rows (were three) and the toolbar is 232 px
+  tall (was 266); at 360 px the Hub caption is one line (was two) and the toolbar 183 px (was
+  198); from 375 px up the height is unchanged. No sideways scroll at 320, 360, 375, 414, 768
+  and 1280 px.
+- A note on v1.5.102, measured against the live v1.5.101: where the Publications group does not
+  share a row with the Hub group (below about 1280 px on this search), its caption makes that
+  row 54 px tall instead of 28, so the toolbar is about 27 px taller than before the group had a
+  caption (768 px: 88 to 115; 375 px: 156 to 183). At 1280 px it is unchanged (54 px).
+
+No new tests: four expectations in `searchFilters.spec.js` were changed to the new label and
+seen to fail first. Mocha: 665 passing, 6 pending (pre-existing skipped stubs); lint clean on the
+changed files. axe (AA and best practices) 0 violations at desktop and phone width and Lighthouse
+accessibility 100 at phone width, on the local dev server. Not checked: the production build.
+
+Tagged `1.5.103` (annotated, "Release 1.5.103"), in the form of the repository's version tags
+(`1.1.0`, 2021, was the last): the first release tagged since.
+
 ## [1.5.102] - 2026-09-21
 
 ### fix: a link to the page it is on was white everywhere on the site; feat(search): the Publications chip has a line and a caption

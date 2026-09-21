@@ -49,7 +49,7 @@ describe("Search page: Research Hub filter", () => {
       label: "Research Hub",
       count: 3,
     });
-    expect(chips.map((c) => c.label)).to.include("Web Applications");
+    expect(chips.map((c) => c.label)).to.include("Web Apps");
   });
 
   // The Hub's three types are its parts, so their chips sit together after it,
@@ -72,7 +72,7 @@ describe("Search page: Research Hub filter", () => {
       "No filter 10",
       "Research Hub 4",
       "Articles 1",
-      "Web Applications 1",
+      "Web Apps 1",
       "Datasets 2",
       "News 3",
       "Publications 2",
@@ -187,7 +187,7 @@ describe("Search page: chips shown as a group, with a line and a caption", () =>
     expect(labels(all[1])).to.deep.equal([
       "Research Hub",
       "Articles",
-      "Web Applications",
+      "Web Apps",
       "Datasets",
     ]);
     // the same chips, in the same order, as before
@@ -227,7 +227,7 @@ describe("Search page: chips shown as a group, with a line and a caption", () =>
       null,
     ]);
     expect(all[1].caption.text).to.equal(
-      "Research Hub includes Articles, Web Applications, and Datasets"
+      "Research Hub includes Articles, Web Apps, and Datasets"
     );
     expect(all[3].caption.text).to.equal("ICJIA’s library since 1983");
     const view = fs.readFileSync(
