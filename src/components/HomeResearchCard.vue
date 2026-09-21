@@ -13,7 +13,7 @@
       <!-- Thumbnails repeat the card's title: decorative, loading spinner
            included (WCAG 1.1.1). -->
       <v-img
-        :src="item.splash"
+        :src="picture"
         :lazy-src="item.thumbnail"
         width="100%"
         height="250"
@@ -60,7 +60,7 @@
       </v-img>
 
       <v-img
-        :src="item.image"
+        :src="picture"
         width="100%"
         height="250"
         class=""
@@ -149,6 +149,15 @@ export default {
     type: {
       type: String,
       default: "",
+    },
+  },
+  computed: {
+    // An article's picture is its splash, a web app's its image. A record with
+    // none in the CMS gets the ICJIA default, the one /researchhub/apps shows:
+    // v-img with no src never leaves its loading spinner.
+    picture() {
+      const own = this.type === "article" ? this.item.splash : this.item.image;
+      return own || "/icjia-half-splash-thumb.jpg";
     },
   },
   methods: {

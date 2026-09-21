@@ -84,6 +84,35 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.107] - 2026-09-21
+
+### fix(home): a web app with no picture showed a loading spinner for ever under "Latest Research"
+
+On the front page, "Latest Research" > "Web Apps", the card for "Illinois Homicide Reporting" had
+a turning spinner where its picture should be. It never stopped.
+
+- Cause: the app was published in the Research Hub CMS without a picture (`image: null`), and the
+  card (`HomeResearchCard.vue`) handed that to `v-img` as it was. With no address to load, `v-img`
+  never leaves its loading state, so its spinner stays. `/researchhub/apps` was not affected: its
+  cards (`HubCard.vue`) already fall back to the ICJIA default image.
+- The card's picture is now a computed value, `picture`: an article's `splash` or a web app's
+  `image`, and when the CMS has none, `/icjia-half-splash-thumb.jpg`, the file `/researchhub/apps`
+  shows. It sits in the same space as the other cards' pictures (the card's width by 250 px) and
+  is cropped to fill it, so the dark blue reaches every edge; the logo in that file is small and
+  centred, and stays whole at every width. Dataset cards have no picture and get none.
+- Not handled: a picture that is there and fails to load. The Hub's pictures are stored in the
+  CMS record itself (base64), so there is no separate file to go missing.
+
+8 new tests (`tests/unit/homeResearchDefaultImage.spec.js`), five seen to fail first. They test
+`picture` directly and read the template, because no `.vue` template compiles in the local mocha
+build ("export 'render' was not found", also for `Banner`, `Disclaimer` and `EventToggle` in
+`components.spec.js`, which passes all the same); older than this release and not looked into.
+Mocha: 692 passing, 6 pending (pre-existing skipped stubs); lint clean on the changed files.
+Checked in a browser on the local dev server at 1440, 1072, 960, 700 and 320 px: one picture, the
+default, filling its space (`cover`, centred), no spinner, the whole logo visible with at least
+33 px of blue around it; axe (AA and best practices) 0 violations at 1440 and 320 px with the Web
+Apps tab open; no page errors. Not checked: the production build, Lighthouse.
+
 ## [1.5.106] - 2026-09-21
 
 ### fix(grants): "No current funding opportunities." stayed above the expired list
