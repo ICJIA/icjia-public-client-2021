@@ -13,7 +13,7 @@
             <v-row class="py-10" style="margin-top: -55px">
               <v-col cols="12" md="4"
                 ><v-img
-                  :src="app.image"
+                  :src="picture"
                   :min-height="350"
                   style="border: 1px solid #eee"
                   class="mt-3"
@@ -197,6 +197,12 @@ export default {
   computed: {
     app() {
       return format(this.item);
+    },
+    // An app with no picture in the CMS gets the ICJIA default, as its cards on
+    // the front page and on /researchhub/apps do: v-img with no src never
+    // leaves its loading spinner.
+    picture() {
+      return this.app.image || "/icjia-half-splash-thumb.jpg";
     },
     hasRelated() {
       const { articles, datasets } = this.item;

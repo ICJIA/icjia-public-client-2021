@@ -84,6 +84,32 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.108] - 2026-09-21
+
+### fix(researchhub): a web app with no picture showed a loading spinner for ever on its own page
+
+The same fault as v1.5.107, on the page that release's card leads to:
+`/researchhub/apps/illinois-homicide-reporting/` had an empty box, 360 by 350 px, beside the
+app's details, with a spinner in it that never stopped. Found while checking v1.5.107 on the
+live site.
+
+- Cause: the app has no picture in the Research Hub CMS (`image: null`), and the page
+  (`src/components/Hub/AppView.vue`) handed that to `v-img` as it was.
+- The page's picture is now a computed value, `picture`: the app's `image`, and when the CMS has
+  none, `/icjia-half-splash-thumb.jpg`, the default its cards show on the front page and on
+  `/researchhub/apps`. It is cropped to fill the box, as the apps' own pictures are, so the dark
+  blue reaches every edge. The box is tall and narrow at some widths (265 by 350 px from 960 px,
+  262 by 350 px on a 320 px phone); the logo is whole there, with 14 to 15 px of blue beside it.
+- An app with its own picture shows it as before (checked: Illinois Death in Custody Dashboard).
+
+4 new tests (`tests/unit/appViewDefaultImage.spec.js`), three seen to fail first; they test
+`picture` directly and read the template, for the reason given under v1.5.107. Mocha: 696
+passing, 6 pending (pre-existing skipped stubs); lint clean on the changed files. Checked in a
+browser on the local dev server at 1440, 1072, 960, 700 and 320 px: one picture, the default,
+filling its box (`cover`), no spinner, the whole logo visible, no sideways scroll; axe (AA and
+best practices) 0 violations at 1440 and 320 px; no page errors. Not checked: the production
+build, Lighthouse.
+
 ## [1.5.107] - 2026-09-21
 
 ### fix(home): a web app with no picture showed a loading spinner for ever under "Latest Research"
