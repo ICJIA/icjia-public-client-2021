@@ -5,6 +5,8 @@
 // alone; "Homicide Reporting" and "Drone Reporting" stand beside it now, and in
 // the R&A bar, with the labels and addresses of the Research menu's "Statutory
 // Reporting" section (src/config/menus.json).
+// v1.5.114: the R&A bar has "Death in Custody Reporting" too, first of the
+// three as in the About bar, to the same page (/about/dicra/).
 // =============================================================================
 import { expect } from "chai";
 import bars from "@/config/contextMenus.json";
@@ -29,13 +31,27 @@ describe("Context bars: the statutory reports", () => {
     ]);
   });
 
-  it("Research and Analysis: after Publications, before the Institutional Review Board", () => {
-    expect(labels("researchhub").slice(-4)).to.deep.equal([
+  it("Research and Analysis: the three reports after Publications, before the Institutional Review Board", () => {
+    expect(labels("researchhub").slice(-5)).to.deep.equal([
       "Publications",
+      "Death in Custody Reporting",
       "Homicide Reporting",
       "Drone Reporting",
       "Institutional Review Board",
     ]);
+  });
+
+  it("sends Death in Custody Reporting to the same page from both bars, the Research menu's", () => {
+    ["About", "researchhub"].forEach((name) => {
+      const found = bar(name).items.filter(
+        (i) => i.label === "Death in Custody Reporting"
+      );
+      expect(found, name).to.have.length(1);
+      expect(found[0].path).to.equal("/about/dicra/");
+    });
+    expect(JSON.stringify(menus)).to.include(
+      '"title":"Death in Custody Reporting","link":"/about/dicra/"'
+    );
   });
 
   it("uses the Research menu's addresses for them", () => {

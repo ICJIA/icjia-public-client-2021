@@ -35,7 +35,7 @@
                 :width="embedWidth"
                 :height="embedHeight"
                 frameborder="0"
-                style="border: 0; transform-origin: top left"
+                style="border: 0; transform-origin: top left; max-width: none"
                 :style="{ transform: `scale(${embedScale})` }"
                 title="Crime Clearances in Illinois for Homicide and Aggravated Assault with a Firearm"
               ></iframe>
@@ -132,7 +132,9 @@
 // no internal scrollbar appears and steals width; the whole embed then scales
 // proportionally to match the content column width — down on narrow viewports
 // (instead of clipping on the right) and up on wide ones (so the dashboard is
-// as wide as the text).
+// as wide as the text). The frame's max-width: none keeps it 1390 px wide for
+// that: app.css caps a frame in .markdown-body at its container's width, and
+// in a column under 1390 px Tableau then drew the dashboard cut off.
 const EMBED_WIDTH = 1390;
 const EMBED_HEIGHT = 2675;
 

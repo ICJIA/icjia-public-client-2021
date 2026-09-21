@@ -84,6 +84,60 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.114] - 2026-09-21
+
+### fix(homicide): the dashboard was cut off on the right in a window under about 1571 px
+
+On `/homicide` the Tableau dashboard lost its right side, the header's title and the fourth
+figure with it, in any window narrower than about 1571 px: most laptops (1366, 1440 and 1536 px),
+tablets and phones. Reported by the user from a window of 1112 px.
+
+- The dashboard is drawn by Tableau at a fixed 1366 px and does not reflow. The page lays its
+  frame out at 1390 px and scales the whole frame to the text column (`transform: scale`), so
+  that it shrinks instead of being cut off. But `app.css` caps a frame inside `.markdown-body` at
+  the width of its container (`max-width: 100%`, for frames in CMS text, WCAG 1.4.10), and the
+  page is a `.markdown-body`. In a column under 1390 px the frame was laid out at the column's
+  width: Tableau drew 1366 px of dashboard in a narrower window, and the scale then shrank that
+  again (at 1112 px: a frame of 977 px shown 687 px wide, where 977 px was meant).
+- The frame opts out of the cap (`max-width: none` on the `<iframe>` in `Homicide.vue`). It is
+  1390 px wide in every window now and fills its scaled box exactly. Neither the frame's
+  attributes nor the dashboard were at fault; the rule in `app.css` is as it was, for the frames
+  it was written for.
+- What this does not change: on a phone the whole dashboard is there but small (23 % of its size
+  at 390 px), because it has one fixed layout. A dashboard that can be read on a phone needs a
+  phone layout made in Tableau; the page could then stop scaling below some width.
+
+### feat(nav): Death in Custody Reporting in the R&A context bar
+
+The Research and Analysis bar got two of the agency's three statutory reports in v1.5.113;
+"Death in Custody Reporting" is there too now, first of the three as in the About bar, and
+goes to the same page, `/about/dicra/` (`src/config/contextMenus.json`): ... Publications |
+Death in Custody Reporting | Homicide Reporting | Drone Reporting | Institutional Review Board.
+
+- What it costs: the bar's tabs are 1801 px wide (1522 px in v1.5.113, about 1170 px before
+  it). The bar fits a window of 1920 px and scrolls with its arrow in a narrower one, 1736 px
+  included, where it fitted exactly until now.
+- `/about/dicra/` is under the About bar, so a click on the tab changes bars, as a click on
+  "Institutional Review Board" does.
+
+Tests: 2 new for the dashboard (`tests/unit/homicideEmbedScale.spec.js`), one seen to fail first
+and one that holds the reason in place; the test of the R&A bar's order changed and one added
+(`tests/unit/contextBarStatutoryReporting.spec.js`, 5 tests), both seen to fail first. Mocha:
+716 passing, 6 pending (pre-existing skipped stubs); lint clean on the changed files. Checked in a
+browser on the local dev server. The dashboard at 1920, 1440, 1112, 768, 390 and 320 px: the
+frame 1390 px wide and its scaled size that of its box, to the pixel, no sideways scroll of the
+page, and seen whole at 1112 px; before the change, measured on the live site: the frame as wide
+as the column and drawn narrower than its box at 1112, 768 and 390 px. The bar: its ten tabs in
+order at 1440 and 320 px, the new tab's address, a click on it opened "Illinois Death in Custody
+Reporting", and whether it fits at eight widths from 1366 to 2560 px. axe (AA and best
+practices) 0 violations on both pages at desktop and phone width; no page errors. Not checked:
+the production build, Lighthouse, the dashboard's own controls inside the frame.
+
+Also checked on the live site after its release: v1.5.113 (both bars at 1440 and 320 px, the
+two new tabs in their places, each opened its page, axe 0 violations).
+
+Tagged `1.5.114`.
+
 ## [1.5.113] - 2026-09-21
 
 ### feat(nav): Homicide Reporting and Drone Reporting in the About and the R&A context bars

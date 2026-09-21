@@ -72,6 +72,10 @@
                 "path": "/researchhub/publications/"
             },
             {
+                "label": "Death in Custody Reporting",
+                "path": "/about/dicra/"
+            },
+            {
                 "label": "Homicide Reporting",
                 "path": "/homicide/"
             },
