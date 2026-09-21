@@ -60,13 +60,39 @@ function rangesIn(word, terms) {
   }, []);
 }
 
-function markTextNode(node, terms) {
-  const parts = node.nodeValue.split(/([A-Za-z0-9]+)/);
+// A typed word with punctuation inside it ("safe-t", "children's") is in no
+// run of letters and digits ("SAFE", "-", "T"), so it is looked for as typed
+// and marked as one piece, whatever mark joins its parts in the text
+// ("Children’s"). A space does not join: "safe-t" is not in "a safe time".
+function typedWhole(terms) {
+  return terms
+    .filter((term) => /[^a-z0-9]/.test(term))
+    .map((term) => term.split(/[^a-z0-9]+/).join("[^A-Za-z0-9\\s]+"))
+    .join("|");
+}
+
+// How a text is cut into pieces, and the test for a typed word kept whole.
+function cutters(terms) {
+  const whole = typedWhole(terms);
+  return {
+    pieces: new RegExp(`(${whole && `${whole}|`}[A-Za-z0-9]+)`, "i"),
+    typed: whole && new RegExp(`^(?:${whole})$`, "i"),
+  };
+}
+
+// The ranges to mark in one piece of a text.
+function rangesOf(part, terms, typed) {
+  if (/^[A-Za-z0-9]+$/.test(part)) return rangesIn(part, terms);
+  return typed && typed.test(part) ? [[0, part.length]] : [];
+}
+
+function markTextNode(node, terms, pieces, typed) {
+  const parts = node.nodeValue.split(pieces);
   if (parts.length < 2) return;
   const fragment = node.ownerDocument.createDocumentFragment();
   let marked = false;
   for (const part of parts) {
-    const ranges = /^[A-Za-z0-9]+$/.test(part) ? rangesIn(part, terms) : [];
+    const ranges = rangesOf(part, terms, typed);
     if (!ranges.length) {
       fragment.appendChild(node.ownerDocument.createTextNode(part));
       continue;
@@ -105,7 +131,21 @@ export function highlightHtml(html, query) {
   const nodes = [];
   while (walker.nextNode()) nodes.push(walker.currentNode);
   const before = holder.innerHTML;
-  nodes.forEach((node) => markTextNode(node, terms));
+  const { pieces, typed } = cutters(terms);
+  nodes.forEach((node) => markTextNode(node, terms, pieces, typed));
   // untouched input is returned exactly as given
   return holder.innerHTML === before ? html : holder.innerHTML;
+}
+
+// True when the highlighter would mark something in this plain text. The tags
+// under a result are small and easy to miss: a chip that holds a typed word,
+// whole or in part, is shown as a hit (SearchCard.vue).
+export function holdsSearchWord(text, query) {
+  if (typeof text !== "string" || !text) return false;
+  const terms = searchWords(query);
+  if (!terms.length) return false;
+  const { pieces, typed } = cutters(terms);
+  return text
+    .split(pieces)
+    .some((part) => rangesOf(part, terms, typed).length > 0);
 }

@@ -84,6 +84,36 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.99] - 2026-09-21
+
+### fix(search): a typed word with a hyphen or an apostrophe in it was never highlighted; feat: a tag that holds a typed word is highlighted
+
+A search for "safe-t" left "SAFE-T" unmarked in the title "The 2021 SAFE-T Act: ICJIA Roles and
+Responsibilities", while "safe-t act" marked "Act" in the same title. The search keeps the
+punctuation inside a typed word ("safe-t", "children's"), and the highlighter cut the text it
+marks into runs of letters and digits ("SAFE", "-", "T"): the typed word, hyphen and all, was in
+none of the pieces. Every typed word with punctuation inside it was affected.
+
+- Such a word is now looked for as typed and marked as one piece (`typedWhole()` in
+  `src/utils/highlight.js`). Whatever mark joins its parts in the text counts, so a typed
+  straight apostrophe marks "Children’s" (31 titles in the index have a curly apostrophe). A
+  space does not join: "safe-t" marks nothing in "a safe time". Plain words are marked as before.
+- **Tag chips.** The tags under a result are small and easy to miss. A tag that holds a typed
+  word, whole or in part, by the rules that mark the title, is now shown as a hit
+  (`holdsSearchWord()`; `tagHit()` in `SearchCard.vue`): the marks' pale yellow (#fff2a8; black
+  text on it is 18.5:1, and 17.2:1 on hover) and a 1px ring (#595959: 6.2:1 on the yellow, 7:1
+  against the card). The yellow is no lighter or darker than a plain chip's grey (1.02:1), so the
+  ring, not the colour, tells a hit apart for a reader who does not see the hue. The ring is
+  drawn inside the chip, whose size does not change. In forced-colours mode the chip takes the
+  system's Mark colours, as the title marks do. A tag's text is still written as text, not HTML.
+
+Also added to the repository: `docs/PDF-SEARCH-PLAN.md`, the plan of 19 September for searching
+inside PDFs. It is a plan only; nothing in it is built.
+
+3 new tests (`highlight.spec.js`), each seen to fail first. Mocha: 652 passing, 6 pending
+(pre-existing skipped stubs); lint clean on the changed files. Checked by the unit tests and by
+computing the contrast ratios; not yet looked at in a browser.
+
 ## [1.5.98] - 2026-09-19
 
 ### fix(search): a former director's name led to a page he is not on

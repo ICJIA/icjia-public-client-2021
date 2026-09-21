@@ -134,6 +134,7 @@
           :key="tag"
           :to="searchFor(tag)"
           class="px-2 py-1 mr-3 search-tag lato"
+          :class="{ 'search-tag-hit': tagHit(tag) }"
           >{{ tag }}
         </router-link>
       </div>
@@ -143,7 +144,7 @@
 
 <script>
 /* eslint-disable no-unused-vars */
-import { highlightHtml } from "@/utils/highlight";
+import { highlightHtml, holdsSearchWord } from "@/utils/highlight";
 import { EventBus } from "@/event-bus";
 import { getProperCategory } from "@/utils/content";
 import { goToSearch, openInNewTab, searchLocation } from "@/utils/search";
@@ -207,6 +208,11 @@ export default {
     // Marks the search terms in a title or summary (src/utils/highlight.js).
     highlight(html) {
       return this.query ? highlightHtml(html, this.query) : html;
+    },
+    // A tag that holds a typed word, whole or in part, is shown as a hit: the
+    // tags are small and easy to miss.
+    tagHit(tag) {
+      return Boolean(this.query) && holdsSearchWord(tag, this.query);
     },
     truncate(string, maxWords = 50) {
       var strippedString = string.trim();
@@ -319,7 +325,8 @@ export default {
   padding: 0 1px;
 }
 @media (forced-colors: active) {
-  .search-hit {
+  .search-hit,
+  .v-application a.search-tag-hit {
     background-color: Mark;
     color: MarkText;
   }
@@ -343,6 +350,16 @@ export default {
 .search-tag:hover {
   background: #ddd;
   text-decoration: underline;
+}
+/* A tag that holds a typed word: the marks' pale yellow (black on it is 18:1)
+   and a dark ring, 6:1 on the yellow, so the hit does not rest on colour
+   alone. The ring is drawn inside the chip: its size does not change. */
+.search-tag-hit {
+  background: #fff2a8;
+  box-shadow: inset 0 0 0 1px #595959;
+}
+.search-tag-hit:hover {
+  background: #ffe97a;
 }
 /* The chips are links now; keep their chip look (see app.css). */
 .v-application a.search-tag {
