@@ -84,6 +84,41 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.115] - 2026-09-21
+
+### build(netlify): a release tag is no longer built as a branch deploy
+
+Every release showed two builds in Netlify: "Production: main@5782956" and "Branch Deploy:
+1.5.114@19fe769". The second is the release's tag. `19fe769` is not a commit but the annotated
+tag `1.5.114` itself, which points at the commit on main; Netlify builds every ref that is
+pushed, and a tag counts, as a branch deploy named after it (each has its own address:
+`https://1-5-114--icjia-public.netlify.app/` answers, `1-5-999` does not). A second build of a
+site nobody looks at, for every release since tagging began.
+
+- `netlify.toml` has an `ignore` command in the branch-deploy context: a ref of digits and dots
+  only, with two dots, is a release tag, and its build is skipped (exit 0; Netlify lists it as
+  Canceled). Every other ref is built as before.
+- The Astro migration branch keeps its preview (`[context."feat/astro-migration"]`, untouched):
+  the rewrite stays ready to deploy and to switch to. Production is not a branch deploy and does
+  not run the command.
+- Done in the file at the user's wish. The setting that would do it for all refs at once is in
+  Netlify (Branch deploys: individual branches), which the Netlify connector cannot change. The
+  branches Dependabot pushes are still built; one more pattern in the same command would stop
+  those.
+
+6 new tests (`tests/unit/netlifyBranchDeployIgnore.spec.js`) run the command as Netlify does,
+with `$BRANCH` set, under `sh` and under `bash`: release tags skipped, nine other refs built
+(the Astro branches, a Dependabot branch, `v1.5.115`, `1.5.115-rc1`, `1.5`, an empty name), the
+rule in the branch-deploy context alone, the Astro context as it was; three seen to fail first.
+The file parses as TOML. Mocha: 722 passing, 6 pending (pre-existing skipped stubs); lint clean.
+Checked after the release, on Netlify itself: see the next entry, or the report of the day.
+
+Also checked on the live site after its release: v1.5.114 (`/homicide/` at 1440, 1112 and
+390 px: the frame 1390 px wide and its scaled size that of its box; the R&A bar's ten tabs, and
+"Death in Custody Reporting" opened its page; axe 0 violations).
+
+Tagged `1.5.115`.
+
 ## [1.5.114] - 2026-09-21
 
 ### fix(homicide): the dashboard was cut off on the right in a window under about 1571 px

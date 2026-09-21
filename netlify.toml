@@ -146,6 +146,22 @@
     Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
 
 # ──────────────────────────────────────────────────────────────────────────
+# Branch deploys: a release tag is not built
+#
+# Each release is pushed as a commit on main and an annotated tag ("1.5.114").
+# Netlify builds every ref that is pushed, a tag too, as a "branch deploy" named
+# after it: for every release, one build for production and one more of a site
+# nobody looks at. The command below runs before a branch deploy, and exit 0
+# skips the build (it is listed as Canceled). A ref of digits and dots only, with
+# two dots, is a release tag and is skipped; every other ref is built, the Astro
+# migration branch below among them. Production (main) is not a branch deploy
+# and never runs this. Run as Netlify runs it in
+# tests/unit/netlifyBranchDeployIgnore.spec.js.
+# ──────────────────────────────────────────────────────────────────────────
+[context.branch-deploy]
+  ignore = 'case "$BRANCH" in *[!0-9.]*) exit 1 ;; [0-9]*.[0-9]*.[0-9]*) exit 0 ;; esac; exit 1'
+
+# ──────────────────────────────────────────────────────────────────────────
 # Astro migration branch (feat/astro-migration)
 #
 # Builds the NEW Astro SSR app from the astro/ subfolder instead of the legacy
