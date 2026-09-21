@@ -75,20 +75,6 @@
           <template>{{ tag }}</template>
         </BasePropChip>
       </div>
-      <div
-        style="background: #fdfdfd; font-size: 12px; border: 1px solid #eee"
-        class="text-center mt-10 px-3 py-3"
-      >
-        Individual publications, as well as old meeting agendas, minutes, and
-        materials, are always available for download from the ICJIA Document
-        Archive:
-        <a
-          href="https://archive.icjia.cloud"
-          target="_blank"
-          rel="noopener noreferrer"
-          >https://archive.icjia.cloud</a
-        >
-      </div>
     </v-card>
   </div>
 </template>

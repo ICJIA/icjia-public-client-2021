@@ -84,6 +84,31 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.117] - 2026-09-21
+
+### chore(publications): the Document Archive note removed from a publication's card
+
+A publication's page ended with a small bordered box: "Individual publications, as well as old
+meeting agendas, minutes, and materials, are always available for download from the ICJIA
+Document Archive: https://archive.icjia.cloud". The box is gone. It was part of the card that
+shows a publication (`src/components/PublicationCard.vue`), so it is gone from both places the
+card is used: a publication's own page, and a row opened in the table on `/about/publications/`.
+
+- Unchanged: the line under that table ("Individual publications are also available for download
+  from the ICJIA Document Archive"), which is the page's own and says much the same; the
+  "Document Archive" link in the footer; the archive lines on the meetings pages.
+- The card ends with its tags now, with the card's own 20 px of padding under them.
+
+No new test: a line of text was deleted, and no test read it. Mocha: 727 passing, 6 pending
+(pre-existing skipped stubs); lint clean on the changed file. Checked in a browser on the local
+dev server, at 1440 and 320 px: the box and its link absent on two publications' pages and in an
+opened row of the table; the title, the download link, the tag and "View all publications" still
+there; the table's own line still there; no sideways scroll; axe (AA and best practices) 0
+violations on the three pages at both widths; no page errors. Not checked: the production build,
+Lighthouse.
+
+Tagged `1.5.117`.
+
 ## [1.5.116] - 2026-09-21
 
 ### feat(nav): Homicide Reporting and Drone Reporting show the R&A context bar
