@@ -7,6 +7,12 @@
 // after every search, so the hint did nothing. It now selects a "Research Hub"
 // filter: articles, web applications and datasets. The component's computed
 // property and methods run against plain objects.
+//
+// v1.5.112: nothing on the site asks for that filter any more. A click on a
+// tag, a category or a name opens the whole search, from a Research Hub page
+// too: a visitor may want everything the site has, and the Research Hub chip is
+// there on the search page to narrow it down. The filter itself, and
+// ?filter=hub in the address once the chip is chosen, work as before.
 // =============================================================================
 import { expect } from "chai";
 import fs from "fs";
@@ -140,7 +146,8 @@ describe("Who asks for the Research Hub filter", () => {
   const source = (file) =>
     fs.readFileSync(path.join(process.cwd(), file), "utf8");
 
-  it("Research Hub components do", () => {
+  // They did, from v1.5.85 to v1.5.111.
+  it("Research Hub components do not: a tag, a category or a name opens the whole search", () => {
     for (const file of [
       "src/utils/dom.js",
       "src/components/Hub/HubCard.vue",
@@ -149,7 +156,11 @@ describe("Who asks for the Research Hub filter", () => {
       "src/components/Hub/DatasetView.vue",
       "src/views/Hub/HubStaff.vue",
     ]) {
-      expect(source(file), file).to.match(/type: "hub"/);
+      // (comment lines, which tell of the search modal's { type: "hub" }, left out)
+      const code = source(file).replace(/^\s*\/\/.*$/gm, "");
+      expect(code, file).to.not.match(/(type|filter): "hub"/);
+      // and they still search
+      expect(source(file), file).to.match(/goToSearch\(|searchLocation\(/);
     }
   });
 

@@ -274,7 +274,6 @@ export default {
     categoryClick(e) {
       goToSearch(this.$router, {
         query: e.target.innerText.toLowerCase(),
-        type: "hub",
       });
     },
     errorHandler() {

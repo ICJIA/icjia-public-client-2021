@@ -60,7 +60,7 @@ export default {
       return renderToHtml(content);
     },
     search(name) {
-      goToSearch(this.$router, { query: name, type: "hub" });
+      goToSearch(this.$router, { query: name });
     },
   },
   apollo: {

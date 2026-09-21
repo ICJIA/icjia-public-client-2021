@@ -84,6 +84,37 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.112] - 2026-09-21
+
+### feat(search): a click on a tag opens the whole search, from a Research Hub page too
+
+Since v1.5.85 a click on a tag, a category or a name on a Research Hub page opened the search
+page with the Research Hub filter already chosen (`?filter=hub`): "crimes" showed 43 results of
+211. A visitor may want everything the site has on the subject, so the search now opens with no
+filter, and the Research Hub chip is there on the search page to narrow it down (the user's
+decision).
+
+- The seven places that asked for the filter no longer do: tags (`BasePropChip.vue`), the
+  categories on a card, on an article and on a dataset (`HubCard.vue`, `ArticleView.vue`,
+  `DatasetView.vue`), an article's keywords and the names in its text (`ArticleView.vue`,
+  `src/utils/dom.js`) and the Hub's staff (`HubStaff.vue`). Tags alone were asked for; the rest
+  follow, so that two links on one card do not open two kinds of search.
+- Nothing else changes: the Research Hub filter, its chip group and `?filter=hub` in the address
+  once the chip is chosen work as before, and a search from anywhere else on the site was
+  already unfiltered.
+
+The test that held the old rule in place (`tests/unit/searchFilters.spec.js`, "Who asks for the
+Research Hub filter") now holds the new one, and was seen to fail first. Mocha: 709 passing,
+6 pending (pre-existing skipped stubs); lint clean on the changed files. Checked in a browser on
+the local dev server: a tag and a category on a card of `/researchhub/apps`, a tag and a category
+on an article, each opened `/search/<words>` with no filter in the address and "No filter"
+chosen ("crimes": 211 of 211 results); the Research Hub chip then showed 43 of 211 and wrote
+`?filter=hub`, and a reload of that address kept it; axe (AA and best practices) 0 violations on
+the search page; no page errors. Not checked: the production build, a name in an article's
+text, the Hub's staff page.
+
+Tagged `1.5.112`.
+
 ## [1.5.111] - 2026-09-21
 
 ### fix(researchhub): the titles of a row of cards line up

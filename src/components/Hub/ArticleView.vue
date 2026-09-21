@@ -312,12 +312,12 @@ export default {
   },
   methods: {
     openSearch(item) {
-      goToSearch(this.$router, { query: item, type: "hub" });
+      goToSearch(this.$router, { query: item });
     },
     // Categories are links to a search for the category (WCAG 2.1.1); they
     // used to be <span>s with a click handler.
     categorySearch(category) {
-      return searchLocation({ query: category.toLowerCase(), type: "hub" });
+      return searchLocation({ query: category.toLowerCase() });
     },
     async downloadHelper(type) {
       await this.downloader(type);

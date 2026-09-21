@@ -26,7 +26,8 @@ export default {
       // search modal and destroyed the user's current scroll/result context.
       // Now navigates to /search/:query; the result page keeps the user's
       // context intact and lets them open hits in new tabs.
-      goToSearch(this.$router, { query, type: "hub" });
+      // No filter: the whole search, which the visitor can narrow down there.
+      goToSearch(this.$router, { query });
     },
   },
 };

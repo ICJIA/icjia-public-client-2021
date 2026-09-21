@@ -24,7 +24,7 @@ const attachSearchEvents = function (vm) {
         // Was: EventBus.$emit("search", { query, type: "hub" }) → modal.
         // Now navigates to /search/:query so the user keeps context and
         // can open hits in new tabs.
-        goToSearch(vm.$router, { query: e.target.innerText, type: "hub" });
+        goToSearch(vm.$router, { query: e.target.innerText });
       });
     }
   });
