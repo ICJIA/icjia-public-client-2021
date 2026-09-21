@@ -72,6 +72,20 @@
               <p style="font-size: 0.9em" class="mt-2">{{ grant.summary }}</p>
             </div>
           </v-card>
+          <!-- To the full list, as "Browse the news archive" under the news
+               (Home.vue): the list shows the latest few. -->
+          <div class="text-center py-4">
+            <v-btn
+              dark
+              small
+              color="#0d4474"
+              to="/grants/funding/"
+              class="home-browse-btn"
+              >Browse all funding<v-icon right small
+                >mdi-arrow-right</v-icon
+              ></v-btn
+            >
+          </div>
         </v-tab-item>
 
         <v-tab-item :style="`background: #fff !important;`">
@@ -143,6 +157,18 @@
                 </p>
               </v-card>
             </div>
+            <div class="text-center py-4">
+              <v-btn
+                dark
+                small
+                color="#0d4474"
+                to="/news/meetings/"
+                class="home-browse-btn"
+                >Browse all meetings<v-icon right small
+                  >mdi-arrow-right</v-icon
+                ></v-btn
+              >
+            </div>
           </v-sheet>
         </v-tab-item>
 
@@ -204,6 +230,18 @@
                   >
                 </v-row>
               </v-container></v-card
+            >
+          </div>
+          <div class="text-center py-4">
+            <v-btn
+              dark
+              small
+              color="#0d4474"
+              to="/about/employment/"
+              class="home-browse-btn"
+              >Browse all employment<v-icon right small
+                >mdi-arrow-right</v-icon
+              ></v-btn
             >
           </div>
         </v-tab-item>
@@ -326,6 +364,19 @@ export default {
 </script>
 
 <style scoped>
+/* The buttons under the lists are links (v-btn with `to`), and app.css paints
+   every hovered link black: on the navy button the label read as vanishing
+   (2.1:1). Darker under the pointer, label held white, as .news-archive-btn
+   in Home.vue (v1.5.55). */
+.home-browse-btn:hover {
+  background-color: #092f51 !important;
+  color: #fff !important;
+}
+
+.home-browse-btn:hover .v-icon {
+  color: #fff !important;
+}
+
 .v-tab {
   font-size: 22px !important;
   font-weight: 400 !important;

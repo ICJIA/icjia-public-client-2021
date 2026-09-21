@@ -84,6 +84,38 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.105] - 2026-09-21
+
+### feat(home): a button to the full list under the Funding, Meetings and Employment lists
+
+The front page's tabbed lists show the latest few items, and nothing under them led to the
+rest; the news list beside them ends with "Browse the news archive". Each list now ends with the
+same button: "Browse all funding" (`/grants/funding/`), "Browse all meetings"
+(`/news/meetings/`), "Browse all employment" (`/about/employment/`), the addresses the site's
+menus use.
+
+- Each button is inside its own tab's panel (`HomeTabbed.vue`), so a click on a tab changes the
+  list and the button together; only the open tab's button is on the screen.
+- The look of the news button: navy #0d4474, small, a right arrow, centred under the list. A
+  `v-btn` with `to` is a link, and `app.css` paints every hovered link black: on the navy button
+  the label read as vanishing (2.1:1), which was fixed for the news button in v1.5.55. The same
+  rule holds the label white here (`.home-browse-btn:hover`: #092f51, white label and arrow).
+- The labels are "Browse all" and the name of the tab, and short. At 320 px the lists' text is
+  256 px wide: "Browse employment opportunities" made a button of 312 px and "Browse funding
+  opportunities" one of 282 px, wider than the text above them. The buttons are 198, 204 and
+  228 px.
+
+6 new tests (`tests/unit/homeBrowseButtons.spec.js`), seen to fail first. Mocha: 681 passing,
+6 pending (pre-existing skipped stubs); lint clean on the changed files. Checked in a browser on
+the local dev server at 1280 px and 320 px: one button on the screen per tab, each inside the
+text column, no sideways scroll; colours at rest and under the pointer; each button opens its
+page ("Funding Opportunities", "ICJIA Meetings", "Employment"); the keyboard reaches the button
+and the focus ring shows; no page errors. axe (AA and best practices) 0 violations at desktop
+and phone width and Lighthouse accessibility 100 at phone width, on the front page. Not
+checked: the production build.
+
+Tagged `1.5.105`.
+
 ## [1.5.104] - 2026-09-21
 
 ### feat: a red chip for what is over ("Expired", "Ended") on the front page; fix: funding and jobs expired at 7 pm on their last day
