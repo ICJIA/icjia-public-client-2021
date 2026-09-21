@@ -43,6 +43,10 @@
         "label": "Research and Analysis Unit",
         "shortLabel": "Research",
         "pathPrefix": "/researchhub/",
+        "alsoOn": [
+            "/homicide/",
+            "/innovation-and-digital-services/drone/"
+        ],
         "defaultPath": "/researchhub/",
         "showTranslation": true,
         "location": "top",

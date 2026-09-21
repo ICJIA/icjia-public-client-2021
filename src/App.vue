@@ -59,6 +59,7 @@
 <script>
 // import { EventBus } from "@/event-bus";
 import { sanitizeText } from "@/utils/contentSanitizer";
+import { topContextMenuFor } from "@/lib/utils";
 import {
   fixBlankTableHeadings,
   fixExpandButtons,
@@ -270,27 +271,13 @@ export default {
         this.disclaimer = null;
       }
     },
+    // The rule is topContextMenuFor() in src/lib/utils.js: a bar that names the
+    // page in its "alsoOn", or else the bar of the page's section.
     checkForTopContextMenu() {
-      if (this.$route.fullPath === "/") {
-        this.topContextMenu = null;
-        return;
-      }
-
-      let fullPath = this.$route.fullPath;
-      fullPath += fullPath.endsWith("/") ? "" : "/";
-      let context = fullPath.split("/").slice(1, -1);
-      context = "/" + context.slice(0, 1).join("/") + "/";
-
-      let topContextMenu = this.$myApp.context.filter((obj) => {
-        if (obj["pathPrefix"] === context && obj["location"] === "top") {
-          return obj;
-        }
-      });
-      if (topContextMenu && topContextMenu.length) {
-        this.topContextMenu = topContextMenu;
-      } else {
-        this.topContextMenu = null;
-      }
+      this.topContextMenu = topContextMenuFor(
+        this.$myApp.context,
+        this.$route.path
+      );
     },
   },
 

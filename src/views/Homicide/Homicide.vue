@@ -127,6 +127,8 @@
 </template>
 
 <script>
+import { EventBus } from "@/event-bus";
+
 // The Tableau dashboard is authored at a fixed 1366×2600 (#tab-dashboard-region)
 // and does not reflow. The frame gets a little extra for the bottom toolbar so
 // no internal scrollbar appears and steals width; the whole embed then scales
@@ -169,6 +171,9 @@ export default {
     },
   },
   mounted() {
+    // The page shows the R&A context bar ("alsoOn" in contextMenus.json); this
+    // is the last part of its breadcrumb.
+    EventBus.$emit("context-label", "Illinois Homicide Reporting");
     this.setEmbedScale();
     window.addEventListener("resize", this.setEmbedScale);
   },

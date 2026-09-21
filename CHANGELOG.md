@@ -84,6 +84,43 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.116] - 2026-09-21
+
+### feat(nav): Homicide Reporting and Drone Reporting show the R&A context bar
+
+A page shows the context bar of its section, found by the first part of its address. Two of the
+agency's statutory reports are not under `/researchhub/`: "Drone Reporting"
+(`/innovation-and-digital-services/drone/`) showed the IDS bar, and "Homicide Reporting"
+(`/homicide/`) showed no bar at all. Both show the Research and Analysis bar now, where each has
+a tab since v1.5.113, with that tab marked as the page being shown.
+
+- A bar can name pages outside its own section: `"alsoOn"` in `src/config/contextMenus.json`,
+  which the R&A bar has for the two addresses. The choice of a page's bar is
+  `topContextMenuFor()` in `src/lib/utils.js`: a bar that names the page, or else the bar of the
+  page's section, as before. `App.vue` asks it; the rule was written out in `App.vue` before,
+  where a test could not reach it.
+- `/homicide/` tells the bar its title ("Illinois Homicide Reporting"), the last part of the
+  breadcrumb, as other pages do; the drone page, a CMS page, already did.
+- Unchanged: the IDS bar on the IDS home page and on InfoNet (it still has its "Drone Reporting"
+  tab, which leads to the page and so to the R&A bar), the About bar on Death in Custody
+  Reporting, which is under `/about/`, and no bar on the front page.
+
+5 new tests (`tests/unit/contextBarAlsoOn.spec.js`), all seen to fail first: the two pages, the
+section's own bar on five others, no bar on the front page or on a page of no section, and that
+a page named in `"alsoOn"` has a tab in that bar. Mocha: 727 passing, 6 pending (pre-existing
+skipped stubs); lint clean on the changed files. Checked in a browser on the local dev server:
+the bar, its breadcrumb and its marked tab on both pages at 1440 and 320 px, and on the IDS home
+page, InfoNet, Death in Custody Reporting, the Hub's web apps and the front page at 1440 px; a
+click from one report's tab to the next without a reload; no sideways scroll; axe (AA and best
+practices) 0 violations on both pages at both widths; no page errors. Not checked: the
+production build, Lighthouse.
+
+Also checked after its release, on Netlify: v1.5.115. Production was built and published
+(`main@90ceb6e`, 69 s); five minutes after the push the tag `1.5.115` still had no deploy of its
+own (`https://1-5-115--icjia-public.netlify.app/` 404, where `1-5-114` answers).
+
+Tagged `1.5.116`.
+
 ## [1.5.115] - 2026-09-21
 
 ### build(netlify): a release tag is no longer built as a branch deploy
@@ -111,7 +148,7 @@ with `$BRANCH` set, under `sh` and under `bash`: release tags skipped, nine othe
 (the Astro branches, a Dependabot branch, `v1.5.115`, `1.5.115-rc1`, `1.5`, an empty name), the
 rule in the branch-deploy context alone, the Astro context as it was; three seen to fail first.
 The file parses as TOML. Mocha: 722 passing, 6 pending (pre-existing skipped stubs); lint clean.
-Checked after the release, on Netlify itself: see the next entry, or the report of the day.
+Checked after the release, on Netlify itself: see v1.5.116's entry.
 
 Also checked on the live site after its release: v1.5.114 (`/homicide/` at 1440, 1112 and
 390 px: the frame 1390 px wide and its scaled size that of its box; the R&A bar's ten tabs, and

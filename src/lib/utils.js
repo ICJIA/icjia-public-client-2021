@@ -135,4 +135,29 @@ const getPublicationType = function (type) {
 //   ? console.log(getContextMenu(json, key, value))
 //   : console.log("not found");
 
-export { getObjects, getValues, getKeys, getContextMenu, getPublicationType };
+// The context bar of a page, as App.vue keeps it (an array of one bar, or null).
+// First a top bar whose "alsoOn" names the page: a page outside a section's own
+// pathPrefix that shows that section's bar, as two of the statutory reports
+// show the R&A bar. Otherwise the top bar whose pathPrefix is the first part of
+// the page's address, as before.
+const topContextMenuFor = function (bars, routePath) {
+  let path = routePath || "/";
+  path += path.endsWith("/") ? "" : "/";
+  if (path === "/") return null;
+  const top = bars.filter((bar) => bar.location === "top");
+  const named = top.filter((bar) => (bar.alsoOn || []).includes(path));
+  if (named.length) return named;
+  const context =
+    "/" + path.split("/").slice(1, -1).slice(0, 1).join("/") + "/";
+  const own = top.filter((bar) => bar.pathPrefix === context);
+  return own.length ? own : null;
+};
+
+export {
+  getObjects,
+  getValues,
+  getKeys,
+  getContextMenu,
+  getPublicationType,
+  topContextMenuFor,
+};
