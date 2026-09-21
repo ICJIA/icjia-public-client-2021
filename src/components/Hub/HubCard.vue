@@ -13,14 +13,11 @@
         item.date | format
       }}</span></v-card-text
     >
+    <!-- Out of the flow (hub-card-new, below), in the space above the date and
+         the title: in a row of its own the chip put a new card's title 36 px
+         below its neighbours'. -->
     <div>
-      <v-chip
-        v-if="isItNew(item.date)"
-        label
-        small
-        class="mb-3 ml-3"
-        style="margin-top: 0px"
-      >
+      <v-chip v-if="isItNew(item.date)" label small class="hub-card-new">
         <span style="color: #000000 !important; font-weight: 700">NEW!</span>
       </v-chip>
     </div>
@@ -352,5 +349,12 @@ export default {
    label has no background or border for it to show. */
 .category[role="button"] {
   padding: 5px 0;
+}
+/* The NEW chip, above the date and the title and out of the flow, so that the
+   titles of a row of cards line up. 28 px is the left edge of the card's text. */
+.hub-card-new {
+  position: absolute;
+  top: 20px;
+  left: 28px;
 }
 </style>

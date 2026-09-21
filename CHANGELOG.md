@@ -84,6 +84,36 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.111] - 2026-09-21
+
+### fix(researchhub): the titles of a row of cards line up
+
+On `/researchhub/apps`, on the Hub's home page and wherever the Hub's cards (`HubCard.vue`) stand
+in a row, a new card's title was 36 px below its neighbours': the "NEW!" chip had a row of its
+own between the date and the title ("Illinois Homicide Reporting", title at 97 px from the top
+of its card, the others at 61 px).
+
+- The chip is out of the flow (`.hub-card-new`: `position: absolute`, 20 px from the card's
+  top, at the left edge of its text), in the space that was already empty above the title. It
+  moves nothing, and a card with no chip is as it was, to the pixel.
+- On a card that shows its date first (the articles), the chip stands above the date, 6 px
+  clear of it; on one that does not (the web apps), 16 px above the title.
+
+2 new tests (`tests/unit/hubCardTitleAlignment.spec.js`), one seen to fail first; the other
+holds the chip in place before the title. Mocha: 709 passing, 6 pending (pre-existing skipped
+stubs); lint clean on the changed files. Checked in a browser on the local dev server at 1440,
+700 and 320 px on `/researchhub/apps`, `/researchhub/` and `/researchhub/articles` (42 cards;
+the clock set to 25 August 2026 there, so that an article was new): on each page every title
+at one distance from the top of its card (61 px, 83 px on the articles), the chip inside its
+card and clear of the date and of the title; no sideways scroll; axe (AA and best practices)
+0 violations at 1440 and 320 px; no page errors. Not checked: the production build,
+Lighthouse, the list view.
+
+Also checked on the live site after its release: v1.5.110's band (no scrim, all text inside
+the band, clear of the arrows and above the dots, 12:1, axe 0 violations at 1440 and 320 px).
+
+Tagged `1.5.111`.
+
 ## [1.5.110] - 2026-09-21
 
 ### feat(researchhub): the slideshow's photos in full colour, the text in a band along the bottom
