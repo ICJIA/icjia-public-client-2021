@@ -69,7 +69,10 @@
                        A click anywhere else on the slide still opens the
                        article. The link sits inside the overlay, where its
                        focus ring is not clipped (WCAG 2.4.7); dark-surface
-                       makes that ring yellow against the dark overlay. -->
+                       makes that ring yellow against the dark band. The photo
+                       is in full colour: the overlay has no scrim, and its
+                       text sits in a band along the bottom (hub-slide-caption,
+                       below), dark enough for white text on any photo. -->
                   <v-img
                     v-if="article && article.splash"
                     :src="article.splash"
@@ -78,11 +81,11 @@
                     class="hover"
                     @click="onSlideClick($event, article)"
                   >
-                    <v-overlay absolute :opacity="0.7">
+                    <v-overlay absolute :opacity="0" class="hub-slide-caption">
                       <div class="text-center px-5 dark-surface">
                         <div
-                          class="text-center px-12"
-                          style="min-width: 350px; max-width: 850px"
+                          class="text-center px-md-12"
+                          style="max-width: 1100px; margin: 0 auto"
                         >
                           <v-chip
                             v-if="isItNew(article.date)"
@@ -113,11 +116,10 @@
                             </p>
                           </div>
                           <p
-                            class=""
+                            class="hub-slide-title"
                             style="
                               color: #fff;
                               font-weight: 900;
-                              font-size: 36px;
                               margin-top: -5px;
                               margin-bottom: 0;
                             "
@@ -394,4 +396,35 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+// A slide's photo is in full colour. Its date, title and authors sit in a band
+// along the bottom, above the dots (50 px): over a white photo the band is
+// #2f3744, which gives white text 11.9:1.
+.hub-slideshow ::v-deep .hub-slide-caption {
+  align-items: flex-end;
+
+  .v-overlay__content {
+    width: 100%;
+    padding: 22px 0 70px;
+    background: rgba(10, 20, 35, 0.85);
+  }
+}
+
+// At 36 px a title filled a phone's slide (6 to 8 lines, a band over 63 to 80 %
+// of the photo) and ran under the arrows at mid-height. Smaller below 960 px,
+// the band stays under them.
+.hub-slide-title {
+  font-size: 36px;
+}
+@media (max-width: 959px) {
+  .hub-slide-title {
+    font-size: 28px;
+  }
+}
+@media (max-width: 599px) {
+  .hub-slide-title {
+    font-size: 22px;
+    line-height: 1.3;
+  }
+}
+</style>

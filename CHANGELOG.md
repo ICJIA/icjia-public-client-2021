@@ -84,6 +84,44 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.110] - 2026-09-21
+
+### feat(researchhub): the slideshow's photos in full colour, the text in a band along the bottom
+
+On `/researchhub/` a scrim dimmed each slide's whole photo by 70 %, so that the white date,
+title and authors on it could be read. The photos looked muddy.
+
+- The scrim is off (`<v-overlay :opacity="0">`), and the text sits in a dark band along the
+  bottom of the slide, above the dots (`.hub-slide-caption` in `HubHome.vue`): the photo has
+  nothing over it but the band. Chosen by the user from a rendered comparison of four
+  treatments on a dark and a light photo.
+- Why not simply no overlay: measured on the five photos of the day, white text straight on the
+  photo could be read on one of them. Behind the text of the other four, 79 to 95 % of the photo
+  is too light (mean contrast 1.8 to 2.9:1; WCAG 1.4.3 asks 4.5:1). The band is
+  `rgba(10, 20, 35, 0.85)`: over a white photo, the worst there is, that is `#2f3744`, and white
+  text on it has 11.9:1. A test works that figure out from the colour in the file and holds it
+  at 7:1 or more.
+- The title is 36 px from 960 px up, as before, 28 px below that and 22 px below 600 px. At
+  36 px it filled a phone's slide: 6 to 8 lines, a band over 63 to 80 % of the photo, and under
+  the arrows at mid-height. The band is now 27 to 35 % of the slide at 320 px and 26 to 33 % at
+  700 px (39 % at 1440 px, 47 % for a title of three lines at 1072 px).
+- The text column is up to 1100 px wide (850 px before) and has no least width (350 px before,
+  wider than a 320 px phone: it only fitted because the overlay centred the overflow).
+- As before: a click anywhere on the photo opens the article, the title is the slide's link,
+  and its focus ring is the yellow one for dark surfaces.
+
+3 new tests in `tests/unit/hubHomeSlideshow.spec.js`, all seen to fail first. Mocha: 707
+passing, 6 pending (pre-existing skipped stubs); lint clean on the changed files. Checked in a
+browser on the local dev server, all five slides at 1920, 1440, 1072, 700 and 320 px: no scrim,
+the band at the bottom and as wide as the slide, all text inside it, inside the window, above
+the dots and clear of the arrows; the worst contrast of white text over the band, worked out
+from each photo's own pixels, 12:1; no sideways scroll; a click on the photo opened the
+article; axe (AA and best practices) 0 violations at 1440 and 320 px (axe cannot judge text
+over a picture, and lists it for review, as it did before); no page errors. Not checked: the
+production build, Lighthouse, a screen reader.
+
+Tagged `1.5.110`.
+
 ## [1.5.109] - 2026-09-21
 
 ### fix(researchhub): the Hub's home page: a card with no picture, the Pause button under the photo, the authors on the title
