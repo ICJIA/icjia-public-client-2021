@@ -43,12 +43,17 @@
 
               <v-col cols="12">
                 <div>
-                  <h3
+                  <!-- An <h2>, the level after the page's <h1>: the
+                       accessibility pass (fixHeadingOrder) REPLACES a heading
+                       that skips a level, and the element it puts there is not
+                       Vue's. As an <h3> this stayed on the page, still saying
+                       "No current", above the expired opportunities. -->
+                  <h2
                     class="text-center"
                     v-if="filteredAndSortedGrants.length === 0"
                   >
                     No {{ currentSelection }} funding opportunities.
-                  </h3>
+                  </h2>
                   <p
                     v-if="filteredAndSortedGrants.length === 0"
                     class="text-center"

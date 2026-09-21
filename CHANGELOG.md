@@ -84,6 +84,41 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.106] - 2026-09-21
+
+### fix(grants): "No current funding opportunities." stayed above the expired list
+
+On `/grants/funding` (which `/grants` redirects to), a click on "Expired" listed the 110 expired
+opportunities under the heading "No current funding opportunities.", left over from the Current
+view, which is empty at the moment.
+
+- Cause: the message for an empty list was an `<h3>` after the page's `<h1>`. The accessibility
+  pass that runs after a page opens (`fixHeadingOrder()` in `src/a11y/index.js`) puts a heading
+  that skips a level right by replacing the element, inside any `.markdown-body`, which the page
+  is. The `<h2>` it put there was not Vue's. A click on "Expired" removed Vue's own `<h3>`,
+  already out of the page, and the paragraph under it; the `<h2>` stayed, still saying "No
+  current". Older than today's releases.
+- The message is an `<h2>` in the template (`FundingAll.vue`), the level the pass wanted, so the
+  pass leaves it alone and Vue shows and hides it. The Current view looks as it did on the live
+  site (25.6 px, bold, centred, a rule below).
+- Looked at and not affected: the Employment page (its message is inside an element Vue removes
+  whole) and the News page (its group headings follow an `<h2>`, so none is replaced).
+  `GrantsHome.vue` has the same markup and is not routed or imported anywhere; it was left.
+
+3 new tests (`tests/unit/staleEmptyMessage.spec.js`): two say what the pass does to a heading
+that skips a level and to one that does not, and one holds the page's message at the right
+level; that one was seen to fail first. Mocha: 684 passing, 6 pending (pre-existing skipped
+stubs); lint clean on the changed files. Checked in a browser on the local dev server: Current
+shows the message and no opportunity, Expired 110 opportunities and no message, Current again
+the message once; heading order valid in both views; no page errors. axe (AA and best
+practices) 0 violations at desktop and phone width and Lighthouse accessibility 100 at phone
+width. Not checked: the production build.
+
+A correction to v1.5.104's notes: `/grants` is not a page of its own (it redirects to
+`/grants/funding`), so that release's comparison of lists covered two pages, not three.
+
+Tagged `1.5.106`.
+
 ## [1.5.105] - 2026-09-21
 
 ### feat(home): a button to the full list under the Funding, Meetings and Employment lists
@@ -158,8 +193,8 @@ Checked in a browser on the local dev server: the chip on 5 expired funding rows
 meetings, its colours at rest and under the pointer, no page errors. No job on the front page
 is closed today and one closes tonight, so the browser's clock was moved: at 11:30 pm in Chicago
 on 21 September that job is open, at 12:01 am it is "Expired", and on the 26th all three are.
-The current and expired lists of `/grants/funding`, `/grants` and `/about/employment` are the
-same as on the live site (outside the hours where the old rule was wrong, they must be). axe (AA
+The current and expired lists of `/grants/funding` (which `/grants` redirects to) and
+`/about/employment` are the same as on the live site (outside the hours where the old rule was wrong, they must be). axe (AA
 and best practices) 0 violations at desktop and phone width and Lighthouse accessibility 100 at
 phone width, on the front page. Not checked: the production build, and forced colours.
 
