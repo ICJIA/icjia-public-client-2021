@@ -44,7 +44,7 @@
             color="green darken-4"
             text-color="white"
             style="font-size: 12px; font-weight: 700"
-            v-if="new Date(addOneDayToDate(item.end)) >= new Date()"
+            v-if="!isPastLastDay(item.end)"
             >&nbsp;Deadline: {{ item.end | dateFormatAlt }}&nbsp;</v-chip
           >
           <v-chip
@@ -52,7 +52,7 @@
             style="font-size: 12px; font-weight: 700"
             color="red darken-4"
             text-color="white"
-            v-if="new Date(addOneDayToDate(item.end)) < new Date()"
+            v-if="isPastLastDay(item.end)"
           >
             &nbsp;Expired: {{ item.end | dateFormatAlt }} &nbsp;
           </v-chip>
@@ -142,11 +142,7 @@
 </template>
 
 <script>
-const addOneDayToDate = function (date) {
-  const newDate = new Date(date);
-  newDate.setDate(newDate.getDate() + 1);
-  return newDate;
-};
+import { isPastLastDay } from "@/utils/ended";
 import { renderToHtml } from "@/services/Markdown";
 import { searchLocation } from "@/utils/search";
 import { isRelatedContent } from "@/utils/content";
@@ -161,10 +157,11 @@ export default {
   data() {
     return {
       show: false,
-      addOneDayToDate,
     };
   },
   methods: {
+    // Used by the template: open through its last day (utils/ended.js).
+    isPastLastDay,
     render(content) {
       return renderToHtml(content);
     },

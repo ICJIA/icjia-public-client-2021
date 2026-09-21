@@ -107,11 +107,7 @@
 </template>
 
 <script>
-const addOneDayToDate = function (date) {
-  const newDate = new Date(date);
-  newDate.setDate(newDate.getDate() + 1);
-  return newDate;
-};
+import { isPastLastDay } from "@/utils/ended";
 // eslint-disable-next-line no-unused-vars
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom";
 import { EventBus } from "@/event-bus";
@@ -209,14 +205,14 @@ export default {
     filterGrants(status) {
       if (status === "current") {
         this.filteredAndSortedGrants = _.filter(this.allGrants, (grant) => {
-          if (new Date(addOneDayToDate(grant.end)) >= new Date()) {
+          if (!isPastLastDay(grant.end)) {
             return grant;
           }
         });
       }
       if (status === "expired") {
         this.filteredAndSortedGrants = _.filter(this.allGrants, (grant) => {
-          if (new Date(grant.end) < new Date()) {
+          if (isPastLastDay(grant.end)) {
             return grant;
           }
         });

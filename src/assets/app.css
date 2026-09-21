@@ -651,6 +651,27 @@ a[target="_blank"]::after {
   color: #ffffff !important;
 }
 
+/* A chip for something that is over ("Expired" on a funding opportunity or a
+   job, "Ended" on a meeting): a desaturated red with white text (#943838,
+   7.3:1), in the standard chip's size and border. The templates made these
+   chips red and the rules above made them black on white. After those rules,
+   which it outranks only by coming later. It keeps its red under the pointer,
+   where a standard chip turns black: it is a label, not a control. The word
+   says it for a reader who does not see the red, and in forced colours. */
+.v-chip.v-chip.chip-over,
+.v-chip.v-chip.chip-over:hover,
+.v-chip.v-chip.chip-over:focus-visible {
+  background-color: #943838 !important;
+  border-color: #943838 !important;
+  color: #ffffff !important;
+}
+
+.v-chip.chip-over .v-chip__content,
+.v-chip.chip-over:hover .v-chip__content,
+.v-chip.chip-over:focus-visible .v-chip__content {
+  color: #ffffff !important;
+}
+
 /* A chip's text wraps when the chip is wider than its column (WCAG 1.4.10).
    Button text stays on one line, and at 320 px the tag "IDOT - Illinois
    Department of Transportation" made the Research Hub home and apps pages

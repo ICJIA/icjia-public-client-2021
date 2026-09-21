@@ -278,6 +278,7 @@
 </template>
 
 <script>
+import { isPastLastDay } from "@/utils/ended";
 /* eslint-disable no-unused-vars */
 import { EventBus } from "@/event-bus";
 import { goToSearch, openInNewTab } from "@/utils/search";
@@ -303,15 +304,10 @@ export default {
     },
   },
   methods: {
-    isItExpired(expiration) {
-      //console.log(expiration);
-      let now = new Date();
-      let expired = new Date(expiration);
-      if (now > expired) {
-        return true;
-      } else {
-        return false;
-      }
+    // Funding is open through its last day, to midnight in Chicago
+    // (utils/ended.js). This read the date as a moment, the evening before.
+    isItExpired(lastDay) {
+      return isPastLastDay(lastDay);
     },
     getStartText(eventStart) {
       let start = dayjs(eventStart);

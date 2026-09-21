@@ -35,19 +35,17 @@
                 <span style="font-weight: 700; font-size: 0.9em; color: #000">
                   {{ getCategory(grant.category) }}
                 </span>
-                <span v-if="isItExpired(grant.end)">
+                <span v-if="isPastLastDay(grant.end)">
                   &nbsp;|&nbsp;
                   <v-chip
                     x-small
-                    class="mr-1"
-                    dark
-                    color="#AD2E2E"
+                    class="mr-1 chip-over"
                     style="font-weight: 700"
                     >Expired</v-chip
                   >
                 </span>
                 <span
-                  v-if="!isItExpired(grant.end)"
+                  v-if="!isPastLastDay(grant.end)"
                   style="font-size: 0.9em; font-weight: 400"
                   >&nbsp;|&nbsp; {{ grant.start | dateFormatAlt }} to
                   {{ grant.end | dateFormatAlt }}
@@ -93,6 +91,16 @@
 
                 <span style="font-size: 0.9em; font-weight: 400"
                   >&nbsp;|&nbsp; {{ meeting.start | format }}
+                </span>
+                <!-- A cancelled meeting did not end: it keeps its own chip. -->
+                <span v-if="!meeting.isCancelled && isMeetingOver(meeting)">
+                  &nbsp;|&nbsp;
+                  <v-chip
+                    x-small
+                    class="mr-1 chip-over"
+                    style="font-weight: 700"
+                    >Ended</v-chip
+                  >
                 </span>
                 <span v-if="meeting.isCancelled">
                   &nbsp;|&nbsp;
@@ -155,19 +163,17 @@
                 <span style="font-weight: 700; font-size: 14px; color: #000">
                   Employment Opportunity
                 </span>
-                <span v-if="isItExpiredEmployment(job.end)">
+                <span v-if="isPastLastDay(job.end)">
                   &nbsp;|&nbsp;
                   <v-chip
                     x-small
-                    color="red darken-2"
-                    class="mr-1"
-                    dark
+                    class="mr-1 chip-over"
                     style="font-weight: 700"
                     >Expired</v-chip
                   >
                 </span>
                 <span
-                  v-if="!isItExpiredEmployment(job.end)"
+                  v-if="!isPastLastDay(job.end)"
                   style="font-size: 14px; font-weight: 400"
                   >&nbsp;|&nbsp; Accepting applications through
                   {{ job.end | format }}
@@ -214,13 +220,9 @@
 </template>
 
 <script>
-const addOneDayToDate = function (date) {
-  const newDate = new Date(date);
-  newDate.setDate(newDate.getDate() + 1);
-  return newDate;
-};
 import dayjs from "@/plugins/dayjs";
 import { isClickOnLink } from "@/utils/focus";
+import { isMeetingOver, isPastLastDay } from "@/utils/ended";
 export default {
   computed: {
     tabViewHeight() {
@@ -255,33 +257,9 @@ export default {
         return "yellow darken-3";
       }
     },
-    //TODO: Sort out these expiration dates.
-    isItExpired(expiration) {
-      //console.log(expiration);
-      let now = new Date();
-      let expired = addOneDayToDate(new Date(expiration));
-      // let expired = new Date(expiration);
-      // expired.setHours(24, 0, 0, 0);
-      //expired.setHours(24, 0, 0, 0);
-      //console.log(expired);
-      // TODO: Fix this date stuff
-      if (now > expired) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    isItExpiredEmployment(expiration) {
-      //console.log(expiration);
-      let now = new Date();
-      let expired = addOneDayToDate(new Date(expiration));
-
-      if (now >= expired) {
-        return true;
-      } else {
-        return false;
-      }
-    },
+    // When funding, a job or a meeting is over: src/utils/ended.js.
+    isPastLastDay,
+    isMeetingOver,
     getCategory(cat) {
       let category = "";
       if (cat === "nofo") {
@@ -316,7 +294,6 @@ export default {
   data() {
     return {
       fundingModel: 0,
-      addOneDayToDate,
     };
   },
   props: {

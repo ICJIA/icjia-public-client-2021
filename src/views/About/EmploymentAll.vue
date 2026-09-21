@@ -168,11 +168,7 @@
 </template>
 
 <script>
-const addOneDayToDate = function (date) {
-  const newDate = new Date(date);
-  newDate.setDate(newDate.getDate() + 1);
-  return newDate;
-};
+import { isPastLastDay } from "@/utils/ended";
 // eslint-disable-next-line no-unused-vars
 import { attachInternalLinks, attachSearchEvents } from "@/utils/dom.js";
 
@@ -229,7 +225,7 @@ export default {
       if (status === "current") {
         console.log("filter current");
         this.filteredAndSortedJobs = _.filter(this.allJobs, (job) => {
-          if (new Date(addOneDayToDate(job.end)) > new Date()) {
+          if (!isPastLastDay(job.end)) {
             return job;
           }
         });
@@ -237,7 +233,7 @@ export default {
       if (status === "expired") {
         console.log("filter expired");
         this.filteredAndSortedJobs = _.filter(this.allJobs, (job) => {
-          if (new Date(addOneDayToDate(job.end)) < new Date()) {
+          if (isPastLastDay(job.end)) {
             return job;
           }
         });

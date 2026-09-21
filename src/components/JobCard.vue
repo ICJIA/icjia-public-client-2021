@@ -26,11 +26,7 @@
         >
 
         <span
-          v-if="
-            item.start &&
-            item.end &&
-            new Date(addOneDayToDate(item.end)) >= new Date()
-          "
+          v-if="item.start && item.end && !isPastLastDay(item.end)"
           style="font-size: 14px; font-weight: 900; color: #222"
           class="mb-8"
           >&nbsp;|&nbsp;
@@ -49,7 +45,7 @@
               background: green;
               color: #fff;
             "
-            v-if="new Date(addOneDayToDate(item.end)) >= new Date()"
+            v-if="!isPastLastDay(item.end)"
             >&nbsp;Deadline: {{ item.end | dateFormatAlt }}&nbsp;</v-chip
           > -->
           <v-chip
@@ -60,7 +56,7 @@
               background: #aa2525;
               color: #fff;
             "
-            v-if="new Date(addOneDayToDate(item.end)) < new Date()"
+            v-if="isPastLastDay(item.end)"
           >
             &nbsp;Expired: {{ item.end | dateFormatAlt }} &nbsp;
           </v-chip>
@@ -189,11 +185,7 @@
 </template>
 
 <script>
-const addOneDayToDate = function (date) {
-  const newDate = new Date(date);
-  newDate.setDate(newDate.getDate() + 1);
-  return newDate;
-};
+import { isPastLastDay } from "@/utils/ended";
 import { renderToHtml } from "@/services/Markdown";
 import { searchLocation } from "@/utils/search";
 import { isRelatedContent, getProperCategory } from "@/utils/content";
@@ -209,11 +201,12 @@ export default {
   data() {
     return {
       show: false,
-      addOneDayToDate,
       isRelated: false,
     };
   },
   methods: {
+    // Used by the template: open through its last day (utils/ended.js).
+    isPastLastDay,
     getCategory(category) {
       return getProperCategory(this.$myApp.config.maps.employment, category);
     },

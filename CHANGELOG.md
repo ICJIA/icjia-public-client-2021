@@ -84,6 +84,59 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.104] - 2026-09-21
+
+### feat: a red chip for what is over ("Expired", "Ended") on the front page; fix: funding and jobs expired at 7 pm on their last day
+
+**The chip.** The front page's Funding and Employment lists mark an expired item with an
+"Expired" chip that its template made red (`#AD2E2E`, `red darken-2`). `app.css` standardizes
+every chip to black on white (v1.5.9), so it was one more black outline. It is a desaturated red
+again, #943838 with white text (7.29:1), by a class that comes after the standard chip's rules
+(`.chip-over`). It keeps the standard chip's size and border (24 px tall, 10 px bold), and it
+keeps its red under the pointer, where a standard chip turns black: it is a label, not a control.
+The word says it for a reader who does not see the red, and in forced colours.
+
+- **Meetings.** A meeting that is over carries the same chip, "Ended", after its date. A
+  cancelled meeting did not end: it keeps its CANCELLED chip and gets no other.
+- **Jobs.** A closed job already swapped "Accepting applications through ..." for the chip; it
+  is red now. The word stays "Expired", as on the Employment page.
+
+**When a thing is over** is one rule now, `src/utils/ended.js`, asked by every page that needs it.
+
+- Funding and jobs end on a date with no time (all 110 and 224 of them in the index) and are open
+  through that day: they are over at the midnight that ends it in Chicago, wherever the visitor
+  is. The next day is found by the calendar and its midnight read in Chicago, so the two days a
+  year that are not 24 hours long are right (tested: 8 March and 1 November 2026).
+- A meeting's end is a moment, the time the meeting ends: it is over once that moment has
+  passed. One meeting in the index ends before it starts: the later of its two times counts.
+- Eight pages and cards each carried a copy of `addOneDayToDate()` and counted a day from the
+  date read as UTC, which is 7 pm in Chicago on the last day (6 pm in winter): funding and jobs
+  were marked expired five or six hours early. Two did not count the day: `FundingAll.vue`
+  listed a grant as current and as expired on its last day, and the related-content card
+  (`SearchCardAlt.vue`) marked funding expired the evening before its last day. Now on the
+  shared rule: `HomeTabbed`, `JobCard`, `BaseCardExpandable`, `SearchCardAlt`, `GrantsHome`,
+  `FundingSingle`, `FundingAll`, `EmploymentAll`. The copies are removed (the one in
+  `EventsAll.vue` is never called and was left).
+
+10 new tests (`tests/unit/ended.spec.js`). The 8 for the rule and the chip were seen to fail
+first; the 2 guards (no page counts the day itself; each of the eight asks the shared rule) were
+written after the change and checked against the last release, where they flag seven files.
+Mocha: 675 passing, 6 pending (pre-existing skipped stubs); lint clean on the changed files.
+Checked in a browser on the local dev server: the chip on 5 expired funding rows and 5 past
+meetings, its colours at rest and under the pointer, no page errors. No job on the front page
+is closed today and one closes tonight, so the browser's clock was moved: at 11:30 pm in Chicago
+on 21 September that job is open, at 12:01 am it is "Expired", and on the 26th all three are.
+The current and expired lists of `/grants/funding`, `/grants` and `/about/employment` are the
+same as on the live site (outside the hours where the old rule was wrong, they must be). axe (AA
+and best practices) 0 violations at desktop and phone width and Lighthouse accessibility 100 at
+phone width, on the front page. Not checked: the production build, and forced colours.
+
+Not changed: the "Expired: date" chips of the Funding page's cards (already red, a more
+saturated one, #b71c1c) and of the job cards and the related-content card (black outlines), and
+the front page's CANCELLED chip.
+
+Tagged `1.5.104`.
+
 ## [1.5.103] - 2026-09-21
 
 ### style(search): the Web Applications chip reads "Web Apps"

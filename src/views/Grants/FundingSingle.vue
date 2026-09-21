@@ -69,11 +69,7 @@
 </template>
 
 <script>
-const addOneDayToDate = function (date) {
-  const newDate = new Date(date);
-  newDate.setDate(newDate.getDate() + 1);
-  return newDate;
-};
+import { isPastLastDay } from "@/utils/ended";
 import NProgress from "@/services/Progress";
 import { renderToHtml } from "@/services/Markdown";
 import { GET_SINGLE_FUNDING_QUERY } from "@/graphql/grants";
@@ -165,13 +161,9 @@ export default {
     };
   },
   computed: {
-    // add one day to js to get the correct date
+    // Open through its last day, to midnight in Chicago (utils/ended.js).
     isExpired() {
-      if (new Date(addOneDayToDate(this.funding.end)) < new Date()) {
-        return true;
-      } else {
-        return false;
-      }
+      return isPastLastDay(this.funding.end);
     },
   },
   created() {
