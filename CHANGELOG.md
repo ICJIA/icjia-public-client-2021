@@ -84,6 +84,37 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.101] - 2026-09-21
+
+### style(search): the Research Hub chip group is marked by one colour, the site's dark blue
+
+The bracket and caption added in v1.5.100 were easy to miss on the live page: a 1 px grey line and
+an 11 px grey caption (#595959) under chips with 2 px near-black borders. Four versions were
+rendered against the live page and the all-blue one was chosen.
+
+- One colour marks the group: the four chips' outlines and text, the bracket under them and the
+  caption are #0d47a1, a darker shade of the blue the chips already turn on hover (#1565c0). It
+  is 8.63:1 on white (the grey was 7:1); a chip's count on its grey badge is 7.24:1.
+- The bracket is 2 px, as thick as a chip's border (was 1 px).
+- The chip in use stays solid black and a hovered chip solid blue, with white text. The group's
+  rule leaves them out (`:not(.filter-chip--active):not(:hover)`): a plainer selector would
+  outrank `.filter-chip--active`, and the Hub chip in use would be blue on black.
+- The colour is not the only mark of the group: the bracket, the caption and the group's name
+  for a screen reader (`role="group"`, named by the caption) are unchanged. The other chips are
+  unchanged.
+
+1 new test (`searchFilters.spec.js`), seen to fail first. Mocha: 661 passing, 6 pending
+(pre-existing skipped stubs); lint clean on the changed files. Checked in a browser on the local
+dev server, on `/search/arrests` (all four Hub chips): no sideways scroll at 320, 375, 414, 768,
+1024 and 1280 px, every chip inside the row, the caption inside the group (two lines at 320 px,
+one from 375 px); smallest chip 105 x 28 px; chip colours at rest, hovered, in use, and in use
+and hovered; Tab reaches each chip, and the site's 2 px focus ring sits 2 px outside the chip's
+outline; the accessibility tree reads group "Filter by content type" > group "Research Hub
+includes Articles, Web Applications, and Datasets" > the four buttons; in Chromium's
+forced-colours emulation the bracket stays and everything takes the system's colours. axe (AA
+and best practices) 0 violations and Lighthouse accessibility 100, at desktop and phone width.
+Not checked: the production build, and forced colours on Windows with a real contrast theme.
+
 ## [1.5.100] - 2026-09-21
 
 ### feat(search): a post titled with the typed words comes before other posts; the Research Hub chips are shown as one group; fix: a hit tag chip in forced-colours mode

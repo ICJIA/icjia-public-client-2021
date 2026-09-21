@@ -209,4 +209,34 @@ describe("Search page: the Research Hub chips are shown as one group", () => {
       /id="hub-chips-caption"[^>]*>\s*Research Hub includes Articles, Web Applications, and\s+Datasets\s*</
     );
   });
+
+  // One colour marks the group (v1.5.101): its chips' outlines and text, the
+  // bracket under them and the caption. The chip in use stays black and a
+  // hovered one blue: their own rules colour them, and a plainer selector here
+  // would outrank them.
+  it("gives the group one colour, but not the chip in use or hovered", () => {
+    const css = fs
+      .readFileSync(
+        path.join(process.cwd(), "src/views/Search/SearchStatic.vue"),
+        "utf8"
+      )
+      .split("<style")[1];
+    const chips = css.match(
+      /\.filter-chip-set--hub\s+\.filter-chip:not\(\.filter-chip--active\):not\(:hover\)\s*\{\s*border-color: (#[0-9a-f]{6});\s*color: (#[0-9a-f]{6});/
+    );
+    expect(chips, "the chips' rule").to.not.equal(null);
+    const bracket = css.match(
+      /\.filter-chip-set__caption::before\s*\{[^}]*border: solid (#[0-9a-f]{6});/
+    );
+    expect(bracket, "the bracket rule").to.not.equal(null);
+    const caption = css.match(
+      /\.filter-chip-set--hub \.filter-chip-set__caption\s*\{[^}]*\bcolor: (#[0-9a-f]{6});/
+    );
+    expect(caption, "the caption rule").to.not.equal(null);
+    expect([chips[1], chips[2], caption[1]]).to.deep.equal([
+      bracket[1],
+      bracket[1],
+      bracket[1],
+    ]);
+  });
 });

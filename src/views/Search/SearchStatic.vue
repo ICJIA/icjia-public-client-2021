@@ -974,10 +974,13 @@ export default {
   display: contents;
 }
 
-/* The Research Hub group: its chips, a thin bracket under them, the caption.
-   #595959 is 7:1 on white. The caption takes the width of the chips and never
-   widens the group (width 0, min-width 100%); at phone width the group takes
-   a row of its own and its chips wrap inside it. */
+/* The Research Hub group: its chips, a bracket under them, the caption. One
+   colour marks the group: the chips' outlines and text, the bracket (as thick
+   as a chip's border) and the caption are the site's dark blue (#0d47a1:
+   8.6:1 on white, 7.2:1 on a chip's count badge). The bracket and the caption
+   mark the group without the colour. The caption takes the width of the chips
+   and never widens the group (width 0, min-width 100%); at phone width the
+   group takes a row of its own and its chips wrap inside it. */
 .filter-chip-set--hub {
   display: inline-flex;
   flex-direction: column;
@@ -998,7 +1001,7 @@ export default {
   margin: 4px 0 0;
   font-size: 11px;
   line-height: 1.4;
-  color: #595959;
+  color: #0d47a1;
 }
 
 .filter-chip-set__caption::before {
@@ -1006,8 +1009,15 @@ export default {
   display: block;
   height: 5px;
   margin-bottom: 2px;
-  border: solid #595959;
-  border-width: 0 1px 1px;
+  border: solid #0d47a1;
+  border-width: 0 2px 2px;
+}
+
+/* Not the chip in use (black) nor a hovered one (blue): their own rules
+   colour them, and a plainer selector here would outrank them. */
+.filter-chip-set--hub .filter-chip:not(.filter-chip--active):not(:hover) {
+  border-color: #0d47a1;
+  color: #0d47a1;
 }
 
 .filter-chip {
