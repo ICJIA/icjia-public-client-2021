@@ -84,6 +84,39 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.113] - 2026-09-21
+
+### feat(nav): Homicide Reporting and Drone Reporting in the About and the R&A context bars
+
+The About bar had one of the agency's three statutory reports, "Death in Custody Reporting";
+the Research and Analysis bar had none. "Homicide Reporting" (`/homicide/`) and "Drone
+Reporting" (`/innovation-and-digital-services/drone/`) are in both now
+(`src/config/contextMenus.json`), with the labels and addresses of the Research menu's
+"Statutory Reporting" section: in the About bar after "Death in Custody Reporting", in the R&A
+bar after "Publications", before "Institutional Review Board".
+
+- What it costs: the bars are longer, and a bar that does not fit scrolls with its arrows, as
+  before. The About bar is 1985 px of tabs now (about 1635 px before): it did not fit a screen
+  under about 1760 px wide before, and does not fit one of 2000 px now. The R&A bar is 1522 px
+  (about 1170 px before): it fitted a 1366 px laptop before, and needs the arrow below about
+  1650 px now, for "Institutional Review Board".
+- `/homicide/` has no context bar of its own; the drone page shows the IDS bar, which already
+  had "Drone Reporting". Links from one bar to a page under another were there before (the IRB
+  in the R&A bar).
+
+4 new tests (`tests/unit/contextBarStatutoryReporting.spec.js`), all seen to fail first. Mocha:
+713 passing, 6 pending (pre-existing skipped stubs); lint clean. Checked in a browser on the
+local dev server at 1440, 1072, 700 and 320 px: both bars with the new tabs in their places and
+with the right addresses, a click on each opened its page, no sideways scroll of the page; axe
+(AA and best practices) 0 violations at 1440 and 320 px on `/about/` and `/researchhub/`; no
+page errors. Not checked: the production build, Lighthouse.
+
+Also checked on the live site after its release: v1.5.112 (a category on a card of
+`/researchhub/apps` opened "crimes" with no filter, 213 of 213 results; the Research Hub chip
+showed 44 and wrote `?filter=hub`; a reload kept it).
+
+Tagged `1.5.113`.
+
 ## [1.5.112] - 2026-09-21
 
 ### feat(search): a click on a tag opens the whole search, from a Research Hub page too

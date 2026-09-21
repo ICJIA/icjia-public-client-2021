@@ -72,6 +72,14 @@
                 "path": "/researchhub/publications/"
             },
             {
+                "label": "Homicide Reporting",
+                "path": "/homicide/"
+            },
+            {
+                "label": "Drone Reporting",
+                "path": "/innovation-and-digital-services/drone/"
+            },
+            {
                 "label": "Institutional Review Board",
                 "path": "/irb/"
             }
@@ -257,6 +265,14 @@
             {
                 "label": "Death in Custody Reporting",
                 "path": "/about/dicra/"
+            },
+            {
+                "label": "Homicide Reporting",
+                "path": "/homicide/"
+            },
+            {
+                "label": "Drone Reporting",
+                "path": "/innovation-and-digital-services/drone/"
             },
             {
                 "label": "FOIA",
