@@ -94,7 +94,7 @@
       </v-img>
 
       <v-img
-        v-if="item.imagePath && !item.image && !textOnly && !imageOK"
+        v-if="showDefault"
         src="/icjia-half-splash-thumb.jpg"
         lazy-src="/icjia-half-splash-thumb.jpg"
         width="100%"
@@ -182,7 +182,7 @@
 
 <script>
 import { goToSearch } from "@/utils/search";
-import { splashCandidates } from "@/utils/hubImage";
+import { splashCandidates, needsDefaultImage } from "@/utils/hubImage";
 const arrford = require("arrford");
 import { format, parseISO } from "date-fns";
 import dayjs from "@/plugins/dayjs";
@@ -197,6 +197,13 @@ export default {
     },
     splashSrc() {
       return this.splashUrls[this.splashAttempt] || this.item.imagePath;
+    },
+    showDefault() {
+      return needsDefaultImage({
+        item: this.item,
+        textOnly: this.textOnly,
+        imageOK: this.imageOK,
+      });
     },
     truncation() {
       if (this.orientation === "grid") {

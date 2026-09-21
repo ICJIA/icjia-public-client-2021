@@ -84,6 +84,47 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.109] - 2026-09-21
+
+### fix(researchhub): the Hub's home page: a card with no picture, the Pause button under the photo, the authors on the title
+
+Three things on `/researchhub/`.
+
+- **A web app with no picture had no picture at all** under "Latest Web Applications", beside
+  its neighbours' (v1.5.107 and v1.5.108 dealt with the same app elsewhere). The Hub's cards
+  (`HubCard.vue`) showed the ICJIA default only when a built picture file would not load, which
+  is the case on `/researchhub/apps`. The home page gives its cards the CMS record itself, with
+  no built file, and "Illinois Homicide Reporting" has `image: null`; none of the card's three
+  pictures applied. The rule is now `needsDefaultImage()` in `src/utils/hubImage.js`, with the
+  card's other picture helpers: a picture card with no picture of its own, none at all or a
+  built file that failed, shows `/icjia-half-splash-thumb.jpg`, cropped to fill its space.
+  Text-only cards (datasets, the list views) still have no picture.
+- **The "Pause slideshow" button had its bottom 8 px behind the photo.** Its row's negative
+  margin (-12 px) pulled the carousel over a column with 4 px of padding. The column's bottom
+  padding is 24 px now (`pb-6`), which leaves the button 12 px clear of the photo at every
+  width. The button was not removed: the slideshow advances by itself, and WCAG 2.2.2 (Pause,
+  Stop, Hide, Level A) needs a control that stops it.
+- **The authors' line on a slide sat on the title** (`margin-top: -10px`, 5 px of overlap). It is
+  8 px now, 13 px below the title's last line. The five slides share one template. Other author
+  listings on the site were left as they are (the user's decision).
+
+8 new tests, all seen to fail first but the one that holds the Pause button in place:
+`tests/unit/hubCardDefaultImage.spec.js` (5; it tests the helper, because importing
+`HubCard.vue` itself stops the local mocha bundle, "Cannot find module
+'./unsupportedIterableToArray.js'", one more fault of that build, see v1.5.107) and
+`tests/unit/hubHomeSlideshow.spec.js` (3). Mocha: 704 passing, 6 pending (pre-existing skipped
+stubs); lint clean on the changed files. Checked in a browser on the local dev server: the card
+at 1920, 1440, 1072, 700 and 320 px (one picture, the default, filling its space, the whole
+logo, no spinner); the button and the authors' line at 1440, 1072, 700 and 320 px (the authors
+are hidden below 960 px, as before); axe (AA and best practices) 0 violations at 1440 and
+320 px; no page errors. Not checked: the production build, Lighthouse.
+
+Still to come: the slideshow's photos in full colour (the 70 % dimming removed, the text in a
+band along the bottom), chosen from a rendered comparison. With no backing at all, white text
+would be readable on one of today's five photos.
+
+Tagged `1.5.109`.
+
 ## [1.5.108] - 2026-09-21
 
 ### fix(researchhub): a web app with no picture showed a loading spinner for ever on its own page

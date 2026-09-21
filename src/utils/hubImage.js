@@ -28,4 +28,15 @@ function splashCandidates(imagePath) {
   return urls;
 }
 
-export { splashCandidates };
+// A picture card shows the ICJIA default when its record has no picture of its
+// own: none at all (no base64 `image` from the CMS and no built file, as on the
+// Hub's home page, which gives its cards the CMS record itself), or a built
+// file that would not load (`imageOK` false, once the candidates above are
+// used up). Text-only cards never show a picture.
+function needsDefaultImage({ item, textOnly, imageOK }) {
+  if (textOnly || !item) return false;
+  if (item.image) return false;
+  return !item.imagePath || !imageOK;
+}
+
+export { splashCandidates, needsDefaultImage };

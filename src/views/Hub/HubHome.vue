@@ -34,7 +34,7 @@
              button paused the slideshow while its label said "Pause". -->
         <v-container class="py-0">
           <v-row>
-            <v-col cols="12" class="text-right py-1">
+            <v-col cols="12" class="text-right pt-1 pb-6">
               <v-btn small outlined @click="slideshowPaused = !slideshowPaused">
                 <v-icon left small aria-hidden="true">{{
                   slideshowPaused ? "mdi-play" : "mdi-pause"
@@ -132,7 +132,7 @@
                           </p>
 
                           <div
-                            style="margin-top: -10px"
+                            style="margin-top: 8px"
                             class="hidden-sm-and-down"
                           >
                             <span
