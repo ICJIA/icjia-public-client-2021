@@ -82,18 +82,41 @@
                 role="group"
                 aria-label="Filter by content type"
               >
-                <button
-                  v-for="chip in availableFilterChips"
-                  :key="chip.value || 'all'"
-                  type="button"
-                  class="filter-chip"
-                  :class="{ 'filter-chip--active': isChipActive(chip) }"
-                  :aria-pressed="isChipActive(chip) ? 'true' : 'false'"
-                  @click="selectChip(chip)"
+                <!-- The Research Hub chip and the Hub's three types are one
+                     group: a line under the four, and a caption that says
+                     the Hub chip includes the other three. The other chips
+                     sit loose in the row (their wrappers make no box). -->
+                <div
+                  v-for="group in filterChipGroups"
+                  :key="group.key"
+                  class="filter-chip-set"
+                  :class="{ 'filter-chip-set--hub': group.hub }"
+                  :role="group.hub ? 'group' : null"
+                  :aria-labelledby="group.hub ? 'hub-chips-caption' : null"
                 >
-                  {{ chip.label }}
-                  <span class="filter-chip__count">{{ chip.count }}</span>
-                </button>
+                  <div class="filter-chip-set__chips">
+                    <button
+                      v-for="chip in group.chips"
+                      :key="chip.value || 'all'"
+                      type="button"
+                      class="filter-chip"
+                      :class="{ 'filter-chip--active': isChipActive(chip) }"
+                      :aria-pressed="isChipActive(chip) ? 'true' : 'false'"
+                      @click="selectChip(chip)"
+                    >
+                      {{ chip.label }}
+                      <span class="filter-chip__count">{{ chip.count }}</span>
+                    </button>
+                  </div>
+                  <p
+                    v-if="group.hub"
+                    id="hub-chips-caption"
+                    class="filter-chip-set__caption"
+                  >
+                    Research Hub includes Articles, Web Applications, and
+                    Datasets
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -482,6 +505,22 @@ export default {
         ...hub,
         ...chips,
       ];
+    },
+    // The chip row as the page draws it: the Research Hub chip and the Hub's
+    // own types are one group, the chips before and after them are loose.
+    filterChipGroups() {
+      const chips = this.availableFilterChips;
+      const inHub = (chip) =>
+        chip.value === "hub" || HUB_TYPES.includes(chip.value);
+      const first = chips.findIndex(inHub);
+      if (first < 0)
+        return chips.length ? [{ key: "all", hub: false, chips }] : [];
+      const last = first + chips.filter(inHub).length;
+      return [
+        { key: "before", hub: false, chips: chips.slice(0, first) },
+        { key: "hub", hub: true, chips: chips.slice(first, last) },
+        { key: "after", hub: false, chips: chips.slice(last) },
+      ].filter((group) => group.chips.length);
     },
   },
   watch: {
@@ -919,10 +958,56 @@ export default {
   color: #666;
 }
 
+/* Each chip keeps its own height: the Research Hub group is taller than a
+   chip, and a row's items are otherwise stretched to the tallest. */
 .search-toolbar__chips {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-start;
   gap: 6px;
+}
+
+/* Loose chips: the wrappers make no box, so each chip is an item of the row
+   and wraps by itself, as before. */
+.filter-chip-set,
+.filter-chip-set__chips {
+  display: contents;
+}
+
+/* The Research Hub group: its chips, a thin bracket under them, the caption.
+   #595959 is 7:1 on white. The caption takes the width of the chips and never
+   widens the group (width 0, min-width 100%); at phone width the group takes
+   a row of its own and its chips wrap inside it. */
+.filter-chip-set--hub {
+  display: inline-flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.filter-chip-set--hub .filter-chip-set__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* Two classes: Vuetify gives every paragraph a 16 px bottom margin
+   (.v-application p), which one class does not outrank. */
+.filter-chip-set--hub .filter-chip-set__caption {
+  width: 0;
+  min-width: 100%;
+  margin: 4px 0 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #595959;
+}
+
+.filter-chip-set__caption::before {
+  content: "";
+  display: block;
+  height: 5px;
+  margin-bottom: 2px;
+  border: solid #595959;
+  border-width: 0 1px 1px;
 }
 
 .filter-chip {

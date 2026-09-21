@@ -223,6 +223,77 @@ describe("Site search: pages come before individual posts", () => {
   });
 });
 
+describe("Site search: a post titled with the typed words comes before other posts", () => {
+  // "safe-t": the two records titled "The 2021 SAFE-T Act: ..." were third and
+  // fourth, behind a literature review that holds the word in a tag. The
+  // search favours a short field that matches exactly, so one exact tag beats
+  // a long title, and a search of one word had no rule for titles at all. A
+  // title that holds every typed word is a direct hit.
+  const review = record(
+    "The Effectiveness and Implications of Police Reform: A Review of the Literature",
+    "article",
+    { tags: ["SAFE-T Act", "use of force"] }
+  );
+  const act = record(
+    "The 2021 SAFE-T Act: ICJIA Roles and Responsibilities",
+    "publication",
+    { tags: ["legislation"] }
+  );
+  const overview = record(
+    "An Overview of Police Use of Force Policies and Research",
+    "article",
+    { tags: ["policing"] }
+  );
+
+  it('"safe-t" leads with the record titled "SAFE-T Act"', () => {
+    expect(titles(search("safe-t", [review, act]))).to.deep.equal([
+      act.title,
+      review.title,
+    ]);
+  });
+
+  it("with several words, the title must hold every one of them", () => {
+    expect(titles(search("use of force", [review, overview]))).to.deep.equal([
+      overview.title,
+      review.title,
+    ]);
+  });
+
+  // A page is found by the keywords it is given, not by its title: titles do
+  // not reorder the pages, and no post comes before a page.
+  it("pages stay first, in the order the search gave them", () => {
+    const records = [
+      record("Widgetry Status Request", "page"),
+      record("Funded Programs", "page", { searchMeta: "widgetry" }),
+      record("Widgetry in Illinois", "news"),
+    ];
+    const plain = build(records)
+      .search("widgetry")
+      .filter((r) => r.item.contentType === "page")
+      .map((r) => r.item.title);
+    expect(plain[0]).to.equal("Funded Programs");
+    expect(titles(search("widgetry", records))).to.deep.equal(
+      plain.concat("Widgetry in Illinois")
+    );
+  });
+
+  // For a person the name and the position are the title. "executive director"
+  // led with the director's biography; counting titles alone, a news post that
+  // names the office went ahead of it, and the biography fell to fifth.
+  it("a person's position counts as a title", () => {
+    const results = search("executive director", [
+      record("A Juneteenth Message from the Executive Director", "news"),
+      record("Delrice Adams", "biography", {
+        fullName: "Delrice Adams",
+        position: "Executive Director",
+        searchMeta: " OED Office of the Executive Director ",
+        unit: { title: "Office of the Executive Director" },
+      }),
+    ]);
+    expect(titles(results)[0]).to.equal("Delrice Adams");
+  });
+});
+
 describe('Site search: "annual report" is a search for the reports', () => {
   // Pages come first for anything that holds the words, and three pages held
   // "annual report" in their keywords or tags (About the Authority: "latest

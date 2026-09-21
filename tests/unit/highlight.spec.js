@@ -133,6 +133,30 @@ describe("Tag chips that hold a typed word", () => {
     );
     expect(card).to.match(/\.search-tag-hit\s*\{[^}]*background/);
   });
+
+  // In forced-colours mode a colour that is not a system colour is replaced,
+  // and for a link by LinkText: written before the chip links' own colour
+  // rules, the hit chip's rule lost to them, and its text was LinkText on Mark
+  // (v1.5.99). It comes after them, and covers the hover they also colour;
+  // app.css colours every hovered link with !important, so the rule has it too.
+  it("keeps the system's mark colours on a hit chip in forced-colours mode", () => {
+    const css = fs
+      .readFileSync(
+        path.join(process.cwd(), "src/components/SearchCard.vue"),
+        "utf8"
+      )
+      .split("<style>")[1];
+    const linkRules = css.lastIndexOf(".v-application a.search-tag:hover {");
+    const forced = css
+      .slice(linkRules)
+      .match(/@media \(forced-colors: active\) \{([^@]*)/);
+    expect(linkRules, "the chip links' colour rules").to.be.above(-1);
+    expect(forced, "a forced-colours rule after them").to.not.equal(null);
+    expect(forced[1]).to.include(".v-application a.search-tag-hit,");
+    expect(forced[1]).to.include(".v-application a.search-tag-hit:hover {");
+    expect(forced[1]).to.include("background-color: Mark;");
+    expect(forced[1]).to.include("color: MarkText !important;");
+  });
 });
 
 describe("Result cards while typing", () => {

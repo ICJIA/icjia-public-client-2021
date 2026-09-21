@@ -325,8 +325,7 @@ export default {
   padding: 0 1px;
 }
 @media (forced-colors: active) {
-  .search-hit,
-  .v-application a.search-tag-hit {
+  .search-hit {
     background-color: Mark;
     color: MarkText;
   }
@@ -369,6 +368,17 @@ export default {
 .v-application a.search-tag:hover {
   color: #000;
   text-decoration: underline;
+}
+/* A hit chip takes the system's mark colours, as the title marks do. After the
+   two rules above: a colour that is not a system colour is replaced there, for
+   a link by LinkText, and the chip's text was LinkText on Mark. !important
+   because app.css colours every hovered link with it. */
+@media (forced-colors: active) {
+  .v-application a.search-tag-hit,
+  .v-application a.search-tag-hit:hover {
+    background-color: Mark;
+    color: MarkText !important;
+  }
 }
 .v-application a.search-chip-link,
 .v-application a.search-chip-link:hover {

@@ -149,7 +149,8 @@ function recordText(fuse, result) {
 
 // The results that hold every typed word, then the rest, marked similar. In
 // each group pages come before posts (posts before pages when the search is
-// for a kind of document); otherwise the order given is kept.
+// for a kind of document), and among posts those titled with the typed words
+// come first; otherwise the order given is kept.
 // Fuse's score cannot make this split: it multiplies over every field that
 // matched, so a biography one letter from the word in its title, its name and
 // its summary scores beside a page that holds the word.
@@ -165,9 +166,32 @@ function arrange(fuse, results, words) {
     phrase.every((word) => words.includes(word) || words.includes(`${word}s`))
   );
   const isPage = (result) => PAGE_TYPES.includes(result.item.contentType);
+  // Among posts, one whose title holds every typed word is a direct hit and
+  // comes first. Fuse favours a short field that matches exactly, so one exact
+  // tag beat a long title: "safe-t" listed "The 2021 SAFE-T Act: ..." third,
+  // behind a literature review tagged "SAFE-T Act". For a person the name and
+  // the position are the title ("executive director" leads with the director).
+  // Pages are left in the order given: a page is found by the keywords it is
+  // given, and its title would undo that ("grants" put Grant Status Request
+  // before Funded Programs).
+  const titled = (result) => {
+    const { title, fullName, position } = result.item;
+    const text = [title, fullName, position]
+      .filter((part) => typeof part === "string")
+      .join("\n")
+      .toLowerCase()
+      .replace(/[\u2018\u2019]/g, "'");
+    return tests.every((test) => test.test(text));
+  };
+  const titledFirst = (list) => {
+    const first = [];
+    const rest = [];
+    list.forEach((result) => (titled(result) ? first : rest).push(result));
+    return first.concat(rest);
+  };
   const byKind = (list) => {
     const pages = list.filter(isPage);
-    const posts = list.filter((result) => !isPage(result));
+    const posts = titledFirst(list.filter((result) => !isPage(result)));
     return forDocuments ? posts.concat(pages) : pages.concat(posts);
   };
   return byKind(held)

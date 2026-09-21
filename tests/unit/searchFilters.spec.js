@@ -163,3 +163,50 @@ describe("Who asks for the Research Hub filter", () => {
     }
   });
 });
+
+// The Research Hub chip stands for three of the chips beside it, and nothing
+// on the page said so: the four looked like any other chips. They are one
+// group now, with a line under it and a caption (v1.5.100).
+describe("Search page: the Research Hub chips are shown as one group", () => {
+  const groups = (state) =>
+    SearchStatic.computed.filterChipGroups.call(page(state));
+
+  it("groups the Research Hub chip with the Hub's own types", () => {
+    const all = groups();
+    expect(all.map((g) => g.hub)).to.deep.equal([false, true, false]);
+    expect(all[0].chips.map((c) => c.label)).to.deep.equal(["No filter"]);
+    expect(all[1].chips.map((c) => c.label)).to.deep.equal([
+      "Research Hub",
+      "Articles",
+      "Web Applications",
+      "Datasets",
+    ]);
+    // the same chips, in the same order, as before
+    expect([].concat(...all.map((g) => g.chips))).to.deep.equal(
+      page().availableFilterChips
+    );
+  });
+
+  it("makes no group when no result is from the Hub", () => {
+    const all = groups({
+      queryResults: [result("news", "n1"), result("publication", "p1")],
+    });
+    expect(all.map((g) => g.hub)).to.deep.equal([false]);
+    expect(all[0].chips.length).to.equal(3);
+    expect(groups({ queryResults: [] })).to.deep.equal([]);
+  });
+
+  it("names the group with a caption that says what the Hub chip includes", () => {
+    const view = fs.readFileSync(
+      path.join(process.cwd(), "src/views/Search/SearchStatic.vue"),
+      "utf8"
+    );
+    expect(view).to.include(":role=\"group.hub ? 'group' : null\"");
+    expect(view).to.include(
+      ":aria-labelledby=\"group.hub ? 'hub-chips-caption' : null\""
+    );
+    expect(view).to.match(
+      /id="hub-chips-caption"[^>]*>\s*Research Hub includes Articles, Web Applications, and\s+Datasets\s*</
+    );
+  });
+});

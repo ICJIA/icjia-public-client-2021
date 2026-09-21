@@ -84,6 +84,84 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.100] - 2026-09-21
+
+### feat(search): a post titled with the typed words comes before other posts; the Research Hub chips are shown as one group; fix: a hit tag chip in forced-colours mode
+
+**Titles first, among posts.** A search for "safe-t" listed "The 2021 SAFE-T Act: ICJIA Roles and
+Responsibilities" third and fourth, behind a literature review that is only tagged "SAFE-T Act".
+Fuse favours a short field that matches exactly, so one exact tag beat a long title. A post whose
+title holds every typed word is a direct hit and now comes before the other posts (`titled()` in
+`arrange()`, in `src/utils/searchFields.js` and, identically, in `public/searchWorker.js`). The
+rule has two limits:
+
+- **Posts only.** Pages, partner sites and plans still come first, in the order the search gave
+  them. A page is found by the keywords it is given, and its title would undo that: with the rule
+  applied to pages, "grants" put Grant Status Request before Funded Programs. A general "titles
+  first" rule was tried and rejected in v1.5.96 (Funding Opportunities went from 1st to 64th);
+  this one cannot move a page.
+- **A person's name and position count as the title.** With titles alone, "executive director"
+  dropped the director's biography from 1st to 5th, behind news posts titled "... from the
+  Executive Director".
+
+Compared with v1.5.99 on 74 everyday searches (local index of 19 September): the first result
+changes in 7. "safe-t" and "safe-t act" lead with the two SAFE-T Act records (were 3rd and 4th);
+"vawa" leads with the Violence Against Women Act program (was 3rd, behind a planning report);
+"use of force" leads with "An Overview of Police Use of Force Policies and Research" (was 3rd,
+behind a death-in-custody report); "court" leads with titles about courts (the former first
+result, on alternative sentencing, is now 32nd). Two are a matter of taste: "cannabis" now leads
+with the two R3 grantmaking reports, titled with the word, and the R3 program record is 3rd (was
+1st); "opioid" leads with reports titled with the word, and the overdose-death report that was
+1st, which has "overdose" in its title and "opioid" only in its tags, is 29th. Still first:
+"jobs" (Employment), "nofo" and "notice of funding opportunity" (Funding Opportunities), "board
+meeting" (ICJIA Meetings), "annual report" (the reports), "r3" (the partner site), "executive
+director" (the director).
+
+Known cost: a job posting titled with the word moves up with the rest. "publications": the two
+Editorial and Publication Manager postings are 3rd and 4th (were 12th and 13th), behind the
+Publications page and the "Top 10 Most Popular Publications" post. "press": the Press Secretary
+posting is 2nd (was 5th), behind the News & Information page. Filler words are not typed words,
+so for "use of force" a meeting of the "... Stop Data Use and Collection Task Force" counts as
+titled (3rd and 4th; were 5th and 6th).
+
+**Research Hub chips.** Nothing on the search page said that the Research Hub chip stands for
+the three chips beside it. The Hub chip and the type chips present (Articles, Web Applications,
+Datasets) are now one group, with a thin bracket under them and the caption "Research Hub
+includes Articles, Web Applications, and Datasets" (`filterChipGroups` in `SearchStatic.vue`).
+The caption names the group for a screen reader (`role="group"`, `aria-labelledby`). The chips,
+their order, their counts and what they filter are unchanged (`availableFilterChips` is
+untouched); the other chips still wrap one by one; with no Hub results there is no group. The
+caption takes the width of the chips and never widens the group: two lines under two chips, one
+line under four. At 320 px the group takes a row of its own. Caption and bracket are #595959 on
+white, 7:1.
+
+Two faults found in the browser and fixed before release: the other chips were stretched to the
+height of the group (the row now aligns its items to the top), and Vuetify's 16 px paragraph
+margin sat under the caption.
+
+**fix: a hit tag chip in forced-colours mode (v1.5.99).** The chip was meant to take the
+system's Mark colours, as the title marks do. Its background did; its text was LinkText. The
+rule stood before the chip links' own colour rules in `SearchCard.vue` and lost to them, and a
+colour that is not a system colour is replaced in that mode, for a link by LinkText. On a
+contrast theme LinkText on Mark is not a pair the system keeps readable. The rule now comes
+after them and covers hover, with `!important` on the text colour because `app.css` colours
+every hovered link with it. Measured in Chromium's forced-colours emulation: Mark and MarkText
+at rest and on hover, as the title marks; colours outside that mode unchanged.
+
+8 new tests (4 in `searchSimilar.spec.js`, 3 in `searchFilters.spec.js`, 1 in
+`highlight.spec.js`), each seen to fail first. Mocha: 660 passing, 6 pending (pre-existing
+skipped stubs); lint clean on the changed files; the worker and `searchFields.js` still order
+results identically (`searchQuality.spec.js`). Checked in a browser on the local dev server,
+which also covers v1.5.99: "safe-t" leads with the SAFE-T Act records, "SAFE-T" is marked in
+both titles, and 9 tag chips on the page are shown as hits (ring 1 px, chip height unchanged at
+23 px); "executive director" leads with the director; the Hub, Datasets and No filter chips
+still filter and write `?filter=`. The Hub group was looked at at 1536 px, 1072 px and 320 px.
+At 320 px with all four Hub chips ("arrests") the group is as wide as the row (256 px), its
+chips wrap inside it on three lines, and the page does not scroll sideways. axe (AA and best
+practices) 0 violations and Lighthouse accessibility 100, at desktop and phone width, on
+`/search/safe-t`; no console errors. Not checked: the production build, and forced colours on
+Windows with a real contrast theme (the emulation only).
+
 ## [1.5.99] - 2026-09-21
 
 ### fix(search): a typed word with a hyphen or an apostrophe in it was never highlighted; feat: a tag that holds a typed word is highlighted
