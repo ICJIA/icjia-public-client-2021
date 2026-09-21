@@ -110,6 +110,8 @@ filling its box (`cover`), no spinner, the whole logo visible, no sideways scrol
 best practices) 0 violations at 1440 and 320 px; no page errors. Not checked: the production
 build, Lighthouse.
 
+Tagged `1.5.108`.
+
 ## [1.5.107] - 2026-09-21
 
 ### fix(home): a web app with no picture showed a loading spinner for ever under "Latest Research"
@@ -138,6 +140,8 @@ Checked in a browser on the local dev server at 1440, 1072, 960, 700 and 320 px:
 default, filling its space (`cover`, centred), no spinner, the whole logo visible with at least
 33 px of blue around it; axe (AA and best practices) 0 violations at 1440 and 320 px with the Web
 Apps tab open; no page errors. Not checked: the production build, Lighthouse.
+
+Tagged `1.5.107`.
 
 ## [1.5.106] - 2026-09-21
 
