@@ -84,6 +84,59 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.102] - 2026-09-21
+
+### fix: a link to the page it is on was white everywhere on the site; feat(search): the Publications chip has a line and a caption
+
+**A result's tags were washed out after a click on one.** A click on the tag "SAFE-T Act" searches
+for it, and the chips of that tag then read white on the hit yellow of v1.5.99 (1.13:1). The
+same click on a result's type ("PUBLICATION") left all 44 such labels on the page white on white.
+
+- Cause: vue-router gives a link to the page it is on the class `router-link-exact-active`, and
+  `AppFooter.vue` painted that class white and heavy, for the footer's dark ground, with a rule
+  for the class alone in a style block that is not scoped (`f2ed61d`, August 2021). It reached
+  every link on the site. It is older than the yellow: white on the chips' grey was as unreadable,
+  and less noticed. It never showed on a page opened by its address: a chip's link carries
+  `?filter=general`, so the chip is a link to the page it is on only after a click on it.
+- The rule now says where it applies (`.v-footer .router-link-exact-active`). Before the change
+  it was deleted in a test browser on 14 live pages, at 1280 px and 375 px: the only link outside
+  the footer that changed was the header logo's screen-reader label, which is not seen. After
+  it, all 11 footer links have the colour, weight and underline they have on the live site, on
+  four pages, the link to the page it is on included (white, 900).
+- After the reported steps on the fixed build: the tag's chips are black on the yellow (18.52:1)
+  and the type labels black on white (21:1).
+- `tests/unit/activeLinkColour.spec.js` fails when a stylesheet, or a component's style block
+  that is not scoped, has a rule for the router's active classes alone.
+
+**Publications chip.** Nothing said what Publications is beside the Research Hub. The chip is now
+a group of its own, as the Hub's chips are (v1.5.100): a bracket under it and the caption
+"ICJIA’s library since 1983", in one colour, a deep green (#14532d: 9.11:1 on white, 7.64:1 for
+the count on its badge). In the index of 19 September there are 1,113 publications, the earliest
+of 1983, and 257 of them are Hub articles under the same title.
+
+- The green is no lighter or darker than the Hub's blue (1.06:1), so the hue alone tells the two
+  groups apart; for a reader who does not see it, the captions do. The chip in use stays solid
+  black and a hovered chip solid blue, as every chip.
+- A longer caption that named the Hub articles was tried first: squeezed to the width of the one
+  chip it took three lines, at phone width too, beside an empty row. The caption is one line
+  (`white-space: nowrap`), and the group is as wide as the longer of the chip and the caption.
+- The groups are data now (`CHIP_GROUPS` in `SearchStatic.vue`: a key, the chips' values, the
+  caption), and a group's colour is one custom property (`--set-colour`) used by the chips'
+  outlines and text, the bracket and the caption. `availableFilterChips` is untouched: the same
+  chips in the same order.
+
+4 more tests (2 in `activeLinkColour.spec.js`; the group tests in `searchFilters.spec.js` were
+rewritten for the two groups, 4 became 6), each seen to fail first. Mocha: 665 passing, 6 pending
+(pre-existing skipped stubs); lint clean on the changed files. Checked in a browser on the local
+dev server, on `/search/arrests`: no sideways scroll at 1280, 768, 375 and 320 px, and the chip
+row is no taller than with the Hub group alone (54 px at 1280 px); the Publications chip at
+rest, hovered and in use, and it still filters (`?filter=publication`); the accessibility tree
+reads group "ICJIA’s library since 1983" > button "Publications 32"; in Chromium's
+forced-colours emulation the bracket stays and everything takes the system's colours. axe (AA
+and best practices) 0 violations at desktop and phone width; Lighthouse accessibility 100 at
+phone width. Not checked: the production build, and forced colours on Windows with a real
+contrast theme.
+
 ## [1.5.101] - 2026-09-21
 
 ### style(search): the Research Hub chip group is marked by one colour, the site's dark blue

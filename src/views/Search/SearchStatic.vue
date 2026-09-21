@@ -84,15 +84,22 @@
               >
                 <!-- The Research Hub chip and the Hub's three types are one
                      group: a line under the four, and a caption that says
-                     the Hub chip includes the other three. The other chips
-                     sit loose in the row (their wrappers make no box). -->
+                     the Hub chip includes the other three. The Publications
+                     chip is a group of its own, with its line and caption.
+                     The other chips sit loose in the row (their wrappers
+                     make no box). -->
                 <div
                   v-for="group in filterChipGroups"
                   :key="group.key"
                   class="filter-chip-set"
-                  :class="{ 'filter-chip-set--hub': group.hub }"
-                  :role="group.hub ? 'group' : null"
-                  :aria-labelledby="group.hub ? 'hub-chips-caption' : null"
+                  :class="
+                    group.caption && [
+                      'filter-chip-set--captioned',
+                      `filter-chip-set--${group.key}`,
+                    ]
+                  "
+                  :role="group.caption ? 'group' : null"
+                  :aria-labelledby="group.caption ? group.caption.id : null"
                 >
                   <div class="filter-chip-set__chips">
                     <button
@@ -109,12 +116,11 @@
                     </button>
                   </div>
                   <p
-                    v-if="group.hub"
-                    id="hub-chips-caption"
+                    v-if="group.caption"
+                    :id="group.caption.id"
                     class="filter-chip-set__caption"
                   >
-                    Research Hub includes Articles, Web Applications, and
-                    Datasets
+                    {{ group.caption.text }}
                   </p>
                 </div>
               </div>
@@ -289,6 +295,23 @@ const KEEP_TYPING = "Keep typing — search starts at 2 characters.";
 // Research Hub pages send their author and tag searches here with ?filter=hub.
 // "hub" is not a content type: it stands for the three types the Hub publishes.
 const HUB_TYPES = ["article", "web application", "dataset"];
+// Chips shown as a group, with a bracket under them and a caption, each group
+// in a colour of its own (its key is its class: filter-chip-set--hub). The
+// Hub chip stands for the three chips beside it. Publications is the agency's
+// library, apart from the Hub: 1,113 records from 1983 on (September 2026),
+// 257 of them Hub articles under the same title.
+const CHIP_GROUPS = [
+  {
+    key: "hub",
+    values: ["hub", ...HUB_TYPES],
+    caption: "Research Hub includes Articles, Web Applications, and Datasets",
+  },
+  {
+    key: "publications",
+    values: ["publication"],
+    caption: "ICJIA\u2019s library since 1983",
+  },
+];
 // Results are rendered this many at a time; "Show more results" adds as many.
 const RESULTS_PER_PAGE = 50;
 export default {
@@ -506,21 +529,23 @@ export default {
         ...chips,
       ];
     },
-    // The chip row as the page draws it: the Research Hub chip and the Hub's
-    // own types are one group, the chips before and after them are loose.
+    // The chip row as the page draws it: the chips of CHIP_GROUPS in their
+    // groups, each with its caption, and the chips between them loose.
     filterChipGroups() {
-      const chips = this.availableFilterChips;
-      const inHub = (chip) =>
-        chip.value === "hub" || HUB_TYPES.includes(chip.value);
-      const first = chips.findIndex(inHub);
-      if (first < 0)
-        return chips.length ? [{ key: "all", hub: false, chips }] : [];
-      const last = first + chips.filter(inHub).length;
-      return [
-        { key: "before", hub: false, chips: chips.slice(0, first) },
-        { key: "hub", hub: true, chips: chips.slice(first, last) },
-        { key: "after", hub: false, chips: chips.slice(last) },
-      ].filter((group) => group.chips.length);
+      const runs = [];
+      this.availableFilterChips.forEach((chip) => {
+        const set = CHIP_GROUPS.find((g) => g.values.includes(chip.value));
+        const last = runs[runs.length - 1];
+        if (last && last.set === set) last.chips.push(chip);
+        else runs.push({ set, chips: [chip] });
+      });
+      return runs.map(({ set, chips }, index) => ({
+        key: set ? set.key : `loose-${index}`,
+        caption: set
+          ? { id: `${set.key}-chips-caption`, text: set.caption }
+          : null,
+        chips,
+      }));
     },
   },
   watch: {
@@ -974,34 +999,46 @@ export default {
   display: contents;
 }
 
-/* The Research Hub group: its chips, a bracket under them, the caption. One
-   colour marks the group: the chips' outlines and text, the bracket (as thick
-   as a chip's border) and the caption are the site's dark blue (#0d47a1:
-   8.6:1 on white, 7.2:1 on a chip's count badge). The bracket and the caption
-   mark the group without the colour. The caption takes the width of the chips
-   and never widens the group (width 0, min-width 100%); at phone width the
-   group takes a row of its own and its chips wrap inside it. */
-.filter-chip-set--hub {
+/* A captioned group (the Research Hub's chips; the Publications chip): its
+   chips, a bracket under them, the caption. One colour marks each group: the
+   chips' outlines and text, the bracket (as thick as a chip's border) and the
+   caption. The bracket and the caption mark the group without the colour. The
+   caption takes the width of the chips and never widens the group (width 0,
+   min-width 100%); at phone width the group takes a row of its own and its
+   chips wrap inside it. */
+.filter-chip-set--captioned {
   display: inline-flex;
   flex-direction: column;
   min-width: 0;
 }
 
-.filter-chip-set--hub .filter-chip-set__chips {
+.filter-chip-set--captioned .filter-chip-set__chips {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
 
+/* The site's dark blue: 8.6:1 on white, 7.2:1 on a chip's count badge. */
+.filter-chip-set--hub {
+  --set-colour: #0d47a1;
+}
+
+/* A deep green: 9.1:1 on white, 7.6:1 on a chip's count badge. It is no
+   lighter or darker than the blue (1.06:1): the captions tell the two groups
+   apart for a reader who does not see the hue. */
+.filter-chip-set--publications {
+  --set-colour: #14532d;
+}
+
 /* Two classes: Vuetify gives every paragraph a 16 px bottom margin
    (.v-application p), which one class does not outrank. */
-.filter-chip-set--hub .filter-chip-set__caption {
+.filter-chip-set--captioned .filter-chip-set__caption {
   width: 0;
   min-width: 100%;
   margin: 4px 0 0;
   font-size: 11px;
   line-height: 1.4;
-  color: #0d47a1;
+  color: var(--set-colour);
 }
 
 .filter-chip-set__caption::before {
@@ -1009,15 +1046,24 @@ export default {
   display: block;
   height: 5px;
   margin-bottom: 2px;
-  border: solid #0d47a1;
+  border: solid var(--set-colour);
   border-width: 0 2px 2px;
+}
+
+/* One chip, and a caption about as long: squeezed to the chip's width the
+   caption took three lines, at phone width too, beside an empty row. It is
+   one line, and the group is as wide as the longer of the two. */
+.filter-chip-set--publications .filter-chip-set__caption {
+  width: auto;
+  min-width: 0;
+  white-space: nowrap;
 }
 
 /* Not the chip in use (black) nor a hovered one (blue): their own rules
    colour them, and a plainer selector here would outrank them. */
-.filter-chip-set--hub .filter-chip:not(.filter-chip--active):not(:hover) {
-  border-color: #0d47a1;
-  color: #0d47a1;
+.filter-chip-set--captioned .filter-chip:not(.filter-chip--active):not(:hover) {
+  border-color: var(--set-colour);
+  color: var(--set-colour);
 }
 
 .filter-chip {

@@ -166,16 +166,25 @@ describe("Who asks for the Research Hub filter", () => {
 
 // The Research Hub chip stands for three of the chips beside it, and nothing
 // on the page said so: the four looked like any other chips. They are one
-// group now, with a line under it and a caption (v1.5.100).
-describe("Search page: the Research Hub chips are shown as one group", () => {
+// group now, with a line under it and a caption (v1.5.100). The Publications
+// chip has a line and a caption too (v1.5.102): Publications is the agency's
+// library, apart from the Hub, and nothing said that either.
+describe("Search page: chips shown as a group, with a line and a caption", () => {
   const groups = (state) =>
     SearchStatic.computed.filterChipGroups.call(page(state));
+  const labels = (group) => group.chips.map((c) => c.label);
 
   it("groups the Research Hub chip with the Hub's own types", () => {
     const all = groups();
-    expect(all.map((g) => g.hub)).to.deep.equal([false, true, false]);
-    expect(all[0].chips.map((c) => c.label)).to.deep.equal(["No filter"]);
-    expect(all[1].chips.map((c) => c.label)).to.deep.equal([
+    expect(all.map((g) => g.key)).to.deep.equal([
+      "loose-0",
+      "hub",
+      "loose-2",
+      "publications",
+      "loose-4",
+    ]);
+    expect(labels(all[0])).to.deep.equal(["No filter"]);
+    expect(labels(all[1])).to.deep.equal([
       "Research Hub",
       "Articles",
       "Web Applications",
@@ -187,56 +196,104 @@ describe("Search page: the Research Hub chips are shown as one group", () => {
     );
   });
 
-  it("makes no group when no result is from the Hub", () => {
-    const all = groups({
+  it("gives the Publications chip a group of its own", () => {
+    const all = groups();
+    expect(labels(all[3])).to.deep.equal(["Publications"]);
+    expect(labels(all[2])).to.deep.equal(["Biographies"]);
+    expect(labels(all[4])).to.deep.equal(["News"]);
+  });
+
+  it("makes no group for a kind of result that is not there", () => {
+    const noHub = groups({
       queryResults: [result("news", "n1"), result("publication", "p1")],
     });
-    expect(all.map((g) => g.hub)).to.deep.equal([false]);
-    expect(all[0].chips.length).to.equal(3);
+    expect(noHub.map((g) => g.key)).to.deep.equal(["loose-0", "publications"]);
+    expect(labels(noHub[0])).to.deep.equal(["No filter", "News"]);
+    const neither = groups({
+      queryResults: [result("news", "n1"), result("meeting", "m1")],
+    });
+    expect(neither.map((g) => g.key)).to.deep.equal(["loose-0"]);
+    expect(neither[0].caption).to.equal(null);
     expect(groups({ queryResults: [] })).to.deep.equal([]);
   });
 
-  it("names the group with a caption that says what the Hub chip includes", () => {
+  it("names each group with its caption, and the loose chips with none", () => {
+    const all = groups();
+    expect(all.map((g) => g.caption && g.caption.id)).to.deep.equal([
+      null,
+      "hub-chips-caption",
+      null,
+      "publications-chips-caption",
+      null,
+    ]);
+    expect(all[1].caption.text).to.equal(
+      "Research Hub includes Articles, Web Applications, and Datasets"
+    );
+    expect(all[3].caption.text).to.equal("ICJIA’s library since 1983");
     const view = fs.readFileSync(
       path.join(process.cwd(), "src/views/Search/SearchStatic.vue"),
       "utf8"
     );
-    expect(view).to.include(":role=\"group.hub ? 'group' : null\"");
+    expect(view).to.include(":role=\"group.caption ? 'group' : null\"");
     expect(view).to.include(
-      ":aria-labelledby=\"group.hub ? 'hub-chips-caption' : null\""
+      ':aria-labelledby="group.caption ? group.caption.id : null"'
     );
     expect(view).to.match(
-      /id="hub-chips-caption"[^>]*>\s*Research Hub includes Articles, Web Applications, and\s+Datasets\s*</
+      /<p\s+v-if="group\.caption"\s+:id="group\.caption\.id"\s+class="filter-chip-set__caption"\s*>\s*\{\{ group\.caption\.text \}\}\s*<\/p>/
     );
   });
 
-  // One colour marks the group (v1.5.101): its chips' outlines and text, the
-  // bracket under them and the caption. The chip in use stays black and a
-  // hovered one blue: their own rules colour them, and a plainer selector here
-  // would outrank them.
-  it("gives the group one colour, but not the chip in use or hovered", () => {
+  // One colour marks a group: its chips' outlines and text, the bracket under
+  // them and the caption (v1.5.101). The chip in use stays black and a hovered
+  // one blue: their own rules colour them, and a plainer selector here would
+  // outrank them. Each group has a colour of its own (v1.5.102).
+  it("gives each group one colour, but not the chip in use or hovered", () => {
     const css = fs
       .readFileSync(
         path.join(process.cwd(), "src/views/Search/SearchStatic.vue"),
         "utf8"
       )
       .split("<style")[1];
-    const chips = css.match(
-      /\.filter-chip-set--hub\s+\.filter-chip:not\(\.filter-chip--active\):not\(:hover\)\s*\{\s*border-color: (#[0-9a-f]{6});\s*color: (#[0-9a-f]{6});/
+    expect(css).to.match(
+      /\.filter-chip-set--captioned\s+\.filter-chip:not\(\.filter-chip--active\):not\(:hover\)\s*\{\s*border-color: var\(--set-colour\);\s*color: var\(--set-colour\);/
     );
-    expect(chips, "the chips' rule").to.not.equal(null);
-    const bracket = css.match(
-      /\.filter-chip-set__caption::before\s*\{[^}]*border: solid (#[0-9a-f]{6});/
+    expect(css).to.match(
+      /\.filter-chip-set__caption::before\s*\{[^}]*border: solid var\(--set-colour\);/
     );
-    expect(bracket, "the bracket rule").to.not.equal(null);
-    const caption = css.match(
-      /\.filter-chip-set--hub \.filter-chip-set__caption\s*\{[^}]*\bcolor: (#[0-9a-f]{6});/
+    expect(css).to.match(
+      /\.filter-chip-set--captioned \.filter-chip-set__caption\s*\{[^}]*\bcolor: var\(--set-colour\);/
     );
-    expect(caption, "the caption rule").to.not.equal(null);
-    expect([chips[1], chips[2], caption[1]]).to.deep.equal([
-      bracket[1],
-      bracket[1],
-      bracket[1],
-    ]);
+    const colourOf = (key) =>
+      (css.match(
+        new RegExp(
+          `\\.filter-chip-set--${key}\\s*\\{\\s*--set-colour: (#[0-9a-f]{6});`
+        )
+      ) || [])[1];
+    expect(colourOf("hub")).to.equal("#0d47a1");
+    expect(colourOf("publications")).to.match(/^#[0-9a-f]{6}$/);
+    expect(colourOf("publications")).to.not.equal(colourOf("hub"));
+  });
+
+  // Squeezed to the width of its one chip, the Publications caption took three
+  // lines, at phone width too, beside an empty row. It is one line, and the
+  // group is as wide as the longer of the chip and the caption.
+  it("keeps the Publications caption on one line", () => {
+    const css = fs
+      .readFileSync(
+        path.join(process.cwd(), "src/views/Search/SearchStatic.vue"),
+        "utf8"
+      )
+      .split("<style")[1];
+    const shared = css.indexOf(
+      ".filter-chip-set--captioned .filter-chip-set__caption {"
+    );
+    const own = css.indexOf(
+      ".filter-chip-set--publications .filter-chip-set__caption {"
+    );
+    expect(shared, "the shared caption rule").to.be.above(-1);
+    expect(own, "the Publications caption rule, after it").to.be.above(shared);
+    expect(css.slice(own, css.indexOf("}", own))).to.match(
+      /width: auto;\s*min-width: 0;\s*white-space: nowrap;/
+    );
   });
 });

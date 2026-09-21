@@ -168,7 +168,11 @@ export default {
 </script>
 
 <style>
-.router-link-exact-active {
+/* The footer's link to the page it is on. For the footer only: this block is
+   not scoped, and the class alone reached every such link on the site, white
+   on a light ground (a result's tag chips and type labels on the search page,
+   after a click on one). */
+.v-footer .router-link-exact-active {
   color: #fff !important;
   font-weight: 900;
 }
