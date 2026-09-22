@@ -84,6 +84,44 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.123] - 2026-09-22
+
+### feat(search): "Newest first" on the results; the Search event names the word left out
+
+- **Newest first.** The search page has a switch, "Newest first", under the filter chips. On,
+  the results are in date order by the date the result card shows: a publication's or a news
+  post's publication date, a Research Hub item's date, and otherwise the record's posting date
+  (a funding notice, a job, a meeting); results with no date (partner sites, plans, some pages)
+  come last, and the similar results stay after the rest, folded away as before. The filter
+  chips apply either way. Off, the search's own order, best match first. The change is
+  announced to screen readers ("Results in date order, newest first." / "Results by best
+  match."). `resultDate()` and `newestFirst()` in `src/utils/search.js`; `orderedResults` in
+  `SearchStatic.vue`. The page had a "Sort by published date" switch commented out of its
+  template since before 2026, whose method sorted by a field the index does not carry
+  (`publicationDate` is only on publications and news); both are gone. Not done: the switch
+  is not written into the address, so Back and a shared link return to best-match order.
+- **The Search event names the word left out.** A search of "ball reform" finds nothing for
+  both words, leaves out "ball" and shows the results for "reform"; the event said
+  `matched: 0` beside `results: 35`, which was right but had to be inferred. It carries
+  `missing: "ball"` now, and no `missing` property when nothing was left out, so Plausible
+  shows "(none)" for those.
+
+8 new tests, all seen to fail first (the sort's with the two source files stashed): the
+event's `missing` property and its absence (`tests/unit/searchRecording.spec.js`); the date
+of a result and its absence, the order (newest first, undated last, similar after the rest),
+a stable sort that leaves its input alone, the switch ordering the results shown with the
+similar ones folded, the search's order when off, the switch in the toolbar and the old
+method gone (`tests/unit/searchSort.spec.js`). Five existing specs' page objects given the
+new property. Mocha: 784 passing, 6 pending (pre-existing skipped stubs); lint clean on the
+changed files. Checked in a browser on the local dev server at 1440 and 320 px: the switch's
+label and state, the order before and after (read from the page's own data: 107 and 199
+results strictly newest-first, the undated last), both announcements, a Publications chip
+with the switch on, the order restored when off; no sideways scroll; axe (AA and best
+practices) 0 violations with the switch on at both widths; no page errors. Not checked: the
+production build, Lighthouse.
+
+Tagged `1.5.123`.
+
 ## [1.5.122] - 2026-09-22
 
 ### feat(search): synonyms; a word left out when nothing holds them all; the main pages when nothing is found

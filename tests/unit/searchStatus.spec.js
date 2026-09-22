@@ -16,19 +16,25 @@ const makeSearch = (state = {}) => {
     announceWhenSearched: false,
     queryResults: [],
     filteredResults: [],
+    sortSwitch: false,
     $nextTick: (fn) => fn(),
     ...state,
   };
   // The two groups of results the message counts, when there are two
   // (tests/unit/searchSimilar.spec.js).
   // v1.5.122: the words left out, when the search dropped one.
-  ["wordResults", "similarResults", "missingWords", "quotedMissing"].forEach(
-    (name) => {
-      Object.defineProperty(vm, name, {
-        get: () => SearchStatic.computed[name].call(vm),
-      });
-    }
-  );
+  // v1.5.123: orderedResults, the order shown.
+  [
+    "orderedResults",
+    "wordResults",
+    "similarResults",
+    "missingWords",
+    "quotedMissing",
+  ].forEach((name) => {
+    Object.defineProperty(vm, name, {
+      get: () => SearchStatic.computed[name].call(vm),
+    });
+  });
   vm.arrayToList = (array) => array.join(", ");
   // Every value written to the live region, in order.
   vm.written = [];

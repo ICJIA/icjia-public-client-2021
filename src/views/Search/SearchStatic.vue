@@ -137,6 +137,20 @@
                   </p>
                 </div>
               </div>
+              <!-- Results in date order, newest first (v1.5.123): the date
+                   the card shows; results with none come last, and similar
+                   results stay after the rest. Off, the search's own order,
+                   best match first. -->
+              <div class="search-toolbar__sort">
+                <v-switch
+                  v-model="sortSwitch"
+                  label="Newest first"
+                  dense
+                  hide-details
+                  class="search-toolbar__switch"
+                  @change="announceSort"
+                ></v-switch>
+              </div>
             </div>
 
             <!-- <div style="font-size: 12px" class="mb-9 d-flex">
@@ -153,11 +167,6 @@
                   resultNumber
                 }}</span
               > -->
-            <!-- <v-switch
-                v-model="sortSwitch"
-                :label="`Sort by published date`"
-                @click="sortResults()"
-              ></v-switch> -->
             <!-- </div> -->
 
             <!-- Query vars: {{ $route.query.filter }} -->
@@ -296,7 +305,7 @@ import Fuse from "fuse.js";
 import _ from "lodash";
 import NProgress from "@/services/Progress";
 import { goToOptions } from "@/utils/motion";
-import { searchLocation, searchEvent } from "@/utils/search";
+import { searchLocation, searchEvent, newestFirst } from "@/utils/search";
 import { searchWords, synonymsOf } from "@/utils/searchFields";
 import {
   historyKey,
@@ -485,11 +494,18 @@ export default {
   computed: {
     // The results that hold every typed word, and the rest, which the search
     // marks similar and lists after them (src/utils/searchFields.js).
+    // The filtered results in the order shown: the search's own, or by date
+    // when the switch is on (src/utils/search.js, newestFirst).
+    orderedResults() {
+      return this.sortSwitch
+        ? newestFirst(this.filteredResults)
+        : this.filteredResults;
+    },
     wordResults() {
-      return this.filteredResults.filter((result) => !result.similar);
+      return this.orderedResults.filter((result) => !result.similar);
     },
     similarResults() {
-      return this.filteredResults.filter((result) => result.similar);
+      return this.orderedResults.filter((result) => result.similar);
     },
     // Similar results are folded away until asked for, unless they are all
     // there is (a misspelt word).
@@ -497,7 +513,7 @@ export default {
       return this.showSimilar || !this.wordResults.length;
     },
     listedResults() {
-      return this.similarOpen ? this.filteredResults : this.wordResults;
+      return this.similarOpen ? this.orderedResults : this.wordResults;
     },
     // The results on the page: the first fifty of the list, and fifty more
     // for each "Show more results".
@@ -913,20 +929,11 @@ export default {
         ]);
       }
     },
-    async sortResults() {
-      if (!this.fuse) return;
-      console.log("sorting");
-      this.queryResults = await this.fuse.search(this.query.trim());
-      if (this.sortSwitch) {
-        await this.instantSearch();
-        this.queryResults = _.orderBy(
-          this.queryResults,
-          ["item.publicationDate"],
-          ["desc"]
-        );
-      } else {
-        await this.instantSearch();
-      }
+    // The switch's change, for screen readers (the list reorders in place).
+    announceSort(on) {
+      this.announceStatus(
+        on ? "Results in date order, newest first." : "Results by best match."
+      );
     },
     focusInput() {
       this.$refs.textfield.focus();
@@ -1077,6 +1084,19 @@ export default {
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 6px;
+}
+
+/* The date-order switch, under the chips (v1.5.123). */
+.search-toolbar__sort {
+  margin-top: 10px;
+}
+.search-toolbar__switch {
+  margin: 0;
+  padding: 0;
+}
+.search-toolbar__switch .v-label {
+  font-size: 14px;
+  color: #333;
 }
 
 /* Loose chips: the wrappers make no box, so each chip is an item of the row

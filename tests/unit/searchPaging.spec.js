@@ -24,6 +24,7 @@ const page = (state = {}) => {
   const vm = {
     queryResults: [],
     filteredResults: [],
+    sortSwitch: false,
     contentSelected: "No filter",
     shownCount: 50,
     showSimilar: false,
@@ -33,6 +34,7 @@ const page = (state = {}) => {
   // visibleResults and what it is computed from (the similar results, folded
   // away: tests/unit/searchSimilar.spec.js).
   [
+    "orderedResults", // v1.5.123: the order shown
     "wordResults",
     "similarResults",
     "similarOpen",

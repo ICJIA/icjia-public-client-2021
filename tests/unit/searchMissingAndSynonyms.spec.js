@@ -126,6 +126,7 @@ describe("A word is dropped when nothing holds every typed word", () => {
       query: "domestic violence statistics",
       results: String(results.length),
       matched: "0",
+      missing: "statistics",
     });
   });
 });
@@ -229,6 +230,7 @@ describe("The search page says so", () => {
       searchedQuery: "domestic violence statistics",
       queryResults: [],
       filteredResults: [],
+      sortSwitch: false,
       showSimilar: false,
       arrayToList: DATA.arrayToList,
       ...state,
@@ -240,6 +242,7 @@ describe("The search page says so", () => {
       "quotedMissing",
       "searchedSynonyms",
       "quotedSynonyms",
+      "orderedResults", // v1.5.123: the order shown
       "wordResults",
       "similarResults",
     ].forEach((name) =>

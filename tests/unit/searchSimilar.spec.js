@@ -345,6 +345,7 @@ const page = (state = {}) => {
     searchedQuery: "drone",
     queryResults: [],
     filteredResults: [],
+    sortSwitch: false,
     contentSelected: "No filter",
     shownCount: 50,
     showSimilar: false,
@@ -352,6 +353,7 @@ const page = (state = {}) => {
     ...state,
   };
   [
+    "orderedResults", // v1.5.123: the order shown
     "wordResults",
     "similarResults",
     "similarOpen",

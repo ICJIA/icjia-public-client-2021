@@ -27,6 +27,22 @@ describe("The Search event", () => {
     });
   });
 
+  it("names the words the search left out (v1.5.123), and only then", () => {
+    const dropped = [
+      { item: {}, missing: ["ball"] },
+      { item: {}, missing: ["ball"] },
+    ];
+    expect(searchEvent("ball reform", dropped).props).to.deep.equal({
+      query: "ball reform",
+      results: "2",
+      matched: "0",
+      missing: "ball",
+    });
+    expect(searchEvent("reform", [{ item: {} }]).props).to.not.have.property(
+      "missing"
+    );
+  });
+
   it("records a search that found nothing", () => {
     expect(searchEvent("expungement", []).props).to.deep.equal({
       query: "expungement",

@@ -93,17 +93,64 @@ export function searchEvent(query, results) {
   const words = (query || "").trim().toLowerCase();
   if (words.length < 2) return null;
   const list = results || [];
-  return {
-    name: "Search",
-    props: {
-      query: words,
-      results: String(list.length),
-      matched: String(
-        list.filter((r) => !r.similar && !(r.missing && r.missing.length))
-          .length
-      ),
-    },
+  const props = {
+    query: words,
+    results: String(list.length),
+    matched: String(
+      list.filter((r) => !r.similar && !(r.missing && r.missing.length)).length
+    ),
   };
+  // The typed words the search left out, when it did (v1.5.123): "ball" for
+  // "ball reform". Absent otherwise, so Plausible shows "(none)".
+  const missing = (list[0] && list[0].missing) || [];
+  if (missing.length) props.missing = missing.join(" ");
+  return { name: "Search", props };
+}
+
+/**
+ * The date of a result, as the result card shows it (v1.5.123): a
+ * publication's or a news post's publicationDate, a Research Hub item's date,
+ * and otherwise the record's published_at (a funding notice, a job, a
+ * meeting). Null without one: a partner site, a plan, some pages.
+ *
+ * @param {object} item  A search record.
+ * @returns {number|null}  Milliseconds since the epoch.
+ */
+export function resultDate(item) {
+  if (!item) return null;
+  const value = item.publicationDate || item.date || item.published_at;
+  const time = value ? Date.parse(value) : NaN;
+  return Number.isNaN(time) ? null : time;
+}
+
+/**
+ * The results in date order, newest first, the undated last; the results that
+ * hold every typed word before the similar ones, each group in that order
+ * (the search's own order otherwise puts the best match first). A stable
+ * sort: equal dates keep the order given. The list given is left alone.
+ *
+ * @param {Array} results  Search results, each with `similar` when it is.
+ * @returns {Array}
+ */
+export function newestFirst(results) {
+  const byDate = (list) =>
+    list
+      .map((result, index) => ({
+        result,
+        index,
+        time: resultDate(result.item),
+      }))
+      .sort((a, b) => {
+        if (a.time === null && b.time === null) return a.index - b.index;
+        if (a.time === null) return 1;
+        if (b.time === null) return -1;
+        return b.time - a.time || a.index - b.index;
+      })
+      .map((entry) => entry.result);
+  const list = results || [];
+  return byDate(list.filter((r) => !r.similar)).concat(
+    byDate(list.filter((r) => r.similar))
+  );
 }
 
 /**
