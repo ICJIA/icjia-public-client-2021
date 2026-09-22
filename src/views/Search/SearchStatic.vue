@@ -281,7 +281,7 @@ import Fuse from "fuse.js";
 import _ from "lodash";
 import NProgress from "@/services/Progress";
 import { goToOptions } from "@/utils/motion";
-import { searchLocation } from "@/utils/search";
+import { searchLocation, searchEvent } from "@/utils/search";
 import { searchWords } from "@/utils/searchFields";
 import {
   historyKey,
@@ -322,6 +322,9 @@ const CHIP_GROUPS = [
 ];
 // Results are rendered this many at a time; "Show more results" adds as many.
 const RESULTS_PER_PAGE = 50;
+// A search is recorded (recordSearch) this long after it settled, so that a
+// query typed in one go is recorded once, not once per letter.
+const RECORD_SEARCH_AFTER = 1500;
 export default {
   metaInfo: {
     title: "Search ICJIA",
@@ -334,6 +337,7 @@ export default {
       opts: null,
       query: null,
       filter: null,
+      recordTimer: null,
 
       contentItems: [
         "No filter",
@@ -631,6 +635,16 @@ export default {
       // contentType string and matches contentSelected directly.
       if (chip.value === null) return this.contentSelected === "No filter";
       return chip.value === this.contentSelected;
+    },
+    // Records the search in Plausible, once it has settled (src/utils/search.js,
+    // searchEvent). A search within the wait replaces the one before it.
+    recordSearch(after = RECORD_SEARCH_AFTER) {
+      clearTimeout(this.recordTimer);
+      this.recordTimer = setTimeout(() => {
+        const event = searchEvent(this.searchedQuery, this.queryResults);
+        if (event && typeof window.plausible === "function")
+          window.plausible(event.name, { props: event.props });
+      }, after);
     },
     // The filter named in the address, when the results offer it as a chip.
     routeFilter() {
@@ -953,6 +967,7 @@ export default {
       this.contentSelected = fromRoute ? this.routeFilter() : "No filter";
       this.filterResults(null);
       this.searchedQuery = this.query;
+      this.recordSearch();
       if (fromRoute) this.restoreView();
       else this.syncAddress();
       if (this.announceWhenSearched) {

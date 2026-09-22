@@ -93,7 +93,7 @@ describe("Search index: the names of a page's links", () => {
       "/grants/funding/": "open solicitations",
     });
     expect(record.searchMeta).to.equal(
-      "funding nofo nofos notice of funding opportunity open solicitations"
+      "funding nofo nofos notice of funding opportunity rfp apply how to apply grant application open solicitations"
     );
   });
 });

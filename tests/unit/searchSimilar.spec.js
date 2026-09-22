@@ -462,6 +462,7 @@ describe("Search page: similar results are folded away", () => {
     });
     vm.filterResults = SearchStatic.methods.filterResults;
     vm.syncAddress = () => {};
+    vm.recordSearch = () => {}; // Plausible: tests/unit/searchRecording.spec.js
     await SearchStatic.methods.instantSearch.call(vm);
     expect(vm.showSimilar).to.equal(false);
     expect(vm.visibleResults.length).to.equal(3);

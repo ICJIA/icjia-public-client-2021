@@ -11,9 +11,17 @@
 // One entry per page, by its path. Add a page here when people look for it by
 // a word its editors did not think of.
 const KEYWORDS = {
-  "/grants/funding/": "nofo nofos notice of funding opportunity",
+  // v1.5.121: "rfp" and "how to apply" found nothing; "apply for a grant" and
+  // "grant application" led with news posts.
+  "/grants/funding/":
+    "nofo nofos notice of funding opportunity rfp apply how to apply grant application",
   // "careers" found nothing at all: no page and no posting has the word.
-  "/about/employment/": "careers",
+  // v1.5.121: "job openings" found nothing, "vacancies" the postings alone.
+  "/about/employment/": "careers vacancies vacant job openings openings",
+  // v1.5.121: "phone number" found nothing.
+  "/about/contact/": "phone phone number address email",
+  // v1.5.121: "board members" found nothing; the page has no keywords of its own.
+  "/about/composition-and-membership/": "board board members",
   // Reported because statutes require it, and listed in the Research menu
   // under "Statutory Reporting"; "statutory" found neither. The third such
   // page, /homicide/, is hand-built: its words are in ./manualPages.js.

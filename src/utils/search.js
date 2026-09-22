@@ -74,6 +74,36 @@ export function goToSearch(router, opts) {
 }
 
 /**
+ * The Plausible event for a search that has settled (v1.5.121): the words,
+ * lowercased, and the counts, as strings (Plausible shows a property's values
+ * as text). `matched` is the results that hold every typed word; the rest
+ * are similar. A search that found nothing is recorded too: that is the one
+ * to learn from. Nothing for a blank box or a single letter, which the page
+ * does not search.
+ *
+ * Plausible's own script records page views on the router's pushState, so a
+ * click on a tag or a name reaches it as /search/<words>; a search typed on
+ * the search page is written into the address with replaceState, and did not.
+ *
+ * @param {string} query    The query the results are for.
+ * @param {Array}  results  The results, each with `similar` when it is.
+ * @returns {{name: string, props: object}|null}
+ */
+export function searchEvent(query, results) {
+  const words = (query || "").trim().toLowerCase();
+  if (words.length < 2) return null;
+  const list = results || [];
+  return {
+    name: "Search",
+    props: {
+      query: words,
+      results: String(list.length),
+      matched: String(list.filter((r) => !r.similar).length),
+    },
+  };
+}
+
+/**
  * Open a destination path in a new browser tab with hardened rel.
  * Used by SearchCard when rendered on the static /search page so users
  * can drill into a result without losing their list of results.

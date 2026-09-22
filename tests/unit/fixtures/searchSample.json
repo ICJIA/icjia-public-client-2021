@@ -1652,6 +1652,16 @@
    "category": "funding",
    "contentType": "funding",
    "fullPath": "/grants/funding/2019-violence-prevention-planning/"
+  },
+  {
+   "title": "Composition and Membership",
+   "altTitle": "composition and membership",
+   "searchMeta": null,
+   "summary": "The Illinois Criminal Justice Information Authority is governed by a 25-member board of state and local leaders in the criminal justice community, and experts from the private sector. ICJIA is supported by a full-time professional staff working from the agency’s offices in Chicago and Springfield.",
+   "tags": [],
+   "category": "about",
+   "contentType": "page",
+   "fullPath": "/about/composition-and-membership/"
   }
  ]
 }

@@ -114,6 +114,7 @@ describe("Search page: the search on the page is in the address", () => {
       routeFilter: () => "No filter",
       syncAddress: () => calls.sync++,
       restoreView: () => calls.restore++,
+      recordSearch() {}, // Plausible: tests/unit/searchRecording.spec.js
       ...state,
     };
     await SearchStatic.methods.instantSearch.call(vm);

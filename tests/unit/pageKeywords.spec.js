@@ -32,19 +32,20 @@ describe("Search index: words added to a CMS page's keywords", () => {
         title: "Funding Opportunities",
         searchMeta: "funding",
       },
+      // A page with no added words (the Contact page has some since v1.5.121).
       {
-        fullPath: "/about/contact/",
-        title: "Contact ICJIA",
-        searchMeta: "phone",
+        fullPath: "/about/privacy/",
+        title: "Privacy Policy",
+        searchMeta: "privacy",
       },
     ]);
     expect(page.searchMeta).to.match(/^funding /);
     expect(page.searchMeta).to.include("nofo");
     expect(page.searchMeta).to.include("notice of funding opportunity");
     expect(other).to.deep.equal({
-      fullPath: "/about/contact/",
-      title: "Contact ICJIA",
-      searchMeta: "phone",
+      fullPath: "/about/privacy/",
+      title: "Privacy Policy",
+      searchMeta: "privacy",
     });
   });
 
@@ -201,5 +202,62 @@ describe("Search index: the generator adds the words", () => {
       .replace(/\s+/g, " ");
     expect(source).to.include('require("./pageKeywords")');
     expect(source).to.include("addKeywords(pages");
+  });
+});
+
+// v1.5.121: the phrasings that a batch of likely searches showed failing
+// (2026-09-22). "job openings", "rfp", "how to apply", "phone number" and
+// "board members" found nothing; "vacancies" found the postings and not the
+// Employment page; "apply for a grant" and "grant application" led with news
+// posts. Each page gets the words.
+describe("Site search: the words of failed searches, added to four pages", () => {
+  const fuse = new Fuse(
+    addKeywords(sample.records),
+    searchOptions(Fuse, config.search.site)
+  );
+  const plain = new Fuse(
+    sample.records,
+    searchOptions(Fuse, config.search.site)
+  );
+  const first = (query) => {
+    const found = searchAll(fuse, query);
+    expect(found, query).to.not.deep.equal([]);
+    expect(found[0], query).to.not.have.property("similar");
+    return found[0].item.fullPath;
+  };
+  const CASES = [
+    ["/about/employment/", ["job openings", "vacancies", "vacant", "openings"]],
+    [
+      "/grants/funding/",
+      ["rfp", "how to apply", "apply for a grant", "grant application"],
+    ],
+    ["/about/contact/", ["phone number", "phone", "email"]],
+    ["/about/composition-and-membership/", ["board members"]],
+  ];
+
+  CASES.forEach(([page, queries]) => {
+    it(`${page} leads for ${queries.map((q) => `"${q}"`).join(", ")}`, () => {
+      queries.forEach((query) => expect(first(query), query).to.equal(page));
+    });
+  });
+
+  it('"board" alone: the Institutional Review Board page may lead, and the Composition page is beside it', () => {
+    const found = searchAll(fuse, "board")
+      .filter((r) => !r.similar)
+      .slice(0, 2)
+      .map((r) => r.item.fullPath);
+    expect(found).to.include("/about/composition-and-membership/");
+  });
+
+  it("without the added words, none of the pages leads", () => {
+    CASES.forEach(([page, queries]) =>
+      queries.forEach((query) => {
+        const found = searchAll(plain, query).filter((r) => !r.similar);
+        expect((found[0] || {}).item || {}, query).to.not.have.property(
+          "fullPath",
+          page
+        );
+      })
+    );
   });
 });

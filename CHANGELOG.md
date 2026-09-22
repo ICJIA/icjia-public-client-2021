@@ -84,6 +84,52 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.121] - 2026-09-22
+
+### feat(search): searches recorded in Plausible; the words of failed searches added to four pages
+
+The first two of five search improvements the user chose on 2026-09-22 (the others follow: a
+fallback when no result holds every typed word, synonyms, a useful empty-results page; the
+search inside PDFs waits until the agency is ready, in a few weeks).
+
+- **Searches are recorded.** Plausible's script records a page view on the router's pushState:
+  a click on a tag or a name, and the front page's search box, reach it as `/search/<words>`,
+  but a search typed on the search page is written into the address with replaceState and
+  never did, so the "top searches" were mostly clicks, and a search that found nothing was
+  invisible. The page now sends a `Search` event once a search has settled (1.5 s after the
+  last change, so a query typed in one go is recorded once), with `query` (lowercased),
+  `results` and `matched` (the results that hold every typed word). A search that found
+  nothing is recorded too: that is the one to learn from. `searchEvent()` in
+  `src/utils/search.js`; `recordSearch()` in `SearchStatic.vue`. **To see it in Plausible:**
+  add a custom-event goal named `Search` (Site settings → Goals); its properties then break
+  down by query and result count.
+- **Keywords** (`generators/pageKeywords.js`, one line per page, as the rule has it) for the
+  phrasings a batch of 45 likely searches showed failing: Employment gets *vacancies, vacant,
+  job openings, openings* ("job openings" found nothing; "vacancies" the postings alone);
+  Funding Opportunities gets *rfp, apply, how to apply, grant application* ("rfp" and "how to
+  apply" found nothing; "apply for a grant" and "grant application" led with news posts);
+  Contact gets *phone, phone number, address, email* ("phone number" found nothing);
+  Composition and Membership gets *board, board members* ("board members" found nothing; the
+  page had no keywords). "board" alone still leads with the Institutional Review Board page,
+  whose title holds the word, with Composition beside it.
+- Seen while at it: the "Sort by published date" switch is commented out of the search page's
+  template, so there is no date sort on the site, contrary to what was said on 2026-09-22.
+
+11 new tests, all seen to fail first: the event's shape, a zero-result search, blank and
+one-letter queries, the page sending it once after the wait and not without Plausible or for a
+cleared box (`tests/unit/searchRecording.spec.js`); each page leading for its phrasings, "board"
+alone, and none of them leading without the words (`tests/unit/pageKeywords.spec.js`; the
+Composition page's record added to `tests/unit/fixtures/searchSample.json`). Four existing tests
+updated for the change (the keyword string they pin; a `recordSearch` stub on three hand-built
+page objects). Mocha: 756 passing, 6 pending (pre-existing skipped stubs); lint clean on the
+changed files. Index rebuilt from the local CMS snapshots. Checked in a browser on the local dev
+server at 1440 px: the seven searches leading with their pages; with the Plausible script
+blocked and `window.plausible` stubbed, one event for a search from the address, one for a
+query typed letter by letter, one for a second search, a zero-result search recorded; no page
+errors. Not checked: the production build, Lighthouse.
+
+Tagged `1.5.121`.
+
 ## [1.5.120] - 2026-09-22
 
 ### feat(search): press releases searched in full, a "Press Releases" chip, and the addresses guessed for the press page
