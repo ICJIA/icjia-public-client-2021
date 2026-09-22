@@ -105,8 +105,9 @@ let siteIndex = [
   ...partnerLinks,
 ];
 
-// Sitemap-only paths: hand-built routes that have no search record.
-const manualIndex = ["/news/press/"];
+// Sitemap-only paths: hand-built routes that have no search record. Empty since
+// v1.5.119: every hand-built page is in ./manualPages.js, which feeds both.
+const manualIndex = [];
 
 const dirpath = "./public/api";
 if (!fs.existsSync(dirpath)) fs.mkdirSync(dirpath);

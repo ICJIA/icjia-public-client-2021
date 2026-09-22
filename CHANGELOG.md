@@ -84,6 +84,32 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.119] - 2026-09-22
+
+### fix(search): Press Releases can be found
+
+The press page (`/news/press/`, the news posts that are press releases and media advisories;
+`/press/` redirects to it) was the other hand-built page in the sitemap alone, through the
+generator's sitemap-only list, and the search could not find it. It has a record in
+`generators/manualPages.js` now: title "Press Releases", with the tags press, press releases,
+media advisories and media. Searches for "press", "press releases", "press release", "media
+advisory" and "media" all show the page first.
+
+- The sitemap-only list (`manualIndex` in `generators/searchIndexAndSitemap.js`) is empty:
+  every hand-built page is in `manualPages.js`, which feeds the search and the sitemap both.
+- Seen while at it, not changed: the CMS holds 6 posts filed as press releases, the newest of
+  March 2024; later announcements are filed as news, so the press page shows those 6.
+
+3 new tests (`tests/unit/pressPage.spec.js`), all seen to fail first: the record, the empty
+sitemap-only list, four searches finding the page first. Mocha: 735 passing, 6 pending
+(pre-existing skipped stubs); lint clean on the changed files. The index and the sitemap rebuilt
+from the local CMS snapshots: 2,452 records, the page once in the sitemap. Checked in a browser
+on the local dev server, at 1440 and 320 px: the five searches; a click on the result opening
+the page; no sideways scroll; axe (AA and best practices) 0 violations on a results page at both
+widths; no page errors. Not checked: the production build, Lighthouse.
+
+Tagged `1.5.119`.
+
 ## [1.5.118] - 2026-09-22
 
 ### fix(search): the accessibility statement can be found; feat(nav): "Accessibility" in the bottom context bar

@@ -130,6 +130,22 @@ module.exports = [
     contentType: "page",
   },
   {
+    // The news posts that are press releases and media advisories
+    // (src/views/News/NewsPress.vue); /press/ redirects here.
+    id: "press",
+    title: "Press Releases",
+    altTitle: "press releases",
+    slug: "press",
+    category: "news",
+    summary:
+      "ICJIA press releases and media advisories, newest first: the agency's announcements to the press.",
+    searchMeta: "press releases media advisories media press room",
+    tags: ["press", "press releases", "media advisories", "media"],
+    fullPath: "/news/press/",
+    imagePath: null,
+    contentType: "page",
+  },
+  {
     id: "meetings",
     title: "ICJIA Meetings",
     altTitle: "icjia meetings",
