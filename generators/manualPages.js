@@ -54,6 +54,32 @@ module.exports = [
     },
   },
   {
+    // The statement's words are the page's own (src/views/Accessibility):
+    // the standards it names and the help it offers.
+    id: "accessibility",
+    title: "Accessibility Statement",
+    altTitle: "accessibility statement",
+    slug: "accessibility",
+    category: "general",
+    summary:
+      "ICJIA's accessibility statement: the website's goal of WCAG 2.1 Level AA, the standard of the Illinois Information Technology Accessibility Act (IITAA) and of Title II of the Americans with Disabilities Act (ADA); how the site is tested; and how to report a barrier or ask for information in a different format.",
+    searchMeta:
+      "accessibility statement WCAG ADA IITAA disability assistive technology screen reader accommodation alternative format",
+    tags: [
+      "accessibility",
+      "accessibility statement",
+      "WCAG",
+      "ADA",
+      "IITAA",
+      "disability",
+      "assistive technology",
+      "screen reader",
+    ],
+    fullPath: "/accessibility/",
+    imagePath: null,
+    contentType: "page",
+  },
+  {
     id: "grant-status",
     title: "Grant Status Request",
     altTitle: "grant status request",

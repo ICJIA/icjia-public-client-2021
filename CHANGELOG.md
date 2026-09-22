@@ -84,6 +84,43 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.118] - 2026-09-22
+
+### fix(search): the accessibility statement can be found; feat(nav): "Accessibility" in the bottom context bar
+
+A search for "accessibility" found nothing about the site's accessibility statement
+(`/accessibility/`, v1.5.65). The statement is a hand-built view with no CMS record, and such a
+page reaches the search index only through `generators/manualPages.js`, where it was never
+listed. It has a record there now: title "Accessibility Statement", the standards the page names
+(WCAG 2.1 AA, IITAA, ADA Title II) and the help it offers, with the tags accessibility,
+accessibility statement, WCAG, ADA, IITAA, disability, assistive technology and screen reader.
+Searches for "accessibility", "accessibility statement", "ADA", "WCAG", "screen reader",
+"disability" and "assistive technology" all show the page first.
+
+- The page was in the sitemap already, through the generator's sitemap-only list
+  (`manualIndex` in `generators/searchIndexAndSitemap.js`). Its search record covers the sitemap
+  now, so the list no longer names it: the sitemap holds the page once, as before.
+- The bottom context bar (the blue bar above the footer, `"Footer"` in
+  `src/config/contextMenus.json`) has an "Accessibility" link, between About and Contact, the
+  bar's alphabetical order. On the statement itself the link is marked as the page being shown.
+- The bar is 13 links wide now, with Search. It scrolls, with its arrows, in a window narrower
+  than about 1655 px; with 12 links that was about 1510 px. (The R&A bar has needed its arrow
+  below about 1650 px since v1.5.113.)
+- The footer's own "Accessibility" link (v1.5.65) is unchanged.
+
+5 new tests (`tests/unit/accessibilityPage.spec.js`), all seen to fail first: the record, the
+sitemap-only list without the page, seven searches finding the page first, the bar's link
+between About and Contact and leading to the page. Mocha: 732 passing, 6 pending (pre-existing
+skipped stubs); lint clean on the changed files. The index and the sitemap rebuilt from the local
+CMS snapshots (`node generators/searchIndexAndSitemap.js`): 2,451 records, the page once in the
+sitemap. Checked in a browser on the local dev server, at 1440 and 320 px: the seven searches;
+the bar's link on About, News and the statement, a click on it opening the statement; no
+sideways scroll; axe (AA and best practices) 0 violations on the statement and on a results page
+at both widths; no page errors. The arrows' thresholds measured on the live site (12 links) and
+locally (13) at 1500–1735 px. Not checked: the production build, Lighthouse.
+
+Tagged `1.5.118`.
+
 ## [1.5.117] - 2026-09-21
 
 ### chore(publications): the Document Archive note removed from a publication's card

@@ -106,7 +106,7 @@ let siteIndex = [
 ];
 
 // Sitemap-only paths: hand-built routes that have no search record.
-const manualIndex = ["/news/press/", "/accessibility/"];
+const manualIndex = ["/news/press/"];
 
 const dirpath = "./public/api";
 if (!fs.existsSync(dirpath)) fs.mkdirSync(dirpath);

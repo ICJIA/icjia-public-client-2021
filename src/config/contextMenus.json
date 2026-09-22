@@ -356,6 +356,10 @@
                 "path": "/about/"
             },
             {
+                "label": "Accessibility",
+                "path": "/accessibility/"
+            },
+            {
                 "label": "Contact",
                 "path": "/about/contact/"
             },
