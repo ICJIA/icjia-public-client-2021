@@ -39,6 +39,26 @@ const redirects = [
     path: "/press/",
     redirect: { name: "NewsPress" },
   },
+  // The addresses visitors guess for the press page (Plausible, 2025-26), and
+  // the old site's addresses of single releases (/press/<slug>, 2015-17; none
+  // of them is in the CMS, whose oldest post is of 2021). Read before the
+  // About pages' route, /about/:slug (src/router/index.js).
+  {
+    path: "/news/press-releases/",
+    redirect: { name: "NewsPress" },
+  },
+  {
+    path: "/about/press/",
+    redirect: { name: "NewsPress" },
+  },
+  {
+    path: "/news-information/press/",
+    redirect: { name: "NewsPress" },
+  },
+  {
+    path: "/press/:slug/",
+    redirect: { name: "NewsPress" },
+  },
 
   {
     path: "/drone/",

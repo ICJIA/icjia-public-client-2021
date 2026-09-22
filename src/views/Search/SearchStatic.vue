@@ -295,6 +295,14 @@ const KEEP_TYPING = "Keep typing — search starts at 2 characters.";
 // Research Hub pages send their author and tag searches here with ?filter=hub.
 // "hub" is not a content type: it stands for the three types the Hub publishes.
 const HUB_TYPES = ["article", "web application", "dataset"];
+// "press" is not a content type either (v1.5.120): the news posts that are
+// press releases and media advisories, by their category, as the press page
+// lists them. Their chip follows the News chip, whose count keeps them.
+const PRESS_CATEGORIES = ["pressRelease", "mediaAdvisory"];
+const isPressRelease = (item) =>
+  !!item &&
+  item.contentType === "news" &&
+  PRESS_CATEGORIES.includes(item.category);
 // Chips shown as a group, with a bracket under them and a caption, each group
 // in a colour of its own (its key is its class: filter-chip-set--hub). The
 // Hub chip stands for the three chips beside it. Publications is the agency's
@@ -510,6 +518,15 @@ export default {
         .filter((t) => !HUB_TYPES.includes(t))
         .map(chip)
         .sort((a, b) => b.count - a.count);
+      // The Press Releases chip, after the News chip.
+      const press = this.queryResults.filter((r) => isPressRelease(r.item));
+      const news = chips.findIndex((c) => c.value === "news");
+      if (press.length && news > -1)
+        chips.splice(news + 1, 0, {
+          value: "press",
+          label: "Press Releases",
+          count: press.length,
+        });
       // The Research Hub chip, then the Hub's own types side by side, in the
       // order of the Research menu.
       const hubTypes = HUB_TYPES.filter((t) => counts[t]).map(chip);
@@ -822,6 +839,10 @@ export default {
       } else if (this.filter === "hub") {
         this.filteredResults = this.queryResults.filter((result) =>
           HUB_TYPES.includes(result.item.contentType)
+        );
+      } else if (this.filter === "press") {
+        this.filteredResults = this.queryResults.filter((result) =>
+          isPressRelease(result.item)
         );
       } else {
         this.filteredResults = _.filter(this.queryResults, [

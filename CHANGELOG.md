@@ -84,6 +84,49 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.120] - 2026-09-22
+
+### feat(search): press releases searched in full, a "Press Releases" chip, and the addresses guessed for the press page
+
+For journalists, after v1.5.119 put the press page in the search. Three changes:
+
+- **A press release is searched in full.** The search reads only the opening 60 characters of a
+  summary, on purpose (whole abstracts multiplied hits for common words; see the header of
+  `src/utils/searchFields.js`), with the Research Hub's web applications and datasets read in
+  full. Press releases and media advisories, news posts by their category, are read in full too:
+  a handful of posts whose summary, about 290 characters, names what was announced ("21 grants
+  totaling...") past the cut. `FULL_TEXT_CATEGORIES` in `searchFields.js` and, identically, in
+  `public/searchWorker.js`. "grant awards totaling" finds the two releases that say so (it found
+  nothing before); "announced" finds 6 posts that hold the word (the releases' "today announced"
+  among them).
+- **A "Press Releases" chip** on the results, after the News chip, when a press release or a
+  media advisory is among the results (`src/views/Search/SearchStatic.vue`). Like the Research
+  Hub chip, "press" is not a content type: the chip narrows to those posts, and the News chip
+  keeps them, they being news. A chosen chip is written into the address (`?filter=press`) and
+  applies from it, as the other chips do. A loose chip, in no captioned group.
+- **The addresses visitors guess for the press page lead to it** (`src/router/redirects/index.js`):
+  `/news/press-releases/`, `/about/press/` and `/news-information/press/`, each seen in Plausible
+  in the past year, and the old site's addresses of single releases (`/press/<slug>`, 2015–17;
+  none of them is in the CMS, whose oldest post is of 2021). `/press/` led there already.
+
+Not changed, and the reason a journalist still finds little: the CMS holds 6 posts filed as
+press releases, the newest of March 2024; later announcements are filed as news.
+
+10 new tests, all seen to fail first: the full text in the app and in the worker, and the
+worker's categories the same as the app's (`tests/unit/pressPage.spec.js`; the worker test
+also seen to fail on the worker's old cut alone); the six guessed addresses, with and without
+their slash, and other About pages and news posts untouched (same file); the chip after News
+with its count, none without a press release, the narrowing and the News chip's count,
+`?filter=press` from the address, the chip in no group (`tests/unit/searchFilters.spec.js`).
+Mocha: 745 passing, 6 pending (pre-existing skipped stubs); lint clean on the changed files;
+`node --check` on the worker. Checked in a browser on the local dev server, at 1440 and 320 px:
+the four searches; the chip's place, count, click (4 of 6 results kept, `?filter=press` in the
+address) and its pressed state on a load with the address; axe (AA and best practices) 0
+violations with the chip chosen at both widths; the five addresses landing on the press page;
+no page errors. Not checked: the production build, Lighthouse.
+
+Tagged `1.5.120`.
+
 ## [1.5.119] - 2026-09-22
 
 ### fix(search): Press Releases can be found

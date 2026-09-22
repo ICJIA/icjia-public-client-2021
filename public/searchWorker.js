@@ -123,6 +123,15 @@ function deepSanitize(obj) {
 const SEARCH_HEAD_LENGTH = 60;
 const HEAD_FIELDS = ["summary", "abstract"];
 const FULL_TEXT_TYPES = ["web application", "dataset"];
+// Press releases and media advisories, news posts by their category, are read
+// in full too (v1.5.120): a handful of posts whose summary, about 290
+// characters, names what was announced ("21 grants totaling...") past the
+// opening 60.
+const FULL_TEXT_CATEGORIES = ["pressRelease", "mediaAdvisory"];
+const readInFull = (record) =>
+  FULL_TEXT_TYPES.includes(record.contentType) ||
+  (record.contentType === "news" &&
+    FULL_TEXT_CATEGORIES.includes(record.category));
 // Words that carry no meaning in a search: "how do I apply for a grant" is a
 // search for "apply" and "grant".
 const STOP_WORDS =
@@ -151,7 +160,7 @@ function searchOptions(options) {
       const name = Array.isArray(path) ? path.join(".") : path;
       return HEAD_FIELDS.includes(name) &&
         typeof value === "string" &&
-        !FULL_TEXT_TYPES.includes(record.contentType)
+        !readInFull(record)
         ? value.slice(0, SEARCH_HEAD_LENGTH)
         : value;
     },

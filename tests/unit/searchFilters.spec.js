@@ -308,3 +308,71 @@ describe("Search page: chips shown as a group, with a line and a caption", () =>
     );
   });
 });
+
+// v1.5.120: a "Press Releases" chip, for the news posts that are press
+// releases and media advisories (by their category, as the press page lists
+// them). Like "hub", "press" is not a content type. The chip follows the News
+// chip, whose count keeps them: they are news posts, and the chip narrows.
+describe("Search page: Press Releases filter", () => {
+  const post = (category, title) => ({
+    item: { contentType: "news", category, title },
+  });
+  const MIXED = [
+    result("page", "A page"),
+    post("news", "A news post"),
+    post("pressRelease", "A press release"),
+    post("mediaAdvisory", "A media advisory"),
+    post("news", "Another news post"),
+    result("publication", "A publication"),
+  ];
+
+  it("offers a Press Releases chip after the News chip, counting press releases and media advisories", () => {
+    const chips = page({ queryResults: MIXED }).availableFilterChips;
+    const at = chips.findIndex((c) => c.value === "news");
+    expect(at).to.be.greaterThan(0);
+    expect(chips[at].count).to.equal(4);
+    expect(chips[at + 1]).to.deep.equal({
+      value: "press",
+      label: "Press Releases",
+      count: 2,
+    });
+  });
+
+  it("offers no Press Releases chip when no press release was found", () => {
+    const chips = page().availableFilterChips;
+    expect(chips.map((c) => c.value)).to.not.include("press");
+    expect(chips.map((c) => c.value)).to.include("news");
+  });
+
+  it("keeps only press releases and media advisories when the chip is chosen; the News chip keeps them all", () => {
+    const vm = page({ queryResults: MIXED, contentSelected: "press" });
+    SearchStatic.methods.filterResults.call(vm);
+    expect(vm.filteredResults.map((r) => r.item.title)).to.deep.equal([
+      "A press release",
+      "A media advisory",
+    ]);
+    vm.contentSelected = "news";
+    SearchStatic.methods.filterResults.call(vm);
+    expect(vm.filteredResults.length).to.equal(4);
+  });
+
+  it("applies ?filter=press from the address when the results have one", () => {
+    const routeFilter = (state) =>
+      SearchStatic.methods.routeFilter.call(
+        page({ $route: { query: { filter: "press" } }, ...state })
+      );
+    expect(routeFilter({ queryResults: MIXED })).to.equal("press");
+    expect(routeFilter()).to.equal("No filter");
+  });
+
+  it("is a loose chip, in no group", () => {
+    const vm = page({ queryResults: MIXED });
+    Object.defineProperty(vm, "filterChipGroups", {
+      get: () => SearchStatic.computed.filterChipGroups.call(vm),
+    });
+    const run = vm.filterChipGroups.find((g) =>
+      g.chips.some((c) => c.value === "press")
+    );
+    expect(run.caption).to.equal(null);
+  });
+});
