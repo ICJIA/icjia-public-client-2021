@@ -84,6 +84,66 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.122] - 2026-09-22
+
+### feat(search): synonyms; a word left out when nothing holds them all; the main pages when nothing is found
+
+The other three search improvements chosen on 2026-09-22 (after v1.5.121's two). The search
+inside PDFs waits until the agency is ready, in a few weeks.
+
+- **Synonyms.** `src/config/searchSynonyms.json`: the words a visitor types and the words the
+  site uses, or will use, for the same thing ("bail": ["pretrial"]; "cops": ["police", "law
+  enforcement"]; "kids": ["youth", "juvenile"]). A search for the typed word also searches its
+  synonyms, and a result holding one of them counts as holding the word; the page says "Also
+  searched for “pretrial”". One way only: "pretrial" finds "pretrial" alone. A typed plural
+  uses its singular's line. 173 lines in nine groups, from people in the justice system to
+  equity and social justice; the agency is moving toward social justice work, so a line whose
+  words are not on the site yet is included on purpose: it finds nothing extra, costs nothing,
+  and starts working when such content is published (42 of the 215 target words are not in
+  the index yet). The file is edited by hand and applied at the next build; its `_about` note
+  says how, and the Plausible `Search` event's zero-result searches say what to add next.
+  "bail reform" finds the two pretrial studies (nothing before); "domestic violence statistics"
+  finds seven InfoNet data reports (nothing before). Kept out on purpose: "cash" (a search for
+  "cash bail" would have become pretrial *funding*), "record" (too common a word).
+- **A word left out when nothing at all is found.** "homicide dashboard expungement" found
+  nothing, where Google shows the results for "homicide dashboard" and says "Missing:
+  expungement". The search now leaves out the word held by the fewest records (an absent word
+  is held by none, whatever its near spellings) and searches the rest, one word at a time. The
+  page says "Nothing contains “expungement”. Showing results for “homicide” and “dashboard”",
+  the status message says the same, and the `Search` event counts no result as matched. A
+  misspelt word is not touched: it still finds its similar spellings, as before ("task force
+  trafic" still leads with the Traffic and Pedestrian Stop task force).
+- **The main pages when nothing is found.** The empty state offered "browse all articles, news,
+  or grants"; it now says "Try fewer or different words, or start from one of these pages" and
+  lists Funding Opportunities, Employment, Research Hub, Publications, News, Meetings and
+  Contact ICJIA.
+- The worker (`public/searchWorker.js`) carries the same code as `src/utils/searchFields.js`
+  and is given the synonym table when it starts (`src/services/searchClient.js`, `INIT`);
+  the parity tests run the worker's code with the same table.
+- Not changed: the highlighting on the cards marks the typed words, not their synonyms; and a
+  short typed word still matches the start of a longer one (v1.5.95: "homic" for "Homicide"), so
+  "bail" lists a biography (Bailey) before the pretrial studies.
+
+20 new tests (`tests/unit/searchMissingAndSynonyms.spec.js`), all seen to fail first: the word
+left out and named, the fewest holders dropped, one word at a time, nothing marked when every
+word is held, nothing when no word is held, the worker the same, the event's count; a synonym
+found and held, in a search of several words, a phrase synonym, a plural, the table read in any
+case and its notes skipped, the worker with the same table, the app giving it the table; the
+shipped table's note, size, form and first pairs; the page's missing and synonym lines, its
+status text, and the empty state's pages. Five existing specs updated for the change (the
+worker parity tests given the table; hand-built page objects given the new properties; the
+keyword control test ignoring results found with a word left out). Mocha: 776 passing, 6
+pending (pre-existing skipped stubs); lint clean on the changed files; `node --check` on the
+worker; the copied functions compared with `diff`. A batch of likely searches run through the
+worker's code against the full index, before and after. Checked in a browser on the local dev
+server at 1440 and 320 px: "bail", "bail reform", "cops", "kids" (typed) with their synonym
+lines; "homicide dashboard expungement" with its missing line and status announcement; "zebra
+giraffe" with the seven pages; no sideways scroll; axe (AA and best practices) 0 violations on
+the three kinds of page at both widths; no page errors. Not checked: the production build,
+Lighthouse.
+
+Tagged `1.5.122`.
+
 ## [1.5.121] - 2026-09-22
 
 ### feat(search): searches recorded in Plausible; the words of failed searches added to four pages

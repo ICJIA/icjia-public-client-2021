@@ -252,7 +252,10 @@ describe("Site search: the words of failed searches, added to four pages", () =>
   it("without the added words, none of the pages leads", () => {
     CASES.forEach(([page, queries]) =>
       queries.forEach((query) => {
-        const found = searchAll(plain, query).filter((r) => !r.similar);
+        // Not similar, and not found with a typed word left out (v1.5.122).
+        const found = searchAll(plain, query).filter(
+          (r) => !r.similar && !r.missing
+        );
         expect((found[0] || {}).item || {}, query).to.not.have.property(
           "fullPath",
           page

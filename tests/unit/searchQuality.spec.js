@@ -180,8 +180,10 @@ describe("Site search: several words, in any order", () => {
     // eslint-disable-next-line no-new-func
     const api = new Function(
       "Fuse",
-      `${source}\nreturn { searchOptions, searchAll };`
+      `${source}\nreturn { searchOptions, searchAll, useSynonyms };`
     )(Fuse);
+    // The same synonym table as the app (v1.5.122).
+    api.useSynonyms(require("@/config/searchSynonyms.json"));
     const theirs = new Fuse(
       sample.records,
       api.searchOptions(config.search.site)

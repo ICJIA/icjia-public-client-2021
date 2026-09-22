@@ -59,6 +59,19 @@
                 <span class="search-toolbar__for">
                   for <em>&ldquo;{{ query }}&rdquo;</em>
                 </span>
+                <!-- A typed word left out, when nothing held them all: the
+                     results are for the rest (v1.5.122). -->
+                <div v-if="missingWords.length" class="search-toolbar__groups">
+                  Nothing contains {{ quotedMissing }}. Showing results for
+                  {{ quotedWords }}.
+                </div>
+                <!-- The synonyms searched with the typed words. -->
+                <div
+                  v-if="searchedSynonyms.length"
+                  class="search-toolbar__groups"
+                >
+                  Also searched for {{ quotedSynonyms }}.
+                </div>
                 <!-- How many of them hold the typed words: the rest are a
                      letter away, or hold the word inside a longer one, and
                      are listed after them, folded away. -->
@@ -250,12 +263,14 @@
                   No results for <em>&ldquo;{{ query }}&rdquo;</em>.
                 </p>
                 <p class="search-empty__hint">
-                  Try a shorter or differently-spelled term, or
-                  <router-link to="/researchhub/articles"
-                    >browse all articles</router-link
-                  >, <router-link to="/news/">news</router-link>, or
-                  <router-link to="/grants/">grants</router-link>.
+                  Try fewer or different words, or start from one of these
+                  pages:
                 </p>
+                <ul class="search-empty__pages">
+                  <li v-for="page in emptyStatePages" :key="page.path">
+                    <router-link :to="page.path">{{ page.label }}</router-link>
+                  </li>
+                </ul>
               </div>
               <div
                 v-else-if="query.length > 0 && query.length < 2"
@@ -282,7 +297,7 @@ import _ from "lodash";
 import NProgress from "@/services/Progress";
 import { goToOptions } from "@/utils/motion";
 import { searchLocation, searchEvent } from "@/utils/search";
-import { searchWords } from "@/utils/searchFields";
+import { searchWords, synonymsOf } from "@/utils/searchFields";
 import {
   historyKey,
   keepSearchView,
@@ -320,6 +335,16 @@ const CHIP_GROUPS = [
     caption: "ICJIA\u2019s library since 1983",
   },
 ];
+// The pages offered when nothing at all was found (v1.5.122).
+const EMPTY_STATE_PAGES = [
+  { label: "Funding Opportunities", path: "/grants/funding/" },
+  { label: "Employment", path: "/about/employment/" },
+  { label: "Research Hub", path: "/researchhub/" },
+  { label: "Publications", path: "/about/publications/" },
+  { label: "News", path: "/news/" },
+  { label: "Meetings", path: "/news/meetings/" },
+  { label: "Contact ICJIA", path: "/about/contact/" },
+];
 // Results are rendered this many at a time; "Show more results" adds as many.
 const RESULTS_PER_PAGE = 50;
 // A search is recorded (recordSearch) this long after it settled, so that a
@@ -338,6 +363,7 @@ export default {
       query: null,
       filter: null,
       recordTimer: null,
+      emptyStatePages: EMPTY_STATE_PAGES,
 
       contentItems: [
         "No filter",
@@ -484,13 +510,33 @@ export default {
     visibleSimilarResults() {
       return this.visibleResults.filter((result) => result.similar);
     },
+    // The typed words the search left out, when nothing held them all
+    // (src/utils/searchFields.js, v1.5.122): every result names them.
+    missingWords() {
+      const first = this.queryResults[0];
+      return (first && first.missing) || [];
+    },
     // The words the results were searched for ("use of force": use, force),
-    // and as they are named on the page: “use” and “force”.
+    // less any left out, and as they are named on the page: “use” and “force”.
     searchedWords() {
-      return searchWords(this.searchedQuery || this.query);
+      return searchWords(this.searchedQuery || this.query).filter(
+        (word) => !this.missingWords.includes(word)
+      );
     },
     quotedWords() {
       return this.arrayToList(this.searchedWords.map((word) => `“${word}”`));
+    },
+    quotedMissing() {
+      return this.arrayToList(this.missingWords.map((word) => `“${word}”`));
+    },
+    // The synonyms searched with the typed words ("bail": also "pretrial"),
+    // from src/config/searchSynonyms.json.
+    searchedSynonyms() {
+      const all = [].concat(...this.searchedWords.map(synonymsOf));
+      return all.filter((word, index) => all.indexOf(word) === index);
+    },
+    quotedSynonyms() {
+      return this.arrayToList(this.searchedSynonyms.map((word) => `“${word}”`));
     },
     similarNote() {
       const count = this.similarResults.length;
@@ -727,9 +773,11 @@ export default {
       const count = this.queryResults.length;
       const query = (this.query || "").trim();
       if (!count) return `No results for “${query}”.`;
-      const status = `${this.filteredResults.length} of ${count} result${
+      let status = `${this.filteredResults.length} of ${count} result${
         count === 1 ? "" : "s"
       } for “${query}”`;
+      if (this.missingWords.length)
+        status += `. Nothing contains ${this.quotedMissing}; these are results for ${this.quotedWords}`;
       // The two groups, when there are two.
       const similar = this.similarResults.length;
       if (!similar) return status;
@@ -1204,9 +1252,21 @@ export default {
   margin: 0;
 }
 
-.search-empty__hint a {
+.search-empty__hint a,
+.search-empty__pages a {
   color: #1565c0;
   text-decoration: underline;
+}
+
+/* The main pages, one row that wraps (v1.5.122). */
+.search-empty__pages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  font-size: 14px;
 }
 
 /* #777 was 4.48:1 on white (WCAG 1.4.3); #666 is 5.74:1. */

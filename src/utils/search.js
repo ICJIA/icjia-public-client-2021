@@ -77,9 +77,9 @@ export function goToSearch(router, opts) {
  * The Plausible event for a search that has settled (v1.5.121): the words,
  * lowercased, and the counts, as strings (Plausible shows a property's values
  * as text). `matched` is the results that hold every typed word; the rest
- * are similar. A search that found nothing is recorded too: that is the one
- * to learn from. Nothing for a blank box or a single letter, which the page
- * does not search.
+ * are similar, or were found with a typed word left out (v1.5.122). A search
+ * that found nothing is recorded too: that is the one to learn from. Nothing
+ * for a blank box or a single letter, which the page does not search.
  *
  * Plausible's own script records page views on the router's pushState, so a
  * click on a tag or a name reaches it as /search/<words>; a search typed on
@@ -98,7 +98,10 @@ export function searchEvent(query, results) {
     props: {
       query: words,
       results: String(list.length),
-      matched: String(list.filter((r) => !r.similar).length),
+      matched: String(
+        list.filter((r) => !r.similar && !(r.missing && r.missing.length))
+          .length
+      ),
     },
   };
 }

@@ -22,6 +22,11 @@
 
 let nextId = 1;
 
+// The synonym table (src/config/searchSynonyms.json) goes to the worker with
+// its first message; the in-process search reads the same file itself
+// (src/utils/searchFields.js).
+import synonyms from "@/config/searchSynonyms.json";
+
 export function workersAvailable() {
   return typeof window !== "undefined" && typeof window.Worker === "function";
 }
@@ -76,7 +81,7 @@ export function createSearchClient({
 
   // Kick off the index load immediately. The promise stored in `readyPromise`
   // resolves when the worker has finished building Fuse and is ready to search.
-  worker.postMessage({ type: "INIT", fuseOptions, indexUrl });
+  worker.postMessage({ type: "INIT", fuseOptions, indexUrl, synonyms });
 
   return {
     usingWorker: true,

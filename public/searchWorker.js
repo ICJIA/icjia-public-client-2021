@@ -132,6 +132,28 @@ const readInFull = (record) =>
   FULL_TEXT_TYPES.includes(record.contentType) ||
   (record.contentType === "news" &&
     FULL_TEXT_CATEGORIES.includes(record.category));
+// Synonyms (v1.5.122): the words a visitor types and the words the site uses
+// for the same thing, from src/config/searchSynonyms.json ("bail":
+// ["pretrial"]). A search for the typed word also searches its synonyms, and a
+// result holding one of them holds the word. One way: "pretrial" finds
+// "pretrial" alone. The app gives this worker the table when it starts (INIT).
+let SYNONYMS = {};
+function useSynonyms(table) {
+  SYNONYMS = {};
+  Object.entries(table || {}).forEach(([key, values]) => {
+    if (key.startsWith("_") || !Array.isArray(values)) return;
+    SYNONYMS[key.toLowerCase()] = values
+      .map((value) => String(value).toLowerCase().trim())
+      .filter(Boolean);
+  });
+}
+// The synonyms of a typed word; a plural's are its singular's.
+function synonymsOf(word) {
+  const typed = String(word || "").toLowerCase();
+  const singular =
+    typed.length > 3 && typed.endsWith("s") ? typed.slice(0, -1) : null;
+  return SYNONYMS[typed] || (singular && SYNONYMS[singular]) || [];
+}
 // Words that carry no meaning in a search: "how do I apply for a grant" is a
 // search for "apply" and "grant".
 const STOP_WORDS =
@@ -190,10 +212,20 @@ function wordHits(fuse, word) {
     memory = new Map();
     WORD_MEMORY.set(fuse, memory);
   }
-  let hits = memory.get(word);
+  // The word's hits, then its synonyms' (a record found by both keeps its
+  // better score).
+  const alternatives = [word].concat(synonymsOf(word));
+  const key = alternatives.join("\n");
+  let hits = memory.get(key);
   if (!hits) {
-    hits = new Map(fuse.search(word).map((r) => [r.refIndex, r]));
-    memory.set(word, hits);
+    hits = new Map();
+    alternatives.forEach((alternative) =>
+      fuse.search(alternative).forEach((r) => {
+        const known = hits.get(r.refIndex);
+        if (!known || r.score < known.score) hits.set(r.refIndex, r);
+      })
+    );
+    memory.set(key, hits);
     if (memory.size > WORD_MEMORY_SIZE)
       memory.delete(memory.keys().next().value);
   }
@@ -208,9 +240,9 @@ function wordHits(fuse, word) {
 // whole word ("drones" by "drone"; not "units" by "United"). A word in "ss",
 // "us" or "is" is singular already: "status" would look for "statu", and find
 // "statute".
-function heldBy(word) {
+// A synonym of the word, held, holds the word too.
+function wordForms(typed) {
   const literal = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const typed = word.replace(/[\u2018\u2019]/g, "'");
   const forms = [literal(typed)];
   if (typed.length >= 4 && /[^aeiou]y$/.test(typed))
     forms.push(literal(`${typed.slice(0, -1)}ies`));
@@ -219,6 +251,11 @@ function heldBy(word) {
     if (typed.endsWith("es")) singular.push(typed.slice(0, -2));
     singular.forEach((form) => forms.push(`${literal(form)}(?![a-z0-9])`));
   }
+  return forms;
+}
+function heldBy(word) {
+  const typed = word.replace(/[\u2018\u2019]/g, "'");
+  const forms = [].concat(...[typed].concat(synonymsOf(typed)).map(wordForms));
   return new RegExp(`(^|[^a-z0-9])(${forms.join("|")})`);
 }
 
@@ -320,9 +357,46 @@ function arrange(fuse, results, words) {
 // (best combined score first), then records that match only as a loose phrase;
 // and, over that order, arrange() above.
 function searchAll(fuse, query) {
+  const results = searchCore(fuse, query);
+  const words = searchWords(query);
+  if (words.length < 2 || results.length) return results;
+  // Nothing at all was found (v1.5.122; a misspelt word still finds its
+  // similar spellings, above): the word held by the fewest records is left
+  // out and the rest searched, as Google does ("Missing: statistics"), one
+  // word at a time. Held, not found: a word the site lacks is found by its
+  // near spellings and held by nothing. Every result names the words left
+  // out, for the page to say so; when even that finds nothing, there are no
+  // results.
+  const holders = words.map((word) => {
+    const test = heldBy(word);
+    let held = 0;
+    wordHits(fuse, word).forEach((r) => {
+      if (test.test(recordText(fuse, r))) held += 1;
+    });
+    return held;
+  });
+  const fewest = holders.indexOf(Math.min.apply(null, holders));
+  const kept = words.filter((word, index) => index !== fewest);
+  const narrower = searchAll(fuse, kept.join(" "));
+  if (!narrower.some((r) => !r.similar)) return results;
+  const missing = [words[fewest]].concat(narrower[0].missing || []);
+  return narrower.map((r) => Object.assign({}, r, { missing }));
+}
+
+function searchCore(fuse, query) {
   const phrase = fuse.search(query);
   const words = searchWords(query);
-  if (words.length < 2) return arrange(fuse, phrase, words);
+  if (words.length < 2) {
+    // One word: its synonyms' results after its own.
+    if (!words.length || !synonymsOf(words[0]).length)
+      return arrange(fuse, phrase, words);
+    const seen = new Set(phrase.map((r) => r.refIndex));
+    const more = [];
+    wordHits(fuse, words[0]).forEach((r, ref) => {
+      if (!seen.has(ref)) more.push(r);
+    });
+    return arrange(fuse, phrase.concat(more), words);
+  }
 
   let every = null; // refIndex -> { result, score }
   for (const word of words) {
@@ -399,6 +473,7 @@ self.addEventListener("message", async (e) => {
       const res = await fetch(url);
       if (!res.ok) throw new Error(`searchIndex fetch failed: ${res.status}`);
       const records = deepSanitize(await res.json());
+      useSynonyms(msg.synonyms || {});
       fuse = new Fuse(records, searchOptions(msg.fuseOptions || {}));
       self.postMessage({ type: "READY" });
     } catch (err) {
