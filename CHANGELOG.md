@@ -84,6 +84,35 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.125] - 2026-09-23
+
+### docs: a one-page briefing on moving the task force reports off the Research Hub
+
+New briefing for non-technical managers, `docs/TASK-FORCE-REPORTS.html`: one self-contained page (dark on
+screen, light when printed) on the proposal to take the 14 task force reports off the Research Hub and
+gather them on a new Task Force page (`/taskforce/`, not built). It informs rather than argues: a TL;DR;
+what moves and what stays (the Hub goes from 256 articles to 242; task force meetings stay on the meetings
+page and the reports stay in the publications list); a year of use, 23 Sept 2025 to 23 Sept 2026, from
+Plausible (2,581 people visited the reports' Hub pages, 1,658 visits began on them, nearly two thirds from
+Google, 161 people downloaded one from the Hub, 205 downloads, and 170 more downloads came from the
+publications list); each report's figures; how readers reach the pages; the 145 task force meetings since
+December 2020, by task force; the reason given for the move (not written to the Hub's research standard);
+points in favour and points to weigh; what the move involves; what is still to decide; how the numbers were
+counted.
+
+- Found while gathering the figures, and set out in the briefing: all 14 publication entries link to their
+  Hub pages, and 13 of the 14 PDF files are stored on the Research Hub's file server, so a move has to keep
+  those files and change those links.
+- "Task force report" means the 14 Hub articles that are a task force's own report. The 2 Domestic Violence
+  Fatality Review Committee reports on the Hub are listed as still to decide.
+- Hub downloads are Plausible's `research_article` event, which the Plausible MCP cannot break down by
+  property; they were read from the same Plausible server's Stats API.
+
+Docs-only change; no site code touched. Checked in a browser at 1072 and 390 px; axe (AA and best
+practices) 0 violations at desktop and phone width; all 338 text elements pass contrast (AA).
+
+Tagged `1.5.125`.
+
 ## [1.5.124] - 2026-09-23
 
 ### fix(researchhub): the articles' own pictures on /researchhub/articles/ again
@@ -116,7 +145,8 @@ own against the live CMS: before, the TypeError, exit 0 and no article picture; 
 article pictures (230 JPEG, 26 PNG, the CMS's own counts) and the 4 apps' pictures, all 260
 real images, the Homicide app skipped. Not checked before the push: a browser (the cards load
 their pictures from the live site's address, so only the deploy can show them), the full
-production build, Lighthouse.
+production build, Lighthouse. Checked live after the deploy: all 256 articles' own pictures load (26 of them
+through the `.png` fallback), and all 42 cards on the first page of `/researchhub/articles/` show their own.
 
 Tagged `1.5.124`.
 

@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Task force reports and the Research Hub</title>
+<meta name="description" content="What would change, and what would stay, if the 14 task force reports moved from the ICJIA Research Hub to a new Task Force page; with a year of use figures.">
+<style>
+  :root {
+    --bg: #0e1f33;
+    --raised: #142d4a;
+    --line: #2d4d70;
+    --text: #edf3f9;
+    --muted: #b6c8da;
+    --hub: #7cc7ff;
+    --tf: #f5c451;
+    --focus: #ffe08a;
+    --display: "Bahnschrift", "DIN Alternate", "DIN Condensed", "Avenir Next Condensed", "Roboto Condensed", "Arial Narrow", sans-serif;
+    --body: "Segoe UI", "Avenir Next", "Helvetica Neue", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 17px/1.6 var(--body);
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  h1, h2, h3, .big, .chip { font-family: var(--display); font-variant-numeric: lining-nums tabular-nums; }
+  h1 {
+    font-size: clamp(2.3rem, 6vw, 4rem);
+    line-height: 1.02;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 0 1rem;
+    max-width: 18ch;
+  }
+  h2 {
+    font-size: clamp(1.7rem, 3.6vw, 2.4rem);
+    line-height: 1.1;
+    font-weight: 700;
+    margin: 4rem 0 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 2px solid var(--line);
+  }
+  h3 { font-size: 1.3rem; line-height: 1.2; font-weight: 700; margin: 0 0 .5rem; }
+  p, li { max-width: 70ch; }
+  .muted { color: var(--muted); }
+  strong { font-weight: 700; }
+
+  /* Masthead */
+  .masthead { padding: 56px 0 8px; }
+  .lede { font-size: 1.2rem; line-height: 1.5; margin: 0 0 .75rem; }
+  .byline { color: var(--muted); margin: 0; }
+
+  /* TL;DR */
+  .tldr {
+    margin-top: 2rem;
+    background: var(--raised);
+    border-left: 8px solid var(--text);
+    padding: 1.25rem 1.5rem 1rem;
+  }
+  .tldr h2 { border: 0; margin: 0 0 .5rem; padding: 0; font-size: 1.8rem; }
+  .tldr ul { margin: 0; padding-left: 1.2rem; }
+  .tldr li { margin: 0 0 .6rem; max-width: none; }
+
+  /* The move */
+  .route {
+    display: grid;
+    grid-template-columns: 1fr minmax(220px, 300px) 1fr;
+    gap: 18px;
+    align-items: stretch;
+  }
+  .place {
+    background: var(--raised);
+    padding: 1.1rem 1.25rem 1.2rem;
+    border-top: 8px solid var(--line);
+  }
+  .place p { margin: .4rem 0 0; }
+  .place.hub { border-top-color: var(--hub); }
+  .place.tfp { border-top-color: var(--tf); }
+  .place.stay { border-top-color: var(--text); }
+  .place h3 { font-size: 1.45rem; }
+  .big {
+    display: block;
+    font-size: clamp(2.6rem, 7vw, 4.4rem);
+    line-height: 1;
+    font-weight: 700;
+    margin: .35rem 0 .15rem;
+  }
+  .hub .big { color: var(--hub); }
+  .tfp .big { color: var(--tf); }
+  .big small { font-size: .45em; font-weight: 600; color: var(--muted); margin: 0 .15em; }
+  .addr { font-weight: 700; color: var(--tf); overflow-wrap: anywhere; }
+  .transit {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: .6rem;
+  }
+  .chips {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(7, auto);
+    gap: 6px;
+    justify-content: center;
+  }
+  .chip {
+    background: var(--tf);
+    color: var(--bg);
+    font-weight: 700;
+    font-size: .9rem;
+    padding: .15rem .35rem;
+    border-radius: 3px;
+    max-width: none;
+  }
+  .arrow {
+    width: 100%;
+    height: 22px;
+    display: block;
+  }
+  .arrow path { fill: var(--tf); }
+  .transit p { margin: 0; font-weight: 600; max-width: 22ch; }
+  .stays {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-top: 18px;
+  }
+  .stays .big { font-size: clamp(2.2rem, 5vw, 3.4rem); }
+  .status {
+    display: inline-block;
+    margin-top: .75rem;
+    border: 2px solid var(--text);
+    border-radius: 999px;
+    padding: .05rem .7rem;
+    font-weight: 700;
+    font-size: .9rem;
+  }
+
+  /* Stats */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .stat { border-left: 6px solid var(--hub); padding: .2rem 0 .2rem 1rem; }
+  .stat.pub { border-left-color: var(--text); }
+  .stat p { margin: 0; }
+  .stat.lead { grid-column: span 2; }
+  .stat.lead .big { font-size: clamp(3.2rem, 10vw, 6.2rem); color: var(--hub); }
+  .note { margin-top: 1.25rem; }
+
+  /* Horizontal bars */
+  .shares { list-style: none; padding: 0; margin: 0; max-width: none; }
+  .shares li {
+    display: grid;
+    grid-template-columns: minmax(12rem, 22rem) 1fr;
+    gap: .4rem 1.25rem;
+    align-items: center;
+    padding: .55rem 0;
+    border-bottom: 1px solid var(--line);
+    max-width: none;
+  }
+  .sv { display: grid; grid-template-columns: minmax(0, 1fr) 11.5rem; gap: .9rem; align-items: center; }
+  .track { display: block; height: 14px; background: rgba(237, 243, 249, .1); }
+  .bar {
+    display: block;
+    height: 14px;
+    width: var(--w);
+    min-width: 2px;
+    background: var(--muted);
+  }
+  .bar.hub { background: var(--hub); }
+  .bar.tf { background: var(--tf); }
+  .bar.neutral { background: var(--text); }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; margin: 0 -4px; padding: 0 4px; }
+  table { border-collapse: collapse; width: 100%; min-width: 900px; font-size: .9rem; }
+  caption { text-align: left; color: var(--muted); padding-bottom: .6rem; caption-side: top; }
+  .cap { display: inline-block; position: sticky; left: 0; max-width: min(100%, calc(100vw - 48px)); }
+  th, td { padding: .55rem .55rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  thead th { font-size: .85rem; color: var(--muted); font-weight: 600; vertical-align: bottom; line-height: 1.3; }
+  thead th.num { white-space: normal; width: 6.5rem; }
+  tbody th { font-weight: 400; min-width: 14rem; }
+  .rt { display: block; font-weight: 600; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .bc { display: grid; grid-template-columns: 5.5rem 2.8rem; gap: .6rem; align-items: center; justify-content: end; }
+  .bc > span:last-child { text-align: right; }
+  .bc .bar { justify-self: start; }
+  .d { white-space: nowrap; }
+
+  /* Two columns */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .two-col > div { background: var(--raised); padding: 1.1rem 1.3rem .6rem; }
+  .two-col ul { padding-left: 1.1rem; }
+  .two-col li { margin-bottom: .6rem; }
+  .reason {
+    font-size: 1.3rem;
+    line-height: 1.45;
+    border-left: 6px solid var(--tf);
+    padding-left: 1rem;
+  }
+  .steps li { margin-bottom: .6rem; }
+  .stay-line { font-weight: 700; font-size: 1.15rem; }
+  .about { font-size: .95rem; }
+  footer { margin: 4rem 0 3rem; padding-top: 1rem; border-top: 2px solid var(--line); color: var(--muted); font-size: .9rem; }
+
+  @media (max-width: 900px) {
+    .route { grid-template-columns: 1fr; }
+    .stays { grid-template-columns: 1fr 1fr; }
+    .stats { grid-template-columns: 1fr 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+    .arrow { transform: rotate(90deg); width: 40px; height: 40px; }
+  }
+  @media (max-width: 560px) {
+    body { font-size: 16px; }
+    .stays, .stats { grid-template-columns: 1fr; }
+    .stat.lead { grid-column: auto; }
+    .shares li { grid-template-columns: 1fr; }
+    .tldr { padding: 1rem 1rem .75rem; }
+  }
+  @media print {
+    :root { --bg: #fff; --raised: #f2f5f9; --line: #c7d3df; --text: #0e1f33; --muted: #41556b; --hub: #1767b0; --tf: #8a5f00; }
+    body { font-size: 10.5pt; }
+    .chip { background: none; color: var(--text); border: 1px solid var(--tf); }
+    .table-wrap { overflow: visible; }
+    table { min-width: 0; }
+    h2 { break-after: avoid; }
+    section, tr, .place, .stat { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <h1>Moving the task force reports off the Research Hub</h1>
+  <p class="lede">The proposal: take the 14 task force reports off the Research Hub and gather them on a new Task Force page. This page sets out what would change, what would stay the same, and how the reports were used over the past year.</p>
+  <p class="byline">Figures for 23 September 2025 to 23 September 2026, taken on 23 September 2026.</p>
+</header>
+
+<main>
+
+<section class="tldr" aria-labelledby="tldr-h">
+  <h2 id="tldr-h">TL;DR</h2>
+  <ul>
+    <li><strong>The change:</strong> the 14 task force reports come off the Research Hub and go on a new Task Force page, <strong>icjia.illinois.gov/taskforce/</strong>, which has not been built yet.</li>
+    <li><strong>What stays the same:</strong> task force meetings stay on the meetings page (145 since December 2020), and the 14 reports stay in the publications list, ICJIA's library since 1983.</li>
+    <li><strong>The reason given:</strong> task force reports are not written to the same research standard as the research articles on the Research Hub.</li>
+    <li><strong>Use in the past year:</strong> 2,581 people visited the reports' Hub pages. 161 people downloaded one from the Hub (205 downloads), and there were 170 more downloads from the publications list.</li>
+    <li><strong>To avoid dead ends:</strong> the 14 old Hub addresses would need to forward to the new page (1,658 visits began on them last year, nearly two thirds of them from Google). The 14 publication entries that link to the Hub would need new links, and the PDF files must be kept: 13 of the 14 are stored on the Research Hub's file server.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="move-h">
+  <h2 id="move-h">What moves, and what stays</h2>
+  <div class="route">
+    <div class="place hub">
+      <h3>Research Hub</h3>
+      <span class="big">256<small>to</small>242</span>
+      <p>articles. The 14 task force reports leave the Hub's article list, its search results and its home page.</p>
+    </div>
+    <div class="transit">
+      <ul class="chips" aria-label="The 14 reports, by year published"><li class="chip" title="Sex Offenses &amp; Sex Offender Registration Task Force Final Report">2018</li><li class="chip" title="2020-2021 Illinois Traffic and Pedestrian Stop Data Use and Collection Task Force Findings">2022</li><li class="chip" title="Firearm Prohibitors and Records Improvement Task Force 2022 Report">2022</li><li class="chip" title="Illinois Higher Education in Prison Task Force 2022 Report">2022</li><li class="chip" title="Firearm Prohibitors and Records Improvement Task Force 2023 Report">2023</li><li class="chip" title="Illinois Crime Reduction Task Force Report: A Report to the Illinois Governor and General Assembly">2024</li><li class="chip" title="Illinois Firearm Prohibitors and Records Improvement Task Force 2024 Report">2024</li><li class="chip" title="2024 Task Force on Missing and Murdered Chicago Women Annual Report">2025</li><li class="chip" title="2024-2025 Illinois Traffic and Pedestrian Stop Data Use and Collection Task Force Findings">2025</li><li class="chip" title="Firearm Prohibitors and Records Improvement Task Force 2025 Report">2025</li><li class="chip" title="Colton&#x27;s Task Force: A 2025 Illinois Domestic Violence Task Force Report">2025</li><li class="chip" title="2025 Task Force on Missing and Murdered Chicago Women Annual Report">2026</li><li class="chip" title="Community-Based Corrections Task Force Report">2026</li><li class="chip" title="Firearm Prohibitors and Records Improvement Task Force 2026 Report">2026</li></ul>
+      <svg class="arrow" viewBox="0 0 300 22" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 8h278V0l22 11-22 11v-8H0z"/></svg>
+      <p>14 reports from 8 task forces, 2018 to 2026</p>
+    </div>
+    <div class="place tfp">
+      <h3>New Task Force page</h3>
+      <span class="big">14</span>
+      <p>reports, grouped by task force, at <span class="addr">icjia.illinois.gov/taskforce/</span> (not built yet).</p>
+    </div>
+  </div>
+  <div class="stays">
+    <div class="place stay">
+      <h3>Publications list</h3>
+      <span class="big">14</span>
+      <p>task force reports stay in ICJIA's library since 1983, among its 1,146 publications. Their links to the Hub pages need to change.</p>
+      <span class="status">Stays</span>
+    </div>
+    <div class="place stay">
+      <h3>Meetings page</h3>
+      <span class="big">145</span>
+      <p>task force meetings since December 2020 stay on the meetings page, as now.</p>
+      <span class="status">Stays</span>
+    </div>
+    <div class="place stay">
+      <h3>Old Hub addresses</h3>
+      <span class="big">1,658</span>
+      <p>visits last year began on one of the 14 Hub pages. Those addresses would forward to the new page.</p>
+      <span class="status">Forward</span>
+    </div>
+    <div class="place stay">
+      <h3>The PDF files</h3>
+      <span class="big">13<small>of</small>14</span>
+      <p>are stored on the Research Hub's file server, and the publications list links to them. They must be kept.</p>
+      <span class="status">Stay</span>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="use-h">
+  <h2 id="use-h">How the 14 reports were used in the past year</h2>
+  <div class="stats">
+    <div class="stat lead">
+      <span class="big">2,581</span>
+      <p>people visited the reports' Research Hub pages, with 4,445 page views in all.</p>
+    </div>
+    <div class="stat">
+      <span class="big">1,658</span>
+      <p>visits began on one of those pages, arriving from Google, another website or a bookmark.</p>
+    </div>
+    <div class="stat">
+      <span class="big">161</span>
+      <p>people downloaded a report from its Hub page (205 downloads).</p>
+    </div>
+    <div class="stat pub">
+      <span class="big">170</span>
+      <p>downloads came from the publications list, 6.7% of all its downloads.</p>
+    </div>
+    <div class="stat">
+      <span class="big">57.5%</span>
+      <p>of visits to the report pages came from Google.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top:2.5rem">Their share of the Research Hub</h3>
+  <ul class="shares">
+        <li><span class="sl">Articles on the Hub</span><span class="sv"><span class="track" aria-hidden="true"><span class="bar tf" style="--w:5.5%"></span></span><span><strong>5.5%</strong> <span class="muted">(14 of 256)</span></span></span></li>
+        <li><span class="sl">People who visited a Hub article page</span><span class="sv"><span class="track" aria-hidden="true"><span class="bar tf" style="--w:7.0%"></span></span><span><strong>7.0%</strong> <span class="muted">(2,581 of 36,893)</span></span></span></li>
+        <li><span class="sl">Hub article page views</span><span class="sv"><span class="track" aria-hidden="true"><span class="bar tf" style="--w:2.2%"></span></span><span><strong>2.2%</strong> <span class="muted">(4,445 of 204,931)</span></span></span></li>
+        <li><span class="sl">People who downloaded from the Hub</span><span class="sv"><span class="track" aria-hidden="true"><span class="bar tf" style="--w:7.1%"></span></span><span><strong>7.1%</strong> <span class="muted">(161 of 2,258)</span></span></span></li>
+        <li><span class="sl">Downloads from the Hub</span><span class="sv"><span class="track" aria-hidden="true"><span class="bar tf" style="--w:4.5%"></span></span><span><strong>4.5%</strong> <span class="muted">(205 of 4,508)</span></span></span></li>
+  </ul>
+  <p class="note">A typical task force report was downloaded from the Hub by 8 people, the same as a typical Hub title that was downloaded at all. 4 of the 14 are among the 40 most downloaded of the 198 Hub titles downloaded last year.</p>
+</section>
+
+<section aria-labelledby="reports-h">
+  <h2 id="reports-h">Report by report</h2>
+  <div class="table-wrap" role="region" aria-labelledby="reports-cap" tabindex="0">
+    <table>
+      <caption id="reports-cap"><span class="cap">The 14 task force reports on the Research Hub, most visited first. Past year. On a narrow screen, scroll the table sideways.</span></caption>
+      <thead>
+        <tr>
+          <th scope="col">Report</th>
+          <th scope="col">Published</th>
+          <th scope="col" class="num">People who visited its Hub page</th>
+          <th scope="col" class="num">Page views</th>
+          <th scope="col" class="num">Visits that began on its page</th>
+          <th scope="col" class="num">People who downloaded it from the Hub</th>
+          <th scope="col" class="num">Downloads from the publications list</th>
+          <th scope="col" class="num">Hub download rank, of 198</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr>
+            <th scope="row"><span class="rt">2024 Task Force on Missing and Murdered Chicago Women Annual Report</span></th>
+            <td class="d">2025</td>
+            <td class="num"><div class="bc"><span class="bar hub" style="--w:100.0%" aria-hidden="true"></span><span>653</span></div></td>
+            <td class="num">874</td>
+            <td class="num">400</td>
+            <td class="num">27</td>
+            <td class="num">14</td>
+            <td class="num">35</td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="rt">Firearm Prohibitors and Records Improvement Task Force 2023 Report</span></th>
+            <td class="d">2023</td>
+            <td class="num"><div class="bc"><span class="bar hub" style="--w:83.3%" aria-hidden="true"></span><span>544</span></div></td>
+            <td class="num">710</td>
+            <td class="num">346</td>
+            <td class="num">2</td>
+            <td class="num">9</td>
+            <td class="num">174</td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="rt">Colton&#x27;s Task Force: A 2025 Illinois Domestic Violence Task Force Report</span></th>
+            <td class="d">2025</td>
+            <td class="num"><div class="bc"><span class="bar hub" style="--w:55.7%" aria-hidden="true"></span><span>364</span></div></td>
+            <td class="num">457</td>
+            <td class="num">140</td>
+            <td class="num">8</td>
+            <td class="num">19</td>
+            <td class="num">98</td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="rt">2025 Task Force on Missing and Murdered Chicago Women Annual Report</span></th>
+            <td class="d">2026</td>
+            <td class="num"><div class="bc"><span class="bar hub" style="--w:44.3%" aria-hidden="true"></span><span>289</span></div></td>
+            <td class="num">424</td>
+            <td class="num">144</td>
+            <td class="num">33</td>
+            <td class="num">18</td>
+            <td class="num">26</td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="rt">2024-2025 Illinois Traffic and Pedestrian Stop Data Use and Collection Task Force Findings</span></th>
+            <td class="d">2025</td>
+            <td class="num"><div class="bc"><span class="bar hub" style="--w:43.2%" aria-hidden="true"></span><span>282</span></div></td>
+            <td class="num">405</td>
+            <td class="num">125</td>
+            <td class="num">25</td>
+            <td class="num">25</td>
+            <td class="num">40</td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="rt">Illinois Firearm Prohibitors and Records Improvement Task Force 2024 Report</span></th>
+            <td class="d">2024</td>
+            <td class="num"><div class="bc"><span class="bar hub" style="--w:33.5%" aria-hidden="true"></span><span>219</span></div></td>
+            <td class="num">291</td>
+            <td class="num">97</td>
+            <td class="num">6</td>
+            <td class="num">12</td>
+            <td class="num">125</td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="rt">Sex Offenses &amp; Sex Offender Registration Task Force Final Report</span></th>
+            <td class="d">2018</td>
+            <td class="num"><div class="bc"><span class="bar hub" style="--w:33.2%" aria-hidden="true"></span><span>217</span></div></td>
+            <td class="num">287</td>
+            <td class="num">112</td>
+            <td class="num">8</td>
+            <td class="num">11</td>
+            <td class="num">104</td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="rt">Firearm Prohibitors and Records Improvement Task Force 2025 Report</span></th>
+            <td class="d">2025</td>
+            <td class="num"><div class="bc"><span class="bar hub" style="--w:32.8%" aria-hidden="true"></span><span>214</span></div></td>
+            <td class="num">264</td>
+            <td class="num">105</td>
+            <td class="num">7</td>
+            <td class="num">21</td>
+            <td class="num">112</td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="rt">Illinois Higher Education in Prison Task Force 2022 Report</span></th>
+            <td class="d">2022</td>
+            <td class="num"><div class="bc"><span class="bar hub" style="--w:23.4%" aria-hidden="true"></span><span>153</span></div></td>
+            <td class="num">222</td>
+            <td class="num">63</td>
+            <td class="num">27</td>
+            <td class="num">9</td>
+            <td class="num">36</td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="rt">2020-2021 Illinois Traffic and Pedestrian Stop Data Use and Collection Task Force Findings</span></th>
+            <td class="d">2022</td>
+            <td class="num"><div class="bc"><span class="bar hub" style="--w:16.5%" aria-hidden="true"></span><span>108</span></div></td>
+            <td class="num">140</td>
+            <td class="num">47</td>
+            <td class="num">8</td>
+            <td class="num">1</td>
+            <td class="num">97</td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="rt">Illinois Crime Reduction Task Force Report: A Report to the Illinois Governor and General Assembly</span></th>
+            <td class="d">2024</td>
+            <td class="num"><div class="bc"><span class="bar hub" style="--w:13.2%" aria-hidden="true"></span><span>86</span></div></td>
+            <td class="num">106</td>
+            <td class="num">37</td>
+            <td class="num">7</td>
+            <td class="num">11</td>
+            <td class="num">113</td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="rt">Firearm Prohibitors and Records Improvement Task Force 2022 Report</span></th>
+            <td class="d">2022</td>
+            <td class="num"><div class="bc"><span class="bar hub" style="--w:10.4%" aria-hidden="true"></span><span>68</span></div></td>
+            <td class="num">86</td>
+            <td class="num">30</td>
+            <td class="num">2</td>
+            <td class="num">8</td>
+            <td class="num">173</td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="rt">Firearm Prohibitors and Records Improvement Task Force 2026 Report</span></th>
+            <td class="d">2026</td>
+            <td class="num"><div class="bc"><span class="bar hub" style="--w:8.9%" aria-hidden="true"></span><span>58</span></div></td>
+            <td class="num">87</td>
+            <td class="num">8</td>
+            <td class="num">6</td>
+            <td class="num">6</td>
+            <td class="num">123</td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="rt">Community-Based Corrections Task Force Report</span></th>
+            <td class="d">2026</td>
+            <td class="num"><div class="bc"><span class="bar hub" style="--w:8.7%" aria-hidden="true"></span><span>57</span></div></td>
+            <td class="num">92</td>
+            <td class="num">4</td>
+            <td class="num">9</td>
+            <td class="num">6</td>
+            <td class="num">90</td>
+          </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section aria-labelledby="src-h">
+  <h2 id="src-h">How readers reach the report pages</h2>
+  <ul class="shares">
+        <li><span class="sl">Google</span><span class="sv"><span class="track" aria-hidden="true"><span class="bar hub" style="--w:57.5%"></span></span><span>57.5% <span class="muted">(1,805 visits)</span></span></span></li>
+        <li><span class="sl">No referring site: a typed address, a bookmark, or a link in an email, PDF or app</span><span class="sv"><span class="track" aria-hidden="true"><span class="bar hub" style="--w:35.5%"></span></span><span>35.5% <span class="muted">(1,115 visits)</span></span></span></li>
+        <li><span class="sl">Other websites, among them idoc.illinois.gov, illinois.gov, Facebook, university course sites, Chicago Police e-learning and Wikipedia</span><span class="sv"><span class="track" aria-hidden="true"><span class="bar hub" style="--w:3.1%"></span></span><span>3.1% <span class="muted">(96 visits)</span></span></span></li>
+        <li><span class="sl">Other search engines (Bing, DuckDuckGo, Yahoo, Ecosia)</span><span class="sv"><span class="track" aria-hidden="true"><span class="bar hub" style="--w:2.4%"></span></span><span>2.4% <span class="muted">(74 visits)</span></span></span></li>
+        <li><span class="sl">AI assistants (ChatGPT, Perplexity)</span><span class="sv"><span class="track" aria-hidden="true"><span class="bar hub" style="--w:1.6%"></span></span><span>1.6% <span class="muted">(49 visits)</span></span></span></li>
+  </ul>
+  <p class="note">These visits arrive at the Hub addresses. Links on other websites keep the old addresses after a move, which is why the forwarding matters.</p>
+</section>
+
+<section aria-labelledby="mtg-h">
+  <h2 id="mtg-h">Task force meetings</h2>
+  <p class="stay-line">No change: task force meetings stay on the meetings page.</p>
+  <div class="stats">
+    <div class="stat pub">
+      <span class="big">145</span>
+      <p>task force meetings since December 2020, 48.3% of the 300 meetings on the meetings page.</p>
+    </div>
+    <div class="stat pub">
+      <span class="big">34</span>
+      <p>of them in the past year, 63.0% of that year's 54 meetings. 5 task forces met.</p>
+    </div>
+    <div class="stat pub">
+      <span class="big">899</span>
+      <p>views of task force meeting pages, by 409 people. The meetings list itself had 2,395 views by 1,075 people.</p>
+    </div>
+  </div>
+  <div class="table-wrap" role="region" aria-labelledby="mtg-cap" tabindex="0" style="margin-top:2rem">
+    <table>
+      <caption id="mtg-cap"><span class="cap">Meetings on the meetings page, by task force.</span></caption>
+      <thead>
+        <tr>
+          <th scope="col">Task force</th>
+          <th scope="col" class="num">Meetings since Dec 2020</th>
+          <th scope="col" class="num">In the past year</th>
+          <th scope="col">First to last</th>
+          <th scope="col" class="num">Reports on the Hub</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr>
+            <th scope="row">Firearm Prohibitors and Records Improvement</th>
+            <td class="num"><div class="bc"><span class="bar neutral" style="--w:100.0%" aria-hidden="true"></span><span>30</span></div></td>
+            <td class="num">8</td>
+            <td>May 2022 to Sept 2026</td>
+            <td class="num">5</td>
+          </tr>
+          <tr>
+            <th scope="row">Missing and Murdered Chicago Women</th>
+            <td class="num"><div class="bc"><span class="bar neutral" style="--w:96.7%" aria-hidden="true"></span><span>29</span></div></td>
+            <td class="num">10</td>
+            <td>May 2023 to Sept 2026</td>
+            <td class="num">2</td>
+          </tr>
+          <tr>
+            <th scope="row">Traffic and Pedestrian Stop Data Use and Collection</th>
+            <td class="num"><div class="bc"><span class="bar neutral" style="--w:56.7%" aria-hidden="true"></span><span>17</span></div></td>
+            <td class="num">0</td>
+            <td>Dec 2020 to Feb 2025</td>
+            <td class="num">2</td>
+          </tr>
+          <tr>
+            <th scope="row">Uniform Statewide Crime Statistics</th>
+            <td class="num"><div class="bc"><span class="bar neutral" style="--w:43.3%" aria-hidden="true"></span><span>13</span></div></td>
+            <td class="num">11</td>
+            <td>July 2025 to Sept 2026</td>
+            <td class="num">None</td>
+          </tr>
+          <tr>
+            <th scope="row">Colton&#x27;s Task Force (domestic violence)</th>
+            <td class="num"><div class="bc"><span class="bar neutral" style="--w:43.3%" aria-hidden="true"></span><span>13</span></div></td>
+            <td class="num">0</td>
+            <td>Aug 2023 to May 2025</td>
+            <td class="num">1</td>
+          </tr>
+          <tr>
+            <th scope="row">Higher Education in Prison</th>
+            <td class="num"><div class="bc"><span class="bar neutral" style="--w:43.3%" aria-hidden="true"></span><span>13</span></div></td>
+            <td class="num">0</td>
+            <td>Feb 2022 to July 2022</td>
+            <td class="num">1</td>
+          </tr>
+          <tr>
+            <th scope="row">Crime Reduction</th>
+            <td class="num"><div class="bc"><span class="bar neutral" style="--w:33.3%" aria-hidden="true"></span><span>10</span></div></td>
+            <td class="num">0</td>
+            <td>Oct 2022 to June 2024</td>
+            <td class="num">1</td>
+          </tr>
+          <tr>
+            <th scope="row">Community-Based Corrections</th>
+            <td class="num"><div class="bc"><span class="bar neutral" style="--w:26.7%" aria-hidden="true"></span><span>8</span></div></td>
+            <td class="num">4</td>
+            <td>Mar 2025 to Apr 2026</td>
+            <td class="num">1</td>
+          </tr>
+          <tr>
+            <th scope="row">Constitutional Rights and Remedies</th>
+            <td class="num"><div class="bc"><span class="bar neutral" style="--w:26.7%" aria-hidden="true"></span><span>8</span></div></td>
+            <td class="num">0</td>
+            <td>Sept 2021 to Dec 2021</td>
+            <td class="num">None</td>
+          </tr>
+          <tr>
+            <th scope="row">Domestic Violence Pre-Trial Practices</th>
+            <td class="num"><div class="bc"><span class="bar neutral" style="--w:10.0%" aria-hidden="true"></span><span>3</span></div></td>
+            <td class="num">0</td>
+            <td>Oct 2023 to Jan 2024</td>
+            <td class="num">None</td>
+          </tr>
+          <tr>
+            <th scope="row">Clean Slate</th>
+            <td class="num"><div class="bc"><span class="bar neutral" style="--w:3.3%" aria-hidden="true"></span><span>1</span></div></td>
+            <td class="num">1</td>
+            <td>Aug 2026</td>
+            <td class="num">None</td>
+          </tr>
+          <tr>
+            <th scope="row">Sex Offenses and Sex Offender Registration</th>
+            <td class="num"><div class="bc"><span aria-hidden="true"></span><span>0</span></div></td>
+            <td class="num">0</td>
+            <td>None on the site; its report is from 2018</td>
+            <td class="num">1</td>
+          </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section aria-labelledby="why-h">
+  <h2 id="why-h">Why the move is proposed</h2>
+  <p class="reason">The reason given: task force reports are not written to the same research standard as the research articles on the Research Hub.</p>
+  <div class="two-col">
+    <div>
+      <h3>A Research Hub article</h3>
+      <p>A research study, usually by ICJIA's research staff, setting out its question, its data and methods, and its findings.</p>
+    </div>
+    <div>
+      <h3>A task force report</h3>
+      <p>The report of a task force of appointed members: what the task force did and, often, the recommendations its members agreed. ICJIA staff support many task forces and often write the report.</p>
+    </div>
+  </div>
+  <p style="margin-top:1.5rem">How the 14 are presented today:</p>
+  <ul>
+    <li>On the Research Hub they are presented like research articles: 8 list individual authors, and 6 name the task force as the author.</li>
+    <li>In the publications list they are filed as Article (7), Research report (5) and Annual report (2).</li>
+  </ul>
+</section>
+
+<section aria-labelledby="weigh-h">
+  <h2 id="weigh-h">Weighing it</h2>
+  <div class="two-col">
+    <div>
+      <h3>In favour</h3>
+      <ul>
+        <li>The Research Hub would hold research articles only, so readers would not take a task force's recommendations for ICJIA research findings.</li>
+        <li>Each task force's reports would be in one place. Today they are on the Hub and in the publications list.</li>
+        <li>The new page could also list the 4 task forces that have meetings on the site but no report on the Hub.</li>
+        <li>Readers who use the publications list or the meetings page would see no change.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>To weigh</h3>
+      <ul>
+        <li>Most readers meet these reports on their Hub pages: 2,581 people last year. Downloads were split between the Hub (205) and the publications list (170).</li>
+        <li>4 of the 14 are among the Hub's 40 most downloaded titles.</li>
+        <li>1,658 visits last year began on these Hub pages, nearly two thirds of them from Google. Without forwarding, those readers would reach "page not found". Search engines usually take a few weeks to show a new address.</li>
+        <li>Other websites link to the Hub pages, among them the Illinois Department of Corrections, illinois.gov and university course sites. Forwarding covers those links; the sites themselves keep the old addresses.</li>
+        <li>Staff time: building the page, forwarding 14 addresses and changing 14 publication links.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="steps-h">
+  <h2 id="steps-h">What the move involves</h2>
+  <ol class="steps">
+    <li>Build the Task Force page at icjia.illinois.gov/taskforce/, with the 14 reports grouped by task force.</li>
+    <li>Forward each of the 14 old Hub addresses to the report's place on the new page.</li>
+    <li>Change the 14 publication entries' links from the Hub pages to the new page.</li>
+    <li>Take the 14 reports off the Research Hub without deleting their files: 13 of the PDF files are stored on the Hub's file server, and the publications list links to them.</li>
+    <li>Add the new page to the site search and the sitemap. The site search keeps finding the reports through the publications list either way.</li>
+    <li>Count downloads on the new page, as the Hub and the publications list do now, so a year from now the use can be compared with these figures.</li>
+  </ol>
+</section>
+
+<section aria-labelledby="open-h">
+  <h2 id="open-h">Still to decide</h2>
+  <ul>
+    <li>The Research Hub also carries 2 reports of the Domestic Violence Fatality Review Committee, which is a committee rather than a task force: the 2026 Biennial Report (114 page views; 11 people downloaded it) and the 2025 Annual Report (288 page views; 13 people). They could move too, or stay.</li>
+    <li>2 older task force reports are in the publications list but not on the Hub: the Inventorying Employment Restrictions Task Force (2013) and the Law Enforcement Information Sharing Task Force (2017). They could be listed on the new page.</li>
+    <li>Whether the new page links each task force to its meetings on the meetings page.</li>
+    <li>Whether the publications list keeps filing the reports as Article, Research report and Annual report.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="about-h" class="about">
+  <h2 id="about-h">About these numbers</h2>
+  <ul>
+    <li>Visitor figures come from Plausible, the website's visitor statistics, for 23 September 2025 to 23 September 2026. Report, publication and meeting details come from the website's content systems, as of 23 September 2026.</li>
+    <li>A download is counted when someone clicks a report's download button on its Hub page, or its file in the publications list. Opening a PDF straight from Google or from another website is not counted, and some browsers block visitor statistics, so every figure here is a minimum.</li>
+    <li>One person can visit several reports, so the figures for single reports do not add up to the totals; the totals count each person once.</li>
+    <li>3 of the 14 were published during the period, so they had less than 6 months to be read: the Firearm Prohibitors and Records Improvement Task Force 2026 Report, the Community-Based Corrections Task Force Report and the 2025 Missing and Murdered Chicago Women Annual Report.</li>
+    <li>"Visits that began on its page" are visits whose first page on the website was the report's Hub page, as when someone follows a link from Google or another website.</li>
+    <li>Task force meetings are the meetings with "task force" in their title. The meetings page's records start in December 2020; the Sex Offenses and Sex Offender Registration Task Force's final report is from 2018.</li>
+  </ul>
+</section>
+
+</main>
+
+<footer>
+  Research Hub, publications list, meetings page and visitor figures as of 23 September 2026.
+</footer>
+
+</div>
+</body>
+</html>
