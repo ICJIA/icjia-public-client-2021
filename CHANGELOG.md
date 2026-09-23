@@ -84,6 +84,42 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.124] - 2026-09-23
+
+### fix(researchhub): the articles' own pictures on /researchhub/articles/ again
+
+Every card on the Research Hub's article list showed the ICJIA default picture in place of the
+article's own. The pictures are built into the site: `generators/generateImagesHub.js` writes
+each app's `image` and each article's `splash`, base64 in the CMS record, to
+`public/images/<id>-<field>.<ext>`, and the cards load them from there. The "Illinois Homicide
+Reporting" app was published on 21 Sept 2026 with no picture (`image: null`). Reading it threw
+a TypeError, the script's catch only logged it, so the build went on (exit 0), and the run ended
+before the articles: no build since has had any article's picture. Each card's picture address
+returned the site's page instead of a picture, and the card showed the default, as it does when
+a picture is missing. The 4 apps listed before it kept theirs.
+
+- The script skips a record that has no picture (anything but a `data:image/` value, as the
+  Astro port `astro/scripts/generate-hub-images.mjs` already does) and says so in the build
+  log (`No image for <id>: skipped`). The Homicide app's card keeps the default picture.
+- The script does its work only when it is run (`require.main === module`, as in
+  `generatePageShells.js`), so the unit tests can load `writeImages`.
+- Unchanged: the card's rule, the default only when a record has no picture or its file does
+  not load. Also unchanged: a failure of the script is still only logged and the build still
+  passes, so the Research Hub API failing during a build would again leave the Hub's cards on
+  the default picture.
+
+2 new tests (`tests/unit/generateImagesHub.spec.js`), the one for a record without a picture
+seen to fail first with the build's own TypeError: the file each picture is written to, and a
+record without a picture skipped with the records after it still written. Mocha: 786 passing,
+6 pending (pre-existing skipped stubs); lint clean on the changed files. The script run on its
+own against the live CMS: before, the TypeError, exit 0 and no article picture; after, 256
+article pictures (230 JPEG, 26 PNG, the CMS's own counts) and the 4 apps' pictures, all 260
+real images, the Homicide app skipped. Not checked before the push: a browser (the cards load
+their pictures from the live site's address, so only the deploy can show them), the full
+production build, Lighthouse.
+
+Tagged `1.5.124`.
+
 ## [1.5.123] - 2026-09-22
 
 ### feat(search): "Newest first" on the results; the Search event names the word left out

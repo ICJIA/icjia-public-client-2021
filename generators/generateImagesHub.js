@@ -3,18 +3,6 @@ const { createApiClient } = require("./apiClient");
 
 // const { apiBaseURL } = require("./src/config");
 const dirpath = "./public/images";
-if (!fs.existsSync(dirpath)) {
-  fs.mkdirSync(dirpath);
-} else {
-  fs.rm("public/images", { recursive: true }, (err) => {
-    if (err) {
-      throw err;
-    }
-    console.log(`./public/images is deleted!`);
-    fs.mkdirSync(dirpath);
-    console.log(`./public/images is created!`);
-  });
-}
 
 const query = `query {
   apps (where: { status: "published" }) {
@@ -27,19 +15,19 @@ const query = `query {
   }
 }`;
 
-const api = createApiClient("https://researchhub.icjia-api.cloud");
-api.postWithRetry("/graphql", { query })
-  .then((res) => {
-    writeImages(res.data.data.apps, ["image"]);
-    writeImages(res.data.data.articles, ["splash"]);
-  })
-  .catch((err) => console.error(err));
-
 const writeImages = (items, attrs) =>
   items.forEach((item) => attrs.forEach((attr) => writeImage(item, attr)));
 
 const writeImage = (item, attr) => {
   const base64 = item[attr];
+  // A record can be published with no picture: the "Illinois Homicide
+  // Reporting" app has had image: null since 21 Sept 2026. Reading it threw,
+  // which ended the run before the articles, so no article splash was written
+  // and every card on /researchhub/articles/ showed the ICJIA default.
+  if (typeof base64 !== "string" || !base64.startsWith("data:image/")) {
+    console.log(`No ${attr} for ${item._id}: skipped`);
+    return;
+  }
   const data = base64.split(";base64,").pop();
   const ext = base64.split("data:image/")[1].split(";")[0];
   const path = `${dirpath}/${item._id}-${attr}.${ext}`;
@@ -49,3 +37,29 @@ const writeImage = (item, attr) => {
   });
   console.log(path);
 };
+
+module.exports = { writeImages };
+
+if (require.main === module) {
+  if (!fs.existsSync(dirpath)) {
+    fs.mkdirSync(dirpath);
+  } else {
+    fs.rm("public/images", { recursive: true }, (err) => {
+      if (err) {
+        throw err;
+      }
+      console.log(`./public/images is deleted!`);
+      fs.mkdirSync(dirpath);
+      console.log(`./public/images is created!`);
+    });
+  }
+
+  const api = createApiClient("https://researchhub.icjia-api.cloud");
+  api
+    .postWithRetry("/graphql", { query })
+    .then((res) => {
+      writeImages(res.data.data.apps, ["image"]);
+      writeImages(res.data.data.articles, ["splash"]);
+    })
+    .catch((err) => console.error(err));
+}
