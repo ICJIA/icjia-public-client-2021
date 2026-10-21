@@ -88,6 +88,7 @@ describe("Newest first", () => {
     const page = (state = {}) => {
       const vm = {
         filteredResults: RESULTS,
+        queryResults: RESULTS,
         showSimilar: false,
         sortSwitch: false,
         shownCount: 50,
@@ -188,6 +189,7 @@ describe("Newest first, on unless turned off", () => {
   it("on the page, keeps the site's pages, partner sites and plans in place", () => {
     const vm = {
       sortSwitch: true,
+      queryResults: [],
       filteredResults: [
         result("/page/", { contentType: "page" }),
         result("/partner/", { contentType: "partner site" }),
@@ -199,5 +201,57 @@ describe("Newest first, on unless turned off", () => {
     expect(
       SearchStatic.computed.orderedResults.call(vm).map((r) => r.item.fullPath)
     ).to.deep.equal(["/page/", "/partner/", "/plan/", "/new/", "/old/"]);
+  });
+});
+
+// v1.5.130: a search with only a few posts titled with the typed words (at
+// most five; most reports are listed twice, a Hub article and a publication)
+// is for those. In date order they keep their places, first among the posts,
+// as the search put them: "safe-t" opens with the SAFE-T Act report, not the
+// newest report that mentions the act. With more of them ("domestic
+// violence", 92) the search is a broad one, and the date order stands.
+describe("Newest first, a search for one act or report", () => {
+  const titled = (fullPath, publicationDate) => ({
+    item: { fullPath, contentType: "article", publicationDate },
+    titled: true,
+  });
+  const post = (fullPath, publicationDate) =>
+    result(fullPath, { contentType: "article", publicationDate });
+  const order = (list) =>
+    SearchStatic.computed.orderedResults
+      .call({ sortSwitch: true, queryResults: list, filteredResults: list })
+      .map((r) => r.item.fullPath);
+
+  it("keeps a few titled posts first, the rest newest first", () => {
+    expect(
+      order([
+        result("/page/", { contentType: "page" }),
+        titled("/safe-t-act/", "2021-03-01"),
+        titled("/safe-t-act-pub/", "2021-03-01"),
+        post("/old/", "2019-01-01"),
+        post("/new/", "2024-01-01"),
+      ])
+    ).to.deep.equal([
+      "/page/",
+      "/safe-t-act/",
+      "/safe-t-act-pub/",
+      "/new/",
+      "/old/",
+    ]);
+  });
+
+  it("puts every post in date order when more than five are titled", () => {
+    const list = [1, 2, 3, 4, 5, 6].map((n) =>
+      titled(`/t${n}/`, `201${n}-01-01`)
+    );
+    expect(order(list.concat(post("/new/", "2024-01-01")))).to.deep.equal([
+      "/new/",
+      "/t6/",
+      "/t5/",
+      "/t4/",
+      "/t3/",
+      "/t2/",
+      "/t1/",
+    ]);
   });
 });

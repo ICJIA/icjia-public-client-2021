@@ -84,6 +84,26 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.130] - 2026-10-21
+
+### search: a search for one act or report opens with it, Newest first or not
+
+With Newest first on (v1.5.129), "safe-t" opened with the newest report that mentions the act, the 2024
+Domestic Violence Pretrial Practices report, and the report on the act itself, "The 2021 SAFE-T Act: ICJIA
+Roles and Responsibilities", sat at its date further down. The search already marks a post whose title holds
+every typed word (it puts those first among the posts); it now tells the page so (`titled`, in `arrange()` of
+`src/utils/searchFields.js` and its copy in `public/searchWorker.js`). When a search has at most five such
+posts (`TITLED_FIRST`; most reports are listed twice, a Hub article and a publication), it is a search for
+those: in date order they keep their places, first among the posts, and the rest follow newest first. With
+more ("domestic violence" has 92, "drone" 6) the search is a broad one and the date order stands.
+
+Measured on the index before choosing the limit: "safe-t" 2, "crime victims compensation" 2, "ifvcc" 3,
+"victim needs assessment" 4, "gun violence" and "rearrest" 5; "drone" 6, "death in custody" 9, "human
+trafficking" 10. The user chose five. Not covered: "pretrial fairness act" (the act's other name) has no
+title holding all three words. Tests in `tests/unit/searchSort.spec.js` and `tests/unit/searchSimilar.spec.js`.
+Checked in a browser: "safe-t" opens with the SAFE-T Act report; "victim needs assessment" with its two
+assessments; "drone" stays newest first; "domestic violence" and "employment" unchanged.
+
 ## [1.5.129] - 2026-10-21
 
 ### search: Newest first on unless turned off; the chips count the results that hold the words

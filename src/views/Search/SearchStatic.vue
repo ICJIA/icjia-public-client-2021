@@ -389,6 +389,10 @@ const EMPTY_STATE_PAGES = [
   { label: "Meetings", path: "/news/meetings/" },
   { label: "Contact ICJIA", path: "/about/contact/" },
 ];
+// In date order, the posts titled with the typed words keep their places
+// first when a search has at most this many (v1.5.130): a search for one act
+// or report. Most reports are listed twice, a Hub article and a publication.
+const TITLED_FIRST = 5;
 // Results are rendered this many at a time; "Show more results" adds as many.
 const RESULTS_PER_PAGE = 50;
 // A search is recorded (recordSearch) this long after it settled, so that a
@@ -533,10 +537,18 @@ export default {
     // The filtered results in the order shown: the search's own, or by date
     // when the switch is on (src/utils/search.js, newestFirst), the site's
     // pages keeping their places before posts (v1.5.129).
+    // A search with only a few posts titled with the typed words (at most
+    // TITLED_FIRST) is for those: "safe-t" opens with the SAFE-T Act report,
+    // not the newest report that mentions it. They keep their places too.
     orderedResults() {
+      const titled = this.queryResults.filter((result) => result.titled);
+      const keepTitled = titled.length <= TITLED_FIRST;
       return this.sortSwitch
-        ? newestFirst(this.filteredResults, (result) =>
-            PAGE_TYPES.includes(result.item && result.item.contentType)
+        ? newestFirst(
+            this.filteredResults,
+            (result) =>
+              PAGE_TYPES.includes(result.item && result.item.contentType) ||
+              (keepTitled && !!result.titled)
           )
         : this.filteredResults;
     },

@@ -243,8 +243,14 @@ function arrange(fuse, results, words) {
     const posts = titledFirst(list.filter((result) => !isPage(result)));
     return forDocuments ? posts.concat(pages) : pages.concat(posts);
   };
+  // A post whose title holds every typed word is marked titled (v1.5.130):
+  // when a search has only a few, the page keeps them first in date order.
   return byKind(held)
-    .map((result) => ({ item: result.item, refIndex: result.refIndex }))
+    .map((result) =>
+      !isPage(result) && titled(result)
+        ? { item: result.item, refIndex: result.refIndex, titled: true }
+        : { item: result.item, refIndex: result.refIndex }
+    )
     .concat(
       byKind(similar).map((result) => ({
         item: result.item,

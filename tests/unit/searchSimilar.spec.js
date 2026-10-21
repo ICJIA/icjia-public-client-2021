@@ -164,8 +164,13 @@ describe("Site search: results that hold the typed words come first", () => {
     const results = search("drone");
     results.forEach((r) => {
       const keys = Object.keys(r).sort();
+      // titled (v1.5.130): a post whose title holds every typed word
       expect(keys).to.deep.equal(
-        r.similar ? ["item", "refIndex", "similar"] : ["item", "refIndex"]
+        r.similar
+          ? ["item", "refIndex", "similar"]
+          : r.titled
+          ? ["item", "refIndex", "titled"]
+          : ["item", "refIndex"]
       );
     });
   });
