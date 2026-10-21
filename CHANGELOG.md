@@ -84,6 +84,17 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.128] - 2026-10-21
+
+### search: the summary, chips and switch in a shaded box
+
+The search toolbar (the count of results, the filter chips and the Newest first switch) sat between two grey
+lines and looked like part of the results. It is a shaded box now, `#f3f5f8` with a thin border and rounded
+corners, so it reads as apart from the results under it; the chips keep their white. Contrast on the shade:
+the Research Hub blue 7.9:1, the Publications green 8.3:1, the row labels 6.4:1. CSS only, in
+`src/views/Search/SearchStatic.vue`. Checked in a browser at 1440 and 375 px: no page scroll sideways,
+axe-core (WCAG 2.2 AA) no violations.
+
 ## [1.5.127] - 2026-10-21
 
 ### search: the filter chips in two labelled rows, No filter apart

@@ -1110,11 +1110,15 @@ export default {
 /* Search-results filter toolbar — replaces the old navy panel + select.
    Quiet single-line summary on top, chip row beneath. Chips are buttons
    so keyboard users can Tab through them; aria-pressed reflects state. */
+/* Shaded, so that the summary, chips and switch read as apart from the
+   results under them (v1.5.128). The chips keep their white. On #f3f5f8 the
+   Hub blue is 7.9:1, the Publications green 8.3:1, the row labels 6.4:1. */
 .search-toolbar {
   margin-top: 4px;
-  padding: 14px 4px 6px;
-  border-top: 1px solid #e6e6e6;
-  border-bottom: 1px solid #e6e6e6;
+  padding: 14px 16px 8px;
+  background: #f3f5f8;
+  border: 1px solid #dde3ea;
+  border-radius: 6px;
 }
 
 .search-toolbar__summary {
