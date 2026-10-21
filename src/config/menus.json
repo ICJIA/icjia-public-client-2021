@@ -24,6 +24,10 @@
                     "link": "/about/icjia-values/"
                 },
                 {
+                    "title": "Publications",
+                    "link": "/about/publications/"
+                },
+                {
                     "divider": true
                 },
                 {
@@ -93,10 +97,6 @@
                 {
                     "title": "Datasets",
                     "link": "/researchhub/datasets/"
-                },
-                {
-                    "title": "Publications",
-                    "link": "/researchhub/publications/"
                 },
                 {
                     "title": "Institutional Review Board",

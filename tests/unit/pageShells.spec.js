@@ -150,4 +150,11 @@ describe("Research menu", () => {
       ["Homicide Reporting", "/homicide/"],
     ]);
   });
+  it("lists Publications under About, not Research", () => {
+    const about = menus.menu.find((m) => m.main === "About").children;
+    expect(research.some((c) => c.title === "Publications")).to.equal(false);
+    expect(about.find((c) => c.title === "Publications").link).to.equal(
+      "/about/publications/"
+    );
+  });
 });

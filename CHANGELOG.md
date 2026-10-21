@@ -84,6 +84,16 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.126] - 2026-10-21
+
+### nav: Publications moves from the Research menu to the About menu
+
+The publications list is everything ICJIA has published since the 1980s, not only research, so its link
+leaves the Research dropdown and joins the About menu's "About ICJIA" section, after Values. It now points to
+`/about/publications/`, which shows the About tab bar (that bar already had a Publications tab).
+`/researchhub/publications/` still works and is unchanged, as are the Research and News tab bars and the site
+search. New test in `tests/unit/pageShells.spec.js` pins the move.
+
 ## [1.5.125] - 2026-09-23
 
 ### docs: a one-page briefing on moving the task force reports off the Research Hub
