@@ -136,27 +136,21 @@
                   </ul>
                   <p>
                     <a
-                      href="https://agency.icjia-api.cloud/uploads/ICJIA_Research_Internship_Flyer_Updated_June_2022_bc5d48166b.pdf"
+                      href="https://agency.icjia-api.cloud/uploads/research_internship_flyer_A0_6b66e9da87.pdf"
                       target="_blank"
                       rel="noopener noreferrer"
                       >Download the latest internship flyer >></a
                     >
                   </p>
-                  <p>For more information on research internships, contact:</p>
-                  <div class="pl-5">
-                    <p><strong>Jessica Reichert</strong></p>
-                    <p>
-                      Research &amp; Evaluation Center Manager, Research &amp;
-                      Analysis Unit
-                    </p>
-                    <p>Phone: 312-793-8550</p>
-                    <p>
-                      E-mail:
-                      <a href="mailto:Jessica.Reichert@Illinois.gov"
-                        >Jessica.Reichert@Illinois.gov</a
-                      >
-                    </p>
-                  </div>
+                  <p>
+                    For more information on research internships, contact
+                    <a
+                      href="mailto: CJA.RAInternship@illinois.gov"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >CJA.RAInternship@illinois.gov</a
+                    >
+                  </p>
                 </v-col>
               </v-row>
             </v-container>
