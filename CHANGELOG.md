@@ -84,6 +84,24 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.127] - 2026-10-21
+
+### search: the filter chips in two labelled rows, No filter apart
+
+A search with many kinds of results (“domestic violence”) wrapped the chips wherever the line ran out:
+the captions under the Research Hub and Publications chips made the first line tall, and the last chip was
+left alone on a second line. The chips now sit in two rows that start at the same edge, each with a small grey
+label: **Research and publications** (the Research Hub group and the Publications chip, each still with its
+bracket and caption) and **Elsewhere on the site** (every other chip, largest count first). No filter stands
+apart at the left, level with the first row's chips: an empty label above it, hidden from screen readers,
+takes the labels' height. At phone width No filter takes a line of its own above the rows and the empty label
+is not shown. A row with no chips is left out. Each labelled row is a `group` named by its label.
+
+The user chose the layout (C, labelled rows) from browser mockups of four. `filterChipColumns` replaces
+`filterChipGroups` in `src/views/Search/SearchStatic.vue`; tests in `tests/unit/searchFilters.spec.js`.
+Checked in a browser: No filter and the first chip row both at 381.6 px from the top at 1440 and 1100 px,
+stacked at 375 px, no page scroll sideways, axe-core (WCAG 2.2 AA) no violations.
+
 ## [1.5.126] - 2026-10-21
 
 ### nav: Publications moves from the Research menu to the About menu

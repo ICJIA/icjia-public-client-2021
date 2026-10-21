@@ -99,42 +99,76 @@
                      group: a line under the four, and a caption that says
                      the Hub chip includes the other three. The Publications
                      chip is a group of its own, with its line and caption.
-                     The other chips sit loose in the row (their wrappers
-                     make no box). -->
+                     No filter stands apart at the left; beside it, the two
+                     captioned groups make one labelled row and the other
+                     chips the labelled row under it (v1.5.127). No filter's
+                     label is an empty line, so that it lines up with the
+                     chips of the first row. Loose chips' wrappers make no
+                     box. -->
                 <div
-                  v-for="group in filterChipGroups"
-                  :key="group.key"
-                  class="filter-chip-set"
-                  :class="
-                    group.caption && [
-                      'filter-chip-set--captioned',
-                      `filter-chip-set--${group.key}`,
-                    ]
-                  "
-                  :role="group.caption ? 'group' : null"
-                  :aria-labelledby="group.caption ? group.caption.id : null"
+                  v-for="(column, c) in filterChipColumns"
+                  :key="c"
+                  class="search-toolbar__column"
                 >
-                  <div class="filter-chip-set__chips">
-                    <button
-                      v-for="chip in group.chips"
-                      :key="chip.value || 'all'"
-                      type="button"
-                      class="filter-chip"
-                      :class="{ 'filter-chip--active': isChipActive(chip) }"
-                      :aria-pressed="isChipActive(chip) ? 'true' : 'false'"
-                      @click="selectChip(chip)"
-                    >
-                      {{ chip.label }}
-                      <span class="filter-chip__count">{{ chip.count }}</span>
-                    </button>
-                  </div>
-                  <p
-                    v-if="group.caption"
-                    :id="group.caption.id"
-                    class="filter-chip-set__caption"
+                  <div
+                    v-for="row in column"
+                    :key="row.key"
+                    :role="row.label ? 'group' : null"
+                    :aria-labelledby="row.label ? `${row.key}-row-label` : null"
                   >
-                    {{ group.caption.text }}
-                  </p>
+                    <p
+                      :id="row.label ? `${row.key}-row-label` : null"
+                      class="search-toolbar__row-label"
+                      :aria-hidden="row.label ? null : 'true'"
+                    >
+                      {{ row.label || "\u00a0" }}
+                    </p>
+                    <div class="search-toolbar__row">
+                      <div
+                        v-for="group in row.groups"
+                        :key="group.key"
+                        class="filter-chip-set"
+                        :class="
+                          group.caption && [
+                            'filter-chip-set--captioned',
+                            `filter-chip-set--${group.key}`,
+                          ]
+                        "
+                        :role="group.caption ? 'group' : null"
+                        :aria-labelledby="
+                          group.caption ? group.caption.id : null
+                        "
+                      >
+                        <div class="filter-chip-set__chips">
+                          <button
+                            v-for="chip in group.chips"
+                            :key="chip.value || 'all'"
+                            type="button"
+                            class="filter-chip"
+                            :class="{
+                              'filter-chip--active': isChipActive(chip),
+                            }"
+                            :aria-pressed="
+                              isChipActive(chip) ? 'true' : 'false'
+                            "
+                            @click="selectChip(chip)"
+                          >
+                            {{ chip.label }}
+                            <span class="filter-chip__count">{{
+                              chip.count
+                            }}</span>
+                          </button>
+                        </div>
+                        <p
+                          v-if="group.caption"
+                          :id="group.caption.id"
+                          class="filter-chip-set__caption"
+                        >
+                          {{ group.caption.text }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <!-- Results in date order, newest first (v1.5.123): the date
@@ -612,23 +646,45 @@ export default {
         ...chips,
       ];
     },
-    // The chip row as the page draws it: the chips of CHIP_GROUPS in their
-    // groups, each with its caption, and the chips between them loose.
-    filterChipGroups() {
-      const runs = [];
-      this.availableFilterChips.forEach((chip) => {
-        const set = CHIP_GROUPS.find((g) => g.values.includes(chip.value));
-        const last = runs[runs.length - 1];
-        if (last && last.set === set) last.chips.push(chip);
-        else runs.push({ set, chips: [chip] });
-      });
-      return runs.map(({ set, chips }, index) => ({
-        key: set ? set.key : `loose-${index}`,
-        caption: set
-          ? { id: `${set.key}-chips-caption`, text: set.caption }
-          : null,
-        chips,
-      }));
+    // The chips as the page draws them (v1.5.127): No filter in a column of
+    // its own; beside it, the groups of CHIP_GROUPS, each with its caption,
+    // in one labelled row, and the other chips loose in the labelled row
+    // under it. An empty row is left out.
+    filterChipColumns() {
+      const [all, ...rest] = this.availableFilterChips;
+      if (!all) return [];
+      const inSet = (set, chip) => set.values.includes(chip.value);
+      const sets = CHIP_GROUPS.map((set) => ({
+        key: set.key,
+        caption: { id: `${set.key}-chips-caption`, text: set.caption },
+        chips: rest.filter((chip) => inSet(set, chip)),
+      })).filter((group) => group.chips.length);
+      const loose = rest.filter(
+        (chip) => !CHIP_GROUPS.some((set) => inSet(set, chip))
+      );
+      return [
+        [
+          {
+            key: "all",
+            label: null,
+            groups: [{ key: "all", caption: null, chips: [all] }],
+          },
+        ],
+        [
+          {
+            key: "collections",
+            label: "Research and publications",
+            groups: sets,
+          },
+          {
+            key: "elsewhere",
+            label: "Elsewhere on the site",
+            groups: loose.length
+              ? [{ key: "loose", caption: null, chips: loose }]
+              : [],
+          },
+        ].filter((row) => row.groups.length),
+      ];
     },
   },
   watch: {
@@ -1079,11 +1135,53 @@ export default {
 
 /* Each chip keeps its own height: the Research Hub group is taller than a
    chip, and a row's items are otherwise stretched to the tallest. */
+/* No filter at the left; beside it, a labelled row of the captioned groups
+   and a labelled row of the other chips, both starting at the same edge
+   (v1.5.127). At phone width No filter takes a line of its own above them. */
 .search-toolbar__chips {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px 14px;
+}
+
+.search-toolbar__column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.search-toolbar__column + .search-toolbar__column {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Two classes: Vuetify gives every paragraph a 16 px bottom margin. #595959
+   is 7:1 on white. */
+.search-toolbar__column .search-toolbar__row-label {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #595959;
+}
+
+.search-toolbar__row {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 6px;
+}
+
+@media (max-width: 600px) {
+  .search-toolbar__chips {
+    flex-direction: column;
+  }
+  /* No filter's empty label: on a line of its own it lines up with nothing. */
+  .search-toolbar__column .search-toolbar__row-label[aria-hidden="true"] {
+    display: none;
+  }
 }
 
 /* The date-order switch, under the chips (v1.5.123). */

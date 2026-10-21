@@ -181,76 +181,106 @@ describe("Who asks for the Research Hub filter", () => {
 // chip has a line and a caption too (v1.5.102): Publications is the agency's
 // library, apart from the Hub, and nothing said that either.
 describe("Search page: chips shown as a group, with a line and a caption", () => {
-  const groups = (state) =>
-    SearchStatic.computed.filterChipGroups.call(page(state));
+  // The chips as the page draws them (v1.5.127): No filter in a column of its
+  // own; beside it, a labelled row of the captioned groups and a labelled row
+  // of the other chips.
+  const columns = (state) =>
+    SearchStatic.computed.filterChipColumns.call(page(state));
   const labels = (group) => group.chips.map((c) => c.label);
+  const rows = (state) => columns(state)[1];
 
-  it("groups the Research Hub chip with the Hub's own types", () => {
-    const all = groups();
-    expect(all.map((g) => g.key)).to.deep.equal([
-      "loose-0",
-      "hub",
-      "loose-2",
-      "publications",
-      "loose-4",
+  it("puts No filter apart, and the groups in a row above the other chips", () => {
+    const [left, right] = columns();
+    expect(left.map((r) => r.label)).to.deep.equal([null]);
+    expect(labels(left[0].groups[0])).to.deep.equal(["No filter"]);
+    expect(right.map((r) => r.label)).to.deep.equal([
+      "Research and publications",
+      "Elsewhere on the site",
     ]);
-    expect(labels(all[0])).to.deep.equal(["No filter"]);
-    expect(labels(all[1])).to.deep.equal([
+    expect(right[0].groups.map((g) => g.key)).to.deep.equal([
+      "hub",
+      "publications",
+    ]);
+    expect(labels(right[0].groups[0])).to.deep.equal([
       "Research Hub",
       "Articles",
       "Web Apps",
       "Datasets",
     ]);
-    // the same chips, in the same order, as before
-    expect([].concat(...all.map((g) => g.chips))).to.deep.equal(
-      page().availableFilterChips
+    expect(labels(right[0].groups[1])).to.deep.equal(["Publications"]);
+    expect(right[1].groups.map(labels)).to.deep.equal([
+      ["Biographies", "News"],
+    ]);
+    // the same chips as before, none lost and none twice
+    const shown = [].concat(
+      ...[left, right].map((col) =>
+        [].concat(...col.map((r) => [].concat(...r.groups.map(labels))))
+      )
+    );
+    expect(shown.slice().sort()).to.deep.equal(
+      page()
+        .availableFilterChips.map((c) => c.label)
+        .sort()
     );
   });
 
-  it("gives the Publications chip a group of its own", () => {
-    const all = groups();
-    expect(labels(all[3])).to.deep.equal(["Publications"]);
-    expect(labels(all[2])).to.deep.equal(["Biographies"]);
-    expect(labels(all[4])).to.deep.equal(["News"]);
-  });
-
-  it("makes no group for a kind of result that is not there", () => {
-    const noHub = groups({
+  it("leaves out a row with nothing in it", () => {
+    const noHub = rows({
       queryResults: [result("news", "n1"), result("publication", "p1")],
     });
-    expect(noHub.map((g) => g.key)).to.deep.equal(["loose-0", "publications"]);
-    expect(labels(noHub[0])).to.deep.equal(["No filter", "News"]);
-    const neither = groups({
+    expect(noHub.map((r) => r.groups.map((g) => g.key))).to.deep.equal([
+      ["publications"],
+      ["loose"],
+    ]);
+    const neither = rows({
       queryResults: [result("news", "n1"), result("meeting", "m1")],
     });
-    expect(neither.map((g) => g.key)).to.deep.equal(["loose-0"]);
-    expect(neither[0].caption).to.equal(null);
-    expect(groups({ queryResults: [] })).to.deep.equal([]);
+    expect(neither.map((r) => r.key)).to.deep.equal(["elsewhere"]);
+    const onlyHub = rows({ queryResults: [result("article", "a1")] });
+    expect(onlyHub.map((r) => r.key)).to.deep.equal(["collections"]);
+    expect(columns({ queryResults: [] })).to.deep.equal([]);
   });
 
-  it("names each group with its caption, and the loose chips with none", () => {
-    const all = groups();
-    expect(all.map((g) => g.caption && g.caption.id)).to.deep.equal([
-      null,
-      "hub-chips-caption",
-      null,
-      "publications-chips-caption",
-      null,
-    ]);
-    expect(all[1].caption.text).to.equal(
-      "Research Hub includes Articles, Web Apps, and Datasets"
-    );
-    expect(all[3].caption.text).to.equal("ICJIA’s library since 1983");
+  it("names each group with its caption, and each row with its label", () => {
+    const [hub, publications] = rows()[0].groups;
+    expect(hub.caption).to.deep.equal({
+      id: "hub-chips-caption",
+      text: "Research Hub includes Articles, Web Apps, and Datasets",
+    });
+    expect(publications.caption).to.deep.equal({
+      id: "publications-chips-caption",
+      text: "ICJIA’s library since 1983",
+    });
+    expect(rows()[1].groups[0].caption).to.equal(null);
     const view = fs.readFileSync(
       path.join(process.cwd(), "src/views/Search/SearchStatic.vue"),
       "utf8"
     );
     expect(view).to.include(":role=\"group.caption ? 'group' : null\"");
-    expect(view).to.include(
-      ':aria-labelledby="group.caption ? group.caption.id : null"'
+    expect(view).to.match(
+      /:aria-labelledby="\s*group\.caption \? group\.caption\.id : null\s*"/
     );
     expect(view).to.match(
       /<p\s+v-if="group\.caption"\s+:id="group\.caption\.id"\s+class="filter-chip-set__caption"\s*>\s*\{\{ group\.caption\.text \}\}\s*<\/p>/
+    );
+    expect(view).to.include(":role=\"row.label ? 'group' : null\"");
+    expect(view).to.include(
+      ':aria-labelledby="row.label ? `${row.key}-row-label` : null"'
+    );
+  });
+
+  // The row labels sit above the chips; No filter has an empty label, hidden
+  // from screen readers, so that it lines up with the chips of the first row.
+  // At phone width it is on a line of its own and the empty label goes.
+  it("lines No filter up with the first row of chips", () => {
+    const view = fs.readFileSync(
+      path.join(process.cwd(), "src/views/Search/SearchStatic.vue"),
+      "utf8"
+    );
+    expect(view).to.include(":aria-hidden=\"row.label ? null : 'true'\"");
+    expect(view).to.include('{{ row.label || "\\u00a0" }}');
+    expect(view.split("<style")[1]).to.match(
+      /@media \(max-width: 600px\)[^@]*\.search-toolbar__row-label\[aria-hidden="true"\]\s*\{\s*display: none;/
     );
   });
 
@@ -367,12 +397,12 @@ describe("Search page: Press Releases filter", () => {
 
   it("is a loose chip, in no group", () => {
     const vm = page({ queryResults: MIXED });
-    Object.defineProperty(vm, "filterChipGroups", {
-      get: () => SearchStatic.computed.filterChipGroups.call(vm),
-    });
-    const run = vm.filterChipGroups.find((g) =>
-      g.chips.some((c) => c.value === "press")
+    const groups = [].concat(
+      ...SearchStatic.computed.filterChipColumns
+        .call(vm)[1]
+        .map((row) => row.groups)
     );
+    const run = groups.find((g) => g.chips.some((c) => c.value === "press"));
     expect(run.caption).to.equal(null);
   });
 });
