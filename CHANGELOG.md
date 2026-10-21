@@ -84,6 +84,28 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.129] - 2026-10-21
+
+### search: Newest first on unless turned off; the chips count the results that hold the words
+
+**Newest first is on when the search page opens.** In date order the results with no date came last, and the
+site's pages have none: "employment" would have listed the Employment page after every one of its 227 job
+listings. The site's pages, partner sites and plans (`PAGE_TYPES`) now keep their places in the list and the
+others are put in date order in the places left, so pages stay before posts as the search put them, and posts
+stay before pages for a search for a kind of document ("annual report"). `newestFirst(results, keepPlace)` in
+`src/utils/search.js`. Turned off, the search's own order (best match first) stands, as before.
+
+**The filter chips count the results that hold the typed words.** "safe-t" showed JOB LISTINGS 3 for three
+jobs that only say "safety" (one letter off): all three were similar results, listed under "Similar spellings
+and partial matches", yet the chip counted them as hits. A kind of result with only similar ones gets no chip
+now; its results are still under No filter, with the similar results. No filter counts the same results.
+When nothing at all holds the typed words, the chips count the similar results, as there are no others.
+
+The user chose both from options: pages kept on top (not pure date order), exact matches only (not both
+numbers). Tests in `tests/unit/searchSort.spec.js` and `tests/unit/searchFilters.spec.js`. Checked in a
+browser: the switch on at load; "employment" lists the Employment page first; "annual report" keeps its
+reports before the pages; "safe-t" and "domestic violence" show no chip for a kind with only similar results.
+
 ## [1.5.128] - 2026-10-21
 
 ### search: the summary, chips and switch in a shaded box

@@ -128,12 +128,16 @@ export function resultDate(item) {
  * hold every typed word before the similar ones, each group in that order
  * (the search's own order otherwise puts the best match first). A stable
  * sort: equal dates keep the order given. The list given is left alone.
+ * The results `keepPlace` picks (the search page: the site's pages, v1.5.129)
+ * keep their places in the list, and the others are put in date order in the
+ * places left, so that pages stay before posts as the search put them.
  *
  * @param {Array} results  Search results, each with `similar` when it is.
+ * @param {Function} [keepPlace]  Picks the results that keep their place.
  * @returns {Array}
  */
-export function newestFirst(results) {
-  const byDate = (list) =>
+export function newestFirst(results, keepPlace = () => false) {
+  const inDateOrder = (list) =>
     list
       .map((result, index) => ({
         result,
@@ -147,6 +151,10 @@ export function newestFirst(results) {
         return b.time - a.time || a.index - b.index;
       })
       .map((entry) => entry.result);
+  const byDate = (list) => {
+    const dated = inDateOrder(list.filter((r) => !keepPlace(r)));
+    return list.map((r) => (keepPlace(r) ? r : dated.shift()));
+  };
   const list = results || [];
   return byDate(list.filter((r) => !r.similar)).concat(
     byDate(list.filter((r) => r.similar))

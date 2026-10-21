@@ -171,10 +171,11 @@
                   </div>
                 </div>
               </div>
-              <!-- Results in date order, newest first (v1.5.123): the date
-                   the card shows; results with none come last, and similar
-                   results stay after the rest. Off, the search's own order,
-                   best match first. -->
+              <!-- Results in date order, newest first (v1.5.123; on unless
+                   turned off, v1.5.129): the date the card shows; results
+                   with none come last, the site's pages keep their places,
+                   and similar results stay after the rest. Off, the search's
+                   own order, best match first. -->
               <div class="search-toolbar__sort">
                 <v-switch
                   v-model="sortSwitch"
@@ -340,7 +341,7 @@ import _ from "lodash";
 import NProgress from "@/services/Progress";
 import { goToOptions } from "@/utils/motion";
 import { searchLocation, searchEvent, newestFirst } from "@/utils/search";
-import { searchWords, synonymsOf } from "@/utils/searchFields";
+import { searchWords, synonymsOf, PAGE_TYPES } from "@/utils/searchFields";
 import {
   historyKey,
   keepSearchView,
@@ -399,7 +400,8 @@ export default {
   },
   data() {
     return {
-      sortSwitch: false,
+      // Newest first, on unless turned off (v1.5.129).
+      sortSwitch: true,
       searchFilter: null,
       searchModal: false,
       opts: null,
@@ -529,10 +531,13 @@ export default {
     // The results that hold every typed word, and the rest, which the search
     // marks similar and lists after them (src/utils/searchFields.js).
     // The filtered results in the order shown: the search's own, or by date
-    // when the switch is on (src/utils/search.js, newestFirst).
+    // when the switch is on (src/utils/search.js, newestFirst), the site's
+    // pages keeping their places before posts (v1.5.129).
     orderedResults() {
       return this.sortSwitch
-        ? newestFirst(this.filteredResults)
+        ? newestFirst(this.filteredResults, (result) =>
+            PAGE_TYPES.includes(result.item && result.item.contentType)
+          )
         : this.filteredResults;
     },
     wordResults() {
@@ -604,8 +609,15 @@ export default {
     // Hidden when no results yet so the empty toolbar doesn't flash.
     availableFilterChips() {
       if (!this.queryResults.length) return [];
+      // The chips count the results that hold the typed words (v1.5.129):
+      // "safe-t" showed JOB LISTINGS 3 for three jobs that only say "safety".
+      // A kind of result with only similar ones gets no chip; they are under
+      // No filter, with the similar results. When nothing holds the words,
+      // the chips count the similar results, as there are no others.
+      const exact = this.queryResults.filter((r) => !r.similar);
+      const counted = exact.length ? exact : this.queryResults;
       const counts = {};
-      for (const r of this.queryResults) {
+      for (const r of counted) {
         const t = (r.item && r.item.contentType) || "other";
         counts[t] = (counts[t] || 0) + 1;
       }
@@ -619,7 +631,7 @@ export default {
         .map(chip)
         .sort((a, b) => b.count - a.count);
       // The Press Releases chip, after the News chip.
-      const press = this.queryResults.filter((r) => isPressRelease(r.item));
+      const press = counted.filter((r) => isPressRelease(r.item));
       const news = chips.findIndex((c) => c.value === "news");
       if (press.length && news > -1)
         chips.splice(news + 1, 0, {
@@ -641,7 +653,7 @@ export default {
           ]
         : [];
       return [
-        { value: null, label: "No filter", count: this.queryResults.length },
+        { value: null, label: "No filter", count: counted.length },
         ...hub,
         ...chips,
       ];

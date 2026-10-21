@@ -406,3 +406,47 @@ describe("Search page: Press Releases filter", () => {
     expect(run.caption).to.equal(null);
   });
 });
+
+// v1.5.129: "safe-t" showed JOB LISTINGS 3 for three jobs that only say
+// "safety", all three similar. The chips count the results that hold the
+// typed words; a kind of result with only similar ones gets no chip. When
+// nothing holds the words, the chips count the similar results.
+describe("Search page: the chips count the results that hold the words", () => {
+  const similar = (contentType, title) => ({
+    ...result(contentType, title),
+    similar: true,
+  });
+  const chips = (queryResults) =>
+    page({ queryResults }).availableFilterChips.map((c) => [c.label, c.count]);
+
+  it("leaves the similar results out of the counts", () => {
+    expect(
+      chips([
+        result("article", "The SAFE-T Act"),
+        result("news", "SAFE-T news"),
+        result("news", "More SAFE-T news"),
+        similar("employment", "Public Safety Manager"),
+        similar("employment", "Public Safety Specialist"),
+        similar("news", "Safety news"),
+      ])
+    ).to.deep.equal([
+      ["No filter", 3],
+      ["Research Hub", 1],
+      ["Articles", 1],
+      ["News", 2],
+    ]);
+  });
+
+  it("counts the similar results when nothing holds the words", () => {
+    expect(
+      chips([
+        similar("employment", "Public Safety Manager"),
+        similar("news", "Safety news"),
+      ])
+    ).to.deep.equal([
+      ["No filter", 2],
+      ["Job Listings", 1],
+      ["News", 1],
+    ]);
+  });
+});

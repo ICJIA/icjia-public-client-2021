@@ -153,3 +153,51 @@ describe("Newest first", () => {
     });
   });
 });
+
+// v1.5.129: the switch is on unless turned off. In date order the site's pages
+// (pages, partner sites, plans, PAGE_TYPES) keep their places, so that a page
+// the search put first stays before the posts: "employment" would otherwise
+// list the Employment page, undated, after every job.
+describe("Newest first, on unless turned off", () => {
+  it("is on when the page opens", () => {
+    expect(SearchStatic.data.call({ $refs: {} }).sortSwitch).to.equal(true);
+  });
+
+  it("leaves the results it is told to keep in their places", () => {
+    const isPage = (r) => r.item.contentType === "page";
+    const list = [
+      result("/employment/", { contentType: "page" }),
+      result("/job-old/", { published_at: "2024-12-09" }),
+      result("/job-new/", { published_at: "2026-09-11" }),
+      result("/partners/", { contentType: "page", date: "2001-01-01" }),
+      result("/undated-post/", {}),
+      result("/similar-job/", { published_at: "2026-10-01" }, true),
+    ];
+    expect(newestFirst(list, isPage).map((r) => r.item.fullPath)).to.deep.equal(
+      [
+        "/employment/",
+        "/job-new/",
+        "/job-old/",
+        "/partners/",
+        "/undated-post/",
+        "/similar-job/",
+      ]
+    );
+  });
+
+  it("on the page, keeps the site's pages, partner sites and plans in place", () => {
+    const vm = {
+      sortSwitch: true,
+      filteredResults: [
+        result("/page/", { contentType: "page" }),
+        result("/partner/", { contentType: "partner site" }),
+        result("/plan/", { contentType: "plan" }),
+        result("/old/", { contentType: "news", publicationDate: "2019-01-01" }),
+        result("/new/", { contentType: "news", publicationDate: "2026-01-01" }),
+      ],
+    };
+    expect(
+      SearchStatic.computed.orderedResults.call(vm).map((r) => r.item.fullPath)
+    ).to.deep.equal(["/page/", "/partner/", "/plan/", "/new/", "/old/"]);
+  });
+});
