@@ -69,6 +69,21 @@ describe("fixExpandButtons()", () => {
     expect(btn.getAttribute("aria-label")).to.equal("Expand");
   });
 
+  it("keeps the name a table gave the button in its own template (data-named), and mirrors it", () => {
+    document.body.innerHTML =
+      "<table><tbody><tr><td>" +
+      '<button class="v-data-table__expand-icon" data-named aria-label="Toggle details for Budget Committee"></button>' +
+      "</td><td>Illinois Domestic Violence Fatality Review Committee</td><td>Budget Committee</td></tr></tbody></table>";
+    fixExpandButtons();
+    const btn = document.querySelector(".v-data-table__expand-icon");
+    expect(btn.getAttribute("aria-label")).to.equal(
+      "Toggle details for Budget Committee"
+    );
+    expect(btn.querySelector(".sr-only").textContent).to.equal(
+      "Toggle details for Budget Committee"
+    );
+  });
+
   it("accepts custom class and label", () => {
     document.body.innerHTML = '<button class="custom-expand"></button>';
     fixExpandButtons("custom-expand", "Show details");

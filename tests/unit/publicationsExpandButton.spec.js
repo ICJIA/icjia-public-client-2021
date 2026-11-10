@@ -10,7 +10,13 @@ import fs from "fs";
 import path from "path";
 import PublicationsAll from "@/views/About/PublicationsAll.vue";
 
+import MeetingTable from "@/components/MeetingTable.vue";
+
 const expandLabel = PublicationsAll.methods.expandLabel;
+const meetings = fs.readFileSync(
+  path.resolve(__dirname, "../../src/components/MeetingTable.vue"),
+  "utf8"
+);
 const source = fs.readFileSync(
   path.resolve(__dirname, "../../src/views/About/PublicationsAll.vue"),
   "utf8"
@@ -46,5 +52,18 @@ describe("Publications list: the name of a row's expand button", () => {
     expect(slot).to.include(':aria-label="expandLabel(item)"');
     expect(slot).to.include(":aria-expanded=");
     expect(slot).to.include('class="v-data-table__expand-icon"');
+  });
+
+  it("the meetings table names its button the same way (v1.5.136)", () => {
+    const slot = meetings.slice(
+      meetings.indexOf("v-slot:item.data-table-expand"),
+      meetings.indexOf("v-slot:item.start")
+    );
+    expect(slot).to.include(':aria-label="expandLabel(item)"');
+    expect(slot).to.include(":aria-expanded=");
+    expect(slot).to.include("data-named");
+    expect(
+      MeetingTable.methods.expandLabel({ title: "Budget Committee" })
+    ).to.equal("Toggle details for Budget Committee");
   });
 });

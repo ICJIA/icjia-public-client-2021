@@ -30,6 +30,21 @@
           {{ header.text }}
         </button>
       </template>
+      <!-- The button that opens a row is named here, as the row is drawn
+           (WCAG 4.1.2): the names fixExpandButtons wrote were lost when the
+           rows were drawn again, by a search or a change of page. Otherwise
+           it is v-data-table's own button. -->
+      <template v-slot:item.data-table-expand="{ item, isExpanded, expand }">
+        <v-icon
+          class="v-data-table__expand-icon"
+          :class="{ 'v-data-table__expand-icon--active': isExpanded }"
+          data-named
+          :aria-label="expandLabel(item)"
+          :aria-expanded="isExpanded ? 'true' : 'false'"
+          @click.stop="expand(!isExpanded)"
+          >$expand</v-icon
+        >
+      </template>
       <template v-slot:item.start="{ item }">
         <div
           style="width: 110px; font-size: 14px; font-weight: 700; color: #222"
@@ -139,7 +154,11 @@
 import NProgress from "@/services/Progress";
 // eslint-disable-next-line no-unused-vars
 import { EventBus } from "@/event-bus";
-import { fixExpandButtons, fixDataTableHeaders } from "@/a11y";
+import {
+  expandButtonLabel,
+  fixExpandButtons,
+  fixDataTableHeaders,
+} from "@/a11y";
 import DataTable from "@/components/DataTable";
 import slug from "slug";
 import { renderToHtml } from "@/services/Markdown";
@@ -192,6 +211,9 @@ export default {
     fixDataTableHeaders();
   },
   methods: {
+    expandLabel(item) {
+      return expandButtonLabel(item && item.title);
+    },
     generateSlug(heading) {
       return slug(heading);
     },

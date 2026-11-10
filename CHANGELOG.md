@@ -84,6 +84,30 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.136] - 2026-11-10
+
+### meetings: each row's expand button keeps its name through a search or a change of page (WCAG 4.1.2)
+
+The check made of the publications list (v1.5.135) was made of the two other tables named there. The
+meetings table (`/news/meetings/`, and the IRB meetings at `/irb/irb-meetings/`) named its expand buttons
+on arrival, but the names were lost whenever the rows were drawn again: measured on the live site, 25 of 25
+buttons unnamed after "Next page" and 20 of 20 after searching "budget". The required-forms table has no
+expand buttons, so there was nothing to change in it.
+
+`src/components/MeetingTable.vue` now names the button in its own template, as the publications list does
+(the `item.data-table-expand` slot), and says whether the row is open (`aria-expanded`). The words come from
+one place, `expandButtonLabel()` in `src/a11y/index.js`, which the publications list now uses too.
+`fixExpandButtons` keeps a name given this way (`data-named`) and only mirrors it into its hidden text: it
+would otherwise name the row from its longest cell, which in the meetings table can be the category.
+
+Checked in Chrome on the local build, meetings at 1280 px and 360 px, IRB meetings and publications at
+1280 px: every button named on arrival, after paging and after a search; a click and the Enter key open and
+close the row; the button's classes, size, place and colour as before. axe-core (WCAG 2.1 A and AA rules):
+0 violations on the meetings and IRB meetings pages. An automated pass is not a statement that a page
+conforms. Tests in `tests/unit/a11y.spec.js` and `tests/unit/publicationsExpandButton.spec.js`.
+
+---
+
 ## [1.5.135] - 2026-11-10
 
 ### publications: each row's expand button has its name from the start (WCAG 4.1.2)

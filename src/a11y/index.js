@@ -69,6 +69,17 @@ const getRowContextLabel = function (button) {
   return "";
 };
 
+// The name of the button that opens a table row, from the row's title. A table
+// that names the button in its own template (PublicationsAll, MeetingTable)
+// uses this, so the name is there as the row is drawn and reads the same as
+// the one fixExpandButtons writes.
+const expandButtonLabel = function (title, fallbackLabel = "Expand") {
+  const text = String(title || "").trim();
+  if (!text) return fallbackLabel;
+  const short = text.length > 80 ? text.slice(0, 77) + "…" : text;
+  return `Toggle details for ${short}`;
+};
+
 const fixExpandButtons = function (
   className = "v-data-table__expand-icon",
   fallbackLabel = "Expand"
@@ -76,8 +87,13 @@ const fixExpandButtons = function (
   const els = document.getElementsByClassName(className);
   for (let i = 0, len = els.length; i < len; ++i) {
     const btn = els[i];
-    const context = getRowContextLabel(btn);
-    const label = context ? `Toggle details for ${context}` : fallbackLabel;
+    // A button named in its table's template (data-named) keeps that name:
+    // the row's longest cell, used below, is not always its title.
+    const own =
+      btn.hasAttribute("data-named") && btn.getAttribute("aria-label");
+    const context = own ? "" : getRowContextLabel(btn);
+    const label =
+      own || (context ? `Toggle details for ${context}` : fallbackLabel);
     btn.setAttribute("aria-label", label);
     // Some auditors compute a button's accessible name from inner text rather than
     // aria-label (notably SiteImprove's sia-r12 returns `failed cantTell` on
@@ -1046,6 +1062,7 @@ export {
   fixButtonText,
   fixBlankTableHeadings,
   fixNuxtContentHeadings,
+  expandButtonLabel,
   fixExpandButtons,
   fixCarouselArrows,
   fixTableRowKeyboard,

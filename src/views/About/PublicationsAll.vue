@@ -77,6 +77,7 @@
                 <v-icon
                   class="v-data-table__expand-icon"
                   :class="{ 'v-data-table__expand-icon--active': isExpanded }"
+                  data-named
                   :aria-label="expandLabel(item)"
                   :aria-expanded="isExpanded ? 'true' : 'false'"
                   @click.stop="expand(!isExpanded)"
@@ -204,7 +205,11 @@
 
 <script>
 import NProgress from "@/services/Progress";
-import { fixExpandButtons, fixNestedInteractive } from "@/a11y";
+import {
+  expandButtonLabel,
+  fixExpandButtons,
+  fixNestedInteractive,
+} from "@/a11y";
 import DataTable from "@/components/DataTable";
 import { getPublicationType } from "@/lib/utils";
 import { deepSanitize } from "@/utils/contentSanitizer";
@@ -313,12 +318,8 @@ export default {
     this.tableLoading = false;
   },
   methods: {
-    // The words fixExpandButtons gives the same button, so the two agree.
     expandLabel(item) {
-      const title = String((item && item.title) || "").trim();
-      if (!title) return "Expand";
-      const short = title.length > 80 ? title.slice(0, 77) + "…" : title;
-      return `Toggle details for ${short}`;
+      return expandButtonLabel(item && item.title);
     },
     registerArticleView(item) {
       //console.log("publicationList_article_view: ", item.articleURL);
