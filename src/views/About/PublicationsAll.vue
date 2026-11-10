@@ -10,10 +10,11 @@
             <h1>ICJIA Publications</h1>
 
             <p class="publications-intro">
-              This is the Authority&rsquo;s virtual library, and it is more than
-              a list of research. It gathers what ICJIA has published since the
-              early 1980s: recent research and evaluations, the reports of ICJIA
-              initiatives past and present, and the agency-wide print
+              This is the Authority&rsquo;s virtual library: a record of
+              ICJIA&rsquo;s printed and online work since the Authority was
+              established in the early 1980s. It is more than a list of
+              research. Beside recent research and evaluations are the reports
+              of ICJIA initiatives past and present and the agency-wide print
               publications of earlier decades, among them
               <em>On Good Authority</em> and <em>The Compiler</em>.
             </p>

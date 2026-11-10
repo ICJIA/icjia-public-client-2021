@@ -31,9 +31,10 @@ describe("Context bars: the statutory reports", () => {
     ]);
   });
 
-  it("Research and Analysis: the three reports after Publications, before the Institutional Review Board", () => {
+  it("Research and Analysis: the three reports after Datasets, before the Institutional Review Board; no Publications tab (v1.5.132)", () => {
+    expect(labels("researchhub")).to.not.include("Publications");
     expect(labels("researchhub").slice(-5)).to.deep.equal([
-      "Publications",
+      "Datasets",
       "Death in Custody Reporting",
       "Homicide Reporting",
       "Drone Reporting",

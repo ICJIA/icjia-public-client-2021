@@ -84,6 +84,23 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.132] - 2026-11-10
+
+### publications: a record of the Authority's printed and online work; no Publications tab in the Research bar
+
+The text under "ICJIA Publications" (v1.5.131) now opens with what the list is: the Authority's virtual
+library, a record of ICJIA's printed and online work since the Authority was established in the early
+1980s. It then says, as before, that this is more than a list of research: recent research and evaluations,
+the reports of ICJIA initiatives past and present, and the agency-wide print publications of earlier decades
+such as *On Good Authority* and *The Compiler*.
+
+The Research and Analysis context bar no longer has a Publications tab (`src/config/contextMenus.json`); the
+list belongs to the whole Authority and is reached from the About menu and its bar (v1.5.126). The address
+`/researchhub/publications/` still opens the list, so old links keep working. The pinned order of that bar
+in `tests/unit/contextBarStatutoryReporting.spec.js` is changed to match.
+
+---
+
 ## [1.5.131] - 2026-11-10
 
 ### publications: the page says what the library holds
