@@ -84,6 +84,15 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.133] - 2026-11-10
+
+### publications: the library is curated
+
+The text under "ICJIA Publications" now calls the list a staff-curated record: ICJIA staff choose and
+maintain what is in it (the Publication List Editor), it is not put together automatically.
+
+---
+
 ## [1.5.132] - 2026-11-10
 
 ### publications: a record of the Authority's printed and online work; no Publications tab in the Research bar
