@@ -84,6 +84,15 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.134] - 2026-11-10
+
+### publications: Trends and Issues named with the other print publications
+
+The text under "ICJIA Publications" now names three of the agency-wide print publications: *On Good
+Authority*, *Trends and Issues*, and *The Compiler*.
+
+---
+
 ## [1.5.133] - 2026-11-10
 
 ### publications: the library is curated

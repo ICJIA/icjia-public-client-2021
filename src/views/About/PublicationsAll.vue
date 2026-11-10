@@ -16,7 +16,8 @@
               list of research. Beside recent research and evaluations are the
               reports of ICJIA initiatives past and present and the agency-wide
               print publications of earlier decades, among them
-              <em>On Good Authority</em> and <em>The Compiler</em>.
+              <em>On Good Authority</em>, <em>Trends and Issues</em>, and
+              <em>The Compiler</em>.
             </p>
 
             <v-card-title class="mb-5">
