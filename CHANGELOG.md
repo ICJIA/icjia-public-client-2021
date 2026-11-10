@@ -84,6 +84,29 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.135] - 2026-11-10
+
+### publications: each row's expand button has its name from the start (WCAG 4.1.2)
+
+axe-core reported the 150 expand buttons of the publications list (`/about/publications/`) as buttons
+without an accessible name. They did get one, "Toggle details for" and the title, but two seconds after the
+list loaded (`fixExpandButtons`, on a timer), so a check or a screen reader arriving sooner found none; a
+search could also leave a row's button unnamed (measured on the live site: 150 of 150 unnamed on arrival,
+1 of 6 after searching "drone").
+
+The name is now part of the table's template in `src/views/About/PublicationsAll.vue` (the
+`item.data-table-expand` slot, `expandLabel()`), so the button has it as the row is drawn and keeps it
+through searching, sorting and paging. The button also says whether its row is open (`aria-expanded`).
+It is otherwise the table's own button: same classes, size, colour and behaviour, by mouse and keyboard.
+
+Checked in Chrome at 1280 px and 360 px: 150 of 150 named on arrival, 6 of 6 after a search; a click and
+the Enter key open and close the row. axe-core (WCAG 2.1 A and AA rules), desktop and phone: 0 violations.
+An automated pass is not a statement that the page conforms. `tests/unit/publicationsExpandButton.spec.js`.
+
+The meetings and required-forms tables name their buttons in the older way and are not changed here.
+
+---
+
 ## [1.5.134] - 2026-11-10
 
 ### publications: Trends and Issues named with the other print publications

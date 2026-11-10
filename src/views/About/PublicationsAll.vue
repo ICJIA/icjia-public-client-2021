@@ -66,6 +66,23 @@
                   {{ header.text }}
                 </button>
               </template>
+              <!-- The button that opens a row is named here, as the row is
+                   drawn (WCAG 4.1.2). Its name used to be written two seconds
+                   after the list loaded (fixExpandButtons), so the 150 buttons
+                   had none until then, nor after a search or a change of the
+                   rows per page. Otherwise it is v-data-table's own button. -->
+              <template
+                v-slot:item.data-table-expand="{ item, isExpanded, expand }"
+              >
+                <v-icon
+                  class="v-data-table__expand-icon"
+                  :class="{ 'v-data-table__expand-icon--active': isExpanded }"
+                  :aria-label="expandLabel(item)"
+                  :aria-expanded="isExpanded ? 'true' : 'false'"
+                  @click.stop="expand(!isExpanded)"
+                  >$expand</v-icon
+                >
+              </template>
               <template v-slot:item.publicationDate="{ item }">
                 <div
                   style="
@@ -296,6 +313,13 @@ export default {
     this.tableLoading = false;
   },
   methods: {
+    // The words fixExpandButtons gives the same button, so the two agree.
+    expandLabel(item) {
+      const title = String((item && item.title) || "").trim();
+      if (!title) return "Expand";
+      const short = title.length > 80 ? title.slice(0, 77) + "…" : title;
+      return `Toggle details for ${short}`;
+    },
     registerArticleView(item) {
       //console.log("publicationList_article_view: ", item.articleURL);
       window.plausible("publicationList_article_view", {
