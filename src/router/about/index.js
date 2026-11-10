@@ -89,6 +89,14 @@ const about = [
       ),
   },
   {
+    // A CMS page filed under About that lives at /partners/ (the CMS has no
+    // "partners" category). Only this slug: generators/movedPages.js.
+    path: "/partners/:slug(icjia-umich-partnership)",
+    name: "PartnersPage",
+    component: () =>
+      import(/* webpackChunkName: "funding" */ "@/views/BasePage.vue"),
+  },
+  {
     path: "/about/:slug",
     name: "AboutPage",
     component: () =>

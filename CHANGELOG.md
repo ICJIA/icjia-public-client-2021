@@ -84,6 +84,26 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.137] - 2026-11-10
+
+### partners: the ICJIA and University of Michigan partnership page is at /partners/
+
+The page (CMS page 47, filed under About) was at `/about/icjia-umich-partnership/`. Its address is now
+`/partners/icjia-umich-partnership/`, and that is the address in the search index, the sitemap and the
+page's canonical link. The address under `/about/` redirects to it. The page shows no context bar.
+
+A page's address is `/<category>/<slug>/`, and the CMS has no "partners" category. The CMS is unchanged:
+`generators/movedPages.js` names the one page and its address, and `generators/generateIndexPages.js` takes
+every page's address from there. The route `/partners/:slug` (`src/router/about`) accepts this slug only, so
+no other About page is shown under `/partners/`; the redirect is in `src/router/redirects`.
+
+Checked in Chrome on the local build: the page at the new address with its canonical link, the old address
+with and without its last slash arriving there, no context bar, `/about/foia/` as before, and a search for
+"university of michigan" listing and opening the new address. `sitemap.xml` and `searchIndex.json` hold the
+`/partners/` address and not the old one. Tests in `tests/unit/movedPages.spec.js`.
+
+---
+
 ## [1.5.136] - 2026-11-10
 
 ### meetings: each row's expand button keeps its name through a search or a change of page (WCAG 4.1.2)

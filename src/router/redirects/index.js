@@ -28,6 +28,12 @@ const redirects = [
     },
   },
   {
+    // The page lives at /partners/ (generators/movedPages.js). Read before
+    // the About pages' route, /about/:slug (src/router/index.js).
+    path: "/about/icjia-umich-partnership/",
+    redirect: "/partners/icjia-umich-partnership/",
+  },
+  {
     path: "/researchhub/hub-home/",
     redirect: { name: "hubHome" },
   },

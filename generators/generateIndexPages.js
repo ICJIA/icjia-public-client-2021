@@ -3,6 +3,7 @@ const fs = require("fs");
 const jsonfile = require("jsonfile");
 const _ = require("lodash");
 const { createApiClient } = require("./apiClient");
+const { pagePath } = require("./movedPages");
 // const { apiBaseURL } = require("./src/config");
 
 const query = `query {
@@ -78,10 +79,7 @@ api
       let obj = {
         ...p,
         altTitle: p.title.toLowerCase(),
-        fullPath:
-          p.category === "general"
-            ? `/${p.slug}/`
-            : `/${p.category}/${p.slug}/`,
+        fullPath: pagePath(p),
         imagePath,
         contentType: "page",
       };
