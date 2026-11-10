@@ -84,6 +84,21 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.131] - 2026-11-10
+
+### publications: the page says what the library holds
+
+`/about/publications/` had its heading, "ICJIA Publications", and then the table, and the list was being
+read as "just research". Under the heading it now says that this is the Authority's virtual library and more
+than a list of research: what ICJIA has published since the early 1980s, which is recent research and
+evaluations, the reports of ICJIA initiatives past and present, and the agency-wide print publications of
+earlier decades such as *On Good Authority* and *The Compiler*.
+
+The heading and this text are written in the page itself (`src/views/About/PublicationsAll.vue`), not in
+the CMS; the CMS supplies only the publications in the table.
+
+---
+
 ## [1.5.130] - 2026-10-21
 
 ### search: a search for one act or report opens with it, Newest first or not

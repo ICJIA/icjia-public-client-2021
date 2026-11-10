@@ -9,6 +9,15 @@
           >
             <h1>ICJIA Publications</h1>
 
+            <p class="publications-intro">
+              This is the Authority&rsquo;s virtual library, and it is more than
+              a list of research. It gathers what ICJIA has published since the
+              early 1980s: recent research and evaluations, the reports of ICJIA
+              initiatives past and present, and the agency-wide print
+              publications of earlier decades, among them
+              <em>On Good Authority</em> and <em>The Compiler</em>.
+            </p>
+
             <v-card-title class="mb-5">
               <v-text-field
                 v-model="search"
@@ -388,5 +397,10 @@ export default {
 <style>
 tr {
   cursor: pointer !important;
+}
+.publications-intro {
+  max-width: 760px;
+  margin: 12px auto 0 !important;
+  text-align: center;
 }
 </style>
