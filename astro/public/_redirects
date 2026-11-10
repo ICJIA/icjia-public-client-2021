@@ -17,6 +17,8 @@
 /rss/                          /about/rss/                                     301
 /drone/                        /innovation-and-digital-services/drone/         301
 /covid19/                      /about/covid-19/                                301
+# The page lives at /partners/ (icjia.config.mjs movedPages).
+/about/icjia-umich-partnership/ /partners/icjia-umich-partnership/           301
 
 # Renamed content
 /news/volunteers/              /news/join-our-volunteer-reviewer-pool/         301

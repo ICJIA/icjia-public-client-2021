@@ -84,6 +84,29 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.140] - 2026-11-10
+
+### astro: the partnership page at /partners/ in the Astro rebuild
+
+The three things v1.5.139 left open in the Astro rebuild are done. The live (Vue) site is unchanged by this
+release.
+
+- The page is built at `/partners/icjia-umich-partnership/` (`astro/src/pages/partners/[slug].astro`), with
+  that address as its canonical link and no context bar, and is no longer built under `/about/`.
+- `/about/icjia-umich-partnership/` redirects to it (301, `astro/public/_redirects`).
+- The search index and the sitemap hold the `/partners/` address (`astro/scripts/generate-search-index.mjs`).
+- The Partners menu titles the 2024-2029 JAG plan "Justice Assistance Grant", as the live menu does.
+
+The page and its address are named once, in `movedPages` in `astro/icjia.config.mjs`, the counterpart of
+`generators/movedPages.js`: a second page moved this way is one line in each.
+
+Checked on a local build of the Astro site: the page's file, canonical link, heading and menu links in the
+built HTML, no context bar, no file under `/about/`, the address in `searchIndex.json` and `sitemap.xml`, and
+the rule in the built `_redirects`. The redirect itself was not exercised: it is a Netlify rule, and takes
+effect on a Netlify deploy. The Astro unit tests pass (61).
+
+---
+
 ## [1.5.139] - 2026-11-10
 
 ### astro: the Partners menu of the Astro rebuild follows v1.5.138

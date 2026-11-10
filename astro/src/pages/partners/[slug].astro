@@ -1,0 +1,30 @@
+---
+// /partners/[slug]/ — CMS pages that live at /partners/ although the CMS files
+// them under another category (it has no "partners" category). Mirrors the Vue
+// site's /partners/:slug route (src/router/about/index.js, v1.5.137). Only the
+// slugs named in icjia.config.mjs movedPages are built; no context bar shows
+// here (contextMenus.json has no /partners/ bar), as on the Vue site.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BasePage from '../../components/BasePage.astro';
+import { getPage } from '../../lib/data';
+import { movedPages } from '../../../icjia.config.mjs';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return Object.entries(movedPages)
+    .filter(([, path]) => path.startsWith('/partners/'))
+    .map(([slug]) => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+const page = slug ? await getPage(slug) : null;
+
+if (!page) {
+  return new Response('Not found', { status: 404 });
+}
+---
+
+<BaseLayout title={page.title || 'ICJIA'} description={page.summary}>
+  <BasePage page={page} />
+</BaseLayout>

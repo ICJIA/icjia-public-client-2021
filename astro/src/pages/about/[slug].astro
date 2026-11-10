@@ -24,6 +24,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import BasePage from '../../components/BasePage.astro';
 import { getPage, getAllPages } from '../../lib/data';
+import { movedPages } from '../../../icjia.config.mjs';
 
 // Prerendered (renderStrategy: about) — builds the about-category CMS pages minus the
 // RESERVED dedicated-route slugs below. Refreshed on nightly/manual rebuild.
@@ -49,7 +50,9 @@ export async function getStaticPaths() {
     // DICRA is researchhub-category, but prod's About-menu context bar links it at
     // /about/dicra/ ("Death in Custody Reporting"), so serve it here to keep the ported
     // contextMenus.json faithful + that tab working (/researchhub/dicra/ 301s here).
-    .filter((p) => (p.category === 'about' || p.slug === 'dicra') && p.slug && !reserved.has(p.slug))
+    // A page that lives outside /about/ (icjia.config.mjs movedPages) is built at
+    // its own address; its /about/ address 301s there (public/_redirects).
+    .filter((p) => (p.category === 'about' || p.slug === 'dicra') && p.slug && !reserved.has(p.slug) && !movedPages[p.slug])
     .map((p) => ({ params: { slug: p.slug } }));
 }
 

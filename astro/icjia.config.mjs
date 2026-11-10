@@ -27,6 +27,19 @@ export const site = {
 };
 
 /**
+ * CMS pages whose address is not their CMS category's (mirrors the Vue site's
+ * generators/movedPages.js, v1.5.137). A page's address is /<category>/<slug>/
+ * and the CMS has no "partners" category: the page below is filed under About
+ * and lives at /partners/. Read by src/pages/partners/[slug].astro (builds it),
+ * src/pages/about/[slug].astro (does not), and scripts/generate-search-index.mjs
+ * (search index + sitemap address). The /about/ address 301s: public/_redirects.
+ * @type {Record<string, string>}
+ */
+export const movedPages = {
+  "icjia-umich-partnership": "/partners/icjia-umich-partnership/",
+};
+
+/**
  * Keep-warm cold-start pings.
  * KILL SWITCH: set `enabled: false`, commit → ~1 min auto-deploy stops the pings.
  *   (Faster options: env var KEEP_WARM_DISABLED=1 in the Netlify UI = no commit;

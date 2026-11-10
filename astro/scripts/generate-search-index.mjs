@@ -21,7 +21,7 @@
 // fails the build.
 import { writeFile, readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
-import { site } from "../icjia.config.mjs";
+import { site, movedPages } from "../icjia.config.mjs";
 
 const AGENCY = process.env.PUBLIC_STRAPI_GRAPHQL || `${site.strapiHost}/graphql`;
 const AGENCY_REST = process.env.PUBLIC_STRAPI_REST || site.strapiHost;
@@ -221,7 +221,9 @@ async function fetchPages() {
   return pages.map((p) => ({
     ...p,
     altTitle: p.title?.toLowerCase(),
-    fullPath: p.category === "general" ? `/${p.slug}/` : `/${p.category}/${p.slug}/`,
+    fullPath:
+      movedPages[p.slug] ||
+      (p.category === "general" ? `/${p.slug}/` : `/${p.category}/${p.slug}/`),
     imagePath: p.splash ? `${site.strapiHost}${p.splash.url}` : null,
     contentType: "page",
   }));
