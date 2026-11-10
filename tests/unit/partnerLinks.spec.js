@@ -26,7 +26,7 @@ const { partnerRecords } = require("../../generators/partnerLinks");
 const source = (file) =>
   fs.readFileSync(path.join(process.cwd(), file), "utf8");
 const partners = menus.menu.find((m) => m.main === "Partners");
-const links = partners.children.filter((c) => c.link);
+const links = partners.children.filter((c) => c.link && c.external);
 const records = partnerRecords(menus);
 
 describe("Partners menu: a search record for every link", () => {
@@ -40,6 +40,15 @@ describe("Partners menu: a search record for every link", () => {
     );
     for (const record of records)
       expect(record.external, record.title).to.equal(true);
+  });
+
+  it("leaves a page of this site to its own record (v1.5.138)", () => {
+    const page = partners.children.find(
+      (c) => c.link === "/partners/icjia-umich-partnership/"
+    );
+    expect(page, "the partnership page is in the menu").to.not.equal(undefined);
+    expect(page.external).to.equal(undefined);
+    expect(records.map((r) => r.fullPath)).to.not.include(page.link);
   });
 
   it("names a record by the menu section it sits under", () => {

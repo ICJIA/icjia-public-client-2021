@@ -94,7 +94,7 @@ const WORDS = {
 };
 
 // The menu's section headings name the kind of record beneath them.
-const TYPE_BY_SECTION = { "Plans and Initiatives": "plan" };
+const TYPE_BY_SECTION = { "Plans, Initiatives, and Partnerships": "plan" };
 const DEFAULT_TYPE = "partner site";
 
 function partnerRecords(menus) {
@@ -105,7 +105,8 @@ function partnerRecords(menus) {
   for (const child of partners.children || []) {
     if (child.section)
       contentType = TYPE_BY_SECTION[child.section] || DEFAULT_TYPE;
-    if (!child.link) continue;
+    // A page of this site (v1.5.138) has its own record, from the CMS.
+    if (!child.link || !child.external) continue;
     const words = WORDS[child.link] || {};
     const short = words.short || "";
     records.push({

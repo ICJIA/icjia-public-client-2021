@@ -84,6 +84,27 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.138] - 2026-11-10
+
+### partners menu: the University of Michigan partnership page, under "Plans, Initiatives, and Partnerships"
+
+The Partners menu's second section, "Plans and Initiatives", is now "Plans, Initiatives, and Partnerships",
+and its last link is the partnership page moved in v1.5.137: "University of Michigan Institute for Firearm
+Injury Prevention Partnership", to `/partners/icjia-umich-partnership/`. It is a page of this site, so it
+opens in the same tab and has no new-tab icon (`src/config/menus.json`).
+
+The search builds a record for every link in this menu (`generators/partnerLinks.js`, v1.5.92). It now does
+so only for links to other sites: the partnership page has its record from the CMS, and a second one would
+have listed it twice, as a "plan". The four plans are still filed as plans under the section's new name.
+
+Checked in Chrome on the local build at 1440 px and 1280 px: the heading, the link on one line inside the
+menu, and the link opening the page; a search for "university of michigan" lists the page once. In the
+phone menu (360 px) the section name takes two lines and the link is there; its title is cut off at the
+drawer's edge, as the long plan titles above it already were (not changed here). Tests in
+`tests/unit/partnerLinks.spec.js`.
+
+---
+
 ## [1.5.137] - 2026-11-10
 
 ### partners: the ICJIA and University of Michigan partnership page is at /partners/
