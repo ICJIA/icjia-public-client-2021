@@ -207,7 +207,7 @@
                     "divider": true
                 },
                 {
-                    "section": "Plans and Initiatives"
+                    "section": "Plans, Initiatives, and Partnerships"
                 },
                 {
                     "title": "Illinois Edward Byrne Memorial Justice Research Grant Strategic Plan 2024-2029",
@@ -232,6 +232,10 @@
                     "link": "https://vpp.icjia.illinois.gov/",
                     "icon": "mdi-open-in-new",
                     "external": true
+                },
+                {
+                    "title": "University of Michigan Institute for Firearm Injury Prevention Partnership",
+                    "link": "/partners/icjia-umich-partnership/"
                 }
             ]
         }

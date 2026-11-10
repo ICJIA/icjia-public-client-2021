@@ -84,6 +84,21 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.139] - 2026-11-10
+
+### astro: the Partners menu of the Astro rebuild follows v1.5.138
+
+The Astro rebuild keeps its own copy of the menus (`astro/src/config/menus.json`). Its Partners menu now has
+the section name "Plans, Initiatives, and Partnerships" and the link to `/partners/icjia-umich-partnership/`,
+as the live site's has. The live (Vue) site is unchanged by this release.
+
+Not done here, and needed before the Astro site goes live: the Astro site has no page at `/partners/` (the
+link leads to its 404 page), and its search index script (`astro/scripts/generate-search-index.mjs`) still
+gives the page its `/about/` address. The Astro menu also still titles the 2024-2029 JAG plan "Justice
+Research Grant", where the live menu says "Justice Assistance Grant".
+
+---
+
 ## [1.5.138] - 2026-11-10
 
 ### partners menu: the University of Michigan partnership page, under "Plans, Initiatives, and Partnerships"
