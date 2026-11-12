@@ -20,7 +20,14 @@
               <em>The Compiler</em>.
             </p>
 
-            <v-card-title class="mb-5">
+            <!-- The list (config "publicationsView": "list") is the default.
+                 Setting it to "table" brings back the expandable table below,
+                 unchanged. -->
+            <PublicationList
+              v-if="useList"
+              :publications="publications"
+            ></PublicationList>
+            <v-card-title v-if="!useList" class="mb-5">
               <v-text-field
                 v-model="search"
                 append-icon="mdi-magnify"
@@ -30,6 +37,7 @@
               ></v-text-field>
             </v-card-title>
             <DataTable
+              v-if="!useList"
               :headers="headers"
               :items="publications"
               :search="search"
@@ -211,6 +219,7 @@ import {
   fixNestedInteractive,
 } from "@/a11y";
 import DataTable from "@/components/DataTable";
+import PublicationList from "@/components/PublicationList";
 import { getPublicationType } from "@/lib/utils";
 import { deepSanitize } from "@/utils/contentSanitizer";
 import { moveFocusTo } from "@/utils/focus";
@@ -222,7 +231,7 @@ import axios from "axios";
 
 export default {
   name: "Publications",
-  components: { DataTable },
+  components: { DataTable, PublicationList },
   metaInfo() {
     return {
       title: "Publications",
@@ -266,6 +275,11 @@ export default {
     };
   },
   computed: {
+    // The list unless the config says "table": the old view, kept to switch
+    // back to.
+    useList() {
+      return (this.$myApp.config.publicationsView || "list") !== "table";
+    },
     sortableHeaders() {
       return this.headers.filter((header) => header.sortable !== false);
     },
@@ -422,7 +436,7 @@ export default {
 </script>
 
 <style>
-tr {
+#pubTable tr {
   cursor: pointer !important;
 }
 .publications-intro {

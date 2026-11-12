@@ -10,6 +10,8 @@
 // search/sort. Only the current page (≤150 rows) is ever in the DOM. The SSR baseline
 // (the shipped ~150 rows) is the no-JS / crawler / SiteImprove view.
 import PublicationTable from './PublicationTable.astro';
+import PublicationList from './PublicationList.astro';
+import config from '../config/config.json';
 import type { PublicationListItem } from '../lib/data';
 import '../styles/publications.css';
 
@@ -21,6 +23,8 @@ const { publications } = Astro.props;
 // JSON-in-HTML: neutralize "<" so the data island can't break out of the script.
 const listJson = JSON.stringify(publications).replace(/</g, '\\u003c');
 const baseline = publications.slice(0, 150);
+// The list unless the config says "table": the expandable table, kept to switch back to.
+const useList = (config as { publicationsView?: string }).publicationsView !== 'table';
 ---
 
 <div class="publications markdown-body pb-12">
@@ -30,7 +34,7 @@ const baseline = publications.slice(0, 150);
 
   <script type="application/json" id="publications-data" set:html={listJson}></script>
 
-  <PublicationTable baseline={baseline} />
+  {useList ? <PublicationList baseline={baseline} /> : <PublicationTable baseline={baseline} />}
 
   <div class="list-archive-note mt-5">
     Individual publications are also available for download from the ICJIA Document Archive:

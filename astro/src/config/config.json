@@ -16,6 +16,7 @@
     },
     "daysToShowNew": 5,
     "daysToShowNewResearch": 10,
+    "publicationsView": "list",
     "archiveDate": "January 1, 2021",
     "home": {
         "eventLimit": 3,

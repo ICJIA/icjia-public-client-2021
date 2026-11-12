@@ -1,0 +1,221 @@
+---
+// Publications as a searchable list (config "publicationsView": "list"), the
+// Astro twin of the legacy src/components/PublicationList.vue (v1.5.141): each
+// publication a list item with its title as a level-2 heading linking to its
+// page, its date and type, its links, and its summary in the browser's own
+// disclosure (<details>). Search, Type, Year, Sort by and Show are native
+// controls with visible labels; a change says how many are left (role=status);
+// paging moves focus to the range line (WCAG 1.3.1, 2.4.3, 2.4.6, 4.1.2, 4.1.3).
+//
+// Driven by Alpine over the #publications-data island, then the full archive
+// from /api/publications.json after paint, as PublicationTable is. The island
+// and the archive carry each summary cut to 25 words (data.ts, for the page's
+// weight), so a summary links to the publication's page for the rest.
+// `baseline` (server-rendered, first 25) is the no-JS / crawler view.
+import type { PublicationListItem } from '../lib/data';
+
+interface Props {
+  baseline?: PublicationListItem[];
+}
+const { baseline = [] } = Astro.props;
+
+const xdata = `{
+  all: [], ready: false, fullLoaded: false,
+  search: '', type: '', year: '', sort: 'newest', perPage: 25, page: 1,
+  announcement: '', timer: null,
+  init(){
+    try { this.all = JSON.parse(document.getElementById('publications-data').textContent); }
+    catch (e) { this.all = []; }
+    this.index(this.all);
+    this.ready = true;
+    fetch('/api/publications.json').then((r) => r.ok ? r.json() : null).then((rows) => {
+      if (!Array.isArray(rows) || rows.length <= this.all.length) { this.fullLoaded = true; return; }
+      this.index(rows); this.all = rows; this.fullLoaded = true;
+    }).catch(() => {});
+    ['search', 'type', 'year', 'sort', 'perPage'].forEach((k) => this.$watch(k, () => this.changed()));
+  },
+  index(arr){ arr.forEach((p) => {
+    p._h = [p.title, p.summary, ...(p.tags || [])].filter(Boolean).join(' ').toLowerCase();
+    p._y = p.publicationDate ? String(p.publicationDate).slice(0, 4) : '';
+  }); },
+  get types(){ const m = new Map(); this.all.forEach((p) => { if (p.pubType && !m.has(p.pubType)) m.set(p.pubType, p.typeLabel || p.pubType); });
+    return [...m].map(([value, text]) => ({ value, text })).sort((a, b) => a.text.localeCompare(b.text)); },
+  get years(){ return [...new Set(this.all.map((p) => p._y).filter(Boolean))].sort((a, b) => b.localeCompare(a)); },
+  get filtered(){ const words = this.search.trim().toLowerCase().split(/\\s+/).filter(Boolean);
+    return this.all.filter((p) => (!this.type || p.pubType === this.type) && (!this.year || p._y === this.year)
+      && words.every((w) => p._h.includes(w))); },
+  get sorted(){ const a = [...this.filtered];
+    if (this.sort === 'title') a.sort((x, y) => x.title.localeCompare(y.title));
+    else { const d = this.sort === 'oldest' ? 1 : -1; a.sort((x, y) => String(x.publicationDate || '').localeCompare(String(y.publicationDate || '')) * d); }
+    return a; },
+  get count(){ return this.sorted.length; },
+  get totalPages(){ return Math.max(1, Math.ceil(this.count / this.perPage)); },
+  get pageItems(){ const s = (this.page - 1) * this.perPage; return this.sorted.slice(s, s + this.perPage); },
+  get rangeText(){ if (!this.count) return 'No publications match.';
+    const s = (this.page - 1) * this.perPage + 1, e = Math.min(this.count, this.page * this.perPage);
+    const of = this.count === 1 ? '1 publication' : this.count.toLocaleString() + ' publications';
+    return 'Showing ' + s.toLocaleString() + '–' + e.toLocaleString() + ' of ' + of; },
+  changed(){ this.page = 1; clearTimeout(this.timer); this.timer = setTimeout(() => { this.announcement = this.rangeText; }, 700); },
+  goTo(p){ this.page = Math.min(Math.max(1, p), this.totalPages);
+    this.$nextTick(() => { const r = this.$refs.range; const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      r.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'start' }); r.focus({ preventScroll: true }); }); },
+  fileWords(p){ if (p.pubType === 'application') return 'Open the application';
+    return p.fileType === 'PDF' ? 'Download the PDF' : 'Download the file (' + p.fileType + ')'; },
+  trackArticle(url){ try { if (typeof window.plausible === 'function') window.plausible('publicationList_article_view', { props: { url } }); } catch (e) {} },
+  trackDownload(url){ try { if (typeof window.plausible === 'function') window.plausible('publicationList_file_download', { props: { url } }); } catch (e) {} }
+}`;
+
+const fileWords = (p: PublicationListItem): string =>
+  p.pubType === 'application'
+    ? 'Open the application'
+    : p.fileType === 'PDF'
+      ? 'Download the PDF'
+      : `Download the file (${p.fileType})`;
+---
+
+<div class="pub-list-wrap" x-data={xdata}>
+  {/* Interactive (JS) view */}
+  <div x-show="ready" x-cloak>
+    <div class="pub-filters">
+      <div class="pub-field pub-field-search">
+        <label for="pub-search">Search publications</label>
+        <input id="pub-search" type="search" autocomplete="off" x-model="search" aria-describedby="pub-search-hint" />
+        <p id="pub-search-hint" class="pub-hint">Searches titles, summaries, and topics.</p>
+      </div>
+      <div class="pub-field">
+        <label for="pub-type">Type</label>
+        <select id="pub-type" x-model="type">
+          <option value="">All types</option>
+          <template x-for="t in types" :key="t.value"><option :value="t.value" x-text="t.text"></option></template>
+        </select>
+      </div>
+      <div class="pub-field">
+        <label for="pub-year">Year</label>
+        <select id="pub-year" x-model="year">
+          <option value="">All years</option>
+          <template x-for="y in years" :key="y"><option :value="y" x-text="y"></option></template>
+        </select>
+      </div>
+      <div class="pub-field">
+        <label for="pub-sort">Sort by</label>
+        <select id="pub-sort" x-model="sort">
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+          <option value="title">Title, A to Z</option>
+        </select>
+      </div>
+      <div class="pub-field">
+        <label for="pub-per-page">Show</label>
+        <select id="pub-per-page" x-model.number="perPage">
+          <option value="25">25 a page</option>
+          <option value="50">50 a page</option>
+          <option value="100">100 a page</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="pub-range" tabindex="-1" x-ref="range" x-text="rangeText"></p>
+    <p class="sr-only" role="status" x-text="announcement"></p>
+
+    <ul class="pub-list" role="list" x-show="count">
+      <template x-for="it in pageItems" :key="it.id">
+        <li class="pub-item">
+          <h2 class="pub-title"><a :href="it.fullPath" x-text="it.title"></a></h2>
+          <p class="pub-meta">
+            <template x-if="it.isNew"><span class="pub-new">New</span></template>
+            <template x-if="it.dateAlt"><span><span x-text="it.dateAlt"></span><span aria-hidden="true"> · </span><span class="sr-only">, </span></span></template>
+            <span x-text="it.typeLabel || 'Publication'"></span>
+          </p>
+          <template x-if="it.localArticlePath || it.fileURL">
+            <p class="pub-links">
+              <template x-if="it.localArticlePath">
+                <a :href="it.localArticlePath" @click="trackArticle(it.articleURL)">Read the article<span class="sr-only" x-text="': ' + it.title"></span></a>
+              </template>
+              <template x-if="it.fileURL">
+                <a :href="it.fileURL" target="_blank" rel="noopener noreferrer" @click="trackDownload(it.fileURL)"><span x-text="fileWords(it)"></span><span class="sr-only" x-text="': ' + it.title + ' (opens in new tab)'"></span></a>
+              </template>
+            </p>
+          </template>
+          <details class="pub-details">
+            <summary>Summary<span class="sr-only" x-text="' of ' + it.title"></span></summary>
+            <div class="pub-details-body">
+              <p x-text="it.summary || 'No summary available.'"></p>
+              <template x-if="it.summary">
+                <p><a :href="it.fullPath">Read the full summary<span class="sr-only" x-text="' of ' + it.title"></span></a></p>
+              </template>
+              <template x-if="it.tags && it.tags.length">
+                <div class="pub-topics">
+                  <span class="pub-topics-label">Topics:</span>
+                  <ul role="list"><template x-for="t in it.tags" :key="t"><li x-text="t"></li></template></ul>
+                </div>
+              </template>
+            </div>
+          </details>
+        </li>
+      </template>
+    </ul>
+    <p class="pub-none" x-show="!count">No publications match. Try fewer words, or set Type and Year to all.</p>
+
+    <nav class="pub-pages" aria-label="Pages of publications" x-show="totalPages > 1">
+      <button type="button" :disabled="page <= 1" @click="goTo(page - 1)">Previous page</button>
+      <span x-text="'Page ' + page + ' of ' + totalPages"></span>
+      <button type="button" :disabled="page >= totalPages" @click="goTo(page + 1)">Next page</button>
+    </nav>
+  </div>
+
+  {/* No-JS / crawler view: the newest 25, the same markup, server-rendered. */}
+  <div x-show="!ready">
+    <ul class="pub-list" role="list">
+      {
+        baseline.slice(0, 25).map((it) => (
+          <li class="pub-item">
+            <h2 class="pub-title">
+              <a href={it.fullPath}>{it.title}</a>
+            </h2>
+            <p class="pub-meta">
+              {it.isNew && <span class="pub-new">New</span>}
+              {it.dateAlt && (
+                <span>
+                  {it.dateAlt}
+                  <span aria-hidden="true"> · </span>
+                  <span class="sr-only">, </span>
+                </span>
+              )}
+              <span>{it.typeLabel || 'Publication'}</span>
+            </p>
+            {(it.localArticlePath || it.fileURL) && (
+              <p class="pub-links">
+                {it.localArticlePath && (
+                  <a href={it.localArticlePath}>
+                    Read the article<span class="sr-only">: {it.title}</span>
+                  </a>
+                )}
+                {it.fileURL && (
+                  <a href={it.fileURL} target="_blank" rel="noopener noreferrer">
+                    {fileWords(it)}
+                    <span class="sr-only">: {it.title} (opens in new tab)</span>
+                  </a>
+                )}
+              </p>
+            )}
+            <details class="pub-details">
+              <summary>
+                Summary<span class="sr-only"> of {it.title}</span>
+              </summary>
+              <div class="pub-details-body">
+                <p>{it.summary || 'No summary available.'}</p>
+                {it.summary && (
+                  <p>
+                    <a href={it.fullPath}>
+                      Read the full summary<span class="sr-only"> of {it.title}</span>
+                    </a>
+                  </p>
+                )}
+              </div>
+            </details>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>

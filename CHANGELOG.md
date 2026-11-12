@@ -84,6 +84,37 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.141] - 2026-11-12
+
+### publications: a searchable list in place of the expandable table (WCAG 1.3.1, 2.4.3, 2.4.6, 4.1.2, 4.1.3)
+
+The publications list (`/about/publications/`, `/researchhub/publications/`, `/news/publications/`, all one
+view) was a 6-column table of 150 rows a page, each row opening a card. A screen reader read it cell by cell:
+NVDA took 27 minutes to read the page, and announced "clickable" and "Column header" (the expand column's header
+was empty) on every row. A reader had no way to jump from publication to publication.
+
+It is now a list (`src/components/PublicationList.vue`):
+
+- **Each publication** is a list item: its title as a level-2 heading, linking to its own page; its date and
+  type; "Read the article" and "Download the PDF" (or "Download the file (DOCX)", "Open the application"),
+  each named with the title after its visible words; and its summary and topics in a native disclosure
+  (`<details>`), named "Summary of" and the title. Screen-reader users move from title to title with H.
+- **Search** (titles, summaries and topics), **Type**, **Year**, **Sort by** and **Show** (25, 50 or 100 a
+  page, 25 by default) are native controls, each with a visible label. When a filter changes, the number of
+  publications left is announced (`role="status"`), once typing pauses.
+- **Paging** moves focus to the "Showing 26–50 of 1,113 publications" line, so the new range is read and Tab
+  goes on to the page's first title.
+- The Document Archive note stays once, at the bottom, no longer repeated in each row's card.
+
+**To switch back:** set `"publicationsView": "table"` in `src/config/config.json` and deploy. The table is
+unchanged behind it. `#pubTable tr`'s pointer cursor, which was written for every `tr` on the site once the
+page had loaded, is scoped to the table.
+
+Checked in Chrome at 1280 px and 320 px against the live API's 1,113 publications: axe-core reports no
+violation with the list as loaded, with a summary open, after a search, and on page 2; nothing scrolls
+sideways at 320 px; a summary opens with Enter and keeps focus; each item is 4 Tab stops. Unit tests:
+`tests/unit/publicationList.spec.js`.
+
 ## [1.5.140] - 2026-11-10
 
 ### astro: the partnership page at /partners/ in the Astro rebuild

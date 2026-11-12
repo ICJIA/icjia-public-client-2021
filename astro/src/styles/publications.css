@@ -370,3 +370,166 @@
     gap: 12px 16px;
   }
 }
+
+/* The list view (config "publicationsView": "list"; PublicationList.astro), the
+ * same look as the legacy src/components/PublicationList.vue (v1.5.141). */
+.publications .pub-list-wrap {
+  max-width: 960px;
+  margin: 0 auto;
+}
+.publications .pub-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 12px 16px;
+  align-items: start;
+  margin: 8px 0 16px;
+}
+.publications .pub-field-search {
+  grid-column: 1 / -1;
+}
+.publications .pub-field label {
+  display: block;
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 4px;
+  color: #222;
+}
+.publications .pub-field input,
+.publications .pub-field select {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 10px;
+  font-size: 16px;
+  color: #222;
+  background: #fff;
+  border: 1px solid #6b6b6b;
+  border-radius: 4px;
+}
+.publications .pub-field input:focus-visible,
+.publications .pub-field select:focus-visible,
+.publications .pub-list-wrap a:focus-visible,
+.publications .pub-list-wrap summary:focus-visible,
+.publications .pub-pages button:focus-visible,
+.publications .pub-range:focus-visible {
+  outline: 3px solid #0d4474;
+  outline-offset: 2px;
+}
+.publications .pub-hint {
+  margin: 4px 0 0 !important;
+  font-size: 14px;
+  color: #555;
+}
+.publications .pub-range {
+  font-weight: 700;
+  margin: 8px 0 !important;
+  color: #222;
+}
+.publications .pub-list {
+  list-style: none;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.publications .pub-item {
+  border-top: 1px solid #d0d0d0;
+  padding: 18px 0;
+}
+.publications .pub-title {
+  font-size: 20px !important;
+  line-height: 1.3 !important;
+  margin: 0 0 6px !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+.publications .pub-title a {
+  color: #0d4474;
+}
+.publications .pub-meta {
+  margin: 0 0 8px !important;
+  font-size: 15px;
+  color: #444;
+}
+.publications .pub-new {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 0 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  background: #0d4474;
+  border-radius: 3px;
+}
+.publications .pub-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 0 0 8px !important;
+  font-size: 15px;
+}
+.publications .pub-links a {
+  color: #0d4474;
+  font-weight: 700;
+}
+.publications .pub-details summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: #0d4474;
+  padding: 4px 0;
+  min-height: 24px;
+}
+.publications .pub-details-body {
+  margin-top: 8px;
+  padding: 12px 16px;
+  background: #f5f5f5;
+  border-left: 4px solid #0d4474;
+}
+.publications .pub-details-body p {
+  margin: 0 0 8px !important;
+}
+.publications .pub-topics {
+  font-size: 14px;
+}
+.publications .pub-topics-label {
+  font-weight: 700;
+  margin-right: 6px;
+}
+.publications .pub-topics ul {
+  display: inline;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none;
+}
+.publications .pub-topics li {
+  display: inline;
+}
+.publications .pub-topics li:not(:last-child)::after {
+  content: " · ";
+  content: " · " / "";
+}
+.publications .pub-none {
+  padding: 24px 0;
+}
+.publications .pub-pages {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 20px;
+  margin-top: 16px;
+}
+.publications .pub-pages button {
+  min-height: 44px;
+  padding: 8px 16px;
+  font-weight: 700;
+  color: #fff;
+  background: #0d4474;
+  border-radius: 4px;
+}
+.publications .pub-pages button:disabled {
+  color: #555;
+  background: #e0e0e0;
+  cursor: not-allowed;
+}
+.publications .pub-details-body a {
+  color: #0d4474;
+  font-weight: 700;
+}
