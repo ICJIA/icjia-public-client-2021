@@ -71,7 +71,7 @@
           }}</span>
           <span v-if="item.publicationDate"
             ><span aria-hidden="true"> · </span
-            ><span class="sr-only">, </span></span
+            ><span class="sr-only">,&nbsp;</span></span
           >
           <span>{{ typeName(item.pubType) }}</span>
         </p>
@@ -102,7 +102,7 @@
              JavaScript (WCAG 2.1.1, 4.1.2). Its name says whose summary it is. -->
         <details class="pub-details">
           <summary>
-            Summary<span class="sr-only"> of {{ item.title }}</span>
+            Summary<span class="sr-only">&nbsp;of {{ item.title }}</span>
           </summary>
           <div class="pub-details-body">
             <p v-if="item.summary && item.summary.length">{{ item.summary }}</p>

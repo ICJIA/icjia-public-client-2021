@@ -84,6 +84,17 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.142] - 2026-11-13
+
+### publications: keep the spaces NVDA reads in the list's hidden words (WCAG 1.3.1, 2.4.6)
+
+NVDA read the new list (v1.5.141) on 13 November 2026 and ran words together where a screen-reader-only
+span began or ended with a space: "Summaryof <title>" on every Summary button, and "Jul 16, 2026,Research
+Report" in every date line. Chrome drops a leading or trailing space in a visually hidden (absolutely
+positioned) span, so NVDA's browse mode joins it to the word beside it. The spaces are now non-breaking
+(`&nbsp;`), which Chrome keeps: "Summary of <title>" and "Jul 16, 2026, Research Report". Nothing visible
+changes. The Astro twin (`astro/src/components/PublicationList.astro`) has the same fix.
+
 ## [1.5.141] - 2026-11-12
 
 ### publications: a searchable list in place of the expandable table (WCAG 1.3.1, 2.4.3, 2.4.6, 4.1.2, 4.1.3)

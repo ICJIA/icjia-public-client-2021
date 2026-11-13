@@ -123,7 +123,7 @@ const fileWords = (p: PublicationListItem): string =>
           <h2 class="pub-title"><a :href="it.fullPath" x-text="it.title"></a></h2>
           <p class="pub-meta">
             <template x-if="it.isNew"><span class="pub-new">New</span></template>
-            <template x-if="it.dateAlt"><span><span x-text="it.dateAlt"></span><span aria-hidden="true"> · </span><span class="sr-only">, </span></span></template>
+            <template x-if="it.dateAlt"><span><span x-text="it.dateAlt"></span><span aria-hidden="true"> · </span><span class="sr-only">,&nbsp;</span></span></template>
             <span x-text="it.typeLabel || 'Publication'"></span>
           </p>
           <template x-if="it.localArticlePath || it.fileURL">
@@ -137,11 +137,11 @@ const fileWords = (p: PublicationListItem): string =>
             </p>
           </template>
           <details class="pub-details">
-            <summary>Summary<span class="sr-only" x-text="' of ' + it.title"></span></summary>
+            <summary>Summary<span class="sr-only" x-text="' of ' + it.title"></span></summary>
             <div class="pub-details-body">
               <p x-text="it.summary || 'No summary available.'"></p>
               <template x-if="it.summary">
-                <p><a :href="it.fullPath">Read the full summary<span class="sr-only" x-text="' of ' + it.title"></span></a></p>
+                <p><a :href="it.fullPath">Read the full summary<span class="sr-only" x-text="' of ' + it.title"></span></a></p>
               </template>
               <template x-if="it.tags && it.tags.length">
                 <div class="pub-topics">
@@ -178,7 +178,7 @@ const fileWords = (p: PublicationListItem): string =>
                 <span>
                   {it.dateAlt}
                   <span aria-hidden="true"> · </span>
-                  <span class="sr-only">, </span>
+                  <span class="sr-only">,&nbsp;</span>
                 </span>
               )}
               <span>{it.typeLabel || 'Publication'}</span>
@@ -200,14 +200,14 @@ const fileWords = (p: PublicationListItem): string =>
             )}
             <details class="pub-details">
               <summary>
-                Summary<span class="sr-only"> of {it.title}</span>
+                Summary<span class="sr-only">&nbsp;of {it.title}</span>
               </summary>
               <div class="pub-details-body">
                 <p>{it.summary || 'No summary available.'}</p>
                 {it.summary && (
                   <p>
                     <a href={it.fullPath}>
-                      Read the full summary<span class="sr-only"> of {it.title}</span>
+                      Read the full summary<span class="sr-only">&nbsp;of {it.title}</span>
                     </a>
                   </p>
                 )}
