@@ -24,6 +24,7 @@ import markdownItLinkAttributesRaw from "markdown-it-link-attributes";
 import markdownItMultimdTableRaw from "markdown-it-multimd-table";
 import markdownItImplicitFiguresRaw from "markdown-it-implicit-figures";
 import markdownItAttrsRaw from "markdown-it-attrs";
+import { nameFootnoteBackrefs } from "./footnoteBackref";
 
 // CJS/ESM interop: some plugins expose the function on `.default`, others
 // directly. Normalize both.
@@ -119,7 +120,8 @@ const md = new MarkdownIt({
   .use(markdownItLinkAttributes, mdLinkAttrOpts)
   .use(markdownItMultimdTable, mdMultimdTableOpts)
   .use(markdownItImplicitFigures, mdImplicitFigureOpts)
-  .use(markdownItAttrs, mdAttrs);
+  .use(markdownItAttrs, mdAttrs)
+  .use(nameFootnoteBackrefs);
 
 const fixTableHeaders = function (html) {
   const doc = new DOMParser().parseFromString(html, "text/html");

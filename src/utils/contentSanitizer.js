@@ -1092,6 +1092,25 @@ function fixCmsEmptyContainers(html) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// PLUGIN: fixCmsBreakRuns
+// A CMS body can stack <br> tags to push the next block below a floated
+// table: "Perspectives of Employers of Illinois Prison Work Release
+// Participants" has up to eleven in a row after each of its tables. A
+// screen reader says "blank" for each one, so the article went quiet for
+// twenty lines (WCAG 1.3.2). Three or more in a row become one empty block
+// that clears the float, with no lines of its own.
+// ═══════════════════════════════════════════════════════════════════
+
+const BREAK_RUN = /(?:<br\s*\/?>\s*){3,}/gi;
+const BREAK_RUN_SPACER =
+  '<span class="cms-break-run" style="display: block; clear: both; height: 1em"></span>';
+
+function fixCmsBreakRuns(html) {
+  if (!html || typeof html !== "string") return html;
+  return html.replace(BREAK_RUN, BREAK_RUN_SPACER);
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // PLUGIN: fixCmsLinkAltText
 // Adds accessible text to image-only links with no text alternative
 // (SC 2.4.4 / 4.1.2). If the <img> has alt, use it on the link via
@@ -1572,6 +1591,7 @@ const htmlPlugins = [
   fixCmsFocusablePre,
   fixCmsFigureTableCaptions,
   fixCmsEmptyContainers,
+  fixCmsBreakRuns,
   fixCmsLinkAltText,
   fixCmsDuplicateLinkText,
   fixCmsSameHrefLinkLabels,
@@ -1680,6 +1700,7 @@ export {
   fixCmsContrast,
   fixCmsTables,
   fixCmsEmptyContainers,
+  fixCmsBreakRuns,
   fixCmsLinkAltText,
   fixCmsDuplicateLinkText,
   fixCmsSameHrefLinkLabels,

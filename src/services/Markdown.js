@@ -57,7 +57,8 @@ let md = require("markdown-it")({
   .use(require("markdown-it-link-attributes"), mdLinkAttrOpts)
   .use(require("markdown-it-multimd-table"), mdMultimdTableOpts)
   .use(require("markdown-it-implicit-figures"), mdImplicitFigureOpts)
-  .use(require("markdown-it-attrs"), mdAttrs);
+  .use(require("markdown-it-attrs"), mdAttrs)
+  .use(require("@/utils/footnoteBackref").nameFootnoteBackrefs);
 
 // Footnote references markdown-it-footnote generates are marked while
 // rendering, so fixDuplicateFootnoteRefIds can tell them from hand-written

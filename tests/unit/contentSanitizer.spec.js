@@ -8,6 +8,7 @@ import { expect } from "chai";
 import {
   fixCmsTables,
   fixCmsEmptyContainers,
+  fixCmsBreakRuns,
   fixCmsLinkAltText,
   fixCmsDuplicateLinkText,
   fixCmsSameHrefLinkLabels,
@@ -863,5 +864,31 @@ describe("sanitizeContent — full pipeline", () => {
     const out = sanitizeContent(html);
     expect(out).to.be.a("string");
     expect(out.length).to.be.greaterThan(0);
+  });
+});
+
+describe("fixCmsBreakRuns", () => {
+  it("turns three or more <br> in a row into one spacer that clears floats", () => {
+    const out = fixCmsBreakRuns(
+      "<p><br><br/>\n<br /><br><strong>Table 2</strong></p>"
+    );
+    expect(out).to.not.include("<br");
+    expect(out.match(/cms-break-run/g)).to.have.length(1);
+    expect(out).to.include("clear: both");
+    expect(out).to.include("<strong>Table 2</strong>");
+  });
+
+  it("leaves one or two <br> as they are", () => {
+    const html = "<p>One<br>Two<br><br>Three</p>";
+    expect(fixCmsBreakRuns(html)).to.equal(html);
+  });
+});
+
+describe("footnote back-links", () => {
+  it("name each back-link by its footnote, and each citation after the first", () => {
+    const out = renderToHtml("A[^1] and B[^1] C[^2]\n\n[^1]: one\n[^2]: two");
+    expect(out).to.include('aria-label="Back to text, footnote 1"');
+    expect(out).to.include('aria-label="Back to text, footnote 1, citation 2"');
+    expect(out).to.include('aria-label="Back to text, footnote 2"');
   });
 });

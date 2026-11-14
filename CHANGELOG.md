@@ -84,6 +84,26 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.143] - 2026-11-13
+
+### Fixes from NVDA's reading of the site's sample (WCAG 1.3.1, 1.3.2, 2.4.4, 2.4.6)
+
+voicecap's sample of 171 pages, read with NVDA on 11 and 12 November 2026, found three problems the site's
+code can fix:
+
+- **Footnote back-links had no name.** Each footnote ends with a link back to the text, shown as "↩︎", which
+  NVDA reads as "right arrow curving left", the same for every footnote: 36 times in a row on four pages. Each
+  one is now named for its footnote, "Back to text, footnote 3", and "…, citation 2" for a footnote cited more
+  than once. Nothing visible changes. The three Markdown renderers (`src/services/Markdown.js`,
+  `src/utils/markdownIt.js`, and the Astro twin's `astro/src/lib/markdown.js`) share `footnoteBackref.js`.
+- **Stacked line breaks read as "blank".** "Perspectives of Employers of Illinois Prison Work Release
+  Participants" stacks up to eleven `<br>` after each of its tables, to push the next block below a floated
+  table. NVDA said "blank" for each, twenty times in a row, and the reading stopped there. The content
+  pipeline's new `fixCmsBreakRuns` turns three or more in a row into one empty block that clears the float,
+  with no lines of its own (also in the Astro twin's `contentSanitizer.js`).
+- **IRB Meetings had no `<h1>`.** Its first heading was the table's `<h2>`. The page's title is now its `<h1>`,
+  as on ICJIA Meetings; the Astro twin already had one.
+
 ## [1.5.142] - 2026-11-13
 
 ### publications: keep the spaces NVDA reads in the list's hidden words (WCAG 1.3.1, 2.4.6)
