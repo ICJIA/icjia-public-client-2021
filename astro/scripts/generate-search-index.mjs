@@ -22,6 +22,16 @@
 import { writeFile, readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { site, movedPages } from "../icjia.config.mjs";
+import menus from "../src/config/menus.json" with { type: "json" };
+import orderBy from "lodash/orderBy.js";
+import {
+  PAGE_LINKS_QUERY,
+  labelsByPage,
+  addKeywords,
+  withoutRetired,
+  MANUAL_PAGES,
+  partnerRecords,
+} from "./search-index-extras.mjs";
 
 const AGENCY = process.env.PUBLIC_STRAPI_GRAPHQL || `${site.strapiHost}/graphql`;
 const AGENCY_REST = process.env.PUBLIC_STRAPI_REST || site.strapiHost;
@@ -267,7 +277,6 @@ async function fetchHub() {
   }));
   const apps = (data.apps || []).map((e) => ({
     ...e,
-    abstract: e.summary,
     fullPath: `/researchhub/apps/${e.slug}/`,
     imagePath: `${ORIGIN}/researchhub/images/${e.id}-image.jpeg`,
     contentType: "web application",
@@ -276,7 +285,6 @@ async function fetchHub() {
     ...e,
     fullPath: `/researchhub/datasets/${e.slug}/`,
     imagePath: null,
-    abstract: e.summary,
     contentType: "dataset",
   }));
   return [...articles, ...apps, ...datasets];
@@ -288,7 +296,8 @@ const EXTRAS = [
   "Aisha Williams", "Alan Blackmon", "Andy Krupin", "Gregory Stevenson",
   "Haley Aubrey", "Jashay Fisher", "Karen Sheley", "Mary Ratliff",
   "Mitchell Troup", "Nathan Bossick", "Reshma Desai", "Roberto Lopez",
-  "Ronnie Reichgelt", "Schweda", "Shai Hoffman", "Zina Smith",
+  "Ronnie Reichgelt", "Schweda", "Shai Hoffman", "Timothy Lavery",
+  "Zina Smith",
 ];
 
 function buildBlocklist(biographies) {
@@ -358,6 +367,7 @@ async function main() {
     ["meetings", fetchMeetings],
     ["posts", fetchPosts],
     ["events", fetchEvents],
+    ["pageLinks", () => postGraphQL(AGENCY, PAGE_LINKS_QUERY)],
   ];
   const settled = await Promise.allSettled(types.map(([, fn]) => fn()));
   const got = {};
@@ -366,16 +376,33 @@ async function main() {
     const name = types[i][0];
     if (r.status === "fulfilled") got[name] = r.value;
     else {
-      got[name] = [];
+      got[name] = name === "pageLinks" ? {} : [];
       failed.push(`${name} (${r.reason?.message || r.reason})`);
     }
   });
   if (failed.length) console.warn(`[search-index] FAILED types (dropped this build): ${failed.join(", ")}`);
 
+  // Each type in the order the live site's generators put it (lodash orderBy,
+  // as they do, for the same order of ties and missing values): the order of
+  // equally good search results follows it (v1.5.146).
+  const SORTS = {
+    hub: ["date", "desc"],
+    grants: ["date", "desc"],
+    pages: ["date", "desc"],
+    publications: ["publicationDate", "desc"],
+    units: ["title", "asc"],
+    jobs: ["end", "desc"],
+    meetings: ["end", "desc"],
+    posts: ["date", "desc"],
+  };
+  for (const [name, [field, dir]] of Object.entries(SORTS)) {
+    got[name] = orderBy(got[name], [field], [dir]);
+  }
+
   const blocklist = buildBlocklist(biographies);
 
-  // Assemble in the legacy siteIndex order, purifying searchMeta (not bios).
-  const siteIndex = purify(
+  // Purify searchMeta (not bios) on the CMS records, in place.
+  const cms = purify(
     [
       ...biographies,
       ...got.hub, ...got.grants, ...got.pages, ...got.publications,
@@ -385,17 +412,38 @@ async function main() {
   );
 
   // Total failure → keep last-known-good files; never ship an empty index/sitemap.
-  if (siteIndex.length === 0) {
+  if (cms.length === 0) {
     console.warn("[search-index] zero records (Strapi outage?) — keeping existing files, exit 0");
     return;
   }
 
+  // The live site's order (generators/searchIndexAndSitemap.js): the CMS
+  // records, the pages with their added keywords and without the retired one,
+  // then the hand-built pages and the Partners menu (v1.5.146).
+  const pageLinks = labelsByPage(got.pageLinks);
+  const siteIndex = [
+    ...biographies,
+    ...got.hub,
+    ...got.grants,
+    ...withoutRetired(addKeywords(got.pages, pageLinks)),
+    ...got.publications,
+    ...got.units,
+    ...got.jobs,
+    ...got.meetings,
+    ...got.posts,
+    ...got.events,
+    ...addKeywords(MANUAL_PAGES, pageLinks),
+    ...partnerRecords(menus),
+  ];
+
   // ── searchIndex.json ──
   await writeFile(OUT_INDEX, JSON.stringify(siteIndex));
 
-  // ── sitemap.xml ── content fullPaths (trailing slash) + the manual /news/press/.
-  const manual = ["/news/press/"];
-  const urls = [...siteIndex.map((i) => i.fullPath), ...manual]
+  // ── sitemap.xml ── every record's fullPath (trailing slash) but the Partners
+  // menu's, which leave the site.
+  const urls = siteIndex
+    .filter((i) => !i.external)
+    .map((i) => i.fullPath)
     .filter(Boolean)
     .map((p) => ORIGIN + (p.endsWith("/") ? p : `${p}/`));
   await writeFile(OUT_SITEMAP, buildSitemap(urls));

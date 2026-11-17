@@ -5141,3 +5141,38 @@ It's deliberately framework-free, so adoption is cheap:
 - **SSG sites are simpler** — both sides are static, so the frozen-clock-vs-SSR trap (#1) doesn't apply.
 - The same two files work for **any before/after parity check**, not only a migration: a CSS-framework swap, a large refactor, a redesign-with-fidelity. Prod-vs-candidate is just two URLs.
 
+
+## Search parity with the live site (v1.5.146, 2026-11-17) — lessons
+
+The Astro `/search/` was ported from the live Vue page (`SearchStatic.vue` + `SearchCard.vue`) and checked
+against the live site search by search (22 queries: summary, chips and counts, the order of the visible
+results, the similar section, status messages), interaction by interaction, element by element (computed
+styles and boxes at 320/375/768/1280) and on Back. What it taught:
+
+1. **§16 is out of date: `window.Alpine` exists here.** `@astrojs/alpinejs` sets `window.Alpine` and starts
+   Alpine on `DOMContentLoaded`, after every module script has run. A big island can be a **bundled module**
+   that registers `Alpine.data(name, factory)` on `alpine:init` (trap #1's fix), with the worker kept in the
+   module's scope, off the reactive object. `src/scripts/search/page.js` does this; no inline script, no hash.
+2. **Layered `!important` beats unlayered `!important`.** `legacy-globals.css` is imported `layer(base)`, so
+   its `:focus-visible { outline … !important }` wins over any component's unlayered `!important`. To override
+   a base-layer rule, put the override **in `@layer base`** and let specificity decide.
+3. **Tailwind's preflight makes every `svg` a block.** An inline icon (astro-icon) after a title wraps onto a
+   line of its own unless it is given `display: inline-block`.
+4. **The site's global type is not every page's.** `h2` is Oswald and links weight 900 site-wide; the live
+   search page is Lato throughout. Compare the *rendered* font (CDP `CSS.getPlatformFontsForNode`), not the
+   CSS: the stacks matched in source and the titles still wrapped differently.
+5. **Whitespace between inline elements.** Vue's compiler drops whitespace-only text between tags; Astro
+   keeps one space. A header line of spans ("MEETING" + "&nbsp;|&nbsp;date") gained a space and wrapped at
+   320 px. Put such spans tag-to-tag in the template.
+6. **Back to the same place on a multi-page site.** Vue keeps the view per history entry in memory; here it is
+   `sessionStorage` keyed by an id stored in `history.state`, saved on `pagehide`. Restore with
+   `history.scrollRestoration = "manual"` and wait (rAF) for the opened result to exist before scrolling and
+   focusing: x-for/x-if render over several frames.
+7. **Index parity is its own layer.** The Astro index script lacked the Vue generators' page keywords,
+   linked-collection titles, retired page, hand-built pages, Partners records, a staff name and the lodash
+   sort order (Fuse breaks ties by index order). Diff the two `searchIndex.json` files record by record, field
+   by field and in order before comparing any page.
+
+Found and left for the cutover (not search): the Astro layout has no bottom "Additional navigation" bar
+(`AppNavContextBottom.vue`, 36 px on every Vue page), its `<main>` is white where Vue's `v-main` is `#fcfcfc`,
+the header menu type differs, and there is no `/homicide/` or `/accessibility/` page (both are in the index).

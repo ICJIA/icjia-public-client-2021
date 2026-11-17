@@ -84,6 +84,53 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.146] - 2026-11-17
+
+### search: the downloads name the search; the Astro rebuild's search matches the live one
+
+**Live site.** The downloaded files (Excel, CSV, JSON) have a **Query** column in place of "Match": the
+search words as typed (`prison`), and for a result that only matched a similar spelling or part of a longer
+word, `prison (similar spelling or partial match)`. In JSON the key is `query`. (`src/utils/searchExport.js`,
+`src/views/Search/SearchStatic.vue`; tests in `tests/unit/searchExport.spec.js`.)
+
+**Astro rebuild (not live).** `/search/` and `/search/<query>/` now behave and look as the live search page
+does, in four layers:
+
+- **The index** (`astro/scripts/generate-search-index.mjs`, `search-index-extras.mjs`): the live generators'
+  page keywords ("nofo", "careers", "board members"…), the link names of Required Forms and Rules, Regulations,
+  and Policies, the retired `/about/policies/` record left out, the 14 hand-built pages, the Partners menu's
+  sites and plans, "Timothy Lavery" in the staff-name list, no extra Hub `abstract`, and each type in the live
+  order (lodash `orderBy`; Fuse breaks ties by index order). The two indexes now hold the same records, fields
+  and order, and the sitemaps the same addresses, but for two places where Astro is already ahead: it leaves
+  out the publication with no slug (live: `/about/publications/null/`) and strips WebEx join links and
+  passcodes from meeting summaries (the live index still has them in 5 meetings).
+- **The worker and settings**: the live `searchWorker.js`, synonym table and Fuse options.
+- **The page** (`astro/src/components/SearchIsland.astro`, run by `astro/src/scripts/search/page.js`, both
+  routes): the chip groups, Newest first, similar results folded away, synonyms and words left out, fifty at a
+  time, highlighted words and tags, the empty state, the status messages, Back to the same result, and the
+  `Search` Plausible event. Titles and summaries are escaped before the words are marked (the live card renders
+  the summary as HTML).
+- **The downloads**: the same three buttons, the same files (with the Query column) and the `Search Download`
+  event; exceljs is a chunk of its own, loaded only by the Excel button.
+
+The Partners menu in the rebuild drops Illinois Heals, as the live menu did in v1.5.93.
+
+Checked against the live site: 22 searches the same (summary, chips and counts, the visible results in order,
+the similar section, the status message), on the dev server and on the production build; chip, sort, similar,
+show-more and address-filter interactions the same; Back returns to the same scroll position and result;
+computed styles and boxes the same at 320, 375, 768 and 1280 px (cards to the pixel); the downloads the same
+88 rows for "prison" under Publications. axe 0 violations (desktop and mobile), Lighthouse accessibility 100.
+Unit tests: Vue 826 passing, 6 pending, 0 failing; Astro 71 passing. Lessons added to
+`docs/astro-conversion-checklist-v7.1.md`.
+
+Found and not changed: on the live page, "Show similar results" loses focus to the top of the page (WCAG
+2.4.3; the Astro page keeps it on the button). For the cutover, outside search: the Astro layout lacks the
+bottom "Additional navigation" bar and the `#fcfcfc` page background, its header menu type differs, and it
+has no `/homicide/` or `/accessibility/` page. The three lint errors in `astro/src/components/PublicationList.astro`
+were there before.
+
+---
+
 ## [1.5.145] - 2026-11-17
 
 ### search: downloads are recorded in Plausible

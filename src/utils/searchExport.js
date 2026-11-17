@@ -138,11 +138,16 @@ function otherLinks(item) {
 // A column whose `link` is set is a web address (a hyperlink in Excel).
 export const COLUMNS = [
   { header: "Rank", width: 7, value: (r) => r.rank },
+  // The search the result was found for (v1.5.146): the words as typed, and
+  // for a similar result, that it matched a similar spelling or part of a
+  // longer word. It was "Match": "Contains search words".
   {
-    header: "Match",
-    width: 20,
+    header: "Query",
+    width: 30,
     value: (r) =>
-      r.result.similar ? "Similar or partial" : "Contains search words",
+      r.result.similar
+        ? `${r.query} (similar spelling or partial match)`
+        : r.query,
   },
   { header: "Title", width: 60, value: (r) => clean(r.item.title) },
   { header: "Type", width: 22, value: (r) => typeLabel(r.item.contentType) },
@@ -209,9 +214,10 @@ export const COLUMNS = [
  *
  * @param {Array} results  Search results ({ item, similar }), in page order.
  * @param {Date} [now]  For Open/Closed and Upcoming/Ended.
+ * @param {string} [query]  The search, for the Query column.
  * @returns {Array<Array<string|number>>}
  */
-function contexts(results, now) {
+function contexts(results, now, query) {
   return (results || [])
     .filter((result) => result && result.item)
     .map((result, index) => ({
@@ -220,11 +226,12 @@ function contexts(results, now) {
       item: result.item,
       links: otherLinks(result.item),
       now,
+      query: (query || "").trim(),
     }));
 }
 
-export function exportRows(results, now = new Date()) {
-  return contexts(results, now).map((row) =>
+export function exportRows(results, now = new Date(), query = "") {
+  return contexts(results, now, query).map((row) =>
     COLUMNS.map((column) => column.value(row))
   );
 }
@@ -242,12 +249,12 @@ export function jsonKey(header) {
  * object per result with a key per column (authors and tags as lists).
  * `about` is the [label, value] pairs of the workbook's second sheet.
  */
-export function toJson(results, about, now = new Date()) {
+export function toJson(results, about, now = new Date(), query = "") {
   const search = {};
   (about || []).forEach(([label, value]) => {
     search[jsonKey(label)] = value;
   });
-  const rows = contexts(results, now).map((row) => {
+  const rows = contexts(results, now, query).map((row) => {
     const out = {};
     COLUMNS.forEach((column) => {
       out[jsonKey(column.header)] = (column.json || column.value)(row);
@@ -275,9 +282,9 @@ function csvCell(value) {
  * ends, and a byte-order mark so that Excel reads the text as UTF-8 (curly
  * quotes, accents).
  */
-export function toCsv(results, now = new Date()) {
+export function toCsv(results, now = new Date(), query = "") {
   const lines = [COLUMNS.map((column) => column.header)]
-    .concat(exportRows(results, now))
+    .concat(exportRows(results, now, query))
     .map((row) => row.map(csvCell).join(","));
   return "﻿" + lines.join("\r\n") + "\r\n";
 }
@@ -303,7 +310,7 @@ export function exportFileName(query, filter, ext, now = new Date()) {
  * bold, frozen header row, filters on every column, and web addresses as
  * links; and an "About this search" sheet from `about` ([label, value] pairs).
  */
-export async function toXlsx(results, about, now = new Date()) {
+export async function toXlsx(results, about, now = new Date(), query = "") {
   const module = await import(
     /* webpackChunkName: "exceljs" */ "exceljs/dist/exceljs.min.js"
   );
@@ -320,7 +327,7 @@ export async function toXlsx(results, about, now = new Date()) {
     width: column.width,
   }));
   sheet.getRow(1).font = { bold: true };
-  exportRows(results, now).forEach((values) => {
+  exportRows(results, now, query).forEach((values) => {
     const row = sheet.addRow(values);
     COLUMNS.forEach((column, i) => {
       const cell = row.getCell(i + 1);

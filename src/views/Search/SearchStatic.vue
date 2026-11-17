@@ -1097,7 +1097,12 @@ export default {
       const name = exportFileName(this.searchedQuery, filter, ext, now);
       try {
         if (ext === "xlsx") {
-          const data = await toXlsx(results, this.downloadAbout(now), now);
+          const data = await toXlsx(
+            results,
+            this.downloadAbout(now),
+            now,
+            this.searchedQuery
+          );
           saveFile(
             data,
             name,
@@ -1105,12 +1110,16 @@ export default {
           );
         } else if (ext === "json") {
           saveFile(
-            toJson(results, this.downloadAbout(now), now),
+            toJson(results, this.downloadAbout(now), now, this.searchedQuery),
             name,
             "application/json;charset=utf-8"
           );
         } else {
-          saveFile(toCsv(results, now), name, "text/csv;charset=utf-8");
+          saveFile(
+            toCsv(results, now, this.searchedQuery),
+            name,
+            "text/csv;charset=utf-8"
+          );
         }
         // Recorded in Plausible once the file has been made (v1.5.145).
         const event = downloadEvent(

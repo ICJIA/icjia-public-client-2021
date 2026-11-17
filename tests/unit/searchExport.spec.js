@@ -84,7 +84,7 @@ describe("Search results download (v1.5.144)", () => {
   });
 
   it("fills the columns from the record", () => {
-    const [a, p, pub, j, m] = exportRows(ALL, NOW);
+    const [a, p, pub, j, m] = exportRows(ALL, NOW, " Prison ");
     expect(a[col("URL")]).to.equal(
       "https://icjia.illinois.gov/researchhub/articles/perspectives/"
     );
@@ -94,8 +94,12 @@ describe("Search results download (v1.5.144)", () => {
     expect(a[col("Tags")]).to.equal("Prison; work release");
     expect(a[col("Summary")]).to.equal("Prison work release programs.");
     expect(a[col("Date")]).to.equal("2026-10-30");
-    expect(a[col("Match")]).to.equal("Contains search words");
-    expect(p[col("Match")]).to.equal("Similar or partial");
+    // The search the result was found for (v1.5.146), not "Match".
+    expect(col("Match")).to.equal(-1);
+    expect(a[col("Query")]).to.equal("Prison");
+    expect(p[col("Query")]).to.equal(
+      "Prison (similar spelling or partial match)"
+    );
     expect(p[col("Category")]).to.equal("Press Release");
     expect(p[col("Tags")]).to.equal("Cannabis");
     expect(pub[col("PDF or file")]).to.equal(publication.item.fileURL);
@@ -122,7 +126,11 @@ describe("Search results download (v1.5.144)", () => {
   });
 
   it("writes JSON with the search and a keyed object per result", () => {
-    const data = JSON.parse(toJson(ALL, [["Search", "prison"]], NOW));
+    const data = JSON.parse(toJson(ALL, [["Search", "prison"]], NOW, "prison"));
+    expect(data.results[0].query).to.equal("prison");
+    expect(data.results[1].query).to.equal(
+      "prison (similar spelling or partial match)"
+    );
     expect(data.search).to.deep.equal({ search: "prison" });
     expect(data.results).to.have.length(5);
     expect(data.results[0].authors).to.deep.equal([
