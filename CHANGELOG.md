@@ -84,6 +84,41 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.144] - 2026-11-17
+
+### search: download the results as Excel, CSV or JSON
+
+More and more visitors asked for a way to take search results away. The search page now has a row of three
+buttons under the result count and the filter chips, always in view once there are results: **Download these
+N results — Excel (.xlsx), CSV (.csv), JSON (.json)**.
+
+- The file holds every result under the chosen filter chip, in the order on the page (newest first or best
+  match), and the similar spellings and partial matches too, marked in a `Match` column. It is not limited to the
+  fifty results on the screen.
+- One row per result, 22 columns: Rank, Match, Title, Type, Category (news and meeting categories by their
+  labels, Hub categories), full URL, Date (as the result card shows it), Start, End, Status (funding and jobs
+  Open/Closed by the site's own rule, meetings Upcoming/Ended/Cancelled, a program's status), Authors, Tags,
+  the full Summary, PDF or file, Research Hub article, Web app, Dataset, Publication type, Position, Unit (staff
+  biographies), First published, Last updated.
+- The Excel workbook has a bold frozen header row, filters on every column, web addresses as links, and a second
+  sheet, "About this search": the search, the filter, the order, the counts, the synonyms searched, the words
+  left out, the page address and when it was downloaded. The JSON file has the same in `search`, and the results
+  in `results` (authors and tags as lists).
+- The CSV starts with a byte-order mark so Excel reads accents and curly quotes; a value that a spreadsheet would
+  take as a formula gets an apostrophe in front.
+- File name: `icjia-search-<search>-<filter>-<date>.<ext>`, e.g. `icjia-search-prison-publication-2026-11-17.csv`.
+- exceljs (already in the project) is loaded only when the Excel button is pressed, as a chunk of its own; the
+  search page does not carry it otherwise.
+- The download is announced in the page's status region; the buttons are 44 px tall, with a visible focus ring.
+
+Code in `src/utils/searchExport.js` and `src/views/Search/SearchStatic.vue`; tests in
+`tests/unit/searchExport.spec.js` (7). Checked in a browser on a dev build: all three files downloaded for
+"prison" (177 rows each, the workbook's two sheets read back with exceljs), the Publications chip narrowed the
+download to its 88 results, axe found nothing in the toolbar, no sideways scroll at 320 px. Unit tests: 825
+passing, 6 pending, 0 failing.
+
+---
+
 ## [1.5.143] - 2026-11-13
 
 ### Fixes from NVDA's reading of the site's sample (WCAG 1.3.1, 1.3.2, 2.4.4, 2.4.6)

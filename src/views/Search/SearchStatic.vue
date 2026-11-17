@@ -186,6 +186,40 @@
                   @change="announceSort"
                 ></v-switch>
               </div>
+              <!-- The results as a spreadsheet or as data (v1.5.144): every
+                   result under the chosen filter, in the order shown, the
+                   similar ones too (marked), not only the fifty on the page.
+                   Buttons in view, not a menu, so the download is found at
+                   once (src/utils/searchExport.js). -->
+              <div
+                v-if="orderedResults.length"
+                class="search-download"
+                role="group"
+                aria-labelledby="search-download-label"
+              >
+                <p id="search-download-label" class="search-download__label">
+                  <v-icon small color="#0d47a1" aria-hidden="true"
+                    >mdi-download</v-icon
+                  >
+                  Download {{ orderedResults.length === 1 ? "this" : "these" }}
+                  {{ orderedResults.length }} result{{
+                    orderedResults.length === 1 ? "" : "s"
+                  }}
+                </p>
+                <div class="search-download__buttons">
+                  <button
+                    v-for="format in downloadFormats"
+                    :key="format.ext"
+                    type="button"
+                    class="search-download__button"
+                    :disabled="downloading"
+                    @click="downloadResults(format.ext)"
+                  >
+                    <v-icon small aria-hidden="true">{{ format.icon }}</v-icon>
+                    {{ format.label }}
+                  </button>
+                </div>
+              </div>
             </div>
 
             <!-- <div style="font-size: 12px" class="mb-9 d-flex">
@@ -343,6 +377,13 @@ import { goToOptions } from "@/utils/motion";
 import { searchLocation, searchEvent, newestFirst } from "@/utils/search";
 import { searchWords, synonymsOf, PAGE_TYPES } from "@/utils/searchFields";
 import {
+  toCsv,
+  toJson,
+  toXlsx,
+  exportFileName,
+  saveFile,
+} from "@/utils/searchExport";
+import {
   historyKey,
   keepSearchView,
   keptSearchView,
@@ -413,6 +454,12 @@ export default {
       filter: null,
       recordTimer: null,
       emptyStatePages: EMPTY_STATE_PAGES,
+      downloadFormats: [
+        { ext: "xlsx", label: "Excel (.xlsx)", icon: "mdi-microsoft-excel" },
+        { ext: "csv", label: "CSV (.csv)", icon: "mdi-file-delimited-outline" },
+        { ext: "json", label: "JSON (.json)", icon: "mdi-code-json" },
+      ],
+      downloading: false,
 
       contentItems: [
         "No filter",
@@ -1009,6 +1056,75 @@ export default {
         ]);
       }
     },
+    // What the download holds, for its "About this search" sheet and the
+    // JSON file's `search` object.
+    downloadAbout(now) {
+      const chip = this.availableFilterChips.find((c) => this.isChipActive(c));
+      const results = this.orderedResults;
+      return [
+        ["Search", (this.searchedQuery || this.query || "").trim()],
+        ["Filter", chip && chip.value !== null ? chip.label : "No filter"],
+        [
+          "Order",
+          this.sortSwitch
+            ? "Newest first (the site's pages first)"
+            : "Best match first",
+        ],
+        ["Results", results.length],
+        [
+          "Containing the search words",
+          results.filter((r) => !r.similar).length,
+        ],
+        [
+          "Similar spellings or partial matches",
+          results.filter((r) => r.similar).length,
+        ],
+        ["Words left out", this.missingWords.join(", ")],
+        ["Also searched for", this.searchedSynonyms.join(", ")],
+        ["Search page", window.location.href],
+        ["Downloaded", now.toISOString()],
+        ["Source", "Illinois Criminal Justice Information Authority"],
+      ];
+    },
+    async downloadResults(ext) {
+      if (this.downloading) return;
+      this.downloading = true;
+      const now = new Date();
+      const results = this.orderedResults;
+      const filter =
+        this.contentSelected !== "No filter" ? this.contentSelected : null;
+      const name = exportFileName(this.searchedQuery, filter, ext, now);
+      try {
+        if (ext === "xlsx") {
+          const data = await toXlsx(results, this.downloadAbout(now), now);
+          saveFile(
+            data,
+            name,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          );
+        } else if (ext === "json") {
+          saveFile(
+            toJson(results, this.downloadAbout(now), now),
+            name,
+            "application/json;charset=utf-8"
+          );
+        } else {
+          saveFile(toCsv(results, now), name, "text/csv;charset=utf-8");
+        }
+        this.announceStatus(
+          `Downloading ${results.length} result${
+            results.length === 1 ? "" : "s"
+          } as ${name}.`
+        );
+      } catch (err) {
+        console.error("search download:", err);
+        this.announceStatus(
+          "The download could not be made. Please try again."
+        );
+      } finally {
+        this.downloading = false;
+      }
+    },
     // The switch's change, for screen readers (the list reorders in place).
     announceSort(on) {
       this.announceStatus(
@@ -1215,6 +1331,58 @@ export default {
 /* The date-order switch, under the chips (v1.5.123). */
 .search-toolbar__sort {
   margin-top: 10px;
+}
+/* The download buttons (v1.5.144): in view under the count and the chips,
+   outlined in the Research Hub's blue, 44 px tall (WCAG 2.5.5). */
+.search-download {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #ddd;
+}
+.search-download__label {
+  margin: 0 !important;
+  font-size: 14px;
+  font-weight: 700;
+  color: #222;
+}
+.search-download__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.search-download__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 2px solid #0d47a1;
+  border-radius: 4px;
+  background: #fff;
+  color: #0d47a1;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.search-download__button .v-icon {
+  color: inherit !important;
+}
+.search-download__button:hover,
+.search-download__button:focus-visible {
+  background: #0d47a1;
+  color: #fff;
+}
+.search-download__button:focus-visible {
+  outline: 3px solid #ffbf47;
+  outline-offset: 2px;
+}
+.search-download__button:disabled {
+  opacity: 0.6;
+  cursor: progress;
 }
 .search-toolbar__switch {
   margin: 0;
