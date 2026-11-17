@@ -84,6 +84,17 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.148] - 2026-11-17
+
+### news: the featured story's button reads "Read more"
+
+The button on the featured card at the top of `/news/` read "Read: " followed by the whole story title, so a
+long title ran the button past the right edge of the card. It now reads "Read more" whatever the title. The
+button is decorative (`aria-hidden`, out of the tab order; the card's title link is the real link), so what
+assistive technology hears is unchanged.
+
+`src/views/News/News.vue`; the Astro rebuild matches (`astro/src/components/NewsListing.astro`).
+
 ## [1.5.147] - 2026-11-17
 
 ### search: "Show similar results" keeps focus after a mouse click, WCAG 2.4.3
