@@ -84,6 +84,16 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.149] - 2026-11-17
+
+### news: the featured story's "Read more" button is a lighter blue than the FEATURED chip
+
+On `/news/` the "Read more" button and the FEATURED chip above it were the same navy (#0d4474). The button is
+now a slightly lighter, brighter blue (#1a5c96) so the two read as separate things. White text on it is
+6.96:1 (WCAG AA needs 4.5:1).
+
+`src/views/News/News.vue`; the Astro rebuild matches (`astro/src/components/NewsListing.astro`).
+
 ## [1.5.148] - 2026-11-17
 
 ### news: the featured story's button reads "Read more"

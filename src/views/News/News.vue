@@ -105,7 +105,7 @@
                       </div>
                       <v-btn
                         small
-                        color="#0D4474"
+                        color="#1A5C96"
                         dark
                         class="mt-4"
                         tabindex="-1"
