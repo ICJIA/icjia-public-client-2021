@@ -84,6 +84,16 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.150] - 2026-11-17
+
+### news: the featured story's "Read more" button is a clearly brighter blue
+
+The lighter navy of 1.5.149 (#1a5c96) still looked too much like the FEATURED chip (#0d4474) on screen. The
+"Read more" button is now a bright royal blue (#1565c0, Vuetify's blue darken-3, already used on the site), a
+plain difference from the chip. White text on it is 5.75:1 (WCAG AA needs 4.5:1).
+
+`src/views/News/News.vue`; the Astro rebuild matches (`astro/src/components/NewsListing.astro`).
+
 ## [1.5.149] - 2026-11-17
 
 ### news: the featured story's "Read more" button is a lighter blue than the FEATURED chip
