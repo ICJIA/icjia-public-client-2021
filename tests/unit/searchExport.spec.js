@@ -13,6 +13,7 @@ import {
   exportFileName,
   absoluteUrl,
   jsonKey,
+  downloadEvent,
 } from "@/utils/searchExport";
 
 const NOW = new Date("2026-11-17T18:00:00Z");
@@ -141,6 +142,30 @@ describe("Search results download (v1.5.144)", () => {
     );
     expect(exportFileName("", null, "xlsx", NOW)).to.equal(
       "icjia-search-results-2026-11-17.xlsx"
+    );
+  });
+
+  it("records a download in Plausible as Search Download (v1.5.145)", () => {
+    expect(downloadEvent("xlsx", "  Prison ", "publication", 88)).to.deep.equal(
+      {
+        name: "Search Download",
+        props: {
+          format: "xlsx",
+          query: "prison",
+          filter: "publication",
+          results: "88",
+        },
+      }
+    );
+    expect(downloadEvent("csv", "prison", null, 177).props.filter).to.equal(
+      "none"
+    );
+    const vue = fs.readFileSync(
+      path.join(process.cwd(), "src/views/Search/SearchStatic.vue"),
+      "utf8"
+    );
+    expect(vue).to.include(
+      "window.plausible(event.name, { props: event.props })"
     );
   });
 

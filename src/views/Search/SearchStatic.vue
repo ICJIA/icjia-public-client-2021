@@ -382,6 +382,7 @@ import {
   toXlsx,
   exportFileName,
   saveFile,
+  downloadEvent,
 } from "@/utils/searchExport";
 import {
   historyKey,
@@ -1111,6 +1112,15 @@ export default {
         } else {
           saveFile(toCsv(results, now), name, "text/csv;charset=utf-8");
         }
+        // Recorded in Plausible once the file has been made (v1.5.145).
+        const event = downloadEvent(
+          ext,
+          this.searchedQuery,
+          filter,
+          results.length
+        );
+        if (typeof window.plausible === "function")
+          window.plausible(event.name, { props: event.props });
         this.announceStatus(
           `Downloading ${results.length} result${
             results.length === 1 ? "" : "s"

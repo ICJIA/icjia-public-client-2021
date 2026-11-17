@@ -84,6 +84,28 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.145] - 2026-11-17
+
+### search: downloads are recorded in Plausible
+
+Each press of a download button on the search page (v1.5.144) sends a Plausible custom event, **`Search Download`**,
+once the file has been made, with four properties:
+
+- `format`: `xlsx`, `csv` or `json`
+- `query`: the search words, lowercased, as the `Search` event has them
+- `filter`: the filter chip's value (`publication`, `hub`, `press`, …), or `none`
+- `results`: the number of results in the file
+
+**To see it in Plausible**, add a custom-event goal named `Search Download` (Site settings → Goals), as for the
+`Search` goal; the properties then show under that goal.
+
+Code: `downloadEvent()` in `src/utils/searchExport.js`, called from `downloadResults()` in
+`src/views/Search/SearchStatic.vue`. Checked in a browser on a dev build with `window.plausible` stubbed: for
+"prison" under the Publications chip, the three buttons sent one event each (`xlsx`, `csv`, `json`, filter
+`publication`, results `88`). Unit tests: 826 passing, 6 pending, 0 failing.
+
+---
+
 ## [1.5.144] - 2026-11-17
 
 ### search: download the results as Excel, CSV or JSON

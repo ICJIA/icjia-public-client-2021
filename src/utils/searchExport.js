@@ -348,6 +348,30 @@ export async function toXlsx(results, about, now = new Date()) {
 }
 
 /**
+ * The Plausible event for a download (v1.5.145): "Search Download", with the
+ * format, the search words (lowercased, as the Search event has them), the
+ * filter chip and the number of results in the file, as text (Plausible shows
+ * a property's values as text).
+ *
+ * @param {string} format   "xlsx", "csv" or "json".
+ * @param {string} query    The search the results are for.
+ * @param {string|null} filter  The chip's value ("publication"), or null.
+ * @param {number} count    The results in the file.
+ * @returns {{name: string, props: object}}
+ */
+export function downloadEvent(format, query, filter, count) {
+  return {
+    name: "Search Download",
+    props: {
+      format,
+      query: (query || "").trim().toLowerCase(),
+      filter: filter || "none",
+      results: String(count),
+    },
+  };
+}
+
+/**
  * Hands the visitor a file: a Blob, a link with `download`, a click.
  */
 export function saveFile(data, fileName, type) {
