@@ -84,6 +84,17 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.151] - 2026-11-17
+
+### news: the FEATURED chip is outlined, so it no longer looks like a button
+
+On `/news/` the FEATURED label on the featured story was a filled navy box, much like the "Read more" button
+below it. It is a label, not something to click, so it is now outlined: navy text and a 1px navy border on
+the white card (10:1 contrast). The filled royal-blue "Read more" is now the only thing on the card that looks
+clickable.
+
+`src/views/News/News.vue`; the Astro rebuild matches (`astro/src/components/NewsListing.astro`).
+
 ## [1.5.150] - 2026-11-17
 
 ### news: the featured story's "Read more" button is a clearly brighter blue

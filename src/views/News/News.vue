@@ -452,8 +452,9 @@ export default {
 
 .featured-badge {
   display: inline-block;
-  background-color: #0d4474;
-  color: #fff;
+  background-color: transparent;
+  border: 1px solid #0d4474;
+  color: #0d4474;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.1em;
