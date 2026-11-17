@@ -84,6 +84,26 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.147] - 2026-11-17
+
+### search: "Show similar results" keeps focus after a mouse click, WCAG 2.4.3
+
+Clicking "Show … similar results" (or "Hide similar results") on the search page sent keyboard focus to the
+top of the page: Vuetify's `v-btn` calls `blur()` on itself after a mouse click (`e.detail` > 0) unless it has
+`retain-focus-on-click`. From the keyboard focus already stayed. The toggle now has the prop, so focus stays on
+it after a click too, and Tab goes on into the similar results. ("Show more results" moves focus to the first
+new result on purpose and is unchanged.)
+
+`src/views/Search/SearchStatic.vue`; test in `tests/unit/searchExport.spec.js`. Checked in a browser on a dev
+build: after a mouse click focus is on the toggle ("Hide similar results", `aria-expanded="true"`), Enter
+toggles it as before, and Tab moves to the first similar result; axe 0 violations. Unit tests: 827 passing,
+6 pending, 0 failing.
+
+Other `v-btn`s across the site blur the same way after a click. Where the button stays on the page and
+focus matters (a toggle), the same prop applies; none were changed here.
+
+---
+
 ## [1.5.146] - 2026-11-17
 
 ### search: the downloads name the search; the Astro rebuild's search matches the live one

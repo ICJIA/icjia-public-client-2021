@@ -196,3 +196,20 @@ describe("Search results download (v1.5.144)", () => {
     );
   });
 });
+
+// The similar-results toggle keeps focus after a mouse click (v1.5.147):
+// Vuetify's v-btn blurs itself on a mouse click unless retain-focus-on-click.
+describe("Similar-results toggle focus (v1.5.147)", () => {
+  it("keeps focus on the toggle after a mouse click (WCAG 2.4.3)", () => {
+    const vue = fs.readFileSync(
+      path.join(process.cwd(), "src/views/Search/SearchStatic.vue"),
+      "utf8"
+    );
+    const toggle = vue.slice(
+      vue.indexOf('aria-controls="search-similar-results"') - 400,
+      vue.indexOf('aria-controls="search-similar-results"')
+    );
+    expect(toggle).to.include("<v-btn");
+    expect(toggle).to.include("retain-focus-on-click");
+  });
+});

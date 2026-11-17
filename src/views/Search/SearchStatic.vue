@@ -279,8 +279,13 @@
                   Similar spellings and partial matches
                 </h2>
                 <p class="search-similar__note">{{ similarNote }}</p>
+                <!-- retain-focus-on-click: Vuetify blurs a button after a
+                     mouse click, and focus fell to the top of the page; it
+                     stays on the toggle, as it does from the keyboard (WCAG
+                     2.4.3, v1.5.147). -->
                 <v-btn
                   v-if="wordResults.length"
+                  retain-focus-on-click
                   :aria-expanded="similarOpen ? 'true' : 'false'"
                   aria-controls="search-similar-results"
                   @click="toggleSimilar()"
