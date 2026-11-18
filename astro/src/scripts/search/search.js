@@ -45,7 +45,10 @@ export function searchLocation(opts) {
   const target = query
     ? {
         name: "Search2",
-        params: { query: encodeURIComponent(query) },
+        // The router encodes the words once ("task force" → task%20force).
+        // Encoded here as well, they were encoded twice (task%2520force)
+        // until v1.5.152; queryFromParam() still reads those links.
+        params: { query },
       }
     : { name: "Search1" };
   if (filter && query) {
@@ -60,6 +63,27 @@ export function searchLocation(opts) {
  * @param {VueRouter} router  The component's $router instance.
  * @param {object}    opts    See searchLocation().
  */
+/**
+ * The search words in a /search/<words> address, as the router hands them over
+ * (v1.5.152). The router has decoded the address once. Links made before
+ * v1.5.152 were encoded twice ("/search/task%2520force", many of them shared),
+ * so what is left still holds an escape ("task%20force") and is decoded once
+ * more. A "%" that is not an escape ("/search/100%25" → "100%") is kept as it
+ * is: decoding it again threw, and the page opened with an empty search.
+ *
+ * @param {string} param  $route.params.query
+ * @returns {string}
+ */
+export function queryFromParam(param) {
+  const text = param === undefined || param === null ? "" : String(param);
+  if (!/%[0-9A-Fa-f]{2}/.test(text)) return text;
+  try {
+    return decodeURIComponent(text);
+  } catch (e) {
+    return text;
+  }
+}
+
 export function goToSearch(router, opts) {
   if (!router) return;
   router.push(searchLocation(opts)).catch((err) => {

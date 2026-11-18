@@ -11,7 +11,6 @@
 // a chunk of its own), so the search page does not carry it.
 // =============================================================================
 import config from "../../config/config.json";
-import { resultDate } from "./search.js";
 import { isPastLastDay, isMeetingOver } from "./ended.js";
 
 const SITE = "https://icjia.illinois.gov";
@@ -158,7 +157,16 @@ export const COLUMNS = [
     link: true,
     value: (r) => absoluteUrl(r.item.fullPath),
   },
-  { header: "Date", width: 12, value: (r) => day(resultDate(r.item)) },
+  // The date the work was published (v1.5.152): a publication's or a news
+  // post's publication date, a Research Hub item's date. Blank for the rest
+  // (funding, jobs, meetings, pages…), whose only date is when the record was
+  // posted ("First published"): it was "Date", which mixed the two, and a
+  // reader filtering files by year read them all as publication dates.
+  {
+    header: "Publication date",
+    width: 16,
+    value: (r) => day(r.item.publicationDate || r.item.date),
+  },
   { header: "Start", width: 20, value: (r) => dateTime(r.item.start) },
   { header: "End", width: 20, value: (r) => dateTime(r.item.end) },
   { header: "Status", width: 12, value: (r) => status(r.item, r.now) },

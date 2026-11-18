@@ -66,7 +66,8 @@ describe("Search page: the search on the page is in the address", () => {
       resolve: (location) => ({
         href:
           (location.name === "Search2"
-            ? `/search/${location.params.query}`
+            ? // The router encodes the words once (v1.5.152).
+              `/search/${encodeURIComponent(location.params.query)}`
             : "/search/") +
           (location.query ? `?filter=${location.query.filter}` : ""),
       }),

@@ -84,6 +84,41 @@ Use **both tools together**: axe-core as the primary development-time gate (fast
 
 ---
 
+## [1.5.152] - 2026-11-18
+
+### search: the downloads' "Publication date" column; search addresses encoded once (old links still work)
+
+**Publication date.** The downloads' "Date" column is now **Publication date**, and holds only that: a
+publication's or a news post's publication date, or a Research Hub article's, app's or dataset's date. It is
+blank for funding notices, programs, jobs, meetings, pages and biographies, whose only date is when the record
+was posted (still in "First published"); "Date" mixed the two, and a reader filtering files by year (a list of
+files from 2012 and before) could take a 2021 posting date for a publication date.
+
+Checked against the files: every publication (1,113) has its own publication date. For the 120 dated
+2010–2015, the date inside the PDF was read for 102: 95 the same year, 101 within a year, and one on the other
+side of 2012, where the CMS date (October 2013) is the one the file name carries. The 73 publications that are
+also Research Hub articles: no pair of dates falls on two sides of 2012. Not changed, for the record: about 100
+County Profiles are all dated 2000-07-01 in the CMS, a placeholder; their PDFs were made December 2004 to
+January 2005. 44 publications have no file.
+
+**Search addresses.** A search's address was encoded twice: "task force" was `/search/task%2520force`.
+`searchLocation()` encoded the words and the router encoded them again; the search page decoded them twice to
+match. It is now encoded once, `/search/task%20force`, everywhere a search address is made (typing, the
+front-page box, tag, name and category links). `queryFromParam()` (`src/utils/search.js`) reads both forms, so
+**the `%2520` links already shared open the same search as before**. It also fixes a search with a `%` in a
+normally encoded link: `/search/100%25` opened an empty search (the second decode threw).
+
+`src/utils/searchExport.js`, `src/utils/search.js`, `src/views/Search/SearchStatic.vue`; tests in
+`tests/unit/searchExport.spec.js`, updated in `homeSearch.spec.js` and `searchReturn.spec.js` (they pinned the
+double encoding). The Astro rebuild's copies are updated to match. Checked in a browser on a dev build:
+`/search/task%2520force`, `/search/task%20force` and `/search/task force` all open "task force" (244 results),
+with `?filter=publication` too (65); `/search/100%25` and `/search/100%2525` open "100%"; typing and the
+front-page box write single-encoded addresses; the CSV has "Publication date" (filled for all 65 publications,
+16 Hub articles and 11 news posts; blank for the 148 meetings). Unit tests: 829 passing, 6 pending, 0 failing;
+Astro 71 passing.
+
+---
+
 ## [1.5.151] - 2026-11-17
 
 ### news: the FEATURED chip is outlined, so it no longer looks like a button

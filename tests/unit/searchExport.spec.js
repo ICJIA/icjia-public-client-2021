@@ -93,7 +93,13 @@ describe("Search results download (v1.5.144)", () => {
     expect(a[col("Authors")]).to.equal("Ryan Maranville; Ellie Borgstrom");
     expect(a[col("Tags")]).to.equal("Prison; work release");
     expect(a[col("Summary")]).to.equal("Prison work release programs.");
-    expect(a[col("Date")]).to.equal("2026-10-30");
+    // Publication date (v1.5.152), not "Date": blank for what has none.
+    expect(col("Date")).to.equal(-1);
+    expect(a[col("Publication date")]).to.equal("2026-10-30");
+    expect(p[col("Publication date")]).to.equal("2021-07-16");
+    expect(pub[col("Publication date")]).to.equal("2026-08-21");
+    expect(j[col("Publication date")]).to.equal("");
+    expect(m[col("Publication date")]).to.equal("");
     // The search the result was found for (v1.5.146), not "Match".
     expect(col("Match")).to.equal(-1);
     expect(a[col("Query")]).to.equal("Prison");
@@ -211,5 +217,25 @@ describe("Similar-results toggle focus (v1.5.147)", () => {
     );
     expect(toggle).to.include("<v-btn");
     expect(toggle).to.include("retain-focus-on-click");
+  });
+});
+
+// Search addresses (v1.5.152): written encoded once; links encoded twice
+// before it ("task%2520force", shared widely) still open the same search.
+describe("Search addresses (v1.5.152)", () => {
+  const { searchLocation, queryFromParam } = require("@/utils/search");
+  it("hands the router the words as typed, so they are encoded once", () => {
+    expect(searchLocation({ query: " task force " })).to.deep.equal({
+      name: "Search2",
+      params: { query: "task force" },
+    });
+  });
+  it("reads every form of the address as the same words", () => {
+    // What the router hands over after decoding the address once:
+    expect(queryFromParam("task force")).to.equal("task force"); // task%20force
+    expect(queryFromParam("task%20force")).to.equal("task force"); // task%2520force
+    expect(queryFromParam("100%")).to.equal("100%"); // 100%25 (threw before)
+    expect(queryFromParam("100%25")).to.equal("100%"); // 100%2525
+    expect(queryFromParam(undefined)).to.equal("");
   });
 });

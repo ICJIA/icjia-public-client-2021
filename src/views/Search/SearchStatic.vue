@@ -379,7 +379,12 @@ import Fuse from "fuse.js";
 import _ from "lodash";
 import NProgress from "@/services/Progress";
 import { goToOptions } from "@/utils/motion";
-import { searchLocation, searchEvent, newestFirst } from "@/utils/search";
+import {
+  searchLocation,
+  searchEvent,
+  newestFirst,
+  queryFromParam,
+} from "@/utils/search";
 import { searchWords, synonymsOf, PAGE_TYPES } from "@/utils/searchFields";
 import {
   toCsv,
@@ -551,7 +556,7 @@ export default {
     // navigate here, mount synchronously, and crash on this.fuse.search()
     // before getFuse resolved.
     if (this.$route.params.query) {
-      this.query = decodeURIComponent(this.$route.params.query);
+      this.query = queryFromParam(this.$route.params.query);
       this.announceWhenSearched = true;
       this.searchFromRoute = true;
       this.instantSearch();
@@ -787,7 +792,7 @@ export default {
     // the user lands on a fresh search page.
     "$route.params.query"(next) {
       if (next) {
-        const decoded = decodeURIComponent(next);
+        const decoded = queryFromParam(next);
         if (decoded === this.query) return;
         this.query = decoded;
         this.announceWhenSearched = true;

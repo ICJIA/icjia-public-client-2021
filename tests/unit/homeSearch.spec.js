@@ -26,7 +26,8 @@ describe("Front page: search box in the banner", () => {
   it("sends the query to the search page, as every search link does", () => {
     expect(search("  homicide dashboard ")).to.deep.equal({
       name: "Search2",
-      params: { query: "homicide%20dashboard" },
+      // The words as typed: the router encodes them once (v1.5.152).
+      params: { query: "homicide dashboard" },
     });
   });
 
